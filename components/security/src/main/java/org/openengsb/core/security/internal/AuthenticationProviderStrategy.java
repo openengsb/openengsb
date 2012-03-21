@@ -19,8 +19,8 @@ package org.openengsb.core.security.internal;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.AbstractDelegateStrategy;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +36,28 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationProviderStrategy.class);
 
+    private OsgiUtilsService utilsService;
+
+    public AuthenticationProviderStrategy() {
+    }
+
+    public AuthenticationProviderStrategy(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
+
     private static class CompositeAuthenticationProvider implements AuthenticationProvider {
         private List<ServiceReference> providers;
+        private OsgiUtilsService utilsService;
 
-        public CompositeAuthenticationProvider(List<ServiceReference> providers) {
+        public CompositeAuthenticationProvider(List<ServiceReference> providers, OsgiUtilsService utilsService) {
             this.providers = providers;
+            this.utilsService = utilsService;
         }
 
         @Override
         public Authentication authenticate(Authentication authentication) throws AuthenticationException {
             Iterator<AuthenticationProvider> serviceIterator =
-                OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthenticationProvider.class);
+                utilsService.getServiceIterator(providers, AuthenticationProvider.class);
             AuthenticationException lastException = null;
             LOGGER.debug("iterating {} authenticationProviderServices", providers.size());
             while (serviceIterator.hasNext()) {
@@ -73,7 +83,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
         @Override
         public boolean supports(final Class<? extends Object> authentication) {
             Iterator<AuthenticationProvider> serviceIterator =
-                OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
+                utilsService.getServiceIterator(providers,
                     AuthenticationProvider.class);
             return Iterators.any(serviceIterator, new Predicate<AuthenticationProvider>() {
                 @Override
@@ -87,12 +97,16 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     @Override
     protected Object createDelegate(List<ServiceReference> services) {
-        return new CompositeAuthenticationProvider(services);
+        return new CompositeAuthenticationProvider(services, utilsService);
     }
 
     @Override
     public boolean supports(Class<?> domainClass) {
         return AuthenticationProvider.class.isAssignableFrom(domainClass);
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

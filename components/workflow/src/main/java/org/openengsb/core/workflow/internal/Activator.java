@@ -14,30 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.workflow.internal;
 
-package org.openengsb.core.common;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.workflow.OsgiHelper;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
+public class Activator implements BundleActivator {
 
-    private OsgiUtilsService utils;
-
-    @Before
-    public void setUp() throws Exception {
-        utils = new DefaultOsgiUtilsService(bundleContext);
+    @Override
+    public void start(BundleContext context) throws Exception {
+        OsgiHelper.setUtilsService(new DefaultOsgiUtilsService(context));
     }
 
-    @Test(expected = OsgiServiceNotAvailableException.class)
-    public void getProxyForNonExistingservice_shouldThrowNotAvailableException() throws Exception {
-        NullDomain osgiServiceProxy = utils.getOsgiServiceProxy(NullDomain.class, 1);
-        osgiServiceProxy.getAliveState();
+    @Override
+    public void stop(BundleContext context) throws Exception {
     }
 
 }

@@ -113,6 +113,13 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     private BundleContext bundleContext;
 
+    public DefaultOsgiUtilsService() {
+    }
+
+    public DefaultOsgiUtilsService(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
     @Override
     public <T> T getService(Class<T> clazz) throws OsgiServiceNotAvailableException {
         return getService(clazz, DEFAULT_TIMEOUT);

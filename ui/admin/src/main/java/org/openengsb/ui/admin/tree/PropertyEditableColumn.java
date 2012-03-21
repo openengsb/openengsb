@@ -33,18 +33,19 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.tree.dropDownPanel.DropDownPanel;
 import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class PropertyEditableColumn extends PropertyRenderableColumn {
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
-
-    private WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+    @PaxWicketBean(name = "domainProviders")
+    private List<DomainProvider> domains;
+    
+    @PaxWicketBean
+    private WiringService wiringService;
 
     public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {
         super(location, header, propertyExpression);
@@ -78,7 +79,6 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
 
     private List<String> getServices(String keyPath) {
         List<String> services = new ArrayList<String>();
-        List<DomainProvider> domains = serviceUtils.listServices(DomainProvider.class);
         for (DomainProvider domainProvider : domains) {
             String domainProvierName = domainProvider.getId();
             if (("/domain/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {

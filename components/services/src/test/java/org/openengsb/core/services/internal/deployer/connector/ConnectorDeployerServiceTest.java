@@ -57,12 +57,10 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
@@ -74,7 +72,6 @@ import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -99,6 +96,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private ConnectorInstanceFactory factory;
     private ConnectorId testConnectorId;
     private DefaultConfigPersistenceService configPersistence;
+    private DefaultWiringService wiringService;
+    private DefaultOsgiUtilsService serviceUtils;
 
     @Before
     public void setUp() throws Exception {
@@ -128,6 +127,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
         testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
+        wiringService = defaultWiringService;
     }
 
     private void setupPersistence() {
@@ -147,7 +147,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
-        registrationManager.setServiceUtils(OpenEngSBCoreServices.getServiceUtilsService());
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
         serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManager = serviceManagerImpl;
@@ -171,7 +171,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
 
-        NullDomain domainEndpoints = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(NullDomain.class, "*");
+        NullDomain domainEndpoints = wiringService.getDomainEndpoint(NullDomain.class, "*");
         domainEndpoints.nullMethod(42);
         verify(createdService).nullMethod(42);
     }
@@ -182,8 +182,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo,bar");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=bar)", 100L);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             .writeStringToFile(connectorFile, testConnectorData + "\nproperty.service.ranking=2\nproperty.bla=foo");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
 
         ServiceReference serviceReference = bundleContext.getServiceReferences(null, "(bla=foo)")[0];
         Integer ranking = (Integer) serviceReference.getProperty(Constants.SERVICE_RANKING);
@@ -206,8 +206,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo , bar");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=bar)", 100L);
     }
 
     private File createSampleConnectorFile() throws IOException {
@@ -580,11 +580,4 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         }
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

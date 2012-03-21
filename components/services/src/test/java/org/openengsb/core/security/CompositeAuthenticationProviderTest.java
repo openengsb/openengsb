@@ -33,13 +33,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.model.User;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.AuthenticationProviderStrategy;
 import org.openengsb.core.security.internal.SystemUserAuthenticationProvider;
 import org.openengsb.core.services.internal.virtual.CompositeConnector;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -54,9 +52,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class CompositeAuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
     private AuthenticationProvider authenticationManager;
+    private OsgiUtilsService utilsService;
 
     @Before
     public void setUp() {
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         UserDetailsService userDetails = mock(UserDetailsService.class);
         when(userDetails.loadUserByUsername(anyString())).thenAnswer(new Answer<UserDetails>() {
@@ -70,8 +70,8 @@ public class CompositeAuthenticationProviderTest extends AbstractOsgiMockService
         registerService(new SystemUserAuthenticationProvider(), new Hashtable<String, Object>(),
             AuthenticationProvider.class);
 
-        CompositeConnector compositeConnector = new CompositeConnector("foo");
-        compositeConnector.setCompositeHandler(new AuthenticationProviderStrategy());
+        CompositeConnector compositeConnector = new CompositeConnector("foo", utilsService);
+        compositeConnector.setCompositeHandler(new AuthenticationProviderStrategy(utilsService));
         compositeConnector.setQueryString(String.format("(%s=%s)", Constants.OBJECTCLASS,
             AuthenticationProvider.class.getName()));
 
@@ -104,11 +104,4 @@ public class CompositeAuthenticationProviderTest extends AbstractOsgiMockService
         assertThat(authenticatedToken.isAuthenticated(), is(true));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

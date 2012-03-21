@@ -29,11 +29,11 @@ import org.mockito.Mockito;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
@@ -46,7 +46,6 @@ import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
 
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
@@ -74,13 +73,13 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
         List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
         context.putBean("openengsbVersionService", versionService);
-        context.putBean(OpenEngSBCoreServices.getWiringService());
-        OsgiUtilsService serviceUtilsService =
-            OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
-        context.putBean("serviceUtils", serviceUtilsService);
+        DefaultWiringService defaultWiringService = new DefaultWiringService();
+        defaultWiringService.setBundleContext(bundleContext);
+        context.putBean("wiringService", defaultWiringService);
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
+        context.putBean("osgiUtilsService", serviceUtils);
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
-        registrationManager.setServiceUtils(serviceUtils);
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
@@ -100,20 +99,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
-        context.putBean(serviceManager);
-    }
+        context.putBean("serviceManager", serviceManager);
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        this.serviceUtils = serviceUtils;
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        DefaultWiringService wiringService = new DefaultWiringService();
-        wiringService.setBundleContext(bundleContext);
-        registerService(wiringService, "wiringService", WiringService.class);
-        this.wiringService = wiringService;
+        context.putBean("domainProviders", makeServiceList(DomainProvider.class));
     }
 
 }

@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,7 +49,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
@@ -59,7 +57,6 @@ import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
@@ -76,7 +73,6 @@ import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -213,7 +209,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         incomingPort = new JMSIncomingPort();
         incomingPort.setFactory(jmsTemplateFactory);
         incomingPort.setConnectionFactory(connectionFactory);
-        handler = new RequestHandlerImpl();
+        RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
+        requestHandlerImpl.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
+        handler = requestHandlerImpl;
 
         TestInterface mock2 = mock(TestInterface.class);
         registerServiceViaId(mock2, "test", TestInterface.class);
@@ -360,11 +358,4 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-    }
 }

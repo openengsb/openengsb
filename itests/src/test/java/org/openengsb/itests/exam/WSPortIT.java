@@ -43,7 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
@@ -72,8 +72,8 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "ws-json", 60000);
+        DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(getBundleContext());
+        OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "ws-json", 60000);
         assertNotNull(serviceWithId);
     }
 

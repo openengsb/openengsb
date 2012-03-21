@@ -27,7 +27,7 @@ import org.fusesource.jansi.Ansi;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.Comparators;
-import org.osgi.framework.ServiceReference;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 
 /**
  * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later release it will be moved
@@ -45,8 +45,7 @@ public class DomainInfoCommand extends OsgiCommandSupport {
     @Override
     protected Object doExecute() throws Exception {
         int maxNameLen = 25;
-        ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
-        OsgiUtilsService service = getService(OsgiUtilsService.class, sr);
+        OsgiUtilsService service = new DefaultOsgiUtilsService(getBundleContext());
         List<DomainProvider> serviceList = service.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
         System.out.println("Services");

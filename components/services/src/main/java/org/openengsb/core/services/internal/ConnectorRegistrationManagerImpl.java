@@ -34,6 +34,7 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MapAsDictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -209,11 +210,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         return domainProvider;
     }
 
-    public void setServiceUtils(OsgiUtilsService serviceUtils) {
-        this.serviceUtils = serviceUtils;
-    }
-
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
     }
 }

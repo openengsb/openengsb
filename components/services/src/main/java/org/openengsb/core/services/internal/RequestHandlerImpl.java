@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
 import org.openengsb.core.api.remote.CustomMarshallerRealTypeAccess;
@@ -35,11 +36,16 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
 public class RequestHandlerImpl implements RequestHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestHandlerImpl.class);
+
+    private OsgiUtilsService utilsService;
 
     @Override
     public MethodResult handleCall(MethodCall call) {
@@ -97,7 +103,7 @@ public class RequestHandlerImpl implements RequestHandler {
         String serviceId = metaData.get("serviceId");
         String filter = metaData.get("serviceFilter");
         String filterString = createFilterString(filter, serviceId);
-        return OpenEngSBCoreServices.getServiceUtilsService().getService(filterString);
+        return utilsService.getService(filterString);
     }
 
     private String createFilterString(String filter, String serviceId) {
@@ -186,6 +192,10 @@ public class RequestHandlerImpl implements RequestHandler {
             }
         }
         return clazzes.toArray(new Class<?>[0]);
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

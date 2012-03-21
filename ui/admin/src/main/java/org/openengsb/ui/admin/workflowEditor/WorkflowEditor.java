@@ -84,7 +84,7 @@ public class WorkflowEditor extends BasePage {
     @PaxWicketBean
     WorkflowConverter workflowConverter;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "workflowValidators")
     List<WorkflowValidator> validators;
 
     @SuppressWarnings("unchecked")

@@ -86,7 +86,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         createWorkflowEditorService();
         ruleManager = mock(RuleManager.class);
         context.putBean(ruleManager);
-        context.putBean("validators", validators);
+        context.putBean("workflowValidators", validators);
         workflowConverter = mock(WorkflowConverter.class);
         context.putBean(workflowConverter);
         tester.getApplication().addComponentInstantiationListener(

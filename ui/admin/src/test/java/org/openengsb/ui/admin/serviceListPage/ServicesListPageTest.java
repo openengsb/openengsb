@@ -33,14 +33,10 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
 
 public class ServicesListPageTest extends AbstractUITest {
 
@@ -86,13 +82,5 @@ public class ServicesListPageTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.state");
         assertThat(stateLabel.getDefaultModelObjectAsString(), is(AliveState.CONNECTING.name()));
         tester.debugComponentTrees();
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

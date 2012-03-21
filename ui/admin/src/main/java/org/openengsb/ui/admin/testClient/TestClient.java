@@ -75,7 +75,6 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -99,13 +98,13 @@ public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
-    private OsgiUtilsService serviceUtils;
+    @PaxWicketBean(name = "osgiUtilsService")
+    private OsgiUtilsService utilsService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
     private DropDownChoice<MethodId> methodList;
@@ -130,11 +129,11 @@ public class TestClient extends BasePage {
         new LoadableDetachableModel<List<? extends DomainProvider>>() {
             @Override
             protected List<? extends DomainProvider> load() {
-                List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
+                List<DomainProvider> serviceList = utilsService.listServices(DomainProvider.class);
                 Collections.sort(serviceList, Comparators.forDomainProvider());
                 return serviceList;
             }
-        };;
+        };
 
     public TestClient() {
         super();
@@ -360,7 +359,7 @@ public class TestClient extends BasePage {
                     new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
-                            return serviceUtils.listServices(ConnectorProvider.class,
+                            return utilsService.listServices(ConnectorProvider.class,
                                 String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
                         }
                     };
@@ -735,8 +734,7 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
-        if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+        if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
         }
@@ -748,7 +746,7 @@ public class TestClient extends BasePage {
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         String serviceId = service.getServiceId();
         if (serviceId != null) {
-            return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
+            return utilsService.getServiceWithId(service.getServiceClass(),
                 serviceId);
         } else {
             String domainName = service.getDomainName();
@@ -759,7 +757,7 @@ public class TestClient extends BasePage {
             } catch (ClassNotFoundException e) {
                 throw new OsgiServiceNotAvailableException(e);
             }
-            return OpenEngSBCoreServices.getServiceUtilsService().getServiceForLocation(serviceClazz,
+            return utilsService.getServiceForLocation(serviceClazz,
                 location);
         }
 

@@ -37,13 +37,13 @@
     <property name="versionNumber" value="${openengsb.version.number}" />
   </bean>
 
-  <osgi:list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService" cardinality="0..N" />
+  <osgi:list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService"
+    cardinality="0..N" />
   <osgi:reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
   <osgi:reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
-  <osgi:reference id="osgiUtilsService" interface="org.openengsb.core.api.OsgiUtilsService" />
   <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
@@ -72,6 +72,10 @@
     <constructor-arg name="applicationName" value="openengsb" />
     <constructor-arg name="priority" value="2" />
     <property name="securityFilterChain" ref="springSecurityFilterChain" />
+  </bean>
+
+  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="osgiUtilsService">
+    <property name="bundleContext" ref="bundleContext" />
   </bean>
 
 </beans>

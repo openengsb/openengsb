@@ -29,6 +29,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -42,7 +43,6 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
@@ -57,6 +57,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private EntityManager entityManager;
     private JPADao dao;
     private PersistInterface persistInterface;
+    private OsgiUtilsService utilsService;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -369,7 +370,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      */
     private void initiatePersistInterface() {
         if (persistInterface == null) {
-            persistInterface = OpenEngSBCoreServices.getServiceUtilsService().getService(PersistInterface.class);
+            persistInterface = utilsService.getService(PersistInterface.class);
         }
     }
 
@@ -526,5 +527,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
                         + entry.getKey());
             }
         }
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 }

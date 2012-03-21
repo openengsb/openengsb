@@ -26,6 +26,11 @@
   <bean id="edbServiceProvider" class="org.openengsb.core.edb.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
+    <property name="utilsService">
+      <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+        <property name="bundleContext" ref="blueprintBundleContext" />
+      </bean>
+    </property>
   </bean>
 
   <service interface="org.openengsb.core.api.edb.EngineeringDatabaseService">

@@ -77,6 +77,10 @@
     <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
+  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="java.lang.String" />
     <property name="outputType" value="java.lang.String" />

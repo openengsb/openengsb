@@ -39,21 +39,18 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 
 public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest {
@@ -64,6 +61,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
     @Before
     public void setUp() throws Exception {
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         createDomainProviderMock(NullDomain.class, "test");
         createFactoryMock("testc", NullDomainImpl.class, "test");
         callrouter = mock(OutgoingPortUtilService.class);
@@ -72,10 +70,11 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registerService(callrouter, new Hashtable<String, Object>(), OutgoingPortUtilService.class);
         ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
-        serviceManagerImpl.setServiceUtils(serviceUtils);
         registrationManager = serviceManagerImpl;
         ProxyConnectorProvider proxyConnectorProvider = new ProxyConnectorProvider();
         proxyConnectorProvider.setId(Constants.EXTERNAL_CONNECTOR_PROXY);
+        proxyConnectorProvider.setBundleContext(bundleContext);
+        proxyConnectorProvider.setOutgoingPortUtilService(callrouter);
         registerService(proxyConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         new Activator().start(bundleContext);
     }
@@ -183,13 +182,5 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         service.nullMethod();
         verify(callrouter, times(3)).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
         assertThat(service.getInstanceId(), is(connectorId.toString()));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
     }
 }

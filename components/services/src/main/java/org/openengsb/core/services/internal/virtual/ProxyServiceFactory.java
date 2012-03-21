@@ -22,18 +22,16 @@ import java.util.Map;
 
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.VirtualConnectorFactory;
-import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 
 public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector> {
 
-    private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
+    private OutgoingPortUtilService outgoingPortUtilService;
 
-    protected ProxyServiceFactory(DomainProvider domainProvider) {
+    protected ProxyServiceFactory(DomainProvider domainProvider, OutgoingPortUtilService outgoingPortUtilService) {
         super(domainProvider);
+        this.outgoingPortUtilService = outgoingPortUtilService;
     }
 
     @Override
@@ -53,26 +51,7 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
 
     @Override
     protected ProxyConnector createNewHandler(String id) {
-        ProxyConnector handler = new ProxyConnector(id);
-        updateInstanceCallRouter();
-        handler.setOutgoingPortUtilService(callRouter);
-        return handler;
-    }
-
-    private void updateInstanceCallRouter() {
-        OutgoingPortUtilService registeredRouter = retrieveCallRouterFromRegsitryIfExisting();
-        if (registeredRouter != null) {
-            callRouter = registeredRouter;
-        }
-    }
-
-    private OutgoingPortUtilService retrieveCallRouterFromRegsitryIfExisting() {
-        try {
-            return OpenEngSBCoreServices.getServiceUtilsService().getService(OutgoingPortUtilService.class, 5);
-        } catch (OsgiServiceNotAvailableException e) {
-            // does not have to be available
-        }
-        return null;
+        return new ProxyConnector(id, outgoingPortUtilService);
     }
 
     @Override

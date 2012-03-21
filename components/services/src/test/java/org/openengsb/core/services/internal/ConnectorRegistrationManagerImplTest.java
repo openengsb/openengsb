@@ -37,19 +37,15 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
-import org.osgi.framework.BundleContext;
 
 public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServiceTest {
-
-    private BundleContext bundleContextMock;
 
     @Test
     public void testRegisterConnectorWithSameNameAfterRemoved_shouldNotFail() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
-        defaultOsgiUtilsService.setBundleContext(bundleContextMock);
+        defaultOsgiUtilsService.setBundleContext(bundleContext);
         ConnectorRegistrationManagerImpl connectorRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
-        connectorRegistrationManagerImpl.setBundleContext(bundleContextMock);
-        connectorRegistrationManagerImpl.setServiceUtils(defaultOsgiUtilsService);
+        connectorRegistrationManagerImpl.setBundleContext(bundleContext);
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Connector connectorMock = mock(Connector.class);
         when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(connectorMock);
@@ -78,10 +74,9 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
     @Test(expected = IllegalStateException.class)
     public void testNoDomainProviderAvailableForType_shouldThrowIllegalArgumentException() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
-        defaultOsgiUtilsService.setBundleContext(bundleContextMock);
+        defaultOsgiUtilsService.setBundleContext(bundleContext);
         ConnectorRegistrationManagerImpl connectorRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
-        connectorRegistrationManagerImpl.setBundleContext(bundleContextMock);
-        connectorRegistrationManagerImpl.setServiceUtils(defaultOsgiUtilsService);
+        connectorRegistrationManagerImpl.setBundleContext(bundleContext);
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
@@ -100,11 +95,6 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         ConnectorId connectorId = new ConnectorId("a", "a", "a");
         connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription(
             new HashMap<String, String>(), new HashMap<String, Object>()));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        bundleContextMock = bundleContext;
     }
 
 }

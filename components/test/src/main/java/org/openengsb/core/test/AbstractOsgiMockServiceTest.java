@@ -58,6 +58,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,6 +197,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
+        when(bundle.getHeaders()).thenReturn(new Hashtable<String, Object>());
     }
 
     public void clearRegistry() throws Exception {
@@ -299,7 +301,14 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         return serviceReference;
     }
 
-    protected abstract void setBundleContext(BundleContext bundleContext);
+    /**
+     * will be removed in 3.0
+     * 
+     * @deprecated you can use the bundle-context in your regular @Before-method
+     */
+    @Deprecated
+    protected void setBundleContext(BundleContext bundleContext) {
+    }
 
     /**
      * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
@@ -435,6 +444,12 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 entry.getKey().serviceChanged(new ServiceEvent(eventType, serviceReference));
             }
         }
+    }
+
+    protected <T> ServiceList<T> makeServiceList(Class<T> serviceClass) {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
+        ServiceList<T> serviceList = new ServiceList<T>(serviceTracker);
+        return serviceList;
     }
 
 }

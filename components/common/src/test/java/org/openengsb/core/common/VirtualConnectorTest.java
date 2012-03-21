@@ -40,7 +40,6 @@ import org.openengsb.core.common.internal.VirtualConnectorManager;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 
 public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
@@ -91,7 +90,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        utilsService = OpenEngSBCoreServices.getServiceUtilsService();
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
         virtualConnectorProvider = mock(VirtualConnectorProvider.class);
         when(virtualConnectorProvider.createFactory(any(DomainProvider.class))).thenAnswer(
             new Answer<ConnectorInstanceFactory>() {
@@ -141,14 +140,6 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
             utilsService.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
 }
