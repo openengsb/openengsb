@@ -44,29 +44,26 @@ public class UserListPage extends BasePage {
 
         @Override
         protected void openCreatePage(AjaxRequestTarget target) {
-
             EditPanel createUser = new EditPanel("userDialogue");  
             createUser.setOutputMarkupId(true);
-
+            userDialogue.setOutputMarkupPlaceholderTag(true);
             userDialogue.replaceWith(createUser);
             userDialogue = createUser;
             target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','Create new user',false)");
+            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','Create new user',false);");
         }
 
         @Override
         protected void openEditorPage(AjaxRequestTarget target, String user) {
-
             EditPanel editUser = new EditPanel("userDialogue", user);  
             editUser.setOutputMarkupId(true);
-
+            userDialogue.setOutputMarkupPlaceholderTag(true);
             userDialogue.replaceWith(editUser);
             userDialogue = editUser;
             target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + editUser.getMarkupId() + ""
-                + "','Edit user: " + user + "',false)");
+            target.appendJavascript("showModalDialogue('" + editUser.getMarkupId()
+                + "','Edit user: " + user + "',false);");
         }
-
     }
     
     private final class EditPanel extends UserEditPanel {
@@ -96,12 +93,11 @@ public class UserListPage extends BasePage {
     }
 
     private void initContent() {
-        
         add(new MyUserListPanel("lazy"));
-
         //Panel for Modal Dialog for User add/edit form
         userDialogue = new EmptyPanel("userDialogue");
         userDialogue.setOutputMarkupId(true);
+        userDialogue.setOutputMarkupPlaceholderTag(true);
         add(userDialogue);
     }
 }

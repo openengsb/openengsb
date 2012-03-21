@@ -22,7 +22,9 @@ import static org.junit.Assert.assertFalse;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractLoginTest;
@@ -62,8 +64,10 @@ public class LoginPageTest extends AbstractLoginTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("logout");
         tester.assertRenderedPage(Index.class);
+        tester.debugComponentTrees();
+        tester.clickLink("header:logout");
+        tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
