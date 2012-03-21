@@ -29,7 +29,16 @@ import org.osgi.framework.Filter;
  * Static helper methods providing proxies which access the OSGi service registry for each request to retrieve the
  * correct service implementation. Please keep in mind that each service implementation can change any moment and be
  * either null and/or replaced by a different service.
+ *
+ * @deprecated rather inject these services properly using blueprint or similar
+ *
+ * <pre>
+ * &lt;bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService"&gt;
+ *   &lt;property name="bundleContext" ref="blueprintBundleContext" /&gt;
+ * &lt;/bean&gt;
+ * </pre>
  */
+@Deprecated
 public final class OpenEngSBCoreServices {
 
     private static OsgiUtilsService serviceUtils;
