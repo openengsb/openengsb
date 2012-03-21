@@ -57,6 +57,10 @@
     </property>
   </bean>
 
+  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="java.lang.String" />
     <property name="outputType" value="java.lang.String" />
@@ -69,7 +73,9 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <value>org.openengsb.core.security.filter.MessageAuthenticatorFilter</value>
+        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+          <property name="utilsService" ref="utilsService" />
+        </bean>
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">

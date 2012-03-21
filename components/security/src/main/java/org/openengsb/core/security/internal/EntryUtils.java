@@ -27,7 +27,6 @@ import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.BeanUtilsExtended;
 import org.openengsb.core.security.internal.model.BeanData;
 import org.openengsb.core.security.internal.model.EntryElement;
@@ -43,10 +42,12 @@ import com.google.common.collect.Maps;
 
 /**
  * Provides util-functions for handling multi-valued attributes, used to save {@link BeanData}.
- *
+ * 
  * For more details on the conversion from a bean to {@link BeanData} and vice versa, see {@link BeanData}.
  */
 public final class EntryUtils {
+
+    private static OsgiUtilsService utilsService;
 
     /**
      * converts a list of {@link EntryElement} back to a list containing the original java objects.
@@ -163,11 +164,10 @@ public final class EntryUtils {
         return (T) BeanUtilsExtended.createBeanFromAttributeMap(permType, attributeValues);
     }
 
-    private static Class<? extends Permission> findPermissionClass(String name) throws ClassNotFoundException {
-        OsgiUtilsService utilService = OpenEngSBCoreServices.getServiceUtilsService();
-        Filter filter = utilService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
-        PermissionProvider provider =
-            OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(filter, PermissionProvider.class);
+    private static Class<? extends Permission> findPermissionClass(String name)
+        throws ClassNotFoundException {
+        Filter filter = utilsService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
+        PermissionProvider provider = utilsService.getOsgiServiceProxy(filter, PermissionProvider.class);
         return provider.getPermissionClass(name);
     }
 
@@ -188,6 +188,10 @@ public final class EntryUtils {
             }
             return objects;
         }
+    }
+
+    public static void setUtilsService(OsgiUtilsService utilsService) {
+        EntryUtils.utilsService = utilsService;
     }
 
     private EntryUtils() {

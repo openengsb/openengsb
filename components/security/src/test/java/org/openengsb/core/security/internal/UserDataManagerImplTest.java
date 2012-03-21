@@ -41,17 +41,14 @@ import javax.persistence.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AbstractPermissionProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.osgi.framework.BundleContext;
 
 import com.google.common.base.Objects;
 
@@ -113,6 +110,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         emf = Persistence.createEntityManagerFactory("security-test");
         entityManager = emf.createEntityManager();
         setupUserManager();
@@ -254,13 +252,5 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     private void assertAttributeValue(List<Object> actual, Object... expected) {
         assertThat(actual, is(Arrays.asList(expected)));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

@@ -15,27 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.internal;
+package org.openengsb.core.security.filter;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.remote.FilterChainElement;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
 
-public class Activator implements BundleActivator {
+public class MessageAuthenticatorFilterFactory implements FilterChainElementFactory {
 
-    private VirtualConnectorManager virtualConnectorManager;
+    private OsgiUtilsService utilsService;
 
-    @Override
-    public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(context);
-        virtualConnectorManager = new VirtualConnectorManager(context, osgiServiceUtils);
-        virtualConnectorManager.start();
+    public MessageAuthenticatorFilterFactory() {
+    }
+
+    public MessageAuthenticatorFilterFactory(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
-        virtualConnectorManager.stop();
+    public FilterChainElement newInstance() throws FilterConfigurationException {
+        return new MessageAuthenticatorFilter(utilsService);
     }
 
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
 }
