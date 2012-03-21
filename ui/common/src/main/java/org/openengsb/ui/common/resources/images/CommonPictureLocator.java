@@ -21,7 +21,7 @@ import org.apache.wicket.ResourceReference;
 public final class CommonPictureLocator {
 
     public static ResourceReference getGreyscaleLogo() {
-        return new ResourceReference(CommonPictureLocator.class, "openengsb_medium_greyscale.png");
+        return new ResourceReference(CommonPictureLocator.class, "openengsb_small_greyscale.png");
     }
 
     public static ResourceReference getFavIcon() {
