@@ -25,28 +25,26 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "imprint")
 public class ImprintPage extends BasePage {
     
-	private class ip extends ImprintPanel {
+    private class MyImprintPanel extends ImprintPanel {
 
-		private static final long serialVersionUID = 1L;
-		
-		public ip(String id) {
-			super(id);
-		}
-		
-	}
-	
-	public ImprintPage() {
-		initContent();
+        private static final long serialVersionUID = 1L;
+
+        public MyImprintPanel(String id) {
+            super(id);
+        }
+    }
+
+    public ImprintPage() {
+        initContent();
     }
 
     public ImprintPage(PageParameters parameters) {
         super(parameters);
         initContent();
     }
-    
-    private void initContent() {
-    	ip imprintPanel = new ip("imprintInclude");
-    	add(imprintPanel);
-    }
 
+    private void initContent() {
+        MyImprintPanel imprintPanel = new MyImprintPanel("imprintInclude");
+        add(imprintPanel);
+    }
 }

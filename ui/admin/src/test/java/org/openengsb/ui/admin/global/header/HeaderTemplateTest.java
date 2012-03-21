@@ -80,7 +80,7 @@ public class HeaderTemplateTest extends AbstractUITest {
     private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
         tester.startPage(page);
         // return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
-    return false;
+        return false;
     }
 
     private void setupTestClientPage() {

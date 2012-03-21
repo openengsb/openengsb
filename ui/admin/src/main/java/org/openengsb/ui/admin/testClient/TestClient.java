@@ -392,7 +392,7 @@ public class TestClient extends BasePage {
             }
         };
     }
-	
+
     /**
      * Returns the ID of the currently selected Service or null if none was selected
      * 

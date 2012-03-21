@@ -36,16 +36,17 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 public abstract class BasePage extends OpenEngSBPage {
 
     public BasePage() {
-    	
-    if(((AuthenticatedWebSession) getSession()).isSignedIn()==false)
-    	setResponsePage(LoginPage.class);
-    else
-    		initHeader();
-    		initCommonContent();
+    
+        if (! ((AuthenticatedWebSession) getSession()).isSignedIn()) {
+            setResponsePage(LoginPage.class);
+        } else {
+            initHeader();
+            initCommonContent();
+        }
     }
-
+    
     private void initHeader() {
-    	add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
         add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
         add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
         add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
@@ -74,7 +75,7 @@ public abstract class BasePage extends OpenEngSBPage {
     }
 
     private void initializeMenu() {
-        add(new MenuTemplate("menu",this.getMenuItem()));
+        add(new MenuTemplate("menu", this.getMenuItem()));
     }
     
     /**

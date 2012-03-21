@@ -18,6 +18,7 @@
 package org.openengsb.ui.common;
 
 import java.util.Locale;
+
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.HeaderContributor;
@@ -25,64 +26,58 @@ import org.apache.wicket.markup.html.CompressedPackageResource;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 
-public class FavIconPackageResource extends CompressedPackageResource{
+public class FavIconPackageResource extends CompressedPackageResource {
 
-	private static final long serialVersionUID = -8603235652736579379L;
+    private static final long serialVersionUID = -8603235652736579379L;
 
-	protected FavIconPackageResource(Class<?> scope, String path, Locale locale, String style)
-	{
-		super(scope, path, locale, style);
-	}
+    protected FavIconPackageResource(Class<?> scope, String path, Locale locale, String style)
+    {
+        super(scope, path, locale, style);
+    }
 
-	public static final HeaderContributor getHeaderContribution(final ResourceReference reference)
-	{
-		return new HeaderContributor(new IHeaderContributor()
-		{
-			private static final long serialVersionUID = 7888632129467142236L;
+    public static final HeaderContributor getHeaderContribution(final ResourceReference reference)
+    {
+        return new HeaderContributor(new IHeaderContributor()
+        {
+            private static final long serialVersionUID = 7888632129467142236L;
 
-			public void renderHead(IHeaderResponse response)
-			{
-				StringBuilder htmlTag=new StringBuilder();
-			    htmlTag.append("<link rel=\"icon\" href=\"");
-			    htmlTag.append("resources/"+reference.getSharedResourceKey());
-			    htmlTag.append("\" type=\"image/x-icon\">\n");
-			    response.renderString(htmlTag);
-			}
-		});
-	}
-	
-	public static final HeaderContributor getHeaderContribution(final String location)
-	{
-		return new HeaderContributor(new IHeaderContributor()
-		{
-			private static final long serialVersionUID = 1L;
+            public void renderHead(IHeaderResponse response) {
+                StringBuilder htmlTag = new StringBuilder();
+                htmlTag.append("<link rel=\"icon\" href=\"");
+                htmlTag.append("resources/" + reference.getSharedResourceKey());
+                htmlTag.append("\" type=\"image/x-icon\">\n");
+                response.renderString(htmlTag);
+            }
+        });
+    }
 
-			public void renderHead(IHeaderResponse response)
-			{
-			    StringBuilder htmlTag=new StringBuilder();
-			    htmlTag.append("<link rel=\"shortcut icon\" href=\"");
-			    htmlTag.append(returnRelativePath(location));
-			    htmlTag.append("\" type=\"image/x-icon\">\n");
-			    response.renderString(htmlTag);
-			}
-		});
-	}
+    public static final HeaderContributor getHeaderContribution(final String location)
+    {
+        return new HeaderContributor(new IHeaderContributor() {
+            private static final long serialVersionUID = 1L;
 
-	private static final String returnRelativePath(String location)
-	{
-		// WICKET-59 allow external URLs, WICKET-612 allow absolute URLs.
-		if (location.startsWith("http://") || location.startsWith("https://") ||
-			location.startsWith("/"))
-		{
-			return location;
-		}
-		else
-		{
-			return RequestCycle.get()
-				.getProcessor()
-				.getRequestCodingStrategy()
-				.rewriteStaticRelativeUrl(location);
-		}
-	}
+            public void renderHead(IHeaderResponse response) {
+                StringBuilder htmlTag = new StringBuilder();
+                htmlTag.append("<link rel=\"shortcut icon\" href=\"");
+                htmlTag.append(returnRelativePath(location));
+                htmlTag.append("\" type=\"image/x-icon\">\n");
+                response.renderString(htmlTag);
+            }
+        });
+    }
 
+    private static String returnRelativePath(String location) {
+
+        // WICKET-59 allow external URLs, WICKET-612 allow absolute URLs.
+        if (location.startsWith("http://") 
+            || location.startsWith("https://")
+            || location.startsWith("/")) {
+            return location;
+        } else {
+            return RequestCycle.get()
+                .getProcessor()
+                .getRequestCodingStrategy()
+                .rewriteStaticRelativeUrl(location);
+        }
+    }
 }
