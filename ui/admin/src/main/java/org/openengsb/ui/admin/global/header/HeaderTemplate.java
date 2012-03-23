@@ -60,9 +60,9 @@ public class HeaderTemplate extends Panel {
 
     private void baseInitialization() {
         
-    	BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
-    	homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
-    	add(homelink);
+        BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
+        homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
+        add(homelink);
 
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
@@ -77,8 +77,8 @@ public class HeaderTemplate extends Panel {
     }
 
     private void initializeTopMenu() {
-    	Link<Object> link = new Link<Object>("logout") {
-    		@Override
+        Link<Object> link = new Link<Object>("logout") {
+            @Override
             public void onClick() {
                 boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
                 if (signedIn) {
@@ -89,80 +89,77 @@ public class HeaderTemplate extends Panel {
         };
         add(link);
         
-        /***
-         * Adds the context choice list
-         */
-        final Label projectLabel = new Label("currentProject",new IModel<String>() {
+        //Adds the context choice list
+        final Label projectLabel = new Label("currentProject", new IModel<String>() {
 
-			@Override
-			public void detach() {
-			}
+            @Override
+            public void detach() {
+            }
 
-			@Override
-			public String getObject() {
-				return ContextHolder.get().getCurrentContextId();
-			}
+            @Override
+            public String getObject() {
+                return ContextHolder.get().getCurrentContextId();
+            }
 
-			@Override
-			public void setObject(String object) {
-			}
-		});
+            @Override
+            public void setObject(String object) {
+            }
+        });
         add(projectLabel);
-        ListView<String>avaliableContexts = new ListView<String>("availableContexts",contextService.getAvailableContexts()) {
+        
+        ListView<String>avaliableContexts = new ListView<String>("availableContexts", 
+                contextService.getAvailableContexts()) {
 
-			@Override
-			protected void populateItem(ListItem<String> item) {
-				item.add(new Link<String>("availableContext",item.getModel()) {
-					
-					@Override
-					public void onClick() {
-						String obj = getModelObject();
-						ContextHolder.get().setCurrentContextId(obj);
-						setResponsePage(this.getPage());
-					}
-				}.add(new Label("availableContextLabel",item.getModelObject())));
-				
-			}
+            @Override
+            protected void populateItem(ListItem<String> item) {
+                item.add(new Link<String>("availableContext", item.getModel()) {
+
+                    @Override
+                    public void onClick() {
+                        String obj = getModelObject();
+                        ContextHolder.get().setCurrentContextId(obj);
+                        setResponsePage(this.getPage());
+                    }
+                }.add(new Label("availableContextLabel", item.getModelObject())));
+            }
         };
         add(avaliableContexts);
         
-        /***
-         * Adds the language choice list
-         */
-        final Label languageLabel = new Label("currentLanguage",new IModel<String>() {
+        // Adds the language choice list
+        final Label languageLabel = new Label("currentLanguage", new IModel<String>() {
 
-			@Override
-			public void detach() {
-			}
+            @Override
+            public void detach() {
+            }
 
-			@Override
-			public String getObject() {
-				return getSession().getLocale().getDisplayLanguage();
-			}
+            @Override
+            public String getObject() {
+                return getSession().getLocale().getDisplayLanguage();
+            }
 
-			@Override
-			public void setObject(String object) {
-			}
-		});
+            @Override
+            public void setObject(String object) {
+            }
+        });
         languageLabel.setOutputMarkupId(true);
         add(languageLabel);
         
-    	add(new Link<Object>("lang.en") {
+        add(new Link<Object>("lang.en") {
             
             @Override
-			public void onClick() {
-				getSession().setLocale(Locale.ENGLISH);
-				setResponsePage(this.getPage());
-			}
+            public void onClick() {
+                getSession().setLocale(Locale.ENGLISH);
+                setResponsePage(this.getPage());
+            }
         });
-    	
-    	add(new Link<Object>("lang.de") {
-			
-    		@Override
-			public void onClick() {
-				getSession().setLocale(Locale.GERMAN);
-				setResponsePage(this.getPage());
-			}
+
+        add(new Link<Object>("lang.de") {
+
+            @Override
+            public void onClick() {
+                getSession().setLocale(Locale.GERMAN);
+                setResponsePage(this.getPage());
+            }
         });
     }
 }

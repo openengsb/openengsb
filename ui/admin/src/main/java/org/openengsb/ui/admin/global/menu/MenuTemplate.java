@@ -42,8 +42,8 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class MenuTemplate extends Panel {
-	
-	private final ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+
+    private final ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
     private final ArrayList<String> avialableItems = new ArrayList<String>();
     
     private static String menuIndex;
@@ -59,48 +59,55 @@ public class MenuTemplate extends Panel {
         initMainMenuItems();
         initMainMenu();
     }
-	
+
     private void initMainMenuItems() {
-    	addMenuItem("Index", Index.class, "index.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
-    	addMenuItem("UserService", UserListPage.class, "userService.title", new ResourceReference(MenuTemplate.class,"userIcon.png"), "ROLE_ADMIN");
-        addMenuItem("TestClient", TestClient.class, "testclient.title",new ResourceReference(MenuTemplate.class,"testClientIcon.png"));
-        addMenuItem("SendEventPage", SendEventPage.class, "sendevent.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
-        addMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
-        addMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
-        addMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
-        addMenuItem("WiringPage", WiringPage.class, "wiring.title", new ResourceReference(MenuTemplate.class,"dashboardIcon.png"), "ROLE_ADMIN");
+        addMenuItem("Index", Index.class, "index.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
+        addMenuItem("UserService", UserListPage.class, "userService.title", 
+                new ResourceReference(MenuTemplate.class, "userIcon.png"), "ROLE_ADMIN");
+        addMenuItem("TestClient", TestClient.class, "testclient.title", 
+                new ResourceReference(MenuTemplate.class, "testClientIcon.png"));
+        addMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
+        addMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
+        addMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
+        addMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
+        addMenuItem("WiringPage", WiringPage.class, "wiring.title", 
+                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"), "ROLE_ADMIN");
     }
 
     private void initMainMenu() {
-    	
+
         if (MenuTemplate.getActiveIndex() == null || !avialableItems.contains(MenuTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
             MenuTemplate.menuIndex = "Index";
         }
-    	
-    	// generate main navigation
-        ListView<MenuItem>MenuItems = new ListView<MenuItem>("menuItems", menuItems) {
+
+        // generate main navigation
+        ListView<MenuItem>menuItemsList = new ListView<MenuItem>("menuItems", menuItems) {
             @Override
             protected void populateItem(ListItem<MenuItem> item) {
                 MenuItem menuItem = item.getModelObject();
                 item.add(menuItem.getLink());
                 
-                String backgroundAttribute = "background:url('resources/"+menuItem.getIcon().getSharedResourceKey()+"') no-repeat scroll left center transparent;";
-                item.add(new SimpleAttributeModifier("style",backgroundAttribute));
+                String backgroundAttribute = "background:url('resources/" + menuItem.getIcon().getSharedResourceKey()
+                        + "') no-repeat scroll left center transparent;";
+                item.add(new SimpleAttributeModifier("style", backgroundAttribute));
                 
-                if(item.getIndex()==menuItems.size()-1) {
-                	item.add(new SimpleAttributeModifier("class","lastElement"));
+                if (item.getIndex() == menuItems.size() - 1) {
+                    item.add(new SimpleAttributeModifier("class", "lastElement"));
                 }
                 
                 // set menu item to active
                 if (menuItem.getItemName().equals(MenuTemplate.getActiveIndex())) {
-                    
-                	item.add(new SimpleAttributeModifier("class","activeElement"));
-                   
+                    item.add(new SimpleAttributeModifier("class", "activeElement"));
                 }
             }
         };
-        add(MenuItems);
+        add(menuItemsList);
     }
     
     /**
@@ -118,13 +125,13 @@ public class MenuTemplate extends Panel {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, ResourceReference icon,
             String... authority) {
-		StringResourceModel label = new StringResourceModel(langKey, this, null);
-	    BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
-	    addAuthorizationRoles(pageLabelLink, authority);
-	    menuItems.add(new MenuItem(index, pageLabelLink, icon));
-	    avialableItems.add(index);
-	}
-	
+        StringResourceModel label = new StringResourceModel(langKey, this, null);
+        BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
+        addAuthorizationRoles(pageLabelLink, authority);
+        menuItems.add(new MenuItem(index, pageLabelLink, icon));
+        avialableItems.add(index);
+    }
+
     private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String... authority) {
         if (authority == null) {
             return;
@@ -133,19 +140,19 @@ public class MenuTemplate extends Panel {
             attributeStore.putAttribute(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
         }
     }
-	
-	private static class MenuItem implements Serializable {
+
+    private static class MenuItem implements Serializable {
         private final String index;
         private final BookmarkablePageLabelLink<? extends WebPage> link;
         private final ResourceReference icon;
 
         @SuppressWarnings("unused")
-		public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
+        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
             this.index = index;
             this.link = link;
-            icon=null;
+            icon = null;
         }
-        
+
         public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, ResourceReference icon) {
             this.index = index;
             this.link = link;

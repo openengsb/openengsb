@@ -40,26 +40,25 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
-public class LoginPage extends OpenEngSBPage{
+public class LoginPage extends OpenEngSBPage {
     private UsernamePassword user = new UsernamePassword();
 
-    public final class ip extends ImprintPanel {
+    public final class MyImprintPanel extends ImprintPanel {
 
-		private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-		public ip(String id) {
-			super(id);
-		}
-    	
+        public MyImprintPanel(String id) {
+            super(id);
+        }
     }
     
     public LoginPage() {
         initHeader();
-    	initContent();
+        initContent();
     }
 
     private void initHeader() {
-    	add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
         add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
         add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
         add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
@@ -91,20 +90,21 @@ public class LoginPage extends OpenEngSBPage{
         add(loginForm);
         loginForm.add(new RequiredTextField<String>("username"));
         loginForm.add(new PasswordTextField("password"));
+        
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-        //add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+        
         add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
-        
-        
-        
-        ip imprintDialogue = new ip("imprintDialogue");
+
+        MyImprintPanel imprintDialogue = new MyImprintPanel("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);
         add(imprintDialogue);
         
-        ExternalLink addUserLink = new ExternalLink("imprint","#");
-        addUserLink.add(new SimpleAttributeModifier("onClick","showModalButtonCloseDialogue('"+imprintDialogue.getMarkupId()+"','Imprint',false,false,550,450)"));
+        ExternalLink addUserLink = new ExternalLink("imprint", "#");
+        addUserLink.add(new SimpleAttributeModifier("onClick",
+                "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
+                + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
         add(addUserLink);
     }
 

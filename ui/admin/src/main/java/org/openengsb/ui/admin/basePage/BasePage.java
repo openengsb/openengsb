@@ -18,6 +18,7 @@
 package org.openengsb.ui.admin.basePage;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
@@ -35,66 +36,72 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
 public abstract class BasePage extends OpenEngSBPage {
 
-    public BasePage() {
-    	
-    if(((AuthenticatedWebSession) getSession()).isSignedIn()==false)
-    	setResponsePage(LoginPage.class);
-    else
-    		initHeader();
-    		initCommonContent();
-    }
+	public BasePage() {
+		if (!((AuthenticatedWebSession) getSession()).isSignedIn()) {
+            throw new RestartResponseAtInterceptPageException(LoginPage.class);
+		}
+		initHeader();
+		initCommonContent();
+	}
 
-    private void initHeader() {
-    	add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
-        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
-        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryUi()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryHelper()));
-        add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator.getFavIcon()));
-    }
-    
-    private void initCommonContent() {
-        initializeHeader();
-        initializeMenu();
-        initializeFooter();
-    }
+	private void initHeader() {
+		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+				.getGridsCss()));
+		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+				.getCommonCss()));
+		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+				.getJqueryUiCss()));
+		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+				.getJqueryJs()));
+		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+				.getJqueryUi()));
+		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+				.getJqueryHelper()));
+		add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
+				.getFavIcon()));
+	}
 
-    public BasePage(PageParameters parameters) {
-        super(parameters);
-        initCommonContent();
-    }
+	private void initCommonContent() {
+		initializeHeader();
+		initializeMenu();
+		initializeFooter();
+	}
 
-    private void initializeFooter() {
-        add(new FooterTemplate("footer"));
-    }
+	public BasePage(PageParameters parameters) {
+		super(parameters);
+		initCommonContent();
+	}
 
-    private void initializeHeader() {
-        add(new HeaderTemplate("header"));
-    }
+	private void initializeFooter() {
+		add(new FooterTemplate("footer"));
+	}
 
-    private void initializeMenu() {
-        add(new MenuTemplate("menu",this.getMenuItem()));
-    }
-    
-    /**
-     * @return the class name, which should be the index in navigation bar
-     * 
-     */
-    public String getMenuItem() {
-        return this.getClass().getSimpleName();
-    }
+	private void initializeHeader() {
+		add(new HeaderTemplate("header"));
+	}
 
-    public String getSessionContextId() {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session == null) {
-            return "foo";
-        }
-        String contextId = ContextHolder.get().getCurrentContextId();
-        if (contextId == null) {
-            ContextHolder.get().setCurrentContextId("foo");
-            return contextId;
-        }
-        return contextId;
-    }
+	private void initializeMenu() {
+		add(new MenuTemplate("menu", this.getMenuItem()));
+	}
+
+	/**
+	 * @return the class name, which should be the index in navigation bar
+	 * 
+	 */
+	public String getMenuItem() {
+		return this.getClass().getSimpleName();
+	}
+
+	public String getSessionContextId() {
+		OpenEngSBWebSession session = OpenEngSBWebSession.get();
+		if (session == null) {
+			return "foo";
+		}
+		String contextId = ContextHolder.get().getCurrentContextId();
+		if (contextId == null) {
+			ContextHolder.get().setCurrentContextId("foo");
+			return contextId;
+		}
+		return contextId;
+	}
 }

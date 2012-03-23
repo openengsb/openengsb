@@ -33,9 +33,8 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserListPage extends BasePage {
 
-	
-	Panel userDialogue;
-	
+    Panel userDialogue;
+
     private final class MyUserListPanel extends UserListPanel {
         private static final long serialVersionUID = 4561294480791309137L;
 
@@ -45,28 +44,25 @@ public class UserListPage extends BasePage {
 
         @Override
         protected void openCreatePage(AjaxRequestTarget target) {
-	 
-        	EditPanel createUser = new EditPanel("userDialogue");  
-        	createUser.setOutputMarkupId(true);
-	        
-	        userDialogue.replaceWith(createUser);
-	        userDialogue=createUser;
-	        target.addComponent(userDialogue);
-	        target.appendJavascript("showModalDialogue('"+createUser.getMarkupId()+"','Create new user',false)");
+            EditPanel createUser = new EditPanel("userDialogue");  
+            createUser.setOutputMarkupId(true);
+            userDialogue.replaceWith(createUser);
+            userDialogue = createUser;
+            target.addComponent(userDialogue);
+            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','"
+                + getLocalizer().getString("add.user", this) + "',false);");
         }
 
-		@Override
-		protected void openEditorPage(AjaxRequestTarget target, String user) {
-			
-			EditPanel editUser = new EditPanel("userDialogue",user);  
-	        editUser.setOutputMarkupId(true);
-	        
-	        userDialogue.replaceWith(editUser);
-	        userDialogue=editUser;
-	        target.addComponent(userDialogue);
-	        target.appendJavascript("showModalDialogue('"+editUser.getMarkupId()+"','Edit user: "+user+"',false)");
-		}
-
+        @Override
+        protected void openEditorPage(AjaxRequestTarget target, String user) {
+            EditPanel editUser = new EditPanel("userDialogue", user);  
+            editUser.setOutputMarkupId(true);
+            userDialogue.replaceWith(editUser);
+            userDialogue = editUser;
+            target.addComponent(userDialogue);
+            target.appendJavascript("showModalDialogue('" + editUser.getMarkupId()
+                + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false);");
+        }
     }
     
     private final class EditPanel extends UserEditPanel {
@@ -81,7 +77,7 @@ public class UserListPage extends BasePage {
         }
 
         @Override
-        protected void afterSubmit() {        	
+        protected void afterSubmit() {
             setResponsePage(UserListPage.class);
         }
     }
@@ -96,16 +92,10 @@ public class UserListPage extends BasePage {
     }
 
     private void initContent() {
-        
-    	add(new MyUserListPanel("lazy"));
-
-    	/**
-    	 * Panel for Modal Dialog for User add/edit form
-    	 */
-    	userDialogue = new EmptyPanel("userDialogue");
-    	userDialogue.setOutputMarkupId(true);
-    	add(userDialogue);
-    	
+        add(new MyUserListPanel("lazy"));
+        //Panel for Modal Dialog for User add/edit form
+        userDialogue = new EmptyPanel("userDialogue");
+        userDialogue.setOutputMarkupId(true);
+        add(userDialogue);
     }
-
 }

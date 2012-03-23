@@ -85,7 +85,7 @@ public abstract class UserListPanel extends Panel {
 
             @Override
             protected void onEditClick(AjaxRequestTarget target, String param) {
-            	openEditorPage(target, param);
+                openEditorPage(target, param);
             }
         };
         add(listPanel);
