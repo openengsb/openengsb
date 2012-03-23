@@ -36,30 +36,40 @@
 	      </div>
 	    </div>
 	    <div id="topMenu" class="unit size1of3 lastUnit header">
-	    	<div id="topMenuContainer">
-	    		<div class="tmc-left"></div>
-	    		<div class="tmc-center">
-	    		  <span>Max Meier</span>
-	    		  <div class="tmc-seperator"></div>
-	    		  <span wicket:id="currentProject">Project</span>
-	    		  <span class="dropdown" onclick="toggleContainerBySlideing('availableContexts',100)">
-	    		    <ul id="availableContexts" class="contextDropdownContainer hidden">
-	    		    	<li wicket:id="availableContexts"><a wicket:id="availableContext"><span wicket:id="availableContextLabel">availableContext</span></a></li>
+	    	<ul id="topMenuContainer">
+	    		<li class="tmc-left" />
+	    		<li class="tmc-center">
+	    		  <span class="topMenuLabel">Max Meier</span>
+	    	    </li>
+	    	    <li class="tmc-seperator" />
+	    	    <li class="tmc-center">
+	    		    <span class="topMenuLabel" wicket:id="currentProject">Project</span>
+	    		    <span class="dropdownIcon" onclick="toggleContainerBySlideing('availableContexts',100)" />
+	    		    <ul id="availableContexts" class="dropdownContainer hidden">
+	    		    	<li class="dropdownContainerHeadline"><wicket:message key="context.select" /></li>
+	    		    	<li wicket:id="availableContexts">
+	    		    	  <a wicket:id="availableContext">
+	    		    	    <span wicket:id="availableContextLabel">availableContext</span>
+	    		    	  </a>
+	    		    	</li>
 	    		    </ul>
-	    		  </span>
-	    		  <div class="tmc-seperator"></div>
-	    		  <span class="dropdown" onclick="toggleContainerBySlideing('availableLanguages',100)">
-	    		    <div wicket:id="currentLanguage">Language</div>
-	    		    <ul id="availableLanguages" class="languageDropdownContainer hidden">
+				</li>
+	    		<li class="tmc-seperator" />
+	    		<li class="tmc-center">
+	    			<span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
+	    		    <span class="dropdownIcon" onclick="toggleContainerBySlideing('availableLanguages',100)" />
+	    		    <ul id="availableLanguages" class="dropdownContainer hidden">
+	    		      <li class="dropdownContainerHeadline"><wicket:message key="language.select" /></li>
 	    		      <li><a wicket:id="lang.en">English (EN)</a></li>
 	    		      <li><a wicket:id="lang.de">German (DE)</a></li>
 	    		    </ul>
-	    		  </span>
-	    		  <div class="tmc-seperator"></div>
-	    		  <a href="BasePage.html#" wicket:id="logout" >Logout</a>
-	    		</div>
-	    		<div class="tmc-right"></div>
-	    	</div>
+	    	    </li>
+	    	    <li class="tmc-seperator" />
+				<li class="tmc-center">
+					<a href="BasePage.html#" class="topMenuLabel" wicket:id="logout" >Logout</a>
+	    	    </li>
+	    		<li class="tmc-right" />
+	    	</ul>
 	    </div>
     </div>
   </wicket:panel>
