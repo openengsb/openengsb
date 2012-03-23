@@ -20,7 +20,6 @@ package org.openengsb.ui.admin;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -51,10 +50,8 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
@@ -65,6 +62,7 @@ import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -72,14 +70,13 @@ import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.ImmutableMap;
 
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- *
+ * 
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -106,13 +103,13 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
         List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
         context.putBean("openengsbVersionService", versionService);
-        context.putBean("wiringService", OpenEngSBCoreServices.getWiringService());
-        OsgiUtilsService serviceUtilsService =
-            OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
-        context.putBean("osgiUtilsService", serviceUtilsService);
+        DefaultWiringService defaultWiringService = new DefaultWiringService();
+        defaultWiringService.setBundleContext(bundleContext);
+        context.putBean("wiringService", defaultWiringService);
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
+        context.putBean("osgiUtilsService", serviceUtils);
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
-        registrationManager.setServiceUtils(serviceUtils);
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
@@ -152,24 +149,12 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         WicketPermissionProvider wicketPermissionProvider = new WicketPermissionProvider();
         registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
 
-        context.putBean("permissionProviders", Arrays.asList(wicketPermissionProvider));
-
         SecurityAttributeProvider attributeStore = new SecurityAttributeProviderImpl();
         context.putBean("attributeStore", attributeStore);
         context.putBean("attributeProviders", Collections.singletonList(attributeStore));
-    }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        this.serviceUtils = serviceUtils;
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        DefaultWiringService wiringService = new DefaultWiringService();
-        wiringService.setBundleContext(bundleContext);
-        registerService(wiringService, "wiringService", WiringService.class);
-        this.wiringService = wiringService;
+        context.putBean("domainProviders", makeServiceList(DomainProvider.class));
+        context.putBean("permissionProviders", makeServiceList(PermissionProvider.class));
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
@@ -189,11 +174,15 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             Domain.class);
 
         DomainProvider authDomainProvider = createDomainProviderMock(AuthorizationDomain.class, "authorization");
-        ConnectorInstanceFactory cFactory = new CompositeConnectorProvider().createFactory(authDomainProvider);
+        CompositeConnectorProvider compositeConnectorProvider = new CompositeConnectorProvider();
+        compositeConnectorProvider.setBundleContext(bundleContext);
+        ConnectorInstanceFactory cFactory = compositeConnectorProvider.createFactory(authDomainProvider);
         Connector instance = cFactory.createNewInstance("auth-admin");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("composite.strategy.name", "authorization");
-        registerService(new AffirmativeBasedAuthorizationStrategy(), props, CompositeConnectorStrategy.class);
+        AffirmativeBasedAuthorizationStrategy service = new AffirmativeBasedAuthorizationStrategy();
+        service.setUtilsService(serviceUtils);
+        registerService(service, props, CompositeConnectorStrategy.class);
 
         cFactory.applyAttributes(instance,
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
@@ -206,5 +195,4 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         webSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
         context.putBean("webSecurityManager", webSecurityManager);
     }
-
 }

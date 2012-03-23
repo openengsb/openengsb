@@ -24,10 +24,12 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public final class OsgiHelper {
+
+    private static OsgiUtilsService utilsService;
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
         throws PortNotAvailableException {
@@ -37,7 +39,8 @@ public final class OsgiHelper {
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
         throws PortNotAvailableException {
         MethodCall methodCall = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
-        OpenEngSBCoreServices.getOutgoingPortUtilService().sendMethodCall(portId, destination, methodCall);
+        OutgoingPortUtilService portUtilService = utilsService.getOsgiServiceProxy(OutgoingPortUtilService.class);
+        portUtilService.sendMethodCall(portId, destination, methodCall);
     }
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
@@ -49,9 +52,12 @@ public final class OsgiHelper {
 
     public static <T> T getResponseProxy(Event e, Class<T> targetClass) {
         String origin = e.getOrigin();
-        OsgiUtilsService utilService = OpenEngSBCoreServices.getServiceUtilsService();
         String filter = String.format("(%s=%s)", Constants.ID_KEY, origin);
-        return utilService.getOsgiServiceProxy(filter, targetClass);
+        return utilsService.getOsgiServiceProxy(filter, targetClass);
+    }
+
+    public static void setUtilsService(OsgiUtilsService utilsService) {
+        OsgiHelper.utilsService = utilsService;
     }
 
     private OsgiHelper() {

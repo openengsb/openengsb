@@ -30,11 +30,9 @@ import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy;
@@ -42,7 +40,6 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
-import org.osgi.framework.BundleContext;
 
 public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
@@ -72,10 +69,13 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         onetimeAuthenticator = authenticator2;
 
         DomainProvider provider = createDomainProviderMock(AuthenticationDomain.class, "authentication");
-        ConnectorInstanceFactory factory = new CompositeConnectorProvider().createFactory(provider);
+        CompositeConnectorProvider compositeConnectorProvider = new CompositeConnectorProvider();
+        compositeConnectorProvider.setBundleContext(bundleContext);
+        ConnectorInstanceFactory factory = compositeConnectorProvider.createFactory(provider);
         authManager = (AuthenticationDomain) factory.createNewInstance("authProvider");
 
-        CompositeConnectorStrategy strategy = new DefaultAuthenticationProviderStrategy();
+        DefaultAuthenticationProviderStrategy strategy = new DefaultAuthenticationProviderStrategy();
+        strategy.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
 
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("composite.strategy.name", "authManagerStrategy");
@@ -132,11 +132,4 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         authManager.authenticate("testuser", new OneTimeValue(123));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

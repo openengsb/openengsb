@@ -27,7 +27,6 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
@@ -37,21 +36,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
 import org.openengsb.core.security.filter.OutgoingWrapperFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -153,11 +148,4 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-    }
 }
