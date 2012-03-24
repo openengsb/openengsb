@@ -118,12 +118,13 @@ input[type=submit] {
  border: 0 none;
 }
 
-.dropdown {
+.dropdownIcon {
  background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownIcon.png");
  background-position: right center;
  background-repeat: no-repeat;
- padding-right: 18px;
  position:relative;
+ padding-right: 8px;
+ padding-bottom: 7px;
 }
 
 .dropdown ul{
@@ -143,10 +144,8 @@ input[type=submit] {
 }
 
 
-.languageDropdownContainer {
- left: -1px;
- position: absolute;
- top: 37px;
+.dropdownContainer {
+	backgound-color:#ffffff;
 }
 
 .contextDropdownContainer {
@@ -246,40 +245,90 @@ li.lastElement {
 	}
 
 #topMenuContainer{
-	    position: absolute;
+	position: absolute;
     right: 15px;
 }
 
-#topMenuContainer div.tmc-left, div.tmc-center, div.tmc-right, div.tmc-seperator, #topMenuContainer a, #topMenuContainer span{
-	height: 38px;
+#topMenuContainer li{
 	display: inline;
 	float: left;
-	line-height: 34px;
-	color: white;
-	text-decoration: none;
-	font-size: 0.85em;
-	font-weight: lighter;
+	list-style-type:none;
+	height: 38px;
+	line-height: 30px;
 }
 
 #topMenuContainer a, span{
 	padding: 0px 8px 0px 8px;
+	text-decoration:none;
 }
 
-#topMenuContainer div.tmc-left {
+#topMenuContainer li.tmc-left {
 	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_left.png");
 	width: 14px;
 }
-#topMenuContainer div.tmc-center {
+#topMenuContainer li.tmc-center {
 	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_center.png");
 }
-#topMenuContainer div.tmc-right {
+#topMenuContainer li.tmc-right {
 	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_right.png");
 	width: 14px;
 	margin: 0px; 0px; 5px; 0px;
 }
-#topMenuContainer div.tmc-seperator {
+#topMenuContainer li.tmc-seperator {
 	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_seperator.png");
 	width: 2px;
+}
+
+#topMenuContainer ul.dropdownContainer {
+	background-color: white;
+	border-top: none;
+	border-left: 1px solid #6f6f6f;
+    border-right: 1px solid #6f6f6f;
+    border-bottom: 1px solid #6f6f6f;
+	margin-top: 6px;
+	position: absolute;
+	min-width: 150px;
+}
+
+
+#topMenuContainer ul.dropdownContainer li{
+	float: none;
+	display: block;
+	text-decoration: none;
+	font-color: black;
+	font-size: 0.75em;
+	height: 1.8em;
+	padding-bottom: 8px;
+	padding-top: 0px;
+    padding-left: 6px;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline{
+	border-bottom: 1px solid #EBEBEB;
+    font-weight: bold;
+    margin-bottom: 5px;
+	padding-left: 8px;
+    padding-top: 0px;
+    padding-bottom: 8px;
+}
+
+#topMenuContainer ul.dropdownContainer li:hover{
+	background-color: #ebebeb;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline:hover{
+	background-color: #ffffff;
+}
+
+
+#topMenuContainer ul.dropdownContainer li a{
+	text-decoration:none;
+	color: #6f6f6f;
+}
+
+.topMenuLabel{
+	color: #ffffff;
+	font-size: 0.75em;
 }
 
 #topLogo{
