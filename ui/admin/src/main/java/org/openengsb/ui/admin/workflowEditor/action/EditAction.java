@@ -37,20 +37,20 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.NodeRepresentation;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class EditAction extends BasePage {
 
     private transient Method actionMethod;
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    @PaxWicketBean(name = "domainProviders")
+    private List<DomainProvider> domainProviders;
 
     private final ActionRepresentation action;
 
@@ -66,9 +66,9 @@ public class EditAction extends BasePage {
             @Override
             public List<Class<? extends Domain>> getObject() {
                 List<Class<? extends Domain>> domains = new ArrayList<Class<? extends Domain>>();
-                List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
-                Collections.sort(serviceList, Comparators.forDomainProvider());
-                for (DomainProvider provider : serviceList) {
+                List<DomainProvider> domainProvidersCopy = new ArrayList<DomainProvider>(domainProviders);
+                Collections.sort(domainProvidersCopy, Comparators.forDomainProvider());
+                for (DomainProvider provider : domainProvidersCopy) {
                     domains.add(provider.getDomainInterface());
                 }
                 return domains;

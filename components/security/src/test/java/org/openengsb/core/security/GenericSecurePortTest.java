@@ -49,7 +49,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
@@ -65,12 +64,11 @@ import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.security.filter.MessageAuthenticatorFilter;
+import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.security.internal.FileKeySource;
@@ -78,7 +76,6 @@ import org.openengsb.core.security.internal.OpenEngSBSecurityManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +140,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             new FilterChainFactory<SecureRequest, SecureResponse>(SecureRequest.class, SecureResponse.class);
         List<Object> filterFactories = new LinkedList<Object>();
         filterFactories.add(MessageVerifierFilter.class);
-        filterFactories.add(MessageAuthenticatorFilter.class);
+        filterFactories.add(new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)));
         filterFactories.add(WrapperFilter.class);
         filterFactories.add(new RequestMapperFilter(requestHandler));
         factory.setFilters(filterFactories);
@@ -260,13 +257,5 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         } else {
             LOGGER.info(o.toString());
         }
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

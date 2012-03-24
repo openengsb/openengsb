@@ -54,7 +54,6 @@ import org.drools.runtime.rule.ConsequenceException;
 import org.drools.runtime.rule.FactHandle;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RemoteEventProcessor;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -69,7 +68,7 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -96,6 +95,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private ExecutorService executor = ThreadLocalUtil.contextAwareExecutor(Executors.newCachedThreadPool());
 
     private Lock workflowLock = new ReentrantLock();
+
+    private DefaultOsgiUtilsService utilsService;
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
@@ -403,19 +404,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
             Filter filter =
-                getServiceUtils().getFilterForLocation(globalClass, global.getKey(),
+                utilsService.getFilterForLocation(globalClass, global.getKey(),
                     ContextHolder.get().getCurrentContextId());
-            Object osgiServiceProxy = getServiceUtils().getOsgiServiceProxy(filter, globalClass);
+            Object osgiServiceProxy = utilsService.getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);
         }
     }
 
-    private OsgiUtilsService getServiceUtils() {
-        return OpenEngSBCoreServices.getServiceUtilsService();
-    }
-
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
     public void setRulemanager(RuleManager rulemanager) {
@@ -429,7 +427,6 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         for (Task t : tasksForProcessId) {
             taskbox.finishTask(t);
         }
-
     }
 
     public void setTaskbox(TaskboxService taskbox) {

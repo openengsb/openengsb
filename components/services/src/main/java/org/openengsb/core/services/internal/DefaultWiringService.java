@@ -25,7 +25,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -44,6 +44,7 @@ public class DefaultWiringService implements WiringService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWiringService.class);
 
     private BundleContext bundleContext;
+    private OsgiUtilsService utilsService;
 
     @Override
     public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
@@ -104,12 +105,13 @@ public class DefaultWiringService implements WiringService {
         return service != null;
     }
 
+    private OsgiUtilsService getServiceUtils() {
+        return utilsService;
+    }
+
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
-    private OsgiUtilsService getServiceUtils() {
-        return OpenEngSBCoreServices.getServiceUtilsService();
-    }
 }
-

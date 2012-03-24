@@ -28,7 +28,6 @@ import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
 import org.osgi.framework.Filter;
@@ -55,10 +54,12 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
+    private OsgiUtilsService utilsService;
     private FilterAction next;
 
-    public MessageAuthenticatorFilter() {
+    public MessageAuthenticatorFilter(OsgiUtilsService utilsService) {
         super(SecureRequest.class, SecureResponse.class);
+        this.utilsService = utilsService;
     }
 
     @Override
@@ -66,15 +67,12 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
-        OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
         Filter filter =
-            serviceUtilsService.makeFilter(CredentialTypeProvider.class,
-                String.format("(credentialClass=%s)", className));
+            utilsService.makeFilter(CredentialTypeProvider.class, String.format("(credentialClass=%s)", className));
         Class<? extends Credentials> credentialType;
         try {
             credentialType =
-                serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(
-                    className);
+                utilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(className);
         } catch (ClassNotFoundException e) {
             throw new FilterException(e);
         }
@@ -93,4 +91,5 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
         checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
         this.next = next;
     }
+
 }

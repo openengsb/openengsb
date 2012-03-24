@@ -31,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -46,7 +45,6 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
@@ -54,10 +52,8 @@ import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
 
 public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -72,8 +68,9 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     public void setUp() throws Exception {
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
-        callrouter = new DefaultOutgoingPortUtilService();
+        callrouter = new DefaultOutgoingPortUtilService(new DefaultOsgiUtilsService(bundleContext));
         requestHandler = new RequestHandlerImpl();
+        requestHandler.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
 
         Map<String, String> metaData = getMetadata("foo");
         methodCall = new MethodCall("test", new Object[0], metaData);
@@ -197,14 +194,6 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
         Integer getAnswer();
 
         Long getOtherAnswer();
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
 }

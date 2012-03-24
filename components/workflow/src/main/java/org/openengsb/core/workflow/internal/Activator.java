@@ -14,28 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openengsb.core.common.internal;
+package org.openengsb.core.workflow.internal;
 
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.workflow.OsgiHelper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-    private VirtualConnectorManager virtualConnectorManager;
-
     @Override
     public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(context);
-        virtualConnectorManager = new VirtualConnectorManager(context, osgiServiceUtils);
-        virtualConnectorManager.start();
+        OsgiHelper.setUtilsService(new DefaultOsgiUtilsService(context));
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        virtualConnectorManager.stop();
     }
 
 }

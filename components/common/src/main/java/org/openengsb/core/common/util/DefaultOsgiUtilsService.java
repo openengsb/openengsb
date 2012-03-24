@@ -64,8 +64,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(Filter filter) {
-            this.tracker = new ServiceTracker(bundleContext, filter, null);
-            this.info = filter.toString();
+            tracker = new ServiceTracker(bundleContext, filter, null);
+            info = filter.toString();
         }
 
         protected ServiceTrackerInvocationHandler(String className, long timeout) {
@@ -74,8 +74,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(String className) {
-            this.tracker = new ServiceTracker(bundleContext, className, null);
-            this.info = "Class: " + className;
+            tracker = new ServiceTracker(bundleContext, className, null);
+            info = "Class: " + className;
         }
 
         protected ServiceTrackerInvocationHandler(Class<?> targetClass, long timeout) {
@@ -112,6 +112,13 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     private static final long DEFAULT_TIMEOUT = 30000L;
 
     private BundleContext bundleContext;
+
+    public DefaultOsgiUtilsService() {
+    }
+
+    public DefaultOsgiUtilsService(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
     @Override
     public <T> T getService(Class<T> clazz) throws OsgiServiceNotAvailableException {
