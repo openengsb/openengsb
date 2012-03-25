@@ -27,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -65,11 +66,16 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
-        String code = FileUtils.readFileToString(artifact);
-        ruleManager.addOrUpdate(id, code);
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            cache.put(artifact.getName(), id);
+        try {
+            RuleBaseElementId id = getIdforFile(artifact);
+            String code = FileUtils.readFileToString(artifact);
+            ruleManager.addOrUpdate(id, code);
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                cache.put(artifact.getName(), id);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
         LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
@@ -77,19 +83,24 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void update(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
-        String code = FileUtils.readFileToString(artifact);
-        boolean changed = false;
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            RuleBaseElementId cachedId = cache.get(artifact.getName());
-            if (!id.equals(cachedId)) {
-                ruleManager.delete(cachedId);
-                changed = true;
+        try {
+            RuleBaseElementId id = getIdforFile(artifact);
+            String code = FileUtils.readFileToString(artifact);
+            boolean changed = false;
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                RuleBaseElementId cachedId = cache.get(artifact.getName());
+                if (!id.equals(cachedId)) {
+                    ruleManager.delete(cachedId);
+                    changed = true;
+                }
             }
-        }
-        ruleManager.addOrUpdate(id, code);
-        if (changed) {
-            cache.put(artifact.getName(), id);
+            ruleManager.addOrUpdate(id, code);
+            if (changed) {
+                cache.put(artifact.getName(), id);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
         LOGGER.info("Successfully updated workflow file \"{}\"", artifact.getName());
     }
@@ -97,12 +108,17 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void uninstall(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
+        try {
+            RuleBaseElementId id = getIdforFile(artifact);
 
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            id = cache.remove(artifact.getName());
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                id = cache.remove(artifact.getName());
+            }
+            ruleManager.delete(id);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
-        ruleManager.delete(id);
         LOGGER.info("Successfully deleted workflow file \"{}\"", artifact.getName());
     }
 
@@ -129,7 +145,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
             return RuleBaseElementType.Process;
         }
 
-        throw new RuntimeException("rule type can not be resolved!");
+        throw new WorkflowException("rule type can not be resolved!");
     }
 
     private String readPackageNameFromProcessFile(File file) throws Exception {
