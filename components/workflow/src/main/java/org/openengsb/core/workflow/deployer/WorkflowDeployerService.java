@@ -75,51 +75,62 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        String ending = FilenameUtils.getExtension(artifact.getName());
-        RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
-        if (typeFromFile != null) {
-            RuleBaseElementId id = getIdforFile(artifact);
-            String code = FileUtils.readFileToString(artifact);
-            ruleManager.addOrUpdate(id, code);
-            if (id.getType().equals(RuleBaseElementType.Process)) {
-                cache.put(artifact.getName(), id);
-            }
-            LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
-        } else {
-            if (IMPORT_ENDING.equals(ending)) {
-                for (String importLine : FileUtils.readLines(artifact)) {
-                    if (!importLine.isEmpty()) {
-                        ruleManager.addImport(importLine);
+        try {
+            String ending = FilenameUtils.getExtension(artifact.getName());
+            RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
+            if (typeFromFile != null) {
+                RuleBaseElementId id = getIdforFile(artifact);
+                String code = FileUtils.readFileToString(artifact);
+                ruleManager.addOrUpdate(id, code);
+                if (id.getType().equals(RuleBaseElementType.Process)) {
+                    cache.put(artifact.getName(), id);
+                }
+                LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
+            } else {
+                if (IMPORT_ENDING.equals(ending)) {
+                    for (String importLine : FileUtils.readLines(artifact)) {
+                        if (!importLine.isEmpty()) {
+                            ruleManager.addImport(importLine);
+                        }
+                    }
+                } else if (GLOBAL_ENDING.equals(ending)) {
+                    for (String importLine : FileUtils.readLines(artifact)) {
+                        String[] parts = importLine.split(" ");
+                        if (parts.length != 2) {
+                            continue;
+                        }
+                        ruleManager.addGlobal(parts[0], parts[1]);
                     }
                 }
-            } else if (GLOBAL_ENDING.equals(ending)) {
-                for (String importLine : FileUtils.readLines(artifact)) {
-                    String[] parts = importLine.split(" ");
-                    if (parts.length != 2) {
-                        continue;
-                    }
-                    ruleManager.addGlobal(parts[0], parts[1]);
-                }
             }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
+        LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
 
     @Override
     public void update(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
-        String code = FileUtils.readFileToString(artifact);
-        boolean changed = false;
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            RuleBaseElementId cachedId = cache.get(artifact.getName());
-            if (!id.equals(cachedId)) {
-                ruleManager.delete(cachedId);
-                changed = true;
+        try {
+            RuleBaseElementId id = getIdforFile(artifact);
+            String code = FileUtils.readFileToString(artifact);
+            boolean changed = false;
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                RuleBaseElementId cachedId = cache.get(artifact.getName());
+                if (!id.equals(cachedId)) {
+                    ruleManager.delete(cachedId);
+                    changed = true;
+                }
             }
-        }
-        ruleManager.addOrUpdate(id, code);
-        if (changed) {
-            cache.put(artifact.getName(), id);
+            ruleManager.addOrUpdate(id, code);
+            if (changed) {
+                cache.put(artifact.getName(), id);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
         LOGGER.info("Successfully updated workflow file \"{}\"", artifact.getName());
     }
@@ -127,12 +138,17 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void uninstall(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
+        try {
+            RuleBaseElementId id = getIdforFile(artifact);
 
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            id = cache.remove(artifact.getName());
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                id = cache.remove(artifact.getName());
+            }
+            ruleManager.delete(id);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
-        ruleManager.delete(id);
         LOGGER.info("Successfully deleted workflow file \"{}\"", artifact.getName());
     }
 
