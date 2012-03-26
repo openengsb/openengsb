@@ -90,7 +90,9 @@
               org.aopalliance.aop,
               org.aopalliance.intercept,
               org.springframework.aop,
-              org.springframework.aop.framework, *
+              org.springframework.aop.framework,
+              org.apache.felix.fileinstall;version="[3,4)",
+              *
             </Import-Package>
             <!--
               Workflows need to access used classes in a dynamic way.
@@ -152,6 +154,11 @@
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.example</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
