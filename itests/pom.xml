@@ -143,6 +143,14 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>org.openengsb.ui.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>com.google.guava-all</artifactId>
@@ -154,6 +162,19 @@
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 
     <!-- Drools Dependencies -->
     <dependency>
