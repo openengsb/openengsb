@@ -110,5 +110,10 @@
       </argument>
     </bean>
   </service>
-
+  
+  <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.workflow.deployer.WorkflowDeployerService">
+      <property name="ruleManager" ref="ruleManager" />
+    </bean>
+  </service>
 </blueprint>
