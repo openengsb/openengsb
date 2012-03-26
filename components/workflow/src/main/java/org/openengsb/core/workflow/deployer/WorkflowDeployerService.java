@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.deployer;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+
 /**
  * {@code ArtifactInstaller} that deploys workflow files
  */
@@ -43,6 +47,14 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     private static final String RULE_ENDING = "rule";
     private static final String PROCESS_ENDING = "rf";
     private static final String FUNCTION_ENDING = "function";
+    private static final String GLOBAL_ENDING = "global";
+    private static final String IMPORT_ENDING = "import";
+    private static final Set<String> SUPPORTED_ENDINGS = Sets.newHashSet(RULE_ENDING, PROCESS_ENDING, FUNCTION_ENDING,
+        GLOBAL_ENDING, IMPORT_ENDING);
+    private static final Map<String, RuleBaseElementType> ELEMENT_TYPES = ImmutableMap.of(
+        RULE_ENDING, RuleBaseElementType.Rule,
+        PROCESS_ENDING, RuleBaseElementType.Process,
+        FUNCTION_ENDING, RuleBaseElementType.Function);
     private static final String PACKAGE_ATTR = "package-name";
     private static Map<String, RuleBaseElementId> cache = new HashMap<String, RuleBaseElementId>();
 
@@ -53,9 +65,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.debug("WorkflowDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
         String fileEnding = FilenameUtils.getExtension(artifact.getName());
 
-        boolean acceptedExtension = fileEnding.equals(RULE_ENDING) || fileEnding.equals(PROCESS_ENDING) || fileEnding
-                .equals(FUNCTION_ENDING);
-        if (artifact.isFile() && acceptedExtension) {
+        if (artifact.isFile() && SUPPORTED_ENDINGS.contains(fileEnding)) {
             LOGGER.info("found \"{}\" to deploy.", artifact);
             return true;
         }
@@ -65,13 +75,33 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        RuleBaseElementId id = getIdforFile(artifact);
-        String code = FileUtils.readFileToString(artifact);
-        ruleManager.addOrUpdate(id, code);
-        if (id.getType().equals(RuleBaseElementType.Process)) {
-            cache.put(artifact.getName(), id);
+        String ending = FilenameUtils.getExtension(artifact.getName());
+        RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
+        if (typeFromFile != null) {
+            RuleBaseElementId id = getIdforFile(artifact);
+            String code = FileUtils.readFileToString(artifact);
+            ruleManager.addOrUpdate(id, code);
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                cache.put(artifact.getName(), id);
+            }
+            LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
+        } else {
+            if (IMPORT_ENDING.equals(ending)) {
+                for (String importLine : FileUtils.readLines(artifact)) {
+                    if (!importLine.isEmpty()) {
+                        ruleManager.addImport(importLine);
+                    }
+                }
+            } else if (GLOBAL_ENDING.equals(ending)) {
+                for (String importLine : FileUtils.readLines(artifact)) {
+                    String[] parts = importLine.split(" ");
+                    if (parts.length != 2) {
+                        continue;
+                    }
+                    ruleManager.addGlobal(parts[0], parts[1]);
+                }
+            }
         }
-        LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
 
     @Override
@@ -118,18 +148,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private RuleBaseElementType getTypeFromFile(File file) {
         String fileEnding = FilenameUtils.getExtension(file.getName());
-
-        if (fileEnding.equals(FUNCTION_ENDING)) {
-            return RuleBaseElementType.Function;
-        }
-        if (fileEnding.equals(RULE_ENDING)) {
-            return RuleBaseElementType.Rule;
-        }
-        if (fileEnding.equals(PROCESS_ENDING)) {
-            return RuleBaseElementType.Process;
-        }
-
-        throw new RuntimeException("rule type can not be resolved!");
+        return ELEMENT_TYPES.get(fileEnding);
     }
 
     private String readPackageNameFromProcessFile(File file) throws Exception {

@@ -24,7 +24,9 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
@@ -35,6 +37,11 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.DummyPersistence;
+import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.slf4j.Logger;
+
+import antlr.debug.Event;
 
 public class WorkflowDeployerServiceTest {
 
@@ -64,10 +71,14 @@ public class WorkflowDeployerServiceTest {
         File processFile = temporaryFolder.newFile("process.rf");
         File ruleFile = temporaryFolder.newFile("rule.rule");
         File functionFile = temporaryFolder.newFile("function.function");
+        File importFile = temporaryFolder.newFile("test1.import");
+        File globalFile = temporaryFolder.newFile("test1.global");
 
         assertThat(workflowDeployer.canHandle(processFile), is(true));
         assertThat(workflowDeployer.canHandle(ruleFile), is(true));
         assertThat(workflowDeployer.canHandle(functionFile), is(true));
+        assertThat(workflowDeployer.canHandle(importFile), is(true));
+        assertThat(workflowDeployer.canHandle(globalFile), is(true));
     }
 
     @Test
@@ -136,7 +147,66 @@ public class WorkflowDeployerServiceTest {
 
         verify(ruleManager, times(1)).delete(idRule);
         verify(ruleManager, times(1)).delete(idProcess);
+    }
 
+    @Test
+    public void testInstallImports_shouldImportClasses() throws Exception {
+        File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            "java.util.List",
+            ""));
+
+        workflowDeployer.install(importFile);
+
+        verify(ruleManager).addImport("java.util.List");
+    }
+
+    @Test
+    public void testInstallGlobals_shouldAddGlobals() throws Exception {
+        File globalfile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalfile, Arrays.asList(
+            Logger.class.getName() + " logger",
+            ""));
+
+        workflowDeployer.install(globalfile);
+
+        verify(ruleManager).addGlobal(Logger.class.getName(), "logger");
+    }
+
+    @Test
+    public void testInstallImportsAndGlobalsRequiredByRule_shouldParseCorrectly() throws Exception {
+        setupWithRealCompiler();
+
+        File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            Event.class.getName(),
+            BigInteger.class.getName(),
+            ""));
+        workflowDeployer.install(importFile);
+
+        File globalFile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalFile, Arrays.asList(
+            Logger.class.getName() + " logger",
+            ""));
+        workflowDeployer.install(globalFile);
+
+        File testRuleFile = temporaryFolder.newFile("test1.rule");
+        FileUtils.writeLines(testRuleFile, Arrays.asList(
+            "when",
+            "   Event()",
+            "then",
+            "   BigInteger i = new BigInteger(1);",
+            "   logger.info(i.toString());",
+            ""));
+
+        workflowDeployer.install(testRuleFile);
+    }
+
+    private void setupWithRealCompiler() {
+        PersistenceRuleManager persistenceRuleManager = new PersistenceRuleManager();
+        persistenceRuleManager.setPersistence(new DummyPersistence());
+        ruleManager = persistenceRuleManager;
+        workflowDeployer.setRuleManager(persistenceRuleManager);
     }
 
     private File readExampleProcessFile() throws IOException {
@@ -154,4 +224,5 @@ public class WorkflowDeployerServiceTest {
         FileUtils.copyFile(processFile, target);
         return target;
     }
+
 }
