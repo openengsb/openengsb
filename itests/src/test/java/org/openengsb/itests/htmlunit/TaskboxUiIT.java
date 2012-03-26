@@ -89,7 +89,9 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(WebTaskboxService.class);
 
-        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);        
+        addWorkflow();
+        loginAsAdmin();
     }
 
     @After
@@ -99,8 +101,6 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testIfTaskOverviewInteractionWorks() throws Exception {
-        addWorkflow();
-        loginAsAdmin();
 
         HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
         assertTrue("Page does not contain: No Records Found", taskOverviewPage.asText().contains("No Records Found"));
@@ -189,8 +189,6 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testIfTaskPanelGetsReplaced() throws Exception {
-        addWorkflow();
-        loginAsAdmin();
 
         taskboxService.registerTaskPanel("step1", TestTaskPanel.class);
         workflowService.startFlow(WORKFLOW);
