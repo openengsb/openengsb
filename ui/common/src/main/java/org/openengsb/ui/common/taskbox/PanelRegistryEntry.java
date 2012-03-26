@@ -17,14 +17,46 @@
 
 package org.openengsb.ui.common.taskbox;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.panel.Panel;
 
-public class PanelRegistryEntry {
+public class PanelRegistryEntry implements Serializable {
+
+    private static final long serialVersionUID = 8597716307328752344L;
     private String taskType;
     private Class<? extends Panel> panelClass;
 
     public PanelRegistryEntry(String taskType) {
         this.taskType = taskType;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((taskType == null) ? 0 : taskType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        PanelRegistryEntry other = (PanelRegistryEntry) obj;
+        if (taskType == null) {
+            return true;
+        } else if (!taskType.equals(other.taskType)) {
+            return false;
+        }
+        return true;
     }
 
     public PanelRegistryEntry(String taskType, Class<? extends Panel> panelClass) {
