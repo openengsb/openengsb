@@ -24,6 +24,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 @XmlRootElement
 public class Event {
@@ -48,9 +51,10 @@ public class Event {
     }
 
     /**
-     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
-     * name
+     * returns the simple classname
      */
+    @XmlTransient
+    @JsonIgnore
     public String getType() {
         return this.getClass().getSimpleName();
     }
