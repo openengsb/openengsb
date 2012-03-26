@@ -97,6 +97,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private DefaultOsgiUtilsService utilsService;
 
+    @SuppressWarnings("deprecation") // will be removed in 3.0 (OPENENGSB-2789)
     @Override
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
@@ -131,6 +132,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         processEvent(event);
     }
 
+    @SuppressWarnings("deprecation") // will be removed in 3.0 (OPENENGSB-2789)
     private void signalEventToProcesses(Event event, StatefulKnowledgeSession session, Set<Long> processIds) {
         for (Long pid : processIds) {
             ProcessInstance processInstance = session.getProcessInstance(pid);

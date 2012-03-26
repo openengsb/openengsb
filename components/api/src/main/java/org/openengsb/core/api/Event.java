@@ -52,9 +52,12 @@ public class Event {
 
     /**
      * returns the simple classname
+     *
+     * @deprecated type should only rely on the java-type
      */
     @XmlTransient
     @JsonIgnore
+    @Deprecated
     public String getType() {
         return this.getClass().getSimpleName();
     }

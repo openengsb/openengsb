@@ -45,6 +45,10 @@ public class InternalWorkflowEvent extends Event {
         this.processBag = processBag;
     }
 
+    /**
+     * @deprecated see {@link Event#getType()}
+     */
+    @Deprecated
     @Override
     public String getType() {
         if (type != null) {
