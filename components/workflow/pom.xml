@@ -82,6 +82,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Bundle-Activator>org.openengsb.core.workflow.internal.Activator</Bundle-Activator>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
