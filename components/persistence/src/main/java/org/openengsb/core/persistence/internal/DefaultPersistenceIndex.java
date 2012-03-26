@@ -63,13 +63,17 @@ public class DefaultPersistenceIndex implements PersistenceIndex {
             objectInfo.addType(class1);
         }
         objectInfo.addType(bean);
-        index.add(objectInfo);
+        synchronized (index) {
+            index.add(objectInfo);
+        }
         LOGGER.debug("Adding to index {}: {}", indexFile.toString(), objectInfo.toString());
     }
 
     @Override
     public void removeIndexObject(ObjectInfo info) {
-        index.remove(info);
+        synchronized (index) {
+            index.remove(info);
+        }
     }
 
     @Override
@@ -81,11 +85,13 @@ public class DefaultPersistenceIndex implements PersistenceIndex {
     public List<ObjectInfo> findIndexObject(Class<?> beanClass) {
         LOGGER.trace("Looking for bean class {} in index {}", beanClass.getName(), indexFile.toString());
         List<ObjectInfo> retVal = Lists.newArrayList();
-        for (ObjectInfo info : index) {
-            if (info.containsClass(beanClass)) {
-                retVal.add(info);
-                LOGGER.debug("Looking for {} in index {} and found " + info.toString(), beanClass.getName(),
-                    indexFile.toString());
+        synchronized (index) {
+            for (ObjectInfo info : index) {
+                if (info.containsClass(beanClass)) {
+                    retVal.add(info);
+                    LOGGER.debug("Looking for {} in index {} and found " + info.toString(), beanClass.getName(),
+                        indexFile.toString());
+                }
             }
         }
         LOGGER.debug("Found {} objects of type bean class {} in index: " + indexFile.toString(), retVal.size(),
