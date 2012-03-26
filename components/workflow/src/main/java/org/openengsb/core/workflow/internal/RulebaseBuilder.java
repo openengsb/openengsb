@@ -66,7 +66,7 @@ public class RulebaseBuilder {
 
     /**
      * reloads the rulebase but keeps references intact
-     *
+     * 
      * @throws RuleBaseException if the rulebase contains errors
      */
     public synchronized void reloadRulebase() throws RuleBaseException {
@@ -163,7 +163,9 @@ public class RulebaseBuilder {
     private StringBuffer initNewPackageString(String packageName) {
         StringBuffer result = new StringBuffer();
         result.append(String.format("package %s;", packageName));
-        result.append(declarations);
+        if (declarations != null) {
+            result.append(declarations);
+        }
         return result;
     }
 
