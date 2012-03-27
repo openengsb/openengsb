@@ -60,7 +60,7 @@
             content can be addressed. Since a datastructure may originate from another one, models
             may be nested in each other. A link to a modelobject can now be established by its
             identifier. Such link must be of the structure <emphasis role="bold"
-                >Project.Model.Version.Identifier</emphasis>. The 'version' part of the link,
+                >Context.Model.Version.Identifier</emphasis>. The 'version' part of the link,
             represents the version of the model the identifier was created in.</para>
         <example>
             <title>An Example</title>

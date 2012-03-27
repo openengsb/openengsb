@@ -18,6 +18,7 @@
 package org.openengsb.core.common.xlink;
 
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -37,7 +38,7 @@ public final class XLinkUtils {
     // @extract-start XLinkUtilsKeyDefs
 
     /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
-    public static final String XLINK_PROJECTID_KEY = "projectId";
+    public static final String XLINK_CONTEXTID_KEY = "contextId";
 
     /** Keyname of the ModelId, mandatoryGET-Parameter in XLinks */
     public static final String XLINK_MODELID_KEY = "modelId";
@@ -56,6 +57,8 @@ public final class XLinkUtils {
 
     /** Keyname of the HostId (e.g. the IP), use during the registration for XLink. */
     public static final String XLINK_HOSTID_KEY = "HostId";
+    
+    private static final String DateFormat = "yyyyMMddkkmmss";
 
     // @extract-end
 
@@ -63,14 +66,14 @@ public final class XLinkUtils {
 
     /**
      * Demonstrates how the baseUrl of a XLinkTemplate is prepared before it is transmitted to the client. Every baseUrl
-     * must contain the projectId, modelId, itÃ‚Â´s version and the expirationDate as GET-Paramters, before it is
+     * must contain the contextId, modelId, itÂ´s version and the expirationDate as GET-Paramters, before it is
      * transmited to the connector. The ConnectorId-Key and the ViewId-Key are also added to the Template to enable
      * Local Switching.
      */
-    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String projectId, String version,
+    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String contextId, String version,
             String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTools> registeredTools) {
         servletUrl +=
-            "?" + XLINK_PROJECTID_KEY + "=" + projectId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
+            "?" + XLINK_CONTEXTID_KEY + "=" + contextId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
                     + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
                     + getExpirationDate(expirationDays);
         return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
@@ -82,7 +85,7 @@ public final class XLinkUtils {
     private static String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
-        Format formatter = new SimpleDateFormat("yyyyMMddkkmmss");
+        Format formatter = new SimpleDateFormat(DateFormat);
         return formatter.format(calendar.getTime());
     }
 
@@ -120,5 +123,16 @@ public final class XLinkUtils {
     }
 
     // @extract-end
+    
+    public static Calendar dateStringToCalendar(String dateString){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat(DateFormat);
+        try {
+            calendar.setTime(formatter.parse(dateString));
+        } catch (ParseException ex) {
+            return null;
+        }
+        return calendar;
+    }
 
 }

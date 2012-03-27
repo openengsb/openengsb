@@ -32,7 +32,7 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigs
 
     private String servletUrl = "http://openengsb.org/registryServlet.html";
-    private String projectId = "ExampleProject";
+    private String contextId = "ExampleContext";
     private String version = "1.0";
     private String modelId = "OOSourceCodeDomainId";
     private int expiresInDays = 3;
@@ -47,11 +47,11 @@ public class XLinkUtilsTest {
     @Test
     public void testPrepareXLinkTemplate() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, version, modelId, identifierKeyNames, expiresInDays,
                 registeredTools);
 
         // baseUrl =
-        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // http://openengsb.org/registryServlet.html?contextId=ExampleProject&versionId=1.0
         // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636
 
         assertTrue(xLinkTemplate.getBaseUrl().contains(XLinkUtils.XLINK_MODELID_KEY + "=" + modelId));
@@ -64,14 +64,14 @@ public class XLinkUtilsTest {
     @Test
     public void testGenerateValidXLinkUrl() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, version, modelId, identifierKeyNames, expiresInDays,
                 registeredTools);
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values);
 
         // xLinkUrl =
-        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // http://openengsb.org/registryServlet.html?contextId=ExampleContext&versionId=1.0
         // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636&methodName=testMethod
         // &className=testClass&packageName=testPackage
 
@@ -87,13 +87,13 @@ public class XLinkUtilsTest {
     @Test
     public void testGenerateValidXLinkUrlForLocalSwitching() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, version, modelId, identifierKeyNames, expiresInDays,
                 registeredTools);
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, values, connectorId, viewId);
 
         // xLinkUrl =
-        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // http://openengsb.org/registryServlet.html?contextId=ExampleContext&versionId=1.0
         // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636&methodName=testMethod
         // &className=testClass&packageName=testPackage&connectorID=exampleConnectorId&viewId=exampleViewId
 
