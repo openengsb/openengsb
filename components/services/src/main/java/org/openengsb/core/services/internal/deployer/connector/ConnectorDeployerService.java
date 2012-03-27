@@ -45,9 +45,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.MapDifference;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
@@ -58,7 +58,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
-    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
+    private LoadingCache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
         new CacheLoader<File, ConnectorFile>() {
             @Override
             public ConnectorFile load(File key) throws Exception {
@@ -66,7 +66,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             }
         });
 
-    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
+    private LoadingCache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
         new CacheLoader<File, Semaphore>() {
             @Override
             public Semaphore load(File key) throws Exception {
