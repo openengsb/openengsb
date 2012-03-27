@@ -70,7 +70,7 @@ public class XLinkUtilsTest {
 
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values);
 
-        // xLinkUrl =
+        // xLinkUrl = 
         // http://openengsb.org/registryServlet.html?contextId=ExampleContext&versionId=1.0
         // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636&methodName=testMethod
         // &className=testClass&packageName=testPackage
