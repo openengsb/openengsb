@@ -21,13 +21,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
@@ -36,8 +39,10 @@ import org.openengsb.core.common.ReferenceCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -66,6 +71,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private RuleManager ruleManager;
 
+    private ConcurrentMap<File, Thread> threadMap = Maps.newConcurrentMap();
+
     @Override
     public boolean canHandle(File artifact) {
         LOGGER.debug("WorkflowDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
@@ -81,16 +88,28 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        try {
-            doInstall(artifact);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            throw e;
+        while (true) {
+            synchronized (this) {
+                try {
+                    doInstall(artifact);
+                    break;
+                } catch (RuleBaseException e) {
+                    LOGGER.warn(e.getMessage());
+                    threadMap.putIfAbsent(artifact, Thread.currentThread());
+                    this.wait();
+                    continue;
+                }
+            }
+        }
+        threadMap.remove(artifact);
+        synchronized (this) {
+            this.notifyAll();
         }
         LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
 
-    private void doInstall(File artifact) throws Exception {
+    private void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,
+        ParserConfigurationException {
         String ending = FilenameUtils.getExtension(artifact.getName());
         RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
 
@@ -125,7 +144,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void installRuleBaseElement(File artifact) throws Exception, IOException {
+    private void installRuleBaseElement(File artifact) throws RuleBaseException, IOException, SAXException,
+        ParserConfigurationException {
         RuleBaseElementId id = getIdforFile(artifact);
         String code = FileUtils.readFileToString(artifact);
         ruleManager.addOrUpdate(id, code);
@@ -192,19 +212,20 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private void unInstallGlobalFile(File artifact) {
         Set<String> globalsGarbage = globalReferences.removeFile(artifact);
-        for(String i : globalsGarbage){
+        for (String i : globalsGarbage) {
             ruleManager.removeGlobal(i);
         }
     }
 
     private void unInstallImportFile(File artifact) {
         Set<String> garbageImports = importReferences.removeFile(artifact);
-        for(String i : garbageImports){
+        for (String i : garbageImports) {
             ruleManager.removeImport(i);
         }
     }
 
-    private RuleBaseElementId getIdforFile(File artifact) throws Exception {
+    private RuleBaseElementId getIdforFile(File artifact) throws RuleBaseException, SAXException, IOException,
+        ParserConfigurationException {
         RuleBaseElementType type = getTypeFromFile(artifact);
         String name = FilenameUtils.removeExtension(artifact.getName());
         RuleBaseElementId id = new RuleBaseElementId(type, name);
@@ -219,7 +240,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         return ELEMENT_TYPES.get(fileEnding);
     }
 
-    private String readPackageNameFromProcessFile(File file) throws Exception {
+    private String readPackageNameFromProcessFile(File file) throws SAXException, IOException,
+        ParserConfigurationException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(file);
