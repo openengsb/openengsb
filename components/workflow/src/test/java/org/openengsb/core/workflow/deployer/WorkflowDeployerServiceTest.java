@@ -17,7 +17,10 @@
 package org.openengsb.core.workflow.deployer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -261,6 +264,21 @@ public class WorkflowDeployerServiceTest {
         pool.submit(c3);
 
         future.get();
+    }
+
+    @Test
+    public void uninstallImport_shouldRemoveImport() throws Exception {
+        File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            Event.class.getName(),
+            BigInteger.class.getName(),
+            ""));
+
+        workflowDeployer.install(importFile);
+        importFile.delete();
+        workflowDeployer.uninstall(importFile);
+
+        assertThat(ruleManager.listImports(), not(hasItem(BigInteger.class.getName())));
     }
 
     private void setupWithRealCompiler() {

@@ -159,7 +159,9 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.debug("WorkflowDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
         try {
             RuleBaseElementId id = getIdforFile(artifact);
-
+            if(id == null){
+                return;
+            }
             if (id.getType().equals(RuleBaseElementType.Process)) {
                 id = cache.remove(artifact.getName());
             }
