@@ -105,7 +105,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private void tryInstallingFailedArtifacts() {
         synchronized (failedArtifacts) {
-            for (Iterator<File> iterator = failedArtifacts.iterator(); iterator.hasNext();) {
+            Iterator<File> iterator = failedArtifacts.iterator();
+            while (iterator.hasNext()) {
                 File failed = (File) iterator.next();
                 try {
                     doInstall(failed);
