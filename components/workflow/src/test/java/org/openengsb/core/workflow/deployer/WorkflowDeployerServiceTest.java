@@ -267,6 +267,21 @@ public class WorkflowDeployerServiceTest {
     }
 
     @Test
+    public void uninstallGlobal_RemoveGlobal() throws Exception {
+        final File globalFile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalFile, Arrays.asList(
+            Logger.class.getName() + " logger",
+            ""));
+
+        workflowDeployer.install(globalFile);
+        globalFile.delete();
+        workflowDeployer.uninstall(globalFile);
+
+        assertThat(ruleManager.listGlobals().keySet(), not(hasItem("logger")));
+    }
+
+    @Test
+    
     public void uninstallImport_shouldRemoveImport() throws Exception {
         File importFile = temporaryFolder.newFile("test1.import");
         FileUtils.writeLines(importFile, Arrays.asList(

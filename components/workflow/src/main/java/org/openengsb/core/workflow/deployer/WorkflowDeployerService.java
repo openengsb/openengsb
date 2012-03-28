@@ -32,6 +32,7 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.ReferenceCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -59,6 +60,9 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     private static final String PACKAGE_ATTR = "package-name";
 
     private static Map<String, RuleBaseElementId> cache = new HashMap<String, RuleBaseElementId>();
+
+    private ReferenceCounter<String> importReferences = new ReferenceCounter<String>();
+    private ReferenceCounter<String> globalReferences = new ReferenceCounter<String>();
 
     private RuleManager ruleManager;
 
@@ -108,6 +112,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
                 continue;
             }
             ruleManager.addGlobal(parts[0], parts[1]);
+            globalReferences.addReference(artifact, parts[1]);
         }
     }
 
@@ -115,6 +120,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         for (String importLine : FileUtils.readLines(artifact)) {
             if (!importLine.isEmpty()) {
                 ruleManager.addImport(importLine);
+                importReferences.addReference(artifact, importLine);
             }
         }
     }
@@ -158,19 +164,44 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     public void uninstall(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
         try {
-            RuleBaseElementId id = getIdforFile(artifact);
-            if(id == null){
-                return;
-            }
-            if (id.getType().equals(RuleBaseElementType.Process)) {
-                id = cache.remove(artifact.getName());
-            }
-            ruleManager.delete(id);
+            doUninstall(artifact);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
         }
         LOGGER.info("Successfully deleted workflow file \"{}\"", artifact.getName());
+    }
+
+    private void doUninstall(File artifact) throws Exception {
+        RuleBaseElementType type = getTypeFromFile(artifact);
+        if (type != null) {
+            RuleBaseElementId id = getIdforFile(artifact);
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                id = cache.remove(artifact.getName());
+            }
+            ruleManager.delete(id);
+            return;
+        }
+        String extension = FilenameUtils.getExtension(artifact.getName());
+        if (IMPORT_ENDING.equals(extension)) {
+            unInstallImportFile(artifact);
+        } else if (GLOBAL_ENDING.equals(extension)) {
+            unInstallGlobalFile(artifact);
+        }
+    }
+
+    private void unInstallGlobalFile(File artifact) {
+        Set<String> globalsGarbage = globalReferences.removeFile(artifact);
+        for(String i : globalsGarbage){
+            ruleManager.removeGlobal(i);
+        }
+    }
+
+    private void unInstallImportFile(File artifact) {
+        Set<String> garbageImports = importReferences.removeFile(artifact);
+        for(String i : garbageImports){
+            ruleManager.removeImport(i);
+        }
     }
 
     private RuleBaseElementId getIdforFile(File artifact) throws Exception {
