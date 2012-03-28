@@ -60,7 +60,7 @@
     <karaf.version>2.2.5</karaf.version>
     <felix.gogo.version>0.6.1</felix.gogo.version>
     <pax.exam.version>2.3.0</pax.exam.version>
-    <pax.wicket.version>0.7.7</pax.wicket.version>
+    <pax.wicket.version>0.7.8</pax.wicket.version>
     <pax.web.version>1.0.8</pax.web.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>2</openengsb.version.min>
