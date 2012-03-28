@@ -14,3 +14,4 @@ org.openengsb.core.api.workflow.model.InternalWorkflowEvent
 org.openengsb.core.workflow.WorkflowHelper
 org.openengsb.core.workflow.OsgiHelper
 
+org.openengsb.domain.auditing.AuditingDomain
