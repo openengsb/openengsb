@@ -18,10 +18,11 @@ package org.openengsb.core.workflow.deployer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,7 +43,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -71,7 +72,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private RuleManager ruleManager;
 
-    private ConcurrentMap<File, Thread> threadMap = Maps.newConcurrentMap();
+    private Collection<File> failedArtifacts = Lists.newLinkedList();
 
     @Override
     public boolean canHandle(File artifact) {
@@ -88,24 +89,35 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        while (true) {
-            synchronized (this) {
+        try {
+            doInstall(artifact);
+            LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
+        } catch (RuleBaseException e) {
+            LOGGER.warn("Could not deploy workflow-element because of unsatisfied dependencies", e);
+            failedArtifacts.add(artifact);
+            return;
+        } catch (Exception e) {
+            LOGGER.error("Error when deploying workflow-element", e);
+            throw e;
+        }
+        tryInstallingFailedArtifacts();
+    }
+
+    private void tryInstallingFailedArtifacts() {
+        synchronized (failedArtifacts) {
+            for (Iterator<File> iterator = failedArtifacts.iterator(); iterator.hasNext();) {
+                File failed = (File) iterator.next();
                 try {
-                    doInstall(artifact);
-                    break;
+                    doInstall(failed);
+                    iterator.remove();
+                    iterator = failedArtifacts.iterator();
                 } catch (RuleBaseException e) {
-                    LOGGER.warn(e.getMessage());
-                    threadMap.putIfAbsent(artifact, Thread.currentThread());
-                    this.wait();
-                    continue;
+                    LOGGER.warn("Could not deploy workflow-element because of unsatisfied dependencies", e);
+                } catch (Exception e) {
+                    LOGGER.error("unexpected exception when trying to install later", e);
                 }
             }
         }
-        threadMap.remove(artifact);
-        synchronized (this) {
-            this.notifyAll();
-        }
-        LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
 
     private void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,

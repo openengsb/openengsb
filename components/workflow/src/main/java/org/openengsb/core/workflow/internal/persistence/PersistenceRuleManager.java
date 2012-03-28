@@ -177,9 +177,15 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
         try {
             persistence.create(globalDeclaration);
         } catch (PersistenceException e) {
+            
             throw new RuleBaseException(e);
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            persistence.delete(globalDeclaration);
+            throw e;
+        }
     }
 
     @Override
