@@ -17,16 +17,11 @@
 
 package org.openengsb.core.workflow.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -46,63 +41,6 @@ public abstract class AbstractRuleManager implements RuleManager {
     @Override
     public KnowledgeBase getRulebase() {
         return rulebase;
-    }
-
-    public void init() throws RuleBaseException {
-        if (rulebaseIsEmpty()) {
-            readImports();
-            readGlobals();
-        }
-        builder.reloadRulebase();
-    }
-
-    private boolean rulebaseIsEmpty() {
-        if (!listImports().isEmpty()) {
-            return false;
-        }
-        return listGlobals().isEmpty();
-    }
-
-    private void readGlobals() throws RuleBaseException {
-        URL globalURL = this.getClass().getClassLoader().getResource("rulebase/globals");
-        File globalFile = copyFileToTemp(globalURL);
-        List<String> globalLines;
-        try {
-            globalLines = FileUtils.readLines(globalFile);
-        } catch (IOException e) {
-            throw new RuleBaseException(e);
-        }
-        for (String s : globalLines) {
-            String[] parts = s.split(" ");
-            addGlobal(parts[0], parts[1]);
-        }
-        FileUtils.deleteQuietly(globalFile);
-    }
-
-    private void readImports() throws RuleBaseException {
-        URL importsURL = this.getClass().getClassLoader().getResource("rulebase/imports");
-        File importsFile = copyFileToTemp(importsURL);
-        List<String> importLines;
-        try {
-            importLines = FileUtils.readLines(importsFile);
-        } catch (IOException e) {
-            throw new RuleBaseException(e);
-        }
-        for (String s : importLines) {
-            addImport(s);
-        }
-        FileUtils.deleteQuietly(importsFile);
-    }
-
-    private File copyFileToTemp(URL url) throws RuleBaseException {
-        File tmpFile;
-        try {
-            tmpFile = File.createTempFile("workflow", null);
-            FileUtils.copyURLToFile(url, tmpFile);
-        } catch (IOException e1) {
-            throw new RuleBaseException(e1);
-        }
-        return tmpFile;
     }
 
     @Override

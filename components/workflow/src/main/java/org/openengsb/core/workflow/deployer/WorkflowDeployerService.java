@@ -17,6 +17,7 @@
 package org.openengsb.core.workflow.deployer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         PROCESS_ENDING, RuleBaseElementType.Process,
         FUNCTION_ENDING, RuleBaseElementType.Function);
     private static final String PACKAGE_ATTR = "package-name";
+
     private static Map<String, RuleBaseElementId> cache = new HashMap<String, RuleBaseElementId>();
 
     private RuleManager ruleManager;
@@ -76,36 +78,53 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
         try {
-            String ending = FilenameUtils.getExtension(artifact.getName());
-            RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
-            if (typeFromFile != null) {
-                RuleBaseElementId id = getIdforFile(artifact);
-                String code = FileUtils.readFileToString(artifact);
-                ruleManager.addOrUpdate(id, code);
-                if (id.getType().equals(RuleBaseElementType.Process)) {
-                    cache.put(artifact.getName(), id);
-                }
-                LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
-            } else {
-                if (IMPORT_ENDING.equals(ending)) {
-                    for (String importLine : FileUtils.readLines(artifact)) {
-                        if (!importLine.isEmpty()) {
-                            ruleManager.addImport(importLine);
-                        }
-                    }
-                } else if (GLOBAL_ENDING.equals(ending)) {
-                    for (String importLine : FileUtils.readLines(artifact)) {
-                        String[] parts = importLine.split(" ");
-                        if (parts.length != 2) {
-                            continue;
-                        }
-                        ruleManager.addGlobal(parts[0], parts[1]);
-                    }
-                }
-            }
+            doInstall(artifact);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
+        }
+        LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
+    }
+
+    private void doInstall(File artifact) throws Exception {
+        String ending = FilenameUtils.getExtension(artifact.getName());
+        RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
+
+        if (typeFromFile != null) {
+            installRuleBaseElement(artifact);
+        } else {
+            if (IMPORT_ENDING.equals(ending)) {
+                installImportFile(artifact);
+            } else if (GLOBAL_ENDING.equals(ending)) {
+                installGlobalFile(artifact);
+            }
+        }
+    }
+
+    private void installGlobalFile(File artifact) throws IOException {
+        for (String importLine : FileUtils.readLines(artifact)) {
+            String[] parts = importLine.split(" ");
+            if (parts.length != 2) {
+                continue;
+            }
+            ruleManager.addGlobal(parts[0], parts[1]);
+        }
+    }
+
+    private void installImportFile(File artifact) throws IOException {
+        for (String importLine : FileUtils.readLines(artifact)) {
+            if (!importLine.isEmpty()) {
+                ruleManager.addImport(importLine);
+            }
+        }
+    }
+
+    private void installRuleBaseElement(File artifact) throws Exception, IOException {
+        RuleBaseElementId id = getIdforFile(artifact);
+        String code = FileUtils.readFileToString(artifact);
+        ruleManager.addOrUpdate(id, code);
+        if (id.getType().equals(RuleBaseElementType.Process)) {
+            cache.put(artifact.getName(), id);
         }
         LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
