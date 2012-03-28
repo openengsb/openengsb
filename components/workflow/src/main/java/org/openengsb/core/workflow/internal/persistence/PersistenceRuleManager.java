@@ -43,14 +43,15 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     private PersistenceService persistence;
     private BundleContext bundleContext;
 
-    @Override
-    public void init() throws RuleBaseException {
+    public PersistenceRuleManager() {
+
+    }
+
+    public void init() {
         if (persistence == null) {
             Bundle self = bundleContext.getBundle();
             persistence = persistenceManager.getPersistenceForBundle(self);
         }
-        super.init();
-
     }
 
     @Override

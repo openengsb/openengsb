@@ -1,0 +1,2 @@
+org.openengsb.core.api.workflow.TaskboxService taskbox
+org.openengsb.core.api.workflow.TaskboxServiceInternal taskboxinternal

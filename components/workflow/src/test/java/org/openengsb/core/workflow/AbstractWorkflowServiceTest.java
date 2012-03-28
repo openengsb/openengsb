@@ -89,6 +89,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     private void setupRulemanager() throws Exception {
         manager = PersistenceTestUtil.getRuleManager();
+        RuleUtil.addImportsAndGlobals(manager);
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),

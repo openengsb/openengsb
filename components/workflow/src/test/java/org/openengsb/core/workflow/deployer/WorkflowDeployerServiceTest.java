@@ -27,6 +27,10 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
@@ -200,6 +204,63 @@ public class WorkflowDeployerServiceTest {
             ""));
 
         workflowDeployer.install(testRuleFile);
+    }
+
+    @Test
+    public void testInstallWrongOrder_shouldAttemptInstallAgain() throws Exception {
+        setupWithRealCompiler();
+
+        final File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            Event.class.getName(),
+            BigInteger.class.getName(),
+            ""));
+
+        final File globalFile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalFile, Arrays.asList(
+            Logger.class.getName() + " logger",
+            ""));
+
+        final File testRuleFile = temporaryFolder.newFile("test1.rule");
+        FileUtils.writeLines(testRuleFile, Arrays.asList(
+            "when",
+            "   Event()",
+            "then",
+            "   BigInteger i = new BigInteger(1);",
+            "   logger.info(i.toString());",
+            ""));
+
+        Callable<Void> c1 = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                workflowDeployer.install(testRuleFile);
+                return null;
+            }
+        };
+
+        Callable<Void> c2 = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                workflowDeployer.install(globalFile);
+                return null;
+            }
+        };
+
+        Callable<Void> c3 = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                workflowDeployer.install(importFile);
+                return null;
+            }
+        };
+
+        ExecutorService pool = Executors.newCachedThreadPool();
+        Future<Void> future = pool.submit(c1);
+        Thread.sleep(100);
+        pool.submit(c2);
+        pool.submit(c3);
+
+        future.get();
     }
 
     private void setupWithRealCompiler() {
