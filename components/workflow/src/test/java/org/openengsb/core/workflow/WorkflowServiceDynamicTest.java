@@ -149,6 +149,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         mockDomain("test");
         mockDomain("report");
         mockDomain("issue");
+        RuleUtil.addImportsAndGlobals(manager);
         RuleUtil.addHello1Rule(manager);
     }
 

@@ -36,7 +36,7 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
-
+    
     @Test
     public void testGetRuleBase() throws Exception {
         assertThat(rulebase, notNullValue());
