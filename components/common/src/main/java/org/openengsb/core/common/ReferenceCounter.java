@@ -67,9 +67,10 @@ public class ReferenceCounter<T> {
     }
 
     public Set<T> removeFile(File artifact) {
-        Set<T> garbage = Sets.newHashSet(dataByFile.get(artifact));
-        for (Iterator<T> iterator = garbage.iterator(); iterator.hasNext();) {
-            T r = (T) iterator.next();
+        Set<T> valueSet = dataByFile.get(artifact);
+        Set<T> garbage = Sets.newHashSet(valueSet);
+        for (Iterator<T> iterator = valueSet.iterator(); iterator.hasNext();) {
+            T r = iterator.next();
 
             Set<File> fileList = dataByValue.get(r);
             fileList.remove(artifact);
