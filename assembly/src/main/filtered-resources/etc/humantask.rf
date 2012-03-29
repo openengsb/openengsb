@@ -41,7 +41,7 @@
     </actionNode>
     <eventNode id="3" name="Message" x="208" y="248" width="48" height="48" variableName="event" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="InternalWorkflowEvent" />
+        <eventFilter type="eventType" eventType="TaskFinished" />
       </eventFilters>
     </eventNode>
     <join id="4" name="Gateway" x="339" y="337" width="49" height="49" type="1" />
