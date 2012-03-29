@@ -154,6 +154,9 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     private void installGlobalFile(File artifact) throws IOException {
         try {
             for (String importLine : FileUtils.readLines(artifact)) {
+                if (importLine.isEmpty() || importLine.startsWith("#")) {
+                    continue;
+                }
                 String[] parts = importLine.split(" ");
                 if (parts.length != 2) {
                     continue;
@@ -172,7 +175,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private void installImportFile(File artifact) throws IOException {
         for (String importLine : FileUtils.readLines(artifact)) {
-            if (!importLine.isEmpty()) {
+            if (!importLine.isEmpty() && !importLine.startsWith("#")) {
                 ruleManager.addImport(importLine);
                 importReferences.addReference(artifact, importLine);
             }
