@@ -144,7 +144,12 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
                 throw new RuleBaseException(e);
             }
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            persistence.delete(imp);
+            throw e;
+        }
     }
 
     @Override
@@ -177,7 +182,7 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
         try {
             persistence.create(globalDeclaration);
         } catch (PersistenceException e) {
-            
+
             throw new RuleBaseException(e);
         }
         try {
