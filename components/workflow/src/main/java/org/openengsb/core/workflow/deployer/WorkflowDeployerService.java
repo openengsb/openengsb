@@ -93,7 +93,9 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
             doInstall(artifact);
             LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
         } catch (RuleBaseException e) {
-            LOGGER.warn("Could not deploy workflow-element because of unsatisfied dependencies", e);
+            LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies", artifact.getName());
+            LOGGER.info(e.getMessage());
+            LOGGER.debug("Details: ", e);
             failedArtifacts.add(artifact);
             return;
         } catch (Exception e) {
@@ -103,7 +105,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         tryInstallingFailedArtifacts();
     }
 
-    private void tryInstallingFailedArtifacts() {
+    private void tryInstallingFailedArtifacts() throws Exception {
+        Exception occured = null;
         synchronized (failedArtifacts) {
             Iterator<File> iterator = failedArtifacts.iterator();
             while (iterator.hasNext()) {
@@ -113,11 +116,22 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
                     iterator.remove();
                     iterator = failedArtifacts.iterator();
                 } catch (RuleBaseException e) {
-                    LOGGER.warn("Could not deploy workflow-element because of unsatisfied dependencies", e);
+                    LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies",
+                        failed.getName());
+                    LOGGER.info(e.getMessage());
+                    LOGGER.debug("Details: ", e);
                 } catch (Exception e) {
-                    LOGGER.error("unexpected exception when trying to install later", e);
+                    LOGGER.error("unexpected exception when trying to install " + failed.getName() + " delayed", e);
+                    /*
+                     * we still want to attempt installing the other artifacts. So we just record the Exception and
+                     * throw it later.
+                     */
+                    occured = e;
                 }
             }
+        }
+        if (occured != null) {
+            throw occured;
         }
     }
 
