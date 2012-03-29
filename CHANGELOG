@@ -1,3 +1,46 @@
+openengsb-2.4.3 2012-03-29
+--------------------------------------------
+
+The third bug-fix release of the OpenEngSB framework corrects minor bugs in the remote communication.
+In addition some tests had been made more stable and some system.out errors in the workflow had been fixed.
+In addition we've upgraded Pax Wicket from 0.7.6 to 0.7.8 which increases the Wicket version to 1.4.20 and
+fixes a problem with the integration tests.
+
+### Details
+** Bug
+    * [OPENENGSB-1814] - Json-Marshalling: Event class string-representation incorrent
+    * [OPENENGSB-2820] - Conflict checking in the EDB has a small error
+    * [OPENENGSB-2824] - test-data from jms-port is stored in src-zip
+    * [OPENENGSB-2825] - README is outdated
+    * [OPENENGSB-2836] - Possible ConcurrentModificationException in AbstractOsgiMockServiceTest
+    * [OPENENGSB-2848] - access to index in DefaultPersistenceIndex is not thread-safe
+    * [OPENENGSB-2859] - "workflow-elements are printed to stdout on error during creation
+
+** Library Upgrade
+    * [OPENENGSB-2839] - Upgrade pax-wicket to 0.7.7
+    * [OPENENGSB-2852] - Upgrade to pax-wicket 0.7.8
+
+** Task
+    * [OPENENGSB-2751] - Release framework 2.4.3
+
+### Known Issues
+    * [OPENENGSB-1169] - "create wrapped artifacts" section outdated
+    * [OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1568] - License headers are missing in bundle.info
+    * [OPENENGSB-1657] - OpenEngSB crashes when OSGI is loaded as feature dependency
+    * [OPENENGSB-1735] - testHandleCallsParallel fails sometimes
+    * [OPENENGSB-1769] - mvn eclipse:eclipse does not include html-files in build-path of ui-admin and ui-common
+    * [OPENENGSB-1858] - itests fail when opencit is running
+    * [OPENENGSB-1896] - languages are messed up in core-services bundle.properties
+    * [OPENENGSB-1899] - Domain archetype contains reference to openengsb-core-events
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-1976] - Aries transactions/jpa hides parameter annotations
+    * [OPENENGSB-2127] - modifying rulebase disrupts running flows
+    * [OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2187] - ui-admin bundle fails to start when ui-common is redeployed
+    * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2860] - jdk-download-link in documentation is broken
+
 openengsb-2.4.2 2012-03-08
 --------------------------------------------
 
@@ -8,6 +51,7 @@ than the full blown object database for the use cases. In addition this release 
 various bug-fix related dependency upgrades; namely CXF (2.5.2), PaxExam Karaf (0.5.1),
 OpenEngSB Root (32) and Pax Wicket (0.7.6).
 
+### Details
 ** Bug
     * [OPENENGSB-2712] - createEmptyModel with ModelEntries as parameter discard model oid and model version
     * [OPENENGSB-2726] - Bug in the querying of models with submodels
@@ -29,9 +73,9 @@ OpenEngSB Root (32) and Pax Wicket (0.7.6).
     * [OPENENGSB-2750] - Release framework 2.4.2
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
  
 openengsb-2.4.1 2012-01-17
@@ -39,6 +83,7 @@ openengsb-2.4.1 2012-01-17
 
 This is a bugfix release fixing several issues that occured at runtime.
 
+### Details
 ** Bug
     * [OPENENGSB-2608] - Typo in OpenEngSBFileModel
     * [OPENENGSB-2683] - Not all features are started/downloaded for karaf/openengsb
@@ -48,9 +93,9 @@ This is a bugfix release fixing several issues that occured at runtime.
     * [OPENENGSB-2669] - Release framework 2.4.1
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 openengsb-2.4.0 2012-01-08
 --------------------------------------------
@@ -91,9 +136,9 @@ further. Various bugs in runtime (jetty, archetypes, offline usagage) had been f
     * [OPENENGSB-2512] - Release openengsb-framework 2.4.0
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
 openengsb-2.3.0 2012-01-01
@@ -192,9 +237,9 @@ Karaf (2.2.5).
     * [OPENENGSB-2532] - Remove no longer required resources from manual
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
 openengsb-2.2.0 2011-11-17
