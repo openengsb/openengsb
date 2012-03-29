@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
@@ -218,6 +219,7 @@ public class WorkflowDeployerServiceTest {
 
         final File globalFile = temporaryFolder.newFile("test1.global");
         FileUtils.writeLines(globalFile, Arrays.asList(
+            List.class.getName() + " listtest",
             Logger.class.getSimpleName() + " logger",
             ""));
 

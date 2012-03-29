@@ -107,7 +107,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         synchronized (failedArtifacts) {
             Iterator<File> iterator = failedArtifacts.iterator();
             while (iterator.hasNext()) {
-                File failed = (File) iterator.next();
+                File failed = iterator.next();
                 try {
                     doInstall(failed);
                     iterator.remove();
@@ -138,13 +138,21 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     }
 
     private void installGlobalFile(File artifact) throws IOException {
-        for (String importLine : FileUtils.readLines(artifact)) {
-            String[] parts = importLine.split(" ");
-            if (parts.length != 2) {
-                continue;
+        try {
+            for (String importLine : FileUtils.readLines(artifact)) {
+                String[] parts = importLine.split(" ");
+                if (parts.length != 2) {
+                    continue;
+                }
+                ruleManager.addGlobal(parts[0], parts[1]);
+                globalReferences.addReference(artifact, parts[1]);
             }
-            ruleManager.addGlobal(parts[0], parts[1]);
-            globalReferences.addReference(artifact, parts[1]);
+        } catch (RuleBaseException e) {
+            Set<String> garbage = globalReferences.removeFile(artifact);
+            for (String globalName : garbage) {
+                ruleManager.removeGlobal(globalName);
+            }
+            throw e;
         }
     }
 
