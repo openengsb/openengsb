@@ -47,10 +47,6 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="taskbox" ref="taskbox" />
   </bean>
-
-  <bean class="org.openengsb.core.workflow.internal.TaskboxConfigurator" init-method="init">
-    <property name="ruleManager" ref="ruleManager" />
-  </bean>
   
   <bean id="taskbox" class="org.openengsb.core.workflow.internal.TaskboxServiceImpl" init-method="init">
     <property name="workflowService" ref="workflowService" />

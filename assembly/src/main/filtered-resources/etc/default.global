@@ -1,0 +1,3 @@
+org.openengsb.core.api.workflow.TaskboxService taskbox
+org.openengsb.core.api.workflow.TaskboxServiceInternal taskboxinternal
+org.openengsb.domain.auditing.AuditingDomain auditing
