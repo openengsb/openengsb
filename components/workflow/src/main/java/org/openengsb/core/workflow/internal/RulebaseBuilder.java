@@ -189,7 +189,6 @@ public class RulebaseBuilder {
             }
         }
         if (builder.hasErrors()) {
-            System.out.println(content.toString());
             throw new RuleBaseException(builder.getErrors().toString());
         }
         return builder.getKnowledgePackages();
