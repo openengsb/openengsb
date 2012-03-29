@@ -46,7 +46,6 @@ public final class PersistenceTestUtil {
         PersistenceRuleManager manager = new PersistenceRuleManager();
         DummyPersistence persistenceMock = new DummyPersistence();
         manager.setPersistence(persistenceMock);
-        manager.init();
         return manager;
     }
 

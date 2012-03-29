@@ -51,11 +51,6 @@
     <property name="workflowService" ref="workflowService" />
   </bean>
 
-  <bean class="org.openengsb.domain.auditing.internal.AuditingConfig" id="auditingConfig" init-method="init">
-    <property name="ruleManager" ref="ruleManager" />
-    <property name="authManager" ref="authenticationManager" />
-  </bean>
-
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />

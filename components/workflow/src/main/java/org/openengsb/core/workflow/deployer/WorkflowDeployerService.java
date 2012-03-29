@@ -17,25 +17,33 @@
 package org.openengsb.core.workflow.deployer;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.ReferenceCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -56,9 +64,15 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         PROCESS_ENDING, RuleBaseElementType.Process,
         FUNCTION_ENDING, RuleBaseElementType.Function);
     private static final String PACKAGE_ATTR = "package-name";
+
     private static Map<String, RuleBaseElementId> cache = new HashMap<String, RuleBaseElementId>();
 
+    private ReferenceCounter<String> importReferences = new ReferenceCounter<String>();
+    private ReferenceCounter<String> globalReferences = new ReferenceCounter<String>();
+
     private RuleManager ruleManager;
+
+    private Collection<File> failedArtifacts = Lists.newLinkedList();
 
     @Override
     public boolean canHandle(File artifact) {
@@ -76,36 +90,105 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     public void install(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.install(\"{}\")", artifact.getAbsolutePath());
         try {
-            String ending = FilenameUtils.getExtension(artifact.getName());
-            RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
-            if (typeFromFile != null) {
-                RuleBaseElementId id = getIdforFile(artifact);
-                String code = FileUtils.readFileToString(artifact);
-                ruleManager.addOrUpdate(id, code);
-                if (id.getType().equals(RuleBaseElementType.Process)) {
-                    cache.put(artifact.getName(), id);
-                }
-                LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
-            } else {
-                if (IMPORT_ENDING.equals(ending)) {
-                    for (String importLine : FileUtils.readLines(artifact)) {
-                        if (!importLine.isEmpty()) {
-                            ruleManager.addImport(importLine);
-                        }
-                    }
-                } else if (GLOBAL_ENDING.equals(ending)) {
-                    for (String importLine : FileUtils.readLines(artifact)) {
-                        String[] parts = importLine.split(" ");
-                        if (parts.length != 2) {
-                            continue;
-                        }
-                        ruleManager.addGlobal(parts[0], parts[1]);
-                    }
+            doInstall(artifact);
+            LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
+        } catch (RuleBaseException e) {
+            LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies", artifact.getName());
+            LOGGER.info(e.getMessage());
+            LOGGER.debug("Details: ", e);
+            failedArtifacts.add(artifact);
+            return;
+        } catch (Exception e) {
+            LOGGER.error("Error when deploying workflow-element", e);
+            throw e;
+        }
+        tryInstallingFailedArtifacts();
+    }
+
+    private void tryInstallingFailedArtifacts() throws Exception {
+        Exception occured = null;
+        synchronized (failedArtifacts) {
+            Iterator<File> iterator = failedArtifacts.iterator();
+            while (iterator.hasNext()) {
+                File failed = iterator.next();
+                try {
+                    doInstall(failed);
+                    iterator.remove();
+                    iterator = failedArtifacts.iterator();
+                } catch (RuleBaseException e) {
+                    LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies",
+                        failed.getName());
+                    LOGGER.info(e.getMessage());
+                    LOGGER.debug("Details: ", e);
+                } catch (Exception e) {
+                    LOGGER.error("unexpected exception when trying to install " + failed.getName() + " delayed", e);
+                    /*
+                     * we still want to attempt installing the other artifacts. So we just record the Exception and
+                     * throw it later.
+                     */
+                    occured = e;
                 }
             }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+        }
+        if (occured != null) {
+            throw occured;
+        }
+    }
+
+    private void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,
+        ParserConfigurationException {
+        String ending = FilenameUtils.getExtension(artifact.getName());
+        RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
+
+        if (typeFromFile != null) {
+            installRuleBaseElement(artifact);
+        } else {
+            if (IMPORT_ENDING.equals(ending)) {
+                installImportFile(artifact);
+            } else if (GLOBAL_ENDING.equals(ending)) {
+                installGlobalFile(artifact);
+            }
+        }
+    }
+
+    private void installGlobalFile(File artifact) throws IOException {
+        try {
+            for (String importLine : FileUtils.readLines(artifact)) {
+                if (importLine.isEmpty() || importLine.startsWith("#")) {
+                    continue;
+                }
+                String[] parts = importLine.split(" ");
+                if (parts.length != 2) {
+                    continue;
+                }
+                ruleManager.addGlobal(parts[0], parts[1]);
+                globalReferences.addReference(artifact, parts[1]);
+            }
+        } catch (RuleBaseException e) {
+            Set<String> garbage = globalReferences.removeFile(artifact);
+            for (String globalName : garbage) {
+                ruleManager.removeGlobal(globalName);
+            }
             throw e;
+        }
+    }
+
+    private void installImportFile(File artifact) throws IOException {
+        for (String importLine : FileUtils.readLines(artifact)) {
+            if (!importLine.isEmpty() && !importLine.startsWith("#")) {
+                ruleManager.addImport(importLine);
+                importReferences.addReference(artifact, importLine);
+            }
+        }
+    }
+
+    private void installRuleBaseElement(File artifact) throws RuleBaseException, IOException, SAXException,
+        ParserConfigurationException {
+        RuleBaseElementId id = getIdforFile(artifact);
+        String code = FileUtils.readFileToString(artifact);
+        ruleManager.addOrUpdate(id, code);
+        if (id.getType().equals(RuleBaseElementType.Process)) {
+            cache.put(artifact.getName(), id);
         }
         LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
     }
@@ -139,12 +222,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     public void uninstall(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
         try {
-            RuleBaseElementId id = getIdforFile(artifact);
-
-            if (id.getType().equals(RuleBaseElementType.Process)) {
-                id = cache.remove(artifact.getName());
-            }
-            ruleManager.delete(id);
+            doUninstall(artifact);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
@@ -152,7 +230,40 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.info("Successfully deleted workflow file \"{}\"", artifact.getName());
     }
 
-    private RuleBaseElementId getIdforFile(File artifact) throws Exception {
+    private void doUninstall(File artifact) throws Exception {
+        RuleBaseElementType type = getTypeFromFile(artifact);
+        if (type != null) {
+            RuleBaseElementId id = getIdforFile(artifact);
+            if (id.getType().equals(RuleBaseElementType.Process)) {
+                id = cache.remove(artifact.getName());
+            }
+            ruleManager.delete(id);
+            return;
+        }
+        String extension = FilenameUtils.getExtension(artifact.getName());
+        if (IMPORT_ENDING.equals(extension)) {
+            unInstallImportFile(artifact);
+        } else if (GLOBAL_ENDING.equals(extension)) {
+            unInstallGlobalFile(artifact);
+        }
+    }
+
+    private void unInstallGlobalFile(File artifact) {
+        Set<String> globalsGarbage = globalReferences.removeFile(artifact);
+        for (String i : globalsGarbage) {
+            ruleManager.removeGlobal(i);
+        }
+    }
+
+    private void unInstallImportFile(File artifact) {
+        Set<String> garbageImports = importReferences.removeFile(artifact);
+        for (String i : garbageImports) {
+            ruleManager.removeImport(i);
+        }
+    }
+
+    private RuleBaseElementId getIdforFile(File artifact) throws RuleBaseException, SAXException, IOException,
+        ParserConfigurationException {
         RuleBaseElementType type = getTypeFromFile(artifact);
         String name = FilenameUtils.removeExtension(artifact.getName());
         RuleBaseElementId id = new RuleBaseElementId(type, name);
@@ -167,7 +278,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         return ELEMENT_TYPES.get(fileEnding);
     }
 
-    private String readPackageNameFromProcessFile(File file) throws Exception {
+    private String readPackageNameFromProcessFile(File file) throws SAXException, IOException,
+        ParserConfigurationException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(file);

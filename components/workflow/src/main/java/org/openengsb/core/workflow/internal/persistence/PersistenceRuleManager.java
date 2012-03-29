@@ -43,14 +43,15 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     private PersistenceService persistence;
     private BundleContext bundleContext;
 
-    @Override
-    public void init() throws RuleBaseException {
+    public PersistenceRuleManager() {
+
+    }
+
+    public void init() {
         if (persistence == null) {
             Bundle self = bundleContext.getBundle();
             persistence = persistenceManager.getPersistenceForBundle(self);
         }
-        super.init();
-
     }
 
     @Override
@@ -143,7 +144,12 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
                 throw new RuleBaseException(e);
             }
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            persistence.delete(imp);
+            throw e;
+        }
     }
 
     @Override
@@ -176,9 +182,15 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
         try {
             persistence.create(globalDeclaration);
         } catch (PersistenceException e) {
+
             throw new RuleBaseException(e);
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            persistence.delete(globalDeclaration);
+            throw e;
+        }
     }
 
     @Override

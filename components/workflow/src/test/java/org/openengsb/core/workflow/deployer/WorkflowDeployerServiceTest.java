@@ -17,7 +17,10 @@
 package org.openengsb.core.workflow.deployer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
@@ -200,6 +204,68 @@ public class WorkflowDeployerServiceTest {
             ""));
 
         workflowDeployer.install(testRuleFile);
+    }
+
+    @Test
+    public void testInstallWrongOrder_shouldAttemptInstallAgain() throws Exception {
+        setupWithRealCompiler();
+
+        final File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            Event.class.getName(),
+            BigInteger.class.getName(),
+            Logger.class.getName(),
+            ""));
+
+        final File globalFile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalFile, Arrays.asList(
+            List.class.getName() + " listtest",
+            Logger.class.getSimpleName() + " logger",
+            ""));
+
+        final File testRuleFile = temporaryFolder.newFile("test1.rule");
+        FileUtils.writeLines(testRuleFile, Arrays.asList(
+            "when",
+            "   Event()",
+            "then",
+            "   BigInteger i = new BigInteger(1);",
+            "   logger.info(i.toString());",
+            ""));
+
+        workflowDeployer.install(testRuleFile);
+        workflowDeployer.install(globalFile);
+        workflowDeployer.install(importFile);
+
+        assertThat(ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Rule, "test1")), not(nullValue()));
+    }
+
+    @Test
+    public void uninstallGlobal_RemoveGlobal() throws Exception {
+        final File globalFile = temporaryFolder.newFile("test1.global");
+        FileUtils.writeLines(globalFile, Arrays.asList(
+            Logger.class.getName() + " logger",
+            ""));
+
+        workflowDeployer.install(globalFile);
+        globalFile.delete();
+        workflowDeployer.uninstall(globalFile);
+
+        assertThat(ruleManager.listGlobals().keySet(), not(hasItem("logger")));
+    }
+
+    @Test
+    public void uninstallImport_shouldRemoveImport() throws Exception {
+        File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+            Event.class.getName(),
+            BigInteger.class.getName(),
+            ""));
+
+        workflowDeployer.install(importFile);
+        importFile.delete();
+        workflowDeployer.uninstall(importFile);
+
+        assertThat(ruleManager.listImports(), not(hasItem(BigInteger.class.getName())));
     }
 
     private void setupWithRealCompiler() {
