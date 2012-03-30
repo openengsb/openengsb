@@ -41,10 +41,7 @@
   <reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
-  <reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
-  <reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
-  <reference-list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator" />
 
   <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />

@@ -43,7 +43,6 @@ import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
@@ -105,7 +104,6 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
         addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
-        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
         addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
 

@@ -76,14 +76,14 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
         assertTrue(sendEventpage.asText().contains("Current Project"));
         HtmlPage servicePage = testClient.getAnchorByText("Services").click();
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(2000);
         assertThat(servicePage.asText(), containsString("ONLINE"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
         assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
-        HtmlPage workflowEditorpage = testClient.getAnchorByText("Workflow Editor").click();
-        assertTrue(workflowEditorpage.asText().contains("Workflow Editor"));
+        HtmlPage wiringPage = testClient.getAnchorByText("Wiring").click();
+        assertTrue(wiringPage.asText().contains("Current Project"));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         form = usermanagementPage.getForms().get(1);
         assertNotNull(form);
-        
+
         HtmlSubmitInput createButton = form.getInputByValue("Create");
         createButton.click();
 
