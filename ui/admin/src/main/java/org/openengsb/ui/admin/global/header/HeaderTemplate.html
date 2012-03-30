@@ -42,9 +42,9 @@
 	    		  <span class="topMenuLabel">Max Meier</span>
 	    	    </li>
 	    	    <li class="tmc-seperator" />
-	    	    <li class="tmc-center">
+	    	    <li class="tmc-center dropdownTrigger">
 	    		    <span class="topMenuLabel" wicket:id="currentProject">Project</span>
-	    		    <span class="dropdownIcon" onclick="toggleContainerBySlideing('availableContexts',100)" />
+	    		    <span class="dropdownIcon">&nbsp;</span>
 	    		    <ul id="availableContexts" class="dropdownContainer hidden">
 	    		    	<li class="dropdownContainerHeadline"><wicket:message key="context.select" /></li>
 	    		    	<li wicket:id="availableContexts">
@@ -55,9 +55,9 @@
 	    		    </ul>
 				</li>
 	    		<li class="tmc-seperator" />
-	    		<li class="tmc-center">
+	    		<li class="tmc-center dropdownTrigger">
 	    			<span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
-	    		    <span class="dropdownIcon" onclick="toggleContainerBySlideing('availableLanguages',100)" />
+	    		    <span class="dropdownIcon">&nbsp;</span>
 	    		    <ul id="availableLanguages" class="dropdownContainer hidden">
 	    		      <li class="dropdownContainerHeadline"><wicket:message key="language.select" /></li>
 	    		      <li><a wicket:id="lang.en">English (EN)</a></li>

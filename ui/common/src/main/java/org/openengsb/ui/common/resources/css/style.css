@@ -123,7 +123,7 @@ input[type=submit] {
  background-position: right center;
  background-repeat: no-repeat;
  position:relative;
- padding-right: 8px;
+ padding-right: 3px;
  padding-bottom: 7px;
 }
 
@@ -397,6 +397,13 @@ li.lastElement {
 .mainArea{
 	padding: 15px 15px 15px 15px;
 	
+}
+
+.dropdownTrigger, .dropdownTrigger ul li a{
+	cursor: pointer;
+}
+.dropdownTrigger ul{
+    cursor: default;
 }
 
 /*

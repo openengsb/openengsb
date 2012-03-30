@@ -14,6 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ $(function() {
+
+$(".dropdownTrigger").click(function() {
+        var $actList = $(this).find("ul");
+
+        var callback = function() {
+            $actList.toggle("slide",{direction: 'up'}, 100);
+        };        
+
+        if($(".dropdownTrigger ul:visible").not($actList).length > 0) {
+            $(".dropdownTrigger ul:visible").not($actList).hide("slide",{direction: 'up'}, 100, callback);
+        } else {
+            callback();
+        }
+    });
+
+$("body").click(function(event) {
+var $target = $(event.target);
+
+if($target.is(":not(.dropdownTrigger, .dropdownTrigger *)")) {
+    $(".dropdownTrigger ul:visible").hide("slide",{direction: 'up'}, 100);
+    }
+});
+
+ });
+
 function showModalDialogue(containerId,title,resizable, draggable) {
 	
 	if(draggable==null)
