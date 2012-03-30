@@ -15,19 +15,20 @@
 # limitations under the License.
 #
 
-Files in this directory are handled by the OpenEngSB deployer services.
-These services listen for new/changed/deleted files and automatically
-update the corresponding configuration in OpenEngSB.
+java.util.List
+java.util.ArrayList
+java.util.Map
+java.util.HashMap
+java.net.URI
 
-For detailed information please check the manual.
+org.openengsb.core.api.Event
+org.openengsb.core.api.workflow.model.Value
+org.openengsb.core.api.workflow.model.RemoteEvent
 
-Supported file types
---------------------
-.connector (property file) - Connector instance configuration
-.context - Context configuration
-.rf - Workflow-process files
-.rule - Rule definitions
-.function - Function definitions
-.import - list of imports for drools
-.globals - list of drools globals
+org.openengsb.core.api.workflow.model.ProcessBag
+org.openengsb.core.api.workflow.model.InternalWorkflowEvent
 
+org.openengsb.core.workflow.WorkflowHelper
+org.openengsb.core.workflow.OsgiHelper
+
+org.openengsb.domain.auditing.AuditingDomain

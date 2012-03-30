@@ -15,19 +15,6 @@
 # limitations under the License.
 #
 
-Files in this directory are handled by the OpenEngSB deployer services.
-These services listen for new/changed/deleted files and automatically
-update the corresponding configuration in OpenEngSB.
-
-For detailed information please check the manual.
-
-Supported file types
---------------------
-.connector (property file) - Connector instance configuration
-.context - Context configuration
-.rf - Workflow-process files
-.rule - Rule definitions
-.function - Function definitions
-.import - list of imports for drools
-.globals - list of drools globals
-
+org.openengsb.core.api.workflow.TaskboxService taskbox
+org.openengsb.core.api.workflow.TaskboxServiceInternal taskboxinternal
+org.openengsb.domain.auditing.AuditingDomain auditing
