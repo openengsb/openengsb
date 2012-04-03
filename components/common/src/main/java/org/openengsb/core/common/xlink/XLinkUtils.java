@@ -18,7 +18,6 @@
 package org.openengsb.core.common.xlink;
 
 import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -50,13 +49,13 @@ public final class XLinkUtils {
     public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
 
     /** Keyname of the ConnectorId, GET-Parameter in XLinks, only mandatory in local switching */
-    public static final String XLINK_CONNECTORID_KEY = "connectorID";
+    public static final String XLINK_CONNECTORID_KEY = "connectorId";
 
     /** Keyname of the ViewId, GET-Parameter in XLinks, only mandatory in local switching */
     public static final String XLINK_VIEW_KEY = "viewId";
 
-    /** Keyname of the HostId (e.g. the IP), use during the registration for XLink. */
-    public static final String XLINK_HOSTID_KEY = "HostId";
+    /** Headername of the HostId (e.g. the IP), used during the registration for XLink. */
+    public static final String XLINK_HOST_HEADERNAME = "Host";
     
     private static final String DateFormat = "yyyyMMddkkmmss";
 
@@ -129,7 +128,7 @@ public final class XLinkUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(DateFormat);
         try {
             calendar.setTime(formatter.parse(dateString));
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             return null;
         }
         return calendar;
