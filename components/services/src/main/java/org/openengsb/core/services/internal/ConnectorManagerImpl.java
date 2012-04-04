@@ -28,6 +28,7 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConfigItem;
+
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Preconditions;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -51,36 +53,24 @@ public class ConnectorManagerImpl implements ConnectorManager {
         new Thread() {
             @Override
             public void run() {
+                Collection<ConnectorConfiguration> configs;
                 try {
-                    Collection<ConnectorConfiguration> configs;
+                    Map<String, String> emptyMap = Collections.emptyMap();
+                    configs = configPersistence.load(emptyMap);
+                } catch (InvalidConfigurationException e) {
+                    throw new IllegalStateException(e);
+                } catch (PersistenceException e) {
+                    throw new IllegalStateException(e);
+                }
+                for (ConnectorConfiguration c : configs) {
                     try {
-                        Map<String, String> emptyMap = Collections.emptyMap();
-                        configs = configPersistence.load(emptyMap);
-                    } catch (InvalidConfigurationException e) {
-                        throw new IllegalStateException(e);
-                    } catch (PersistenceException e) {
+                        registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
+                    } catch (ConnectorValidationFailedException e) {
                         throw new IllegalStateException(e);
                     }
-                    // FIXME Should be refactored when OPENENGSB-1931 is fixed
-                    configs = Collections2.filter(configs, new Predicate<ConfigItem<?>>() {
-                        @Override
-                        public boolean apply(ConfigItem<?> input) {
-                            return input instanceof ConnectorConfiguration;
-                        }
-                    });
-                    for (ConnectorConfiguration c : configs) {
-                        try {
-                            registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
-                        } catch (ConnectorValidationFailedException e) {
-                            throw new IllegalStateException(e);
-                        }
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Exception while restoring connectors", e);
                 }
             }
         }.start();
-
     }
 
     @Override
