@@ -72,5 +72,5 @@ Further Information
 -------------------
 This readme gives only the most important information for developer. General information about this project is located
 at http://openengsb.org.
-The detailed developer and user documentation is located at http://openengsb.org/manual/index.html.
+The detailed developer and user documentation is located at http://openengsb.org/index/documentation.html.
 
