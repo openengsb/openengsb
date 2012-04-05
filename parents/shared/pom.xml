@@ -95,7 +95,7 @@
     <guava.version>11.0.1</guava.version>
     <guava.wrapped.version>11.0.1_1</guava.wrapped.version>
     <spring.osgi.version>1.2.1</spring.osgi.version>
-    <spring.version>3.0.6.RELEASE</spring.version>
+    <spring.version>3.0.7.RELEASE</spring.version>
     <spring.security.version>3.0.7.RELEASE</spring.security.version>
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
