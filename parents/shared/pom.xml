@@ -57,7 +57,7 @@
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding><!--this is defined in 3 poms but used nowhere!-->
     <!-- core versions -->
-    <karaf.version>2.2.5</karaf.version>
+    <karaf.version>2.2.6</karaf.version>
     <felix.gogo.version>0.6.1</felix.gogo.version>
     <pax.exam.version>2.3.1</pax.exam.version>
     <pax.wicket.version>0.7.8</pax.wicket.version>
