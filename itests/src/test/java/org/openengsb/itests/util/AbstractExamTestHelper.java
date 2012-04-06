@@ -90,13 +90,21 @@ public abstract class AbstractExamTestHelper {
     @Before
     public void waitForRequiredTasks() throws Exception {
         RuleManager rm = getOsgiService(RuleManager.class);
+        int count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
         }
+        count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
             LOGGER.warn("waiting for taskboxConfig to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("taskbox-config did not finish in time");
+            }
         }
     }
 
