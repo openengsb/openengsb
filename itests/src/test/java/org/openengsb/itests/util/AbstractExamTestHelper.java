@@ -95,13 +95,21 @@ public abstract class AbstractExamTestHelper {
     public void waitForRequiredTasks() throws Exception {
         waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
+        int count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
         }
+        count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
             LOGGER.warn("waiting for taskboxConfig to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("taskbox-config did not finish in time");
+            }
         }
     }
 
@@ -247,6 +255,7 @@ public abstract class AbstractExamTestHelper {
 
     protected void waitForUserDataInitializer() throws InterruptedException {
         SecurityManager sm = null;
+        int count = 0;
         while (sm == null) {
             try {
                 sm = SecurityUtils.getSecurityManager();
@@ -254,11 +263,18 @@ public abstract class AbstractExamTestHelper {
                 LOGGER.warn("waiting for security-manager to be set");
                 Thread.sleep(1000);
             }
+            if (count++ > 100) {
+                throw new IllegalStateException("security-manager was not set in time");
+            }
         }
         UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
+        count = 0;
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("user-data-initializer did not finish in time");
+            }
         }
         getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
