@@ -25,7 +25,7 @@ import java.util.ListIterator;
 import org.apache.commons.lang.ArrayUtils;
 import org.osgi.util.tracker.ServiceTracker;
 
-public final class ServiceList<T> implements List<T> {
+public final class ServiceList<ServiceType> implements List<ServiceType> {
     private ServiceTracker tracker;
 
     public ServiceList(ServiceTracker tracker) {
@@ -49,7 +49,7 @@ public final class ServiceList<T> implements List<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<ServiceType> iterator() {
         return asList().iterator();
     }
 
@@ -67,7 +67,7 @@ public final class ServiceList<T> implements List<T> {
     }
 
     @Override
-    public boolean add(T e) {
+    public boolean add(ServiceType e) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -82,12 +82,12 @@ public final class ServiceList<T> implements List<T> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends ServiceType> c) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
+    public boolean addAll(int index, Collection<? extends ServiceType> c) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -108,22 +108,22 @@ public final class ServiceList<T> implements List<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T get(int index) {
-        return (T) tracker.getServices()[index];
+    public ServiceType get(int index) {
+        return (ServiceType) tracker.getServices()[index];
     }
 
     @Override
-    public T set(int index, T element) {
+    public ServiceType set(int index, ServiceType element) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public void add(int index, T element) {
+    public void add(int index, ServiceType element) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public T remove(int index) {
+    public ServiceType remove(int index) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -138,22 +138,22 @@ public final class ServiceList<T> implements List<T> {
     }
 
     @Override
-    public ListIterator<T> listIterator() {
+    public ListIterator<ServiceType> listIterator() {
         return asList().listIterator();
     }
 
     @Override
-    public ListIterator<T> listIterator(int index) {
+    public ListIterator<ServiceType> listIterator(int index) {
         return asList().listIterator(index);
     }
 
     @Override
-    public List<T> subList(int fromIndex, int toIndex) {
+    public List<ServiceType> subList(int fromIndex, int toIndex) {
         return asList().subList(fromIndex, toIndex);
     }
 
     @SuppressWarnings("unchecked")
-    private List<T> asList() {
-        return Arrays.asList((T[]) tracker.getServices());
+    private List<ServiceType> asList() {
+        return Arrays.asList((ServiceType[]) tracker.getServices());
     }
 }
