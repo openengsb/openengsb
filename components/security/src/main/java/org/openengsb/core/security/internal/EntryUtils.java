@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtilsExtended;
 import org.openengsb.core.security.internal.model.BeanData;
 import org.openengsb.core.security.internal.model.EntryElement;
@@ -165,13 +164,13 @@ public final class EntryUtils {
         return (T) BeanUtilsExtended.createBeanFromAttributeMap(permType, attributeValues);
     }
 
-    private static Class<? extends Permission> findPermissionClass(String name)
+    private static Class<?> findPermissionClass(String name)
         throws ClassNotFoundException {
         Filter filter =
             utilsService
                 .makeFilter(ClassProvider.class, String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, name));
         ClassProvider provider = utilsService.getOsgiServiceProxy(filter, ClassProvider.class);
-        return (Class<? extends Permission>) provider.loadClass(name);
+        return provider.loadClass(name);
     }
 
     private static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {

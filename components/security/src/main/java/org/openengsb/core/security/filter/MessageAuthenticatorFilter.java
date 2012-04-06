@@ -66,27 +66,34 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
-
         String className = input.getCredentials().getClassName();
-        Filter filter =
-            utilsService.makeFilter(ClassProvider.class,
-                String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, className));
-        Class<? extends Credentials> credentialType;
-        try {
-            credentialType =
-                (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
-                    .loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new FilterException(e);
-        }
+        Class<? extends Credentials> credentialType = loadCredentialType(className);
         try {
             SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
         } catch (AuthenticationException e) {
             throw new FilterException(e);
         }
-
         LOGGER.debug("authenticated");
         return (SecureResponse) next.filter(input, metaData);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Credentials> loadCredentialType(String className) {
+        Filter filter =
+            utilsService.makeFilter(ClassProvider.class,
+                String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, className));
+        Class<?> loadedType;
+        try {
+            loadedType = utilsService.getOsgiServiceProxy(filter, ClassProvider.class).loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new FilterException(e);
+        }
+        if (!Credentials.class.isAssignableFrom(loadedType)) {
+            throw new IllegalStateException(
+                "There was a class in the permissions-context that is not derived from Credentials: "
+                        + loadedType.getName());
+        }
+        return (Class<? extends Credentials>) loadedType;
     }
 
     @Override
