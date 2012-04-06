@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -84,6 +85,7 @@ import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
@@ -248,7 +250,9 @@ public class TestClientTest extends AbstractUITest {
         for (MethodId mid : choices) {
             choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
         }
-        Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
+        List<Method> list = Arrays.asList(TestInterface.class.getMethods());
+        Collections.sort(list, new MethodComparator());
+        Assert.assertEquals(list, choiceMethods);
     }
 
     @Test
