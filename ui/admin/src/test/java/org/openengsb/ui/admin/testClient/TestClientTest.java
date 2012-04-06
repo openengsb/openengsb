@@ -590,7 +590,6 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
@@ -598,9 +597,8 @@ public class TestClientTest extends AbstractUITest {
         List<String> availableInTree = new ArrayList<String>();
         List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
 
-        int count =
-            ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                .getDefaultModelObject()).size();
+        Component domainsComponent = tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains");
+        int count = ((ArrayList<?>) domainsComponent.getDefaultModelObject()).size();
         // get all domains
         for (int i = 0; i < count; i++) {
             Component label = tester
