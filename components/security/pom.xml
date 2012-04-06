@@ -117,6 +117,7 @@
           <instructions>
             <Bundle-Activator>org.openengsb.core.security.internal.SecurityBundleActivator</Bundle-Activator>
             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>

@@ -155,7 +155,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.PROVIDED_CLASSES_KEY, Password.class.getName());
-        props.put(Constants.DELEGATION_CONTEXT, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_CREDENTIALS);
+        props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_CREDENTIALS);
         registerService(new ClassProviderImpl(bundle, Sets.newHashSet(Password.class.getName())), props,
             ClassProvider.class);
     }
