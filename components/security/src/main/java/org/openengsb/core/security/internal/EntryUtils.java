@@ -25,12 +25,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtilsExtended;
 import org.openengsb.core.security.internal.model.BeanData;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.Constants;
 import org.osgi.framework.Filter;
 import org.springframework.util.ReflectionUtils;
 
@@ -166,9 +167,11 @@ public final class EntryUtils {
 
     private static Class<? extends Permission> findPermissionClass(String name)
         throws ClassNotFoundException {
-        Filter filter = utilsService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
-        PermissionProvider provider = utilsService.getOsgiServiceProxy(filter, PermissionProvider.class);
-        return provider.getPermissionClass(name);
+        Filter filter =
+            utilsService
+                .makeFilter(ClassProvider.class, String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, name));
+        ClassProvider provider = utilsService.getOsgiServiceProxy(filter, ClassProvider.class);
+        return (Class<? extends Permission>) provider.loadClass(name);
     }
 
     private static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {

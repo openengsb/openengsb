@@ -16,8 +16,11 @@
  */
 package org.openengsb.connector.serviceacl;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide(Constants.DELEGATION_CONTEXT_PERMISSIONS)
 public class ServicePermission implements Permission {
 
     private String type;

@@ -40,8 +40,6 @@ import javax.persistence.Persistence;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.AbstractPermissionProvider;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -49,8 +47,12 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 
 public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
@@ -143,10 +145,11 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
                 new Class<?>[]{ UserDataManager.class }, invocationHandler);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("permissionClass", TestPermission.class.getName());
-        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
-        };
-        registerService(permissionProvider, props, PermissionProvider.class);
+        props.put(Constants.PROVIDED_CLASSES_KEY, TestPermission.class.getName());
+        props.put(Constants.DELEGATION_CONTEXT, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_PERMISSIONS);
+        ClassProvider permissionProvider =
+            new ClassProviderImpl(bundle, Sets.newHashSet(TestPermission.class.getName()));
+        registerService(permissionProvider, props, ClassProvider.class);
 
     }
 

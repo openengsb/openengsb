@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
-import org.openengsb.connector.wicketacl.internal.WicketPermissionProvider;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -45,7 +44,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
@@ -66,12 +64,15 @@ import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
@@ -145,16 +146,20 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("userManager", userManager);
 
         Dictionary<String, Object> wicketProviderProps = new Hashtable<String, Object>();
-        wicketProviderProps.put("permissionClass", WicketPermission.class.getName());
-        WicketPermissionProvider wicketPermissionProvider = new WicketPermissionProvider();
-        registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
+        wicketProviderProps.put(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_KEY,
+            WicketPermission.class.getName());
+        wicketProviderProps.put(org.openengsb.labs.delegation.service.Constants.DELEGATION_CONTEXT,
+            Constants.DELEGATION_CONTEXT_PERMISSIONS);
+        ClassProvider wicketPermissionProvider =
+            new ClassProviderImpl(bundle, Sets.newHashSet(WicketPermission.class.getName()));
+        registerService(wicketPermissionProvider, wicketProviderProps, ClassProvider.class);
 
         SecurityAttributeProvider attributeStore = new SecurityAttributeProviderImpl();
         context.putBean("attributeStore", attributeStore);
         context.putBean("attributeProviders", Collections.singletonList(attributeStore));
 
         context.putBean("domainProviders", makeServiceList(DomainProvider.class));
-        context.putBean("permissionProviders", makeServiceList(PermissionProvider.class));
+        context.putBean("permissionProviders", makeServiceList(ClassProvider.class));
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {

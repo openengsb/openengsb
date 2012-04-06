@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.security.PermissionProvider;
+import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -58,7 +58,7 @@ public abstract class PermissionEditorPanel extends Panel {
     private UserInput user;
 
     @PaxWicketBean(name = "permissionProviders")
-    private List<PermissionProvider> providers;
+    private List<ClassProvider> providers;
 
     public PermissionEditorPanel(String id, UserInput user) {
         super(id);
@@ -82,8 +82,8 @@ public abstract class PermissionEditorPanel extends Panel {
                 @Override
                 protected List<Class<?>> load() {
                     List<Class<?>> result = Lists.newArrayList();
-                    for (PermissionProvider p : providers) {
-                        result.addAll(p.getSupportedPermissionClasses());
+                    for (ClassProvider p : providers) {
+                        result.addAll(p.listClasses());
                     }
                     return result;
                 }

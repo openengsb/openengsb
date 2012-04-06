@@ -19,7 +19,8 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" xmlns:wicket="http://www.ops4j.org/schema/wicket">
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" xmlns:wicket="http://www.ops4j.org/schema/wicket"
+>
 
   <service interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
     <service-properties>
@@ -32,15 +33,17 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-  
-   <service ref="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
+
+  <service ref="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="webtaskbox" />
     </service-properties>
   </service>
 
-  <bean id="webtaskboxService" class="org.openengsb.ui.common.taskbox.WebTaskboxServiceImpl" init-method="init">
+  <bean id="webtaskboxService" class="org.openengsb.ui.common.taskbox.WebTaskboxServiceImpl"
+    init-method="init"
+  >
     <property name="taskboxService" ref="taskboxService" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -48,16 +51,19 @@
 
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)" />
+  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain"
+    filter="(location.root=authorization-root)" />
   <reference-list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
-  
+  <reference-list id="permissionProviders" interface="org.openengsb.labs.delegation.service.ClassProvider"
+    filter="(delegationContext=permissions)" />
+
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
-  
+
   <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
     filter="(location.root=authentication-root)" />
-  
+
   <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
     <property name="authenticator">
       <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
@@ -65,6 +71,6 @@
       </bean>
     </property>
   </bean>
-  
+
 </blueprint>
 
