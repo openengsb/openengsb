@@ -25,7 +25,7 @@
 
   <bean id="connectorJPA" class="org.openengsb.persistence.connector.jpabackend.ConnectorJPAPersistenceBackendService">
     <tx:transaction method="*" value="Required" />
-    <jpa:context property="entityManager" unitname="connector" />
+    <jpa:context property="entityManager" unitname="openengsb-connector" />
   </bean>
 
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
