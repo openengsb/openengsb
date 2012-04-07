@@ -145,11 +145,11 @@ public class EDBIT extends AbstractExamTestHelper {
         
         commit = edbService.createCommit("test", "test");
         
-        EDBObject obj = edbService.getObject("newtestobject");
+        EDBObject obj = edbService.getObject("newtestobject2");
         obj.put(EDBConstants.MODEL_VERSION, 0);
         obj.put("test", "test");
 
-        commit.update(testObject);
+        commit.update(obj);
         edbService.commit(commit);
     }
 
