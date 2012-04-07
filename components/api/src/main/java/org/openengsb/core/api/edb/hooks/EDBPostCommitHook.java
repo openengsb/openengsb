@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api.edb.hooks;
 
-import org.openengsb.core.api.ekb.EKBCommit;
+import org.openengsb.core.api.edb.EDBCommit;
 
 /**
  * Defines the functions of the post-commit hook for the EDB component. All services in the OSGi environment providing
@@ -28,5 +28,5 @@ public interface EDBPostCommitHook {
     /**
      * This function will be called after a successful commit in the EDB.
      */
-    void onPostCommit(EKBCommit commit);
+    void onPostCommit(EDBCommit commit);
 }

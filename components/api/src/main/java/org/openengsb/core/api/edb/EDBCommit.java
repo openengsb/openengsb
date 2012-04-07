@@ -28,9 +28,14 @@ import java.util.List;
  */
 public interface EDBCommit {
     /**
-     * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
+     * Add an object to be inserted. The object's timestamp must match the commit's timestamp.
      */
-    void add(EDBObject obj) throws EDBException;
+    void insert(EDBObject obj) throws EDBException;
+    
+    /**
+     * Add an object to be updated. The object's timestamp must match the commit's timestamp.
+     */
+    void update(EDBObject obj) throws EDBException;
 
     /**
      * Delete an object that already exists.
@@ -43,7 +48,17 @@ public interface EDBCommit {
     List<String> getOIDs();
 
     /**
-     * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
+     * For a created commit: retrieve the list of all objects that have been inserted to this commit.
+     */
+    List<EDBObject> getInserts();
+    
+    /**
+     * For a created commit: retrieve the list of all objects that have been updated to this commit.
+     */
+    List<EDBObject> getUpdates();
+    
+    /**
+     * For a created commit: retrieve the list of all objects that should be inserted or updated with this commit.
      */
     List<EDBObject> getObjects();
 

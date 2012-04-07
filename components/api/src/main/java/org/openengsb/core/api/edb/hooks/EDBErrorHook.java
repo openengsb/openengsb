@@ -17,8 +17,8 @@
 
 package org.openengsb.core.api.edb.hooks;
 
+import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.ekb.EKBCommit;
 
 /**
  * Defines the functions of the error hook for the EDB component. All services in the OSGi environment providing this
@@ -28,9 +28,9 @@ public interface EDBErrorHook {
 
     /**
      * This function will be called if any error happens in the EDB commit procedure. This function can define the next
-     * steps happening in the EDB in that way: *) it returns an EKBCommit object: In this case the EDB try to commit the
-     * returned EKBCommit instead of the error-prone one. *) it throws an exception: the EDB throws the new exception
+     * steps happening in the EDB in that way: *) it returns an EDBCommit object: In this case the EDB try to commit the
+     * returned EDBCommit instead of the error-prone one. *) it throws an exception: the EDB throws the new exception
      * instead of the old one. *) it returns null: The EDB ignore the result of this ErrorHook.
      */
-    EKBCommit onError(EKBCommit commit, Exception cause) throws EDBException;
+    EDBCommit onError(EDBCommit commit, Exception cause) throws EDBException;
 }
