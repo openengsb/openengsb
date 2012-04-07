@@ -35,6 +35,10 @@ import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.hooks.EDBErrorHook;
+import org.openengsb.core.api.edb.hooks.EDBPostCommitHook;
+import org.openengsb.core.api.edb.hooks.EDBPreCommitHook;
+import org.openengsb.core.api.edb.hooks.EDBStartCommitHook;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.openengsb.core.security.SecurityContext;
@@ -48,6 +52,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JPADao dao;
+    
+    private List<EDBErrorHook> errorHooks;
+    private List<EDBPostCommitHook> postCommitHooks;
+    private List<EDBPreCommitHook> preCommitHooks;
+    private List<EDBStartCommitHook> startCommitHooks;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -475,5 +484,21 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
                         + entry.getKey());
             }
         }
+    }
+    
+    public void setErrorHooks(List<EDBErrorHook> errorHooks) {
+        this.errorHooks = errorHooks;
+    }
+
+    public void setPostCommitHooks(List<EDBPostCommitHook> postCommitHooks) {
+        this.postCommitHooks = postCommitHooks;
+    }
+
+    public void setPreCommitHooks(List<EDBPreCommitHook> preCommitHooks) {
+        this.preCommitHooks = preCommitHooks;
+    }
+
+    public void setStartCommitHooks(List<EDBStartCommitHook> startCommitHooks) {
+        this.startCommitHooks = startCommitHooks;
     }
 }
