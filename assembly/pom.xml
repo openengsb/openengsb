@@ -199,8 +199,10 @@
                 <!-- OpenEngSB Administration -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
+                <feature>openengsb-domain-example</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
+                <feature>openengsb-connector-example</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
