@@ -17,11 +17,13 @@
 
 package org.openengsb.core.edb.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.openengsb.core.api.edb.EDBCheckException;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBException;
@@ -32,65 +34,113 @@ import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is the standard pre-commit hook for the EDB. It does the basic checking algorithms, fills and updates the
+ * model version field and checks for conflicts. If any error occurs, the onPreCommit function throws an
+ * EDBCheckException.
+ */
 public class CheckPreCommitHook implements EDBPreCommitHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPreCommitHook.class);
     private JPADao dao;
-    
+
     public CheckPreCommitHook() {
-        
+
     }
-    
+
     public CheckPreCommitHook(EntityManager entityManager) {
         setEntityManager(entityManager);
     }
 
     @Override
     public void onPreCommit(EDBCommit commit) throws EDBException {
+        List<EDBObject> insertFails = null;
+        List<EDBObject> updateFails = null;
+        List<String> deleteFails = null;
+
         if (commit.getInserts() != null) {
-            checkInserts(commit.getInserts());
+            insertFails = checkInserts(commit.getInserts());
         }
         if (commit.getDeletions() != null) {
-            checkDeletions(commit.getDeletions());
+            deleteFails = checkDeletions(commit.getDeletions());
         }
         if (commit.getUpdates() != null) {
-            checkUpdates(commit.getUpdates());
+            updateFails = checkUpdates(commit.getUpdates());
+        }
+        testIfExceptionNeeded(insertFails, updateFails, deleteFails);
+    }
+
+    /**
+     * Checks all lists with failed objects if there is the need to throw an EDBCheckException. If the need is given, it
+     * creates this exception and throws it.
+     */
+    private void testIfExceptionNeeded(List<EDBObject> insertFails, List<EDBObject> updateFails,
+            List<String> deleteFails) throws EDBCheckException {
+        StringBuilder builder = new StringBuilder();
+
+        for (EDBObject insert : insertFails) {
+            builder.append("Object with the oid ").append(insert.getOID()).append(" exists already. ");
+        }
+        for (EDBObject update : updateFails) {
+            builder.append("Found a conflict for the oid ").append(update.getOID()).append(". ");
+        }
+        for (String delete : deleteFails) {
+            builder.append("Object with the oid ").append(delete).append(" doesn't exists/is deleted. ");
+        }
+        if (builder.length() != 0) {
+            EDBCheckException checkException = new EDBCheckException(builder.toString());
+            checkException.setFailedInserts(insertFails);
+            checkException.setFailedUpdates(updateFails);
+            checkException.setFailedDeletes(deleteFails);
+            throw checkException;
         }
     }
-    
+
     /**
-     * Checks if all oid's of the given EDBObjects are not existing yet. If they do, an EDBException is thrown.
+     * Checks if all oid's of the given EDBObjects are not existing yet. Returns a list of objects where the EDBObject
+     * already exists.
      */
-    private void checkInserts(List<EDBObject> inserts) throws EDBException {
+    private List<EDBObject> checkInserts(List<EDBObject> inserts) {
+        List<EDBObject> failedObjects = new ArrayList<EDBObject>();
         for (EDBObject insert : inserts) {
             String oid = insert.getOID();
             if (checkIfActiveOidExisting(oid)) {
-                throw new EDBException("The object under the oid " + oid + " is already existing");
+                failedObjects.add(insert);
             } else {
                 insert.put(EDBConstants.MODEL_VERSION, 1);
             }
         }
+        return failedObjects;
     }
 
     /**
-     * Checks if all oid's of the given EDBObjects are existing. If they don't exist, an EDBException is thrown.
+     * Checks if all oid's of the given EDBObjects are existing. Returns a list of objects where the EDBObject doesn't
+     * exist.
      */
-    private void checkDeletions(List<String> deletes) throws EDBException {
+    private List<String> checkDeletions(List<String> deletes) {
+        List<String> failedObjects = new ArrayList<String>();
         for (String delete : deletes) {
             if (!checkIfActiveOidExisting(delete)) {
-                throw new EDBException("The object under the oid " + delete + " is not existing or is already deleted");
+                failedObjects.add(delete);
             }
         }
+        return failedObjects;
     }
 
     /**
-     * Checks every update for a potential conflict. If a conflict is found, an EDBException is thrown.
+     * Checks every update for a potential conflict. Returns a list of objects where a conflict has been found.
      */
-    private void checkUpdates(List<EDBObject> updates) throws EDBException {
+    private List<EDBObject> checkUpdates(List<EDBObject> updates) throws EDBException {
+        List<EDBObject> failedObjects = new ArrayList<EDBObject>();
         for (EDBObject update : updates) {
-            Integer modelVersion = investigateVersionAndCheckForConflict(update);
-            modelVersion++;
-            update.put(EDBConstants.MODEL_VERSION, modelVersion);
+            try {
+                Integer modelVersion = investigateVersionAndCheckForConflict(update);
+                modelVersion++;
+                update.put(EDBConstants.MODEL_VERSION, modelVersion);
+            } catch (EDBException e) {
+                failedObjects.add(update);
+            }
         }
+        return failedObjects;
     }
 
     /**
@@ -139,7 +189,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             }
         }
     }
-    
+
     /**
      * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
      */
@@ -154,21 +204,23 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         }
         return false;
     }
-    
+
+    /**
+     * Loads the EDBObject for the given oid.
+     */
     private EDBObject getObject(String oid) throws EDBException {
         JPAObject temp = dao.getJPAObject(oid);
         return temp.getObject();
     }
-    
+
     /**
      * Loads the actual version of a model with the given oid.
      */
     private Integer getVersionOfOid(String oid) throws EDBException {
         return dao.getVersionOfOid(oid);
     }
-    
+
     public void setEntityManager(EntityManager entityManager) {
         dao = new DefaultJPADao(entityManager);
     }
-
 }
