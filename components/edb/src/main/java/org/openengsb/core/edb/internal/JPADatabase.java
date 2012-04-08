@@ -106,7 +106,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
 
         try {
-            performUtxAction(UTXACTION.BEGIN);
+            if (utx != null) {
+                utx.begin();
+            }
             commit.setCommitted(true);
             LOGGER.debug("persisting JPACommit");
             entityManager.persist(commit);
@@ -120,10 +122,14 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
                 entityManager.persist(j);
             }
 
-            performUtxAction(UTXACTION.COMMIT);
+            if (utx != null) {
+                utx.commit();
+            }
         } catch (Exception ex) {
             try {
-                performUtxAction(UTXACTION.ROLLBACK);
+                if (utx != null) {
+                    utx.rollback();
+                }
             } catch (Exception e) {
                 throw new EDBException("Failed to rollback transaction to DB", e);
             }
@@ -218,36 +224,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             }
         }
     }
-
-    /**
-     * Helper function that performs a UTXACTION if the utx is not null
-     */
-    private void performUtxAction(UTXACTION action) {
-        if (utx == null) {
-            return;
-        }
-        switch (action) {
-            case BEGIN:
-                utx.begin();
-                break;
-            case COMMIT:
-                utx.commit();
-                break;
-            case ROLLBACK:
-                utx.rollback();
-                break;
-            default:
-                LOGGER.warn("unknown Transaction action: {}", action.toString());
-                break;
-        }
-    }
-
-    /**
-     * Enumeration for categorizing the transaction actions.
-     */
-    private enum UTXACTION {
-        BEGIN, COMMIT, ROLLBACK
-    };
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
