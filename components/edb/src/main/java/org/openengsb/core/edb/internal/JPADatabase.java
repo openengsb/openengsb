@@ -82,50 +82,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-
-        if (startCommitHooks != null) {
-            for (EDBStartCommitHook hook : startCommitHooks) {
-                try {
-                    hook.onStartCommit(commit);
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                }
-            }
-        }
-
-        EDBException exception = null;
-        if (preCommitHooks != null) {
-            for (EDBPreCommitHook hook : preCommitHooks) {
-                try {
-                    hook.onPreCommit(commit);
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                } catch (EDBException e) {
-                    exception = e;
-                    break;
-                }
-            }
-        }
-
+        runStartCommitHooks(commit);
+        EDBException exception = runPreCommitHooks(commit);
         if (exception != null) {
-            if (errorHooks != null) {
-                for (EDBErrorHook hook : errorHooks) {
-                    try {
-                        EDBCommit newCommit = hook.onError(commit, exception);
-                        if (newCommit != null) {
-                            return commit(newCommit);
-                        }
-                    } catch (ServiceUnavailableException e) {
-                        // Ignore
-                    } catch (EDBException e) {
-                        exception = e;
-                        break;
-                    }
-                }
-            }
-            throw exception;
+            return runErrorHooks(commit, exception);
         }
+        Long timestamp = performCommit(commit);
+        runEDBPostHooks(commit);
 
+        return timestamp;
+    }
+
+    /**
+     * Does the actual commit work (JPA related actions) and returns the timestamp when the commit was done. Throws an
+     * EDBException if an error occurs.
+     */
+    private Long performCommit(EDBCommit commit) throws EDBException {
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
         for (EDBObject update : commit.getObjects()) {
@@ -157,22 +129,98 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             }
             throw new EDBException("Failed to commit transaction to DB", ex);
         }
+        return timestamp;
+    }
 
+    /**
+     * Runs all registered start commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions.
+     */
+    private void runStartCommitHooks(EDBCommit commit) {
+        if (startCommitHooks != null) {
+            for (EDBStartCommitHook hook : startCommitHooks) {
+                try {
+                    hook.onStartCommit(commit);
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBStartCommitHook", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Runs all registered pre commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function returns this
+     * exception.
+     */
+    private EDBException runPreCommitHooks(EDBCommit commit) {
+        EDBException exception = null;
+        if (preCommitHooks != null) {
+            for (EDBPreCommitHook hook : preCommitHooks) {
+                try {
+                    hook.onPreCommit(commit);
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (EDBException e) {
+                    exception = e;
+                    break;
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBPreCommitHook", e);
+                }
+            }
+        }
+        return exception;
+    }
+
+    /**
+     * Runs all registered error hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except for
+     * ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function overrides the cause of
+     * the error with the new Exception. If an error hook returns a new EDBCommit, the EDB tries to persist this commit
+     * instead.
+     */
+    private Long runErrorHooks(EDBCommit commit, EDBException exception) throws EDBException {
+        if (errorHooks != null) {
+            for (EDBErrorHook hook : errorHooks) {
+                try {
+                    EDBCommit newCommit = hook.onError(commit, exception);
+                    if (newCommit != null) {
+                        return commit(newCommit);
+                    }
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (EDBException e) {
+                    exception = e;
+                    break;
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBErrorHook", e);
+                }
+            }
+        }
+        throw exception;
+    }
+
+    /**
+     * Runs all registered post commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions.
+     */
+    private void runEDBPostHooks(EDBCommit commit) {
         if (postCommitHooks != null) {
             for (EDBPostCommitHook hook : postCommitHooks) {
                 try {
                     hook.onPostCommit(commit);
                 } catch (ServiceUnavailableException e) {
                     // Ignore
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBPostCommitHook", e);
                 }
             }
         }
-
-        return timestamp;
     }
 
     /**
-     * helper function that performs a UTXACTION if the utx is not null
+     * Helper function that performs a UTXACTION if the utx is not null
      */
     private void performUtxAction(UTXACTION action) {
         if (utx == null) {
@@ -195,7 +243,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     }
 
     /**
-     * enumeration for categorizing the transaction actions.
+     * Enumeration for categorizing the transaction actions.
      */
     private enum UTXACTION {
         BEGIN, COMMIT, ROLLBACK
@@ -419,7 +467,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
         this.commit(commit);
     }
-    
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
         dao = new DefaultJPADao(entityManager);
