@@ -199,7 +199,6 @@
                 <!-- OpenEngSB Administration -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
-                <feature>openengsb-domain-auditing</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
               </features>
