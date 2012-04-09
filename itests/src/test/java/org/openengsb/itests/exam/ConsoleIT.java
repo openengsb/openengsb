@@ -17,7 +17,7 @@
 
 package org.openengsb.itests.exam;
 
-import static org.junit.Assert.assertFalse;
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
@@ -112,18 +112,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
         assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
         assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
         assertTrue(contains(result, "authorization+composite-connector+root-authorizer", "ONLINE"));
-        assertTrue(contains(result, "Example Domain",
-            "This domain is provided as an example for all developers. It should not be used in production."));
-    }
-
-    private void waitForDefaultConnectors() {
-        getOsgiService(AuditingDomain.class);
-        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 15000);
-        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
     }
 
     @Test
@@ -131,10 +122,11 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
         ConnectorDescription connectorDescription = new ConnectorDescription();
         Map<String, String> attributes =
-            Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
+            Maps.newHashMap(
+                ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
         connectorDescription.setAttributes(attributes);
 
-        connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"), 
+        connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"),
             connectorDescription);
 
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -148,13 +140,34 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
-        cs.execute("openengsb:service -f true delete authentication+composite-connector+foo ");
+        cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
         cs.execute("openengsb:service list");
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertFalse(contains(result, "authentication+composite-connector+foo", "ONLINE"));
+        assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+    }
 
+    @Test
+    public void testToExecuteOpenEngSBServiceCreateCommand() throws Exception {
+        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+        PrintStream out = new PrintStream(outputStreamHelper);
+        CommandSession cs = cp.createSession(System.in, out, System.err);
+
+        Bundle b = getInstalledBundle("org.openengsb.framework.console");
+        b.start();
+
+        waitForDefaultConnectors();
+        System.out.println("starting  ");
+        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing " +
+            "id:testID attr:something");
+        cs.execute(executeCommand);
+        cs.close();
+
+        List<String> result = outputStreamHelper.getResult();
+        assertTrue(result.contains("Connector successfully created"));
     }
 
     private boolean contains(List<String> list, String value, String value2) {
@@ -165,5 +178,11 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
             }
         }
         return false;
+    }
+
+    private void waitForDefaultConnectors() {
+        getOsgiService(AuditingDomain.class);
+        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
     }
 }
