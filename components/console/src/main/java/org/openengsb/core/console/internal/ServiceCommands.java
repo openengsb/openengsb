@@ -17,6 +17,11 @@
 
 package org.openengsb.core.console.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
@@ -27,16 +32,25 @@ import org.openengsb.core.console.internal.util.ServicesHelper;
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
 
-    @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
-            required = false, multiValued = false)
-    String arg = null;
-
-    @Argument(index = 1, name = "id", required = false, multiValued = false)
-    String id = null;
+    public static final String VALUE_SEPARATOR = ":";
+    public static final String CONNECTOR_TYPE = "type";
 
     @Option(name = "-f", aliases = {"--force"}, description = "Force the command (true or false) ", required = false,
-            multiValued = false)
-    String force = "false";
+        multiValued = false)
+    private String force = "false";
+
+    @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
+        required = false, multiValued = false)
+    private String arg = null;
+
+    @Argument(index = 1, name = "id", required = false, multiValued = false)
+    private String id = null;
+
+    //attributes for creating a service: has the format:
+    // <CONNECTOR_TYPE> VALUE_SEPARATOR <value> <field1> VALUE_SEPARATOR <value1>
+    // ...without the "<" sign and any whitespace
+    @Argument(index = 2, name = "attributes", required = false, multiValued = true)
+    private List<String> attributes = new ArrayList<String>();
 
     private ServicesHelper serviceHelper;
 
@@ -49,7 +63,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     serviceHelper.listRunningServices();
                     break;
                 case CREATE:
-                    // TODO: see OPENENGSB-2280
+                    serviceHelper.createService(id, option, retrieveAttributes(attributes));
                     break;
                 case UPDATE:
                     // TODO: see OPENENGSB-2282
@@ -62,7 +76,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     break;
             }
         } catch (IllegalArgumentException ex) {
-            System.err.println("Invalid Argument");
+            System.err.println(String.format("An error occurred: %s", ex.getMessage()));
         }
         return null;
     }
@@ -78,6 +92,20 @@ public class ServiceCommands extends OsgiCommandSupport {
         return Boolean.parseBoolean(this.force);
     }
 
+    private Map<String, String> retrieveAttributes(List<String> attributes) {
+        Map<String, String> resultMap = new HashMap<String, String>();
+
+        for (String valueAndFields : attributes) {
+            String[] valueAndField = valueAndFields.split(ServiceCommands.VALUE_SEPARATOR);
+            if (valueAndField.length != 2) {
+                throw new IllegalArgumentException();
+            } else {
+                resultMap.put(valueAndField[0], valueAndField[1]);
+            }
+        }
+        return resultMap;
+    }
+
     public ServicesHelper getServiceHelper() {
         return serviceHelper;
     }
@@ -85,4 +113,6 @@ public class ServiceCommands extends OsgiCommandSupport {
     public void setServiceHelper(ServicesHelper serviceHelper) {
         this.serviceHelper = serviceHelper;
     }
+
+
 }

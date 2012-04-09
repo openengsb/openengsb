@@ -22,6 +22,7 @@ import static org.openengsb.core.console.internal.util.ServiceCommandArguments.D
 import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
 import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.karaf.shell.console.Completer;
@@ -50,8 +51,7 @@ public class ServiceCompleter implements Completer {
                 if (lastCommand == null) {
                     addStandardArguments(delegate);
                 } else {
-                    addIds(delegate);
-                    lastCommand = null;
+                    addCandidates(delegate, lastCommand);
                 }
             } else {
                 lastCommand = ServiceCommandArguments.valueOf(buffer.toUpperCase());
@@ -59,14 +59,15 @@ public class ServiceCompleter implements Completer {
                     case LIST:
                         return delegate.complete(buffer, cursor, candidates);
                     case CREATE:
-                        // TODO: see OPENENGSB-2280
-                        break;
+                        lastCommand = CREATE;
+                        addDomains(candidates);
+                        return new StringsCompleter().complete(buffer, cursor, candidates);
                     case UPDATE:
                         // TODO: see OPENENGSB-2282
                         break;
                     case DELETE:
                         lastCommand = DELETE;
-                        addIds(candidates);
+                        addServiceIds(candidates);
                         return new StringsCompleter().complete(buffer, cursor, candidates);
                     default:
                         break;
@@ -74,13 +75,27 @@ public class ServiceCompleter implements Completer {
             }
         } catch (IllegalArgumentException ex) {
             if (lastCommand != null) {
-                addIds(delegate);
+                addCandidates(delegate, lastCommand);
                 lastCommand = null;
             } else {
                 addStandardArguments(delegate);
             }
         }
         return delegate.complete(buffer, cursor, candidates);
+    }
+
+    private void addCandidates(StringsCompleter delegate, ServiceCommandArguments lastCommand) {
+        switch (lastCommand) {
+            case DELETE:
+                addServiceIds(delegate.getStrings());
+                break;
+            case CREATE:
+            case UPDATE:
+                addDomains(delegate.getStrings());
+                break;
+            default:
+                break;
+        }
     }
 
     private void addStandardArguments(StringsCompleter delegate) {
@@ -90,11 +105,11 @@ public class ServiceCompleter implements Completer {
         delegate.getStrings().add(DELETE.toString().toLowerCase());
     }
 
-    private void addIds(StringsCompleter delegate) {
-        delegate.getStrings().addAll(servicesHelper.getRunningServiceIds());
+    private void addDomains(Collection<String> strings) {
+        strings.addAll(servicesHelper.getDomainProviderNames());
     }
 
-    private void addIds(List<String> strings) {
+    private void addServiceIds(Collection<String> strings) {
         strings.addAll(servicesHelper.getRunningServiceIds());
     }
 }
