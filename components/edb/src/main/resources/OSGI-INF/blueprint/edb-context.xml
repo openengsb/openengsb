@@ -29,7 +29,7 @@
     <property name="errorHooks" ref="errorHooks" />
     <property name="postCommitHooks" ref="postCommitHooks" />
     <property name="preCommitHooks" ref="preCommitHooks" />
-    <property name="startCommitHooks" ref="startCommitHooks" />
+    <property name="beginCommitHooks" ref="beginCommitHooks" />
   </bean>
   
   <bean id="preCommitHook" class="org.openengsb.core.edb.internal.CheckPreCommitHook">
@@ -47,6 +47,6 @@
   <reference-list id="errorHooks" interface="org.openengsb.core.api.edb.hooks.EDBErrorHook" availability="optional" />
   <reference-list id="postCommitHooks" interface="org.openengsb.core.api.edb.hooks.EDBPostCommitHook" availability="optional"/>
   <reference-list id="preCommitHooks" interface="org.openengsb.core.api.edb.hooks.EDBPreCommitHook" availability="optional"/>
-  <reference-list id="startCommitHooks" interface="org.openengsb.core.api.edb.hooks.EDBStartCommitHook" availability="optional"/>
+  <reference-list id="beginCommitHooks" interface="org.openengsb.core.api.edb.hooks.EDBBeginCommitHook" availability="optional"/>
 
 </blueprint>

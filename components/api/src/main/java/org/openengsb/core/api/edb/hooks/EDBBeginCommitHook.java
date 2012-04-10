@@ -21,11 +21,11 @@ import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 
 /**
- * Defines the functions of the start-commit hook for the EDB component. All services in the OSGi environment providing
+ * Defines the functions of the begin-commit hook for the EDB component. All services in the OSGi environment providing
  * this interface which are exported by any bundle, will be called when the EDB gets an EDBCommit to persist. It is the
  * first hook that is called in the commit procedure.
  */
-public interface EDBStartCommitHook {
+public interface EDBBeginCommitHook {
 
     /**
      * This function is called when the EDB gets an EDBCommit object to persist and before the pre-commit hook is

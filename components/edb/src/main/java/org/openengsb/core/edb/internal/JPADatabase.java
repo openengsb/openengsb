@@ -30,10 +30,10 @@ import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.hooks.EDBBeginCommitHook;
 import org.openengsb.core.api.edb.hooks.EDBErrorHook;
 import org.openengsb.core.api.edb.hooks.EDBPostCommitHook;
 import org.openengsb.core.api.edb.hooks.EDBPreCommitHook;
-import org.openengsb.core.api.edb.hooks.EDBStartCommitHook;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.openengsb.core.security.SecurityContext;
@@ -50,7 +50,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private List<EDBErrorHook> errorHooks;
     private List<EDBPostCommitHook> postCommitHooks;
     private List<EDBPreCommitHook> preCommitHooks;
-    private List<EDBStartCommitHook> startCommitHooks;
+    private List<EDBBeginCommitHook> beginCommitHooks;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -82,7 +82,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-        runStartCommitHooks(commit);
+        runBeginCommitHooks(commit);
         EDBException exception = runPreCommitHooks(commit);
         if (exception != null) {
             return runErrorHooks(commit, exception);
@@ -139,18 +139,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     }
 
     /**
-     * Runs all registered start commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * Runs all registered begin commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
      * for ServiceUnavailableExceptions.
      */
-    private void runStartCommitHooks(EDBCommit commit) {
-        if (startCommitHooks != null) {
-            for (EDBStartCommitHook hook : startCommitHooks) {
+    private void runBeginCommitHooks(EDBCommit commit) {
+        if (beginCommitHooks != null) {
+            for (EDBBeginCommitHook hook : beginCommitHooks) {
                 try {
                     hook.onStartCommit(commit);
                 } catch (ServiceUnavailableException e) {
                     // Ignore
                 } catch (Exception e) {
-                    LOGGER.error("Error while performing EDBStartCommitHook", e);
+                    LOGGER.error("Error while performing EDBBeginCommitHook", e);
                 }
             }
         }
@@ -461,7 +461,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         this.preCommitHooks = preCommitHooks;
     }
 
-    public void setStartCommitHooks(List<EDBStartCommitHook> startCommitHooks) {
-        this.startCommitHooks = startCommitHooks;
+    public void setBeginCommitHooks(List<EDBBeginCommitHook> beginCommitHooks) {
+        this.beginCommitHooks = beginCommitHooks;
     }
 }
