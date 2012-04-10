@@ -140,15 +140,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     /**
      * Runs all registered begin commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
-     * for ServiceUnavailableExceptions.
+     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, it is thrown and so returned to
+     * the calling instance.
      */
-    private void runBeginCommitHooks(EDBCommit commit) {
+    private void runBeginCommitHooks(EDBCommit commit) throws EDBException {
         if (beginCommitHooks != null) {
             for (EDBBeginCommitHook hook : beginCommitHooks) {
                 try {
                     hook.onStartCommit(commit);
                 } catch (ServiceUnavailableException e) {
                     // Ignore
+                } catch (EDBException e) {
+                    throw e;
                 } catch (Exception e) {
                     LOGGER.error("Error while performing EDBBeginCommitHook", e);
                 }
