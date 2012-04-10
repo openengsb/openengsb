@@ -26,7 +26,8 @@ import org.openengsb.core.api.edb.EDBCommit;
 public interface EDBPostCommitHook {
 
     /**
-     * This function will be called after a successful commit in the EDB.
+     * This function will be called after a successful commit in the EDB. Every exception gets caught, logged and
+     * ignored.
      */
     void onPostCommit(EDBCommit commit);
 }

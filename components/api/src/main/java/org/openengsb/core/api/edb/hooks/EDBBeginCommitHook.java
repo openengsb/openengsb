@@ -24,12 +24,16 @@ import org.openengsb.core.api.edb.EDBException;
  * Defines the functions of the begin-commit hook for the EDB component. All services in the OSGi environment providing
  * this interface which are exported by any bundle, will be called when the EDB gets an EDBCommit to persist. It is the
  * first hook that is called in the commit procedure.
+ * 
+ * Normally this hook is used to check if the EDBCommit is valid (e.g. the authenticated user is allowed to do the
+ * commit).
  */
 public interface EDBBeginCommitHook {
 
     /**
      * This function is called when the EDB gets an EDBCommit object to persist and before the pre-commit hook is
-     * called. If this method throws an exception, it is directly returned to the calling instance.
+     * called. If this method throws an EDBEexception, it is directly returned to the calling instance. Every other
+     * exception gets caught, logged and ignored.
      */
     void onStartCommit(EDBCommit commit) throws EDBException;
 }

@@ -23,13 +23,16 @@ import org.openengsb.core.api.edb.EDBException;
 /**
  * Defines the functions of the pre-commit hook for the EDB component. All services in the OSGi environment providing
  * this interface which are exported by any bundle, will be called before the EDB tries to run the commit but after the
- * start commit hooks are passed.
+ * begin commit hooks are passed.
+ * 
+ * Normally this hook is used to extend and adapt the EDBCommit (and with it the elements of the EDBCommit) if needed.
  */
 public interface EDBPreCommitHook {
 
     /**
-     * This function is called before the EDB tries to persist the changes of the EDBCommit. If this method throws an
-     * exception, the error hook get this exception.
+     * This function is called before the EDB tries to persist the changes of the EDBCommit. If this methods throws an
+     * EDBException, it is forwarded to the error hooks as cause for the error. Every other exception gets caught,
+     * logged and ignored.
      */
     void onPreCommit(EDBCommit commit) throws EDBException;
 }

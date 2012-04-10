@@ -28,9 +28,13 @@ public interface EDBErrorHook {
 
     /**
      * This function will be called if any error happens in the EDB commit procedure. This function can define the next
-     * steps happening in the EDB in that way: *) it returns an EDBCommit object: In this case the EDB try to commit the
-     * returned EDBCommit instead of the error-prone one. *) it throws an exception: the EDB throws the new exception
-     * instead of the old one. *) it returns null: The EDB ignore the result of this ErrorHook.
+     * steps happening in the EDB in that way: 
+     * - it returns an EDBCommit object: In this case the EDB try to commit the returned EDBCommit 
+     *   instead of the error-prone one. 
+     * - it throws an EDBException: the EDB throws the new EDBException instead of the old one. 
+     * - it returns null: The EDB ignore the result of this ErrorHook.
+     * 
+     * If it throws any other exception, it gets caught, logged and ignored.
      */
     EDBCommit onError(EDBCommit commit, Exception cause) throws EDBException;
 }
