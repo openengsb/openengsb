@@ -335,5 +335,10 @@ public class ModelUtilsTest {
         assertThat(compare2, is(false));
         assertThat(compare3, is(true));
     }
-
+    
+    @Test
+    public void testDefaultStringValueWorks_shouldWork() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        assertThat(model.getTest(), is("teststring"));
+    }
 }

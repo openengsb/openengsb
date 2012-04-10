@@ -22,58 +22,60 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.ekb.annotations.DefaultStringValue;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
  * little interface for testing the proxy functionality of the EKBServiceTest
  */
 interface TestModel extends OpenEngSBModel {
-        
+
     void setId(String id);
-    
+
     String getId();
-    
+
     void setDate(Date date);
-    
+
     Date getDate();
-    
+
     String getName();
-    
+
     void setName(String name);
-    
+
     void testMethod();
-    
+
     void setTest(String test);
-    
+
+    @DefaultStringValue(value = "teststring")
     String getTest();
-    
+
     void setEnumeration(ENUM enumeration);
-    
+
     ENUM getEnumeration();
-    
+
     void setList(List<String> list);
-    
+
     List<String> getList();
 
     void setSub(SubModel sub);
-    
+
     SubModel getSub();
-    
+
     void setSubs(List<SubModel> subs);
-    
+
     List<SubModel> getSubs();
-    
+
     void setFile(File file);
-    
+
     File getFile();
-    
+
     Map<String, String> getMap();
-    
+
     void setMap(Map<String, String> map);
 }
 
 enum ENUM {
     A,
-    B,
-    C
+        B,
+        C
 }
