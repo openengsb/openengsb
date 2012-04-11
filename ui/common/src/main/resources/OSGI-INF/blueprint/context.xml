@@ -53,6 +53,8 @@
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
   
+  <reference-list id="permissionProviders" interface="org.openengsb.core.api.security.PermissionProvider" />
+  
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
   
   <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
