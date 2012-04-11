@@ -180,7 +180,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
-        osgiService.doSomething("test");
+        osgiService.doSomethingWithMessage("test");
         assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
 
         remoteConnector.stop();
@@ -254,12 +254,12 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             return "success : " + message;
         }
 
@@ -274,7 +274,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
             response.setResult("successful");
             return response;

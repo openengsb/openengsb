@@ -92,17 +92,17 @@ public abstract class AbstractRuleManagerTest {
             }
 
             @Override
-            public String doSomething(ExampleEnum exampleEnum) {
+            public String doSomethingWithEnum(ExampleEnum exampleEnum) {
                 return null;
             }
 
             @Override
-            public String doSomething(String message) {
+            public String doSomethingWithMessage(String message) {
                 return null;
             }
 
             @Override
-            public ExampleResponseModel doSomething(ExampleRequestModel model) {
+            public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
                 return null;
             }
         };

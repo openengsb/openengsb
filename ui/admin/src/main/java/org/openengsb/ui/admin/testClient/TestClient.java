@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -88,11 +90,15 @@ import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
+import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 @SecurityAttributes({
     @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER"),
@@ -219,7 +225,7 @@ public class TestClient extends BasePage {
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-
+                LOGGER.info("method selected: " + call.getMethod());
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }
@@ -722,6 +728,21 @@ public class TestClient extends BasePage {
     private void populateMethodList() {
         ServiceId service = call.getService();
         List<Method> methods = getServiceMethods(service);
+        Collection<String> methodSignatures = Collections2.transform(methods, new Function<Method, String>() {
+            @Override
+            public String apply(Method input) {
+                Class<?>[] parameterTypes = input.getParameterTypes();
+                String[] parameterTypeNames = new String[parameterTypes.length];
+                for (int i = 0; i < parameterTypeNames.length; i++) {
+                    parameterTypeNames[i] = parameterTypes[i].getSimpleName();
+                }
+                return input.getName() + "(" + StringUtils.join(parameterTypeNames, ", ") + ")";
+            }
+        });
+        LOGGER.info("found {} methods: {}", methods.size());
+        for (String s : methodSignatures) {
+            LOGGER.info("# " + s);
+        }
         List<MethodId> methodChoices = new ArrayList<MethodId>();
         for (Method m : methods) {
             methodChoices.add(new MethodId(m));
@@ -743,7 +764,9 @@ public class TestClient extends BasePage {
         }
         if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
-            return Arrays.asList(connectorInterface.getMethods());
+            List<Method> result = Arrays.asList(connectorInterface.getMethods());
+            Collections.sort(result, new MethodComparator());
+            return result;
         }
         error("No service found for domain: " + connectorInterface.getName());
         submitButton.setEnabled(false);

@@ -109,7 +109,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "    \"classes\": ["
             + "        \"org.openengsb.core.api.model.OpenEngSBModelWrapper\""
             + "    ],"
-            + "    \"methodName\": \"doSomething\","
+            + "    \"methodName\": \"doSomethingWithModel\","
             + "    \"metaData\": {"
             + "        \"serviceId\": \"test\""
             + "    },"

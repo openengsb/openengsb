@@ -122,13 +122,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
         ConnectorDescription connectorDescription = new ConnectorDescription();
         Map<String, String> attributes =
-<<<<<<< HEAD
-            Maps.newHashMap(ImmutableMap.of("compositeStrategy", 
-                    "authentication.provider", "queryString", "(foo=bar)"));
-=======
             Maps.newHashMap(
                 ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
->>>>>>> upstream/master
         connectorDescription.setAttributes(attributes);
 
         connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"),

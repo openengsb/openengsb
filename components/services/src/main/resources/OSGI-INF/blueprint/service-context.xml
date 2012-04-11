@@ -83,15 +83,6 @@
     <property name="utilsService" ref="utilsService" />
   </bean>
 
-  <service interface="org.openengsb.core.api.workflow.WorkflowEditorService">
-    <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl">
-      <property name="configPersistence" ref="workflowConfigPersistence" />
-    </bean>
-  </service>
-
-  <reference id="workflowConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
-    filter="(configuration.id=WORKFLOW)" />
-
   <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
       <property name="serviceManager" ref="connectorManager" />

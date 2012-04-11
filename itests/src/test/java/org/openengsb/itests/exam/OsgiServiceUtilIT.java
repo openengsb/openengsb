@@ -74,12 +74,12 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
@@ -94,7 +94,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 

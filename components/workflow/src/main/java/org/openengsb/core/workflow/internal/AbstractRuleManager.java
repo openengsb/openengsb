@@ -87,6 +87,6 @@ public abstract class AbstractRuleManager implements RuleManager {
 
     @Override
     public String getGlobalType(String name) {
-        return this.listGlobals().get(name);
+        return listGlobals().get(name);
     }
 }

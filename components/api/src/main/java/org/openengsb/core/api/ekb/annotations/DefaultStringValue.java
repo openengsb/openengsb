@@ -15,14 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow;
+package org.openengsb.core.api.ekb.annotations;
 
-import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Converts a Workflow into a format that can be processed by the OpenENGSb Workflow service (e.g. Drools Flow). 
+ * This annotation is used to define default values for string fields of models. Only works on domain models which have
+ * been proxied through the EKB. This annotation should mark the getter method of the field which shall get the default
+ * string value.
  */
-public interface WorkflowConverter {
-
-    String convert(WorkflowRepresentation workflow);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface DefaultStringValue {
+    String value();
 }
