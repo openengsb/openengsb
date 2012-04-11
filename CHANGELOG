@@ -1,3 +1,46 @@
+openengsb-2.4.4 2012-04-11
+--------------------------------------------
+
+The fourth bug-fix release of the OpenEngSB Framework fixes duplicated distribution tags in the
+final assemblies, corrected the README file and enhanced our tests at various places. In
+addition it contains bug fix upgrades of Karaf (2.2.6) and Spring (3.0.7). Both increase
+the stability of this release.
+
+### Details
+
+** Bug
+    * [OPENENGSB-2877] - Duplicated distribution tags
+    * [OPENENGSB-2894] - "further information" link in readme point to invalid location
+    * [OPENENGSB-2916] - TestClientTests should not rely on specific ordering of methods
+    * [OPENENGSB-2918] - endless-loops in itests should timeout at some point
+
+** Library Upgrade
+    * [OPENENGSB-2900] - Upgrade to karaf 2.2.6
+    * [OPENENGSB-2911] - Upgrade to spring 3.0.7.RELEASE
+
+** Task
+    * [OPENENGSB-2858] - Release framework 2.4.4
+
+### Known Issues
+    * [OPENENGSB-1169] - "create wrapped artifacts" section outdated
+    * [OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1568] - License headers are missing in bundle.info
+    * [OPENENGSB-1657] - OpenEngSB crashes when OSGI is loaded as feature dependency
+    * [OPENENGSB-1735] - testHandleCallsParallel fails sometimes
+    * [OPENENGSB-1769] - mvn eclipse:eclipse does not include html-files in build-path of ui-admin and ui-common
+    * [OPENENGSB-1858] - itests fail when opencit is running
+    * [OPENENGSB-1896] - languages are messed up in core-services bundle.properties
+    * [OPENENGSB-1899] - Domain archetype contains reference to openengsb-core-events
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-1976] - Aries transactions/jpa hides parameter annotations
+    * [OPENENGSB-2127] - modifying rulebase disrupts running flows
+    * [OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2187] - ui-admin bundle fails to start when ui-common is redeployed
+    * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2860] - jdk-download-link in documentation is broken
+    * [OPENENGSB-2862] - zip-assembly is corrupt when built using java7
+
+
 openengsb-2.4.3 2012-03-29
 --------------------------------------------
 
