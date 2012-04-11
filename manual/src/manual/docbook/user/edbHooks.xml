@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.edbHooks" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>EDB Hooks</title>
+
+    <para>
+        The EDB is the storage of models of the OpenEngSB project (see the semantic chapter of this manual). 
+        Now we consider the EDB hooks concept. Hooks can be used to dynamically influence the EDB commit procedure.
+    </para>
+
+    <section>
+        <title>Motivation</title>
+        <para>
+            The EDB can be seen as a SCM system for models in the EDB. Like other SCM systems, also the OpenEngSB
+            project supports hooks to interfere the commit procedure of models. So far there are four hook types:
+        </para>
+        <itemizedlist>
+            <listitem>EDBBeginCommitHook</listitem>
+            <listitem>EDBPreCommitHook</listitem>
+            <listitem>EDBPostCommitHook</listitem>
+            <listitem>EDBErrorHook</listitem>
+        </itemizedlist>
+        <para>
+            They are realized as a dynamically created list of hook services which are queried in the EDB. More
+            about this in the usage section. The four types get explained in more detail in the following sections. 
+        </para>
+    </section>
+    <section>
+        <title>EDBBeginCommitHook</title>
+        <para>
+            The EDBBeginCommitHook is the first thing that is called in the EDB commit procedure. This hook type is
+            typically used to do some basic check algorithms, like checking if the actual active user is allowed to
+            commit the objects which shall be committed.
+        </para>
+        <para>
+            This hooks influence on the EDB commit procedure:
+        </para>
+        <itemizedlist>
+            <listitem>Throws an EDBException: The commit gets aborted and the exception is thrown.</listitem>
+            <listitem>Throws any other Exception: The excpetion gets caught, logged and ignored.</listitem>
+        </itemizedlist>
+    </section>
+    <section>
+        <title>EDBPreCommitHook</title>
+        <para>
+            The EDBPreCommitHook is called after all EDBBeginCommitHooks are called and none of them has thrown
+            an EDBException. Typically this hook type is used to adapt and modify the commit before they get 
+            really committed.
+        </para>
+        <para>
+            This hooks influence on the EDB commit procedure:
+        </para>
+        <itemizedlist>
+            <listitem>Throws an EDBException: The exception is saved and forwarded to the error hooks as error cause.</listitem>
+            <listitem>Throws any other Exception: The excpetion gets caught, logged and ignored.</listitem>
+        </itemizedlist>
+    </section>
+    <section>
+        <title>EDBPostCommitHook</title>
+        <para>
+            The EDBPostCommitHook is called after the commit procedure is performed. Typically this hook is used
+            to update some third library tools which need to know about specific commits.
+        </para>
+        <para>
+            This hooks have no influence on the EDB commit procedure. But all exceptions which are thrown in such a hook,
+            are caught, logged and ignored.
+        </para>
+    </section>
+    <section>
+        <title>EDBErrorHook</title>
+        <para>
+            The EDBErrorHook is called if an EDBException is thrown in the EDBPreCommitHook. Typically this hook is
+            used to provide simple commit repair mechanisms or to enhance the EDBException so that the exception message
+            is more precise.
+        </para>
+        <para>
+            This hooks influence on the EDB commit procedure:
+        </para>
+        <itemizedlist>
+            <listitem>Returns an EDBCommit object: The EDB tries to persist the new EDBCommit instead of the old one.</listitem>
+            <listitem>Throws an EDBException: The new EDBException is thrown instead of the passed one.</listitem>
+            <listitem>Throws any other Exception: The excpetion gets caught, logged and ignored.</listitem>
+        </itemizedlist>
+    </section>
+    <section>
+        <title>Usage</title>
+        <para>
+            Each hook type is described as an java interface. To add a hook to the OpenEngSB environment, you have to implement
+            a class implementing such an interface and provide this implementation as service of your bundle.
+        </para>
+        <para>
+            The EDB have a dynamic list of each hook type which is grows and shrinks whenever such services are added or removed.
+            The list of this hooks is then processed at the defined and already mentioned places in the EDB commit procedure.
+        </para>
+    </section>
+</chapter>
+
