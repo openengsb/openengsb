@@ -25,12 +25,12 @@
   <parent>
     <groupId>org.openengsb.examples</groupId>
     <artifactId>openengsb-examples-parent</artifactId>
-    <version>2.4.4-SNAPSHOT</version>
+    <version>2.4.4</version>
   </parent>
 
   <groupId>org.openengsb.examples</groupId>
   <artifactId>org.openengsb.examples.remotesamples</artifactId>
-  <version>2.4.4-SNAPSHOT</version>
+  <version>2.4.4</version>
   <name>OpenEngSB :: Examples :: Remote Samples</name>
   <packaging>pom</packaging>
 
