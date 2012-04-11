@@ -21,42 +21,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.hooks.EDBBeginCommitHook;
+import org.openengsb.core.api.edb.hooks.EDBErrorHook;
+import org.openengsb.core.api.edb.hooks.EDBPostCommitHook;
+import org.openengsb.core.api.edb.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.openengsb.core.security.SecurityContext;
+import org.osgi.service.blueprint.container.ServiceUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
     private EntityTransaction utx;
-    @PersistenceContext(name = "openengsb-edb")
-    private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JPADao dao;
+
+    private List<EDBErrorHook> errorHooks;
+    private List<EDBPostCommitHook> postCommitHooks;
+    private List<EDBPreCommitHook> preCommitHooks;
+    private List<EDBBeginCommitHook> beginCommitHooks;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
      */
-    public void open() throws EDBException {
+    public void open(EntityManager entityManager) throws EDBException {
         LOGGER.debug("starting to open EDB for testing via JPA");
-        Properties props = new Properties();
-        emf = Persistence.createEntityManagerFactory("edb-test", props);
-        setEntityManager(emf.createEntityManager());
+        setEntityManager(entityManager);
         utx = entityManager.getTransaction();
         LOGGER.debug("starting of EDB successful");
     }
@@ -68,7 +69,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         entityManager.close();
         utx = null;
         entityManager = null;
-        emf = null;
     }
 
     @Override
@@ -82,7 +82,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
+        runBeginCommitHooks(commit);
+        EDBException exception = runPreCommitHooks(commit);
+        if (exception != null) {
+            return runErrorHooks(commit, exception);
+        }
+        Long timestamp = performCommit(commit);
+        runEDBPostHooks(commit);
 
+        return timestamp;
+    }
+
+    /**
+     * Does the actual commit work (JPA related actions) and returns the timestamp when the commit was done. Throws an
+     * EDBException if an error occurs.
+     */
+    private Long performCommit(EDBCommit commit) throws EDBException {
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
         for (EDBObject update : commit.getObjects()) {
@@ -91,7 +106,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
 
         try {
-            performUtxAction(UTXACTION.BEGIN);
+            if (utx != null) {
+                utx.begin();
+            }
             commit.setCommitted(true);
             LOGGER.debug("persisting JPACommit");
             entityManager.persist(commit);
@@ -105,48 +122,111 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
                 entityManager.persist(j);
             }
 
-            performUtxAction(UTXACTION.COMMIT);
+            if (utx != null) {
+                utx.commit();
+            }
         } catch (Exception ex) {
             try {
-                performUtxAction(UTXACTION.ROLLBACK);
+                if (utx != null) {
+                    utx.rollback();
+                }
             } catch (Exception e) {
                 throw new EDBException("Failed to rollback transaction to DB", e);
             }
             throw new EDBException("Failed to commit transaction to DB", ex);
         }
-
         return timestamp;
     }
 
     /**
-     * helper function that performs a UTXACTION if the utx is not null
+     * Runs all registered begin commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, it is thrown and so returned to
+     * the calling instance.
      */
-    private void performUtxAction(UTXACTION action) {
-        if (utx == null) {
-            return;
-        }
-        switch (action) {
-            case BEGIN:
-                utx.begin();
-                break;
-            case COMMIT:
-                utx.commit();
-                break;
-            case ROLLBACK:
-                utx.rollback();
-                break;
-            default:
-                LOGGER.warn("unknown Transaction action: {}", action.toString());
-                break;
+    private void runBeginCommitHooks(EDBCommit commit) throws EDBException {
+        if (beginCommitHooks != null) {
+            for (EDBBeginCommitHook hook : beginCommitHooks) {
+                try {
+                    hook.onStartCommit(commit);
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (EDBException e) {
+                    throw e;
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBBeginCommitHook", e);
+                }
+            }
         }
     }
 
     /**
-     * enumeration for categorizing the transaction actions.
+     * Runs all registered pre commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function returns this
+     * exception.
      */
-    private enum UTXACTION {
-        BEGIN, COMMIT, ROLLBACK
-    };
+    private EDBException runPreCommitHooks(EDBCommit commit) {
+        EDBException exception = null;
+        if (preCommitHooks != null) {
+            for (EDBPreCommitHook hook : preCommitHooks) {
+                try {
+                    hook.onPreCommit(commit);
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (EDBException e) {
+                    exception = e;
+                    break;
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBPreCommitHook", e);
+                }
+            }
+        }
+        return exception;
+    }
+
+    /**
+     * Runs all registered error hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except for
+     * ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function overrides the cause of
+     * the error with the new Exception. If an error hook returns a new EDBCommit, the EDB tries to persist this commit
+     * instead.
+     */
+    private Long runErrorHooks(EDBCommit commit, EDBException exception) throws EDBException {
+        if (errorHooks != null) {
+            for (EDBErrorHook hook : errorHooks) {
+                try {
+                    EDBCommit newCommit = hook.onError(commit, exception);
+                    if (newCommit != null) {
+                        return commit(newCommit);
+                    }
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (EDBException e) {
+                    exception = e;
+                    break;
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBErrorHook", e);
+                }
+            }
+        }
+        throw exception;
+    }
+
+    /**
+     * Runs all registered post commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
+     * for ServiceUnavailableExceptions.
+     */
+    private void runEDBPostHooks(EDBCommit commit) {
+        if (postCommitHooks != null) {
+            for (EDBPostCommitHook hook : postCommitHooks) {
+                try {
+                    hook.onPostCommit(commit);
+                } catch (ServiceUnavailableException e) {
+                    // Ignore
+                } catch (Exception e) {
+                    LOGGER.error("Error while performing EDBPostCommitHook", e);
+                }
+            }
+        }
+    }
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
@@ -344,26 +424,27 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return ContextHolder.get().getCurrentContextId();
     }
 
-    /**
-     * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
-     */
-    private boolean checkIfActiveOidExisting(String oid) {
-        try {
-            EDBObject obj = getObject(oid);
-            if (!obj.isDeleted()) {
-                return true;
-            }
-        } catch (EDBException e) {
-            // nothing to do here
-        }
-        return false;
-    }
+    @Override
+    public void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException {
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
 
-    /**
-     * Loads the actual version of a model with the given oid.
-     */
-    private Integer getVersionOfOid(String oid) throws EDBException {
-        return dao.getVersionOfOid(oid);
+        if (inserts != null) {
+            for (EDBObject insert : inserts) {
+                commit.insert(insert);
+            }
+        }
+        if (updates != null) {
+            for (EDBObject update : updates) {
+                commit.update(update);
+            }
+        }
+        if (deletes != null) {
+            for (EDBObject delete : deletes) {
+                commit.delete(delete.getOID());
+            }
+        }
+        this.commit(commit);
     }
 
     public void setEntityManager(EntityManager entityManager) {
@@ -371,109 +452,19 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         dao = new DefaultJPADao(entityManager);
     }
 
-    @Override
-    public void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
-        throws EDBException {
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-
-        if (inserts != null) {
-            checkInserts(inserts, commit);
-        }
-        if (deletes != null) {
-            checkDeletions(deletes, commit);
-        }
-        if (updates != null) {
-            checkUpdates(updates, commit);
-        }
-
-        this.commit(commit);
+    public void setErrorHooks(List<EDBErrorHook> errorHooks) {
+        this.errorHooks = errorHooks;
     }
 
-    /**
-     * Checks if all oid's of the given EDBObjects are not existing yet. If they do, an EDBException is thrown.
-     */
-    private void checkInserts(List<EDBObject> inserts, JPACommit commit) throws EDBException {
-        for (EDBObject insert : inserts) {
-            String oid = insert.getOID();
-            if (checkIfActiveOidExisting(oid)) {
-                throw new EDBException("The object under the oid " + oid + " is already existing");
-            } else {
-                insert.put(EDBConstants.MODEL_VERSION, 1);
-                commit.add(insert);
-            }
-        }
+    public void setPostCommitHooks(List<EDBPostCommitHook> postCommitHooks) {
+        this.postCommitHooks = postCommitHooks;
     }
 
-    /**
-     * Checks if all oid's of the given EDBObjects are existing. If they don't exist, an EDBException is thrown.
-     */
-    private void checkDeletions(List<EDBObject> deletes, JPACommit commit) throws EDBException {
-        for (EDBObject delete : deletes) {
-            String oid = delete.getOID();
-            if (!checkIfActiveOidExisting(oid)) {
-                throw new EDBException("The object under the oid " + oid + " is not existing or is already deleted");
-            } else {
-                commit.delete(oid);
-            }
-        }
+    public void setPreCommitHooks(List<EDBPreCommitHook> preCommitHooks) {
+        this.preCommitHooks = preCommitHooks;
     }
 
-    /**
-     * Checks every update for a potential conflict. If a conflict is found, an EDBException is thrown.
-     */
-    private void checkUpdates(List<EDBObject> updates, JPACommit commit) throws EDBException {
-        for (EDBObject update : updates) {
-            Integer modelVersion = investigateVersionAndCheckForConflict(update);
-            modelVersion++;
-            update.put(EDBConstants.MODEL_VERSION, modelVersion);
-            commit.add(update);
-        }
-    }
-
-    /**
-     * Investigates the version of an EDBObject and checks if a conflict can be found.
-     */
-    private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
-        Integer modelVersion = (Integer) newObject.get(EDBConstants.MODEL_VERSION);
-        String oid = newObject.getOID();
-
-        if (modelVersion != null) {
-            Integer currentVersion = getVersionOfOid(oid);
-            if (!modelVersion.equals(currentVersion)) {
-                try {
-                    checkForConflict(newObject);
-                } catch (EDBException e) {
-                    LOGGER.info("conflict detected, user get informed");
-                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
-                            + oid + " saved.");
-                }
-                modelVersion = currentVersion;
-            }
-        } else {
-            modelVersion = getVersionOfOid(oid);
-        }
-
-        return modelVersion;
-    }
-
-    /**
-     * Simple check mechanism if there is a conflict between a model which should be saved and the existing model, based
-     * on the values which are in the EDB.
-     */
-    private void checkForConflict(EDBObject newObject) throws EDBException {
-        String oid = newObject.getOID();
-        EDBObject object = getObject(oid);
-        for (Map.Entry<String, Object> entry : newObject.entrySet()) {
-            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
-                continue;
-            }
-            Object value = object.get(entry.getKey());
-            if (value == null || !value.equals(entry.getValue())) {
-                LOGGER.debug("Conflict detected at key %s when comparing %s with %s", new Object[]{ entry.getKey(),
-                    entry.getValue(), value == null ? "null" : value.toString() });
-                throw new EDBException("Conflict detected. Failure when comparing the values of the key "
-                        + entry.getKey());
-            }
-        }
+    public void setBeginCommitHooks(List<EDBBeginCommitHook> beginCommitHooks) {
+        this.beginCommitHooks = beginCommitHooks;
     }
 }
