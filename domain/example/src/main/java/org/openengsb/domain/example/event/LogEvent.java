@@ -17,8 +17,11 @@
 
 package org.openengsb.domain.example.event;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Event;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide(Constants.DELEGATION_DOMAIN_MODEL)
 public class LogEvent extends Event {
 
     public static enum LogLevel {

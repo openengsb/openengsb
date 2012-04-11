@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +48,7 @@ import javax.swing.tree.DefaultTreeModel;
 import junit.framework.Assert;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
@@ -79,6 +81,8 @@ import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.ProxyFactory;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -92,6 +96,8 @@ import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.ServiceReference;
+
+import com.google.common.collect.Sets;
 
 public class TestClientTest extends AbstractUITest {
 
@@ -149,6 +155,13 @@ public class TestClientTest extends AbstractUITest {
     public void setupTest() throws Exception {
         context.putBean("blueprintBundleContext", bundleContext);
         context.putBean(mock(ProxyFactory.class));
+        HashSet<String> classSet = Sets.newHashSet(TestInterface.class.getName());
+        ClassProviderImpl service = new ClassProviderImpl(bundle, classSet);
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.labs.delegation.service.Constants.DELEGATION_CONTEXT,
+            Constants.DELEGATION_DOMAIN_INTERFACE);
+        props.put(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_KEY, classSet);
+        bundleContext.registerService(ClassProvider.class.getName(), service, props);
     }
 
     @Test
@@ -236,10 +249,10 @@ public class TestClientTest extends AbstractUITest {
         serviceListExpanded = true;
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
-        @SuppressWarnings("unchecked")
         DropDownChoice<MethodId> methodList =
             (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
@@ -248,7 +261,9 @@ public class TestClientTest extends AbstractUITest {
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
         for (MethodId mid : choices) {
-            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+            List<Class<?>> typeList = ClassUtils.convertClassNamesToClasses(mid.getArgumentTypes());
+            Class<?>[] types = typeList.toArray(new Class<?>[typeList.size()]);
+            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), types));
         }
         List<Method> list = Arrays.asList(TestInterface.class.getMethods());
         Collections.sort(list, new MethodComparator());
@@ -662,18 +677,20 @@ public class TestClientTest extends AbstractUITest {
         throw new IllegalArgumentException("Service with name " + serviceName + " not found in tree");
     }
 
+    @SuppressWarnings("unchecked")
     private void setMethodInDropDown(String name, Class<?>... parameterTypes) {
-        @SuppressWarnings("unchecked")
         List<? extends MethodId> choices =
             ((DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList"))
                 .getChoices();
         for (int i = 0; i < choices.size(); i++) {
             MethodId methodId = choices.get(i);
-            if (methodId.getName().equals(name)
-                    && ArrayUtils.isEquals(methodId.getArgumentTypesAsClasses(), parameterTypes)) {
-                formTester.select("methodList", i);
-                tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
-                return;
+            if (methodId.getName().equals(name)) {
+                List<Class<?>> classes = ClassUtils.convertClassNamesToClasses(methodId.getArgumentTypes());
+                if (ArrayUtils.isEquals(classes, Arrays.asList(parameterTypes))) {
+                    formTester.select("methodList", i);
+                    tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+                    return;
+                }
             }
         }
         throw new IllegalArgumentException(String.format("could not find method %s(%s) in dropdown (%s)", name,

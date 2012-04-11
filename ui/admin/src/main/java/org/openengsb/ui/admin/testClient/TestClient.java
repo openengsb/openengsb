@@ -35,6 +35,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.wicket.PageParameters;
@@ -81,6 +82,8 @@ import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -94,6 +97,7 @@ import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -422,7 +426,7 @@ public class TestClient extends BasePage {
      * @return a Standard MethodCall with of the selected Method
      */
     private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
-        Class<?>[] classes = methodId.getArgumentTypesAsClasses();
+        Class<?>[] classes = getArgumentTypesAsClasses(methodId.getArgumentTypes());
         List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
@@ -637,7 +641,8 @@ public class TestClient extends BasePage {
             error(string);
             return null;
         }
-        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+        method =
+            service.getClass().getMethod(methodId.getName(), getArgumentTypesAsClasses(methodId.getArgumentTypes()));
         return method;
     }
 
@@ -757,9 +762,9 @@ public class TestClient extends BasePage {
         }
         Class<?> connectorInterface;
         try {
-            connectorInterface = Class.forName(service.getServiceClass());
+            connectorInterface = getClassFromProvider(Constants.DELEGATION_DOMAIN_INTERFACE, service.getServiceClass());
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalStateException(e);
         }
         if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
@@ -797,10 +802,9 @@ public class TestClient extends BasePage {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;
         try {
-            aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
+            aClass = (Class<? extends Domain>) getClassFromProvider(service.getServiceClass());
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
         if (wiringService.isConnectorCurrentlyPresent(aClass)) {
@@ -812,7 +816,7 @@ public class TestClient extends BasePage {
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {
         try {
-            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+            return serviceClass.getMethod(methodId.getName(), getArgumentTypesAsClasses(methodId.getArgumentTypes()));
         } catch (SecurityException e) {
             throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {
@@ -820,4 +824,40 @@ public class TestClient extends BasePage {
         }
     }
 
+    private Class<?>[] getArgumentTypesAsClasses(List<String> argumentTypes) {
+        Class<?>[] result = new Class<?>[argumentTypes.size()];
+        int i = 0;
+        for (String s : argumentTypes) {
+            result[i] = getClassForName(s);
+            i++;
+        }
+        return result;
+    }
+
+    private Class<?> getClassForName(String s) {
+        try {
+            return ClassUtils.getClass(s);
+        } catch (ClassNotFoundException e) {
+            Class<?> result;
+            try {
+                result = getClassFromProvider(s);
+            } catch (Exception e1) {
+                LOGGER.error("could not find class neither with contextclassloader nor by delegation", e);
+                throw new IllegalArgumentException(e);
+            }
+            return result;
+        }
+    }
+
+    private Class<?> getClassFromProvider(String className) throws ClassNotFoundException {
+        Filter filter = DelegationUtil.createClassProviderFilter(className);
+        ClassProvider service = (ClassProvider) utilsService.getService(filter);
+        return service.loadClass(className);
+    }
+    
+    private Class<?> getClassFromProvider(String context, String className) throws ClassNotFoundException {
+        Filter filter = DelegationUtil.createClassProviderFilter(context, className);
+        ClassProvider service = (ClassProvider) utilsService.getService(filter);
+        return service.loadClass(className);
+    }
 }

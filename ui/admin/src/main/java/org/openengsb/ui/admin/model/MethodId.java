@@ -65,23 +65,6 @@ public class MethodId implements Serializable {
         this.argumentTypes = argumentTypes;
     }
 
-    public Class<?>[] getArgumentTypesAsClasses() {
-        Class<?>[] result = new Class<?>[argumentTypes.size()];
-        int i = 0;
-        for (String s : argumentTypes) {
-            try {
-                result[i] = PRIMITIVES.get(s);
-                if (result[i] == null) {
-                    result[i] = Class.forName(s);
-                }
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            i++;
-        }
-        return result;
-    }
-
     @Override
     public String toString() {
         StringBuffer result = new StringBuffer();

@@ -17,13 +17,14 @@
 
 package org.openengsb.domain.example;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
-
+import org.openengsb.labs.delegation.service.Provide;
 
 // @extract-start ExampleDomain
 /**
@@ -32,6 +33,7 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
  * connectors.
  */
 @SecurityAttribute("domain.example")
+@Provide(Constants.DELEGATION_DOMAIN_INTERFACE)
 public interface ExampleDomain extends Domain {
 
     @SecurityAttribute("something")
@@ -45,6 +47,7 @@ public interface ExampleDomain extends Domain {
     @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);
 
+    @Provide(Constants.DELEGATION_DOMAIN_MODEL)
     public enum ExampleEnum {
         ONE, TWO, THREE
     }

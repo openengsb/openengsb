@@ -127,6 +127,16 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Delegation-Annotations>true</Delegation-Annotations>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -142,6 +152,10 @@
       <artifactId>org.openengsb.framework.common</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
   </dependencies>
 
