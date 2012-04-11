@@ -21,7 +21,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.labs.delegation.service.Provide;
 
-@Provide(Constants.DELEGATION_DOMAIN_MODEL)
+@Provide(context = Constants.DELEGATION_DOMAIN_MODEL)
 public interface ExampleResponseModel extends OpenEngSBModel {
     String getResult();
 

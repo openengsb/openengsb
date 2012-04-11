@@ -33,7 +33,7 @@ import org.openengsb.labs.delegation.service.Provide;
  * connectors.
  */
 @SecurityAttribute("domain.example")
-@Provide(Constants.DELEGATION_DOMAIN_INTERFACE)
+@Provide(context = Constants.DELEGATION_DOMAIN_INTERFACE)
 public interface ExampleDomain extends Domain {
 
     @SecurityAttribute("something")
@@ -47,7 +47,7 @@ public interface ExampleDomain extends Domain {
     @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);
 
-    @Provide(Constants.DELEGATION_DOMAIN_MODEL)
+    @Provide(context = Constants.DELEGATION_DOMAIN_MODEL)
     public enum ExampleEnum {
         ONE, TWO, THREE
     }

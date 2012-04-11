@@ -21,7 +21,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.labs.delegation.service.Provide;
 
-@Provide(Constants.DELEGATION_CONTEXT_PERMISSIONS)
+@Provide(context = Constants.DELEGATION_CONTEXT_PERMISSIONS)
 public class WicketPermission implements Permission {
 
     private String componentName;

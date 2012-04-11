@@ -21,7 +21,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.labs.delegation.service.Provide;
 
-@Provide(Constants.DELEGATION_CONTEXT_CREDENTIALS)
+@Provide(context = Constants.DELEGATION_CONTEXT_CREDENTIALS)
 public class Password implements Credentials {
     private String value;
 
