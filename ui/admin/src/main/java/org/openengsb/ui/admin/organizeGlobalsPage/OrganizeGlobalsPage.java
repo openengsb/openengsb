@@ -45,6 +45,9 @@ import org.slf4j.LoggerFactory;
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "globals")
 public class OrganizeGlobalsPage extends BasePage {
+
+    private static final long serialVersionUID = -8984270399033782826L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);
 
     @PaxWicketBean(name = "ruleManager")
@@ -75,8 +78,8 @@ public class OrganizeGlobalsPage extends BasePage {
                 Global global = (Global) mnode.getUserObject();
                 globalName = global.getName();
                 className = global.getClassname();
-                target.addComponent(nameField);
-                target.addComponent(classNameField);
+                target.add(nameField);
+                target.add(classNameField);
             }
 
         };
@@ -94,7 +97,7 @@ public class OrganizeGlobalsPage extends BasePage {
                 if (globalName == null || globalName.equals("") || className == null || className.equals("")) {
                     String message = new StringResourceModel("emptyError", this, null).getString();
                     error(message);
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
 
@@ -125,10 +128,15 @@ public class OrganizeGlobalsPage extends BasePage {
                 globalName = "";
                 className = "";
 
-                target.addComponent(nameField);
-                target.addComponent(classNameField);
-                target.addComponent(tree);
-                target.addComponent(feedbackPanel);
+                target.add(nameField);
+                target.add(classNameField);
+                target.add(tree);
+                target.add(feedbackPanel);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during handling submitButton submit");
             }
 
         };
@@ -155,7 +163,7 @@ public class OrganizeGlobalsPage extends BasePage {
                         String message = new StringResourceModel("notExistingError", this, null).getString();
                         error(globalName + " " + message);
                     }
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
                 tree.setModelObject(createTreeModel());
@@ -163,10 +171,15 @@ public class OrganizeGlobalsPage extends BasePage {
                 globalName = "";
                 className = "";
 
-                target.addComponent(feedbackPanel);
-                target.addComponent(nameField);
-                target.addComponent(classNameField);
-                target.addComponent(tree);
+                target.add(feedbackPanel);
+                target.add(nameField);
+                target.add(classNameField);
+                target.add(tree);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Deletebutton error during submit.");
             }
         };
         deleteButton.setOutputMarkupId(true);

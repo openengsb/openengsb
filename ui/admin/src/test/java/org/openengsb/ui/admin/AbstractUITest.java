@@ -76,7 +76,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -91,13 +91,14 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected ContextCurrentService contextCurrentService;
     protected UserDataManager userManager;
     protected UsernamePasswordServiceImpl authConnector;
+    protected PaxWicketSpringBeanComponentInjector defaultPaxWicketInjector;
 
     @Before
     public void makeContextMock() throws Exception {
         tester = new WicketTester();
         context = new ApplicationContextMock();
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        defaultPaxWicketInjector = new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context);
+        tester.getApplication().getComponentInstantiationListeners().add(defaultPaxWicketInjector);
         contextCurrentService = mock(ContextCurrentService.class);
         context.putBean("contextCurrentService", contextCurrentService);
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());

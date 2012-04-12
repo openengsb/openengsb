@@ -23,12 +23,12 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.PopupCloseLink;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -42,6 +42,8 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "oauth")
 public class OAuthPage extends WebPage {
 
+    private static final long serialVersionUID = -3633232323121788393L;
+
     public OAuthPage() {
         String notStarted = new StringResourceModel("oAuth.notStarted", this, null).getString();
         add(new PopupCloseLink<String>("close"));
@@ -52,8 +54,8 @@ public class OAuthPage extends WebPage {
         OAuthData oauth = OAuthPageFactory.getOAuthObject(getSession().getId());
         if (oauth != null) {
             String intermediate = oauth.getIntermediateParameterName();
-            if (pp.containsKey(intermediate)) {
-                String code = pp.getString(intermediate);
+            if (!pp.get(intermediate).isEmpty()) {
+                String code = pp.get(intermediate).toOptionalString();
                 OAuthData data = OAuthPageFactory.getOAuthObject(getSession().getId());
                 data.addEntryToSecondParams(intermediate, code);
 

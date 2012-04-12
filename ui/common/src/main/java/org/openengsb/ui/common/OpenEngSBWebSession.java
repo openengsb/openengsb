@@ -18,10 +18,10 @@
 package org.openengsb.ui.common;
 
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.wicket.Request;
 import org.apache.wicket.Session;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.authorization.strategies.role.Roles;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authroles.authorization.strategies.role.Roles;
+import org.apache.wicket.request.Request;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.security.SecurityContext;
 import org.ops4j.pax.wicket.api.InjectorHolder;

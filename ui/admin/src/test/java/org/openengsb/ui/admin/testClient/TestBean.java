@@ -33,7 +33,7 @@ public class TestBean {
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -41,7 +41,7 @@ public class TestBean {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -52,8 +52,8 @@ public class TestBean {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ObjectUtils.hashCode(this.id);
-        result = prime * result + ObjectUtils.hashCode(this.name);
+        result = prime * result + ObjectUtils.hashCode(id);
+        result = prime * result + ObjectUtils.hashCode(name);
         return result;
     }
 
@@ -63,7 +63,7 @@ public class TestBean {
             return false;
         }
         TestBean other = (TestBean) obj;
-        return ObjectUtils.equals(this.id, other.id) && ObjectUtils.equals(this.name, other.name);
+        return ObjectUtils.equals(id, other.id) && ObjectUtils.equals(name, other.name);
     }
 
 }

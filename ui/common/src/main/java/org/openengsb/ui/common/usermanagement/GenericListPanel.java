@@ -70,7 +70,7 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         if (activeConfirm != null) {
                             activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm"));
-                            ajaxRequestTarget.addComponent(activeConfirm);
+                            ajaxRequestTarget.add(activeConfirm);
                             activeConfirm = null;
                         }
                         final Model<T> model = new Model<T>(userListItem.getModelObject());
@@ -80,17 +80,17 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                             @Override
                             protected void onConfirm(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
                                 onDeleteClick(ajaxRequestTarget, form, model.getObject());
-                                ajaxRequestTarget.addComponent(listContainer);
+                                ajaxRequestTarget.add(listContainer);
                             }
 
                             @Override
                             protected void onCancel(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                                ajaxRequestTarget.addComponent(listContainer);
+                                ajaxRequestTarget.add(listContainer);
                             }
                         };
                         userListItem.get("confirm").replaceWith(confirmPanel);
                         activeConfirm = userListItem;
-                        ajaxRequestTarget.addComponent(userListItem);
+                        ajaxRequestTarget.add(userListItem);
                     }
                 };
                 userListItem.add(deleteLink);

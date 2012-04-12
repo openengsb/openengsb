@@ -47,8 +47,8 @@ public class ServicesListPageTest extends AbstractUITest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONNECTOR_KEY, "bla");
 
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
 
     }
 

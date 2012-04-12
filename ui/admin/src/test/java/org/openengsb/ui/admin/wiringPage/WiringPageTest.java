@@ -80,6 +80,7 @@ public class WiringPageTest extends AbstractUITest {
     private final String globTest = "globTest";
     private final String anotherGlob = "anotherGlob";
     private Map<String, Object> startproperties;
+    private FormTester formTester;
 
     @Before
     public void setUp() throws Exception {
@@ -102,9 +103,10 @@ public class WiringPageTest extends AbstractUITest {
             (ContextCurrentService) context.getBean("contextCurrentService");
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(WiringPage.class);
+        formTester = tester.newFormTester("wiringForm");
     }
 
     @Test
@@ -143,7 +145,6 @@ public class WiringPageTest extends AbstractUITest {
     @Test
     public void testSelectDomain_shouldUpdateGlobals() {
         selectDomain(1); // TestDomainInterface
-
         LinkTree globals = (LinkTree) tester.getComponentFromLastRenderedPage("globals");
         TreeModel tree = globals.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(1));
@@ -153,7 +154,6 @@ public class WiringPageTest extends AbstractUITest {
     @Test
     public void testSelectDomain_shouldUpdateEndpoints() {
         selectDomain(1); // TestDomainInterface
-
         LinkTree endpoints = (LinkTree) tester.getComponentFromLastRenderedPage("endpoints");
         TreeModel tree = endpoints.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(1));
@@ -362,12 +362,11 @@ public class WiringPageTest extends AbstractUITest {
     private void selectDomain(int index) {
         FormTester formTester = tester.newFormTester("domainChooseForm");
         formTester.select("domains", index);
-        formTester.submit();
         tester.executeAjaxEvent("domainChooseForm:domains", "onchange");
     }
 
     private void setGlobal(String global) {
-        tester.setParameterForNextRequest("wiringForm:globalName", global);
+        formTester.setValue("globalName", global);
     }
 
     private void selectFirstGlobal() {
@@ -379,7 +378,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     private void selectContext(int i) {
-        tester.setParameterForNextRequest("wiringForm:contextList:i:" + i + ":nodeComponent:check", true);
+        formTester.setValue("contextList:i:" + i + ":nodeComponent:check", true);
     }
 
     private void createConnectors() throws Exception {

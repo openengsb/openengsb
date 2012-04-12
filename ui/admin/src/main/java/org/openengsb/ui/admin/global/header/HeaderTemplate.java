@@ -124,7 +124,7 @@ public class HeaderTemplate extends Panel {
 
                 // set menu item to active
                 if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
-                    item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
+                    item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
                         @Override
                         public String getObject() {
                             return "active";

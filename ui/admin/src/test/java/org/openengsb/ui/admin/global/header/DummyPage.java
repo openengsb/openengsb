@@ -15,37 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.taskOverview;
+package org.openengsb.ui.admin.global.header;
 
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-@SecurityAttribute(key = "org.openengsb.ui.component", value = "TASK_USER")
-@PaxWicketMountPoint(mountPoint = "tasks")
-public class TaskOverview extends BasePage {
+public class DummyPage extends BasePage {
 
-    private static final long serialVersionUID = -2538133590170315082L;
+    private static final long serialVersionUID = -4406193474348091967L;
 
-    @PaxWicketBean(name = "webtaskboxService")
-    private WebTaskboxService taskboxService;
-
-    public TaskOverview() {
-        initContent();
+    public DummyPage() {
+        super();
     }
 
-    public TaskOverview(PageParameters parameters) {
+    public DummyPage(PageParameters parameters) {
         super(parameters);
-        initContent();
     }
-
-    private void initContent() {
-        Panel p = taskboxService.getOverviewPanel();
-        this.add(p);
-    }
-
 }

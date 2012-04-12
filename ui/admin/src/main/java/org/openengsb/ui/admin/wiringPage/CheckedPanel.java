@@ -17,7 +17,7 @@
 
 package org.openengsb.ui.admin.wiringPage;
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -27,7 +27,7 @@ import org.apache.wicket.model.IModel;
 public class CheckedPanel extends Panel {
 
     private CheckBox checkBox;
-    
+
     public CheckedPanel(String id, IModel<Boolean> checkModel, IModel<String> labelModel) {
         super(id);
         initCheckBox(checkModel, labelModel);
@@ -40,10 +40,10 @@ public class CheckedPanel extends Panel {
         checkBox.setOutputMarkupId(true);
         add(checkBox);
     }
-    
+
     private void initSimpleLabel() {
         SimpleFormComponentLabel simpleLabel = new SimpleFormComponentLabel("label", checkBox);
-        simpleLabel.add(new SimpleAttributeModifier("for", checkBox.getMarkupId()));
+        simpleLabel.add(AttributeModifier.replace("for", checkBox.getMarkupId()));
         add(simpleLabel);
     }
 

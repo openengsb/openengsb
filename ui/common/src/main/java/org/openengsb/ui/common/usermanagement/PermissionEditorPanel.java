@@ -98,9 +98,14 @@ public abstract class PermissionEditorPanel extends Panel {
                 user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
                 editorPanel.replaceWith(new EmptyPanel("permissionEditor"));
                 submitButton.setVisible(false);
-                target.addComponent(container);
+                target.add(container);
                 afterSubmit(target, form);
                 LOGGER.info("got values {}", values.toString());
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error occured during submit of form via submitButton");
             }
         };
         form.add(submitButton);
@@ -119,7 +124,7 @@ public abstract class PermissionEditorPanel extends Panel {
                 editorPanel.replaceWith(beanEditorPanel);
                 editorPanel = beanEditorPanel;
                 submitButton.setVisible(true);
-                target.addComponent(container);
+                target.add(container);
             }
         });
 

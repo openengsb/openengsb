@@ -17,17 +17,17 @@
 
 package org.openengsb.ui.admin.userService;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.usermanagement.UserListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-import com.google.common.collect.ImmutableMap;
-
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "USER_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserListPage extends BasePage {
+
+    private static final long serialVersionUID = -6841313899998597640L;
 
     private final class MyUserListPanel extends UserListPanel {
         private static final long serialVersionUID = 4561294480791309137L;
@@ -43,7 +43,9 @@ public class UserListPage extends BasePage {
 
         @Override
         protected void openEditorPage(String user) {
-            setResponsePage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", user)));
+            PageParameters parameters = new PageParameters();
+            parameters.set("user", user);
+            setResponsePage(UserEditPage.class, parameters);
         }
 
     }
