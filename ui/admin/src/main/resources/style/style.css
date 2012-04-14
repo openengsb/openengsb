@@ -591,3 +591,8 @@ color: green;
 #aliveStateOther {
 color: orange;
 }
+
+/*  required fields */
+.required {
+    color: red;
+}
