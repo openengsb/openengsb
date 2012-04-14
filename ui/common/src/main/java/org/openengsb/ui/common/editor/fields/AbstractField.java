@@ -72,10 +72,13 @@ public abstract class AbstractField<T> extends Panel {
         }
         mainComponent.setRequired(attribute.isRequired());
         mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
-        add(new SimpleFormComponentLabel("name", mainComponent).add(AttributeModifier.replace("for", attribute
-            .getId())));
+        SimpleFormComponentLabel label = new SimpleFormComponentLabel("name", mainComponent);
+        label.add(new SimpleAttributeModifier("for", attribute.getId()));
+        if (attribute.isRequired()) {
+            label.add(new SimpleAttributeModifier("class", "required"));
+        }
+        add(label);
         add(mainComponent);
-
         addTooltip(attribute);
     }
 
