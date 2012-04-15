@@ -17,11 +17,42 @@
 
 package org.openengsb.core.api.ekb;
 
+import java.io.File;
+import java.util.List;
+
+import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+
 /**
- * The transformation engine does the actual conversation work. It uses the information of the
- * model registry to make the transformation steps. It also needs for every technology which is
- * needed to make a transformation a transformation provider.
+ * The transformation engine does the actual conversation work. It uses the transformation descriptions it got to
+ * transform one model into another if possible.
  */
 public interface TransformationEngine {
 
+    /**
+     * Saves a transformation description into the transformation engine memory. If a transformation
+     * description for the same class pair already exists, it gets updated.
+     */
+    void saveDescription(TransformationDescription description);
+
+    /**
+     * Deletes a transformation description from the transformation engine memory.
+     */
+    void deleteDescription(TransformationDescription description);
+
+    /**
+     * Scans a file for transformation descriptions and returns all successfully read transformation descriptions.
+     */
+    List<TransformationDescription> getDescriptionsFromFile(File file);
+
+    /**
+     * Scans a file for transformation descriptions and add all successfully read descriptions to the transformation
+     * engine memory.
+     */
+    void addDescriptionsFromFile(File file);
+
+    /**
+     * Transforms the source object of the source class type to the target class type. Throws an
+     * IllegalArgumentException if no transformation descriptions for this transformation are available.
+     */
+    <T> T performTransformation(Class<?> sourceClass, Class<T> targetClass, Object source);
 }

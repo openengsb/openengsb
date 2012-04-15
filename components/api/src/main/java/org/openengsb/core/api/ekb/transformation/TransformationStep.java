@@ -1,0 +1,61 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.openengsb.core.api.ekb.transformation;
+
+/**
+ * Describes a transforming step in the transformation progress. Contains all informations to perform
+ * a transformation operation on source fields and target fields.
+ */
+public class TransformationStep {
+    private String targetField;
+    private TransformationOperation operation;
+    private String operationParam;
+    private String[] sourceFields;
+
+    public String getTargetField() {
+        return targetField;
+    }
+
+    public void setTargetField(String targetField) {
+        this.targetField = targetField;
+    }
+
+    public TransformationOperation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(TransformationOperation operation) {
+        this.operation = operation;
+    }
+
+    public String getOperationParam() {
+        return operationParam;
+    }
+
+    public void setOperationParam(String operationParam) {
+        this.operationParam = operationParam;
+    }
+
+    public String[] getSourceFields() {
+        return sourceFields;
+    }
+
+    public void setSourceFields(String... sourceFields) {
+        this.sourceFields = sourceFields;
+    }
+}

@@ -1,0 +1,38 @@
+<transformations>
+  <transformation source="org.openengsb.core.ekb.internal.models.ModelA" target="org.openengsb.core.ekb.internal.models.ModelB">
+    <forward>
+      <source-field>idA</source-field>
+      <target-field>idB</target-field>
+    </forward>
+    <forward>
+      <source-field>testA</source-field>
+      <target-field>testB</target-field> 
+    </forward>
+    <concat>
+      <source-fields>
+        <source-field>blubA</source-field>
+        <source-field>blaA</source-field>   
+      </source-fields>
+      <target-field>blubB</target-field>
+      <operation-string>#</operation-string>
+    </concat>
+  </transformation>
+  <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
+    <forward>
+      <source-field>idB</source-field>
+      <target-field>idA</target-field>
+    </forward>
+    <forward>
+      <source-field>testB</source-field>
+      <target-field>testA</target-field> 
+    </forward>
+    <split>
+      <target-fields>
+        <target-field>blubA</target-field>
+        <target-field>blaA</target-field>   
+      </target-fields>
+      <source-field>blubB</source-field>
+      <operation-string>#</operation-string>
+    </split>
+  </transformation>
+</transformations>

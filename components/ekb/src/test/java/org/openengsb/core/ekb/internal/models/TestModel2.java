@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.models;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class TestModel2 implements OpenEngSBModel {
 
     private Map<String, OpenEngSBModelEntry> tail = new HashMap<String, OpenEngSBModelEntry>();
 
-    enum ENUM {
+    public enum ENUM {
             A,
             B,
             C

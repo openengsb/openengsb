@@ -33,7 +33,9 @@ import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.ekb.internal.TestModel2.ENUM;
+import org.openengsb.core.ekb.internal.models.SubModel;
+import org.openengsb.core.ekb.internal.models.TestModel;
+import org.openengsb.core.ekb.internal.models.TestModel2.ENUM;
 
 /**
  * The EDBConverter test file only tests the converting Model -> EDBObject since the other way round is tested by the
