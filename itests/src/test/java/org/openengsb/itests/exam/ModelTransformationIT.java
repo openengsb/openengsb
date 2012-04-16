@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
+import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +31,11 @@ import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)
-public class ModelTransformationIT extends AbstractExamTestHelper {
+public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     private TransformationEngine transformationEngine;
 
     @Before
@@ -44,12 +44,12 @@ public class ModelTransformationIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testIfServiceIsFound_shouldWork() {
+    public void testIfServiceIsFound_shouldWork() throws Exception {
         assertThat(transformationEngine, notNullValue());
     }
 
     @Test
-    public void testIfTransformationWorks_shouldWork() {
+    public void testIfTransformationWorks_shouldWork() throws Exception {
         TransformationDescription description =
             new TransformationDescription(ExampleRequestModel.class, ExampleResponseModel.class);
         description.concatField("result", "-", "name", "id");
@@ -61,21 +61,22 @@ public class ModelTransformationIT extends AbstractExamTestHelper {
 
         ExampleResponseModel modelB =
             transformationEngine.performTransformation(ExampleRequestModel.class, ExampleResponseModel.class, modelA);
-        
+
         assertThat(modelB.getResult(), is("test-42"));
     }
-    
+
     @Test
-    public void testIfTransformationsFromFileWork_shouldWork() {
-        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
-        transformationEngine.addDescriptionsFromFile(descriptionFile);
-        
+    public void testIfTransformationsFromFileWork_shouldWork() throws Exception {
+        InputStream stream = getClass().getClassLoader().getResourceAsStream("transformations/testDescription.xml");
+        transformationEngine.addDescriptionsFromInputStream(stream);
+
         ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         modelA.setResult("test-42");
 
         ExampleRequestModel modelB =
-            transformationEngine.performTransformation(ExampleResponseModel.class, ExampleRequestModel.class, modelA);
-        
+            transformationEngine.performTransformation(ExampleResponseModel.class, ExampleRequestModel.class,
+                modelA);
+
         assertThat(modelB.getName(), is("test"));
     }
 
