@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -71,18 +73,57 @@ public class TransformationEngineService implements TransformationEngine {
     }
 
     @Override
+    public void addDescriptionsFromInputStream(InputStream inputStream) {
+        List<TransformationDescription> descriptions = getDescriptionsFromInputStream(inputStream);
+        for (TransformationDescription description : descriptions) {
+            saveDescription(description);
+        }
+    }
+
+    @Override
+    public List<TransformationDescription> getDescriptionsFromInputStream(InputStream fileContent) {
+        List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
+        try {
+            desc = loadFromInputSource(new InputSource(fileContent));
+//            XMLReader xr = XMLReaderFactory.createXMLReader();
+//            TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
+//            xr.setContentHandler(reader);
+//            xr.parse(IOUtils.toString(fileContent));
+//            desc = reader.getResult();
+        } catch (Exception e) {
+            LOGGER.error("Unable to read the descriptions from input stream. ", e);
+        }
+        return desc;
+    }
+
+    private List<TransformationDescription> loadFromInputSource(InputSource source) throws Exception {
+        XMLReader xr = XMLReaderFactory.createXMLReader();
+        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
+        xr.setContentHandler(reader);
+        xr.parse(source);
+        return reader.getResult();
+    }
+
+    @Override
     public List<TransformationDescription> getDescriptionsFromFile(File file) {
         List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
         try {
-            XMLReader xr = XMLReaderFactory.createXMLReader();
-            TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
-            xr.setContentHandler(reader);
-            xr.parse(file.getAbsolutePath());
-            desc = reader.getResult();
+            return loadFromInputSource(new InputSource(file.getAbsolutePath()));
         } catch (Exception e) {
-            LOGGER.error("unable to read the descriptions from file " + file.getAbsolutePath(), e);
+            LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
         }
         return desc;
+        // List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
+        // try {
+        // XMLReader xr = XMLReaderFactory.createXMLReader();
+        // TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
+        // xr.setContentHandler(reader);
+        // xr.parse(file.getAbsolutePath());
+        // desc = reader.getResult();
+        // } catch (Exception e) {
+        // LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
+        // }
+        // return desc;
     }
 
     @SuppressWarnings("unchecked")
@@ -177,7 +218,7 @@ public class TransformationEngineService implements TransformationEngine {
         }
         return result;
     }
-    
+
     /**
      * Returns the name of the getter method of a field.
      */
