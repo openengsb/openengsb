@@ -73,14 +73,14 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             Class<?> sourceClass;
             Class<?> targetClass;
             try {
-                sourceClass = Class.forName(source);
+                sourceClass = getClass().getClassLoader().loadClass(source);
             } catch (Exception e) {
-                throw new IllegalArgumentException("unable to load source class \"" + source + "\"", e);
+                throw new IllegalArgumentException("Unable to load source class \"" + source + "\"", e);
             }
             try {
-                targetClass = Class.forName(target);
+                targetClass = getClass().getClassLoader().loadClass(target);
             } catch (Exception e) {
-                throw new IllegalArgumentException("unable to load target class \"" + target + "\"", e);
+                throw new IllegalArgumentException("Unable to load target class \"" + target + "\"", e);
             }
             activeDescription = new TransformationDescription(sourceClass, targetClass);
         } else if (localName.equals("source-field")) {
