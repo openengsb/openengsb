@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,20 @@ public class ModelTransformationIT extends AbstractExamTestHelper {
             transformationEngine.performTransformation(ExampleRequestModel.class, ExampleResponseModel.class, modelA);
         
         assertThat(modelB.getResult(), is("test-42"));
+    }
+    
+    @Test
+    public void testIfTransformationsFromFileWork_shouldWork() {
+        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
+        transformationEngine.addDescriptionsFromFile(descriptionFile);
+        
+        ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        modelA.setResult("test-42");
+
+        ExampleRequestModel modelB =
+            transformationEngine.performTransformation(ExampleResponseModel.class, ExampleRequestModel.class, modelA);
+        
+        assertThat(modelB.getName(), is("test"));
     }
 
 }
