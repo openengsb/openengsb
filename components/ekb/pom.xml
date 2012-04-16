@@ -84,6 +84,15 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <!--
+              This import is required since the loading of transformation descriptions from files
+              need to lookup dynamically for classes which are in other bundles. 
+            -->
+            <DynamicImport-Package>*</DynamicImport-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
