@@ -19,7 +19,6 @@ package org.openengsb.core.ekb.internal;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,23 +84,10 @@ public class TransformationEngineService implements TransformationEngine {
         List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
         try {
             desc = loadFromInputSource(new InputSource(fileContent));
-//            XMLReader xr = XMLReaderFactory.createXMLReader();
-//            TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
-//            xr.setContentHandler(reader);
-//            xr.parse(IOUtils.toString(fileContent));
-//            desc = reader.getResult();
         } catch (Exception e) {
             LOGGER.error("Unable to read the descriptions from input stream. ", e);
         }
         return desc;
-    }
-
-    private List<TransformationDescription> loadFromInputSource(InputSource source) throws Exception {
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
-        xr.setContentHandler(reader);
-        xr.parse(source);
-        return reader.getResult();
     }
 
     @Override
@@ -113,17 +99,14 @@ public class TransformationEngineService implements TransformationEngine {
             LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
         }
         return desc;
-        // List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
-        // try {
-        // XMLReader xr = XMLReaderFactory.createXMLReader();
-        // TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
-        // xr.setContentHandler(reader);
-        // xr.parse(file.getAbsolutePath());
-        // desc = reader.getResult();
-        // } catch (Exception e) {
-        // LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
-        // }
-        // return desc;
+    }
+
+    private List<TransformationDescription> loadFromInputSource(InputSource source) throws Exception {
+        XMLReader xr = XMLReaderFactory.createXMLReader();
+        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
+        xr.setContentHandler(reader);
+        xr.parse(source);
+        return reader.getResult();
     }
 
     @SuppressWarnings("unchecked")
@@ -158,65 +141,86 @@ public class TransformationEngineService implements TransformationEngine {
         } else {
             result = td.getTarget().newInstance();
         }
-        Method getter;
-        Method setter;
-        Object object;
-        for (TransformationStep step : td.getTransformingSteps()) {
-            try {
-                switch (step.getOperation()) {
-                    case FORWARD:
-                        getter = td.getSource().getMethod(getGetterName(step.getSourceFields()[0]));
-                        object = getter.invoke(source);
-                        setter =
-                            td.getTarget().getMethod(getSetterName(step.getTargetField()), object.getClass());
-                        setter.invoke(result, object);
-                        break;
-                    case CONCAT:
-                        StringBuilder builder = new StringBuilder();
-                        for (String field : step.getSourceFields()) {
-                            if (builder.length() != 0) {
-                                builder.append(step.getOperationParam());
-                            }
-                            getter = td.getSource().getMethod(getGetterName(field));
-                            builder.append(getter.invoke(source));
-                        }
-                        setter = td.getTarget().getMethod(getSetterName(step.getTargetField()), String.class);
-                        setter.invoke(result, builder.toString());
-                        break;
-                    case SPLIT:
-                        getter = td.getSource().getMethod(getGetterName(step.getTargetField()));
-                        String split = (String) getter.invoke(source);
-                        String[] splits = split.split(step.getOperationParam());
-                        for (int i = 0; i < step.getSourceFields().length; i++) {
-                            if (splits.length <= i) {
-                                LOGGER.warn("Not enough results of the split operation for the given target fields.");
-                                break;
-                            }
-                            String field = step.getSourceFields()[i];
-                            setter = td.getTarget().getMethod(getSetterName(field), String.class);
-                            setter.invoke(result, splits[i]);
-                        }
-                        if (splits.length > step.getSourceFields().length) {
-                            LOGGER
-                                .warn("Too many results of the split operation for the given target fields. "
-                                        + "Data will get lost!");
-                        }
-                        break;
-                    default:
-                        LOGGER.error("Unsupported operation: " + step.getOperation());
 
-                }
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        for (TransformationStep step : td.getTransformingSteps()) {
+            performTransformationStep(step, td, source, result);
         }
         return result;
+    }
+
+    /**
+     * Performs one transformation step
+     */
+    private void performTransformationStep(TransformationStep step, TransformationDescription desc, Object source,
+            Object target) throws IllegalAccessException {
+        try {
+            switch (step.getOperation()) {
+                case FORWARD:
+                    performForwardStep(desc, step, source, target);
+                    break;
+                case CONCAT:
+                    performConcatStep(desc, step, source, target);
+                    break;
+                case SPLIT:
+                    performSplitStep(desc, step, source, target);
+                    break;
+                default:
+                    LOGGER.error("Unsupported operation: " + step.getOperation());
+            }
+        } catch (Exception e) {
+            LOGGER.error("Unable to perform transformation step ." + step, e);
+        }
+    }
+
+    /**
+     * Logic for a forward transformation step
+     */
+    private void performForwardStep(TransformationDescription desc, TransformationStep step, Object source,
+            Object target) throws Exception {
+        Method getter = desc.getSource().getMethod(getGetterName(step.getSourceFields()[0]));
+        Object object = getter.invoke(source);
+        Method setter = desc.getTarget().getMethod(getSetterName(step.getTargetField()), object.getClass());
+        setter.invoke(target, object);
+    }
+
+    /**
+     * Logic for a concat transformation step
+     */
+    private void performConcatStep(TransformationDescription desc, TransformationStep step, Object source,
+            Object target) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        for (String field : step.getSourceFields()) {
+            if (builder.length() != 0) {
+                builder.append(step.getOperationParam());
+            }
+            Method getter = desc.getSource().getMethod(getGetterName(field));
+            builder.append(getter.invoke(source));
+        }
+        Method setter = desc.getTarget().getMethod(getSetterName(step.getTargetField()), String.class);
+        setter.invoke(target, builder.toString());
+    }
+
+    /**
+     * Logic for a split transformation step
+     */
+    private void performSplitStep(TransformationDescription desc, TransformationStep step, Object source,
+            Object target) throws Exception {
+        Method getter = desc.getSource().getMethod(getGetterName(step.getTargetField()));
+        String split = (String) getter.invoke(source);
+        String[] splits = split.split(step.getOperationParam());
+        for (int i = 0; i < step.getSourceFields().length; i++) {
+            if (splits.length <= i) {
+                LOGGER.warn("Not enough results of the split operation for the given target fields.");
+                break;
+            }
+            String field = step.getSourceFields()[i];
+            Method setter = desc.getTarget().getMethod(getSetterName(field), String.class);
+            setter.invoke(target, splits[i]);
+        }
+        if (splits.length > step.getSourceFields().length) {
+            LOGGER.warn("Too many results of the split operation for the given target fields. "
+                    + "Data will get lost!");
+        }
     }
 
     /**
