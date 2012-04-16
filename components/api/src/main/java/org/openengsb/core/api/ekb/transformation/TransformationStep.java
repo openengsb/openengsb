@@ -18,8 +18,8 @@
 package org.openengsb.core.api.ekb.transformation;
 
 /**
- * Describes a transforming step in the transformation progress. Contains all informations to perform
- * a transformation operation on source fields and target fields.
+ * Describes a transforming step in the transformation progress. Contains all informations to perform a transformation
+ * operation on source fields and target fields.
  */
 public class TransformationStep {
     private String targetField;
@@ -57,5 +57,27 @@ public class TransformationStep {
 
     public void setSourceFields(String... sourceFields) {
         this.sourceFields = sourceFields;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{ ").append(operation);
+        if (operation == TransformationOperation.SPLIT) {
+            builder.append(" targets: {");
+        } else {
+            builder.append(" sources: {");
+        }
+        for (String source : sourceFields) {
+            builder.append(source).append(", ");
+        }
+        builder.append("} ");
+        if (operation == TransformationOperation.SPLIT) {
+            builder.append(" source: {");
+        } else {
+            builder.append(" target: {");
+        }
+        builder.append(targetField).append("}}");
+        return builder.toString();
     }
 }
