@@ -83,9 +83,6 @@ public final class PlainSampleApp {
         ClassNotFoundException {
         MethodResultMessage resultMessage = MAPPER.readValue(resultString, MethodResultMessage.class);
         MethodResult result = resultMessage.getResult();
-        Class<?> clazz = Class.forName(result.getClassName());
-        Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
-        result.setArg(resultValue);
         return result;
     }
 

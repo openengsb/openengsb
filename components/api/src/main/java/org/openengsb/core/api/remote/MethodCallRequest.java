@@ -20,7 +20,7 @@ package org.openengsb.core.api.remote;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import com.google.common.base.Objects;
 
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
  * identify the right method.
  */
-@XmlRootElement
 public class MethodCallRequest implements Serializable {
 
     private static final long serialVersionUID = -484867025274841475L;
@@ -93,4 +92,13 @@ public class MethodCallRequest implements Serializable {
         this.destination = destination;
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+            .add("callId", callId)
+            .add("destination", destination)
+            .add("answer", answer)
+            .add("methodCall", methodCall)
+            .toString();
+    }
 }

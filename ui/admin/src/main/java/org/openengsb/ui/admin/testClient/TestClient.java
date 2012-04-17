@@ -60,6 +60,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
@@ -71,7 +72,6 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
@@ -81,7 +81,6 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
-import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -124,6 +123,9 @@ public class TestClient extends BasePage {
 
     @PaxWicketBean(name = "attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
+//
+//    @PaxWicketBean(name = "objectSerializers")
+//    private List<ObjectSerializer> serializers;
 
     private DropDownChoice<MethodId> methodList;
 
@@ -431,7 +433,7 @@ public class TestClient extends BasePage {
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
         }
-        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray(), classList);
+        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray());
     }
 
     /**
@@ -458,8 +460,7 @@ public class TestClient extends BasePage {
      */
     private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
         MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
-        BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
-        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+        return SecureRequest.create(methodCallRequest, "yourusername", new Password("yourpassword"));
     }
 
     /**
@@ -489,7 +490,7 @@ public class TestClient extends BasePage {
         String jsonResult = "";
         try {
             jsonResult =
-                JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false)
+                new ObjectMapper().configure(Feature.FAIL_ON_EMPTY_BEANS, false)
                     .writeValueAsString(secureRequest);
         } catch (IOException ex) {
             handleExceptionWithFeedback(ex);

@@ -20,19 +20,15 @@ package org.openengsb.core.security.filter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.common.util.JsonUtils;
 
 /**
  * This filter takes a {@link SecureRequest} and serializes it to JSON. The String s then passed on to the next filter.
@@ -52,21 +48,23 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
 
     private FilterAction next;
 
-    public OutgoingJsonSecureMethodCallMarshalFilter() {
+    private GenericObjectSerializer serializer;
+
+    public OutgoingJsonSecureMethodCallMarshalFilter(GenericObjectSerializer serializer) {
         super(SecureRequest.class, SecureResponse.class);
+        this.serializer = serializer;
     }
 
     @Override
     public SecureResponse doFilter(SecureRequest input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = createObjectMapper();
         SecureResponse resultMessage;
         try {
-            String jsonString = objectMapper.writeValueAsString(input);
+            String jsonString = serializer.serializeToString(input);
             String resultString = (String) next.filter(jsonString, metadata);
             if (resultString == null) {
                 return null;
             }
-            resultMessage = objectMapper.readValue(resultString, SecureResponse.class);
+            resultMessage = serializer.parse(resultString, SecureResponse.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
@@ -74,8 +72,6 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
 
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
-        } else {
-            JsonUtils.convertResult(result);
         }
         return resultMessage;
     }
@@ -84,17 +80,6 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, String.class, String.class);
         this.next = next;
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector introspector =
-            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
-        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
-        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
-        return mapper;
     }
 
 }

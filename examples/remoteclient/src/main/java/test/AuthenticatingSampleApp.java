@@ -34,10 +34,11 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.model.BeanDescription;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.model.SecureRequest;
@@ -73,7 +74,7 @@ public final class AuthenticatingSampleApp {
         producer = session.createProducer(destination);
     }
 
-    private static MethodResult call(MethodCall call, String username, Object credentials) throws IOException,
+    private static MethodResult call(MethodCall call, String username, Credentials credentials) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
         String requestString = marshalSecureRequest(methodCallRequest, username, credentials);
@@ -83,9 +84,8 @@ public final class AuthenticatingSampleApp {
     }
 
     private static String marshalSecureRequest(MethodCallRequest methodCallRequest,
-            String username, Object credentails) throws IOException {
-        BeanDescription auth = BeanDescription.fromObject(credentails);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, auth);
+            String username, Credentials credentials) throws IOException {
+        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, credentials);
         return MAPPER.writeValueAsString(secureRequest);
     }
 
@@ -97,9 +97,6 @@ public final class AuthenticatingSampleApp {
 
     private static MethodResult convertResult(SecureResponse resultMessage) throws ClassNotFoundException {
         MethodResult result = resultMessage.getMessage().getResult();
-        Class<?> clazz = Class.forName(result.getClassName());
-        Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
-        result.setArg(resultValue);
         return result;
     }
 
@@ -151,7 +148,7 @@ public final class AuthenticatingSampleApp {
             new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of("serviceId",
                 "example+example+testlog", "contextId", "foo"));
         LOGGER.info("calling method");
-        MethodResult methodResult = call(methodCall, "admin", "password");
+        MethodResult methodResult = call(methodCall, "admin", new Password("password"));
         System.out.println(methodResult);
 
         stop();

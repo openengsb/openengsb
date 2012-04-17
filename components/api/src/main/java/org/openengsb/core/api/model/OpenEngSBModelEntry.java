@@ -17,13 +17,13 @@
 
 package org.openengsb.core.api.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * Simple Model Entry class. Every model entry has three fields: key, value and type. Key defines the id, value is the
  * value for the key and type defines the type of the value.
  */
-@XmlRootElement
+@Provide(alias = "ModelEntry")
 public class OpenEngSBModelEntry {
     private String key;
     private Object value;

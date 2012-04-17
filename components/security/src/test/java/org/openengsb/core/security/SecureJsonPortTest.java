@@ -23,15 +23,15 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.common.JsonObjectSerializer;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
-import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
+import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilterFactory;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,20 +39,18 @@ import org.slf4j.LoggerFactory;
 public class SecureJsonPortTest extends GenericSecurePortTest<String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureJsonPortTest.class);
-
-    private ObjectMapper mapper = new ObjectMapper();
-
+    private JsonObjectSerializer jsonObjectSerializer;
     @Override
     protected SecureResponse decryptAndDecode(String message, SecretKey sessionKey) throws Exception {
         LOGGER.info("decrypting: " + new String(message));
         byte[] decrypt = CipherUtils.decrypt(Base64.decodeBase64(message), sessionKey);
         LOGGER.info("decoding: " + new String(decrypt));
-        return mapper.readValue(decrypt, SecureResponse.class);
+        return jsonObjectSerializer.parse(decrypt, SecureResponse.class);
     }
 
     @Override
     protected String encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
-        byte[] content = mapper.writeValueAsBytes(secureRequest);
+        byte[] content = jsonObjectSerializer.serializeToByteArray(secureRequest);
         LOGGER.info("encrypting: " + new String(content));
         byte[] encryptedContent = CipherUtils.encrypt(content, sessionKey);
 
@@ -60,7 +58,7 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
         encryptedMessage.setEncryptedContent(encryptedContent);
         byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), serverPublicKey);
         encryptedMessage.setEncryptedKey(encryptedKey);
-        return mapper.writeValueAsString(encryptedMessage);
+        return jsonObjectSerializer.serializeToString(encryptedMessage);
     }
 
     @Override
@@ -72,11 +70,15 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
     protected FilterChain getSecureRequestHandlerFilterChain() {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
 
+        jsonObjectSerializer = new JsonObjectSerializer();
+        jsonObjectSerializer.setBundleContext(bundleContext);
+        jsonObjectSerializer.init();
+        
         List<Object> asList =
             Arrays.asList(
                 EncryptedJsonMessageMarshaller.class,
                 new MessageCryptoFilterFactory(privateKeySource, "AES"),
-                JsonSecureRequestMarshallerFilter.class,
+                new JsonSecureRequestMarshallerFilterFactory(jsonObjectSerializer),
                 filterTop.create());
         factory.setFilters(asList);
         return factory.create();

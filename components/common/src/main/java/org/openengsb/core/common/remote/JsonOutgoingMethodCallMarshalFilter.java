@@ -20,20 +20,19 @@ package org.openengsb.core.common.remote;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.JsonUtils;
 
 /**
  * This filter takes a {@link MethodCallRequest} and serializes it to JSON. The String s then passed on to the next
  * filter. The returned JSON-String representing a {@link MethodResultMessage} is then deserialized and returned.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallRequest]   > Filter > [MethodCallRequest as JSON-string]     > ...
@@ -47,37 +46,29 @@ public class JsonOutgoingMethodCallMarshalFilter extends
         AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
 
     private FilterAction next;
+    private GenericObjectSerializer objectSerializer;
 
-    public JsonOutgoingMethodCallMarshalFilter() {
+    public JsonOutgoingMethodCallMarshalFilter(GenericObjectSerializer objectSerializer) {
         super(MethodCallRequest.class, MethodResultMessage.class);
+        this.objectSerializer = objectSerializer;
     }
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
         MethodResultMessage resultMessage;
         try {
-            String jsonString = objectMapper.writeValueAsString(input);
+            String jsonString = objectSerializer.serializeToString(input);
             String resultString = (String) next.filter(jsonString, metadata);
             if (resultString == null) {
                 return null;
             }
-            resultMessage = objectMapper.readValue(resultString, MethodResultMessage.class);
+            resultMessage = objectSerializer.parse(resultString, MethodResultMessage.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
         MethodResult result = resultMessage.getResult();
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
-        } else {
-            Class<?> className;
-            try {
-                className = Class.forName(result.getClassName());
-            } catch (ClassNotFoundException e) {
-                throw new FilterException(e);
-            }
-            Object convertedValue = objectMapper.convertValue(result.getArg(), className);
-            result.setArg(convertedValue);
         }
         return resultMessage;
     }
@@ -86,6 +77,10 @@ public class JsonOutgoingMethodCallMarshalFilter extends
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, String.class, String.class);
         this.next = next;
+    }
+
+    public void setObjectSerializer(GenericObjectSerializer objectSerializer) {
+        this.objectSerializer = objectSerializer;
     }
 
 }

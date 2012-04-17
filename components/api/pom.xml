@@ -99,6 +99,7 @@
               net.sf.cglib.proxy; resolution:="optional",
               net.sf.cglib.reflect; resolution:="optional", *
             </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -115,6 +116,10 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
    </dependencies>
 

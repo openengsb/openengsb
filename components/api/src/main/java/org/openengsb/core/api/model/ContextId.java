@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * Representation of a unique identification of context instances.
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * A context instance is identified by a String-identifier
  * 
  */
-@XmlRootElement
+@Provide(alias = "ContextId")
 public class ContextId {
     
     public static final String META_KEY_ID = "id";

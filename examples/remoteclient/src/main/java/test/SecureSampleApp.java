@@ -34,10 +34,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.model.BeanDescription;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
@@ -52,10 +53,9 @@ import org.springframework.jms.core.SessionCallback;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Setup to run this app: + Start OpenEngSB + install the jms-feature:
- * features:install openengsb-ports-jms + copy example+example+testlog.connector
- * to the openengsb/config-directory + copy openengsb/etc/keys/public.key.data
- * to src/main/resources
+ * Setup to run this app: + Start OpenEngSB + install the jms-feature: features:install openengsb-ports-jms + copy
+ * example+example+testlog.connector to the openengsb/config-directory + copy openengsb/etc/keys/public.key.data to
+ * src/main/resources
  */
 public final class SecureSampleApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleApp.class);
@@ -72,7 +72,7 @@ public final class SecureSampleApp {
 
     }
 
-    private static MethodResult call(MethodCall call, String username, Object credentails) throws IOException,
+    private static MethodResult call(MethodCall call, String username, Credentials credentails) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
@@ -99,14 +99,14 @@ public final class SecureSampleApp {
     }
 
     private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey,
-            String username, Object credentials) throws IOException, EncryptionException {
+            String username, Credentials credentials) throws IOException, EncryptionException {
         byte[] requestString = marshalSecureRequest(methodCallRequest, username, credentials);
         EncryptedMessage encryptedMessage = encryptMessage(sessionKey, requestString);
         return MAPPER.writeValueAsString(encryptedMessage);
     }
 
     private static EncryptedMessage encryptMessage(SecretKey sessionKey, byte[] requestString) throws IOException,
-            EncryptionException {
+        EncryptionException {
         PublicKey publicKey = readPublicKey();
         byte[] encryptedContent = CipherUtils.encrypt(requestString, sessionKey);
         byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
@@ -122,23 +122,19 @@ public final class SecureSampleApp {
     }
 
     private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
-            String username, Object credentials) throws IOException {
-        BeanDescription credentialsBean = BeanDescription.fromObject(credentials);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, credentialsBean);
+            String username, Credentials credentials) throws IOException {
+        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, credentials);
         return MAPPER.writeValueAsBytes(secureRequest);
     }
 
     private static MethodResult convertStringToResult(String resultString, SecretKey sessionKey) throws IOException,
-            ClassNotFoundException, DecryptionException {
+        ClassNotFoundException, DecryptionException {
         SecureResponse resultMessage = decryptResponse(resultString, sessionKey);
         return convertResult(resultMessage);
     }
 
     private static MethodResult convertResult(SecureResponse resultMessage) throws ClassNotFoundException {
         MethodResult result = resultMessage.getMessage().getResult();
-        Class<?> clazz = Class.forName(result.getClassName());
-        Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
-        result.setArg(resultValue);
         return result;
     }
 
@@ -156,17 +152,16 @@ public final class SecureSampleApp {
     }
 
     /**
-     * Small-test client that can be used for sending jms-messages to a running
-     * openengsb
+     * Small-test client that can be used for sending jms-messages to a running openengsb
      */
     public static void main(String[] args) throws Exception {
         LOGGER.info("initializing");
         init();
         LOGGER.info("initialized");
-        MethodCall methodCall = new MethodCall("doSomething", new Object[] { "Hello World!" }, ImmutableMap.of(
-                "serviceId", "example+example+testlog", "contextId", "foo"));
+        MethodCall methodCall = new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of(
+            "serviceId", "example+example+testlog", "contextId", "foo"));
         LOGGER.info("calling method");
-        MethodResult methodResult = call(methodCall, "admin", "password");
+        MethodResult methodResult = call(methodCall, "admin", new Password("password"));
         System.out.println(methodResult);
     }
 

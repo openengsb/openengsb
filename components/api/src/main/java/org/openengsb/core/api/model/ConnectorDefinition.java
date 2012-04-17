@@ -23,19 +23,18 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.openengsb.core.api.Constants;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * Representation of a unique identification of connector instances.
- *
+ * 
  * A connector instance is identified by the name of the connector id, the id of the domain it represents and an
  * additional instance id.
- *
+ * 
  */
 @SuppressWarnings("serial")
-@XmlRootElement
+@Provide(alias = "ConnectorDefinition")
 public class ConnectorDefinition implements Serializable {
 
     private static final String CONNECTOR_ID_SEPARATOR = "+";
@@ -99,7 +98,7 @@ public class ConnectorDefinition implements Serializable {
 
     /**
      * generates a new unique ConnectorID for the given domain and connector.
-     *
+     * 
      * A {@link UUID} is used as unique string-identifier.
      */
     public static ConnectorDefinition generate(String domainId, String connectorId) {
@@ -109,9 +108,9 @@ public class ConnectorDefinition implements Serializable {
 
     /**
      * parses a connectorID from a string-representation of the format:
-     *
+     * 
      * "&lt;domainType&gt;+&lt;connectorType&gt;+&lt;instanceId&gt;"
-     *
+     * 
      * Example: "scm+git+projectx-main-repo"
      */
     public static ConnectorDefinition fromFullId(String fullId) {
@@ -130,7 +129,7 @@ public class ConnectorDefinition implements Serializable {
     /**
      * returns a string-representation of the ConnectorDefinition for use with the service-registry. It is also used as
      * instanceId returned by {@link org.openengsb.core.api.OpenEngSBService#getInstanceId()}
-     *
+     * 
      * The resulting String can be parsed to a ConnectorId again using the {@link ConnectorDefinition#parse} method
      */
     public String toFullID() {

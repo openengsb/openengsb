@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.remote;
 
-package org.openengsb.domain.example.model;
+import java.io.IOException;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+public interface GenericObjectSerializer {
 
-@Provide(context = Constants.DELEGATION_DOMAIN_MODEL, alias = "ExampleRequestModel")
-public interface ExampleRequestModel extends OpenEngSBModel {
-    Integer getId();
+    byte[] serializeToByteArray(Object object) throws IOException;
 
-    void setId(Integer id);
+    String serializeToString(Object object) throws IOException;
 
-    String getName();
+    <T> T parse(String data, Class<T> type) throws IOException;
 
-    void setName(String name);
+    <T> T parse(byte[] data, Class<T> type) throws IOException;
+
 }

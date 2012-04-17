@@ -62,9 +62,6 @@ public class EKBProxyOutgoingFilter extends
         LOGGER.debug("entered EKBProxyOutgoingFilter");
         Object[] parameters = input.getMethodCall().getArgs();
         if (parameters != null) {
-            List<String> classes = input.getMethodCall().getClasses();
-            List<String> newClasses = new ArrayList<String>();
-
             for (int i = 0; i < parameters.length; i++) {
                 if (List.class.isAssignableFrom(parameters[i].getClass())) {
                     List<?> list = (List<?>) parameters[i];
@@ -83,17 +80,9 @@ public class EKBProxyOutgoingFilter extends
                     OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
                     LOGGER.debug("successfully generated wrapper");
                     parameters[i] = wrapper;
-                    newClasses.add(OpenEngSBModelWrapper.class.getName());                    
-                } else {
-                    if (classes != null && classes.size() >= (i + 1)) {
-                        newClasses.add(classes.get(i));
-                    } else {
-                        newClasses.add(parameters[i].getClass().getName());
-                    }
                 }
             }
             input.getMethodCall().setArgs(parameters);
-            input.getMethodCall().setClasses(newClasses);
         }
 
         LOGGER.debug("forward to next filter");
@@ -107,7 +96,6 @@ public class EKBProxyOutgoingFilter extends
             Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
             LOGGER.debug("successfully generated model");
             message.getResult().setArg(modelObject);
-            message.getResult().setClassName(wrapper.getModelClass());
         } else if (message.getResult().getArg() != null
                 && List.class.isAssignableFrom(message.getResult().getArg().getClass())) {
             List<?> list = (List<?>) message.getResult().getArg();

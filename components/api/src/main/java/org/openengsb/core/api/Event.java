@@ -23,9 +23,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.labs.delegation.service.Provide;
 
-@XmlRootElement
+@Provide(alias = "Event")
 public class Event {
     private String name;
     private Long processId;

@@ -14,36 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.common.remote;
 
-package org.openengsb.core.api;
+import org.openengsb.core.api.remote.FilterChainElement;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 
-public class SimpleTestBean {
-    String stringValue;
-    Long longValue;
+public class JsonMethodCallMarshalFilterFactory implements FilterChainElementFactory {
 
-    public SimpleTestBean() {
+    private GenericObjectSerializer serializer;
+
+    public JsonMethodCallMarshalFilterFactory() {
     }
 
-    public SimpleTestBean(String stringValue, Long longValue) {
-        super();
-        this.stringValue = stringValue;
-        this.longValue = longValue;
+    public JsonMethodCallMarshalFilterFactory(GenericObjectSerializer serializer) {
+        this.serializer = serializer;
     }
 
-    public String getStringValue() {
-        return stringValue;
+    @Override
+    public FilterChainElement newInstance() throws FilterConfigurationException {
+        return new JsonMethodCallMarshalFilter(serializer);
     }
 
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
-
-    public Long getLongValue() {
-        return longValue;
-    }
-
-    public void setLongValue(Long longValue) {
-        this.longValue = longValue;
+    public void setSerializer(GenericObjectSerializer serializer) {
+        this.serializer = serializer;
     }
 }
-

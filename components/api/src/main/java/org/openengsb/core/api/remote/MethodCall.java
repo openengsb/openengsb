@@ -19,12 +19,13 @@ package org.openengsb.core.api.remote;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.commons.lang.ArrayUtils;
+
+import com.google.common.base.Objects;
 
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
@@ -35,13 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * identify the right method.
  */
 @SuppressWarnings("serial")
-@XmlRootElement
 public class MethodCall implements Serializable {
 
     private String methodName;
     private Object[] args;
     private Map<String, String> metaData;
-    private List<String> classes;
 
     public MethodCall() {
     }
@@ -50,21 +49,11 @@ public class MethodCall implements Serializable {
         this(methodName, args, new HashMap<String, String>());
     }
 
-    public MethodCall(String methodName, Object[] args, List<String> classes) {
-        this(methodName, args, new HashMap<String, String>(), classes);
-    }
-
-    public MethodCall(String methodName, Object[] args, Map<String, String> metaData, List<String> classes) {
+    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
         super();
         this.methodName = methodName;
         this.args = args;
         this.metaData = metaData;
-        this.classes = classes;
-    }
-
-    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
-        this(methodName, args, metaData, null);
-        classes = getRealClassImplementation();
     }
 
     public String getMethodName() {
@@ -91,15 +80,7 @@ public class MethodCall implements Serializable {
         this.metaData = metaData;
     }
 
-    public List<String> getClasses() {
-        return classes;
-    }
-
-    public void setClasses(List<String> classes) {
-        this.classes = classes;
-    }
-
-    public List<String> getRealClassImplementation() {
+    public List<String> doGetRealClassImplementation() {
         List<String> argsClasses = new ArrayList<String>();
         if (getArgs() != null) {
             for (Object object : getArgs()) {
@@ -115,52 +96,26 @@ public class MethodCall implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(args);
-        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
-        result = prime * result + ((metaData == null) ? 0 : metaData.hashCode());
-        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        return result;
+        return Objects.hashCode(methodName, args, metaData);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+        if (obj instanceof MethodCall) {
+            MethodCall other = (MethodCall) obj;
+            return Objects.equal(methodName, other.methodName)
+                    && Objects.equal(args, other.args)
+                    && Objects.equal(metaData, other.metaData);
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MethodCall other = (MethodCall) obj;
-        if (!Arrays.equals(args, other.args)) {
-            return false;
-        }
-        if (classes == null) {
-            if (other.classes != null) {
-                return false;
-            }
-        } else if (!classes.equals(other.classes)) {
-            return false;
-        }
-        if (metaData == null) {
-            if (other.metaData != null) {
-                return false;
-            }
-        } else if (!metaData.equals(other.metaData)) {
-            return false;
-        }
-        if (methodName == null) {
-            if (other.methodName != null) {
-                return false;
-            }
-        } else if (!methodName.equals(other.methodName)) {
-            return false;
-        }
-        return true;
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+            .add("methodName", methodName)
+            .add("args", ArrayUtils.toString(args))
+            .add("metadata", metaData).toString();
     }
 
 }

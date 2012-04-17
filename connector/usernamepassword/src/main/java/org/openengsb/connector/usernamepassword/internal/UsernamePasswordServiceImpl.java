@@ -59,7 +59,6 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
         }
         Authentication authentication = new Authentication(username);
         return authentication;
-
     }
 
     @Override

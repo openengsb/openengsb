@@ -20,18 +20,15 @@ package org.openengsb.core.security.filter;
 import java.util.Map;
 
 import org.apache.shiro.authc.AuthenticationException;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
-import org.openengsb.labs.delegation.service.ClassProvider;
-import org.openengsb.labs.delegation.service.Constants;
-import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,45 +52,27 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
-    private OsgiUtilsService utilsService;
     private FilterAction next;
 
-    public MessageAuthenticatorFilter(OsgiUtilsService utilsService) {
+    public MessageAuthenticatorFilter() {
         super(SecureRequest.class, SecureResponse.class);
-        this.utilsService = utilsService;
     }
 
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
-        String className = input.getCredentials().getClassName();
-        Class<? extends Credentials> credentialType = loadCredentialType(className);
+
         try {
-            SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
+            SecurityContext.login(input.getPrincipal(), input.getCredentials());
         } catch (AuthenticationException e) {
-            throw new FilterException(e);
+            MethodResult methodResult = new MethodResult(e, ReturnType.Exception);
+            MethodResultMessage methodResultMessage =
+                new MethodResultMessage(methodResult, input.getMessage().getCallId());
+            return SecureResponse.create(methodResultMessage);
         }
         LOGGER.debug("authenticated");
         return (SecureResponse) next.filter(input, metaData);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends Credentials> loadCredentialType(String className) {
-        Filter filter =
-            utilsService.makeFilter(ClassProvider.class,
-                String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, className));
-        Class<?> loadedType;
-        try {
-            loadedType = utilsService.getOsgiServiceProxy(filter, ClassProvider.class).loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new FilterException(e);
-        }
-        if (!Credentials.class.isAssignableFrom(loadedType)) {
-            throw new IllegalStateException(
-                "There was a class in the permissions-context that is not derived from Credentials: "
-                        + loadedType.getName());
-        }
-        return (Class<? extends Credentials>) loadedType;
     }
 
     @Override

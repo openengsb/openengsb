@@ -123,6 +123,7 @@
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.openengsb.core.common.internal.Activator</Bundle-Activator>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -200,6 +201,14 @@
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.jaxb-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
   </dependencies>
 

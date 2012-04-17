@@ -19,9 +19,12 @@ package org.openengsb.core.api.model;
 
 import java.util.List;
 
+import org.openengsb.labs.delegation.service.Provide;
+
 /**
  * The OpenEngSBModelWrapper class is needed for the proper sending of OpenEngSBModels (with Jason). 
  */
+@Provide(alias = "ModelWrapper")
 public class OpenEngSBModelWrapper {
     private String modelClass;
     private List<OpenEngSBModelEntry> entries;

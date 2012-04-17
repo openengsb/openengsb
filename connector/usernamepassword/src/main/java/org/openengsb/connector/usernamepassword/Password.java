@@ -17,12 +17,18 @@
 
 package org.openengsb.connector.usernamepassword;
 
+import java.io.Serializable;
+
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.labs.delegation.service.Provide;
 
-@Provide(context = Constants.DELEGATION_CONTEXT_CREDENTIALS)
-public class Password implements Credentials {
+@Provide(context = Constants.DELEGATION_CONTEXT_CREDENTIALS, alias = "Password")
+public class Password implements Credentials, Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3687973890157849487L;
     private String value;
 
     public Password(String value) {

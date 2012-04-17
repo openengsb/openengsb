@@ -20,13 +20,12 @@ package org.openengsb.core.common.remote;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.JsonUtils;
 
 /**
  * This filter takes a JSON-serialized {@link MethodCallRequest} and deserializes it. The {@link MethodCallRequest}
@@ -46,19 +45,20 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     private FilterAction next;
 
-    public JsonMethodCallMarshalFilter() {
+    private GenericObjectSerializer objectSerializer;
+
+    public JsonMethodCallMarshalFilter(GenericObjectSerializer objectSerializer) {
         super(String.class, String.class);
+        this.objectSerializer = objectSerializer;
     }
 
     @Override
     public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
         MethodCallRequest call;
         try {
-            call = objectMapper.readValue(input, MethodCallRequest.class);
-            JsonUtils.convertAllArgs(call);
+            call = objectSerializer.parse(input, MethodCallRequest.class);
             MethodResultMessage returnValue = (MethodResultMessage) next.filter(call, metadata);
-            return objectMapper.writeValueAsString(returnValue);
+            return objectSerializer.serializeToString(returnValue);
         } catch (IOException e) {
             throw new FilterException(e);
         }
@@ -68,6 +68,10 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
         this.next = next;
+    }
+
+    public void setObjectSerializer(GenericObjectSerializer objectSerializer) {
+        this.objectSerializer = objectSerializer;
     }
 
 }

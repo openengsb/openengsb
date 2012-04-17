@@ -33,7 +33,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
@@ -52,74 +51,6 @@ import org.slf4j.LoggerFactory;
 public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
-
-    protected static final String METHOD_CALL_STRING = ""
-            + "{"
-            + "    \"classes\": ["
-            + "        \"java.lang.String\","
-            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-            + "    ],"
-            + "    \"methodName\": \"executeWorkflow\","
-            + "    \"metaData\": {"
-            + "        \"serviceId\": \"workflowService\","
-            + "        \"contextId\": \"foo\""
-            + "    },"
-            + "    \"args\": ["
-            + "        \"simpleFlow\","
-            + "        {"
-            + "        }"
-            + "    ]"
-            + "}";
-
-    protected static final String VOID_CALL_STRING = ""
-            + "{"
-            + "    \"classes\": ["
-            + "        \"" + Event.class.getName() + "\""
-            + "    ],"
-            + "    \"methodName\": \"audit\","
-            + "    \"metaData\": {"
-            + "        \"serviceId\": \"auditing+memoryauditing+auditing-root\","
-            + "        \"contextId\": \"foo\""
-            + "    },"
-            + "    \"args\": ["
-            + "        { \"name\": \"testMessage\" }"
-            + "    ]"
-            + "}";
-
-    protected static final String METHOD_CALL_STRING_FILTER = ""
-            + "{"
-            + "    \"classes\": ["
-            + "        \"java.lang.String\","
-            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-            + "    ],"
-            + "    \"methodName\": \"executeWorkflow\","
-            + "    \"metaData\": {"
-            + "        \"serviceFilter\": \"(objectClass=org.openengsb.core.api.workflow.WorkflowService)\","
-            + "        \"contextId\": \"foo\""
-            + "    },"
-            + "    \"args\": ["
-            + "        \"simpleFlow\","
-            + "        {"
-            + "        }"
-            + "    ]"
-            + "}";
-
-    protected static final String METHOD_CALL_WITH_MODEL_PARAMETER = ""
-            + "{"
-            + "    \"classes\": ["
-            + "        \"org.openengsb.core.api.model.OpenEngSBModelWrapper\""
-            + "    ],"
-            + "    \"methodName\": \"doSomethingWithModel\","
-            + "    \"metaData\": {"
-            + "        \"serviceId\": \"test\""
-            + "    },"
-            + "    \"args\": ["
-            + "        { \"entries\":["
-            + "              {\"value\":10, \"key\":\"id\",\"type\":\"java.lang.Integer\"},"
-            + "              {\"value\":\"test\", \"key\":\"name\",\"type\":\"java.lang.String\"}],"
-            + "          \"modelClass\":\"org.openengsb.domain.example.model.ExampleRequestModel\"}],"
-            + "    \"realClassImplementation\":[\"org.openengsb.core.api.model.OpenEngSBModelWrapper\"]"
-            + "}";
 
     protected RuleManager ruleManager;
 
@@ -169,17 +100,14 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
 
         String authInfo = ""
                 + "{"
-                + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
-                + "  \"data\":"
-                + "  {"
-                + "    \"value\":\"" + password + "\""
-                + "  }"
+                + "  \"@type\":\"org.openengsb.connector.usernamepassword.Password\","
+                + "  \"value\":\"" + password + "\""
                 + "}";
 
         String secureRequest = ""
                 + "{"
                 + "  \"principal\": \"" + username + "\","
-                + "  \"credentials\":" + authInfo + ","
+                + "  \"credentials\": " + authInfo + ","
                 + "  \"timestamp\":" + System.currentTimeMillis() + ","
                 + "  \"message\":" + request
                 + "}";

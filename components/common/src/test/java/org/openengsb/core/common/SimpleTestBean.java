@@ -15,19 +15,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.common;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+public class SimpleTestBean {
+    String stringValue;
+    Long longValue;
 
-@Provide(context = Constants.DELEGATION_DOMAIN_MODEL, alias = "ExampleRequestModel")
-public interface ExampleRequestModel extends OpenEngSBModel {
-    Integer getId();
+    public SimpleTestBean() {
+    }
 
-    void setId(Integer id);
+    public SimpleTestBean(String stringValue, Long longValue) {
+        super();
+        this.stringValue = stringValue;
+        this.longValue = longValue;
+    }
 
-    String getName();
+    public String getStringValue() {
+        return stringValue;
+    }
 
-    void setName(String name);
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
+    }
 }
+

@@ -17,6 +17,9 @@
 
 package org.openengsb.ports.jms;
 
+import org.openengsb.labs.delegation.service.Provide;
+
+@Provide(alias = "TestClass")
 public class TestClass {
     String test;
 
@@ -65,4 +68,3 @@ public class TestClass {
         return true;
     }
 }
-

@@ -17,6 +17,7 @@
 
 package org.openengsb.ports.jms;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -36,15 +37,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.common.JsonObjectSerializer;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
+import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilterFactory;
 import org.openengsb.core.security.filter.OutgoingWrapperFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.jms.core.JmsTemplate;
@@ -57,8 +60,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
             + "   \"message\":{"
             + "      \"result\":{"
             + "         \"type\":\"Object\","
-            + "         \"className\":\"java.lang.String\","
-            + "         \"arg\":\"42\","
+            + "         \"arg\": \"42\","
             + "         \"metaData\":{"
             + ""
             + "         }"
@@ -79,11 +81,14 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     private OutgoingPort outgoingPort;
 
+    private GenericObjectSerializer objectSerializer;
+
     @Before
     public void setup() throws Exception {
         MethodResult methodResult = new MethodResult("42");
         MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
-        String writeValueAsString = new ObjectMapper().writeValueAsString(SecureResponse.create(methodResultMessage));
+        String writeValueAsString = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(
+            SecureResponse.create(methodResultMessage));
 
         System.out.println(writeValueAsString);
 
@@ -106,10 +111,16 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         JMSOutgoingPort jmsOutgoingPort = new JMSOutgoingPort();
         jmsOutgoingPort.setFactory(jmsTemplateFactory);
 
+        JsonObjectSerializer jsonObjectSerializer = new JsonObjectSerializer();
+        jsonObjectSerializer.setBundleContext(bundleContext);
+        jsonObjectSerializer.init();
+        objectSerializer = jsonObjectSerializer;
+
         FilterChainFactory<MethodCallRequest, MethodResultMessage> factory =
             new FilterChainFactory<MethodCallRequest, MethodResultMessage>(MethodCallRequest.class,
                 MethodResultMessage.class);
-        factory.setFilters(Arrays.asList(OutgoingWrapperFilter.class, OutgoingJsonSecureMethodCallMarshalFilter.class,
+        factory.setFilters(Arrays.asList(OutgoingWrapperFilter.class,
+            new OutgoingJsonSecureMethodCallMarshalFilterFactory(objectSerializer),
             jmsOutgoingPort));
 
         OutgoingPortImpl outgoingPort = new OutgoingPortImpl();
@@ -127,10 +138,15 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
         JsonNode readTree = requestMessage.get("message").get("methodCall");
 
-        assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
-                + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.TestClass\"]"));
         assertThat(readTree.get("methodName").toString(), Matchers.equalTo("\"method\""));
-        assertThat(readTree.get("args").toString(), Matchers.equalTo("[\"123\",5,{\"test\":\"test\"}]"));
+        System.out.println(readTree.get("args"));
+        JsonNode argNode1 = readTree.get("args").get(0);
+        assertThat(argNode1.getTextValue(), is("123"));
+        JsonNode argNode2 = readTree.get("args").get(1);
+        assertThat(argNode2.toString(), is("5"));
+        JsonNode argNode3 = readTree.get("args").get(2);
+        assertThat(argNode3.get("test").getTextValue(), is("test"));
+        assertThat(argNode3.get("@type").getTextValue(), is("TestClass"));
         assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"serviceId\":\"test\"}"));
     }
 

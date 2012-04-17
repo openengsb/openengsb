@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * Container class that describes a connector. It serves as common model for
@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * specification for more details http://www.osgi.org/Download/Release4V42).
  */
 @SuppressWarnings("serial")
-@XmlRootElement
+@Provide(alias = "ConnectorDescription")
 public class ConnectorDescription implements Serializable {
 
     private Map<String, String> attributes;

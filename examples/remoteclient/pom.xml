@@ -58,6 +58,11 @@
       <artifactId>org.openengsb.framework.common</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.security</artifactId>
     </dependency>

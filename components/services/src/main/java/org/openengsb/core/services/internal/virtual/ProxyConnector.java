@@ -54,7 +54,7 @@ public class ProxyConnector extends VirtualConnector {
             paramTypeNames.add(paramType.getName());
         }
 
-        MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
+        MethodCall methodCall = new MethodCall(method.getName(), args, metadata);
         MethodResult callResult = portUtil.sendMethodCallWithResult(portId, destination, methodCall);
         switch (callResult.getType()) {
             case Object:

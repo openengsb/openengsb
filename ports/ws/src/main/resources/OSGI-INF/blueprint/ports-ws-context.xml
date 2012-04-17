@@ -49,7 +49,9 @@
     <property name="filters">
       <list>
         <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
-        <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
+        <bean class="org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilterFactory">
+          <property name="serializer" ref="objectSerializer" />
+        </bean>
         <bean class="org.openengsb.ports.ws.WSOutgoingPort">
           <property name="bundleContext" ref="blueprintBundleContext" />
         </bean>
@@ -61,6 +63,8 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
+  <reference id="objectSerializer" interface="org.openengsb.core.api.remote.GenericObjectSerializer" />
+
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="java.lang.String" />
     <property name="outputType" value="java.lang.String" />
@@ -71,11 +75,11 @@
           <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
-          <property name="utilsService" ref="utilsService" />
+        <bean class="org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilterFactory">
+          <property name="objectSerializer" ref="objectSerializer" />
         </bean>
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+        <value>org.openengsb.core.security.filter.MessageAuthenticatorFilter</value>
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">

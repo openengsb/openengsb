@@ -31,10 +31,10 @@ import org.openengsb.core.api.workflow.ProcessBagException;
 
 /**
  * The ProcessBag is a workflow property that contains all neccessary information and workflow metadata.
- *
+ * 
  * It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow creates its own
  * new ProcessBag when none is passed on workflow start.
- *
+ * 
  * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
 @SuppressWarnings("serial")
@@ -105,27 +105,12 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
         user = bag.user;
     }
 
-    public void setProcessId(String processId) {
-        synchronized (processIdLock) {
-            this.processId = processId;
-            processIdLock.notifyAll();
-        }
+    public String getProcessId() {
+        return processId;
     }
 
-    public String getProcessId() {
-        if (empty) {
-            return processId;
-        }
-        synchronized (processIdLock) {
-            while (processId == null) {
-                try {
-                    processIdLock.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return processId;
-        }
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 
     public void setContext(String context) {
@@ -146,7 +131,7 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
 
     /**
      * Adds a new property only if it does not exist already
-     *
+     * 
      * @throws ProcessBagException if the key is already present
      */
     public void addProperty(String key, Object value) throws ProcessBagException {

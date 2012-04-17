@@ -14,31 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.common.remote;
 
-package org.openengsb.core.security.filter;
-
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.GenericObjectSerializer;
 
-public class MessageAuthenticatorFilterFactory implements FilterChainElementFactory {
+public class JsonOutgoingMethodCallMarshalFilterFactory implements FilterChainElementFactory {
 
-    private OsgiUtilsService utilsService;
+    private GenericObjectSerializer serializer;
 
-    public MessageAuthenticatorFilterFactory() {
+    public JsonOutgoingMethodCallMarshalFilterFactory() {
     }
 
-    public MessageAuthenticatorFilterFactory(OsgiUtilsService utilsService) {
-        this.utilsService = utilsService;
+    public JsonOutgoingMethodCallMarshalFilterFactory(GenericObjectSerializer serializer) {
+        this.serializer = serializer;
     }
 
     @Override
     public FilterChainElement newInstance() throws FilterConfigurationException {
-        return new MessageAuthenticatorFilter(utilsService);
+        return new JsonOutgoingMethodCallMarshalFilter(serializer);
     }
 
-    public void setUtilsService(OsgiUtilsService utilsService) {
-        this.utilsService = utilsService;
+    public void setSerializer(GenericObjectSerializer serializer) {
+        this.serializer = serializer;
     }
 }

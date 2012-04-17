@@ -29,10 +29,9 @@ public class MethodResult implements Serializable {
     private static final long serialVersionUID = 3311624967097440078L;
 
     public enum ReturnType {
-            Void, Object, Exception,
+        Void, Object, Exception,
     }
 
-    private String className;
     private Object arg;
     private ReturnType type;
     private Map<String, String> metaData;
@@ -45,30 +44,17 @@ public class MethodResult implements Serializable {
     }
 
     public MethodResult(Object arg, ReturnType type) {
-        this(arg, type, arg.getClass().getName());
-    }
-
-    public MethodResult(Object arg, ReturnType type, String className) {
-        this(arg, type, className, new HashMap<String, String>());
+        this(arg, type, new HashMap<String, String>());
     }
 
     public MethodResult(Object arg, Map<String, String> metaData) {
-        this(arg, ReturnType.Object, arg.getClass().getName(), metaData);
+        this(arg, ReturnType.Object, metaData);
     }
 
-    public MethodResult(Object arg, ReturnType type, String className, Map<String, String> metaData) {
-        this.className = className;
+    public MethodResult(Object arg, ReturnType type, Map<String, String> metaData) {
         this.arg = arg;
         this.type = type;
         this.metaData = metaData;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
     }
 
     public Object getArg() {
@@ -101,6 +87,6 @@ public class MethodResult implements Serializable {
     }
 
     public static MethodResult newVoidResult() {
-        return new MethodResult(null, ReturnType.Void, void.class.getName());
+        return new MethodResult(null, ReturnType.Void);
     }
 }
