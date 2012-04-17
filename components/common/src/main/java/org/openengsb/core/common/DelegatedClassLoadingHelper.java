@@ -16,8 +16,6 @@
  */
 package org.openengsb.core.common;
 
-import java.util.Collection;
-
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.Constants;
 import org.osgi.framework.BundleContext;
@@ -25,10 +23,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
 
 public class DelegatedClassLoadingHelper {
 
@@ -41,31 +35,6 @@ public class DelegatedClassLoadingHelper {
     }
 
     public DelegatedClassLoadingHelper() {
-    }
-
-    public Collection<Class<?>> getAllKnownSubTypes(String superType) {
-        LOGGER.info("queryKnownSubTypes for {}", superType);
-        Collection<Class<?>> result = Sets.newHashSet();
-        ServiceReference[] serviceReferences;
-        try {
-            serviceReferences = bundleContext.getAllServiceReferences(ClassProvider.class.getName(), null);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        if (serviceReferences == null) {
-            return result;
-        }
-        for (ServiceReference r : serviceReferences) {
-            ClassProvider service = (ClassProvider) bundleContext.getService(r);
-            Collection<Class<?>> allClasses = service.listClasses();
-            result.addAll(Collections2.filter(allClasses, new Predicate<Class<?>>() {
-                @Override
-                public boolean apply(Class<?> input) {
-                    return true;
-                }
-            }));
-        }
-        return result;
     }
 
     public Class<?> loadClass(String name) throws ClassNotFoundException {

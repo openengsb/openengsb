@@ -32,7 +32,6 @@ import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
 import org.codehaus.jackson.type.JavaType;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.JsonObjectSerializer.DelegatingSubtypeResolver;
 import org.openengsb.core.common.JsonObjectSerializer.DelegatingTypeIdResolver;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.labs.delegation.service.ClassProvider;
@@ -190,7 +189,6 @@ public class JsonObjectMapperUT extends AbstractOsgiMockServiceTest {
         typer = typer.init(JsonTypeInfo.Id.NAME, new DelegatingTypeIdResolver(classLoadingHelper));
         typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
         objectMapper.setDefaultTyping(typer);
-        objectMapper.setSubtypeResolver(new DelegatingSubtypeResolver(classLoadingHelper));
 
         ObjectMapper plainMapper = new ObjectMapper();
         ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();

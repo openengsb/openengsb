@@ -17,20 +17,13 @@
 package org.openengsb.core.common;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.MapperConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTypeResolverBuilder;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.introspect.AnnotatedClass;
-import org.codehaus.jackson.map.introspect.AnnotatedMember;
-import org.codehaus.jackson.map.jsontype.NamedType;
-import org.codehaus.jackson.map.jsontype.SubtypeResolver;
 import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
 import org.codehaus.jackson.map.type.SimpleType;
@@ -40,9 +33,6 @@ import org.openengsb.labs.delegation.service.Provide;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 public class JsonObjectSerializer implements GenericObjectSerializer {
 
@@ -119,59 +109,7 @@ public class JsonObjectSerializer implements GenericObjectSerializer {
         typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
         mapper.setDefaultTyping(typer);
 
-        mapper.setSubtypeResolver(new DelegatingSubtypeResolver(classLoadingHelper));
-
         return mapper;
-    }
-
-    static final class DelegatingSubtypeResolver extends SubtypeResolver {
-
-        private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingSubtypeResolver.class);
-
-        private DelegatedClassLoadingHelper helper;
-
-        public DelegatingSubtypeResolver(DelegatedClassLoadingHelper helper) {
-            this.helper = helper;
-        }
-
-        @Override
-        public void registerSubtypes(Class<?>... classes) {
-            throw new UnsupportedOperationException("This method should not be used in this resolver");
-        }
-
-        @Override
-        public void registerSubtypes(NamedType... types) {
-            throw new UnsupportedOperationException("This method should not be used in this resolver");
-        }
-
-        @Override
-        public Collection<NamedType> collectAndResolveSubtypes(AnnotatedClass basetype, MapperConfig<?> config,
-                AnnotationIntrospector ai) {
-            String typeName = basetype.getName();
-            LOGGER.info("resolving {}", typeName);
-            return getKnownSubclasses(typeName);
-        }
-
-        private Collection<NamedType> getKnownSubclasses(String typeName) {
-            Collection<Class<?>> allKnownSubTypes = helper.getAllKnownSubTypes(typeName);
-            return Collections2.transform(allKnownSubTypes, new Function<Class<?>, NamedType>() {
-                @Override
-                public NamedType apply(Class<?> input) {
-                    Provide annotation = input.getAnnotation(Provide.class);
-                    if (annotation != null && (!annotation.alias()[0].isEmpty())) {
-                        return new NamedType(input, annotation.alias()[0]);
-                    }
-                    return new NamedType(input);
-                }
-            });
-        }
-
-        @Override
-        public Collection<NamedType> collectAndResolveSubtypes(AnnotatedMember property, MapperConfig<?> config,
-                AnnotationIntrospector ai) {
-            LOGGER.info("resolving {}", property);
-            return getKnownSubclasses(property.getDeclaringClass().getName());
-        }
     }
 
     static final class DelegatingTypeIdResolver implements TypeIdResolver {
