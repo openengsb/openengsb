@@ -17,11 +17,9 @@
 
 package org.openengsb.ui.admin.loginPage;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
+
 import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.markup.html.CSSPackageResource;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -32,9 +30,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.model.UsernamePassword;
-import org.openengsb.ui.common.FavIconPackageResource;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.imprint.ImprintPanel;
 import org.openengsb.ui.common.resources.css.CommonCssLocator;
@@ -44,7 +40,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
 
-public class LoginPage extends BasePage {
+public class LoginPage extends OpenEngSBPage {
 
     private static final long serialVersionUID = 4704550987311760491L;
 
@@ -60,19 +56,24 @@ public class LoginPage extends BasePage {
     }
     
     public LoginPage() {
-        initHeader();
         initContent();
     }
-
-    private void initHeader() {
-        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
-        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
-        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryUi()));
-        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryHelper()));
-        add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator.getFavIcon()));
+    
+    public LoginPage(PageParameters parameters) {
+        super(parameters);
     }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+    response.renderCSSReference(CommonCssLocator.getGridsCss());
+    response.renderCSSReference(CommonCssLocator.getCommonCss());
+    response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
+    response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
+    response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
+    response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
+    /*add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
+              .getFavIcon())); */
+    } 
     
     private void initContent() {
         @SuppressWarnings("serial")
@@ -114,9 +115,4 @@ public class LoginPage extends BasePage {
                 + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
         add(addUserLink);
     }
-
-    public LoginPage(PageParameters parameters) {
-        super(parameters);
-    }
-
 }

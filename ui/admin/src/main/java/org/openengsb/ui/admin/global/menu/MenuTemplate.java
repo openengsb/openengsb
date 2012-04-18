@@ -20,13 +20,13 @@ package org.openengsb.ui.admin.global.menu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
@@ -89,7 +89,7 @@ public class MenuTemplate extends Panel {
                 
                 if (menuItem.getIcon() != null) {
                     String backgroundAttribute = "background:url('resources/"
-                        + menuItem.getIcon().getSharedResourceKey() + "') no-repeat scroll left center transparent;";
+                        + menuItem.getIcon().getExtension() + "') no-repeat scroll left center transparent;";
                     item.add(new SimpleAttributeModifier("style", backgroundAttribute));
                 }
                 
@@ -128,8 +128,8 @@ public class MenuTemplate extends Panel {
             ResourceReference icon, String... authority) {
         
     	ComponentStringResourceLoader csrl = new ComponentStringResourceLoader();
-        String label = csrl.loadStringResource(linkClass, langKey, getSession().getLocale(), getSession().getStyle());
-        String description = csrl.loadStringResource(linkClass, langDescKey, getSession().getLocale(), getSession().getStyle());
+        String label = csrl.loadStringResource(linkClass, langKey, getSession().getLocale(), getSession().getStyle(),"");
+        String description = csrl.loadStringResource(linkClass, langDescKey, getSession().getLocale(), getSession().getStyle(),"");
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
         addAuthorizationRoles(pageLabelLink, authority);
         

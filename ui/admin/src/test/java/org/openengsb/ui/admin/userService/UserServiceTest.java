@@ -136,7 +136,7 @@ public class UserServiceTest extends AbstractUITest {
 
         tester.debugComponentTrees();
     }
-    */
+    
     @Test
     public void deleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);

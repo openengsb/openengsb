@@ -16,20 +16,21 @@
  */
 package org.openengsb.ui.common.resources.css;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 public final class CommonCssLocator {
 
     public static ResourceReference getGridsCss() {
-        return new ResourceReference(CommonCssLocator.class, "grids.css");
+        return new PackageResourceReference(CommonCssLocator.class, "grids.css");
     }
 
     public static ResourceReference getCommonCss() {
-        return new ResourceReference(CommonCssLocator.class, "jquery.css");
+        return new PackageResourceReference(CommonCssLocator.class, "jquery.css");
     }
 
     public static ResourceReference getJqueryUiCss() {
-        return new ResourceReference(CommonCssLocator.class, "style.css");
+        return new PackageResourceReference(CommonCssLocator.class, "style.css");
     }
     
     private CommonCssLocator() {

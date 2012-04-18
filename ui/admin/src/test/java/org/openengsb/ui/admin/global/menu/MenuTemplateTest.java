@@ -94,7 +94,7 @@ public class MenuTemplateTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
+        tester.getApplication().getComponentInstantiationListeners().add(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 

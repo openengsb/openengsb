@@ -17,7 +17,6 @@
 
 package org.openengsb.ui.admin.userService;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -63,7 +62,7 @@ public class UserListPage extends BasePage {
             userDialogue.replaceWith(editUser);
             userDialogue = editUser;
             target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + editUser.getMarkupId()
+            target.appendJavaScript("showModalDialogue('" + editUser.getMarkupId()
                 + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false,500,400);");
         }
     }
@@ -74,6 +73,7 @@ public class UserListPage extends BasePage {
 
         private EditPanel(String id) {
             super(id);
+        }
 
         protected void openEditorPage(String user) {
             PageParameters parameters = new PageParameters();

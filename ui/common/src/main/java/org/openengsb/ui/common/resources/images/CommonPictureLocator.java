@@ -16,16 +16,17 @@
  */
 package org.openengsb.ui.common.resources.images;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 public final class CommonPictureLocator {
 
     public static ResourceReference getGreyscaleLogo() {
-        return new ResourceReference(CommonPictureLocator.class, "openengsb_small_greyscale.png");
+        return new PackageResourceReference(CommonPictureLocator.class, "openengsb_small_greyscale.png");
     }
 
     public static ResourceReference getFavIcon() {
-        return new ResourceReference(CommonPictureLocator.class, "openengsb.ico");
+        return new PackageResourceReference(CommonPictureLocator.class, "openengsb.ico");
     }
     
     private CommonPictureLocator() {

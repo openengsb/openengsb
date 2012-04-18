@@ -21,6 +21,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 @SuppressWarnings("serial")
 public class BookmarkablePageLabelLink<Type extends WebPage> extends BookmarkablePageLink<Type> {
@@ -54,7 +55,7 @@ public class BookmarkablePageLabelLink<Type extends WebPage> extends Bookmarkabl
      *      org.apache.wicket.markup.ComponentTag)
      */
     @Override
-    protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        replaceComponentTagBody(markupStream, openTag, label);
+	public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
+        replaceComponentTagBody(markupStream, openTag, this.label);
     }
 }

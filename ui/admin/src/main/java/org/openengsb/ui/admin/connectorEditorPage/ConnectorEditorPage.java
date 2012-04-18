@@ -147,9 +147,9 @@ public class ConnectorEditorPage extends BasePage {
 
     public ConnectorEditorPage(PageParameters parameters) {
         super(parameters, pageNameKey);
-        String serviceId = parameters.getString("id");
-        String domainType = parameters.getString("domainType");
-        String connectorType = parameters.getString("connectorType");
+        String serviceId = parameters.get("id").toString();
+        String domainType = parameters.get("domainType").toString();
+        String connectorType = parameters.get("connectorType").toString();
 
         ConnectorDefinition connectorId = new ConnectorDefinition(domainType, connectorType, serviceId);
         retrieveDescriptor(connectorType);
