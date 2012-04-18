@@ -34,7 +34,11 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 public class UserListPage extends BasePage {
 
     Panel userDialogue;
+
     private static final long serialVersionUID = -6841313899998597640L;
+    
+    public static final String pageNameKey="userListPage.title";
+    public static final String pageDescriptionKey="userListPage.description";
 
     private final class MyUserListPanel extends UserListPanel {
         private static final long serialVersionUID = 4561294480791309137L;
@@ -50,11 +54,21 @@ public class UserListPage extends BasePage {
             userDialogue.replaceWith(createUser);
             userDialogue = createUser;
             target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','"
-                + getLocalizer().getString("add.user", this) + "',false);");
+        }
+
+        @Override
+        protected void openEditorPage(AjaxRequestTarget target, String user) {
+            EditPanel editUser = new EditPanel("userDialogue", user);  
+            editUser.setOutputMarkupId(true);
+            userDialogue.replaceWith(editUser);
+            userDialogue = editUser;
+            target.addComponent(userDialogue);
+            target.appendJavascript("showModalDialogue('" + editUser.getMarkupId()
+                + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false,500,400);");
         }
     }
     
+    //TODO CHECK IF NEEDED? //
     private final class EditPanel extends UserEditPanel {
         private static final long serialVersionUID = -4646745795328499771L;
 
@@ -78,11 +92,12 @@ public class UserListPage extends BasePage {
     }
 
     public UserListPage() {
-        initContent();
+        super(pageNameKey);
+    	initContent();
     }
 
     public UserListPage(PageParameters parameters) {
-        super(parameters);
+        super(parameters, pageNameKey);
         initContent();
     }
 

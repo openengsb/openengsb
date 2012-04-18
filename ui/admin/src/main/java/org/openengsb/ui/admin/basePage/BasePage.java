@@ -17,15 +17,14 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.protocol.http.WebSession;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
@@ -40,90 +39,86 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
 public abstract class BasePage extends OpenEngSBPage {
 
+	private String pageNameKey;
+	
 	public BasePage() {
+		checkAuthentication();
+		initHeader();
+        initCommonContent();
+    }
+	
+	public BasePage(String pageNameKey) {
+		checkAuthentication();
+		this.pageNameKey=pageNameKey;
+		initHeader();
+        initCommonContent();
+    }
+	
+	private void checkAuthentication() {
 		if (!((AuthenticatedWebSession) getSession()).isSignedIn()) {
             throw new RestartResponseAtInterceptPageException(LoginPage.class);
-		}
-		initHeader();
-		initCommonContent();
+        }
 	}
 
-	private void initHeader() {
-		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
-				.getGridsCss()));
-		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
-				.getCommonCss()));
-		add(CSSPackageResource.getHeaderContribution(CommonCssLocator
-				.getJqueryUiCss()));
-		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
-				.getJqueryJs()));
-		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
-				.getJqueryUi()));
-		add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
-				.getJqueryHelper()));
-		add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
-				.getFavIcon()));
-	}
+    private void initHeader() {
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+                .getGridsCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+                .getCommonCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator
+                .getJqueryUiCss()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+                .getJqueryJs()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+                .getJqueryUi()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator
+                .getJqueryHelper()));
+        add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
+                .getFavIcon()));
+    }
 
-	private void initCommonContent() {
-		initializeHeader();
-		initializeMenu();
-		initializeFooter();
-	}
+    private void initCommonContent() {
+        initializeHeader();
+        initializeMenu();
+        initializeFooter();
+        
+        if (pageNameKey != null) {
+            Label sectionName = new Label("sectionName",new StringResourceModel(pageNameKey, this, null));
+            add(sectionName);
+        } else {
+        	add(new EmptyPanel("sectionName"));
+        }
+    }
 
-	public BasePage(PageParameters parameters) {
-		super(parameters);
-		initCommonContent();
-	}
+    public BasePage(PageParameters parameters) {
+        super(parameters);
+        initCommonContent();
+    }
+    
+    public BasePage(PageParameters parameters, String pageNameKey) {
+        super(parameters);
+        initCommonContent();
+        this.pageNameKey=pageNameKey;
+    }
 
-	private void initializeFooter() {
-		add(new FooterTemplate("footer"));
-	}
+    private void initializeFooter() {
+        add(new FooterTemplate("footer"));
+    }
 
-	private void initializeHeader() {
-		add(new HeaderTemplate("header"));
-	}
+    private void initializeHeader() {
+        add(new HeaderTemplate("header"));
+    }
 
-	private void initializeMenu() {
-		add(new MenuTemplate("menu", this.getMenuItem()));
-	}
+    private void initializeMenu() {
+        add(new MenuTemplate("menu", this.getMenuItem()));
+    }
 
-	/**
-	 * @return the class name, which should be the index in navigation bar
-	 * 
-	 */
-	public String getMenuItem() {
-		return this.getClass().getSimpleName();
-	}
-
-    private Component createProjectChoice() {
-        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
-            @Override
-            public String getObject() {
-                return getSessionContextId();
-            }
-
-            @Override
-            public void setObject(String object) {
-                ContextHolder.get().setCurrentContextId(object);
-            }
-
-            @Override
-            public void detach() {
-            }
-        }, getAvailableContexts()) {
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-                return true;
-            }
-
-            @Override
-            protected void onModelChanged() {
-                setResponsePage(BasePage.this.getClass());
-            }
-
-        };
-        return dropDownChoice;
+    /**
+     * @return the class name, which should be the index in navigation bar
+     *  
+     */
+    public String getMenuItem() {
+        return this.getClass().getSimpleName();
     }
 
     /**
@@ -147,5 +142,4 @@ public abstract class BasePage extends OpenEngSBPage {
         }
         return contextId;
     }
->>>>>>> 348d939b9c72a78037e603995b0b190c31f15ef6
 }

@@ -23,11 +23,43 @@
       
 <wicket:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title><wicket:message key="title"></wicket:message></title>
+  <title><wicket:message key="title" /></title>
 </wicket:head>
 
 
 <body>
+  <div id="loginContainer" class="lightbox">
+    <div class="line">
+      <div class="unit size1of3"><img wicket:id="topImage" class="logoSmallSize inline" /></div>
+      <div class="unit size1of3"><h1><wicket:message key="adminConsole.title" /></h1></div>
+      <div class="unit size1of3 lastUnit">&nbsp;</div>      
+    </div>
+    <div class="separator">&nbsp;</div>
+    <div class="line">
+      <div class="unit size3of4">
+        <p><wicket:message key="login.welcome" /></p>
+      </div>
+      <div class="unit size1of4 lastUnit">
+        <span wicket:id="feedback" />
+        <form wicket:id="loginForm">
+          <label for="username" class="lightBlue"><wicket:message key="username"></wicket:message></label><br />
+          <input type="text" wicket:id="username" /> 
+
+          <label for="password" class="lightBlue"><wicket:message key="password"></wicket:message></label><br />
+          <input type="password" wicket:id="password" />
+          <input type="submit" wicket:message="value:button.login,title:button.login" />
+        </form>
+      </div>
+    </div>
+    <span>
+      <a href="../" wicket:id="imprint">
+        <wicket:message key="imprint"></wicket:message>
+      </a>
+    </span>
+  </div>
+  <div wicket:id="imprintDialogue" class="hidden"></div>
+  
+  <!-- 
 	<div id="loginMaskContainer">
 	  <div class="line">  
         <div class="unit size1of2 background">
@@ -69,5 +101,6 @@
   	  </div>
   	  <div wicket:id="imprintDialogue" class="hidden"></div>
   	</div>
+  	-- -->
 </body>
 </html>

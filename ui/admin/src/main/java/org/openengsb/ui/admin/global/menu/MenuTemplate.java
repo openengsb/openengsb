@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
@@ -37,7 +38,6 @@ import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
@@ -61,22 +61,13 @@ public class MenuTemplate extends Panel {
     }
 
     private void initMainMenuItems() {
-        addMenuItem("Index", Index.class, "index.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
-        addMenuItem("UserService", UserListPage.class, "userService.title", 
-                new ResourceReference(MenuTemplate.class, "userIcon.png"), "ROLE_ADMIN");
-        addMenuItem("TestClient", TestClient.class, "testclient.title", 
-                new ResourceReference(MenuTemplate.class, "testClientIcon.png"));
-        addMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
-        addMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
-        addMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
-        addMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"));
-        addMenuItem("WiringPage", WiringPage.class, "wiring.title", 
-                new ResourceReference(MenuTemplate.class, "dashboardIcon.png"), "ROLE_ADMIN");
+        addMenuItem("Index", Index.class, Index.pageNameKey, Index.pageDescriptionKey);
+        addMenuItem("UserService", UserListPage.class, UserListPage.pageNameKey, UserListPage.pageDescriptionKey, "ROLE_ADMIN");
+        addMenuItem("TestClient", TestClient.class, TestClient.pageNameKey, TestClient.pageDescriptionKey);
+        addMenuItem("SendEventPage", SendEventPage.class, SendEventPage.pageNameKey, SendEventPage.pageDescriptionKey);
+        addMenuItem("ServiceListPage", ServiceListPage.class, ServiceListPage.pageNameKey, ServiceListPage.pageDescriptionKey);
+        addMenuItem("TaskOverview", TaskOverview.class, TaskOverview.pageNameKey, TaskOverview.pageDescriptionKey);
+        addMenuItem("WiringPage", WiringPage.class, WiringPage.pageNameKey, WiringPage.pageDescriptionKey , "ROLE_ADMIN");
     }
 
     private void initMainMenu() {
@@ -93,9 +84,14 @@ public class MenuTemplate extends Panel {
                 MenuItem menuItem = item.getModelObject();
                 item.add(menuItem.getLink());
                 
-                String backgroundAttribute = "background:url('resources/" + menuItem.getIcon().getSharedResourceKey()
-                        + "') no-repeat scroll left center transparent;";
-                item.add(new SimpleAttributeModifier("style", backgroundAttribute));
+                Label itemDescription = new Label("itemDescripton", menuItem.getItemDescription());
+                item.add(itemDescription);
+                
+                if (menuItem.getIcon() != null) {
+                    String backgroundAttribute = "background:url('resources/"
+                        + menuItem.getIcon().getSharedResourceKey() + "') no-repeat scroll left center transparent;";
+                    item.add(new SimpleAttributeModifier("style", backgroundAttribute));
+                }
                 
                 if (item.getIndex() == menuItems.size() - 1) {
                     item.add(new SimpleAttributeModifier("class", "lastElement"));
@@ -122,13 +118,26 @@ public class MenuTemplate extends Panel {
      * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
      * should be displayed and authority defines who is authorized to see the link
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, ResourceReference icon,
+    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String langDescKey,
             String... authority) {
-        StringResourceModel label = new StringResourceModel(langKey, this, null);
+        addMenuItem(index, linkClass, langKey, langDescKey, null, authority);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String langDescKey, 
+            ResourceReference icon, String... authority) {
+        
+    	ComponentStringResourceLoader csrl = new ComponentStringResourceLoader();
+        String label = csrl.loadStringResource(linkClass, langKey, getSession().getLocale(), getSession().getStyle());
+        String description = csrl.loadStringResource(linkClass, langDescKey, getSession().getLocale(), getSession().getStyle());
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
         addAuthorizationRoles(pageLabelLink, authority);
-        menuItems.add(new MenuItem(index, pageLabelLink, icon));
+        
+        if (icon == null) {
+            menuItems.add(new MenuItem(index, pageLabelLink, description));
+        } else {
+            menuItems.add(new MenuItem(index, pageLabelLink, description, icon));
+        }
         avialableItems.add(index);
     }
 
@@ -143,20 +152,23 @@ public class MenuTemplate extends Panel {
 
     private static class MenuItem implements Serializable {
         private final String index;
+        private final String itemDescription;
         private final BookmarkablePageLabelLink<? extends WebPage> link;
         private final ResourceReference icon;
 
-        @SuppressWarnings("unused")
-        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
+        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, String itemDescription) {
             this.index = index;
             this.link = link;
             icon = null;
+            this.itemDescription = itemDescription;
         }
 
-        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, ResourceReference icon) {
+        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, String itemDescription,
+                ResourceReference icon) {
             this.index = index;
             this.link = link;
             this.icon = icon;
+            this.itemDescription = itemDescription;
         }
 
         public String getItemName() {
@@ -169,6 +181,10 @@ public class MenuTemplate extends Panel {
         
         public ResourceReference getIcon() {
             return icon;
+        }
+        
+        public String getItemDescription() {
+            return itemDescription;
         }
     } 
 

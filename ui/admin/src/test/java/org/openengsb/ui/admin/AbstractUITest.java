@@ -95,7 +95,11 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void makeContextMock() throws Exception {
-        tester = new WicketTester();
+    	WicketApplication wicketApplication = new WicketApplication();
+    	tester = new WicketTester(wicketApplication);
+    	wicketApplication.addComponentInstantiationListener(
+                new PaxWicketSpringBeanComponentInjector(wicketApplication, context));
+    	
         context = new ApplicationContextMock();
         defaultPaxWicketInjector = new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context);
         tester.getApplication().getComponentInstantiationListeners().add(defaultPaxWicketInjector);

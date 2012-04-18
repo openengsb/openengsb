@@ -31,7 +31,10 @@ public class TaskOverview extends BasePage {
 
     private static final long serialVersionUID = -2538133590170315082L;
 
-    @PaxWicketBean(name = "webtaskboxService")
+    public static final String pageNameKey="taskOverview.title";
+    public static final String pageDescriptionKey="taskOverview.description";
+	
+	@PaxWicketBean(name = "webtaskboxService")
     private WebTaskboxService taskboxService;
 
     public TaskOverview() {
@@ -39,7 +42,7 @@ public class TaskOverview extends BasePage {
     }
 
     public TaskOverview(PageParameters parameters) {
-        super(parameters);
+        super(parameters, pageNameKey);
         initContent();
     }
 

@@ -55,6 +55,9 @@ public class ConnectorEditorPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
+    public static final String pageNameKey="connectorEditorPage.tile";
+    public static final String pageDescriptionKey="connectorEditorPage.title";
+    
     @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;
@@ -143,10 +146,11 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     public ConnectorEditorPage(PageParameters parameters) {
-        super(parameters);
-        String serviceId = parameters.get("id").toOptionalString();
-        String domainType = parameters.get("domainType").toOptionalString();
-        String connectorType = parameters.get("connectorType").toOptionalString();
+        super(parameters, pageNameKey);
+        String serviceId = parameters.getString("id");
+        String domainType = parameters.getString("domainType");
+        String connectorType = parameters.getString("connectorType");
+
         ConnectorDefinition connectorId = new ConnectorDefinition(domainType, connectorType, serviceId);
         retrieveDescriptor(connectorType);
         initEditor(connectorType);

@@ -42,28 +42,27 @@ limitations under the License.
     <wicket:panel>
       <div wicket:id="listContainer">
         <form wicket:id="form">
-          <div class="line tableHead">
-            <div class="unit size2of3">
-              <wicket:message key="username.tableHead" />
-            </div>
-            <div class="unit size1of3 lastUnit">
-              <wicket:message key="action.tableHead" />
-            </div>
-          </div>
-          <div class="line"  wicket:id="list">
-            <div class="unit size2of3">
-              <span wicket:id="item.name">[service.name]</span>
-            </div>
-            <div class="unit size1of3 lastUnit">
+          <table class="dataTable">
+            <tr>
+              <th class="size4of5"><wicket:message key="username.tableHead" /></th>
+              <th><wicket:message key="action.tableHead" /></th>
+            </tr>
+            <tr wicket:id="list">
+              <td>
+                <span wicket:id="item.name">[service.name]</span>
+                <div wicket:id="confirm" />
+              </td>
+              <td>
               <a href="UserService.html#" wicket:id="item.delete">
                 <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
               </a>
-              <a href="UserService.html#" wicket:id="item.update">
+              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog">
                 <img wicket:message="title:update.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
               </a>
-            </div>
-            <div wicket:id="confirm" />
-          </div>
+              </td>
+            </tr>
+          </table>
+          
         </form>
       </div>
     </wicket:panel>

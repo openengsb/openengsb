@@ -40,8 +40,23 @@ if($target.is(":not(.dropdownTrigger, .dropdownTrigger *)")) {
 });
 
  });
+ 
+ $(function() {
+ 
+   $(".showUserDialog").click(function () {
+     $("#userDialogue").dialog({
+            modal: true,
+            title: "Create user",
+            resizable: false,
+            draggable: false,
+            width:300,
+            heigth: 200
+        });
+   }); 
+ 
+ });
 
-function showModalDialogue(containerId,title,resizable, draggable) {
+function showModalDialogue(containerId,title,resizable, draggable, width,height) {
 	
 	if(draggable==null)
 		draggable=true;
@@ -51,7 +66,9 @@ function showModalDialogue(containerId,title,resizable, draggable) {
 			modal: true,
 			title: title,
 			resizable: resizable,
-			draggable: draggable
+			draggable: draggable,
+			width: width,
+			height: height
 		});
 		
 	});

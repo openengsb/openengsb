@@ -25,6 +25,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "imprint")
 public class ImprintPage extends BasePage {
 
+    private class MyImprintPanel extends ImprintPanel {
 
     private static final long serialVersionUID = -5208568567882864747L;
 

@@ -26,33 +26,26 @@
         <form wicket:id="userForm">
           <fieldset>
             <legend>
-              <wicket:message key="createUser.title">[create user]</wicket:message>
+              <wicket:message key="general.title" />
             </legend>
-            <ul>
-              <li>
-                <div class="createUserFormField">
-                  <wicket:message key="username.title">[username]</wicket:message>
-                </div>
-                <div class="formField">
-                  <input wicket:id="username" />
-                </div>
-              </li>
-              <li>
-                <div class="createUserFormField">
-                  <wicket:message key="password.title">[password]</wicket:message>
-                </div>
-                <div class="formField">
-                  <input type="password" wicket:id="password" />
-                </div>
-              </li>
-              <li>
-                <div class="createUserFormField">
-                  <wicket:message key="rePassword.title">[password]</wicket:message>
-                </div>
-                <div class="formField">
-                  <input type="password" wicket:id="passwordVerification" />
-                </div>
-              </li>
+              <div>
+                <label for="username"><wicket:message key="username.title" /></label>
+                <input id="username" wicket:id="username" />
+              </div>
+              <div>
+                <label for="password"><wicket:message key="password.title" /></label>
+                <input id="password" type="password" wicket:id="password" />
+              </div>
+              <div>
+                <label for="passwordVerification"><wicket:message key="rePassword.title" /></label>
+                <input id="passwordVerification" type="password" wicket:id="passwordVerification" />
+              </div>
+            </fieldset>
+            <hr />
+            <fieldset>
+              <legend>
+                <wicket:message key="permission.title" />
+              </legend>
               <div wicket:id="permissionListContainer">
                 <div wicket:id="permissionList" />
                 <div wicket:id="createPermissionContainer">
@@ -60,12 +53,6 @@
                 </div>
                 <input type="button" wicket:id="createPermission" wicket:message="value:permission.create" />
               </div>
-              
-              
-<!--               <button wicket:id="cancelButton"> -->
-<!--                 <wicket:message key="resetButton" /> -->
-<!--               </button> -->
-            </ul>
             <span wicket:id="feedback" />
           </fieldset>
 

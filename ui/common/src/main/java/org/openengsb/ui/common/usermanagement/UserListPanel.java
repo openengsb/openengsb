@@ -58,16 +58,16 @@ public abstract class UserListPanel extends Panel {
     }
 
     private void initContent() {
-        AjaxLink<String> button = new AjaxLink<String>("createButton") {
-
-            private static final long serialVersionUID = 6848409071241559174L;
-
+       
+        AjaxLink<String> addUserButton = new AjaxLink<String>("addUser") {
+            private static final long serialVersionUID = 1L;
             @Override
             public void onClick(AjaxRequestTarget target) {
                 openCreatePage(target);
             }
         };
-        add(button);
+        addUserButton.setOutputMarkupId(false);
+        add(addUserButton);
         GenericListPanel<String> listPanel = new GenericListPanel<String>("userList") {
 
             private static final long serialVersionUID = 1340747497564868555L;

@@ -111,6 +111,9 @@ public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
+    public static final String pageNameKey="testClient.title";
+    public static final String pageDescriptionKey="testClient.description";
+    
     @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
@@ -157,7 +160,7 @@ public class TestClient extends BasePage {
     }
 
     public TestClient(PageParameters parameters) {
-        super(parameters);
+        super(parameters, pageNameKey);
         initContent();
     }
 
@@ -863,5 +866,4 @@ public class TestClient extends BasePage {
             throw new IllegalArgumentException(e);
         }
     }
-
 }

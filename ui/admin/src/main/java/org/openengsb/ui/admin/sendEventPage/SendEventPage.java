@@ -70,6 +70,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
+    public static final String pageNameKey="sendEventPage.title";
+    public static final String pageDescriptionKey="sendEventPage.description";
+    
     @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
@@ -94,7 +97,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     }
 
     public SendEventPage(PageParameters parameters) {
-        super(parameters);
+        super(parameters, pageNameKey);
         initContent();
     }
 

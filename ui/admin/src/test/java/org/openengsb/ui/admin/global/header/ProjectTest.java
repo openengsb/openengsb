@@ -47,7 +47,6 @@ public class ProjectTest extends AbstractLoginTest {
         session.signIn("test", "password");
 
         when(contextCurrentService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
-
         basePage = tester.startPage(new DummyPage());
     }
 
