@@ -24,6 +24,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.apache.wicket.request.component.IRequestableComponent;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
@@ -85,7 +86,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     }
 
     @Override
-    public <T extends Component> boolean isInstantiationAuthorized(Class<T> componentClass) {
+    public <T extends IRequestableComponent> boolean isInstantiationAuthorized(Class<T> componentClass) {
         if (!hasSecurityAnnotation(componentClass)) {
             return true;
         }
@@ -108,12 +109,13 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         return principal.toString();
     }
 
-    private boolean hasSecurityAnnotation(Class<? extends Component> class1) {
+    private boolean hasSecurityAnnotation(Class<? extends IRequestableComponent> class1) {
         return class1.isAnnotationPresent(SecurityAttribute.class)
                 || class1.isAnnotationPresent(SecurityAttributes.class);
     }
 
-    private Collection<SecurityAttributeEntry> getSecurityAttributes(Class<? extends Component> componentClass) {
+    private Collection<SecurityAttributeEntry> getSecurityAttributes(
+            Class<? extends IRequestableComponent> componentClass) {
         SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
         if (annotation != null) {
             return Arrays.asList(convertAnnotationToEntry(annotation));
@@ -136,4 +138,5 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     public void setAuthorizer(AuthorizationDomain authorizer) {
         this.authorizer = authorizer;
     }
+
 }

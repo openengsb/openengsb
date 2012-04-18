@@ -30,13 +30,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.AbstractRepeater;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,8 +74,8 @@ public class EditorPageTest extends AbstractUITest {
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
         factoryMock = createFactoryMock("testconnector", NullDomainImpl.class, "testdomain");
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
@@ -95,9 +95,11 @@ public class EditorPageTest extends AbstractUITest {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
         serviceManager.create(connectorId, new ConnectorDescription(attributes, null));
-        PageParameters pageParams =
-            new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
-        tester.startPage(ConnectorEditorPage.class, pageParams);
+        PageParameters pageParameters = new PageParameters();
+        pageParameters.set("domainType", "testdomain");
+        pageParameters.set("connectorType", "testconnector");
+        pageParameters.set("id", connectorId.getInstanceId());
+        tester.startPage(ConnectorEditorPage.class, pageParameters);
         FormComponentLabel nameLabel =
             (FormComponentLabel) tester
                 .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:name");

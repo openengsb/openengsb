@@ -74,6 +74,9 @@ import org.slf4j.LoggerFactory;
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "wiring")
 public class WiringPage extends BasePage {
+
+    private static final long serialVersionUID = 4196803215701011090L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
     @PaxWicketBean(name = "wiringService")
@@ -126,8 +129,8 @@ public class WiringPage extends BasePage {
                 globals.setModel(createGlobalTreeModel(domainType));
                 endpoints.setModel(createEndpointsModel(domainType));
                 resetWiringForm(target);
-                target.addComponent(globals);
-                target.addComponent(endpoints);
+                target.add(globals);
+                target.add(endpoints);
             }
         });
         domainChooseForm.add(domains);
@@ -186,7 +189,7 @@ public class WiringPage extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.debug("Start wiring {} with {}", globalName, instanceId);
                 if (noGlobalNameSet() || noInstanceIdSet() || noContextSet()) {
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
                 ConnectorDefinition connectorId = null;
@@ -194,7 +197,7 @@ public class WiringPage extends BasePage {
                 try {
                     connectorId = ConnectorDefinition.fromFullId(instanceId);
                     if (!typeOfGlobalAndServiceAreEqual(connectorId.getDomainId())) {
-                        target.addComponent(feedbackPanel);
+                        target.add(feedbackPanel);
                         return;
                     }
                     description = serviceManager.getAttributeValues(connectorId);
@@ -210,6 +213,11 @@ public class WiringPage extends BasePage {
                 } finally {
                     resetWiringForm(target);
                 }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Linking Ajax Link produces an error.");
             }
         };
         wiringForm.add(wireButton);
@@ -393,9 +401,9 @@ public class WiringPage extends BasePage {
     private void resetWiringForm(AjaxRequestTarget target) {
         globalName = "";
         instanceId = "";
-        target.addComponent(txtGlobalName);
-        target.addComponent(txtInstanceId);
-        target.addComponent(feedbackPanel);
+        target.add(txtGlobalName);
+        target.add(txtInstanceId);
+        target.add(feedbackPanel);
     }
 
     public String getGlobalName() {
@@ -430,7 +438,7 @@ public class WiringPage extends BasePage {
                 return;
             }
             subject.setDefaultModelObject(mnode.getUserObject());
-            target.addComponent(subject);
+            target.add(subject);
         }
 
         @Override

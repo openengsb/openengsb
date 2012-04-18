@@ -23,8 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory;
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "CONNECTOR_EDITOR")
 @PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
+
+    private static final long serialVersionUID = -8199301932270437500L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
@@ -142,9 +144,9 @@ public class ConnectorEditorPage extends BasePage {
 
     public ConnectorEditorPage(PageParameters parameters) {
         super(parameters);
-        String serviceId = parameters.getString("id");
-        String domainType = parameters.getString("domainType");
-        String connectorType = parameters.getString("connectorType");
+        String serviceId = parameters.get("id").toOptionalString();
+        String domainType = parameters.get("domainType").toOptionalString();
+        String connectorType = parameters.get("connectorType").toOptionalString();
         ConnectorDefinition connectorId = new ConnectorDefinition(domainType, connectorType, serviceId);
         retrieveDescriptor(connectorType);
         initEditor(connectorType);

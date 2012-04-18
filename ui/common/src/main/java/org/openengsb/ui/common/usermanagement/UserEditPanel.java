@@ -190,16 +190,16 @@ public abstract class UserEditPanel extends Panel {
                             EmptyPanel emptyPanel = new EmptyPanel("createPermissionContent");
                             createPermissionContainer.addOrReplace(emptyPanel);
                             permissionContentPanel = emptyPanel;
-                            target.addComponent(createPermissionContainer);
+                            target.add(createPermissionContainer);
                             reenable();
-                            target.addComponent(permissionListContainer);
+                            target.add(permissionListContainer);
                         }
                     };
                 createPermissionContainer.addOrReplace(realPermissionEditorPanel);
                 permissionContentPanel = realPermissionEditorPanel;
-                target.addComponent(createPermissionContainer);
+                target.add(createPermissionContainer);
                 setEnabled(false);
-                target.addComponent(this);
+                target.add(this);
             }
         };
         permissionListContainer.add(ajaxButton);

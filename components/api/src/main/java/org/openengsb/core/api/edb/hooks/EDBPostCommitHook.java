@@ -15,23 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.index;
+package org.openengsb.core.api.edb.hooks;
 
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import org.openengsb.core.api.edb.EDBCommit;
 
-@PaxWicketMountPoint(mountPoint = "index")
-public class Index extends BasePage {
+/**
+ * Defines the functions of the post-commit hook for the EDB component. All services in the OSGi environment providing
+ * this interface which are exported by any bundle, will be called after a successful commit in the EDB.
+ */
+public interface EDBPostCommitHook {
 
-    private static final long serialVersionUID = -445277092895685296L;
-
-    public Index() {
-
-    }
-
-    public Index(PageParameters parameters) {
-        super(parameters);
-    }
-
+    /**
+     * This function will be called after a successful commit in the EDB. Every exception gets caught, logged and
+     * ignored.
+     */
+    void onPostCommit(EDBCommit commit);
 }

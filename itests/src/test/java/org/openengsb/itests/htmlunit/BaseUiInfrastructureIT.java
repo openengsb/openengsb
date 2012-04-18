@@ -46,7 +46,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper {
 
     private WebClient webClient;
-    private static final String LOGIN_PAGE_URL = "http://localhost:" + WEBUI_PORT + "/openengsb/login/";
+    private static final String LOGIN_PAGE_URL = "http://localhost:" + WEBUI_PORT + "/openengsb/login";
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
     @Before

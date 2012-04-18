@@ -53,22 +53,26 @@ public abstract class AbstractLoginTest extends AbstractUITest {
      */
     @After
     public void detachSubject() {
-        this.threadState.clear();
+        threadState.clear();
     }
 
     @Before
     public void setupLogin() throws Exception {
         mockAuthentication();
-        tester = new WicketTester(new WicketApplication());
-
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
-
-        this.mockShiroSession = mock(Session.class);
-        this.mockSubject = mock(Subject.class);
-        when(this.mockSubject.getSession()).thenReturn(this.mockShiroSession);
-        this.threadState = new SubjectThreadState(this.mockSubject);
-        this.threadState.bind();
+        tester = new WicketTester(new WicketApplication() {
+            @Override
+            protected void init() {
+                defaultPaxWicketInjector.registerForAdditionalName(getApplicationKey());
+                super.init();
+            }
+        });
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        mockShiroSession = mock(Session.class);
+        mockSubject = mock(Subject.class);
+        when(mockSubject.getSession()).thenReturn(mockShiroSession);
+        threadState = new SubjectThreadState(mockSubject);
+        threadState.bind();
 
         final AtomicReference<Object> authenticated = new AtomicReference<Object>();
 

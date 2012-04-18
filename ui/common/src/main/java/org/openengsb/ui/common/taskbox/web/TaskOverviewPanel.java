@@ -42,8 +42,9 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
+
+    private static final long serialVersionUID = -8724223987824602812L;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskOverviewPanel.class);
 
@@ -53,10 +54,10 @@ public class TaskOverviewPanel extends Panel {
     @PaxWicketBean(name = "webtaskboxService")
     private WebTaskboxService webtaskboxService;
 
+    @SuppressWarnings("serial")
     public TaskOverviewPanel(String id) {
         super(id);
         ArrayList<IColumn<Task>> columns = new ArrayList<IColumn<Task>>();
-
         IColumn<Task> actionsColumn = new FilteredAbstractColumn<Task>(Model.of("Actions")) {
             @Override
             public Component getFilter(String componentId, FilterForm<?> form) {
@@ -77,21 +78,21 @@ public class TaskOverviewPanel extends Panel {
             .add(new TextFilteredPropertyColumn<Task, String>(Model.of("Description"), "description", "description"));
         columns.add(new PropertyColumn<Task>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
             "taskCreationTimestamp"));
-
-        FilterForm<Object> form = new FilterForm<Object>("form", dataProvider);
-
+        FilterForm<Task> form = new FilterForm<Task>("form", dataProvider);
         DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 15);
         dataTable.addTopToolbar(new FilterToolbar(dataTable, form, dataProvider));
         form.add(dataTable);
         add(form);
         add(panel);
-
     }
 
     private class UserActionsPanel extends Panel {
 
+        private static final long serialVersionUID = -8163071854733837122L;
+
         private Task task;
 
+        @SuppressWarnings("serial")
         public UserActionsPanel(String id, Task t) {
             super(id);
             task = t;

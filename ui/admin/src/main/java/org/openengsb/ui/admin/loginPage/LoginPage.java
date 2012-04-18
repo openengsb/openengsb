@@ -22,6 +22,7 @@ import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -30,6 +31,8 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.model.UsernamePassword;
 import org.openengsb.ui.common.FavIconPackageResource;
 import org.openengsb.ui.common.OpenEngSBPage;
@@ -40,7 +43,11 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
-public class LoginPage extends OpenEngSBPage {
+
+public class LoginPage extends BasePage {
+
+    private static final long serialVersionUID = 4704550987311760491L;
+
     private UsernamePassword user = new UsernamePassword();
 
     public final class MyImprintPanel extends ImprintPanel {

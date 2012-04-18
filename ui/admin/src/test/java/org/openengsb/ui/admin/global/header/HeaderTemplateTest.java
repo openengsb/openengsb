@@ -95,8 +95,8 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @SuppressWarnings("unchecked")

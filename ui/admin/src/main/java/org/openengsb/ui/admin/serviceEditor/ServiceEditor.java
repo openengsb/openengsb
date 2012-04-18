@@ -36,10 +36,15 @@ import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_EDITOR")
-@SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
+
+    private static final long serialVersionUID = 1172948737509752463L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEditor.class);
 
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
@@ -77,6 +82,7 @@ public abstract class ServiceEditor extends Panel {
         this(id, domainType, connectorType, attributes, attributeMap, properties, new DefaultPassingFormValidator());
     }
 
+    @SuppressWarnings("serial")
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
             Map<String, Object> properties) {
         this.properties = properties;
@@ -114,8 +120,14 @@ public abstract class ServiceEditor extends Panel {
                 properties.put(newKey, "new Value");
                 newKeyModel.setObject("");
                 serviceEditorPanel.reloadList(ServiceEditor.this.properties);
-                target.addComponent(serviceEditorPanel);
+                target.add(serviceEditorPanel);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error occured during add property action.");
+            }
+
         });
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
@@ -125,14 +137,14 @@ public abstract class ServiceEditor extends Panel {
                 ServiceEditor.this.onSubmit();
                 if (hasErrorMessage()) {
                     ServiceEditorPanel.addAjaxValidationToForm(form);
-                    target.addComponent(form);
+                    target.add(form);
                 }
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
                 ServiceEditorPanel.addAjaxValidationToForm(form);
-                target.addComponent(form);
+                target.add(form);
             }
         };
         form.setOutputMarkupId(true);

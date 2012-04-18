@@ -17,54 +17,26 @@
 
 package org.openengsb.ui.admin.userService;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.usermanagement.UserEditPanel;
-import org.openengsb.ui.common.usermanagement.UserListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+
+import com.google.common.base.Throwables;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "USER_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
-public class UserListPage extends BasePage {
+public class UserEditPage extends BasePage {
 
-    Panel userDialogue;
-    private static final long serialVersionUID = -6841313899998597640L;
+    private static final long serialVersionUID = -7560121146708178122L;
 
-    private final class MyUserListPanel extends UserListPanel {
-        private static final long serialVersionUID = 4561294480791309137L;
-
-        private MyUserListPanel(String id) {
-            super(id);
-        }
-
-        @Override
-        protected void openCreatePage(AjaxRequestTarget target) {
-            EditPanel createUser = new EditPanel("userDialogue");  
-            createUser.setOutputMarkupId(true);
-            userDialogue.replaceWith(createUser);
-            userDialogue = createUser;
-            target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','"
-                + getLocalizer().getString("add.user", this) + "',false);");
-        }
-    }
-    
     private final class EditPanel extends UserEditPanel {
         private static final long serialVersionUID = -4646745795328499771L;
 
         private EditPanel(String id) {
             super(id);
-
-        protected void openEditorPage(String user) {
-            PageParameters parameters = new PageParameters();
-            parameters.set("user", user);
-            setResponsePage(UserEditPage.class, parameters);
         }
 
         public EditPanel(String id, String username) throws UserNotFoundException {
@@ -77,20 +49,18 @@ public class UserListPage extends BasePage {
         }
     }
 
-    public UserListPage() {
-        initContent();
+    public UserEditPage() {
+        add(new EditPanel("userEditor"));
     }
 
-    public UserListPage(PageParameters parameters) {
+    public UserEditPage(PageParameters parameters) {
         super(parameters);
-        initContent();
+        String username = parameters.get("user").toOptionalString();
+        try {
+            add(new EditPanel("userEditor", username));
+        } catch (UserNotFoundException e) {
+            Throwables.propagate(e);
+        }
     }
 
-    private void initContent() {
-        add(new MyUserListPanel("lazy"));
-        //Panel for Modal Dialog for User add/edit form
-        userDialogue = new EmptyPanel("userDialogue");
-        userDialogue.setOutputMarkupId(true);
-        add(userDialogue);
-    }
 }

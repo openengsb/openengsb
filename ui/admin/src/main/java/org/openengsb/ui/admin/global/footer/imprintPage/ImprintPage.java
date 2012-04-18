@@ -17,21 +17,18 @@
 
 package org.openengsb.ui.admin.global.footer.imprintPage;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.imprint.ImprintPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "imprint")
 public class ImprintPage extends BasePage {
-    
-    private class MyImprintPanel extends ImprintPanel {
 
-        private static final long serialVersionUID = 1L;
 
-        public MyImprintPanel(String id) {
-            super(id);
-        }
+    private static final long serialVersionUID = -5208568567882864747L;
+
+    public ImprintPage() {
     }
 
     public ImprintPage() {

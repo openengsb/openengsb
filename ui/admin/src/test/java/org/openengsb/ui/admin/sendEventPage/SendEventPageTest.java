@@ -60,8 +60,8 @@ public class SendEventPageTest extends AbstractUITest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);

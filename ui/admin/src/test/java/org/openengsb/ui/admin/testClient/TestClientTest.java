@@ -21,8 +21,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -45,11 +46,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -62,6 +63,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -441,8 +443,7 @@ public class TestClientTest extends AbstractUITest {
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "fail");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-        String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
-        assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
+        assertTrue(tester.getMessages(FeedbackMessage.ERROR).get(0).toString().contains("IllegalArgumentException"));
     }
 
     @Test
@@ -458,8 +459,8 @@ public class TestClientTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
@@ -543,8 +544,7 @@ public class TestClientTest extends AbstractUITest {
         Assert.assertEquals(true, editButton.isEnabled());
         tester.executeAjaxEvent(editButton, "onclick");
 
-        ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
-        tester.assertRenderedPage(editorPage.getPageClass());
+        tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
@@ -570,26 +570,21 @@ public class TestClientTest extends AbstractUITest {
         Assert.assertEquals(true, deleteButton.isEnabled());
         tester.executeAjaxEvent(deleteButton, "onclick");
 
-        boolean works = false;
         try {
             tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
-        } catch (Exception e) {
-            works = true;
+        } catch (AssertionFailedError e) {
+            return;
         }
-        if (!works) {
-            assertFalse(true);
-        } else {
-            assertFalse(false);
-        }
+        fail("Deleation wasn't successful.");
     }
 
     @Test
     public void testStartWithContextAsParam() throws Exception {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
-        tester.startPage(TestClient.class, new PageParameters(parameterMap));
+        PageParameters pageParameters = new PageParameters();
+        pageParameters.set(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
+        tester.startPage(TestClient.class, pageParameters);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
@@ -603,6 +598,7 @@ public class TestClientTest extends AbstractUITest {
 
         Component domainsComponent = tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains");
         int count = ((ArrayList<?>) domainsComponent.getDefaultModelObject()).size();
+
         // get all domains
         for (int i = 0; i < count; i++) {
             Component label = tester

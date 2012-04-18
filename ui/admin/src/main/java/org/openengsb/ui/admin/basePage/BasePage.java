@@ -17,11 +17,15 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RestartResponseAtInterceptPageException;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.CSSPackageResource;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.Component;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
@@ -92,16 +96,56 @@ public abstract class BasePage extends OpenEngSBPage {
 		return this.getClass().getSimpleName();
 	}
 
-	public String getSessionContextId() {
-		OpenEngSBWebSession session = OpenEngSBWebSession.get();
-		if (session == null) {
-			return "foo";
-		}
-		String contextId = ContextHolder.get().getCurrentContextId();
-		if (contextId == null) {
-			ContextHolder.get().setCurrentContextId("foo");
-			return contextId;
-		}
-		return contextId;
-	}
+    private Component createProjectChoice() {
+        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            @Override
+            public String getObject() {
+                return getSessionContextId();
+            }
+
+            @Override
+            public void setObject(String object) {
+                ContextHolder.get().setCurrentContextId(object);
+            }
+
+            @Override
+            public void detach() {
+            }
+        }, getAvailableContexts()) {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+            @Override
+            protected void onModelChanged() {
+                setResponsePage(BasePage.this.getClass());
+            }
+
+        };
+        return dropDownChoice;
+    }
+
+    /**
+     * @return the class name, which should be the index in navigation bar
+     *
+     */
+    @Override
+    public String getHeaderMenuItem() {
+        return this.getClass().getSimpleName();
+    }
+
+    public String getSessionContextId() {
+        OpenEngSBWebSession session = OpenEngSBWebSession.get();
+        if (session == null) {
+            return "foo";
+        }
+        String contextId = ContextHolder.get().getCurrentContextId();
+        if (contextId == null) {
+            ContextHolder.get().setCurrentContextId("foo");
+            return contextId;
+        }
+        return contextId;
+    }
+>>>>>>> 348d939b9c72a78037e603995b0b190c31f15ef6
 }

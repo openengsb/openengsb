@@ -21,13 +21,12 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.ui.common.editor.ModelFacade;
@@ -73,7 +72,7 @@ public abstract class AbstractField<T> extends Panel {
         }
         mainComponent.setRequired(attribute.isRequired());
         mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
-        add(new SimpleFormComponentLabel("name", mainComponent).add(new SimpleAttributeModifier("for", attribute
+        add(new SimpleFormComponentLabel("name", mainComponent).add(AttributeModifier.replace("for", attribute
             .getId())));
         add(mainComponent);
 
@@ -85,9 +84,9 @@ public abstract class AbstractField<T> extends Panel {
     }
 
     private void addTooltip(AttributeDefinition attribute) {
-        Image tooltip = new Image("tooltip", new ResourceReference(AbstractField.class, "balloon.png"));
+        Image tooltip = new Image("tooltip", new PackageResourceReference(AbstractField.class, "balloon.png"));
         if (attribute.hasDescription()) {
-            tooltip.add(new AttributeModifier("title", true, new LocalizableStringModel(this, attribute
+            tooltip.add(new AttributeModifier("title", new LocalizableStringModel(this, attribute
                 .getDescription())));
         } else {
             tooltip.setVisible(false);

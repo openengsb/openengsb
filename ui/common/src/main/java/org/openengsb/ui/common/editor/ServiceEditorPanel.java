@@ -45,12 +45,13 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
 import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -61,10 +62,15 @@ import com.google.common.collect.Lists;
  * Creates a panel containing a service-editor, for usage in forms.
  *
  */
-@SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
+    private static final long serialVersionUID = 5593901084329552949L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEditorPanel.class);
+
     private final class EntryModel implements IModel<String> {
+
+        private static final long serialVersionUID = -6996584309100143740L;
 
         private Entry<String, Object> entry;
         private int index;
@@ -182,6 +188,7 @@ public class ServiceEditorPanel extends Panel {
         }
     }
 
+    @SuppressWarnings("serial")
     private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
             Map<String, Object> properties) {
         RepeatingView fields =
@@ -190,7 +197,6 @@ public class ServiceEditorPanel extends Panel {
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
-
         propertiesList = new ListView<MapEntry<String, Object>>("properties") {
             @Override
             protected void populateItem(final ListItem<MapEntry<String, Object>> item) {
@@ -234,8 +240,13 @@ public class ServiceEditorPanel extends Panel {
                             newArray[1] = "";
                             modelObject.setValue(newArray);
                         }
-                        target.addComponent(item);
-                        target.addComponent(ServiceEditorPanel.this);
+                        target.add(item);
+                        target.add(ServiceEditorPanel.this);
+                    }
+
+                    @Override
+                    protected void onError(AjaxRequestTarget target, Form<?> form) {
+                        LOGGER.warn("Error occured during submit!");
                     }
                 };
                 item.add(button);
@@ -258,6 +269,8 @@ public class ServiceEditorPanel extends Panel {
     public void attachFormValidator(final Form<?> form, final FormValidator validator) {
         form.add(new AbstractFormValidator() {
 
+            private static final long serialVersionUID = -4181095793820830517L;
+
             @Override
             public void validate(Form<?> form) {
                 Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
@@ -271,7 +284,7 @@ public class ServiceEditorPanel extends Panel {
                     Map<String, String> attributeErrorMessages = e.getErrorMessages();
                     for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
                         FormComponent<?> fc = loadFormComponents.get(entry.getKey());
-                        fc.error((IValidationError) new ValidationError().setMessage(entry.getValue()));
+                        fc.error(new ValidationError().setMessage(entry.getValue()));
                     }
                 }
 

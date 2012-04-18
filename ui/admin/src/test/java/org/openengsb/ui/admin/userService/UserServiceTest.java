@@ -23,12 +23,16 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ResourceBundle;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-
 
 public class UserServiceTest extends AbstractUITest {
 
@@ -54,8 +58,8 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     //TODO Fix test as UserEditPage does not exist anymore. Now there is used a Modal dialogue in the UserListPage
@@ -71,7 +75,9 @@ public class UserServiceTest extends AbstractUITest {
 
     @Test
     public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
-        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "admin")));
+        PageParameters parameters = new PageParameters();
+        parameters.set("user", "admin");
+        tester.startPage(UserEditPage.class, parameters);
         tester.assertRenderedPage(UserEditPage.class);
         Component usernameField =
             tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
@@ -141,23 +147,6 @@ public class UserServiceTest extends AbstractUITest {
         assertThat(userManager.getUserList(), not(hasItem("test")));
     }
 
-    //
-    // @Test
-    // public void testUserCreationWithoutRoles_ShouldWork() throws Exception {
-    // tester.startPage(UserListPage.class);
-    //
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("passwordVerification", "password");
-    // formTester.submit();
-    // tester.assertNoErrorMessage();
-    // assertThat(userManager.getUserCredentials("user1", "password"), is("password"));
-    // }
-    //
-    
-    //TODO Fix test as UserEditPage does not exist anymore. Now there is used a Modal dialogue in the UserListPage
-    /*
     @Test
     public void testErrorMessage_shouldReturnUserExists() throws Exception {
         tester.startPage(UserEditPage.class);
@@ -182,7 +171,9 @@ public class UserServiceTest extends AbstractUITest {
     @Test
     public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
         userManager.createUser("user1");
-        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "user1")));
+        PageParameters parameters = new PageParameters();
+        parameters.set("user", "user1");
+        tester.startPage(UserEditPage.class, parameters);
         FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
@@ -190,21 +181,5 @@ public class UserServiceTest extends AbstractUITest {
         formTester.submit();
         tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
     }
-    */
-    // @Test
-    // public void testShowUserAuthorities() throws Exception {
-    // tester.startPage(UserListPage.class);
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("passwordVerification", "password");
-    // formTester.setValue("roles", "ROLE_ADMIN");
-    // formTester.submit();
-    // tester.assertNoErrorMessage();
-    // //
-    // // ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
-    // // verify(userManager, times(1)).createUser(argCaptor.capture());
-    // // User userCreated = argCaptor.getValue();
-    // // assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
-    // }
+   */
 }
