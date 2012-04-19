@@ -18,9 +18,9 @@
 package org.openengsb.core.api.ekb.transformation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.openengsb.core.api.ekb.TransformationConstants;
 
 /**
  * Describes all steps to transform an object of the source class into an object of the target class.
@@ -28,12 +28,12 @@ import java.util.Map;
 public class TransformationDescription {
     private Class<?> source;
     private Class<?> target;
-    private Map<String, TransformationStep> steps;
+    private List<TransformationStep> steps;
 
     public TransformationDescription(Class<?> source, Class<?> target) {
         this.source = source;
         this.target = target;
-        steps = new HashMap<String, TransformationStep>();
+        steps = new ArrayList<TransformationStep>();
     }
 
     public Class<?> getSource() {
@@ -53,7 +53,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
         step.setOperation(TransformationOperation.FORWARD);
-        steps.put(targetField, step);
+        steps.add(step);
     }
 
     /**
@@ -65,9 +65,9 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceFields);
-        step.setOperationParam(concatString);
+        step.setOperationParameter(TransformationConstants.concatParam, concatString);
         step.setOperation(TransformationOperation.CONCAT);
-        steps.put(targetField, step);
+        steps.add(step);
     }
 
     /**
@@ -80,7 +80,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(sourceField);
         step.setSourceFields(targetFields);
-        step.setOperationParam(splitString);
+        step.setOperationParameter(TransformationConstants.splitParam, splitString);
         step.setOperation(TransformationOperation.SPLIT);
         StringBuilder key = new StringBuilder();
         for (String target : targetFields) {
@@ -89,10 +89,10 @@ public class TransformationDescription {
             }
             key.append(target);
         }
-        steps.put(key.toString(), step);
+        steps.add(step);
     }
 
     public List<TransformationStep> getTransformingSteps() {
-        return new ArrayList<TransformationStep>(steps.values());
+        return steps;
     }
 }

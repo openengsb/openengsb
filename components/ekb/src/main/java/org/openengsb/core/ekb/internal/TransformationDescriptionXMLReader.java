@@ -19,8 +19,11 @@ package org.openengsb.core.ekb.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.openengsb.core.api.ekb.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -36,10 +39,9 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     private MODE activeMode;
     private List<String> sourceFields;
     private List<String> targetFields;
-    private String operationParam;
+    private Map<String, String> operationParams;
     private boolean sourceField = false;
     private boolean targetField = false;
-    private boolean paramField = false;
 
     private enum MODE {
         FORWARD, CONCAT, SPLIT, NONE
@@ -49,10 +51,11 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         descriptions = new ArrayList<TransformationDescription>();
         sourceFields = new ArrayList<String>();
         targetFields = new ArrayList<String>();
+        operationParams = new HashMap<String, String>();
     }
 
     private boolean isIgnoreField(String fieldName, boolean isEndElement) {
-        List<String> ignores = Arrays.asList("transformations", "target-fields", "source-fields");
+        List<String> ignores = Arrays.asList("transformations", "target-fields", "source-fields", "params");
         if (isEndElement) {
             ignores = new ArrayList<String>(ignores);
             ignores.add("target-field");
@@ -87,8 +90,10 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             sourceField = true;
         } else if (localName.equals("target-field")) {
             targetField = true;
-        } else if (localName.equals("operation-string")) {
-            paramField = true;
+        } else if (localName.equals("param")) {
+            String key = attributes.getValue("key");
+            String value = attributes.getValue("value");
+            operationParams.put(key, value);
         } else {
             activeMode = Enum.valueOf(MODE.class, localName.toUpperCase());
         }
@@ -103,9 +108,6 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         } else if (targetField) {
             targetFields.add(new String(ch).substring(start, start + length));
             targetField = false;
-        } else if (paramField) {
-            operationParam = new String(ch).substring(start, start + length);
-            paramField = false;
         }
     }
 
@@ -123,11 +125,13 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                     activeDescription.forwardField(sourceFields.get(0), targetFields.get(0));
                     break;
                 case CONCAT:
-                    activeDescription.concatField(targetFields.get(0), operationParam,
+                    String concatString = operationParams.get(TransformationConstants.concatParam);
+                    activeDescription.concatField(targetFields.get(0), concatString,
                         sourceFields.toArray(new String[0]));
                     break;
                 case SPLIT:
-                    activeDescription.splitField(sourceFields.get(0), operationParam,
+                    String splitString = operationParams.get(TransformationConstants.splitParam);
+                    activeDescription.splitField(sourceFields.get(0), splitString,
                         targetFields.toArray(new String[0]));
                     break;
                 default:
@@ -136,7 +140,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             activeMode = MODE.NONE;
             sourceFields.clear();
             targetFields.clear();
-            operationParam = "";
+            operationParams.clear();
         }
     }
 

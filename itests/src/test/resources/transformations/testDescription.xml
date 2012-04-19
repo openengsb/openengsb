@@ -25,7 +25,9 @@
       <target-fields>
         <target-field>name</target-field>
       </target-fields>
-      <operation-string>-</operation-string>
+      <params>
+      	<param key="splitString" value="-" />
+      </params>
     </split>
   </transformation>
 </transformations>

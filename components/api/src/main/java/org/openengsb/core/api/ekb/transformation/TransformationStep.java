@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api.ekb.transformation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Describes a transforming step in the transformation progress. Contains all informations to perform a transformation
  * operation on source fields and target fields.
@@ -24,7 +27,7 @@ package org.openengsb.core.api.ekb.transformation;
 public class TransformationStep {
     private String targetField;
     private TransformationOperation operation;
-    private String operationParam;
+    private Map<String, String> operationParams;
     private String[] sourceFields;
 
     public String getTargetField() {
@@ -43,12 +46,27 @@ public class TransformationStep {
         this.operation = operation;
     }
 
-    public String getOperationParam() {
-        return operationParam;
+    public Map<String, String> getOperationParams() {
+        return operationParams;
     }
 
-    public void setOperationParam(String operationParam) {
-        this.operationParam = operationParam;
+    public void setOperationParams(Map<String, String> operationParams) {
+        this.operationParams = operationParams;
+    }
+
+    public String getOperationPramater(String key) {
+        if (operationParams == null) {
+            return "";
+        }
+        String value = operationParams.get(key);
+        return value != null ? value : "";
+    }
+
+    public void setOperationParameter(String key, String value) {
+        if (operationParams == null) {
+            operationParams = new HashMap<String, String>();
+        }
+        operationParams.put(key, value);
     }
 
     public String[] getSourceFields() {

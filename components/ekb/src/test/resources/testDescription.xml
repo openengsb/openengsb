@@ -34,7 +34,9 @@
         <source-field>blaA</source-field>   
       </source-fields>
       <target-field>blubB</target-field>
-      <operation-string>#</operation-string>
+      <params>
+      	<param key="concatString" value="#" />
+      </params>
     </concat>
   </transformation>
   <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
@@ -52,7 +54,9 @@
         <target-field>blaA</target-field>   
       </target-fields>
       <source-field>blubB</source-field>
-      <operation-string>#</operation-string>
+      <params>
+      	<param key="splitString" value="#" />
+      </params>
     </split>
   </transformation>
 </transformations>

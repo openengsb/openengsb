@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.api.ekb.TransformationConstants;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationStep;
@@ -189,9 +190,10 @@ public class TransformationEngineService implements TransformationEngine {
     private void performConcatStep(TransformationDescription desc, TransformationStep step, Object source,
             Object target) throws Exception {
         StringBuilder builder = new StringBuilder();
+        String concatString = step.getOperationPramater(TransformationConstants.concatParam);
         for (String field : step.getSourceFields()) {
             if (builder.length() != 0) {
-                builder.append(step.getOperationParam());
+                builder.append(concatString);
             }
             Method getter = desc.getSource().getMethod(getGetterName(field));
             builder.append(getter.invoke(source));
@@ -207,7 +209,8 @@ public class TransformationEngineService implements TransformationEngine {
             Object target) throws Exception {
         Method getter = desc.getSource().getMethod(getGetterName(step.getTargetField()));
         String split = (String) getter.invoke(source);
-        String[] splits = split.split(step.getOperationParam());
+        String splitString = step.getOperationPramater(TransformationConstants.splitParam);
+        String[] splits = split.split(splitString);
         for (int i = 0; i < step.getSourceFields().length; i++) {
             if (splits.length <= i) {
                 LOGGER.warn("Not enough results of the split operation for the given target fields.");
