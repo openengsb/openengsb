@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,6 +195,26 @@ public class TransformationEngineServiceTest {
         assertThat(result.getIdB(), is("this is a test"));
         assertThat(result.getTestB(), is("blub"));
     }
+    
+    @Test
+    public void testLengthTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        desc.lengthField("testB", "testA", null);
+        desc.lengthField("elements", "blubA", "size");
+        service.saveDescription(desc);
+        
+        ModelB model = new ModelB();
+        model.setTestB("Hallo");
+        List<String> elements = new ArrayList<String>();
+        elements.add("A");
+        elements.add("B");
+        elements.add("C");
+        model.setElements(elements);
+        
+        ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
+        assertThat(result.getTestA(), is(model.getTestB().length() + ""));
+        assertThat(result.getBlubA(), is(model.getElements().size() + ""));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -234,12 +255,23 @@ public class TransformationEngineServiceTest {
         modelB.setIdB("test1");
         modelB.setTestB("test2");
         modelB.setBlubB("test3");
+        List<String> elements = new ArrayList<String>();
+        elements.add("A");
+        elements.add("B");
+        elements.add("C");
+        modelB.setElements(elements);
+        
+        ModelA modelA = new ModelA();
+        modelA.setTestA("Hallo");
         
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
+        ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
         
         assertThat(resultA.getIdA(), is(modelB.getIdB()));
         assertThat(resultA.getTestA(), is(modelB.getTestB()));
-        assertThat(resultA.getBlubA(), is(modelB.getBlubB()));
+        assertThat(resultA.getBlubA(), is(modelB.getElements().size() + ""));
         assertThat(resultA.getBlaA(), is("Hello World"));
+        
+        assertThat(resultB.getTestB(), is(modelA.getTestA().length() + ""));
     }
 }

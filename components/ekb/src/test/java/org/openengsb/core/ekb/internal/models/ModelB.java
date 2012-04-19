@@ -17,10 +17,13 @@
 
 package org.openengsb.core.ekb.internal.models;
 
+import java.util.List;
+
 public class ModelB {
     private String idB;
     private String testB;
     private String blubB;
+    private List<String> elements;
 
     public String getIdB() {
         return idB;
@@ -45,5 +48,12 @@ public class ModelB {
     public void setBlubB(String blubB) {
         this.blubB = blubB;
     }
-
+    
+    public List<String> getElements() {
+        return this.elements;
+    }
+    
+    public void setElements(List<String> elements) {
+        this.elements = elements;
+    }
 }

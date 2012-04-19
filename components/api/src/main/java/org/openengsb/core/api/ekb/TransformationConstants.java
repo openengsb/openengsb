@@ -41,19 +41,24 @@ public final class TransformationConstants {
      * user than has to define which of the results should be forwarded to the target field.
      */
     public static String index = "resultIndex";
-    
+
     /**
      * The parameter for the substring operation which defines from which index the substring starts.
      */
     public static String substringFrom = "from";
-    
+
     /**
      * The parameter for the substring operation which defines to which index the substring goes.
      */
     public static String substringTo = "to";
-    
+
     /**
      * The parameter for the value operation.
      */
     public static String value = "value";
+
+    /**
+     * The parameter for the function which returns the length of the object on the source side for the length step.
+     */
+    public static String lengthFunction = "function";
 }

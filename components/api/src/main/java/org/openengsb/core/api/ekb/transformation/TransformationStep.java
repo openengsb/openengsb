@@ -56,10 +56,9 @@ public class TransformationStep {
 
     public String getOperationParamater(String key) {
         if (operationParams == null) {
-            return "";
+            return null;
         }
-        String value = operationParams.get(key);
-        return value != null ? value : "";
+        return operationParams.get(key);
     }
 
     public void setOperationParameter(String key, String value) {

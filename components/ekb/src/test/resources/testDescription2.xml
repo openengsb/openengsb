@@ -24,10 +24,16 @@
       <source-field>idA</source-field>
       <target-field>idB</target-field>
     </forward>
-    <forward>
+    <length>
       <source-field>testA</source-field>
       <target-field>testB</target-field>
-    </forward>
+      <!-- With the parameter function it is possible to define the function which calculates the length of the source field.
+           It must be a function the object of the source field is supporting.
+       <params>
+         <param key="function" value="customLength" />
+       </params>
+      -->   
+    </length>
     <concat>
       <source-fields>
         <source-field>blubA</source-field>
@@ -52,6 +58,13 @@
       <source-field>blubB</source-field>
       <target-field>blubA</target-field>
     </forward>
+    <length>
+      <source-field>elements</source-field>
+      <target-field>blubA</target-field>
+      <params>
+        <param key="function" value="size" />     
+      </params>   
+    </length>
     <value>
       <target-field>blaA</target-field>
       <params>

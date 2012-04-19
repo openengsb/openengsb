@@ -125,6 +125,20 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.VALUE);
         steps.add(step);
     }
+    
+    /**
+     * Adds a length step to the transformation description. The sourceField needs to be an object which supports
+     * the function .length(). The result will be written in the target field. If the function is null, then "length"
+     * will be taken as standard function.
+     */
+    public void lengthField(String sourceField, String targetField, String function) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.lengthFunction, function);
+        step.setOperation(TransformationOperation.LENGTH);
+        steps.add(step);
+    }
 
     public List<TransformationStep> getTransformingSteps() {
         return steps;

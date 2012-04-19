@@ -86,6 +86,9 @@ public class TransformationPerformer {
                 case VALUE:
                     performValueStep(step);
                     break;
+                case LENGTH:
+                    performLengthStep(step);
+                    break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
@@ -201,14 +204,50 @@ public class TransformationPerformer {
     }
 
     /**
-     * Sets the given value object to the field with the fieldname of the target object with the class of the
-     * target object. Is also aware of temporary fields.
+     * Logic for the length step
+     */
+    private void performLengthStep(TransformationStep step) throws Exception {
+        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
+        String length = "0";
+        String function = step.getOperationParamater(TransformationConstants.lengthFunction);
+        try {
+            if (function == null) {
+                function = "length";
+            }
+            Method method = value.getClass().getMethod(function);
+            length = method.invoke(value).toString();
+        } catch (NoSuchMethodException e) {
+            LOGGER.warn("The type of the given field for the length step doesn't support " + function + " method. "
+                    + "So 0 will be used as standard value");
+        }
+        setObjectToTargetField(step.getTargetField(), length);
+    }
+
+    /**
+     * Sets the given value object to the field with the fieldname of the target object with the class of the target
+     * object. Is also aware of temporary fields.
      */
     private void setObjectToTargetField(String fieldname, Object value) throws Exception {
         if (isTemporaryField(fieldname)) {
             temporaryFields.put(fieldname, value);
         } else {
-            Method setter = description.getTarget().getMethod(getSetterName(fieldname), value.getClass());
+            String methodName = getSetterName(fieldname);
+            Method setter = null;
+            if (value == null) {
+                for (Method method : description.getTarget().getMethods()) {
+                    if (method.getName().equals(methodName)) {
+                        setter = method;
+                        break;
+                    }
+                }
+            } else {
+                setter = description.getTarget().getMethod(methodName, value.getClass());
+            }
+            if (setter == null) {
+                LOGGER.error("There is no setter for the field " + fieldname + " at the target model found."
+                        + " Step will be ignored");
+                return;
+            }
             setter.invoke(target, value);
         }
     }
