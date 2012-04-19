@@ -114,6 +114,17 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.SUBSTRING);
         steps.add(step);
     }
+    
+    /**
+     * Adds a value step to the transformation description. The given value is written to the target field.
+     */
+    public void valueField(String targetField, String value) {
+        TransformationStep step = new TransformationStep();
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.value, value);
+        step.setOperation(TransformationOperation.VALUE);
+        steps.add(step);
+    }
 
     public List<TransformationStep> getTransformingSteps() {
         return steps;

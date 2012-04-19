@@ -83,6 +83,9 @@ public class TransformationPerformer {
                 case SUBSTRING:
                     performSubStringStep(step);
                     break;
+                case VALUE:
+                    performValueStep(step);
+                    break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
@@ -95,8 +98,8 @@ public class TransformationPerformer {
      * Logic for a forward transformation step
      */
     private void performForwardStep(TransformationStep step) throws Exception {
-        Object value = getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
-        setObjectToField(step.getTargetField(), description.getTarget(), target, value);
+        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
+        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
@@ -109,16 +112,16 @@ public class TransformationPerformer {
             if (builder.length() != 0) {
                 builder.append(concatString);
             }
-            builder.append(getObjectFromField(field, description.getSource(), source));
+            builder.append(getObjectFromSourceField(field));
         }
-        setObjectToField(step.getTargetField(), description.getTarget(), target, builder.toString());
+        setObjectToTargetField(step.getTargetField(), builder.toString());
     }
 
     /**
      * Logic for a split transformation step
      */
     private void performSplitStep(TransformationStep step) throws Exception {
-        String split = (String) getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
+        String split = (String) getObjectFromSourceField(step.getSourceFields()[0]);
         String splitString = step.getOperationParamater(TransformationConstants.splitParam);
         Integer index = 0;
         try {
@@ -134,28 +137,28 @@ public class TransformationPerformer {
         } catch (IndexOutOfBoundsException e) {
             LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead");
         }
-        setObjectToField(step.getTargetField(), description.getTarget(), target, result);
+        setObjectToTargetField(step.getTargetField(), result);
     }
 
     /**
      * Logic for a map step
      */
     private void performMapStep(TransformationStep step) throws Exception {
-        Object value = getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
+        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
         for (Map.Entry<String, String> entry : step.getOperationParams().entrySet()) {
             if (value.toString().equals(entry.getKey())) {
                 value = entry.getValue();
                 break;
             }
         }
-        setObjectToField(step.getTargetField(), description.getTarget(), target, value);
+        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
      * Logic for a substring step
      */
     private void performSubStringStep(TransformationStep step) throws Exception {
-        String value = (String) getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
+        String value = (String) getObjectFromSourceField(step.getSourceFields()[0]);
         String fromString = step.getOperationParamater(TransformationConstants.substringFrom);
         String toString = step.getOperationParamater(TransformationConstants.substringTo);
         int from = 0;
@@ -182,18 +185,30 @@ public class TransformationPerformer {
             to = value.length();
         }
         value = value.substring(from, to);
-        setObjectToField(step.getTargetField(), description.getTarget(), target, value);
+        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
-     * Sets the given value object to the field with the fieldname of the given target object with the class of the
+     * Logic for the value step
+     */
+    private void performValueStep(TransformationStep step) throws Exception {
+        Object value = step.getOperationParamater(TransformationConstants.value);
+        if (value == null) {
+            LOGGER.warn("There was no value set for the value step. This step will be skipped.");
+            return;
+        }
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Sets the given value object to the field with the fieldname of the target object with the class of the
      * target object. Is also aware of temporary fields.
      */
-    private void setObjectToField(String fieldname, Class<?> clazz, Object target, Object value) throws Exception {
+    private void setObjectToTargetField(String fieldname, Object value) throws Exception {
         if (isTemporaryField(fieldname)) {
             temporaryFields.put(fieldname, value);
         } else {
-            Method setter = clazz.getMethod(getSetterName(fieldname), value.getClass());
+            Method setter = description.getTarget().getMethod(getSetterName(fieldname), value.getClass());
             setter.invoke(target, value);
         }
     }
@@ -202,12 +217,12 @@ public class TransformationPerformer {
      * Gets the value of the field with the fieldname of the given source object with the class of the source object. Is
      * also aware of temporary fields.
      */
-    private Object getObjectFromField(String fieldname, Class<?> clazz, Object source) throws Exception {
+    private Object getObjectFromSourceField(String fieldname) throws Exception {
         if (isTemporaryField(fieldname)) {
             Object temp = temporaryFields.get(fieldname);
             return temp;
         } else {
-            Method getter = clazz.getMethod(getGetterName(fieldname));
+            Method getter = description.getSource().getMethod(getGetterName(fieldname));
             return getter.invoke(source);
         }
     }

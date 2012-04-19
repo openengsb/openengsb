@@ -179,9 +179,24 @@ public class TransformationEngineServiceTest {
         ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
         assertThat(result.getIdB(), is("this"));
     }
+    
+    @Test
+    public void testValueTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.forwardField("idA", "idB");
+        desc.valueField("testB", "blub");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setIdA("this is a test");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getIdB(), is("this is a test"));
+        assertThat(result.getTestB(), is("blub"));
+    }
 
     @Test
-    public void testRetrievedTransformationsFromFile_shouldWork() {
+    public void testRetrievedTransformationsFromFile1_shouldWork() {
         File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
@@ -208,7 +223,23 @@ public class TransformationEngineServiceTest {
         assertThat(resultA.getTestA(), is("world"));
         assertThat(resultA.getBlubA(), is("test3"));
         assertThat(resultA.getBlaA(), is("test4"));
+    }
+    
+    @Test
+    public void testRetrievedTransformationsFromFile2_shouldWork() {
+        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription2.xml").getFile());
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
+        service.saveDescriptions(descriptions);
+        ModelB modelB = new ModelB();
+        modelB.setIdB("test1");
+        modelB.setTestB("test2");
+        modelB.setBlubB("test3");
         
+        ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
         
+        assertThat(resultA.getIdA(), is(modelB.getIdB()));
+        assertThat(resultA.getTestA(), is(modelB.getTestB()));
+        assertThat(resultA.getBlubA(), is(modelB.getBlubB()));
+        assertThat(resultA.getBlaA(), is("Hello World"));
     }
 }

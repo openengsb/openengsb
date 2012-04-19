@@ -140,6 +140,10 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                     String to = operationParams.get(TransformationConstants.substringTo);
                     activeDescription.substringField(sourceFields.get(0), targetField, from, to);
                     break;
+                case VALUE:
+                    String value = operationParams.get(TransformationConstants.value);
+                    activeDescription.valueField(targetField, value);
+                    break;
                 default:
                     break;
             }

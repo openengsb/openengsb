@@ -51,4 +51,9 @@ public final class TransformationConstants {
      * The parameter for the substring operation which defines to which index the substring goes.
      */
     public static String substringTo = "to";
+    
+    /**
+     * The parameter for the value operation.
+     */
+    public static String value = "value";
 }
