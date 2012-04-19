@@ -100,6 +100,21 @@ public class TransformationDescription {
         steps.add(step);
     }
 
+    /**
+     * Adds a substring step to the transformation description. The value of the source field is taken and it is tried
+     * to build the substring from the given index from to the given index to. From and to must be Integers written as
+     * String, the value of the source field must also be a String.
+     */
+    public void substringField(String sourceField, String targetField, String from, String to) {
+        TransformationStep step = new TransformationStep();
+        step.setTargetField(targetField);
+        step.setSourceFields(sourceField);
+        step.setOperationParameter(TransformationConstants.substringFrom, from);
+        step.setOperationParameter(TransformationConstants.substringTo, to);
+        step.setOperation(TransformationOperation.SUBSTRING);
+        steps.add(step);
+    }
+
     public List<TransformationStep> getTransformingSteps() {
         return steps;
     }

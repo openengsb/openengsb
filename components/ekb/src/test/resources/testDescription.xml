@@ -24,10 +24,14 @@
       <source-field>idA</source-field>
       <target-field>idB</target-field>
     </forward>
-    <forward>
+    <substring>
       <source-field>testA</source-field>
-      <target-field>testB</target-field> 
-    </forward>
+      <target-field>testB</target-field>
+      <params>
+       <param key="from" value="0" />
+       <param key="to" value="4" />     
+      </params> 
+    </substring>
     <concat>
       <source-fields>
         <source-field>blubA</source-field>

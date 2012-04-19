@@ -80,6 +80,9 @@ public class TransformationPerformer {
                 case MAP:
                     performMapStep(step);
                     break;
+                case SUBSTRING:
+                    performSubStringStep(step);
+                    break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
@@ -122,14 +125,14 @@ public class TransformationPerformer {
             index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
         } catch (NumberFormatException e) {
             System.out.println(step.getOperationParamater(TransformationConstants.index));
-            LOGGER.error("The index given for the split operation is not a number. 0 will be taken instead");
+            LOGGER.warn("The index given for the split operation is not a number. 0 will be taken instead");
         }
         String[] splits = split.split(splitString);
         String result = "";
         try {
             result = splits[index];
         } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("Split havn't enough results for the given index. The empty string will be taken instead");
+            LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead");
         }
         setObjectToField(step.getTargetField(), description.getTarget(), target, result);
     }
@@ -145,6 +148,40 @@ public class TransformationPerformer {
                 break;
             }
         }
+        setObjectToField(step.getTargetField(), description.getTarget(), target, value);
+    }
+
+    /**
+     * Logic for a substring step
+     */
+    private void performSubStringStep(TransformationStep step) throws Exception {
+        String value = (String) getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
+        String fromString = step.getOperationParamater(TransformationConstants.substringFrom);
+        String toString = step.getOperationParamater(TransformationConstants.substringTo);
+        int from = 0;
+        int to = value.length();
+        if (fromString != null) {
+            try {
+                from = Integer.parseInt(fromString);
+            } catch (NumberFormatException e) {
+                LOGGER.warn("The String defining the start index of the substring is no number. "
+                        + "0 will be taken instead.");
+            }
+        }
+        if (toString != null) {
+            try {
+                to = Integer.parseInt(toString);
+            } catch (NumberFormatException e) {
+                LOGGER.warn("The String defining the end index of the substring is no number. "
+                        + "The length of input string will be taken instead.");
+            }
+        }
+        if (to > value.length()) {
+            LOGGER.warn("The end index is bigger than the length of the input string. "
+                    + "The length of the input string will be taken instead.");
+            to = value.length();
+        }
+        value = value.substring(from, to);
         setObjectToField(step.getTargetField(), description.getTarget(), target, value);
     }
 

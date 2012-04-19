@@ -135,6 +135,11 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                     activeDescription.mapField(sourceFields.get(0), targetField, new HashMap<String, String>(
                         operationParams));
                     break;
+                case SUBSTRING:
+                    String from = operationParams.get(TransformationConstants.substringFrom);
+                    String to = operationParams.get(TransformationConstants.substringTo);
+                    activeDescription.substringField(sourceFields.get(0), targetField, from, to);
+                    break;
                 default:
                     break;
             }

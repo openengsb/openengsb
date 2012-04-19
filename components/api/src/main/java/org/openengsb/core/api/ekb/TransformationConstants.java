@@ -37,8 +37,18 @@ public final class TransformationConstants {
     public static String splitParam = "splitString";
 
     /**
-     * The paramter for all operations where more than one result happens during the transformation (e.g. split). The
+     * The parameter for all operations where more than one result happens during the transformation (e.g. split). The
      * user than has to define which of the results should be forwarded to the target field.
      */
     public static String index = "resultIndex";
+    
+    /**
+     * The parameter for the substring operation which defines from which index the substring starts.
+     */
+    public static String substringFrom = "from";
+    
+    /**
+     * The parameter for the substring operation which defines to which index the substring goes.
+     */
+    public static String substringTo = "to";
 }

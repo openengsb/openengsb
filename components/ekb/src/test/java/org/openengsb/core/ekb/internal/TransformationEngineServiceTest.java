@@ -166,6 +166,19 @@ public class TransformationEngineServiceTest {
         assertThat(result1.getBlubA(), is("world"));
         assertThat(result2.getBlubA(), is("cat"));
     }
+    
+    @Test
+    public void testSubStringTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.substringField("idA", "idB", "0", "4");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setIdA("this is a test");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getIdB(), is("this"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile_shouldWork() {
@@ -185,15 +198,17 @@ public class TransformationEngineServiceTest {
         modelB.setBlubB("test3#test4");
 
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
-        
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
+        
+        assertThat(resultB.getIdB(), is("test1"));
+        assertThat(resultB.getTestB(), is("test"));
+        assertThat(resultB.getBlubB(), is("test3#test4"));
+        
         assertThat(resultA.getIdA(), is("test1"));
         assertThat(resultA.getTestA(), is("world"));
         assertThat(resultA.getBlubA(), is("test3"));
         assertThat(resultA.getBlaA(), is("test4"));
         
-        assertThat(resultB.getIdB(), is("test1"));
-        assertThat(resultB.getTestB(), is("test2"));
-        assertThat(resultB.getBlubB(), is("test3#test4"));
+        
     }
 }
