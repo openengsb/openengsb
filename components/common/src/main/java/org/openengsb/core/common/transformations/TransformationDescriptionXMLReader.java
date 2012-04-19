@@ -148,6 +148,9 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                     String function = operationParams.get(TransformationConstants.lengthFunction);
                     activeDescription.lengthField(sourceFields.get(0), targetField, function);
                     break;
+                case TRIM:
+                    activeDescription.trimField(sourceFields.get(0), targetField);
+                    break;
                 default:
                     break;
             }

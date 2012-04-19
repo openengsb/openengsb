@@ -20,10 +20,10 @@
 
 <transformations>
   <transformation source="org.openengsb.core.ekb.internal.models.ModelA" target="org.openengsb.core.ekb.internal.models.ModelB">
-    <forward>
+    <trim>
       <source-field>idA</source-field>
       <target-field>idB</target-field>
-    </forward>
+    </trim>
     <length>
       <source-field>testA</source-field>
       <target-field>testB</target-field>

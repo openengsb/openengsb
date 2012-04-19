@@ -204,7 +204,7 @@ public class TransformationEngineServiceTest {
         service.saveDescription(desc);
         
         ModelB model = new ModelB();
-        model.setTestB("Hallo");
+        model.setTestB("Hello");
         List<String> elements = new ArrayList<String>();
         elements.add("A");
         elements.add("B");
@@ -214,6 +214,19 @@ public class TransformationEngineServiceTest {
         ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
         assertThat(result.getTestA(), is(model.getTestB().length() + ""));
         assertThat(result.getBlubA(), is(model.getElements().size() + ""));
+    }
+    
+    @Test
+    public void testTrimTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        desc.trimField("testB", "testA");
+        service.saveDescription(desc);
+        
+        ModelB model = new ModelB();
+        model.setTestB("       Hello      ");
+        
+        ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
+        assertThat(result.getTestA(), is("Hello"));
     }
 
     @Test
@@ -262,7 +275,8 @@ public class TransformationEngineServiceTest {
         modelB.setElements(elements);
         
         ModelA modelA = new ModelA();
-        modelA.setTestA("Hallo");
+        modelA.setIdA("          Test         ");
+        modelA.setTestA("Hello");
         
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
@@ -272,6 +286,7 @@ public class TransformationEngineServiceTest {
         assertThat(resultA.getBlubA(), is(modelB.getElements().size() + ""));
         assertThat(resultA.getBlaA(), is("Hello World"));
         
+        assertThat(resultB.getIdB(), is("Test"));
         assertThat(resultB.getTestB(), is(modelA.getTestA().length() + ""));
     }
 }

@@ -89,9 +89,14 @@ public class TransformationPerformer {
                 case LENGTH:
                     performLengthStep(step);
                     break;
+                case TRIM:
+                    performTrimStep(step);
+                    break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
+        } catch (TransformationStepException e) {
+            LOGGER.debug(e.getMessage(), e);
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step ." + step, e);
         }
@@ -115,7 +120,11 @@ public class TransformationPerformer {
             if (builder.length() != 0) {
                 builder.append(concatString);
             }
-            builder.append(getObjectFromSourceField(field));
+            try {
+                builder.append(getObjectFromSourceField(field));
+            } catch (TransformationStepException e) {
+                // ignore
+            }
         }
         setObjectToTargetField(step.getTargetField(), builder.toString());
     }
@@ -124,7 +133,7 @@ public class TransformationPerformer {
      * Logic for a split transformation step
      */
     private void performSplitStep(TransformationStep step) throws Exception {
-        String split = (String) getObjectFromSourceField(step.getSourceFields()[0]);
+        String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String splitString = step.getOperationParamater(TransformationConstants.splitParam);
         Integer index = 0;
         try {
@@ -161,7 +170,7 @@ public class TransformationPerformer {
      * Logic for a substring step
      */
     private void performSubStringStep(TransformationStep step) throws Exception {
-        String value = (String) getObjectFromSourceField(step.getSourceFields()[0]);
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String fromString = step.getOperationParamater(TransformationConstants.substringFrom);
         String toString = step.getOperationParamater(TransformationConstants.substringTo);
         int from = 0;
@@ -224,8 +233,17 @@ public class TransformationPerformer {
     }
 
     /**
-     * Sets the given value object to the field with the fieldname of the target object with the class of the target
-     * object. Is also aware of temporary fields.
+     * Logic for the trim step
+     */
+    private void performTrimStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        value = value.trim();
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Sets the given value object to the field with the fieldname of the target object. Is also aware of temporary
+     * fields.
      */
     private void setObjectToTargetField(String fieldname, Object value) throws Exception {
         if (isTemporaryField(fieldname)) {
@@ -253,17 +271,38 @@ public class TransformationPerformer {
     }
 
     /**
-     * Gets the value of the field with the fieldname of the given source object with the class of the source object. Is
-     * also aware of temporary fields.
+     * Gets the value of the field with the fieldname of the source object. Is also aware of temporary fields.
      */
     private Object getObjectFromSourceField(String fieldname) throws Exception {
         if (isTemporaryField(fieldname)) {
+            if (!temporaryFields.containsKey(fieldname)) {
+                String message = String.format("The temporary field %s doesn't exist.", fieldname);
+                throw new TransformationStepException(message);
+            }
             Object temp = temporaryFields.get(fieldname);
             return temp;
         } else {
             Method getter = description.getSource().getMethod(getGetterName(fieldname));
-            return getter.invoke(source);
+            Object result = getter.invoke(source);
+            if (result == null) {
+                String message = String.format("The source field %s is null and can be ignored", fieldname);
+                throw new TransformationStepException(message);
+            }
+            return result;
         }
+    }
+
+    /**
+     * Gets the value of the field with the fieldname of the source object and try to type it.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getTypedObjectFromSourceField(String fieldname, Class<T> type) throws Exception {
+        Object result = getObjectFromSourceField(fieldname);
+        if (result.getClass().equals(type)) {
+            return (T) result;
+        }
+        String message = String.format("The field %s hasn't the type %s.", fieldname, type.getName());
+        throw new TransformationStepException(message);
     }
 
     /**

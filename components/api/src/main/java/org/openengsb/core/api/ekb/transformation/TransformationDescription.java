@@ -114,7 +114,7 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.SUBSTRING);
         steps.add(step);
     }
-    
+
     /**
      * Adds a value step to the transformation description. The given value is written to the target field.
      */
@@ -125,11 +125,11 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.VALUE);
         steps.add(step);
     }
-    
+
     /**
-     * Adds a length step to the transformation description. The sourceField needs to be an object which supports
-     * the function .length(). The result will be written in the target field. If the function is null, then "length"
-     * will be taken as standard function.
+     * Adds a length step to the transformation description. The step takes the object from the source field and
+     * calculate the length through the given method function (which needs to be implemented by the object). The result
+     * will be written in the target field. If the function is null, then "length" will be taken as standard function.
      */
     public void lengthField(String sourceField, String targetField, String function) {
         TransformationStep step = new TransformationStep();
@@ -137,6 +137,18 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.lengthFunction, function);
         step.setOperation(TransformationOperation.LENGTH);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a trim step to the transformation description. The source field and the target field need to be of String
+     * type.
+     */
+    public void trimField(String sourceField, String targetField) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperation(TransformationOperation.TRIM);
         steps.add(step);
     }
 

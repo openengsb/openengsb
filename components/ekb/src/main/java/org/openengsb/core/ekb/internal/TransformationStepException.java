@@ -15,11 +15,28 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.ekb.transformation;
+package org.openengsb.core.ekb.internal;
 
 /**
- * The TransformOperation enum describes all possible transformation operations during model transformations
+ * A helper exception for the transformation process. It is used for the easier handling of null values at the source
+ * side or if the source field hasn't the correct format.
  */
-public enum TransformationOperation {
-    FORWARD, SPLIT, CONCAT, MAP, SUBSTRING, VALUE, LENGTH, TRIM, NONE
+@SuppressWarnings("serial")
+public class TransformationStepException extends Exception {
+
+    public TransformationStepException() {
+        super();
+    }
+    
+    public TransformationStepException(String message) {
+        super(message);
+    }
+    
+    public TransformationStepException(Throwable cause) {
+        super(cause);
+    }
+    
+    public TransformationStepException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
