@@ -54,6 +54,26 @@ public class TransformationEngineServiceTest {
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
     }
+    
+    @Test
+    public void testForwardTransformationsWithTemporaryField_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.forwardField("idA", "idB");
+        desc.forwardField("testA", "testB");
+        desc.forwardField("blubA", "temp.test");
+        desc.forwardField("temp.test", "blubB");
+        service.saveDescription(desc);
+
+        ModelA model = new ModelA();
+        model.setIdA("test1");
+        model.setTestA("test2");
+        model.setBlubA("test3");
+
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getIdB(), is("test1"));
+        assertThat(result.getTestB(), is("test2"));
+        assertThat(result.getBlubB(), is("test3"));
+    }
 
     @Test
     public void testMixedForwardTransformations_shouldWork() {

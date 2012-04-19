@@ -19,16 +19,11 @@ package org.openengsb.core.ekb.internal;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.api.ekb.TransformationConstants;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
-import org.openengsb.core.api.ekb.transformation.TransformationStep;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -121,7 +116,8 @@ public class TransformationEngineService implements TransformationEngine {
                 }
             }
             if (desc != null) {
-                return (T) doActualTransformationSteps(desc, source);
+                TransformationPerformer performer = new TransformationPerformer();
+                return (T) performer.transformObject(desc, source);
             }
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -129,117 +125,5 @@ public class TransformationEngineService implements TransformationEngine {
             e.printStackTrace();
         }
         throw new IllegalArgumentException("No transformation description for this class pair defined");
-    }
-
-    /**
-     * Performs the actual transformation work. Performs step-wise the transformation steps.
-     */
-    private Object doActualTransformationSteps(TransformationDescription td, Object source)
-        throws InstantiationException, IllegalAccessException {
-        Object result;
-        if (OpenEngSBModel.class.isAssignableFrom(td.getTarget())) {
-            result = ModelUtils.createModelObject(td.getTarget());
-        } else {
-            result = td.getTarget().newInstance();
-        }
-
-        for (TransformationStep step : td.getTransformingSteps()) {
-            performTransformationStep(step, td, source, result);
-        }
-        return result;
-    }
-
-    /**
-     * Performs one transformation step
-     */
-    private void performTransformationStep(TransformationStep step, TransformationDescription desc, Object source,
-            Object target) throws IllegalAccessException {
-        try {
-            switch (step.getOperation()) {
-                case FORWARD:
-                    performForwardStep(desc, step, source, target);
-                    break;
-                case CONCAT:
-                    performConcatStep(desc, step, source, target);
-                    break;
-                case SPLIT:
-                    performSplitStep(desc, step, source, target);
-                    break;
-                default:
-                    LOGGER.error("Unsupported operation: " + step.getOperation());
-            }
-        } catch (Exception e) {
-            LOGGER.error("Unable to perform transformation step ." + step, e);
-        }
-    }
-
-    /**
-     * Logic for a forward transformation step
-     */
-    private void performForwardStep(TransformationDescription desc, TransformationStep step, Object source,
-            Object target) throws Exception {
-        Method getter = desc.getSource().getMethod(getGetterName(step.getSourceFields()[0]));
-        Object object = getter.invoke(source);
-        Method setter = desc.getTarget().getMethod(getSetterName(step.getTargetField()), object.getClass());
-        setter.invoke(target, object);
-    }
-
-    /**
-     * Logic for a concat transformation step
-     */
-    private void performConcatStep(TransformationDescription desc, TransformationStep step, Object source,
-            Object target) throws Exception {
-        StringBuilder builder = new StringBuilder();
-        String concatString = step.getOperationParamater(TransformationConstants.concatParam);
-        for (String field : step.getSourceFields()) {
-            if (builder.length() != 0) {
-                builder.append(concatString);
-            }
-            Method getter = desc.getSource().getMethod(getGetterName(field));
-            builder.append(getter.invoke(source));
-        }
-        Method setter = desc.getTarget().getMethod(getSetterName(step.getTargetField()), String.class);
-        setter.invoke(target, builder.toString());
-    }
-
-    /**
-     * Logic for a split transformation step
-     */
-    private void performSplitStep(TransformationDescription desc, TransformationStep step, Object source,
-            Object target) throws Exception {
-        Method getter = desc.getSource().getMethod(getGetterName(step.getSourceFields()[0]));
-        String split = (String) getter.invoke(source);
-        String splitString = step.getOperationParamater(TransformationConstants.splitParam);
-        Integer index = 0;
-        try {
-            index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
-        } catch (NumberFormatException e) {
-            System.out.println(step.getOperationParamater(TransformationConstants.index));
-            LOGGER.error("The index given for the split operation is not a number. 0 will be taken instead");
-        }
-        String[] splits = split.split(splitString);
-        String result = "";
-        try {
-            result = splits[index];
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("Split havn't enough results for the given index. The empty string will be taken instead");
-        }
-        String field = step.getTargetField();
-        Method setter = desc.getTarget().getMethod(getSetterName(field), String.class);
-        setter.invoke(target, result);
-    }
-
-    /**
-     * Returns the name of the getter method of a field.
-     */
-    private String getGetterName(String fieldname) {
-        return "get" + Character.toUpperCase(fieldname.charAt(0)) + fieldname.substring(1);
-    }
-
-    /**
-     * Returns the name of the setter method of a field.
-     */
-    private String getSetterName(String fieldname) {
-        return "set" + Character.toUpperCase(fieldname.charAt(0)) + fieldname.substring(1);
-    }
+    }    
 }
