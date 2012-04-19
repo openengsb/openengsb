@@ -228,6 +228,32 @@ public class TransformationEngineServiceTest {
         ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
         assertThat(result.getTestA(), is("Hello"));
     }
+    
+    @Test
+    public void testToUpperTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.toUpperField("testA", "testB");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setTestA("hello");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getTestB(), is("HELLO"));
+    }
+    
+    @Test
+    public void testToLowerTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.toLowerField("testA", "testB");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setTestA("HELLO");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getTestB(), is("hello"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -265,7 +291,7 @@ public class TransformationEngineServiceTest {
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
         ModelB modelB = new ModelB();
-        modelB.setIdB("test1");
+        modelB.setIdB("TEST");
         modelB.setTestB("test2");
         modelB.setBlubB("test3");
         List<String> elements = new ArrayList<String>();
@@ -281,8 +307,8 @@ public class TransformationEngineServiceTest {
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
         
-        assertThat(resultA.getIdA(), is(modelB.getIdB()));
-        assertThat(resultA.getTestA(), is(modelB.getTestB()));
+        assertThat(resultA.getIdA(), is(modelB.getIdB().toLowerCase()));
+        assertThat(resultA.getTestA(), is(modelB.getTestB().toUpperCase()));
         assertThat(resultA.getBlubA(), is(modelB.getElements().size() + ""));
         assertThat(resultA.getBlaA(), is("Hello World"));
         

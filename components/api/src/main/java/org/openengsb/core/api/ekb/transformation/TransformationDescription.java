@@ -142,13 +142,38 @@ public class TransformationDescription {
 
     /**
      * Adds a trim step to the transformation description. The source field and the target field need to be of String
-     * type.
+     * type. Performs standard trim operation on the string of the source field and writes the result to the target
+     * field.
      */
     public void trimField(String sourceField, String targetField) {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
         step.setOperation(TransformationOperation.TRIM);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a toLower step to the transformation description. The source and the target field need to be of String type.
+     * Performs standard toLower operation on the string of the source field and writes the result to the target field.
+     */
+    public void toLowerField(String sourceField, String targetField) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperation(TransformationOperation.TOLOWER);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a toUpper step to the transformation description. The source and the target field need to be of String type.
+     * Performs standard toUpper operation on the string of the source field and writes the result to the target field.
+     */
+    public void toUpperField(String sourceField, String targetField) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperation(TransformationOperation.TOUPPER);
         steps.add(step);
     }
 

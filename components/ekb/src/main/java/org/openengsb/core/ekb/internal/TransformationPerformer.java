@@ -92,6 +92,12 @@ public class TransformationPerformer {
                 case TRIM:
                     performTrimStep(step);
                     break;
+                case TOLOWER:
+                    performToLowerStep(step);
+                    break;
+                case TOUPPER:
+                    performToUpperStep(step);
+                    break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
@@ -238,6 +244,24 @@ public class TransformationPerformer {
     private void performTrimStep(TransformationStep step) throws Exception {
         String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         value = value.trim();
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+    
+    /**
+     * Logic for the toUpper step
+     */
+    private void performToUpperStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        value = value.toUpperCase();
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+    
+    /**
+     * Logic for the toLower step
+     */
+    private void performToLowerStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        value = value.toLowerCase();
         setObjectToTargetField(step.getTargetField(), value);
     }
 

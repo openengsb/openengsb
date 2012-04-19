@@ -151,6 +151,13 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                 case TRIM:
                     activeDescription.trimField(sourceFields.get(0), targetField);
                     break;
+                case TOUPPER:
+                    activeDescription.toUpperField(sourceFields.get(0), targetField);
+                    break;
+                case TOLOWER:
+                    activeDescription.toLowerField(sourceFields.get(0), targetField);
+                    break;
+                case NONE:
                 default:
                     break;
             }

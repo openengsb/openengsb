@@ -46,14 +46,14 @@
     </concat>
   </transformation>
   <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
-    <forward>
+    <toLower>
       <source-field>idB</source-field>
       <target-field>idA</target-field>
-    </forward>
-    <forward>
+    </toLower>
+    <toUpper>
       <source-field>testB</source-field>
       <target-field>testA</target-field>
-    </forward>
+    </toUpper>
     <forward>
       <source-field>blubB</source-field>
       <target-field>blubA</target-field>
