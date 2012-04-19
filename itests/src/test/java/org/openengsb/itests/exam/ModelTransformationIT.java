@@ -22,12 +22,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
@@ -68,7 +70,8 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testIfTransformationsFromFileWork_shouldWork() throws Exception {
         InputStream stream = getClass().getClassLoader().getResourceAsStream("transformations/testDescription.xml");
-        transformationEngine.addDescriptionsFromInputStream(stream);
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
+        transformationEngine.saveDescriptions(descriptions);
 
         ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         modelA.setResult("test-42");

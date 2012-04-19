@@ -21,10 +21,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.internal.models.ModelA;
 import org.openengsb.core.ekb.internal.models.ModelB;
 
@@ -138,7 +140,8 @@ public class TransformationEngineServiceTest {
     @Test
     public void testAddDescriptionsFromFile_shouldWork() {
         File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
-        service.addDescriptionsFromFile(descriptionFile);
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
+        service.saveDescriptions(descriptions);
 
         ModelA modelA = new ModelA();
         modelA.setIdA("test1");

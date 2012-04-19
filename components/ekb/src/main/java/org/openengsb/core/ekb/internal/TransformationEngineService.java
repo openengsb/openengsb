@@ -17,8 +17,6 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +24,6 @@ import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Implementation of the transformation engine. Only supports the transformations from OpenEngSBModels to
@@ -47,6 +42,14 @@ public class TransformationEngineService implements TransformationEngine {
     public void saveDescription(TransformationDescription description) {
         deleteDescription(description);
         descriptions.add(description);
+        LOGGER.debug("Added transformation description to the TransformationEngine");
+    }
+
+    @Override
+    public void saveDescriptions(List<TransformationDescription> descriptions) {
+        for (TransformationDescription description : descriptions) {
+            saveDescription(description);
+        }
     }
 
     @Override
@@ -57,52 +60,6 @@ public class TransformationEngineService implements TransformationEngine {
                 return;
             }
         }
-    }
-
-    @Override
-    public void addDescriptionsFromFile(File file) {
-        List<TransformationDescription> descriptions = getDescriptionsFromFile(file);
-        for (TransformationDescription description : descriptions) {
-            saveDescription(description);
-        }
-    }
-
-    @Override
-    public void addDescriptionsFromInputStream(InputStream inputStream) {
-        List<TransformationDescription> descriptions = getDescriptionsFromInputStream(inputStream);
-        for (TransformationDescription description : descriptions) {
-            saveDescription(description);
-        }
-    }
-
-    @Override
-    public List<TransformationDescription> getDescriptionsFromInputStream(InputStream fileContent) {
-        List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
-        try {
-            desc = loadFromInputSource(new InputSource(fileContent));
-        } catch (Exception e) {
-            LOGGER.error("Unable to read the descriptions from input stream. ", e);
-        }
-        return desc;
-    }
-
-    @Override
-    public List<TransformationDescription> getDescriptionsFromFile(File file) {
-        List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
-        try {
-            return loadFromInputSource(new InputSource(file.getAbsolutePath()));
-        } catch (Exception e) {
-            LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
-        }
-        return desc;
-    }
-
-    private List<TransformationDescription> loadFromInputSource(InputSource source) throws Exception {
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
-        xr.setContentHandler(reader);
-        xr.parse(source);
-        return reader.getResult();
     }
 
     @SuppressWarnings("unchecked")
@@ -125,5 +82,5 @@ public class TransformationEngineService implements TransformationEngine {
             e.printStackTrace();
         }
         throw new IllegalArgumentException("No transformation description for this class pair defined");
-    }    
+    }
 }

@@ -17,8 +17,6 @@
 
 package org.openengsb.core.api.ekb;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
@@ -36,32 +34,15 @@ public interface TransformationEngine {
     void saveDescription(TransformationDescription description);
 
     /**
+     * Saves a collection of transformation descriptions into the transformation engine memory. If a transformation
+     * description for the same class pair already exists, it gets updated.
+     */
+    void saveDescriptions(List<TransformationDescription> descriptions);
+
+    /**
      * Deletes a transformation description from the transformation engine memory.
      */
     void deleteDescription(TransformationDescription description);
-
-    /**
-     * Scans a file for transformation descriptions and returns all successfully read transformation descriptions.
-     */
-    List<TransformationDescription> getDescriptionsFromFile(File file);
-
-    /**
-     * Scans an input stream for transformation descriptions and returns all successfully read transformation
-     * descriptions.
-     */
-    List<TransformationDescription> getDescriptionsFromInputStream(InputStream inputStream);
-
-    /**
-     * Scans a file for transformation descriptions and add all successfully read descriptions to the transformation
-     * engine memory.
-     */
-    void addDescriptionsFromFile(File file);
-
-    /**
-     * Scans an input stream for transformation descriptions and add all successfully read descriptions to the
-     * transformation engine memory.
-     */
-    void addDescriptionsFromInputStream(InputStream inputStream);
 
     /**
      * Transforms the source object of the source class type to the target class type. Throws an
