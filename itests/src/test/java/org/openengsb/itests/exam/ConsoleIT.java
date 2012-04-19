@@ -22,10 +22,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
@@ -50,6 +52,11 @@ import com.google.common.collect.Maps;
 // This one will run each test in it's own container (slower speed)
 // @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
+
+    @BeforeClass
+    public static void initialize() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @ProbeBuilder
     public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
