@@ -19,6 +19,7 @@ package org.openengsb.core.api.ekb.transformation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.ekb.TransformationConstants;
 
@@ -72,7 +73,7 @@ public class TransformationDescription {
 
     /**
      * Adds a split transformation step to the transformation description. The value of the source field is split based
-     * on the split string into parts. Based on the given index, the result will be set to the targetField. The index
+     * on the split string into parts. Based on the given index, the result will be set to the target field. The index
      * needs to be an integer value. All fields need to be of the type String.
      */
     public void splitField(String sourceField, String targetField, String splitString, String index) {
@@ -82,6 +83,20 @@ public class TransformationDescription {
         step.setOperationParameter(TransformationConstants.splitParam, splitString);
         step.setOperationParameter(TransformationConstants.index, index);
         step.setOperation(TransformationOperation.SPLIT);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a map transformation step to the transformation description. The value of the source field is mapped based
+     * on the mapping to another value which is forwarded to the target field. The values in the models need to be
+     * working with the values of the mapping (e.g. assigning 'hello' to Integer field will not work).
+     */
+    public void mapField(String sourceField, String targetField, Map<String, String> mapping) {
+        TransformationStep step = new TransformationStep();
+        step.setTargetField(targetField);
+        step.setSourceFields(sourceField);
+        step.setOperationParams(mapping);
+        step.setOperation(TransformationOperation.MAP);
         steps.add(step);
     }
 

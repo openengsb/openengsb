@@ -131,6 +131,10 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
                     String index = operationParams.get(TransformationConstants.index);
                     activeDescription.splitField(sourceFields.get(0), targetField, splitString, index);
                     break;
+                case MAP:
+                    activeDescription.mapField(sourceFields.get(0), targetField, new HashMap<String, String>(
+                        operationParams));
+                    break;
                 default:
                     break;
             }

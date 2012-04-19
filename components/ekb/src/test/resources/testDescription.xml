@@ -44,10 +44,14 @@
       <source-field>idB</source-field>
       <target-field>idA</target-field>
     </forward>
-    <forward>
+    <map>
       <source-field>testB</source-field>
-      <target-field>testA</target-field> 
-    </forward>
+      <target-field>testA</target-field>
+      <params>
+      	<param key="dog" value="cat" />
+      	<param key="hello" value="world" />
+      </params> 
+    </map>
     <split>
       <source-field>blubB</source-field>
       <target-field>blubA</target-field>

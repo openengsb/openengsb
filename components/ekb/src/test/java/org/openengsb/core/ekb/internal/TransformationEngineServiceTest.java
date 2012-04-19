@@ -21,7 +21,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -136,9 +138,37 @@ public class TransformationEngineServiceTest {
         assertThat(result.getBlubA(), is("test3"));
         assertThat(result.getBlaA(), is("test4"));
     }
+    
+    @Test
+    public void testMapTransformation_shoulWork() {
+        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        desc.forwardField("idB", "idA");
+        desc.forwardField("testB", "testA");
+        Map<String, String> mapping = new HashMap<String, String>();
+        mapping.put("hello", "world");
+        mapping.put("dog", "cat");
+        desc.mapField("blubB", "blubA", mapping);
+        service.saveDescription(desc);
+        
+        ModelB model1 = new ModelB();
+        model1.setIdB("test1");
+        model1.setTestB("test2");
+        model1.setBlubB("hello");
+        
+        ModelB model2 = new ModelB();
+        model2.setIdB("test1");
+        model2.setTestB("test2");
+        model2.setBlubB("dog");
+        
+        ModelA result1 = service.performTransformation(ModelB.class, ModelA.class, model1);
+        ModelA result2 = service.performTransformation(ModelB.class, ModelA.class, model2);
+        
+        assertThat(result1.getBlubA(), is("world"));
+        assertThat(result2.getBlubA(), is("cat"));
+    }
 
     @Test
-    public void testAddDescriptionsFromFile_shouldWork() {
+    public void testRetrievedTransformationsFromFile_shouldWork() {
         File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
@@ -148,21 +178,22 @@ public class TransformationEngineServiceTest {
         modelA.setTestA("test2");
         modelA.setBlubA("test3");
         modelA.setBlaA("test4");
+        
+        ModelB modelB = new ModelB();
+        modelB.setIdB("test1");
+        modelB.setTestB("hello");
+        modelB.setBlubB("test3#test4");
 
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
+        
+        ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
+        assertThat(resultA.getIdA(), is("test1"));
+        assertThat(resultA.getTestA(), is("world"));
+        assertThat(resultA.getBlubA(), is("test3"));
+        assertThat(resultA.getBlaA(), is("test4"));
+        
         assertThat(resultB.getIdB(), is("test1"));
         assertThat(resultB.getTestB(), is("test2"));
         assertThat(resultB.getBlubB(), is("test3#test4"));
-
-        ModelB modelB = new ModelB();
-        modelB.setIdB("test1");
-        modelB.setTestB("test2");
-        modelB.setBlubB("test3#test4");
-
-        ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
-        assertThat(resultA.getIdA(), is("test1"));
-        assertThat(resultA.getTestA(), is("test2"));
-        assertThat(resultA.getBlubA(), is("test3"));
-        assertThat(resultA.getBlaA(), is("test4"));
     }
 }

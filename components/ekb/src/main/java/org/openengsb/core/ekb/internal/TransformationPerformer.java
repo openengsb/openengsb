@@ -36,6 +36,8 @@ public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
     private TransformationDescription description;
+    private Object source;
+    private Object target;
 
     public TransformationPerformer() {
         temporaryFields = new HashMap<String, Object>();
@@ -47,34 +49,36 @@ public class TransformationPerformer {
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException {
         this.description = description;
-        Object result;
+        this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(description.getTarget())) {
-            result = ModelUtils.createModelObject(description.getTarget());
+            target = ModelUtils.createModelObject(description.getTarget());
         } else {
-            result = description.getTarget().newInstance();
+            target = description.getTarget().newInstance();
         }
 
         for (TransformationStep step : description.getTransformingSteps()) {
-            performTransformationStep(step, source, result);
+            performTransformationStep(step);
         }
-        return result;
+        return target;
     }
 
     /**
      * Performs one transformation step
      */
-    private void performTransformationStep(TransformationStep step, Object source,
-            Object target) throws IllegalAccessException {
+    private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             switch (step.getOperation()) {
                 case FORWARD:
-                    performForwardStep(step, source, target);
+                    performForwardStep(step);
                     break;
                 case CONCAT:
-                    performConcatStep(step, source, target);
+                    performConcatStep(step);
                     break;
                 case SPLIT:
-                    performSplitStep(step, source, target);
+                    performSplitStep(step);
+                    break;
+                case MAP:
+                    performMapStep(step);
                     break;
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
@@ -87,7 +91,7 @@ public class TransformationPerformer {
     /**
      * Logic for a forward transformation step
      */
-    private void performForwardStep(TransformationStep step, Object source, Object target) throws Exception {
+    private void performForwardStep(TransformationStep step) throws Exception {
         Object value = getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
         setObjectToField(step.getTargetField(), description.getTarget(), target, value);
     }
@@ -95,7 +99,7 @@ public class TransformationPerformer {
     /**
      * Logic for a concat transformation step
      */
-    private void performConcatStep(TransformationStep step, Object source, Object target) throws Exception {
+    private void performConcatStep(TransformationStep step) throws Exception {
         StringBuilder builder = new StringBuilder();
         String concatString = step.getOperationParamater(TransformationConstants.concatParam);
         for (String field : step.getSourceFields()) {
@@ -110,7 +114,7 @@ public class TransformationPerformer {
     /**
      * Logic for a split transformation step
      */
-    private void performSplitStep(TransformationStep step, Object source, Object target) throws Exception {
+    private void performSplitStep(TransformationStep step) throws Exception {
         String split = (String) getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
         String splitString = step.getOperationParamater(TransformationConstants.splitParam);
         Integer index = 0;
@@ -128,6 +132,20 @@ public class TransformationPerformer {
             LOGGER.error("Split havn't enough results for the given index. The empty string will be taken instead");
         }
         setObjectToField(step.getTargetField(), description.getTarget(), target, result);
+    }
+
+    /**
+     * Logic for a map step
+     */
+    private void performMapStep(TransformationStep step) throws Exception {
+        Object value = getObjectFromField(step.getSourceFields()[0], description.getSource(), source);
+        for (Map.Entry<String, String> entry : step.getOperationParams().entrySet()) {
+            if (value.toString().equals(entry.getKey())) {
+                value = entry.getValue();
+                break;
+            }
+        }
+        setObjectToField(step.getTargetField(), description.getTarget(), target, value);
     }
 
     /**
