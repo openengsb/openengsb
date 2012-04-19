@@ -21,5 +21,5 @@ package org.openengsb.core.api.ekb.transformation;
  * The TransformOperation enum describes all possible transformation operations during model transformations
  */
 public enum TransformationOperation {
-    FORWARD, SPLIT, CONCAT
+    FORWARD, SPLIT, CONCAT, NONE
 }
