@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
@@ -42,69 +43,124 @@ import org.osgi.framework.Constants;
 public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @ProbeBuilder
-    public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
-        probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE, "*,org.apache.felix.service.*;status=provisional");
-        return probe;
-    }
+     public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
+         probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE, "*,org.apache.felix.service.*;status=provisional");
+         return probe;
+     }
 
-    @Test
-    public void testToExecuteOpenEngSBDomainInfoCommand() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+     @Test
+     public void testToExecuteOpenEngSBInfoCommand() throws Exception {
+         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
+         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+         PrintStream out = new PrintStream(outputStreamHelper);
+         CommandSession cs = cp.createSession(System.in, out, System.err);
 
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
-        cs.execute("openengsb:domains");
-        cs.close();
+         Bundle b = getInstalledBundle("org.openengsb.framework.console");
+         b.start();
+         cs.execute("openengsb:info");
+         cs.close();
+         List<String> result = outputStreamHelper.getResult();
+         assertTrue(contains(result, "OpenEngSB Framework Version", ""));
+         assertTrue(contains(result, "Karaf Version", ""));
+         assertTrue(contains(result, "OSGi Framework", ""));
+         assertTrue(contains(result, "Drools version", ""));
+     }
 
-        List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
-        assertTrue(contains(result, "Example Domain",
-            "This domain is provided as an example for all developers. It should not be used in production."));
-    }
+     @Test
+     public void testToExecuteOpenEngSBDomainInfoCommand() throws Exception {
+         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
-    @Test
-    public void testToExecuteOpenEngSBServiceListCommand() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+         PrintStream out = new PrintStream(outputStreamHelper);
+         CommandSession cs = cp.createSession(System.in, out, System.err);
 
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
+         Bundle b = getInstalledBundle("org.openengsb.framework.console");
+         b.start();
+         cs.execute("openengsb:domains");
+         cs.close();
 
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
-        
-        waitForDefaultConnectors();
-        
-        cs.execute("openengsb:service list");
-        cs.close();
+         List<String> result = outputStreamHelper.getResult();
+         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
+         assertTrue(contains(result, "Example Domain",
+             "This domain is provided as an example for all developers. It should not be used in production."));
+     }
 
-        List<String> result = outputStreamHelper.getResult();
-        for (String string : result) {
-            System.out.println(string);
-        }
-        assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
-        assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
-        assertTrue(contains(result, "BinaryTransformationDomain",
-            "Domain for connectors which want to provide a BinaryTransformationProviderFactory."));
-        assertTrue(contains(result, "Example Domain",
-            "This domain is provided as an example for all developers. It should not be used in production."));
-    }
+     @Test
+     public void testToExecuteOpenEngSBServiceListCommand() throws Exception {
+         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
-	private void waitForDefaultConnectors() {
-		getOsgiService(AuditingDomain.class);
-	}
+         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+         PrintStream out = new PrintStream(outputStreamHelper);
+         CommandSession cs = cp.createSession(System.in, out, System.err);
 
-    private boolean contains(List<String> list, String value, String value2) {
-        for (String s : list) {
-            String s1 = OutputStreamFormater.formatValues(value, value2);
-            if (s.contains(s1)) {
-                return true;
-            }
-        }
-        return false;
-    }
+         Bundle b = getInstalledBundle("org.openengsb.framework.console");
+         b.start();
+
+         waitForDefaultConnectors();
+
+         cs.execute("openengsb:service list");
+         cs.close();
+
+         List<String> result = outputStreamHelper.getResult();
+         assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
+     }
+
+     @Test
+     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
+
+         CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+
+         PrintStream out = new PrintStream(outputStreamHelper);
+         CommandSession cs = cp.createSession(System.in, out, System.err);
+
+         waitForDefaultConnectors();
+
+         Bundle b = getInstalledBundle("org.openengsb.framework.console");
+         b.start();
+         cs.execute("openengsb:service -f true delete auditing+memoryauditing+auditing-root ");
+         cs.execute("openengsb:service list");
+         cs.close();
+
+         List<String> result = outputStreamHelper.getResult();
+         assertFalse(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
+     }
+
+     @Test
+     public void testToExecuteOpenEngSBServiceCreateCommand() throws Exception {
+         CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+         PrintStream out = new PrintStream(outputStreamHelper);
+         CommandSession cs = cp.createSession(System.in, out, System.err);
+
+         Bundle b = getInstalledBundle("org.openengsb.framework.console");
+         b.start();
+
+         waitForDefaultConnectors();
+         System.out.println("starting  ");
+         String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing " +
+             "id:testID attr:something");
+         cs.execute(executeCommand);
+         cs.close();
+
+         List<String> result = outputStreamHelper.getResult();
+         assertTrue(result.contains("Connector successfully created"));
+     }
+
+     private boolean contains(List<String> list, String value, String value2) {
+         for (String s : list) {
+             String s1 = OutputStreamFormater.formatValues(value, value2);
+             if (s.contains(s1)) {
+                 return true;
+             }
+         }
+         return false;
+     }
+
+     private void waitForDefaultConnectors() {
+         getOsgiService(AuditingDomain.class);
+     }
 }

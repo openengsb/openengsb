@@ -46,10 +46,9 @@
     <argument index="0" type="org.openengsb.core.console.internal.util.ServicesHelper" ref="serviceHelper"/>
   </bean>
 
-  <bean id="serviceHelper" class="org.openengsb.core.console.internal.util.ServicesHelper">
-    <argument index="0" type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
+  <bean id="serviceHelper" class="org.openengsb.core.console.internal.util.ServicesHelper" init-method="init">
+    <property name="bundleContext" ref="blueprintBundleContext"/>
   </bean>
-
 
   <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"
                   availability="optional">
