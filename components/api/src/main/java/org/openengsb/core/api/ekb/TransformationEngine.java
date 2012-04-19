@@ -49,4 +49,9 @@ public interface TransformationEngine {
      * IllegalArgumentException if no transformation descriptions for this transformation are available.
      */
     <T> T performTransformation(Class<?> sourceClass, Class<T> targetClass, Object source);
+
+    /**
+     * Returns true if there is a transformation possible from source to target class. Returns fals if not.
+     */
+    Boolean isTransformationPossible(Class<?> sourceClass, Class<?> targetClass);
 }

@@ -65,13 +65,7 @@ public class TransformationEngineService implements TransformationEngine {
     @SuppressWarnings("unchecked")
     public <T> T performTransformation(Class<?> sourceClass, Class<T> targetClass, Object source) {
         try {
-            TransformationDescription desc = null;
-            for (TransformationDescription td : descriptions) {
-                if (td.getSource().equals(sourceClass) && td.getTarget().equals(targetClass)) {
-                    desc = td;
-                    break;
-                }
-            }
+            TransformationDescription desc = getTransformationDescription(sourceClass, targetClass);
             if (desc != null) {
                 TransformationPerformer performer = new TransformationPerformer();
                 return (T) performer.transformObject(desc, source);
@@ -82,5 +76,22 @@ public class TransformationEngineService implements TransformationEngine {
             e.printStackTrace();
         }
         throw new IllegalArgumentException("No transformation description for this class pair defined");
+    }
+
+    @Override
+    public Boolean isTransformationPossible(Class<?> sourceClass, Class<?> targetClass) {
+        return getTransformationDescription(sourceClass, targetClass) != null;
+    }
+
+    /**
+     * Returns the first possible way to transform an object of the source class to an object of the target class.
+     */
+    private TransformationDescription getTransformationDescription(Class<?> sourceClass, Class<?> targetClass) {
+        for (TransformationDescription td : descriptions) {
+            if (td.getSource().equals(sourceClass) && td.getTarget().equals(targetClass)) {
+                return td;
+            }
+        }
+        return null;
     }
 }
