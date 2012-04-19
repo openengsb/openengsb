@@ -49,13 +49,19 @@
       <target-field>testA</target-field> 
     </forward>
     <split>
-      <target-fields>
-        <target-field>blubA</target-field>
-        <target-field>blaA</target-field>   
-      </target-fields>
       <source-field>blubB</source-field>
+      <target-field>blubA</target-field>
       <params>
       	<param key="splitString" value="#" />
+      	<param key="resultIndex" value="0" />
+      </params>
+    </split>
+    <split>
+      <source-field>blubB</source-field>
+      <target-field>blaA</target-field>
+      <params>
+      	<param key="splitString" value="#" />
+      	<param key="resultIndex" value="1" />
       </params>
     </split>
   </transformation>

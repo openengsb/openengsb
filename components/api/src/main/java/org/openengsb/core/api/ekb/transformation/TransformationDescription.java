@@ -72,23 +72,16 @@ public class TransformationDescription {
 
     /**
      * Adds a split transformation step to the transformation description. The value of the source field is split based
-     * on the split string into parts. This parts are then set at the target fields. if the result of the split
-     * operation has too few / too many results for the target fields, a warning is printed. All fields need to be of
-     * the type String.
+     * on the split string into parts. Based on the given index, the result will be set to the targetField. The index
+     * needs to be an integer value. All fields need to be of the type String.
      */
-    public void splitField(String sourceField, String splitString, String... targetFields) {
+    public void splitField(String sourceField, String targetField, String splitString, String index) {
         TransformationStep step = new TransformationStep();
-        step.setTargetField(sourceField);
-        step.setSourceFields(targetFields);
+        step.setTargetField(targetField);
+        step.setSourceFields(sourceField);
         step.setOperationParameter(TransformationConstants.splitParam, splitString);
+        step.setOperationParameter(TransformationConstants.index, index);
         step.setOperation(TransformationOperation.SPLIT);
-        StringBuilder key = new StringBuilder();
-        for (String target : targetFields) {
-            if (key.length() != 0) {
-                key.append("; ");
-            }
-            key.append(target);
-        }
         steps.add(step);
     }
 

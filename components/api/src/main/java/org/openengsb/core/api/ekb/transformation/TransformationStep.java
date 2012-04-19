@@ -54,7 +54,7 @@ public class TransformationStep {
         this.operationParams = operationParams;
     }
 
-    public String getOperationPramater(String key) {
+    public String getOperationParamater(String key) {
         if (operationParams == null) {
             return "";
         }

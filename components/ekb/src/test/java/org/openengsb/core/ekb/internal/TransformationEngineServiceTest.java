@@ -99,7 +99,8 @@ public class TransformationEngineServiceTest {
         TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
         desc.forwardField("idB", "idA");
         desc.forwardField("testB", "testA");
-        desc.splitField("blubB", "#", "blubA", "blaA");
+        desc.splitField("blubB", "blubA", "#", "0");
+        desc.splitField("blubB", "blaA", "#", "1");
         service.saveDescription(desc);
 
         ModelB model = new ModelB();

@@ -190,7 +190,7 @@ public class TransformationEngineService implements TransformationEngine {
     private void performConcatStep(TransformationDescription desc, TransformationStep step, Object source,
             Object target) throws Exception {
         StringBuilder builder = new StringBuilder();
-        String concatString = step.getOperationPramater(TransformationConstants.concatParam);
+        String concatString = step.getOperationParamater(TransformationConstants.concatParam);
         for (String field : step.getSourceFields()) {
             if (builder.length() != 0) {
                 builder.append(concatString);
@@ -207,23 +207,26 @@ public class TransformationEngineService implements TransformationEngine {
      */
     private void performSplitStep(TransformationDescription desc, TransformationStep step, Object source,
             Object target) throws Exception {
-        Method getter = desc.getSource().getMethod(getGetterName(step.getTargetField()));
+        Method getter = desc.getSource().getMethod(getGetterName(step.getSourceFields()[0]));
         String split = (String) getter.invoke(source);
-        String splitString = step.getOperationPramater(TransformationConstants.splitParam);
+        String splitString = step.getOperationParamater(TransformationConstants.splitParam);
+        Integer index = 0;
+        try {
+            index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
+        } catch (NumberFormatException e) {
+            System.out.println(step.getOperationParamater(TransformationConstants.index));
+            LOGGER.error("The index given for the split operation is not a number. 0 will be taken instead");
+        }
         String[] splits = split.split(splitString);
-        for (int i = 0; i < step.getSourceFields().length; i++) {
-            if (splits.length <= i) {
-                LOGGER.warn("Not enough results of the split operation for the given target fields.");
-                break;
-            }
-            String field = step.getSourceFields()[i];
-            Method setter = desc.getTarget().getMethod(getSetterName(field), String.class);
-            setter.invoke(target, splits[i]);
+        String result = "";
+        try {
+            result = splits[index];
+        } catch (IndexOutOfBoundsException e) {
+            LOGGER.error("Split havn't enough results for the given index. The empty string will be taken instead");
         }
-        if (splits.length > step.getSourceFields().length) {
-            LOGGER.warn("Too many results of the split operation for the given target fields. "
-                    + "Data will get lost!");
-        }
+        String field = step.getTargetField();
+        Method setter = desc.getTarget().getMethod(getSetterName(field), String.class);
+        setter.invoke(target, result);
     }
 
     /**

@@ -18,21 +18,27 @@
 package org.openengsb.core.api.ekb;
 
 /**
- * The TransformationConstants class sums up all strings for the transformation operation parameters so
- * that they don't need to be hard-coded at three stages.
+ * The TransformationConstants class sums up all strings for the transformation operation parameters so that they don't
+ * need to be hard-coded at three stages.
  */
 public final class TransformationConstants {
 
     private TransformationConstants() {
     }
-    
+
     /**
      * The parameter for the concat operation.
      */
     public static String concatParam = "concatString";
-    
+
     /**
      * The parameter for the split operation.
      */
     public static String splitParam = "splitString";
+
+    /**
+     * The paramter for all operations where more than one result happens during the transformation (e.g. split). The
+     * user than has to define which of the results should be forwarded to the target field.
+     */
+    public static String index = "resultIndex";
 }

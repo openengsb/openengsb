@@ -38,10 +38,10 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     private TransformationDescription activeDescription;
     private MODE activeMode;
     private List<String> sourceFields;
-    private List<String> targetFields;
+    private String targetField;
     private Map<String, String> operationParams;
-    private boolean sourceField = false;
-    private boolean targetField = false;
+    private boolean activeSourceField = false;
+    private boolean activeTargetField = false;
 
     private enum MODE {
         FORWARD, CONCAT, SPLIT, NONE
@@ -50,16 +50,16 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     public TransformationDescriptionXMLReader() {
         descriptions = new ArrayList<TransformationDescription>();
         sourceFields = new ArrayList<String>();
-        targetFields = new ArrayList<String>();
         operationParams = new HashMap<String, String>();
     }
 
     private boolean isIgnoreField(String fieldName, boolean isEndElement) {
-        List<String> ignores = Arrays.asList("transformations", "target-fields", "source-fields", "params");
+        List<String> ignores = Arrays.asList("transformations", "source-fields", "params");
         if (isEndElement) {
             ignores = new ArrayList<String>(ignores);
             ignores.add("target-field");
             ignores.add("source-field");
+            ignores.add("param");
         }
         return ignores.contains(fieldName);
     }
@@ -87,9 +87,9 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             }
             activeDescription = new TransformationDescription(sourceClass, targetClass);
         } else if (localName.equals("source-field")) {
-            sourceField = true;
+            activeSourceField = true;
         } else if (localName.equals("target-field")) {
-            targetField = true;
+            activeTargetField = true;
         } else if (localName.equals("param")) {
             String key = attributes.getValue("key");
             String value = attributes.getValue("value");
@@ -102,12 +102,12 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
-        if (sourceField) {
+        if (activeSourceField) {
             sourceFields.add(new String(ch).substring(start, start + length));
-            sourceField = false;
-        } else if (targetField) {
-            targetFields.add(new String(ch).substring(start, start + length));
-            targetField = false;
+            activeSourceField = false;
+        } else if (activeTargetField) {
+            targetField = new String(ch).substring(start, start + length);
+            activeTargetField = false;
         }
     }
 
@@ -122,24 +122,23 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         } else {
             switch (activeMode) {
                 case FORWARD:
-                    activeDescription.forwardField(sourceFields.get(0), targetFields.get(0));
+                    activeDescription.forwardField(sourceFields.get(0), targetField);
                     break;
                 case CONCAT:
                     String concatString = operationParams.get(TransformationConstants.concatParam);
-                    activeDescription.concatField(targetFields.get(0), concatString,
+                    activeDescription.concatField(targetField, concatString,
                         sourceFields.toArray(new String[0]));
                     break;
                 case SPLIT:
                     String splitString = operationParams.get(TransformationConstants.splitParam);
-                    activeDescription.splitField(sourceFields.get(0), splitString,
-                        targetFields.toArray(new String[0]));
+                    String index = operationParams.get(TransformationConstants.index);
+                    activeDescription.splitField(sourceFields.get(0), targetField, splitString, index);
                     break;
                 default:
                     break;
             }
             activeMode = MODE.NONE;
             sourceFields.clear();
-            targetFields.clear();
             operationParams.clear();
         }
     }

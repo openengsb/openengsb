@@ -22,11 +22,10 @@
   <transformation source="org.openengsb.domain.example.model.ExampleResponseModel" target="org.openengsb.domain.example.model.ExampleRequestModel" >
     <split>
       <source-field>result</source-field>
-      <target-fields>
-        <target-field>name</target-field>
-      </target-fields>
+      <target-field>name</target-field>
       <params>
       	<param key="splitString" value="-" />
+      	<param key="resultIndex" value="0" />
       </params>
     </split>
   </transformation>
