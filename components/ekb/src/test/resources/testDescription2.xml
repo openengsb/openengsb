@@ -34,16 +34,14 @@
        </params>
       -->   
     </length>
-    <concat>
-      <source-fields>
-        <source-field>blubA</source-field>
-        <source-field>blaA</source-field>   
-      </source-fields>
+    <replace>
+      <source-field>blubA</source-field>
       <target-field>blubB</target-field>
       <params>
-      	<param key="concatString" value="#" />
+      	<param key="oldString" value="test" />
+      	<param key="newString" value="blub" />
       </params>
-    </concat>
+    </replace>
   </transformation>
   <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
     <toLower>
@@ -54,10 +52,6 @@
       <source-field>testB</source-field>
       <target-field>testA</target-field>
     </toUpper>
-    <forward>
-      <source-field>blubB</source-field>
-      <target-field>blubA</target-field>
-    </forward>
     <length>
       <source-field>elements</source-field>
       <target-field>blubA</target-field>

@@ -22,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.ekb.TransformationConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Describes all steps to transform an object of the source class into an object of the target class.
  */
 public class TransformationDescription {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationDescription.class);
     private Class<?> source;
     private Class<?> target;
     private List<TransformationStep> steps;
@@ -85,8 +88,14 @@ public class TransformationDescription {
                 String value = parameters.get(TransformationConstants.value);
                 valueField(targetField, value);
                 break;
+            case REPLACE:
+                String oldString = parameters.get(TransformationConstants.replaceOld);
+                String newString = parameters.get(TransformationConstants.replaceNew);
+                replaceField(sourceFields.get(0), targetField, oldString, newString);
+                break;
             case NONE:
             default:
+                LOGGER.warn("Not supported operation received: " + operation);
                 break;
         }
     }
@@ -220,6 +229,20 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
         step.setOperation(TransformationOperation.TOUPPER);
+        steps.add(step);
+    }
+    
+    /**
+     * Adds a replace step to the transformation description. The source and the target field need to be of String type.
+     * Performs standard string replacement on the string of the source field and writes the result to the target field.
+     */
+    public void replaceField(String sourceField, String targetField, String oldString, String newString) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.replaceOld, oldString);
+        step.setOperationParameter(TransformationConstants.replaceNew, newString);
+        step.setOperation(TransformationOperation.REPLACE);
         steps.add(step);
     }
 

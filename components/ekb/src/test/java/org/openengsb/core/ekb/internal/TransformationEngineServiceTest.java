@@ -254,6 +254,19 @@ public class TransformationEngineServiceTest {
         ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
         assertThat(result.getTestB(), is("hello"));
     }
+    
+    @Test
+    public void testReplaceTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.replaceField("testA", "testB", "test", "blub");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setTestA("testHellotest");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getTestB(), is("blubHelloblub"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -293,7 +306,7 @@ public class TransformationEngineServiceTest {
         ModelB modelB = new ModelB();
         modelB.setIdB("TEST");
         modelB.setTestB("test2");
-        modelB.setBlubB("test3");
+        modelB.setBlubB("testHellotest");
         List<String> elements = new ArrayList<String>();
         elements.add("A");
         elements.add("B");
@@ -303,6 +316,7 @@ public class TransformationEngineServiceTest {
         ModelA modelA = new ModelA();
         modelA.setIdA("          Test         ");
         modelA.setTestA("Hello");
+        modelA.setBlubA("testHellotest");
         
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
@@ -314,5 +328,6 @@ public class TransformationEngineServiceTest {
         
         assertThat(resultB.getIdB(), is("Test"));
         assertThat(resultB.getTestB(), is(modelA.getTestA().length() + ""));
+        assertThat(resultB.getBlubB(), is("blubHelloblub"));
     }
 }

@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.ekb.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationStep;
@@ -98,6 +99,10 @@ public class TransformationPerformer {
                 case TOUPPER:
                     performToUpperStep(step);
                     break;
+                case REPLACE:
+                    performReplaceStep(step);
+                    break;
+                case NONE:
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
             }
@@ -246,7 +251,7 @@ public class TransformationPerformer {
         value = value.trim();
         setObjectToTargetField(step.getTargetField(), value);
     }
-    
+
     /**
      * Logic for the toUpper step
      */
@@ -255,13 +260,28 @@ public class TransformationPerformer {
         value = value.toUpperCase();
         setObjectToTargetField(step.getTargetField(), value);
     }
-    
+
     /**
      * Logic for the toLower step
      */
     private void performToLowerStep(TransformationStep step) throws Exception {
         String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         value = value.toLowerCase();
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Logic for the replace step
+     */
+    private void performReplaceStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        String oldString = step.getOperationParamater(TransformationConstants.replaceOld);
+        String newString = step.getOperationParamater(TransformationConstants.replaceNew);
+        if (oldString == null || newString == null) {
+            String message = "The replace step from %s to %s isn't complete defined. The replace will be ignored";
+            LOGGER.warn(String.format(message, step.getSourceFields()[0], step.getTargetField()));
+        }
+        value = StringUtils.replace(value, oldString, newString);
         setObjectToTargetField(step.getTargetField(), value);
     }
 
@@ -273,25 +293,34 @@ public class TransformationPerformer {
         if (isTemporaryField(fieldname)) {
             temporaryFields.put(fieldname, value);
         } else {
-            String methodName = getSetterName(fieldname);
-            Method setter = null;
-            if (value == null) {
-                for (Method method : description.getTarget().getMethods()) {
-                    if (method.getName().equals(methodName)) {
-                        setter = method;
-                        break;
-                    }
-                }
-            } else {
-                setter = description.getTarget().getMethod(methodName, value.getClass());
-            }
+            Method setter = getSetterForField(fieldname, value);
             if (setter == null) {
-                LOGGER.error("There is no setter for the field " + fieldname + " at the target model found."
-                        + " Step will be ignored");
+                String message = "There is no setter for the field %s at the target model found. Step will be ignored";
+                LOGGER.error(String.format(message, fieldname));
                 return;
             }
             setter.invoke(target, value);
         }
+    }
+
+    /**
+     * Tries to get the setter for the given field name. May need a search for the method in all methods the target
+     * model has.
+     */
+    private Method getSetterForField(String fieldname, Object value) throws Exception {
+        String methodName = getSetterName(fieldname);
+        Method setter = null;
+        if (value == null) {
+            for (Method method : description.getTarget().getMethods()) {
+                if (method.getName().equals(methodName)) {
+                    setter = method;
+                    break;
+                }
+            }
+        } else {
+            setter = description.getTarget().getMethod(methodName, value.getClass());
+        }
+        return setter;
     }
 
     /**

@@ -61,4 +61,16 @@ public final class TransformationConstants {
      * The parameter for the function which returns the length of the object on the source side for the length step.
      */
     public static String lengthFunction = "function";
+
+    /**
+     * The parameter for the function which replaces some substring of a string with another string. This parameter
+     * defines the string that shall be replaced.
+     */
+    public static String replaceOld = "oldString";
+
+    /**
+     * The parameter for the function which replaces some substring of a string with another string. This parameter
+     * defines the string that shall replace the old.
+     */
+    public static String replaceNew = "newString";
 }
