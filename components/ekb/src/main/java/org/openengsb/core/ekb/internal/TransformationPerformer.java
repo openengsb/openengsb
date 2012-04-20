@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.ekb.TransformationConstants;
@@ -126,7 +124,7 @@ public class TransformationPerformer {
         } catch (TransformationStepException e) {
             LOGGER.debug(e.getMessage(), e);
         } catch (Exception e) {
-            LOGGER.error("Unable to perform transformation step ." + step, e);
+            LOGGER.error("Unable to perform transformation step." + step, e);
         }
     }
 
@@ -163,18 +161,14 @@ public class TransformationPerformer {
     private void performSplitStep(TransformationStep step) throws Exception {
         String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String splitString = step.getOperationParamater(TransformationConstants.splitParam);
-        Integer index = 0;
-        try {
-            index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
-        } catch (NumberFormatException e) {
-            LOGGER.warn("The index given for the split operation is not a number. 0 will be taken instead");
-        }
+        String indexString = step.getOperationParamater(TransformationConstants.index);
+        Integer index = TransformationPerformUtils.parseIntString(indexString, false, 0);
         String[] splits = split.split(splitString);
         String result = "";
         try {
             result = splits[index];
         } catch (IndexOutOfBoundsException e) {
-            LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead");
+            LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead.");
         }
         setObjectToTargetField(step.getTargetField(), result);
     }
@@ -185,29 +179,15 @@ public class TransformationPerformer {
     private void performSplitRegexStep(TransformationStep step) throws Exception {
         String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String splitString = step.getOperationParamater(TransformationConstants.regexParam);
-        Integer index = 0;
-        try {
-            index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
-        } catch (NumberFormatException e) {
-            LOGGER.warn("The index given for the split operation is not a number. 0 will be taken instead");
-        }
-        Pattern pattern = null;
-        try {
-            pattern = Pattern.compile(splitString);
-        } catch (PatternSyntaxException e) {
-            String message =
-                String.format("Given split regex string %s can't be compiled. The step will be ignored", splitString);
-            LOGGER.warn(message);
-            throw new TransformationStepException(message);
-        }
-        Matcher match = pattern.matcher(split);
+        String indexString = step.getOperationParamater(TransformationConstants.index);
+        Integer index = TransformationPerformUtils.parseIntString(indexString, false, 0);
+        Matcher matcher = TransformationPerformUtils.generateMatcher(splitString, split);
         for (int i = 0; i <= index; i++) {
-            match.find();
+            matcher.find();
         }
-        String result = match.group();
-
+        String result = matcher.group();
         if (result == null) {
-            LOGGER.warn("No result for given regex and index. The empty string will be taken instead");
+            LOGGER.warn("No result for given regex and index. The empty string will be taken instead.");
             result = "";
         }
         setObjectToTargetField(step.getTargetField(), result);
@@ -234,24 +214,8 @@ public class TransformationPerformer {
         String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String fromString = step.getOperationParamater(TransformationConstants.substringFrom);
         String toString = step.getOperationParamater(TransformationConstants.substringTo);
-        int from = 0;
-        int to = value.length();
-        if (fromString != null) {
-            try {
-                from = Integer.parseInt(fromString);
-            } catch (NumberFormatException e) {
-                LOGGER.warn("The String defining the start index of the substring is no number. "
-                        + "0 will be taken instead.");
-            }
-        }
-        if (toString != null) {
-            try {
-                to = Integer.parseInt(toString);
-            } catch (NumberFormatException e) {
-                LOGGER.warn("The String defining the end index of the substring is no number. "
-                        + "The length of input string will be taken instead.");
-            }
-        }
+        int from = TransformationPerformUtils.parseIntString(fromString, false, 0);
+        int to = TransformationPerformUtils.parseIntString(toString, false, value.length());
         if (to > value.length()) {
             LOGGER.warn("The end index is bigger than the length of the input string. "
                     + "The length of the input string will be taken instead.");
@@ -281,14 +245,12 @@ public class TransformationPerformer {
         String length = "0";
         String function = step.getOperationParamater(TransformationConstants.lengthFunction);
         try {
-            if (function == null) {
-                function = "length";
-            }
+            function = function != null ? function : "length";
             Method method = value.getClass().getMethod(function);
             length = method.invoke(value).toString();
         } catch (NoSuchMethodException e) {
             LOGGER.warn("The type of the given field for the length step doesn't support " + function + " method. "
-                    + "So 0 will be used as standard value");
+                    + "So 0 will be used as standard value.");
         }
         setObjectToTargetField(step.getTargetField(), length);
     }
@@ -328,7 +290,7 @@ public class TransformationPerformer {
         String oldString = step.getOperationParamater(TransformationConstants.replaceOld);
         String newString = step.getOperationParamater(TransformationConstants.replaceNew);
         if (oldString == null || newString == null) {
-            String message = "The replace step from %s to %s isn't complete defined. The replace will be ignored";
+            String message = "The replace step from %s to %s isn't complete defined. The step will be skipped.";
             LOGGER.warn(String.format(message, step.getSourceFields()[0], step.getTargetField()));
         }
         value = StringUtils.replace(value, oldString, newString);
@@ -352,16 +314,9 @@ public class TransformationPerformer {
         String lengthString = step.getOperationParamater(TransformationConstants.padLength);
         String characterString = step.getOperationParamater(TransformationConstants.padCharacter);
         String directionString = step.getOperationParamater(TransformationConstants.padDirection);
-        Integer length = 0;
-        try {
-            length = Integer.parseInt(lengthString);
-        } catch (NumberFormatException e) {
-            String message = "The given length for the pad is not a number. Step will be ignored.";
-            LOGGER.error(message);
-            throw new TransformationStepException(message);
-        }
+        Integer length = TransformationPerformUtils.parseIntString(lengthString, true, 0);
         if (characterString == null || characterString.isEmpty()) {
-            String message = "The given character string for the pad is empty. Step will be ignored.";
+            String message = "The given character string for the pad is empty. Step will be skipped.";
             LOGGER.error(message);
             throw new TransformationStepException(message);
         }
@@ -389,30 +344,9 @@ public class TransformationPerformer {
         String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         String regex = step.getOperationParamater(TransformationConstants.regexParam);
         String lengthString = step.getOperationParamater(TransformationConstants.removeLeadingLength);
-        Integer length = null;
-        Matcher matcher = null;
-        if (regex == null) {
-            throw new TransformationStepException("No regex for remove leading defined. Step will be ignored.");
-        }
-        try {
-            Pattern pattern = Pattern.compile(regex);
-            matcher = pattern.matcher(value);
-        } catch (Exception e) {
-            String message = "The given regex for the remove leading is can't be compiled. Step will be ignored.";
-            LOGGER.error(message);
-            throw new TransformationStepException(message);
-        }
-        try {
-            if (lengthString != null && !lengthString.equals("0")) {
-                length = Integer.parseInt(lengthString);
-            }
-        } catch (NumberFormatException e) {
-            String message = "The given length for the remove leading is not a number. Step will be ignored.";
-            LOGGER.error(message);
-            throw new TransformationStepException(message);
-        }
-
-        if (length != null) {
+        Integer length = TransformationPerformUtils.parseIntString(lengthString, false, 0);
+        Matcher matcher = TransformationPerformUtils.generateMatcher(regex, value);
+        if (length != null && length != 0) {
             matcher.region(0, length);
         }
         if (matcher.find()) {
@@ -423,16 +357,16 @@ public class TransformationPerformer {
     }
 
     /**
-     * Sets the given value object to the field with the fieldname of the target object. Is also aware of temporary
+     * Sets the given value object to the field with the field name of the target object. Is also aware of temporary
      * fields.
      */
     private void setObjectToTargetField(String fieldname, Object value) throws Exception {
-        if (isTemporaryField(fieldname)) {
+        if (TransformationPerformUtils.isTemporaryField(fieldname)) {
             temporaryFields.put(fieldname, value);
         } else {
             Method setter = getSetterForField(fieldname, value);
             if (setter == null) {
-                String message = "There is no setter for the field %s at the target model found. Step will be ignored";
+                String message = "There is no setter for the field %s at the target model found. Step will be skipped";
                 LOGGER.error(String.format(message, fieldname));
                 return;
             }
@@ -445,7 +379,7 @@ public class TransformationPerformer {
      * model has.
      */
     private Method getSetterForField(String fieldname, Object value) throws Exception {
-        String methodName = getSetterName(fieldname);
+        String methodName = TransformationPerformUtils.getSetterName(fieldname);
         Method setter = null;
         if (value == null) {
             for (Method method : description.getTarget().getMethods()) {
@@ -461,10 +395,10 @@ public class TransformationPerformer {
     }
 
     /**
-     * Gets the value of the field with the fieldname of the source object. Is also aware of temporary fields.
+     * Gets the value of the field with the field name of the source object. Is also aware of temporary fields.
      */
     private Object getObjectFromSourceField(String fieldname) throws Exception {
-        if (isTemporaryField(fieldname)) {
+        if (TransformationPerformUtils.isTemporaryField(fieldname)) {
             if (!temporaryFields.containsKey(fieldname)) {
                 String message = String.format("The temporary field %s doesn't exist.", fieldname);
                 throw new TransformationStepException(message);
@@ -472,7 +406,7 @@ public class TransformationPerformer {
             Object temp = temporaryFields.get(fieldname);
             return temp;
         } else {
-            Method getter = description.getSource().getMethod(getGetterName(fieldname));
+            Method getter = description.getSource().getMethod(TransformationPerformUtils.getGetterName(fieldname));
             Object result = getter.invoke(source);
             if (result == null) {
                 String message = String.format("The source field %s is null and can be ignored", fieldname);
@@ -483,7 +417,7 @@ public class TransformationPerformer {
     }
 
     /**
-     * Gets the value of the field with the fieldname of the source object and try to type it.
+     * Gets the value of the field with the field name of the source object and try to type it.
      */
     @SuppressWarnings("unchecked")
     private <T> T getTypedObjectFromSourceField(String fieldname, Class<T> type) throws Exception {
@@ -495,24 +429,4 @@ public class TransformationPerformer {
         throw new TransformationStepException(message);
     }
 
-    /**
-     * Returns true if the given fieldname points to a temporary field. Returns false if not.
-     */
-    private boolean isTemporaryField(String fieldname) {
-        return fieldname.startsWith("temp.");
-    }
-
-    /**
-     * Returns the name of the getter method of a field.
-     */
-    private String getGetterName(String fieldname) {
-        return "get" + Character.toUpperCase(fieldname.charAt(0)) + fieldname.substring(1);
-    }
-
-    /**
-     * Returns the name of the setter method of a field.
-     */
-    private String getSetterName(String fieldname) {
-        return "set" + Character.toUpperCase(fieldname.charAt(0)) + fieldname.substring(1);
-    }
 }
