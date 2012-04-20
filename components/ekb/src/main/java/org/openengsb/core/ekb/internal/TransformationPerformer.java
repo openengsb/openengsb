@@ -20,6 +20,9 @@ package org.openengsb.core.ekb.internal;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.ekb.TransformationConstants;
@@ -78,6 +81,9 @@ public class TransformationPerformer {
                 case SPLIT:
                     performSplitStep(step);
                     break;
+                case SPLITREGEX:
+                    performSplitRegexStep(step);
+                    break;
                 case MAP:
                     performMapStep(step);
                     break;
@@ -101,6 +107,9 @@ public class TransformationPerformer {
                     break;
                 case REPLACE:
                     performReplaceStep(step);
+                    break;
+                case REVERSE:
+                    performReverseStep(step);
                     break;
                 case NONE:
                 default:
@@ -150,7 +159,6 @@ public class TransformationPerformer {
         try {
             index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
         } catch (NumberFormatException e) {
-            System.out.println(step.getOperationParamater(TransformationConstants.index));
             LOGGER.warn("The index given for the split operation is not a number. 0 will be taken instead");
         }
         String[] splits = split.split(splitString);
@@ -159,6 +167,40 @@ public class TransformationPerformer {
             result = splits[index];
         } catch (IndexOutOfBoundsException e) {
             LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead");
+        }
+        setObjectToTargetField(step.getTargetField(), result);
+    }
+
+    /**
+     * Logic for a split regex transformation step
+     */
+    private void performSplitRegexStep(TransformationStep step) throws Exception {
+        String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        String splitString = step.getOperationParamater(TransformationConstants.splitParam);
+        Integer index = 0;
+        try {
+            index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
+        } catch (NumberFormatException e) {
+            LOGGER.warn("The index given for the split operation is not a number. 0 will be taken instead");
+        }
+        Pattern pattern = null;
+        try {
+            pattern = Pattern.compile(splitString);
+        } catch (PatternSyntaxException e) {
+            String message =
+                String.format("Given split regex string %s can't be compiled. The step will be ignored", splitString);
+            LOGGER.warn(message);
+            throw new TransformationStepException(message);
+        }
+        Matcher match = pattern.matcher(split);
+        for (int i = 0; i <= index; i++) {
+            match.find();
+        }
+        String result = match.group();
+
+        if (result == null) {
+            LOGGER.warn("No result for given regex and index. The empty string will be taken instead");
+            result = "";
         }
         setObjectToTargetField(step.getTargetField(), result);
     }
@@ -282,6 +324,15 @@ public class TransformationPerformer {
             LOGGER.warn(String.format(message, step.getSourceFields()[0], step.getTargetField()));
         }
         value = StringUtils.replace(value, oldString, newString);
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Logic for the reverse step
+     */
+    private void performReverseStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        value = StringUtils.reverse(value);
         setObjectToTargetField(step.getTargetField(), value);
     }
 

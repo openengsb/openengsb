@@ -141,6 +141,21 @@ public class TransformationEngineServiceTest {
     }
     
     @Test
+    public void testSplitRegexTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        desc.splitRegexField("blubB", "blubA", "[^#]+", "0");
+        desc.splitRegexField("blubB", "blaA", "[^#]+", "1");
+        service.saveDescription(desc);
+
+        ModelB model = new ModelB();
+        model.setBlubB("test3#test4");
+
+        ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
+        assertThat(result.getBlubA(), is("test3"));
+        assertThat(result.getBlaA(), is("test4"));
+    }
+    
+    @Test
     public void testMapTransformation_shoulWork() {
         TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
         desc.forwardField("idB", "idA");
@@ -267,6 +282,19 @@ public class TransformationEngineServiceTest {
         ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
         assertThat(result.getTestB(), is("blubHelloblub"));
     }
+    
+    @Test
+    public void testReverseTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.reverseField("testA", "testB");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setTestA("This is a teststring");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getTestB(), is("gnirtstset a si sihT"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -329,5 +357,22 @@ public class TransformationEngineServiceTest {
         assertThat(resultB.getIdB(), is("Test"));
         assertThat(resultB.getTestB(), is(modelA.getTestA().length() + ""));
         assertThat(resultB.getBlubB(), is("blubHelloblub"));
+    }
+    
+    @Test
+    public void testRetrievedTransformationsFromFile3_shouldWork() {
+        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription3.xml").getFile());
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
+        service.saveDescriptions(descriptions);
+
+        ModelB modelB = new ModelB();
+        modelB.setTestB("hello");
+        modelB.setBlubB("test3#test4");
+
+        ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
+        
+        assertThat(resultA.getTestA(), is("olleh"));
+        assertThat(resultA.getBlubA(), is("test3"));
+        assertThat(resultA.getBlaA(), is("test4"));
     }
 }

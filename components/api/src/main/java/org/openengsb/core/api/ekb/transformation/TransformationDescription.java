@@ -75,6 +75,11 @@ public class TransformationDescription {
                 String index = parameters.get(TransformationConstants.index);
                 splitField(sourceFields.get(0), targetField, splitString, index);
                 break;
+            case SPLITREGEX:
+                splitString = parameters.get(TransformationConstants.splitParam);
+                index = parameters.get(TransformationConstants.index);
+                splitRegexField(sourceFields.get(0), targetField, splitString, index);
+                break;
             case TOLOWER:
                 toLowerField(sourceFields.get(0), targetField);
                 break;
@@ -92,6 +97,9 @@ public class TransformationDescription {
                 String oldString = parameters.get(TransformationConstants.replaceOld);
                 String newString = parameters.get(TransformationConstants.replaceNew);
                 replaceField(sourceFields.get(0), targetField, oldString, newString);
+                break;
+            case REVERSE:
+                reverseField(sourceFields.get(0), targetField);
                 break;
             case NONE:
             default:
@@ -138,6 +146,21 @@ public class TransformationDescription {
         step.setOperationParameter(TransformationConstants.splitParam, splitString);
         step.setOperationParameter(TransformationConstants.index, index);
         step.setOperation(TransformationOperation.SPLIT);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a split regex transformation step to the transformation description. The value of the source field is split
+     * based on the split string as regular expression into parts. Based on the given index, the result will be set to
+     * the target field. The index needs to be an integer value. All fields need to be of the type String.
+     */
+    public void splitRegexField(String sourceField, String targetField, String splitString, String index) {
+        TransformationStep step = new TransformationStep();
+        step.setTargetField(targetField);
+        step.setSourceFields(sourceField);
+        step.setOperationParameter(TransformationConstants.splitParam, splitString);
+        step.setOperationParameter(TransformationConstants.index, index);
+        step.setOperation(TransformationOperation.SPLITREGEX);
         steps.add(step);
     }
 
@@ -231,7 +254,7 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.TOUPPER);
         steps.add(step);
     }
-    
+
     /**
      * Adds a replace step to the transformation description. The source and the target field need to be of String type.
      * Performs standard string replacement on the string of the source field and writes the result to the target field.
@@ -243,6 +266,18 @@ public class TransformationDescription {
         step.setOperationParameter(TransformationConstants.replaceOld, oldString);
         step.setOperationParameter(TransformationConstants.replaceNew, newString);
         step.setOperation(TransformationOperation.REPLACE);
+        steps.add(step);
+    }
+    
+    /**
+     * Adds a reverse step to the transformation description. The source and the target field need to be of String type.
+     * Performs standard string reversing on the string of the source field and writes the result to the target field.
+     */
+    public void reverseField(String sourceField, String targetField) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperation(TransformationOperation.REVERSE);
         steps.add(step);
     }
 
