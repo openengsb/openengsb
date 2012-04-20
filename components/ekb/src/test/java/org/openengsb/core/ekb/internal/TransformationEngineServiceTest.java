@@ -311,6 +311,29 @@ public class TransformationEngineServiceTest {
         assertThat(result.getIdB(), is("0001"));
         assertThat(result.getTestB(), is("works?!"));
     }
+    
+    @Test
+    public void testRemoveLeadingText_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        desc.removeLeadingField("idB", "idA", "[#?]+", "3");
+        desc.removeLeadingField("testB", "testA", "#+", "2");
+        desc.removeLeadingField("blubB", "blubA", "[#?]+", "0");
+        desc.removeLeadingField("blubB", "blaA", "#+", "3");
+        service.saveDescription(desc);
+        
+        ModelB model = new ModelB();
+        model.setIdB("#?##blub");
+        model.setTestB("##blub");
+        model.setBlubB("#?#?#?test");
+        
+        
+        ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
+        
+        assertThat(result.getIdA(), is("#blub"));
+        assertThat(result.getTestA(), is("blub"));
+        assertThat(result.getBlubA(), is("test"));
+        assertThat(result.getBlaA(), is("?#?#?test"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -381,6 +404,7 @@ public class TransformationEngineServiceTest {
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
         ModelB modelB = new ModelB();
+        modelB.setIdB("??##??id");
         modelB.setTestB("hello");
         modelB.setBlubB("test3#test4");
         
@@ -391,6 +415,7 @@ public class TransformationEngineServiceTest {
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
         ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
         
+        assertThat(resultA.getIdA(), is("id"));
         assertThat(resultA.getTestA(), is("olleh"));
         assertThat(resultA.getBlubA(), is("test3"));
         assertThat(resultA.getBlaA(), is("test4"));

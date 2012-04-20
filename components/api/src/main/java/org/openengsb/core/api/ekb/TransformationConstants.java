@@ -35,6 +35,11 @@ public final class TransformationConstants {
      * The parameter for the split operation.
      */
     public static String splitParam = "splitString";
+    
+    /**
+     * The parameter for all operations that take a regular expression parameter.
+     */
+    public static String regexParam = "regexString";
 
     /**
      * The parameter for all operations where more than one result happens during the transformation (e.g. split). The
@@ -73,20 +78,25 @@ public final class TransformationConstants {
      * defines the string that shall replace the old.
      */
     public static String replaceNew = "newString";
-    
+
     /**
      * The parameter for the pad function which specifies how far the padding should be done.
      */
     public static String padLength = "length";
-    
+
     /**
      * The parameter for the pad function which specifies which character should be used for the padding.
      */
     public static String padCharacter = "char";
-    
+
     /**
-     * The parameter for the pad function which specifies if the padding should be done at the beginning or the end
-     * of the string. 
+     * The parameter for the pad function which specifies if the padding should be done at the beginning or the end of
+     * the string.
      */
     public static String padDirection = "direction";
+
+    /**
+     * The parameter for the remove leading operation which defines how long at maximum the deletion should be done.
+     */
+    public static String removeLeadingLength = "length";
 }

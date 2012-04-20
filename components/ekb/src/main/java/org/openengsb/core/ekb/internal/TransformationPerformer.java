@@ -116,6 +116,9 @@ public class TransformationPerformer {
                 case PAD:
                     performPadStep(step);
                     break;
+                case REMOVELEADING:
+                    performRemoveLeadingStep(step);
+                    break;
                 case NONE:
                 default:
                     LOGGER.error("Unsupported operation: " + step.getOperation());
@@ -181,7 +184,7 @@ public class TransformationPerformer {
      */
     private void performSplitRegexStep(TransformationStep step) throws Exception {
         String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String splitString = step.getOperationParamater(TransformationConstants.splitParam);
+        String splitString = step.getOperationParamater(TransformationConstants.regexParam);
         Integer index = 0;
         try {
             index = Integer.parseInt(step.getOperationParamater(TransformationConstants.index));
@@ -375,6 +378,46 @@ public class TransformationPerformer {
             value = Strings.padStart(value, length, character);
         } else {
             value = Strings.padEnd(value, length, character);
+        }
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Logic for the remove leading step
+     */
+    private void performRemoveLeadingStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        String regex = step.getOperationParamater(TransformationConstants.regexParam);
+        String lengthString = step.getOperationParamater(TransformationConstants.removeLeadingLength);
+        Integer length = null;
+        Matcher matcher = null;
+        if (regex == null) {
+            throw new TransformationStepException("No regex for remove leading defined. Step will be ignored.");
+        }
+        try {
+            Pattern pattern = Pattern.compile(regex);
+            matcher = pattern.matcher(value);
+        } catch (Exception e) {
+            String message = "The given regex for the remove leading is can't be compiled. Step will be ignored.";
+            LOGGER.error(message);
+            throw new TransformationStepException(message);
+        }
+        try {
+            if (lengthString != null && !lengthString.equals("0")) {
+                length = Integer.parseInt(lengthString);
+            }
+        } catch (NumberFormatException e) {
+            String message = "The given length for the remove leading is not a number. Step will be ignored.";
+            LOGGER.error(message);
+            throw new TransformationStepException(message);
+        }
+
+        if (length != null) {
+            matcher.region(0, length);
+        }
+        if (matcher.find()) {
+            String matched = matcher.group();
+            value = value.substring(matched.length());
         }
         setObjectToTargetField(step.getTargetField(), value);
     }

@@ -50,10 +50,14 @@
     </concat>
   </transformation>
   <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
-    <forward>
+    <removeleading>
       <source-field>idB</source-field>
       <target-field>idA</target-field>
-    </forward>
+      <params>
+        <param key="regexString" value="[?#]+" />
+        <param key="length" value="0" /> <!-- optional parameter. If not defined, 0 will be used which means that all is removed what matches regex at start -->     
+      </params>
+    </removeleading>
     <reverse>
       <source-field>testB</source-field>
       <target-field>testA</target-field> 
@@ -62,7 +66,7 @@
       <source-field>blubB</source-field>
       <target-field>blubA</target-field>
       <params>
-      	<param key="splitString" value="[^#]+" />
+      	<param key="regexString" value="[^#]+" />
       	<param key="resultIndex" value="0" />
       </params>
     </splitRegex>
@@ -70,7 +74,7 @@
       <source-field>blubB</source-field>
       <target-field>blaA</target-field>
       <params>
-      	<param key="splitString" value="[^#]+" />
+      	<param key="regexString" value="[^#]+" />
       	<param key="resultIndex" value="1" />
       </params>
     </splitRegex>

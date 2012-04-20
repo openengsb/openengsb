@@ -50,35 +50,38 @@ public class TransformationDescription {
 
     public void addStep(TransformationOperation operation, List<String> sourceFields, String targetField,
             Map<String, String> parameters) {
+        String param1 = "";
+        String param2 = "";
+        String param3 = "";
         switch (operation) {
             case FORWARD:
                 forwardField(sourceFields.get(0), targetField);
                 break;
             case CONCAT:
-                String concatString = parameters.get(TransformationConstants.concatParam);
-                concatField(targetField, concatString, sourceFields.toArray(new String[0]));
+                param1 = parameters.get(TransformationConstants.concatParam);
+                concatField(targetField, param1, sourceFields.toArray(new String[0]));
                 break;
             case LENGTH:
-                String lengthFunction = parameters.get(TransformationConstants.lengthFunction);
-                lengthField(sourceFields.get(0), targetField, lengthFunction);
+                param1 = parameters.get(TransformationConstants.lengthFunction);
+                lengthField(sourceFields.get(0), targetField, param1);
                 break;
             case MAP:
                 mapField(sourceFields.get(0), targetField, parameters);
                 break;
             case SUBSTRING:
-                String from = parameters.get(TransformationConstants.substringFrom);
-                String to = parameters.get(TransformationConstants.substringTo);
-                substringField(sourceFields.get(0), targetField, from, to);
+                param1 = parameters.get(TransformationConstants.substringFrom);
+                param2 = parameters.get(TransformationConstants.substringTo);
+                substringField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case SPLIT:
-                String splitString = parameters.get(TransformationConstants.splitParam);
-                String index = parameters.get(TransformationConstants.index);
-                splitField(sourceFields.get(0), targetField, splitString, index);
+                param1 = parameters.get(TransformationConstants.splitParam);
+                param2 = parameters.get(TransformationConstants.index);
+                splitField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case SPLITREGEX:
-                splitString = parameters.get(TransformationConstants.splitParam);
-                index = parameters.get(TransformationConstants.index);
-                splitRegexField(sourceFields.get(0), targetField, splitString, index);
+                param1 = parameters.get(TransformationConstants.regexParam);
+                param2 = parameters.get(TransformationConstants.index);
+                splitRegexField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case TOLOWER:
                 toLowerField(sourceFields.get(0), targetField);
@@ -90,22 +93,27 @@ public class TransformationDescription {
                 trimField(sourceFields.get(0), targetField);
                 break;
             case VALUE:
-                String value = parameters.get(TransformationConstants.value);
-                valueField(targetField, value);
+                param1 = parameters.get(TransformationConstants.value);
+                valueField(targetField, param1);
                 break;
             case REPLACE:
-                String oldString = parameters.get(TransformationConstants.replaceOld);
-                String newString = parameters.get(TransformationConstants.replaceNew);
-                replaceField(sourceFields.get(0), targetField, oldString, newString);
+                param1 = parameters.get(TransformationConstants.replaceOld);
+                param2 = parameters.get(TransformationConstants.replaceNew);
+                replaceField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case REVERSE:
                 reverseField(sourceFields.get(0), targetField);
                 break;
             case PAD:
-                String length = parameters.get(TransformationConstants.padLength);
-                String character = parameters.get(TransformationConstants.padCharacter);
-                String direction = parameters.get(TransformationConstants.padDirection);
-                padField(sourceFields.get(0), targetField, length, character, direction);
+                param1 = parameters.get(TransformationConstants.padLength);
+                param2 = parameters.get(TransformationConstants.padCharacter);
+                param3 = parameters.get(TransformationConstants.padDirection);
+                padField(sourceFields.get(0), targetField, param1, param2, param3);
+                break;
+            case REMOVELEADING:
+                param1 = parameters.get(TransformationConstants.regexParam);
+                param2 = parameters.get(TransformationConstants.removeLeadingLength);
+                removeLeadingField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case NONE:
             default:
@@ -160,11 +168,11 @@ public class TransformationDescription {
      * based on the split string as regular expression into parts. Based on the given index, the result will be set to
      * the target field. The index needs to be an integer value. All fields need to be of the type String.
      */
-    public void splitRegexField(String sourceField, String targetField, String splitString, String index) {
+    public void splitRegexField(String sourceField, String targetField, String regexString, String index) {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
-        step.setOperationParameter(TransformationConstants.splitParam, splitString);
+        step.setOperationParameter(TransformationConstants.regexParam, regexString);
         step.setOperationParameter(TransformationConstants.index, index);
         step.setOperation(TransformationOperation.SPLITREGEX);
         steps.add(step);
@@ -274,7 +282,7 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.REPLACE);
         steps.add(step);
     }
-    
+
     /**
      * Adds a reverse step to the transformation description. The source and the target field need to be of String type.
      * Performs standard string reversing on the string of the source field and writes the result to the target field.
@@ -286,13 +294,13 @@ public class TransformationDescription {
         step.setOperation(TransformationOperation.REVERSE);
         steps.add(step);
     }
-    
+
     /**
      * Adds a pad step to the transformation description. The source and the target field need to be of String type.
      * Performs padding operation on the string of the source field and writes the result to the target field. The
-     * length describes to which size the padding should be done, the pad character describes which character to use
-     * for the padding. The direction describes if the padding should be done at the start or at the end. The standard
-     * value for the direction is at the beginning. Values for direction could be "Start" or "End".
+     * length describes to which size the padding should be done, the pad character describes which character to use for
+     * the padding. The direction describes if the padding should be done at the start or at the end. The standard value
+     * for the direction is at the beginning. Values for direction could be "Start" or "End".
      */
     public void padField(String sourceField, String targetField, String length, String character, String direction) {
         TransformationStep step = new TransformationStep();
@@ -302,6 +310,21 @@ public class TransformationDescription {
         step.setOperationParameter(TransformationConstants.padCharacter, character);
         step.setOperationParameter(TransformationConstants.padDirection, direction);
         step.setOperation(TransformationOperation.PAD);
+        steps.add(step);
+    }
+
+    /**
+     * Adds a remove leading step to the transformation description. The source and the target field need to be of
+     * String type. Based on the given regular expression string the beginning of the source string will be removed
+     * until the given maximum length. If the length is 0, the maximum length is ignored.
+     */
+    public void removeLeadingField(String sourceField, String targetField, String regexString, String length) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.removeLeadingLength, length);
+        step.setOperationParameter(TransformationConstants.regexParam, regexString);
+        step.setOperation(TransformationOperation.REMOVELEADING);
         steps.add(step);
     }
 
