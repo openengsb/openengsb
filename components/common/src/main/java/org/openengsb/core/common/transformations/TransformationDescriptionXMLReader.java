@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.ekb.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationOperation;
 import org.xml.sax.Attributes;
@@ -62,26 +61,15 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException,
+        IllegalArgumentException {
         super.startElement(uri, localName, qName, attributes);
         if (isIgnoreField(localName, false)) {
             return;
         }
         if (localName.equals("transformation")) {
-            String source = attributes.getValue("source");
-            String target = attributes.getValue("target");
-            Class<?> sourceClass;
-            Class<?> targetClass;
-            try {
-                sourceClass = getClass().getClassLoader().loadClass(source);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Unable to load source class \"" + source + "\"", e);
-            }
-            try {
-                targetClass = getClass().getClassLoader().loadClass(target);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Unable to load target class \"" + target + "\"", e);
-            }
+            Class<?> sourceClass = loadClass(attributes.getValue("source"), true);
+            Class<?> targetClass = loadClass(attributes.getValue("target"), false);
             activeDescription = new TransformationDescription(sourceClass, targetClass);
         } else if (localName.equals("source-field")) {
             activeSourceField = true;
@@ -117,53 +105,27 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         if (localName.equals("transformation")) {
             descriptions.add(activeDescription);
         } else {
-            switch (activeMode) {
-                case FORWARD:
-                    activeDescription.forwardField(sourceFields.get(0), targetField);
-                    break;
-                case CONCAT:
-                    String concatString = operationParams.get(TransformationConstants.concatParam);
-                    activeDescription.concatField(targetField, concatString,
-                        sourceFields.toArray(new String[0]));
-                    break;
-                case SPLIT:
-                    String splitString = operationParams.get(TransformationConstants.splitParam);
-                    String index = operationParams.get(TransformationConstants.index);
-                    activeDescription.splitField(sourceFields.get(0), targetField, splitString, index);
-                    break;
-                case MAP:
-                    activeDescription.mapField(sourceFields.get(0), targetField, new HashMap<String, String>(
-                        operationParams));
-                    break;
-                case SUBSTRING:
-                    String from = operationParams.get(TransformationConstants.substringFrom);
-                    String to = operationParams.get(TransformationConstants.substringTo);
-                    activeDescription.substringField(sourceFields.get(0), targetField, from, to);
-                    break;
-                case VALUE:
-                    String value = operationParams.get(TransformationConstants.value);
-                    activeDescription.valueField(targetField, value);
-                    break;
-                case LENGTH:
-                    String function = operationParams.get(TransformationConstants.lengthFunction);
-                    activeDescription.lengthField(sourceFields.get(0), targetField, function);
-                    break;
-                case TRIM:
-                    activeDescription.trimField(sourceFields.get(0), targetField);
-                    break;
-                case TOUPPER:
-                    activeDescription.toUpperField(sourceFields.get(0), targetField);
-                    break;
-                case TOLOWER:
-                    activeDescription.toLowerField(sourceFields.get(0), targetField);
-                    break;
-                case NONE:
-                default:
-                    break;
-            }
+            Map<String, String> copy = new HashMap<String, String>(operationParams);
+            activeDescription.addStep(activeMode, sourceFields, targetField, copy);
             activeMode = TransformationOperation.NONE;
             sourceFields.clear();
             operationParams.clear();
+        }
+    }
+
+    /**
+     * Tries to load a class through the class loader of the bundle. Throws an IllegalArgumentException if the class
+     * can't be loaded.
+     */
+    private Class<?> loadClass(String className, boolean sourceClass) throws IllegalArgumentException {
+        if (className == null) {
+            String message = "One description doesnt contain a %s. Description loading aborted";
+            throw new IllegalArgumentException(String.format(message, sourceClass ? "source class" : "target class"));
+        }
+        try {
+            return getClass().getClassLoader().loadClass(className);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to load class \"" + className + "\"", e);
         }
     }
 

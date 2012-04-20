@@ -45,6 +45,52 @@ public class TransformationDescription {
         return target;
     }
 
+    public void addStep(TransformationOperation operation, List<String> sourceFields, String targetField,
+            Map<String, String> parameters) {
+        switch (operation) {
+            case FORWARD:
+                forwardField(sourceFields.get(0), targetField);
+                break;
+            case CONCAT:
+                String concatString = parameters.get(TransformationConstants.concatParam);
+                concatField(targetField, concatString, sourceFields.toArray(new String[0]));
+                break;
+            case LENGTH:
+                String lengthFunction = parameters.get(TransformationConstants.lengthFunction);
+                lengthField(sourceFields.get(0), targetField, lengthFunction);
+                break;
+            case MAP:
+                mapField(sourceFields.get(0), targetField, parameters);
+                break;
+            case SUBSTRING:
+                String from = parameters.get(TransformationConstants.substringFrom);
+                String to = parameters.get(TransformationConstants.substringTo);
+                substringField(sourceFields.get(0), targetField, from, to);
+                break;
+            case SPLIT:
+                String splitString = parameters.get(TransformationConstants.splitParam);
+                String index = parameters.get(TransformationConstants.index);
+                splitField(sourceFields.get(0), targetField, splitString, index);
+                break;
+            case TOLOWER:
+                toLowerField(sourceFields.get(0), targetField);
+                break;
+            case TOUPPER:
+                toUpperField(sourceFields.get(0), targetField);
+                break;
+            case TRIM:
+                trimField(sourceFields.get(0), targetField);
+                break;
+            case VALUE:
+                String value = parameters.get(TransformationConstants.value);
+                valueField(targetField, value);
+                break;
+            case NONE:
+            default:
+                break;
+        }
+    }
+
     /**
      * Adds a forward transformation step to the transformation description. The value of the source field is copied to
      * the target field unchanged. Both fields need to have the same object type.
