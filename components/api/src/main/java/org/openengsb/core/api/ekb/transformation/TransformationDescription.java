@@ -101,6 +101,12 @@ public class TransformationDescription {
             case REVERSE:
                 reverseField(sourceFields.get(0), targetField);
                 break;
+            case PAD:
+                String length = parameters.get(TransformationConstants.padLength);
+                String character = parameters.get(TransformationConstants.padCharacter);
+                String direction = parameters.get(TransformationConstants.padDirection);
+                padField(sourceFields.get(0), targetField, length, character, direction);
+                break;
             case NONE:
             default:
                 LOGGER.warn("Not supported operation received: " + operation);
@@ -278,6 +284,24 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
         step.setOperation(TransformationOperation.REVERSE);
+        steps.add(step);
+    }
+    
+    /**
+     * Adds a pad step to the transformation description. The source and the target field need to be of String type.
+     * Performs padding operation on the string of the source field and writes the result to the target field. The
+     * length describes to which size the padding should be done, the pad character describes which character to use
+     * for the padding. The direction describes if the padding should be done at the start or at the end. The standard
+     * value for the direction is at the beginning. Values for direction could be "Start" or "End".
+     */
+    public void padField(String sourceField, String targetField, String length, String character, String direction) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.padLength, length);
+        step.setOperationParameter(TransformationConstants.padCharacter, character);
+        step.setOperationParameter(TransformationConstants.padDirection, direction);
+        step.setOperation(TransformationOperation.PAD);
         steps.add(step);
     }
 

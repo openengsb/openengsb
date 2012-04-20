@@ -33,6 +33,8 @@ import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
 /**
  * The TransformationPerformer does the actual performing work between objects.
  */
@@ -110,6 +112,9 @@ public class TransformationPerformer {
                     break;
                 case REVERSE:
                     performReverseStep(step);
+                    break;
+                case PAD:
+                    performPadStep(step);
                     break;
                 case NONE:
                 default:
@@ -333,6 +338,44 @@ public class TransformationPerformer {
     private void performReverseStep(TransformationStep step) throws Exception {
         String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
         value = StringUtils.reverse(value);
+        setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Logic for the pad step
+     */
+    private void performPadStep(TransformationStep step) throws Exception {
+        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
+        String lengthString = step.getOperationParamater(TransformationConstants.padLength);
+        String characterString = step.getOperationParamater(TransformationConstants.padCharacter);
+        String directionString = step.getOperationParamater(TransformationConstants.padDirection);
+        Integer length = 0;
+        try {
+            length = Integer.parseInt(lengthString);
+        } catch (NumberFormatException e) {
+            String message = "The given length for the pad is not a number. Step will be ignored.";
+            LOGGER.error(message);
+            throw new TransformationStepException(message);
+        }
+        if (characterString == null || characterString.isEmpty()) {
+            String message = "The given character string for the pad is empty. Step will be ignored.";
+            LOGGER.error(message);
+            throw new TransformationStepException(message);
+        }
+        char character = characterString.charAt(0);
+        if (characterString.length() > 0) {
+            LOGGER.debug("The given character string is longer than one element. The first character is used.");
+        }
+        if (directionString == null || !(directionString.equals("Start") || directionString.equals("End"))) {
+            LOGGER.debug("Unrecognized direction string. The standard value 'Start' will be used.");
+            directionString = "Start";
+        }
+
+        if (directionString.equals("Start")) {
+            value = Strings.padStart(value, length, character);
+        } else {
+            value = Strings.padEnd(value, length, character);
+        }
         setObjectToTargetField(step.getTargetField(), value);
     }
 

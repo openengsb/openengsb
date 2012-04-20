@@ -20,18 +20,24 @@
 
 <transformations>
   <transformation source="org.openengsb.core.ekb.internal.models.ModelA" target="org.openengsb.core.ekb.internal.models.ModelB">
-    <forward>
+    <pad>
       <source-field>idA</source-field>
       <target-field>idB</target-field>
-    </forward>
-    <substring>
+      <params>
+        <param key="length" value="4" />
+        <param key="char" value="0" />
+        <param key="direction" value="Start" /> <!-- optional parameter. If not defined, Start will be used -->     
+      </params>
+    </pad>
+    <pad>
       <source-field>testA</source-field>
       <target-field>testB</target-field>
       <params>
-       <param key="from" value="0" />
-       <param key="to" value="4" />     
+        <param key="length" value="7" />
+        <param key="char" value="!" />
+        <param key="direction" value="End" />
       </params> 
-    </substring>
+    </pad>
     <concat>
       <source-fields>
         <source-field>blubA</source-field>

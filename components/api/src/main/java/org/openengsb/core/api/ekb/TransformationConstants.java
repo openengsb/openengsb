@@ -73,4 +73,20 @@ public final class TransformationConstants {
      * defines the string that shall replace the old.
      */
     public static String replaceNew = "newString";
+    
+    /**
+     * The parameter for the pad function which specifies how far the padding should be done.
+     */
+    public static String padLength = "length";
+    
+    /**
+     * The parameter for the pad function which specifies which character should be used for the padding.
+     */
+    public static String padCharacter = "char";
+    
+    /**
+     * The parameter for the pad function which specifies if the padding should be done at the beginning or the end
+     * of the string. 
+     */
+    public static String padDirection = "direction";
 }

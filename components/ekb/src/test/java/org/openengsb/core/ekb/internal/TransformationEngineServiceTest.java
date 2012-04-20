@@ -295,6 +295,22 @@ public class TransformationEngineServiceTest {
         ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
         assertThat(result.getTestB(), is("gnirtstset a si sihT"));
     }
+    
+    @Test
+    public void testPadTransformation_shouldWork() {
+        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        desc.padField("idA", "idB", "4", "0", "Start");
+        desc.padField("testA", "testB", "7", "!", "End");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setIdA("1");
+        model.setTestA("works?");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        assertThat(result.getIdB(), is("0001"));
+        assertThat(result.getTestB(), is("works?!"));
+    }
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
@@ -364,15 +380,22 @@ public class TransformationEngineServiceTest {
         File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription3.xml").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
-
         ModelB modelB = new ModelB();
         modelB.setTestB("hello");
         modelB.setBlubB("test3#test4");
-
+        
+        ModelA modelA = new ModelA();
+        modelA.setIdA("1");
+        modelA.setTestA("works?");
+        
         ModelA resultA = service.performTransformation(ModelB.class, ModelA.class, modelB);
+        ModelB resultB = service.performTransformation(ModelA.class, ModelB.class, modelA);
         
         assertThat(resultA.getTestA(), is("olleh"));
         assertThat(resultA.getBlubA(), is("test3"));
         assertThat(resultA.getBlaA(), is("test4"));
+        
+        assertThat(resultB.getIdB(), is("0001"));
+        assertThat(resultB.getTestB(), is("works?!"));
     }
 }
