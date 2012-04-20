@@ -30,22 +30,26 @@ import org.slf4j.LoggerFactory;
  */
 public class TransformationDescription {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationDescription.class);
-    private Class<?> source;
-    private Class<?> target;
+    private String sourceClass;
+    private String targetClass;
     private List<TransformationStep> steps;
 
-    public TransformationDescription(Class<?> source, Class<?> target) {
-        this.source = source;
-        this.target = target;
+    public TransformationDescription(String sourceClass, String targetClass) {
+        this.sourceClass = sourceClass;
+        this.targetClass = targetClass;
         steps = new ArrayList<TransformationStep>();
+    }    
+
+    public String getSourceClass() {
+        return sourceClass;
     }
 
-    public Class<?> getSource() {
-        return source;
+    public String getTargetClass() {
+        return targetClass;
     }
-
-    public Class<?> getTarget() {
-        return target;
+    
+    public List<TransformationStep> getTransformingSteps() {
+        return steps;
     }
 
     public void addStep(TransformationOperation operation, List<String> sourceFields, String targetField,
@@ -328,7 +332,27 @@ public class TransformationDescription {
         steps.add(step);
     }
 
-    public List<TransformationStep> getTransformingSteps() {
-        return steps;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((sourceClass == null) ? 0 : sourceClass.hashCode());
+        result = prime * result + ((steps == null) ? 0 : steps.hashCode());
+        result = prime * result + ((targetClass == null) ? 0 : targetClass.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!obj.getClass().equals(TransformationDescription.class)) {
+            return false;
+        }
+        TransformationDescription other = (TransformationDescription) obj;
+        boolean sourceEqual = sourceClass.equals(other.getSourceClass());
+        boolean targetEqual = targetClass.equals(other.getTargetClass());
+        return sourceEqual && targetEqual;
     }
 }

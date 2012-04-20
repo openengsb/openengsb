@@ -68,8 +68,8 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             return;
         }
         if (localName.equals("transformation")) {
-            Class<?> sourceClass = loadClass(attributes.getValue("source"), true);
-            Class<?> targetClass = loadClass(attributes.getValue("target"), false);
+            String sourceClass = attributes.getValue("source");
+            String targetClass = attributes.getValue("target");
             activeDescription = new TransformationDescription(sourceClass, targetClass);
         } else if (localName.equals("source-field")) {
             activeSourceField = true;
@@ -110,22 +110,6 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             activeMode = TransformationOperation.NONE;
             sourceFields.clear();
             operationParams.clear();
-        }
-    }
-
-    /**
-     * Tries to load a class through the class loader of the bundle. Throws an IllegalArgumentException if the class
-     * can't be loaded.
-     */
-    private Class<?> loadClass(String className, boolean sourceClass) throws IllegalArgumentException {
-        if (className == null) {
-            String message = "One description doesnt contain a %s. Description loading aborted";
-            throw new IllegalArgumentException(String.format(message, sourceClass ? "source class" : "target class"));
-        }
-        try {
-            return getClass().getClassLoader().loadClass(className);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to load class \"" + className + "\"", e);
         }
     }
 

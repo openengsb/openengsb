@@ -55,7 +55,7 @@ public class TransformationEngineService implements TransformationEngine {
     @Override
     public void deleteDescription(TransformationDescription description) {
         for (TransformationDescription desc : descriptions) {
-            if (desc.getSource().equals(description.getSource()) && desc.getTarget().equals(description.getTarget())) {
+            if (desc.equals(description)) {
                 descriptions.remove(desc);
                 return;
             }
@@ -87,8 +87,9 @@ public class TransformationEngineService implements TransformationEngine {
      * Returns the first possible way to transform an object of the source class to an object of the target class.
      */
     private TransformationDescription getTransformationDescription(Class<?> sourceClass, Class<?> targetClass) {
+        TransformationDescription compare = new TransformationDescription(sourceClass.getName(), targetClass.getName());
         for (TransformationDescription td : descriptions) {
-            if (td.getSource().equals(sourceClass) && td.getTarget().equals(targetClass)) {
+            if (td.equals(compare)) {
                 return td;
             }
         }

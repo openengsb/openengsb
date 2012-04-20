@@ -35,6 +35,8 @@ import org.openengsb.core.ekb.internal.models.ModelB;
 
 public class TransformationEngineServiceTest {
     private TransformationEngineService service;
+    private String modelAName = ModelA.class.getName();
+    private String modelBName = ModelB.class.getName();
 
     @Before
     public void init() {
@@ -43,7 +45,7 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testSimpleForwardTransformations_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
         desc.forwardField("blubA", "blubB");
@@ -62,7 +64,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testForwardTransformationsWithTemporaryField_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
         desc.forwardField("blubA", "temp.test");
@@ -82,7 +84,7 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testMixedForwardTransformations_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.forwardField("idA", "testB");
         desc.forwardField("testA", "blubB");
         desc.forwardField("blubA", "idB");
@@ -101,7 +103,7 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testConcatTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
         desc.concatField("blubB", "#", "blubA", "blaA");
@@ -121,7 +123,7 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testSplitTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.forwardField("idB", "idA");
         desc.forwardField("testB", "testA");
         desc.splitField("blubB", "blubA", "#", "0");
@@ -142,7 +144,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testSplitRegexTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.splitRegexField("blubB", "blubA", "[^#]+", "0");
         desc.splitRegexField("blubB", "blaA", "[^#]+", "1");
         service.saveDescription(desc);
@@ -157,7 +159,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testMapTransformation_shoulWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.forwardField("idB", "idA");
         desc.forwardField("testB", "testA");
         Map<String, String> mapping = new HashMap<String, String>();
@@ -185,7 +187,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testSubStringTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.substringField("idA", "idB", "0", "4");
         service.saveDescription(desc);
         
@@ -198,7 +200,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testValueTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.forwardField("idA", "idB");
         desc.valueField("testB", "blub");
         service.saveDescription(desc);
@@ -213,7 +215,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testLengthTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.lengthField("testB", "testA", null);
         desc.lengthField("elements", "blubA", "size");
         service.saveDescription(desc);
@@ -233,7 +235,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testTrimTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.trimField("testB", "testA");
         service.saveDescription(desc);
         
@@ -246,7 +248,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testToUpperTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.toUpperField("testA", "testB");
         service.saveDescription(desc);
         
@@ -259,7 +261,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testToLowerTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.toLowerField("testA", "testB");
         service.saveDescription(desc);
         
@@ -272,7 +274,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testReplaceTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.replaceField("testA", "testB", "test", "blub");
         service.saveDescription(desc);
         
@@ -285,7 +287,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testReverseTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.reverseField("testA", "testB");
         service.saveDescription(desc);
         
@@ -298,7 +300,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testPadTransformation_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelA.class, ModelB.class);
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
         desc.padField("idA", "idB", "4", "0", "Start");
         desc.padField("testA", "testB", "7", "!", "End");
         service.saveDescription(desc);
@@ -314,7 +316,7 @@ public class TransformationEngineServiceTest {
     
     @Test
     public void testRemoveLeadingText_shouldWork() {
-        TransformationDescription desc = new TransformationDescription(ModelB.class, ModelA.class);
+        TransformationDescription desc = new TransformationDescription(modelBName, modelAName);
         desc.removeLeadingField("idB", "idA", "[#?]+", "3");
         desc.removeLeadingField("testB", "testA", "#+", "2");
         desc.removeLeadingField("blubB", "blubA", "[#?]+", "0");

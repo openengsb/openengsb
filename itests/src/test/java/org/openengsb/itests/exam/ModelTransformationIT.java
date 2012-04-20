@@ -53,7 +53,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testIfTransformationWorks_shouldWork() throws Exception {
         TransformationDescription description =
-            new TransformationDescription(ExampleRequestModel.class, ExampleResponseModel.class);
+            new TransformationDescription(ExampleRequestModel.class.getName(), ExampleResponseModel.class.getName());
         description.concatField("result", "-", "name", "id");
         transformationEngine.saveDescription(description);
 

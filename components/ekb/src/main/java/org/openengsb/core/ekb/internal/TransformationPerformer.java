@@ -39,7 +39,8 @@ import com.google.common.base.Strings;
 public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
-    private TransformationDescription description;
+    private Class<?> sourceClass;
+    private Class<?> targetClass;
     private Object source;
     private Object target;
 
@@ -52,12 +53,14 @@ public class TransformationPerformer {
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException {
-        this.description = description;
+        sourceClass = TransformationPerformUtils.loadClass(description.getSourceClass(), true);
+        targetClass = TransformationPerformUtils.loadClass(description.getTargetClass(), false);
+        
         this.source = source;
-        if (OpenEngSBModel.class.isAssignableFrom(description.getTarget())) {
-            target = ModelUtils.createModelObject(description.getTarget());
+        if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {
+            target = ModelUtils.createModelObject(targetClass);
         } else {
-            target = description.getTarget().newInstance();
+            target = targetClass.newInstance();
         }
 
         for (TransformationStep step : description.getTransformingSteps()) {
@@ -382,14 +385,14 @@ public class TransformationPerformer {
         String methodName = TransformationPerformUtils.getSetterName(fieldname);
         Method setter = null;
         if (value == null) {
-            for (Method method : description.getTarget().getMethods()) {
+            for (Method method : targetClass.getMethods()) {
                 if (method.getName().equals(methodName)) {
                     setter = method;
                     break;
                 }
             }
         } else {
-            setter = description.getTarget().getMethod(methodName, value.getClass());
+            setter = targetClass.getMethod(methodName, value.getClass());
         }
         return setter;
     }
@@ -406,7 +409,7 @@ public class TransformationPerformer {
             Object temp = temporaryFields.get(fieldname);
             return temp;
         } else {
-            Method getter = description.getSource().getMethod(TransformationPerformUtils.getGetterName(fieldname));
+            Method getter = sourceClass.getMethod(TransformationPerformUtils.getGetterName(fieldname));
             Object result = getter.invoke(source);
             if (result == null) {
                 String message = String.format("The source field %s is null and can be ignored", fieldname);
