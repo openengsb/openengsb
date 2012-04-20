@@ -47,7 +47,7 @@
     <title>Java Development Kit 6</title>
 
     <para>First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set.
-  (<link xlink:href="http://java.sun.com/javase/downloads">Java download</link>).</para>
+      (<link xlink:href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java download</link>).</para>
     <para>Also, make sure that the java-command is available in the PATH-variable.</para>
   </section>
 
