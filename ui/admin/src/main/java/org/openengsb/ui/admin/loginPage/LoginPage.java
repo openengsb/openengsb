@@ -18,7 +18,7 @@
 package org.openengsb.ui.admin.loginPage;
 
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
@@ -110,7 +110,7 @@ public class LoginPage extends OpenEngSBPage {
         add(imprintDialogue);
         
         ExternalLink addUserLink = new ExternalLink("imprint", "#");
-        addUserLink.add(new SimpleAttributeModifier("onClick",
+        addUserLink.add(AttributeModifier.replace("onClick",
                 "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
                 + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
         add(addUserLink);

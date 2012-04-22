@@ -36,10 +36,8 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
 public abstract class BasePage extends OpenEngSBPage {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4189867438159317921L;
+
 	private String pageNameKey;
 	
 	public BasePage() {

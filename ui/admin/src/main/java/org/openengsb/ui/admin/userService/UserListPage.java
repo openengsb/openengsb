@@ -51,8 +51,8 @@ public class UserListPage extends BasePage {
             EditPanel createUser = new EditPanel("userDialogue");  
             createUser.setOutputMarkupId(true);
             userDialogue.replaceWith(createUser);
-            userDialogue = createUser;
-            target.addComponent(userDialogue);
+            userDialogue = createUser;	
+            target.add(userDialogue);
         }
 
         @Override
@@ -61,7 +61,7 @@ public class UserListPage extends BasePage {
             editUser.setOutputMarkupId(true);
             userDialogue.replaceWith(editUser);
             userDialogue = editUser;
-            target.addComponent(userDialogue);
+            target.add(userDialogue);
             target.appendJavaScript("showModalDialogue('" + editUser.getMarkupId()
                 + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false,500,400);");
         }

@@ -20,7 +20,7 @@ package org.openengsb.ui.admin.global.menu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -90,16 +90,16 @@ public class MenuTemplate extends Panel {
                 if (menuItem.getIcon() != null) {
                     String backgroundAttribute = "background:url('resources/"
                         + menuItem.getIcon().getExtension() + "') no-repeat scroll left center transparent;";
-                    item.add(new SimpleAttributeModifier("style", backgroundAttribute));
+                    item.add(AttributeModifier.replace("style", backgroundAttribute));
                 }
                 
                 if (item.getIndex() == menuItems.size() - 1) {
-                    item.add(new SimpleAttributeModifier("class", "lastElement"));
+                    item.add(AttributeModifier.replace("class", "lastElement"));
                 }
                 
                 // set menu item to active
                 if (menuItem.getItemName().equals(MenuTemplate.getActiveIndex())) {
-                    item.add(new SimpleAttributeModifier("class", "activeElement"));
+                    item.add(AttributeModifier.replace("class", "activeElement"));
                 }
             }
         };
