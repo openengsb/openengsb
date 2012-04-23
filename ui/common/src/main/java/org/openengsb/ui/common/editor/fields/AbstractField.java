@@ -63,7 +63,7 @@ public abstract class AbstractField<T> extends Panel {
                 add(child);
             }
         }
-	FormComponent<T> mainComponent = component.getMainComponent();
+        FormComponent<T> mainComponent = component.getMainComponent();
         mainComponent.setOutputMarkupId(true);
         mainComponent.setMarkupId(attribute.getId());
         // editable is always set to true
@@ -73,13 +73,13 @@ public abstract class AbstractField<T> extends Panel {
         }
         mainComponent.setRequired(attribute.isRequired());
         mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
-	
-	SimpleFormComponentLabel label = new SimpleFormComponentLabel("name", mainComponent);
-	label.add(new SimpleAttributeModifier("for", attribute.getId()));
-	if (attribute.isRequired()) {
-	    label.add(new SimpleAttributeModifier("class", "required"));
-	}
-	add(label);
+
+        SimpleFormComponentLabel label = new SimpleFormComponentLabel("name", mainComponent);
+        label.add(new SimpleAttributeModifier("for", attribute.getId()));
+        if (attribute.isRequired()) {
+            label.add(new SimpleAttributeModifier("class", "required"));
+        }
+        add(label);
         add(mainComponent);
 
         addTooltip(attribute);
