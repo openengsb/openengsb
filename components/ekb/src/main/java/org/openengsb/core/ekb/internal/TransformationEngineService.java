@@ -97,6 +97,24 @@ public class TransformationEngineService implements TransformationEngine {
         return getTransformationDescription(sourceModel, targetModel) != null;
     }
     
+    @Override
+    public void deleteDescriptionsByFile(String fileName) {
+        for (TransformationDescription description : getDescriptionsByFile(fileName)) {
+            deleteDescription(description);
+        }
+    }
+
+    @Override
+    public List<TransformationDescription> getDescriptionsByFile(String fileName) {
+        List<TransformationDescription> result = new ArrayList<TransformationDescription>();
+        for (TransformationDescription description : descriptions) {
+            if (fileName.equals(description.getFileName())) {
+                result.add(description);
+            }
+        }
+        return result;
+    }
+
     public void setClassLoader(EKBClassLoader classLoader) {
         this.classLoader = classLoader;
     }

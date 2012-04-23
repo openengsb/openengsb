@@ -45,7 +45,7 @@ public final class TransformationUtils {
     public static List<TransformationDescription> getDescriptionsFromXMLInputStream(InputStream fileContent) {
         List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
         try {
-            desc = loadDescrtipionsFromXMLInputSource(new InputSource(fileContent));
+            desc = loadDescrtipionsFromXMLInputSource(new InputSource(fileContent), null);
         } catch (Exception e) {
             LOGGER.error("Unable to read the descriptions from input stream. ", e);
         }
@@ -58,7 +58,7 @@ public final class TransformationUtils {
     public static List<TransformationDescription> getDescriptionsFromXMLFile(File file) {
         List<TransformationDescription> desc = new ArrayList<TransformationDescription>();
         try {
-            return loadDescrtipionsFromXMLInputSource(new InputSource(file.getAbsolutePath()));
+            return loadDescrtipionsFromXMLInputSource(new InputSource(file.getAbsolutePath()), file.getName());
         } catch (Exception e) {
             LOGGER.error("Unable to read the descriptions from file " + file.getAbsolutePath(), e);
         }
@@ -68,10 +68,11 @@ public final class TransformationUtils {
     /**
      * Does the actual parsing.
      */
-    private static List<TransformationDescription> loadDescrtipionsFromXMLInputSource(InputSource source)
+    private static List<TransformationDescription> loadDescrtipionsFromXMLInputSource(InputSource source,
+            String fileName)
         throws Exception {
         XMLReader xr = XMLReaderFactory.createXMLReader();
-        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader();
+        TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader(fileName);
         xr.setContentHandler(reader);
         xr.parse(source);
         return reader.getResult();

@@ -43,11 +43,13 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     private Map<String, String> operationParams;
     private boolean activeSourceField = false;
     private boolean activeTargetField = false;
+    private String fileName;
 
-    public TransformationDescriptionXMLReader() {
+    public TransformationDescriptionXMLReader(String fileName) {
         descriptions = new ArrayList<TransformationDescription>();
         sourceFields = new ArrayList<String>();
         operationParams = new HashMap<String, String>();
+        this.fileName = fileName;
     }
 
     private boolean isIgnoreField(String fieldName, boolean isEndElement) {
@@ -83,6 +85,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             ModelDescription targetModel = new ModelDescription(className, version);
             
             activeDescription = new TransformationDescription(sourceModel, targetModel);
+            activeDescription.setFileName(fileName);
         } else if (localName.equals("source-field")) {
             activeSourceField = true;
         } else if (localName.equals("target-field")) {

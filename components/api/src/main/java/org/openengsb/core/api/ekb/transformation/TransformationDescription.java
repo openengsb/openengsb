@@ -33,6 +33,7 @@ public class TransformationDescription {
     private ModelDescription sourceModel;
     private ModelDescription targetModel;
     private List<TransformationStep> steps;
+    private String fileName;
 
     public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel) {
         this.sourceModel = sourceModel;
@@ -350,6 +351,14 @@ public class TransformationDescription {
 
     public List<TransformationStep> getTransformingSteps() {
         return steps;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
     
     @Override

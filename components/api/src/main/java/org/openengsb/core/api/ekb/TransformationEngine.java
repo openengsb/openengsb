@@ -43,6 +43,16 @@ public interface TransformationEngine {
      * Deletes a transformation description from the transformation engine memory.
      */
     void deleteDescription(TransformationDescription description);
+    
+    /**
+     * Deletes all transformation descriptions which are added through a file with the given file name.
+     */
+    void deleteDescriptionsByFile(String fileName);
+    
+    /**
+     * Returns a list of transformation descriptions which were added through a file with the given file name.
+     */
+    List<TransformationDescription> getDescriptionsByFile(String fileName);
 
     /**
      * Transforms the source object of the source model type to the target model type. Throws an
