@@ -60,13 +60,21 @@
   </service>
   
   <!-- Transformation Engine -->
-  <bean id="transformationEngineService" class="org.openengsb.core.ekb.internal.TransformationEngineService" />
+  <bean id="transformationEngineService" class="org.openengsb.core.ekb.internal.TransformationEngineService">
+    <property name="classLoader" ref="classLoader" />
+  </bean>
   
   <service interface="org.openengsb.core.api.ekb.TransformationEngine">
     <ref component-id="transformationEngineService"/>
   </service>
   
+  <!-- EKB ClassLoader -->
+  <bean id="classLoader" class="org.openengsb.core.ekb.internal.EKBClassLoader">
+   	<property name="providers" ref="providers" /> 
+  </bean>
+  
   <!-- References to other bundles -->
   <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
   
+  <reference-list id="providers" interface="org.openengsb.labs.delegation.service.ClassProvider" availability="optional"/> 
 </blueprint>

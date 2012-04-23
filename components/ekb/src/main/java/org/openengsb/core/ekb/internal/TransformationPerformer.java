@@ -45,9 +45,25 @@ public class TransformationPerformer {
     private Class<?> targetClass;
     private Object source;
     private Object target;
+    private EKBClassLoader classLoader;
 
-    public TransformationPerformer() {
+    public TransformationPerformer(EKBClassLoader classLoader) {
         temporaryFields = new HashMap<String, Object>();
+        this.classLoader = classLoader;
+    }
+
+    /**
+     * Does the checking of all necessary values of the TransformationDescription which are needed
+     * to process the description
+     */
+    private void checkNeededValues(TransformationDescription description) {
+        String message = "The TransformationDescription doesn't contain a %s. Description loading aborted";
+        if (description.getSourceModel().getModelClassName() == null) {
+            throw new IllegalArgumentException(String.format(message, "sourceclass"));
+        }
+        if (description.getTargetModel().getModelClassName() == null) {
+            throw new IllegalArgumentException(String.format(message, "targetclass"));
+        }
     }
 
     /**
@@ -57,9 +73,12 @@ public class TransformationPerformer {
         IllegalAccessException {
         // TODO: when the model registry is completed, then take also the versions into account while loading the
         // classes.
-        sourceClass = TransformationPerformUtils.loadClass(description.getSourceModel().getModelClassName(), true);
-        targetClass = TransformationPerformUtils.loadClass(description.getTargetModel().getModelClassName(), false);
-
+        checkNeededValues(description);
+        String sourceModel = description.getSourceModel().getModelClassName();
+        String targetModel = description.getTargetModel().getModelClassName();
+        sourceClass = classLoader.loadClass(sourceModel);
+        targetClass = classLoader.loadClass(targetModel);
+        
         this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {
             target = ModelUtils.createModelObject(targetClass);

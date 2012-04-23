@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public class TransformationEngineService implements TransformationEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
-
     private List<TransformationDescription> descriptions;
+    private EKBClassLoader classLoader;
 
     public TransformationEngineService() {
         descriptions = new ArrayList<TransformationDescription>();
@@ -81,7 +81,7 @@ public class TransformationEngineService implements TransformationEngine {
         try {
             TransformationDescription desc = getTransformationDescription(sourceModel, targetModel);
             if (desc != null) {
-                TransformationPerformer performer = new TransformationPerformer();
+                TransformationPerformer performer = new TransformationPerformer(classLoader);
                 return performer.transformObject(desc, source);
             }
         } catch (InstantiationException e) {
@@ -95,5 +95,9 @@ public class TransformationEngineService implements TransformationEngine {
     @Override
     public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
         return getTransformationDescription(sourceModel, targetModel) != null;
+    }
+    
+    public void setClassLoader(EKBClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

@@ -79,23 +79,7 @@ public final class TransformationPerformUtils {
         }
         return integer;
     }
-    
-    /**
-     * Tries to load a class through the class loader of the bundle. Throws an IllegalArgumentException if the class
-     * can't be loaded.
-     */
-    public static Class<?> loadClass(String className, boolean sourceClass) throws IllegalArgumentException {
-        if (className == null) {
-            String message = "One description doesnt contain a %s. Description loading aborted";
-            throw new IllegalArgumentException(String.format(message, sourceClass ? "source class" : "target class"));
-        }
-        try {
-            return TransformationPerformUtils.class.getClassLoader().loadClass(className);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to load class \"" + className + "\"", e);
-        }
-    }
-    
+
     /**
      * Returns true if the given fieldname points to a temporary field. Returns false if not.
      */
