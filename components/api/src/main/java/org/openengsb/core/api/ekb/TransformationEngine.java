@@ -45,13 +45,13 @@ public interface TransformationEngine {
     void deleteDescription(TransformationDescription description);
 
     /**
-     * Transforms the source object of the source class type to the target class type. Throws an
+     * Transforms the source object of the source model type to the target model type. Throws an
      * IllegalArgumentException if no transformation descriptions for this transformation are available.
      */
-    <T> T performTransformation(Class<?> sourceClass, Class<T> targetClass, Object source);
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source);
 
     /**
-     * Returns true if there is a transformation possible from source to target class. Returns fals if not.
+     * Returns true if there is a transformation possible from source to target model. Returns false if not.
      */
-    Boolean isTransformationPossible(Class<?> sourceClass, Class<?> targetClass);
+    Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel);
 }

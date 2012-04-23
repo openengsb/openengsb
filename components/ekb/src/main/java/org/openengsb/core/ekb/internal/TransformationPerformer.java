@@ -55,8 +55,10 @@ public class TransformationPerformer {
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException {
-        sourceClass = TransformationPerformUtils.loadClass(description.getSourceClass(), true);
-        targetClass = TransformationPerformUtils.loadClass(description.getTargetClass(), false);
+        // TODO: when the model registry is completed, then take also the versions into account while loading the
+        // classes.
+        sourceClass = TransformationPerformUtils.loadClass(description.getSourceModel().getModelClassName(), true);
+        targetClass = TransformationPerformUtils.loadClass(description.getTargetModel().getModelClassName(), false);
 
         this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {

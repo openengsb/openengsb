@@ -20,6 +20,7 @@ package org.openengsb.core.ekb.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.slf4j.Logger;
@@ -62,37 +63,37 @@ public class TransformationEngineService implements TransformationEngine {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T performTransformation(Class<?> sourceClass, Class<T> targetClass, Object source) {
-        try {
-            TransformationDescription desc = getTransformationDescription(sourceClass, targetClass);
-            if (desc != null) {
-                TransformationPerformer performer = new TransformationPerformer();
-                return (T) performer.transformObject(desc, source);
-            }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        throw new IllegalArgumentException("No transformation description for this class pair defined");
-    }
-
-    @Override
-    public Boolean isTransformationPossible(Class<?> sourceClass, Class<?> targetClass) {
-        return getTransformationDescription(sourceClass, targetClass) != null;
-    }
-
     /**
-     * Returns the first possible way to transform an object of the source class to an object of the target class.
+     * Returns the first possible way to transform an object of the source model to an object of the target model.
      */
-    private TransformationDescription getTransformationDescription(Class<?> sourceClass, Class<?> targetClass) {
-        TransformationDescription compare = new TransformationDescription(sourceClass.getName(), targetClass.getName());
+    private TransformationDescription getTransformationDescription(ModelDescription source, ModelDescription target) {
+        TransformationDescription compare = new TransformationDescription(source, target);
         for (TransformationDescription td : descriptions) {
             if (td.equals(compare)) {
                 return td;
             }
         }
         return null;
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
+        try {
+            TransformationDescription desc = getTransformationDescription(sourceModel, targetModel);
+            if (desc != null) {
+                TransformationPerformer performer = new TransformationPerformer();
+                return performer.transformObject(desc, source);
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        throw new IllegalArgumentException("No transformation description for this model pair defined");
+    }
+
+    @Override
+    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
+        return getTransformationDescription(sourceModel, targetModel) != null;
     }
 }

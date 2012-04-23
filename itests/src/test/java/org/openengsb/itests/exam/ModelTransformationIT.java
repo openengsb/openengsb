@@ -27,6 +27,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.common.transformations.TransformationUtils;
@@ -35,6 +36,7 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.osgi.framework.Version;
 
 @RunWith(JUnit4TestRunner.class)
 public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
@@ -50,10 +52,30 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         assertThat(transformationEngine, notNullValue());
     }
 
+    private ModelDescription getExampleRequestDescription() {
+        return new ModelDescription(ExampleRequestModel.class, new Version(1, 0, 0));
+    }
+
+    private ModelDescription getExampleResponseDescription() {
+        return new ModelDescription(ExampleResponseModel.class, new Version(1, 0, 0));
+    }
+    
+    private ExampleResponseModel transformRequestToResponse(ExampleRequestModel model) {
+        return (ExampleResponseModel)
+        transformationEngine.performTransformation(getExampleRequestDescription(), getExampleResponseDescription(),
+            model);
+    }
+    
+    private ExampleRequestModel transformResponseToRequest(ExampleResponseModel model) {
+        return (ExampleRequestModel)
+        transformationEngine.performTransformation(getExampleResponseDescription(), getExampleRequestDescription(), 
+            model);
+    }
+
     @Test
     public void testIfTransformationWorks_shouldWork() throws Exception {
         TransformationDescription description =
-            new TransformationDescription(ExampleRequestModel.class.getName(), ExampleResponseModel.class.getName());
+            new TransformationDescription(getExampleRequestDescription(), getExampleResponseDescription());
         description.concatField("result", "-", "name", "id");
         transformationEngine.saveDescription(description);
 
@@ -61,8 +83,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         modelA.setName("test");
         modelA.setId(42);
 
-        ExampleResponseModel modelB =
-            transformationEngine.performTransformation(ExampleRequestModel.class, ExampleResponseModel.class, modelA);
+        ExampleResponseModel modelB = transformRequestToResponse(modelA);
 
         assertThat(modelB.getResult(), is("test-42"));
     }
@@ -76,9 +97,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         modelA.setResult("test-42");
 
-        ExampleRequestModel modelB =
-            transformationEngine.performTransformation(ExampleResponseModel.class, ExampleRequestModel.class,
-                modelA);
+        ExampleRequestModel modelB = transformResponseToRequest(modelA);
 
         assertThat(modelB.getName(), is("test"));
     }

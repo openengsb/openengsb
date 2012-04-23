@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,26 +30,14 @@ import org.slf4j.LoggerFactory;
  */
 public class TransformationDescription {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationDescription.class);
-    private String sourceClass;
-    private String targetClass;
+    private ModelDescription sourceModel;
+    private ModelDescription targetModel;
     private List<TransformationStep> steps;
 
-    public TransformationDescription(String sourceClass, String targetClass) {
-        this.sourceClass = sourceClass;
-        this.targetClass = targetClass;
+    public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel) {
+        this.sourceModel = sourceModel;
+        this.targetModel = targetModel;
         steps = new ArrayList<TransformationStep>();
-    }
-
-    public String getSourceClass() {
-        return sourceClass;
-    }
-
-    public String getTargetClass() {
-        return targetClass;
-    }
-
-    public List<TransformationStep> getTransformingSteps() {
-        return steps;
     }
 
     public void addStep(TransformationOperation operation, List<String> sourceFields, String targetField,
@@ -351,13 +340,25 @@ public class TransformationDescription {
         steps.add(step);
     }
 
+    public ModelDescription getSourceModel() {
+        return sourceModel;
+    }
+
+    public ModelDescription getTargetModel() {
+        return targetModel;
+    }
+
+    public List<TransformationStep> getTransformingSteps() {
+        return steps;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((sourceClass == null) ? 0 : sourceClass.hashCode());
+        result = prime * result + ((sourceModel == null) ? 0 : sourceModel.hashCode());
         result = prime * result + ((steps == null) ? 0 : steps.hashCode());
-        result = prime * result + ((targetClass == null) ? 0 : targetClass.hashCode());
+        result = prime * result + ((targetModel == null) ? 0 : targetModel.hashCode());
         return result;
     }
 
@@ -370,8 +371,8 @@ public class TransformationDescription {
             return false;
         }
         TransformationDescription other = (TransformationDescription) obj;
-        boolean sourceEqual = sourceClass.equals(other.getSourceClass());
-        boolean targetEqual = targetClass.equals(other.getTargetClass());
+        boolean sourceEqual = sourceModel.equals(other.getSourceModel());
+        boolean targetEqual = targetModel.equals(other.getTargetModel());
         return sourceEqual && targetEqual;
     }
 }

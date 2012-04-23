@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationOperation;
 import org.xml.sax.Attributes;
@@ -68,9 +69,20 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             return;
         }
         if (localName.equals("transformation")) {
-            String sourceClass = attributes.getValue("source");
-            String targetClass = attributes.getValue("target");
-            activeDescription = new TransformationDescription(sourceClass, targetClass);
+            String source = attributes.getValue("source");
+            String target = attributes.getValue("target");
+            
+            String[] split = source.split(";");
+            String className = split[0];
+            String version = split.length > 1 ? split[1] : "1.0.0";
+            ModelDescription sourceModel = new ModelDescription(className, version);
+            
+            split = target.split(";");
+            className = split[0];
+            version = split.length > 1 ? split[1] : "1.0.0";
+            ModelDescription targetModel = new ModelDescription(className, version);
+            
+            activeDescription = new TransformationDescription(sourceModel, targetModel);
         } else if (localName.equals("source-field")) {
             activeSourceField = true;
         } else if (localName.equals("target-field")) {
