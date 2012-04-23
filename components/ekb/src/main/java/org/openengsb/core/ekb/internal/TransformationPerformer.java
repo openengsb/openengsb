@@ -17,13 +17,15 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
-import org.openengsb.core.api.ekb.TransformationConstants;
+import org.openengsb.core.api.ekb.transformation.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationStep;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -55,7 +57,7 @@ public class TransformationPerformer {
         IllegalAccessException {
         sourceClass = TransformationPerformUtils.loadClass(description.getSourceClass(), true);
         targetClass = TransformationPerformUtils.loadClass(description.getTargetClass(), false);
-        
+
         this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {
             target = ModelUtils.createModelObject(targetClass);
@@ -119,6 +121,9 @@ public class TransformationPerformer {
                     break;
                 case REMOVELEADING:
                     performRemoveLeadingStep(step);
+                    break;
+                case INSTANTIATE:
+                    performInstantiationStep(step);
                     break;
                 case NONE:
                 default:
@@ -357,6 +362,44 @@ public class TransformationPerformer {
             value = value.substring(matched.length());
         }
         setObjectToTargetField(step.getTargetField(), value);
+    }
+
+    /**
+     * Logic for the instantiate step
+     */
+    private void performInstantiationStep(TransformationStep step) throws Exception {
+        Object sourceObject = getObjectFromSourceField(step.getSourceFields()[0]);
+        String targetType = step.getOperationParamater(TransformationConstants.instantiateTargetType);
+        String targetTypeInit = step.getOperationParamater(TransformationConstants.instantiateInitMethod);
+        Object targetObject = null;
+        Class<?> targetClass = null;
+        try {
+            targetClass = this.getClass().getClassLoader().loadClass(targetType);
+        } catch (Exception e) {
+            String message = "The class %s can't be found. The instantiate step will be ignored.";
+            message = String.format(message, targetType);
+            LOGGER.error(message);
+            throw new TransformationStepException(message, e);
+        }
+        try {
+            if (targetTypeInit == null) {
+                Constructor<?> constr = targetClass.getConstructor(sourceObject.getClass());
+                targetObject = constr.newInstance(sourceObject);
+            } else {
+                Method method = targetClass.getMethod(targetTypeInit, sourceObject.getClass());
+                if (Modifier.isStatic(method.getModifiers())) {
+                    targetObject = method.invoke(null, sourceObject);
+                } else {
+                    targetObject = method.invoke(targetClass.newInstance(), sourceObject);
+                }
+            }
+        } catch (Exception e) {
+            String message = "Unable to create the desired object. The instantiate step will be ignored.";
+            message = String.format(message, targetType);
+            LOGGER.error(message);
+            throw new TransformationStepException(message, e);
+        }
+        setObjectToTargetField(step.getTargetField(), targetObject);
     }
 
     /**

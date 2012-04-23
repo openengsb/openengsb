@@ -24,6 +24,7 @@ public class ModelB {
     private String testB;
     private String blubB;
     private List<String> elements;
+    private Integer intValue;
 
     public String getIdB() {
         return idB;
@@ -55,5 +56,13 @@ public class ModelB {
     
     public void setElements(List<String> elements) {
         this.elements = elements;
+    }
+    
+    public Integer getIntValue() {
+        return this.intValue;
+    }
+    
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
     }
 }

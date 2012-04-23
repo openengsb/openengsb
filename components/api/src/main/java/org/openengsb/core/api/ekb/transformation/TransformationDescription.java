@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.ekb.TransformationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public class TransformationDescription {
         this.sourceClass = sourceClass;
         this.targetClass = targetClass;
         steps = new ArrayList<TransformationStep>();
-    }    
+    }
 
     public String getSourceClass() {
         return sourceClass;
@@ -47,7 +46,7 @@ public class TransformationDescription {
     public String getTargetClass() {
         return targetClass;
     }
-    
+
     public List<TransformationStep> getTransformingSteps() {
         return steps;
     }
@@ -118,6 +117,11 @@ public class TransformationDescription {
                 param1 = parameters.get(TransformationConstants.regexParam);
                 param2 = parameters.get(TransformationConstants.removeLeadingLength);
                 removeLeadingField(sourceFields.get(0), targetField, param1, param2);
+                break;
+            case INSTANTIATE:
+                param1 = parameters.get(TransformationConstants.instantiateTargetType);
+                param2 = parameters.get(TransformationConstants.instantiateInitMethod);
+                instantiateField(sourceFields.get(0), targetField, param1, param2);
                 break;
             case NONE:
             default:
@@ -332,6 +336,21 @@ public class TransformationDescription {
         steps.add(step);
     }
 
+    /**
+     * Adds an instantiate step to the transformation description. An object defined through the given target type will
+     * be created. For the instantiation the targetTypeInit method will be used. If this parameter is null, the
+     * constructor of the targetType will be used with the object type of the source object as parameter.
+     */
+    public void instantiateField(String sourceField, String targetField, String targetType, String targetTypeInit) {
+        TransformationStep step = new TransformationStep();
+        step.setSourceFields(sourceField);
+        step.setTargetField(targetField);
+        step.setOperationParameter(TransformationConstants.instantiateTargetType, targetType);
+        step.setOperationParameter(TransformationConstants.instantiateInitMethod, targetTypeInit);
+        step.setOperation(TransformationOperation.INSTANTIATE);
+        steps.add(step);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -341,7 +360,7 @@ public class TransformationDescription {
         result = prime * result + ((targetClass == null) ? 0 : targetClass.hashCode());
         return result;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

@@ -22,5 +22,5 @@ package org.openengsb.core.api.ekb.transformation;
  */
 public enum TransformationOperation {
     FORWARD, SPLIT, SPLITREGEX, CONCAT, MAP, SUBSTRING, VALUE, LENGTH, TRIM,
-        TOLOWER, TOUPPER, REPLACE, REVERSE, PAD, REMOVELEADING, NONE
+        TOLOWER, TOUPPER, REPLACE, REVERSE, PAD, REMOVELEADING, INSTANTIATE, NONE
 }

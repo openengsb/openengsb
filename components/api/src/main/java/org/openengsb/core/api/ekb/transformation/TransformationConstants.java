@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.ekb;
+package org.openengsb.core.api.ekb.transformation;
 
 /**
  * The TransformationConstants class sums up all strings for the transformation operation parameters so that they don't
@@ -99,4 +99,15 @@ public final class TransformationConstants {
      * The parameter for the remove leading operation which defines how long at maximum the deletion should be done.
      */
     public static String removeLeadingLength = "length";
+    
+    /**
+     * This parameter for the instantiate operation defines which object type should be instantiated.
+     */
+    public static String instantiateTargetType = "targetType";
+    
+    /**
+     * This parameter for the instantiate operation defines which method should be used initiate the object. If empty
+     * the constructor will be used.
+     */
+    public static String instantiateInitMethod = "targetTypeInit";
 }

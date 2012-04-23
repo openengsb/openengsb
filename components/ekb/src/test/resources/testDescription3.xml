@@ -48,6 +48,17 @@
       	<param key="concatString" value="#" />
       </params>
     </concat>
+    <instantiate>
+      <source-field>idA</source-field>
+      <target-field>intValue</target-field>
+      <params>
+        <param key="targetType" value="java.lang.Integer" />
+        <param key="targetTypeInit" value="parseInt" />
+        <!-- optional value. If this parameter isn't set, the constructor of the target type with the object
+         class of the source field as parameter will be used. Also this paramater can be a static method or 
+         a instance method -->     
+      </params>
+    </instantiate>
   </transformation>
   <transformation target="org.openengsb.core.ekb.internal.models.ModelA" source="org.openengsb.core.ekb.internal.models.ModelB">
     <removeleading>

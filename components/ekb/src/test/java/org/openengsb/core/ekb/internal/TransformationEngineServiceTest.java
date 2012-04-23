@@ -328,13 +328,26 @@ public class TransformationEngineServiceTest {
         model.setTestB("##blub");
         model.setBlubB("#?#?#?test");
         
-        
         ModelA result = service.performTransformation(ModelB.class, ModelA.class, model);
         
         assertThat(result.getIdA(), is("#blub"));
         assertThat(result.getTestA(), is("blub"));
         assertThat(result.getBlubA(), is("test"));
         assertThat(result.getBlaA(), is("?#?#?test"));
+    }
+    
+    @Test
+    public void testInstantiate_shouldWork() throws Exception {
+        TransformationDescription desc = new TransformationDescription(modelAName, modelBName);
+        desc.instantiateField("idA", "intValue", Integer.class.getName(), "parseInt");
+        service.saveDescription(desc);
+        
+        ModelA model = new ModelA();
+        model.setIdA("42");
+        
+        ModelB result = service.performTransformation(ModelA.class, ModelB.class, model);
+        
+        assertThat(result.getIntValue(), is(42));
     }
 
     @Test
@@ -424,5 +437,6 @@ public class TransformationEngineServiceTest {
         
         assertThat(resultB.getIdB(), is("0001"));
         assertThat(resultB.getTestB(), is("works?!"));
+        assertThat(resultB.getIntValue(), is(1));
     }
 }
