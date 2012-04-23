@@ -59,16 +59,16 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     private ModelDescription getExampleResponseDescription() {
         return new ModelDescription(ExampleResponseModel.class, new Version(1, 0, 0));
     }
-    
+
     private ExampleResponseModel transformRequestToResponse(ExampleRequestModel model) {
-        return (ExampleResponseModel)
-        transformationEngine.performTransformation(getExampleRequestDescription(), getExampleResponseDescription(),
+        return (ExampleResponseModel) transformationEngine.performTransformation(getExampleRequestDescription(),
+            getExampleResponseDescription(),
             model);
     }
-    
+
     private ExampleRequestModel transformResponseToRequest(ExampleResponseModel model) {
-        return (ExampleRequestModel)
-        transformationEngine.performTransformation(getExampleResponseDescription(), getExampleRequestDescription(), 
+        return (ExampleRequestModel) transformationEngine.performTransformation(getExampleResponseDescription(),
+            getExampleRequestDescription(),
             model);
     }
 
@@ -90,7 +90,8 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testIfTransformationsFromFileWork_shouldWork() throws Exception {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("transformations/testDescription.xml");
+        InputStream stream =
+            getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
         transformationEngine.saveDescriptions(descriptions);
 

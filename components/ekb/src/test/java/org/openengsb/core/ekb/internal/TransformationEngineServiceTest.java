@@ -59,11 +59,11 @@ public class TransformationEngineServiceTest {
     private TransformationDescription getDescriptionForModelBToModelA() {
         return new TransformationDescription(getModelBDescription(), getModelADescription());
     }
-    
+
     private ModelB transformModelAToModelB(ModelA model) {
         return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model);
     }
-    
+
     private ModelA transformModelBToModelA(ModelB model) {
         return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model);
     }
@@ -377,7 +377,8 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testRetrievedTransformationsFromFile1_shouldWork() {
-        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription.xml").getFile());
+        File descriptionFile =
+            new File(getClass().getClassLoader().getResource("testDescription.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
 
@@ -407,7 +408,8 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testRetrievedTransformationsFromFile2_shouldWork() {
-        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription2.xml").getFile());
+        File descriptionFile =
+            new File(getClass().getClassLoader().getResource("testDescription2.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
         ModelB modelB = new ModelB();
@@ -427,7 +429,7 @@ public class TransformationEngineServiceTest {
 
         ModelB resultB = transformModelAToModelB(modelA);
         ModelA resultA = transformModelBToModelA(modelB);
-        
+
         assertThat(resultA.getIdA(), is(modelB.getIdB().toLowerCase()));
         assertThat(resultA.getTestA(), is(modelB.getTestB().toUpperCase()));
         assertThat(resultA.getBlubA(), is(modelB.getElements().size() + ""));
@@ -440,7 +442,8 @@ public class TransformationEngineServiceTest {
 
     @Test
     public void testRetrievedTransformationsFromFile3_shouldWork() {
-        File descriptionFile = new File(getClass().getClassLoader().getResource("testDescription3.xml").getFile());
+        File descriptionFile =
+            new File(getClass().getClassLoader().getResource("testDescription3.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         service.saveDescriptions(descriptions);
         ModelB modelB = new ModelB();
@@ -454,7 +457,7 @@ public class TransformationEngineServiceTest {
 
         ModelB resultB = transformModelAToModelB(modelA);
         ModelA resultA = transformModelBToModelA(modelB);
-        
+
         assertThat(resultA.getIdA(), is("id"));
         assertThat(resultA.getTestA(), is("olleh"));
         assertThat(resultA.getBlubA(), is("test3"));
