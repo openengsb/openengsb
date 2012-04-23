@@ -45,7 +45,11 @@ public class JPAEntry extends AbstractDataRow {
     }
 
     public void setValue(Object v) {
-        value = v.toString();
+        if (v != null) {
+            value = v.toString();
+        } else {
+            value = null;
+        }
     }
 
     public String getKey() {
