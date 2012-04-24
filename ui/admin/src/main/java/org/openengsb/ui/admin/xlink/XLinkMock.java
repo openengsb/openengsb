@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.xlink.XLinkRegisteredTools;
+import org.openengsb.core.api.xlink.XLinkRegisteredTool;
+import org.openengsb.core.api.xlink.XLinkToolView;
 
 /**
  */
@@ -33,15 +34,13 @@ public final class XLinkMock {
         
     }
     
-    public static ConnectorId getConnectorIdInstance(String connectorId){
+    private static ConnectorId getConnectorIdClassForStringId(String id){
         return null;
     }
     
-    public static String getModelClassNameFromModelId(String modelId, String versionId){
-        return null;
-    }
-    
-    public static String getModelClassNameFromConnectorId(ConnectorId connectorId){
+    public static String getDestinationModelClassName(String cId, String viewId){
+        ConnectorId connectorId = getConnectorIdClassForStringId(cId);
+        List<XLinkRegisteredTool> tools = getToolsFromConnectorId(connectorId);
         return null;
     }
     
@@ -54,24 +53,34 @@ public final class XLinkMock {
         
     }
     
-    public static List<XLinkRegisteredTools> getRegisteredToolsFromUser(String hostId){
-        //List<ConnectorId> connectors = getConnectorIdsFromHost(hostId);
-        //return getToolsFromConnectors(connectors);
-        return createMockToolList();
+    public static List<XLinkRegisteredTool> getRegisteredToolsFromUser(String hostId){
+        List<ConnectorId> connectors = getConnectorIdsFromHost(hostId);
+        return getToolsFromConnectors(connectors);
     }
     
-    private static List<XLinkRegisteredTools> createMockToolList(){
-        List<XLinkRegisteredTools> tools = new ArrayList<XLinkRegisteredTools>();
-        XLinkRegisteredTools dummyTool1 = new XLinkRegisteredTools();
+    private static List<XLinkRegisteredTool> createMockToolList(){
+        List<XLinkRegisteredTool> tools = new ArrayList<XLinkRegisteredTool>();
+        XLinkRegisteredTool dummyTool1 = new XLinkRegisteredTool();
         dummyTool1.setId(new ConnectorId());
-        HashMap<String, String> views = new HashMap<String, String>();
-        views.put("view1","View1");
-        views.put("view1","View2");
-        views.put("view1","View3");
+        
+        String viewId_1 = "exampleViewId_1";
+        String viewId_2 = "exampleViewId_2";
+        
+        HashMap<String, String> descriptions  = new HashMap<String, String>();
+        descriptions.put("en","This is a demo view.");
+        descriptions.put("de","Das ist eine demonstration view.");
+        
+        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        views.add(new XLinkToolView(viewId_1, "View 1", descriptions));
+        views.add(new XLinkToolView(viewId_2, "View 2", descriptions));
+        
+        HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>(); 
+        modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);
+        
         dummyTool1.setAvailableViews(views);
         dummyTool1.setToolName("Tool A");     
         tools.add(dummyTool1);
-        XLinkRegisteredTools dummyTool2 = new XLinkRegisteredTools();
+        XLinkRegisteredTool dummyTool2 = new XLinkRegisteredTool();
         dummyTool2.setId(new ConnectorId());
         dummyTool2.setAvailableViews(views);
         dummyTool2.setToolName("Tool B");     
@@ -83,24 +92,18 @@ public final class XLinkMock {
         return null;
     }
     
-    private static List<XLinkRegisteredTools> getToolsFromConnectors(List<ConnectorId> connectors){
-        List<XLinkRegisteredTools> tools = new ArrayList();
+    private static List<XLinkRegisteredTool> getToolsFromConnectors(List<ConnectorId> connectors){
+        List<XLinkRegisteredTool> tools = new ArrayList();
         for(ConnectorId connectorId : connectors){
-            XLinkRegisteredTools newTool = new XLinkRegisteredTools();
-            newTool.setId(connectorId);
-            newTool.setAvailableViews(getAvailableViewsForConnectorId(connectorId));
-            newTool.setToolName(getToolNameForConnectorId(connectorId));
-            tools.add(newTool);
+            tools.addAll(getToolsFromConnectorId(connectorId));
         }
-        return tools;
+        //return tools;
+        return createMockToolList();
     }
     
-    private static HashMap<String, String> getAvailableViewsForConnectorId(ConnectorId connectorId){
-        return null;
+    private static List<XLinkRegisteredTool> getToolsFromConnectorId(ConnectorId connectorId){
+        return createMockToolList();
     }
-    
-    private static String getToolNameForConnectorId(ConnectorId connectorId){
-        return null;
-    }
+
     
 }

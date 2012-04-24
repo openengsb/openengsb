@@ -31,7 +31,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.xlink.XLinkRegisteredTools;
+import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
@@ -77,10 +77,10 @@ public class OpenXLinkPage extends WebPage{
         }
         setContextFromId();
         if(checkForLocalSwitchingParameters()){
-            String sourceModelClass = XLinkMock.getModelClassNameFromModelId(modelId, versionId);           
-            ConnectorId connectorIdInstance = XLinkMock.getConnectorIdInstance(connectorId);
-            String destinationModelClass = XLinkMock.getModelClassNameFromConnectorId(connectorIdInstance);
-            XLinkMock.callMatcher(sourceModelClass, identifierValues, destinationModelClass, connectorIdInstance, viewId);
+            String sourceModelClass = modelId;           
+            //ConnectorId connectorIdInstance = XLinkMock.getConnectorIdInstance(connectorId);
+            String destinationModelClass = XLinkMock.getDestinationModelClassName(connectorId,viewId);
+            //XLinkMock.callMatcher(sourceModelClass, identifierValues, destinationModelClass, connectorIdInstance, viewId);
             fillPageWithDummyValues(resp);
             return;
         }
@@ -100,7 +100,7 @@ public class OpenXLinkPage extends WebPage{
     
     private void fetchXLinkParameters(HttpServletRequest req){
         contextId = getParameterFromMap(XLinkUtils.XLINK_CONTEXTID_KEY);
-        modelId = getParameterFromMap(XLinkUtils.XLINK_MODELID_KEY);
+        modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
         hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME);
@@ -111,7 +111,7 @@ public class OpenXLinkPage extends WebPage{
     private void checkMandatoryXLinkParameters() throws OpenXLinkException{
         String errorMsg = new StringResourceModel("error.missingMandatoryGetParam", this, null).getString();
         if(contextId == null)errorMsg+=" "+XLinkUtils.XLINK_CONTEXTID_KEY;
-        if(modelId == null)errorMsg+=", "+XLinkUtils.XLINK_MODELID_KEY;
+        if(modelId == null)errorMsg+=", "+XLinkUtils.XLINK_MODELCLASS_KEY;
         if(versionId == null)errorMsg+=", "+XLinkUtils.XLINK_VERSION_KEY;
         if(expirationDate == null)errorMsg+=", "+XLinkUtils.XLINK_EXPIRATIONDATE_KEY;
         if(hostId == null)errorMsg+=", "+XLinkUtils.XLINK_HOST_HEADERNAME;
@@ -153,7 +153,7 @@ public class OpenXLinkPage extends WebPage{
         ContextHolder.get().setCurrentContextId(contextId);
     }
     
-    public void buildCorrectUserPage(List<XLinkRegisteredTools> tools){
+    public void buildCorrectUserPage(List<XLinkRegisteredTool> tools){
         add(new Label("successMessage", "Success!"));
             /*
              * 5) fetch input of select page
