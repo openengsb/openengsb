@@ -17,8 +17,8 @@
 
 package org.openengsb.core.api.xlink;
 
-import java.util.HashMap;
 
+import java.util.List;
 import org.openengsb.core.api.model.ConnectorId;
 
 /**
@@ -27,9 +27,9 @@ import org.openengsb.core.api.model.ConnectorId;
  * as a HashMap of keyNames and short descriptions. The HostId of the tool is not 
  * needed, since this information is only sent to tools of the same host.
  */
-public class XLinkRegisteredTools {
+public class XLinkRegisteredTool {
     
-    // @extract-start XLinkRegisteredTools
+    // @extract-start XLinkRegisteredTool
     /**
      * Id of the connector, identifying the tool
      */
@@ -43,18 +43,24 @@ public class XLinkRegisteredTools {
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
-    private HashMap<String, String> availableViews;
+    private List<XLinkToolView> availableViews;
     
     // @extract-end
+
+    public XLinkRegisteredTool(ConnectorId id, String toolName, List<XLinkToolView> availableViews) {
+        this.id = id;
+        this.toolName = toolName;
+        this.availableViews = availableViews;
+    }
 
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */    
-    public HashMap<String, String> getAvailableViews() {
+    public List<XLinkToolView> getAvailableViews() {
         return availableViews;
     }
 
-    public void setAvailableViews(HashMap<String, String> availableViews) {
+    public void setAvailableViews(List<XLinkToolView> availableViews) {
         this.availableViews = availableViews;
     }
 

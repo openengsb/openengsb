@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import org.openengsb.core.api.xlink.XLinkRegisteredTools;
+import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 
 /**
@@ -39,8 +39,8 @@ public final class XLinkUtils {
     /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
     public static final String XLINK_CONTEXTID_KEY = "contextId";
 
-    /** Keyname of the ModelId, mandatoryGET-Parameter in XLinks */
-    public static final String XLINK_MODELID_KEY = "modelId";
+    /** Keyname of the ModelClass, mandatoryGET-Parameter in XLinks */
+    public static final String XLINK_MODELCLASS_KEY = "modelClass";
 
     /** Keyname of the Version, mandatory GET-Parameter in XLinks */
     public static final String XLINK_VERSION_KEY = "versionId";
@@ -70,12 +70,13 @@ public final class XLinkUtils {
      * Local Switching.
      */
     public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String contextId, String version,
-            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTools> registeredTools) {
+            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTool> registeredTools) {
         servletUrl +=
             "?" + XLINK_CONTEXTID_KEY + "=" + contextId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
-                    + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
+                    + XLINK_MODELCLASS_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
                     + getExpirationDate(expirationDays);
-        return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
+        //return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
+        return null;
     }
 
     /**
@@ -98,7 +99,7 @@ public final class XLinkUtils {
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
         String completeUrl = template.getBaseUrl();
-        List<String> keyNames = template.getKeyNames();
+        List<String> keyNames = null;//template.getKeyNames();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
         }
@@ -116,7 +117,7 @@ public final class XLinkUtils {
             String connectorIdValue, String viewIdValue) {
         String xLink = generateValidXLinkUrl(template, values);
         xLink +=
-            "&" + template.getConnectorIdKeyName() + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
+            "&" + ""/*template.getConnectorIdKeyName()*/ + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
                     + viewIdValue;
         return xLink;
     }

@@ -14,35 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.api.xlink;
 
-import java.util.List;
-
-import org.openengsb.core.api.Event;
-
 /**
- * Event, indicating that the list of tools registered for XLinking, at the host,
- * has changed.
+ * 
  */
-public class RegisteredToolsUpdateEvent extends Event {
+public class XLinkModelInformation {
     
-    /**
-     * List of all other currently registered tools from the same host. The list
-     * has changed. This information is used to support local switching between tools.
-     */
-    List<XLinkRegisteredTool> registeredTools;
+    private String className;
+    private String version;
 
-    /**
-     * List of all other currently registered tools from the same host. The list
-     * has changed. This information is used to support local switching between tools.
-     */    
-    public List<XLinkRegisteredTool> getRegisteredTools() {
-        return registeredTools;
+    public XLinkModelInformation(String className, String version) {
+        this.className = className;
+        this.version = version;
+    }
+    
+    public String getClassName() {
+        return className;
     }
 
-    public void setRegisteredTools(List<XLinkRegisteredTool> registeredTools) {
-        this.registeredTools = registeredTools;
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
     
 }
