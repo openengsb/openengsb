@@ -38,30 +38,33 @@
             organized in projects and are therefore loosely semantically related. Every project may
             consist of a variety of artifacts with different content and datatypes. Actors from
             various disciplines are working together on different projects, everyone with their
-            appropriate set of tools alias programs. A tool may offer different kinds of views on
-            the data it is working on, but it serves a certain general purpose. Bigger tools which
-            serve multiple purposes are treated as a suite of standalone tools, every single one
-            with its own purpose. Therefore it is assumed that tools work on data with a similar or
-            related structure. An actor may hold the whole dataset of a project or just subset of
-            it, for a graphical description see <link linkend="concept.graphic">here</link>.</para>
+            appropriate set of tools alias programs. A tool is connected to the OpenEngSB via a
+            connector. It may offer different kinds of views on the data it is working on, but it
+            serves a certain general purpose. Bigger tools which serve multiple purposes may have
+            multiple connectors and are, in the following section, treated as a suite of standalone
+            tools, every single one with its own purpose. Therefore it is assumed that tools work on
+            data with a similar or related structure. An actor may hold the whole dataset of a
+            project or just subset of it, for a graphical description see <link
+                linkend="concept.graphic">here</link>.</para>
     </section>
     <section xml:id="concept.logical.components">
-        <title>Logical Components</title>
-        <para>Data of similar structure is grouped. In most cases tools work on data with one kind
-            of structure. In our concept such similar datastructure is represented by a, so called,
-                <emphasis role="bold">model</emphasis>. Every model is part of a <link
-                xlink:href="#architecture.concept.tooldomains">Domain</link>. While a model is
-            representing data of a certain structure, it is also enables us to define an appropriate
-                <emphasis role="bold">identifier</emphasis> for this data. In that way, data which
-            is represented by a model, is divided through the model´s identifier, into instances of
-            the model, called <emphasis role="bold">modelobjects</emphasis>. The identifier of a
-            model has to ensure, that each modelobject is unique within the model. The structure of
-            the identifier of a model also defines the precision in which points of interest in the
-            content can be addressed. Since a datastructure may originate from another one, models
-            may be nested in each other. A link to a modelobject can now be established by its
-            identifier. Such link must be of the structure <emphasis role="bold"
-                >Context.Model.Version.Identifier</emphasis>. The 'version' part of the link,
-            represents the version of the model the identifier was created in.</para>
+        <title>Components in General</title>
+        <para>In most cases tools work on structured data and use defined <emphasis role="bold"
+                >models</emphasis> to manage it. In OpenEngSB, every defined model is part of a
+                <link xlink:href="#architecture.concept.tooldomains">Domain</link>. Tools work
+            against those Domains and implement the associated models. To enable linking across
+            models, we have to add additional metadata to those models. For a model we define an
+            appropriate <emphasis role="bold">identifier</emphasis>, it is now refered to as
+            'linkable'. In that way, data which is represented by a model, is parted through the
+            model´s identifier, into instances of the model, called <emphasis role="bold"
+                >modelobjects</emphasis>. The identifier of a model has to ensure, that each
+            modelobject is unique within the model. The structure of the identifier of a model also
+            defines the precision in which points of interest in the content can be addressed. Since
+            a datastructure may originate from another one, models may be nested in each other. A
+            link to a modelobject can now be established by its identifier. Such link must be of the
+            structure <emphasis role="bold">Context.Model.Version.Identifier</emphasis>. The
+            'version' part of the link, represents the version of the model the identifier was
+            created in.</para>
         <example>
             <title>An Example</title>
             <para><emphasis role="italic">A programmer is working on a project. Part of the
@@ -79,46 +82,49 @@
                     same webservice. A developer would be able to jump between those corresponding
                     methods.</emphasis></para>
         </example>
-        <para>Every tool organizes data, it is working on, in his own model, called the <emphasis
-                role="bold">toolenviroment</emphasis>. This toolenviroment can be represented as a
-            set of key/value pairs, managed by the tool. To participate in crossprogram linking, a
-            tool must announce it´s participation and is associated with an appropriate model.
-            During this registration, the tool receives a <emphasis role="bold"
-                >XLinkTemplate</emphasis> (will be discussed below). Also every tool must be able to
-            open or retrieve modelobjects by their associated identifiers. A tool may offer
-            different views on it´s data.</para>
+        <para>Every tool organizes data in its own way and may offer different views on it´s data.
+            The enviroment in which this is done is called the <emphasis role="bold"
+                >toolenviroment</emphasis>. This toolenviroment can be imagined as a set of
+            key/value pairs, managed by the tool. The tool also implements some OpenEndSB models,
+            the ones associated with its Domain. Therefore the Tool knows which models are linkable
+            and can decide which ones can be connected with it´s toolenviroment. To participate in
+            crossprogram linking, a tool must announce it´s participation at the OpenEngSB and
+            declare the models (inclusive  the views per model) it is able to use for XLink. Some of
+            those declared models are choosen by the OpenEngSB to be used for the XLink process. The
+            tool receives a <emphasis role="bold">XLinkTemplate</emphasis> with information (will be
+            discussed below). After this registration, every tool must be able to receive and open
+            or to retrieve modelobjects of the models it has declared.</para>
         <para>Now, to enable distributed linking between semantically related datapoints, an
-            (abstract) central component, called <emphasis role="bold">registry</emphasis>, is
-            needed. This registry manages the association of tools to models and the <emphasis
-                role="bold">mapping</emphasis> between modelobjects from different models. The
-            nessecary tasks fulfilled by this registry will be provided by the <link
+            (abstract) central component, called <emphasis role="bold">xlink-registry</emphasis>, is
+            needed. It manages the association of models to connectors (e.g. tools) and the
+                <emphasis role="bold">mapping</emphasis> between modelobjects from different models.
+            The nessecary tasks fulfilled by this registry will be provided by the <link
                 xlink:href="#contributor.ekb">engineering knowledge base</link> (ekb). A mapping is
-            achieved by <emphasis role="bold">transformation</emphasis> of model identifiers from
-            the format of the source-model to the format of the destination-model. The part of the
-            ekb that takes care of the transformation is referred as <emphasis role="bold"
-                >mapper</emphasis>. How the transformation between the various models is done, is
-            explained <link xlink:href="#xlink.openengsb.model.transformation">here</link>. The first
-            required input to calculate such a mapping, is a modelobject from the source-model,
-            represented by an identifier as showed above. This indicates that the source-model of
-            the modelobject can be determined. The second required input is the destination-model.
-            The generated output is a set of identifiers in the destination-model´s structure. They
-            represent <emphasis role="bold">potential matches</emphasis> to modelobjects which are
-            associated with the destination-model. If the generated identifiers correspond to some
-            real modelobjects a match was found and a link between different datapoints was made. It
-            may occur that no corresponding real modelobject can be found and linking fails.
-            Depending on the quality of the transformation, the quality of the structured data and
-            the degree of semantical relation a match is more likely to be found, or not. For
-            example, crossproject linking may technically be realised but wont be very effective
-            since the different datasets may be not semantical related at all. It is also possible
-            that there is no possible transformation between two models and no match can be
-            generated at all. Because of the different granularity and characteristics of
-            identifiers, one modelobject of a model may be associated with multiple modelobjects of
-            another model. <anchor xml:id="concept.graphic"/></para>
+            achieved by <emphasis role="bold">transformation</emphasis> of a modelobject from the
+            format of the source-model to the format of the destination-model. How the
+            transformation between the various models is done, is explained <link
+                xlink:href="#xlink.openengsb.model.transformation">here</link>. The first two
+            required inputs to calculate such a mapping, are the source-model and a modelobject from
+            the source-model, represented by an identifier as shown above. The third required input
+            is the destination-model. The generated output is a set of identifiers in the
+            destination-model´s structure. They represent <emphasis role="bold">potential
+                matches</emphasis> to modelobjects which are associated with the destination-model.
+            If the generated identifiers correspond to some real modelobjects a match was found and
+            a link between different datapoints was made. It may occur that no corresponding real
+            modelobject can be found and linking fails. Depending on the quality of the
+            transformation, the quality of the structured data and the degree of semantical relation
+            a match is more likely to be found, or not. For example, crossproject linking may
+            technically be realised but wont be very effective since the different datasets may be
+            not semantical related at all. It is also possible that there is no possible
+            transformation between two models and no match can be generated at all. Because of the
+            different granularity and characteristics of identifiers, one modelobject of a model may
+            be associated with multiple modelobjects of another model. <anchor
+                xml:id="concept.graphic"/></para>
         <para>
             <mediaobject>
                 <alt>XLink Concept</alt>
                 <imageobject>
-                    <imagedata fileref="graphics/LinkingConceptGraphic_V3.png" format="png"
+                    <imagedata fileref="graphics/LinkingConceptGraphic_V4.png" format="png"
                         width="400" align="center"/>
                 </imageobject>
                 <caption>
@@ -128,58 +134,63 @@
         </para>
     </section>
     <section xml:id="concept.architecture.components">
-        <title>Architectual Components</title>
-        <para>Actors share <emphasis role="bold">XLinks</emphasis> of modelobjects via channels like
-            email, when they want to highlight points of interest for other actors. When an actor
-            receives a XLinks to a modelobject, he wants to open corresponding datapoints in his
-            tools and datasets. To make those XLinks easy to call from a wide range of programs,
-            they are realized as http-urls that points to the registry. The identifier which links
-            to the corresponding modelobject is added as a set of GET-Parameters. For example:
+        <title>Components in Detail</title>
+        <para>Actors want to share <emphasis role="bold">XLinks</emphasis> of modelobjects via
+            channels like email, when they want to highlight points of interest for other actors.
+            When an actor receives a XLinks to a modelobject, he wants to open corresponding
+            datapoints in his tools and datasets. To make those XLinks easy to call from a wide
+            range of programs, they are realized as URLs that points to the registry. The identifier
+            which links to the corresponding modelobject is added as a set of GET-Parameters. For
+            example:
             <ns:programlisting><![CDATA[http://urlToRegistry.suff?identifier-field1=someData&amp;identifier-field2=someData]]>           </ns:programlisting>The
-            registry must be able to receive such http-requests and act on them. Since the dataset
-            of projects is changed frequently, generated XLinks will expire after a few days. This
+            OpenEngSB is able to receive such http-requests and act on them. Since the dataset of
+            projects is changed frequently, generated XLinks will expire after a few days. This
             predicates on the fact that possible matches of generated XLinks will be less likely the
             more the dataset has changed since its generation. Therefore XLinks are not to be used
             in wikis or documentation.</para>
-        <para>As mentioned, the <emphasis role="bold">registry</emphasis> must act as a central
-            component to all tools and must therefore be providing it´s services the whole time to
-            enable linking. Tools may be up and running or not. When an actor starts his client in
-            the integration framework, his installed tools must notify the registry if they will
-            participate in linking. During a registration, the tool provides it´s host´s IP (this
-            will be explained later on) and the registry associates the tool with an appropriate
+        <para>As mentioned, the xlink-registry must act as a central component to all tools and must
+            therefore be providing a connection on this XLink-URL the whole time to enable linking.
+            Tools may be up and running or not, they may connect and disconnect at any time. When an
+            actor starts his client, his installed tools must notify the xlink-registry if they want
+            to participate in linking. During a notification, the tool must provide it´s host´s IP
+            (this will be explained later on) and a Map of linkable models and views it is
+            accepting. For every view of the tool, the xlink-registry chooses the most appropriate
             model (see the Registrationfunction <link xlink:href="#implementation.registration"
-                >implementation</link>). The tool must connect this model with it´s toolenviroment,
-            which means that the tool must adopt the model´s identfier structure. To create valid
-            XLinks, the tool also needs the registry-url. All this information will be transfered to
-            the tool via a <emphasis role="bold">XLinkTemplate</emphasis>, containing the <emphasis
-                role="bold">registry-url</emphasis>, a <emphasis role="bold">list of
-                keynames</emphasis> and some additional information for Local Switching (this will
-            be explained later on). Note that the registry-url is already prefilled with some
-            mandatory metadata that does not change during the session. The transported keynames are
-            a subset of the keys in the specific toolenviroment. In this way a tool can fetch the
-            data, necessary to identify a modelobject, dynamically by the instructions in the
+                >implementation</link>). This means that for every view, the tool must adopt the
+            identfier of a given model. To create valid XLinks, the tool also needs the
+            registry-url. All this information will be returned to the tool via a <emphasis
+                role="bold">XLinkTemplate</emphasis>, containing the <emphasis role="bold"
+                >registry-url</emphasis>, a <emphasis role="bold">map of views with associated
+                models</emphasis> and some additional information for Local Switching (this will be
+            explained later on). Note that the registry-url is already prefilled with some mandatory
+            metadata that does not change during the session. The transported map instructs the tool
+            which models to use and expect for certain views. In this way a tool can fetch the data,
+            necessary to identify a modelobject, dynamically by the instructions in the
             XLinkTemplate (see the attributes of the XLinkTemplate <link
                 xlink:href="#implementation.xlinkemplate.attributes">implementation</link> and see
             how an XLinkTemplate is <link xlink:href="#implementation.xlinkemplate.prepareUseCase"
-                >prepared</link> bevor transmission). When an actor clicks on a modelobject url, the
-            registry identifies the related tools of the Host via the IP of the http-request (since
-            every connector registered itself with it´s host´s IP). Here lies a limitation which
-            will be addressed in future work <link
+                >prepared</link> bevor transmission). When an actor clicks on a xlink-url, the
+            xlink-registry identifies the local tools of the Host via the IP of the http-request
+            (since every connector registered itself with it´s host´s IP). Here lies a limitation
+            which will be addressed in future work <link
                 xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2777">(see on
                 Jira)</link>, currently it is only possible to call this registry-url without proxy,
-            since this would change the IP of the http-request. Next the registry must read the
-            information from this <emphasis role="bold">sourcelink</emphasis> and provide an
+            since this would change the IP of the http-request. Next the xlink-registry reads the
+            information from this <emphasis role="bold">sourcelink</emphasis> and provides an
                 <emphasis role="bold">user-interface</emphasis> which enables the actor to
             authenticate himself and to choose a view in which he wants to open corresponding
-            datapoints in his dataset. A preselection can be made by filtering the tools and views
-            to which no transformation can be done. By determining the tool and view the actor also
-            defines the <emphasis role="bold">destination-model</emphasis>, because every tool is
-            associated with a model. This user-interface is realized as <emphasis role="bold"
-                >http-servlet</emphasis>. After the actors selection, the given sourcelink is
-            transformed into the destination-model´s structure. Next the registry calls up the
+            datapoints in his dataset. The login is done via http-authentication rather than the
+            standard login page of the OpenEngSB. In the user-interface , a preselection can be made
+            by filtering the tools and views to which no transformation can be done. By determining
+            the tool and view the actor also defines the <emphasis role="bold"
+                >destination-model</emphasis>, because every tool´s view is associated with a model.
+            This user-interface is realized as <emphasis role="bold">http-servlet</emphasis>. After
+            the actors selection, the given source modelobject is transformed into the
+            destination-model´s structure. Next the xlink-registry calls up the connector of the
             selected tool and sends it the transformation results. Its up to the tool, how to open
-            existing corresponding datapoints. It may happen that no corresponding datapoints can be
-            found, in that case the actor must be informed. </para>
+            existing corresponding datapoints. As mentioned above the transformation results are
+            only potential matches. It may happen that no corresponding datapoints can be found, in
+            that case the actor must be informed. </para>
         <para>
             <mediaobject>
                 <imageobject>
@@ -199,16 +210,15 @@
             automatically triggered action by the registry. For example, first the actor receives a
             modelobject-link as an url via email, from a different actor, and clicks on it. He is
             forwarded to the http-servlet. Next he will be asked to define the tool and view he
-            wants to open corresponding datapoints in, then the registry transforms the
-            modelobject-identifier into the destination-model´s identifier structure and last sends
-            the results to the tool, to trigger the opening of the corresponding datapoint. If no
-            corresponding datapoint can be found by the tool it must inform the actor that linking
-            failed. </para>
+            wants to open corresponding datapoints in, then the registry transforms the source
+            modelobject into the destination-model´s structure and last sends the results to the
+            tool, to trigger the opening of the corresponding datapoint. If no corresponding
+            datapoint can be found by the tool it must inform the actor that linking failed. </para>
         <para>Note that this concept also enables the actor to <emphasis role="bold">switch
                 locally</emphasis> between his installed tool. To support this, the XLinkTemplate
             contains a <emphasis role="bold">list of local, already registered, tools</emphasis> and
                 <emphasis role="bold">two Keyfields</emphasis> that have to be used. There is also
-            an event-function to Keep the List up to date. Details are explained in <link
+            an event-function to Keep the list up to date. Details are explained in <link
                 xlink:href="#concept.architecture.localJumps">this section</link>.</para>
     </section>
     <section xml:id="concept.sequence.actions">
@@ -308,15 +318,16 @@
             wants to switch to, in the http-servlet. To make this easier, XLink offers a shortcut
             for local switching. This section describe how tools can implement this shortcut and how
             it benefits it´s actors. Note that local switching must only be supported by the
-            outgoing tool, even though it would not be possible to switch back.</ns:para>
+            outgoing tool, even though it may not be possible to switch back if the traget tool
+            doesn´t support it.</ns:para>
         <ns:para>To increase the Usability, the tool has to be able to reduce the nessecary
-            interaction by retrieving the information about other installed tools by itself and by
+            interaction by retrieving the information about other installed tools by itself. And by
             sending an http-request to the registry that directly fires the transformation without
-            opening the http-servlet in a browser. The list of installed tools and the KeyFields for
-            the ConnectorId and the ViewId are transfered in the XLinkTemplate during the
-            registration. The list of installed tools is updated with an Event Method (see the
-            implementation <link xlink:href="#implementation.localswitch.information"
-            >here</link>).</ns:para>
+            opening the http-servlet in a browser. The list of installed tools and the Information
+            about the ConnectorId and the keyfield of the ViewId are transfered in the XLinkTemplate
+            during the registration. The list of installed tools is updated with an Event Method
+            (see the implementation <link xlink:href="#implementation.localswitch.information"
+                >here</link>).</ns:para>
         <ns:para>To establish a http connection to the registry, an actor must authenticate.
             Therefore the tool must ask the actor to input his credentials, if required. In order to
             make XLinks useable for Local Switching they only require some extra information, so

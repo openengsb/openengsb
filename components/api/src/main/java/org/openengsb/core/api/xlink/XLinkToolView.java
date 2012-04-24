@@ -18,6 +18,8 @@
 
 package org.openengsb.core.api.xlink;
 
+import java.util.Map;
+
 /**
  * 
  */
@@ -25,30 +27,12 @@ public class XLinkToolView {
     
     private String viewId;
     private String name;
-    private String description;
-    private String locale;
+    private Map<String,String> descriptions;
 
-    public XLinkToolView(String viewId, String name, String description, String locale) {
+    public XLinkToolView(String viewId, String name, Map<String,String> descriptions) {
         this.viewId = viewId;
         this.name = name;
-        this.description = description;
-        this.locale = locale;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
+        this.descriptions = descriptions;
     }
 
     public String getName() {
@@ -65,6 +49,14 @@ public class XLinkToolView {
 
     public void setViewId(String viewId) {
         this.viewId = viewId;
+    }
+
+    public Map<String, String> getDescriptions() {
+        return descriptions;
+    }
+
+    public void setDescriptions(Map<String, String> descriptions) {
+        this.descriptions = descriptions;
     }
     
 }
