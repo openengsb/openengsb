@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.image.Image;
@@ -74,9 +73,9 @@ public abstract class AbstractField<T> extends Panel {
         mainComponent.setRequired(attribute.isRequired());
         mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
         SimpleFormComponentLabel label = new SimpleFormComponentLabel("name", mainComponent);
-        label.add(new SimpleAttributeModifier("for", attribute.getId()));
+        label.add(AttributeModifier.replace("for", attribute.getId()));
         if (attribute.isRequired()) {
-            label.add(new SimpleAttributeModifier("class", "required"));
+            label.add(AttributeModifier.replace("class", "required"));
         }
         add(label);
         add(mainComponent);
