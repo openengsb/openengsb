@@ -20,10 +20,16 @@ package org.openengsb.core.common.xlink;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
+import org.openengsb.core.api.xlink.XLinkToolView;
 
 /**
  * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
@@ -57,6 +63,7 @@ public final class XLinkUtils {
     /** Headername of the HostId (e.g. the IP), used during the registration for XLink. */
     public static final String XLINK_HOST_HEADERNAME = "Host";
     
+    /**Format of the ExpirationDate*/
     private static final String DateFormat = "yyyyMMddkkmmss";
 
     // @extract-end
@@ -64,19 +71,48 @@ public final class XLinkUtils {
     // @extract-start XLinkUtilsPrepareTemplate
 
     /**
-     * Demonstrates how the baseUrl of a XLinkTemplate is prepared before it is transmitted to the client. Every baseUrl
-     * must contain the contextId, modelId, itÂ´s version and the expirationDate as GET-Paramters, before it is
-     * transmited to the connector. The ConnectorId-Key and the ViewId-Key are also added to the Template to enable
+     * Demonstrates how the baseUrl of a XLinkTemplate may be prepared before it is transmitted to the client. 
+     * Every baseUrl must contain the contextId and the expirationDate as GET-Paramters, before it is 
+     * transmited to the connector. The models are naively assigned to the views.
+     * The ConnectorId/value combination and the ViewId-Key are also added to the Template to enable 
      * Local Switching.
      */
-    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String contextId, String version,
-            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTool> registeredTools) {
-        servletUrl +=
-            "?" + XLINK_CONTEXTID_KEY + "=" + contextId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
-                    + XLINK_MODELCLASS_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
-                    + getExpirationDate(expirationDays);
-        //return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
-        return null;
+    public static XLinkTemplate prepareXLinkTemplate(String baseUrl, 
+            String contextId, 
+            String connectorId,
+            HashMap<String, List<XLinkToolView>> modelsToViews, 
+            int expirationDays, 
+            List<XLinkRegisteredTool> registeredTools) {
+        baseUrl +=
+            "?" + XLINK_CONTEXTID_KEY + "=" + contextId + 
+                "&" + XLINK_EXPIRATIONDATE_KEY + "=" + getExpirationDate(expirationDays);
+        String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + connectorId;
+        Map<String, XLinkModelInformation> viewToModels = assigneModelsToViews(modelsToViews);
+        return new XLinkTemplate(baseUrl, 
+                viewToModels, 
+                XLINK_MODELCLASS_KEY, 
+                XLINK_VERSION_KEY, 
+                registeredTools, 
+                connectorIdParam, 
+                XLINK_VIEW_KEY);
+    }
+    
+    /**
+     * Naive model to view assignment. 
+     * Current model is choosen for the first occurence of the view.
+     * Version is always '1.0'
+     */
+    private static Map<String, XLinkModelInformation> assigneModelsToViews(HashMap<String, List<XLinkToolView>> modelsToViews){
+        HashMap<String, XLinkModelInformation> viewsToModels = new HashMap<String, XLinkModelInformation> ();
+        for(String className: modelsToViews.keySet()){
+            List<XLinkToolView> currentViewList = modelsToViews.get(className);
+            for(XLinkToolView view : currentViewList){
+                if(!viewsToModels.containsKey(view.getViewId())){
+                    viewsToModels.put(view.getViewId(), new XLinkModelInformation(className, "1.0"));
+                }
+            }
+        }
+        return viewsToModels;
     }
 
     /**
@@ -93,15 +129,15 @@ public final class XLinkUtils {
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrl
     /**
-     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate and a List of values, corresponding to
-     * the List of keyNames of the Template. Depending on the contained Keys, the XLink is useable for local switching,
-     * or not.
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, the Modelclass and a List of values, 
+     * corresponding to the List of keyFields of the Modelclass. 
+     * Depending on the contained Keys, the XLink is useable for local switching, or not.
      */
-    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
+    public static String generateValidXLinkUrl(XLinkTemplate template, OpenEngSBModel modelOfView, List<String> values) {
         String completeUrl = template.getBaseUrl();
-        List<String> keyNames = null;//template.getKeyNames();
+        List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
-            completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
+            completeUrl += "&" + keyNames.get(i).getKey() + "=" + values.get(i);
         }
         return completeUrl;
     }
@@ -110,15 +146,16 @@ public final class XLinkUtils {
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
     /**
-     * Demonstrates how a valid XLink-Url for a Local Switching is generated out of an XLinkTemplate, a List of values
-     * corresponding to the List of keyNames of the Template and the ConnectorId and the ViewId.
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, the Modelclass and a List of values, 
+     * corresponding to the List of keyFields of the Modelclass. The connectorId and viewId parameters are added 
+     * in the end, to mark the link for Local Switching
      */
-    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
-            String connectorIdValue, String viewIdValue) {
-        String xLink = generateValidXLinkUrl(template, values);
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, OpenEngSBModel modelOfView, List<String> values,
+            String viewIdValue) {
+        String xLink = generateValidXLinkUrl(template, modelOfView, values);
         xLink +=
-            "&" + ""/*template.getConnectorIdKeyName()*/ + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
-                    + viewIdValue;
+            "&" + template.getConnectorId() +
+            "&" + template.getViewIdKeyName() + "=" + viewIdValue;
         return xLink;
     }
 

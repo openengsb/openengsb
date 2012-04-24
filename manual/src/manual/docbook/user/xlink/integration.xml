@@ -30,11 +30,12 @@
     
     <section xml:id="implementation.registration">
         <title>XLink registration for Connectors</title>
-        <para>For the XLink-registration of connectors (e.g. the tools) the following function in
-            the class <emphasis role="bold">ConnectorManager</emphasis> is provided.</para>
+        <para>For the XLink-registration of connectors (e.g. the tools) the following functions in
+            the class <emphasis role="bold">ConnectorManager</emphasis> are provided.</para>
         <xi:include href="../../../../../../target/docbook/snippets/ConnectorManager.xml"/>
-        <ns:para>Every connector announces it´s participation in XLinking when he calls this
-            function. After the registration a XLinkTemplate is returned to the connector.</ns:para>
+        <ns:para>Every connector announces it´s participation in XLinking when he calls the
+            "connect" function. After the registration a XLinkTemplate is returned to the connector.
+            When shutting down or going idle, the connector must call a "disconnect".</ns:para>
     </section>
     <section xml:id="implementation.xlinkemplate">
         <title>Contents of a XLinkTemplate</title>
@@ -45,7 +46,7 @@
             following. <anchor xml:id="implementation.xlinkemplate.attributes"/></ns:para>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkTemplate.xml"/>
         <ns:para>The attributes of the class XLinkRegisteredTools are the following.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTools.xml"/>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTool.xml"/>
     </section>
     <section xml:id="implementation.xlinkprepare">
         <title>Preparation of a XLinkTemplate</title>        

@@ -34,6 +34,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.XLinkTemplate;
+import org.openengsb.core.api.xlink.XLinkToolView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,8 +236,12 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public XLinkTemplate registerForXLink(ConnectorId id, String hostId, 
-        HashMap<String, String> availableViews) {
+    public XLinkTemplate connectToXLink(ConnectorId id, String hostId, String toolName, HashMap<String, List<XLinkToolView>> modelsToViews) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void disconnectFromXLink(ConnectorId id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
