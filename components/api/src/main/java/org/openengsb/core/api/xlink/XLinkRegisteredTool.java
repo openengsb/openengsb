@@ -47,6 +47,9 @@ public class XLinkRegisteredTool {
     
     // @extract-end
 
+    public XLinkRegisteredTool() {
+    }
+
     public XLinkRegisteredTool(ConnectorId id, String toolName, List<XLinkToolView> availableViews) {
         this.id = id;
         this.toolName = toolName;
