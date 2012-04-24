@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ConnectorConfiguration;

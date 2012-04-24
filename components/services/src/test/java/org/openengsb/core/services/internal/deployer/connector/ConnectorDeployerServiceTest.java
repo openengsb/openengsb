@@ -69,7 +69,7 @@ import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
-import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
+import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
@@ -145,7 +145,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private ConnectorManagerImpl createServiceManagerMock() {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
-        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
+        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager();
         registrationManager.setBundleContext(bundleContext);
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);

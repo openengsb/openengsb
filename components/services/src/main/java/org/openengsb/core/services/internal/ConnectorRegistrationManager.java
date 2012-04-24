@@ -27,7 +27,6 @@ import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -50,9 +49,9 @@ import org.springframework.aop.framework.ProxyFactory;
 
 import com.google.common.collect.Sets;
 
-public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationManager {
+public class ConnectorRegistrationManager  {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorRegistrationManagerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorRegistrationManager.class);
 
     /*
      * These attributes may not be removed from a service.
@@ -78,12 +77,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private MethodInterceptor securityInterceptor;
 
-    @Override
-    public String getInstanceId() {
-        return this.getClass().getName();
-    }
-
-    @Override
     public void updateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
         if (!instances.containsKey(id)) {
@@ -98,7 +91,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         }
     }
 
-    @Override
     public void forceUpdateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescription) {
         if (!instances.containsKey(id)) {
             forceCreateService(id, connectorDescription);
@@ -112,7 +104,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         }
     };
 
-    @Override
     public void remove(ConnectorDefinition id) {
         registrations.get(id).unregister();
         registrations.remove(id);
