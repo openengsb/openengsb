@@ -77,7 +77,6 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -146,7 +145,6 @@ public class TestClientTest extends AbstractUITest {
     @Before
     public void setupTest() throws Exception {
         context.putBean(bundleContext);
-        context.putBean(mock(ProxyFactory.class));
     }
 
     @Test
