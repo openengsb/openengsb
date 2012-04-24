@@ -73,6 +73,12 @@
    	<property name="providers" ref="providers" /> 
   </bean>
   
+  <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.ekb.internal.deployer.TransformationDeployerService">
+      <property name="engine" ref="transformationEngineService" />
+    </bean>
+  </service>
+  
   <!-- References to other bundles -->
   <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
   

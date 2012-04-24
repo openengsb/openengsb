@@ -94,6 +94,11 @@
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- OpenEngSb dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
