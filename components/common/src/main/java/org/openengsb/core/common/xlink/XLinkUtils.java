@@ -18,12 +18,11 @@
 package org.openengsb.core.common.xlink;
 
 import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import org.openengsb.core.api.xlink.XLinkRegisteredTools;
+import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 
 /**
@@ -40,8 +39,8 @@ public final class XLinkUtils {
     /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
     public static final String XLINK_CONTEXTID_KEY = "contextId";
 
-    /** Keyname of the ModelId, mandatoryGET-Parameter in XLinks */
-    public static final String XLINK_MODELID_KEY = "modelId";
+    /** Keyname of the ModelClass, mandatoryGET-Parameter in XLinks */
+    public static final String XLINK_MODELCLASS_KEY = "modelClass";
 
     /** Keyname of the Version, mandatory GET-Parameter in XLinks */
     public static final String XLINK_VERSION_KEY = "versionId";
@@ -50,13 +49,13 @@ public final class XLinkUtils {
     public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
 
     /** Keyname of the ConnectorId, GET-Parameter in XLinks, only mandatory in local switching */
-    public static final String XLINK_CONNECTORID_KEY = "connectorID";
+    public static final String XLINK_CONNECTORID_KEY = "connectorId";
 
     /** Keyname of the ViewId, GET-Parameter in XLinks, only mandatory in local switching */
     public static final String XLINK_VIEW_KEY = "viewId";
 
-    /** Keyname of the HostId (e.g. the IP), use during the registration for XLink. */
-    public static final String XLINK_HOSTID_KEY = "HostId";
+    /** Headername of the HostId (e.g. the IP), used during the registration for XLink. */
+    public static final String XLINK_HOST_HEADERNAME = "Host";
     
     private static final String DateFormat = "yyyyMMddkkmmss";
 
@@ -71,12 +70,13 @@ public final class XLinkUtils {
      * Local Switching.
      */
     public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String contextId, String version,
-            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTools> registeredTools) {
+            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTool> registeredTools) {
         servletUrl +=
             "?" + XLINK_CONTEXTID_KEY + "=" + contextId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
-                    + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
+                    + XLINK_MODELCLASS_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
                     + getExpirationDate(expirationDays);
-        return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
+        //return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
+        return null;
     }
 
     /**
@@ -99,7 +99,7 @@ public final class XLinkUtils {
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
         String completeUrl = template.getBaseUrl();
-        List<String> keyNames = template.getKeyNames();
+        List<String> keyNames = null;//template.getKeyNames();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
         }
@@ -117,7 +117,7 @@ public final class XLinkUtils {
             String connectorIdValue, String viewIdValue) {
         String xLink = generateValidXLinkUrl(template, values);
         xLink +=
-            "&" + template.getConnectorIdKeyName() + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
+            "&" + ""/*template.getConnectorIdKeyName()*/ + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
                     + viewIdValue;
         return xLink;
     }
@@ -129,7 +129,7 @@ public final class XLinkUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(DateFormat);
         try {
             calendar.setTime(formatter.parse(dateString));
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             return null;
         }
         return calendar;

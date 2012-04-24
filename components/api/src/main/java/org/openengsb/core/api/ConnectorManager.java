@@ -19,10 +19,12 @@ package org.openengsb.core.api;
 
 import java.util.HashMap;
 
+import java.util.List;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.XLinkTemplate;
+import org.openengsb.core.api.xlink.XLinkToolView;
 
 /**
  * Manages connector instances.
@@ -91,19 +93,34 @@ public interface ConnectorManager {
     ConnectorDescription getAttributeValues(ConnectorId id);
 
     // @extract-start ConnectorManager
+    
     /**
-     * Registers the given Connector for XLinking. The Connector must provide the views it offers for XLink, represented
-     * as a HashMap of keyNames and short descriptions. The parameter named hostId must containing the Host-IP. 
-     * This Id is used to identify the Host when the user calls the XLink HTTP-Servlet.
-     * Therefore the Host must not reach the HTTP-Servlet via a proxy. A XLinkTemplate is returned, it contains
-     * informations about how modelObjects are identified by XLink and how valid XLink-URLs are generated. The class
-     * 'XLinkUtils' in the commons package also provides examples of how to create XLink-URLs. Note that this function
-     * does not create a Connector, it must be called with an already registered Connector. 
+     * Registers the given Connector for XLinking. 
+     * The Connector must provide the models it accepts for XLink, represented as a HashMap with the modelClass 
+     * String as key and for each key a list of views which are available for the model. 
+     * A Toolname must be provided to display a human readable Name of the Tool in the XLink http-servlet.
+     * The parameter named hostId must containing the Host-IP. This Id is used to identify the Host when 
+     * the user calls the XLink HTTP-Servlet. Therefore the Host must not reach the HTTP-Servlet via a proxy. 
+     * A XLinkTemplate is returned, it contains information about which model is to be used for which view.
+     * Together with the baseUrl, the tool can now construct valid XLink-URLs with the identifier 
+     * of one of the defined model. 
+     * 
+     * The classes 'XLinkUtils' and 'XLinkUtilsTest' in the commons package also provides examples of how to 
+     * create XLink-URLs. 
+     * 
+     * Note that this function does not create a Connector, 
+     * it must be called with an already registered Connector. 
      * 
      * @see org.openengsb.core.api.xlink.XLinkTemplate
+     */    
+    XLinkTemplate connectToXLink(ConnectorId id, String hostId, 
+            String toolName, 
+            HashMap<String, List<XLinkToolView>> modelsToViews);
+    
+    /**
+     * Unregisters the given Connector from XLink.
      */
-    XLinkTemplate registerForXLink(ConnectorId id, String hostId,
-            HashMap<String, String> availableViews);
+    void disconnectFromXLink(ConnectorId id);
 
     // @extract-end
 }

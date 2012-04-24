@@ -18,13 +18,14 @@
 package org.openengsb.core.api.xlink;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * Modelclass for the XLinkTemplate definitions. Transfered to each Tool that participates in XLinking. Defines the
- * baseURL to the XLink HTTP-Servlet, a list of Keynames used to identify modelObjects and a List of all other 
- * currently registered tools from the same host. This information is used to support local switching between
- * tools. To create valid XLink-URLs, the KeyNames with their values must be concatenated to the baseURL as 
+ * baseURL to the XLink HTTP-Servlet, view/model associations and a List of all other 
+ * currently registered tools from the same host. This last information is used to support local switching between
+ * tools. To create valid XLink-URLs, the identifing fields of a model must be concatenated to the baseURL as 
  * GET-Parameters.
  */
 public class XLinkTemplate {
@@ -36,25 +37,33 @@ public class XLinkTemplate {
      * days.
      */
     private String baseUrl;
-
+    
     /**
-     * List containing keynames that determine how single modelObjects are identified. Must be concatenated with 
-     * their values to the baseUrl as GET-Parameters. The keyNames correspond to existing keys in the 
-     * toolenviroment.
+     * Map with the available viewId as key and the assigned modelclass as value.
+     * In this way the OpenEngSB defines which Model is to be used for which 
+     * view. When in use, the identifing fields of the model must be concatenated 
+     * with their values to the baseUrl as GET-Parameters. 
      */
-    private List<String> keyNames;
+    private Map<String,XLinkModelInformation> viewToModels;
+    
+    /**
+     * Keyname of the modelClass, which must be concatenated to the baseUrl as 
+     * GET Paramter
+     */
+    private String modelClassKey;
     
     /**
      * List of all other currently registered tools from the same host. This information is used to support 
      * local switching between tools.
      */
-    private List<XLinkRegisteredTools> registeredTools;
+    private List<XLinkRegisteredTool> registeredTools;
     
     /**
-     * Keyname of the connectorId, which is to be used for local switching.
-     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     * Key/value combination of the connectorId in HTTP GET paramater syntax.
+     * Simply concatenate to the baseUrl, when the XLink is 
+     * to be used for local switching.
      */
-    private String connectorIdKeyName;
+    private String connectorId;
     
     /**
      * Keyname of the viewId, which is to be used for local switching.
@@ -67,31 +76,57 @@ public class XLinkTemplate {
     public XLinkTemplate() {
     }
 
-    public XLinkTemplate(String baseUrl, List<String> keyNames, List<XLinkRegisteredTools> registeredTools, 
-            String connectorIdKeyName, String viewIdKeyName) {
+    public XLinkTemplate(String baseUrl, Map<String, XLinkModelInformation> viewToModels, String modelClassKey, List<XLinkRegisteredTool> registeredTools, String connectorId, String viewIdKeyName) {
         this.baseUrl = baseUrl;
-        this.keyNames = keyNames;
+        this.viewToModels = viewToModels;
+        this.modelClassKey = modelClassKey;
         this.registeredTools = registeredTools;
-        this.connectorIdKeyName = connectorIdKeyName;
+        this.connectorId = connectorId;
         this.viewIdKeyName = viewIdKeyName;
     }
 
     /**
-     * Keyname of the connectorId, which is to be used for local switching.
-     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     * URL to the Registry´s HTTP-Servlet without the Identifier´s fields. Already contains the modelId of the
+     * sourceModel and the expirationDate of the Link as GET-Parameters. XLink-URLs expire after a certain amount of
+     * days.
      */    
-    public String getConnectorIdKeyName() {
-        return connectorIdKeyName;
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setConnectorIdKeyName(String connectorIdKeyName) {
-        this.connectorIdKeyName = connectorIdKeyName;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+    
+    /**
+     * Key/value combination of the connectorId in HTTP GET paramater syntax.
+     * Simply concatenate to the baseUrl, when the XLink is 
+     * to be used for local switching.
+     */
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
+    /**
+     * List of all other currently registered tools from the same host. This information is used to support 
+     * local switching between tools.
+     */    
+    public List<XLinkRegisteredTool> getRegisteredTools() {
+        return registeredTools;
+    }
+
+    public void setRegisteredTools(List<XLinkRegisteredTool> registeredTools) {
+        this.registeredTools = registeredTools;
     }
 
     /**
      * Keyname of the viewId, which is to be used for local switching.
      * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
-     */        
+     */     
     public String getViewIdKeyName() {
         return viewIdKeyName;
     }
@@ -101,39 +136,30 @@ public class XLinkTemplate {
     }
 
     /**
-     * URL to the Registry´s HTTP-Servlet without the Identifier Fields as Parameters
-     */
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    /**
-     * List containing keynames that determine how single modelObjects are identified. Must be concatenated to the
-     * baseUrl as GET-Parameters.
-     */
-    public List<String> getKeyNames() {
-        return keyNames;
-    }
-
-    public void setKeyNames(List<String> keyNames) {
-        this.keyNames = keyNames;
-    }
-
-    /**
-     * List of all other currently registered tools from the same host. This information can be used to support 
-     * local switching between tools.
+     * Map with the available viewId as key and the assigned modelclass as value.
+     * In this way the OpenEngSB defines which Model is to be used for which 
+     * view. When in use, the identifing fields of the model must be concatenated 
+     * with their values to the baseUrl as GET-Parameters. 
      */    
-    public List<XLinkRegisteredTools> getRegisteredTools() {
-        return registeredTools;
+    public Map<String, XLinkModelInformation> getViewToModels() {
+        return viewToModels;
     }
 
-    public void setRegisteredTools(List<XLinkRegisteredTools> registeredTools) {
-        this.registeredTools = registeredTools;
+    public void setViewToModels(Map<String, XLinkModelInformation> viewToModels) {
+        this.viewToModels = viewToModels;
     }
 
+    /**
+     * Keyname of the modelClass, which must be concatenated to the baseUrl as 
+     * GET Paramter
+     */    
+    public String getModelClassKey() {
+        return modelClassKey;
+    }
+
+    public void setModelClassKey(String modelClassKey) {
+        this.modelClassKey = modelClassKey;
+    }
+    
 }
 
