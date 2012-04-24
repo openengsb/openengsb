@@ -20,6 +20,7 @@ package org.openengsb.core.api.remote;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.DomainProvider;
 
+@Deprecated
 public interface ProxyFactory {
     ConnectorRegistrationManager createProxyForDomain(DomainProvider provider);
 }
