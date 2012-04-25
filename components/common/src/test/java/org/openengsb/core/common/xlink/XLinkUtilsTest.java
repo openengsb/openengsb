@@ -36,9 +36,8 @@ import org.openengsb.core.common.util.ModelUtils;
 public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestConfigs
-    
-
     //Information provided by the client
+    
     /**Models supported by the tool, together with possible views*/
     private static HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>();  
     /**Id of the Tool´s connector*/
@@ -73,9 +72,6 @@ public class XLinkUtilsTest {
     private int expiresInDays = 3;
     /**List with already registered tools*/
     private List<XLinkRegisteredTool> registeredTools = null;
-    
-
-
     // @extract-end
 
     // @extract-start XLinkUtilsTestPrepareTemplate

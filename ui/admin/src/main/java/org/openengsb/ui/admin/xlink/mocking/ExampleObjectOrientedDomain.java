@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.ui.admin.xlink;
+
+package org.openengsb.ui.admin.xlink.mocking;
+
+import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * This Exception is thrown if an Error occurs during the validation of an incoming XLink-Request.
+ * Example modelObject for an ObjectOriented-Sourcecode Domain
  */
-public class OpenXLinkException extends Exception {
+public interface ExampleObjectOrientedDomain extends OpenEngSBModel {
 
-    /**
-     * Creates a new instance of <code>OpenXLinkException</code> without detail message.
-     */
-    public OpenXLinkException() {
-    }
+    String getOOMethodName();
 
-    /**
-     * Constructs an instance of <code>OpenXLinkException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public OpenXLinkException(String msg) {
-        super(msg);
-    }
+    void setOOMethodName(String ooMethod);
+
+    String getOOClassName();
+
+    void setOOClassName(String ooClass);
+
+    String getOOPackageName();
+
+    void setOOPackageName(String ooPackage);
+
 }

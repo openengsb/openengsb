@@ -17,6 +17,8 @@
 
 package org.openengsb.ui.admin.xlink;
 
+import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
+import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -38,7 +40,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 /**
  */
 @PaxWicketMountPoint(mountPoint = "openXLink")
-public class OpenXLinkPage extends WebPage{
+public class UserSuccesPage extends WebPage{
     
     private String contextId;
     private String modelId;
@@ -53,12 +55,12 @@ public class OpenXLinkPage extends WebPage{
     
     private Map<String,String[]> requestParameters;
     
-    public OpenXLinkPage(){
+    public UserSuccesPage(){
         preProcessingPage();
     }
     
     
-    public OpenXLinkPage(PageParameters parameters) {
+    public UserSuccesPage(PageParameters parameters) {
         preProcessingPage();
     }
     
@@ -78,13 +80,12 @@ public class OpenXLinkPage extends WebPage{
         setContextFromId();
         if(checkForLocalSwitchingParameters()){
             String sourceModelClass = modelId;           
-            //ConnectorId connectorIdInstance = XLinkMock.getConnectorIdInstance(connectorId);
-            String destinationModelClass = XLinkMock.getDestinationModelClassName(connectorId,viewId);
-            //XLinkMock.callMatcher(sourceModelClass, identifierValues, destinationModelClass, connectorIdInstance, viewId);
-            fillPageWithDummyValues(resp);
+            XLinkModelInformation destinationModelClass = XLinkMock.getDestinationModelClass(connectorId,viewId);
+            XLinkMock.transformAndOpenMatch(sourceModelClass, versionId, identifierValues, destinationModelClass.getClassName(), connectorId, viewId);
+            handleSuccessResponse(resp,null);
             return;
         }
-        buildCorrectUserPage(XLinkMock.getRegisteredToolsFromUser(hostId));      
+        handleSuccessResponse(resp,XLinkMock.getRegisteredToolsFromUser(hostId));      
     }
     
     private String getParameterFromMap(String key){
@@ -103,7 +104,7 @@ public class OpenXLinkPage extends WebPage{
         modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
-        hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME);
+        hostId = req.getRemoteHost();//.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME);
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
     }    
@@ -146,27 +147,30 @@ public class OpenXLinkPage extends WebPage{
     }
     
     private void handleErrorResponse(String error){
-        setResponsePage(new XLinkErrorPage(error,checkForLocalSwitchingParameters()));
+        if(checkForLocalSwitchingParameters()){
+            setResponsePage(new MachineResponsePage(error,false));
+        }else{   
+            setResponsePage(new UserErrorPage(error));        
+        }
     }
     
-    public void setContextFromId(){
-        ContextHolder.get().setCurrentContextId(contextId);
-    }
-    
-    public void buildCorrectUserPage(List<XLinkRegisteredTool> tools){
-        add(new Label("successMessage", "Success!"));
+    private void handleSuccessResponse(HttpServletResponse resp, List<XLinkRegisteredTool> tools){
+        if(checkForLocalSwitchingParameters()){
+            String successMsg = new StringResourceModel("success.localSwitch", this, null).getString();
+            setResponsePage(new MachineResponsePage(successMsg,true));
+        }else{         
+        }        
+        add(new Label("successMessage", "Success Processing LocalSwitch!"));
             /*
              * 5) fetch input of select page
              * 6) call parser and return thank you page
              */
         //weiterleiten der registrierten tools, der modelId, der version, der contextId
-        
-        //resp.sendError(resp.SC_BAD_REQUEST, "forwardToDestinationChooserPage");
-    }   
+     
+    }
     
-    public void fillPageWithDummyValues(HttpServletResponse resp){
-        add(new Label("successMessage", "Success Processing LocalSwitch!"));
-        resp.setStatus(resp.SC_OK);
+    public void setContextFromId(){
+        ContextHolder.get().setCurrentContextId(contextId);
     }
     
 }
