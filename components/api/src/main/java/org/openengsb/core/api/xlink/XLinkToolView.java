@@ -29,6 +29,38 @@ public class XLinkToolView {
     private String name;
     private Map<String,String> descriptions;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final XLinkToolView other = (XLinkToolView) obj;
+        if ((this.viewId == null) ? (other.viewId != null) : !this.viewId.equals(other.viewId)) {
+            return false;
+        }
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.descriptions != other.descriptions && (this.descriptions == null || !this.descriptions.equals(other.descriptions))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + (this.viewId != null ? this.viewId.hashCode() : 0);
+        hash = 71 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 71 * hash + (this.descriptions != null ? this.descriptions.hashCode() : 0);
+        return hash;
+    }
+    
+    
+
     public XLinkToolView(String viewId, String name, Map<String,String> descriptions) {
         this.viewId = viewId;
         this.name = name;
