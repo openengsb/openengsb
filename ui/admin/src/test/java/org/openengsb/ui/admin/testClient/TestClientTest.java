@@ -209,7 +209,7 @@ public class TestClientTest extends AbstractUITest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), "testdomain+testconnector+test-service");
+        ServiceId reference = new ServiceId(TestInterface.class, "testdomain+testconnector+test-service");
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -218,7 +218,7 @@ public class TestClientTest extends AbstractUITest {
     public void testJumpToService() throws Exception {
         setupTestClientPage();
         String connectorId = "testdomain+testconnector+test-service";
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
+        ServiceId reference = new ServiceId(TestInterface.class, connectorId);
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -245,7 +245,7 @@ public class TestClientTest extends AbstractUITest {
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
         for (MethodId mid : choices) {
-            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypes()));
         }
         List<Method> list = Arrays.asList(TestInterface.class.getMethods());
         Collections.sort(list, new MethodComparator());
@@ -661,7 +661,7 @@ public class TestClientTest extends AbstractUITest {
         for (int i = 0; i < choices.size(); i++) {
             MethodId methodId = choices.get(i);
             if (methodId.getName().equals(name)
-                    && ArrayUtils.isEquals(methodId.getArgumentTypesAsClasses(), parameterTypes)) {
+                    && ArrayUtils.isEquals(methodId.getArgumentTypes(), parameterTypes)) {
                 formTester.select("methodList", i);
                 tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
                 return;

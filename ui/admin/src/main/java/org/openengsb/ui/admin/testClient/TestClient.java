@@ -463,7 +463,7 @@ public class TestClient extends BasePage {
      * @return a Standard MethodCall with of the selected Method
      */
     private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
-        Class<?>[] classes = methodId.getArgumentTypesAsClasses();
+        Class<?>[] classes = methodId.getArgumentTypes();
         List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
@@ -651,7 +651,7 @@ public class TestClient extends BasePage {
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
-        domainProviderServiceId.setServiceClass(domainInterface.getName());
+        domainProviderServiceId.setServiceClass(domainInterface);
         domainProviderServiceId.setDomainName(provider.getId());
 
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
@@ -664,7 +664,7 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                serviceId.setServiceClass(domainInterface.getName());
+                serviceId.setServiceClass(domainInterface);
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
@@ -678,7 +678,7 @@ public class TestClient extends BasePage {
             error(string);
             return null;
         }
-        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypes());
         return method;
     }
 
@@ -797,11 +797,7 @@ public class TestClient extends BasePage {
             return Collections.emptyList();
         }
         Class<?> connectorInterface;
-        try {
-            connectorInterface = Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
+        connectorInterface = service.getServiceClass();
         if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             List<Method> result = Arrays.asList(connectorInterface.getMethods());
@@ -822,11 +818,8 @@ public class TestClient extends BasePage {
             String domainName = service.getDomainName();
             String location = "domain/" + domainName + "/default";
             Class<?> serviceClazz;
-            try {
-                serviceClazz = this.getClass().getClassLoader().loadClass(service.getServiceClass());
-            } catch (ClassNotFoundException e) {
-                throw new OsgiServiceNotAvailableException(e);
-            }
+            serviceClazz = service.getServiceClass();
+
             return utilsService.getServiceForLocation(serviceClazz,
                 location);
         }
@@ -837,11 +830,7 @@ public class TestClient extends BasePage {
     private Object getServiceViaDomainEndpointFactory(ServiceId service) {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;
-        try {
-            aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        aClass = (Class<? extends Domain>) service.getServiceClass();
 
         if (wiringService.isConnectorCurrentlyPresent(aClass)) {
             return wiringService.getDomainEndpoint(aClass, "domain/" + name + "/default");
@@ -852,7 +841,7 @@ public class TestClient extends BasePage {
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {
         try {
-            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypes());
         } catch (SecurityException e) {
             throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {
