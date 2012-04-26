@@ -58,7 +58,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
     <karaf.version>2.2.7</karaf.version>
-    <felix.gogo.version>0.6.1</felix.gogo.version>
+    <felix.gogo.version>0.10.0</felix.gogo.version>
     <pax.exam.version>2.3.1</pax.exam.version>
     <pax.wicket.version>1.0.0</pax.wicket.version>
     <pax.web.version>1.0.8</pax.web.version>
