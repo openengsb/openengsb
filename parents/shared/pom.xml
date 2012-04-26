@@ -114,7 +114,7 @@
     <rhino.version>1.7R2_2</rhino.version>
     <xmlresolver.version>1.2_4</xmlresolver.version>
     <mockito.version>1.8.5</mockito.version>
-    <felix.fileinstall.version>3.1.10</felix.fileinstall.version>
+    <felix.fileinstall.version>3.2.2</felix.fileinstall.version>
     <jsch.wrapped.version>0.1.44_2</jsch.wrapped.version>
     <activemq.version>5.5.1</activemq.version>
     <hamcrest.version>1.1</hamcrest.version>
