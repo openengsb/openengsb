@@ -1,3 +1,56 @@
+openengsb-2.4.5 2012-04-29
+--------------------------------------------
+
+The fifth bug-fix release of the OpenEngSB Framework tons of issues internal and various issues by
+upgrading various libraries. The release fixes various errors in the documentation; fixed the
+permission error of the config directory; fixed various tests; a nullpointer exception in the EDB,
+and abstracted the primitives handling by using ClassUtils in commons-lang. This release is more
+stable by upgrading openengsb-root (v33), PaxExam Karaf (v0.5.3), Apache CXF (v2.5.3),
+Apache Karaf (v2.2.7), Pax Exam (v2.3.1), Apache Felix File Install (v3.2.2), OPS4J Pax Web (v1.0.9)
+and Apache Felix Gogo (v0.10.0). All in all we've reduced the number of known issues from 17 to 14.
+
+### Details
+
+** Bug
+    * [OPENENGSB-1169] - "create wrapped artifacts" section outdated
+    * [OPENENGSB-1735] - testHandleCallsParallel fails sometimes
+    * [OPENENGSB-1896] - languages are messed up in core-services bundle.properties
+    * [OPENENGSB-2860] - jdk-download-link in documentation is broken
+    * [OPENENGSB-2862] - zip-assembly is corrupt when built using java7
+    * [OPENENGSB-2936] - ConsoleIT fail when executed on a non english environment machine
+    * [OPENENGSB-2947] - Uncought nullpointer exception in JPAEntry
+    * [OPENENGSB-2966] - replace custom primitives-handling in test-client with ClassUtils from commons-lang
+
+** Library Upgrade
+    * [OPENENGSB-2944] - Upgrade to openengsb-root-33
+    * [OPENENGSB-2948] - Upgrade to labs-paxexam-0.5.3
+    * [OPENENGSB-2951] - Upgrade to cxf 2.5.3
+    * [OPENENGSB-2956] - Upgrade to karaf 2.2.7
+    * [OPENENGSB-2957] - Upgrade to exam 2.3.1
+    * [OPENENGSB-2958] - Upgrade to fileinstall 3.2.2
+    * [OPENENGSB-2959] - Upgrade to pax-web 1.0.9
+    * [OPENENGSB-2960] - Upgrade to gogo 0.10.0
+
+** Task
+    * [OPENENGSB-2930] - Release framework 2.4.5
+
+### Known Issues
+    * [OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1568] - License headers are missing in bundle.info
+    * [OPENENGSB-1657] - OpenEngSB crashes when OSGI is loaded as feature dependency
+    * [OPENENGSB-1769] - mvn eclipse:eclipse does not include html-files in build-path of ui-admin and ui-common
+    * [OPENENGSB-1858] - Not all tests run green if another karaf instance is running
+    * [OPENENGSB-1899] - Domain archetype contains reference to openengsb-core-events
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2127] - modifying rulebase disrupts running flows
+    * [OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2187] - ui-admin bundle fails to start when ui-common is redeployed
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2791] - Prepush JPATestIT fails under Windows
+    * [OPENENGSB-2838] - WorkflowTest testLoad_shouldLoadAllWorkflowsFromFolder fails under Windows 7 x64
+
+
 openengsb-2.4.4 2012-04-11
 --------------------------------------------
 
