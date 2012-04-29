@@ -99,12 +99,12 @@ This project includes:
   Apache MINA Core under Apache 2.0 License
   Apache Mina SSHD :: Core under Apache 2.0 License
   Apache Neethi under The Apache Software License, Version 2.0
-  Apache Santuario under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: asm under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: cglib under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: commons-dbcp under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: serp under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
+  Apache XML Security for Java under The Apache Software License, Version 2.0
   aQute Bundle Tool Library under All files contained in this JAR are licensed under the Apache
          2.0 license, unless noted differently in their source (see
          swing2swt).
