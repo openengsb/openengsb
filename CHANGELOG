@@ -7,7 +7,7 @@ permission error of the config directory; fixed various tests; a nullpointer exc
 and abstracted the primitives handling by using ClassUtils in commons-lang. This release is more
 stable by upgrading openengsb-root (v33), PaxExam Karaf (v0.5.3), Apache CXF (v2.5.3),
 Apache Karaf (v2.2.7), Pax Exam (v2.3.1), Apache Felix File Install (v3.2.2), OPS4J Pax Web (v1.0.9)
-and Apache Felix Gogo (v0.10.0). All in all we've reduced the number of known issues from 17 to 14.
+and Apache Felix Gogo (v0.10.0). All in all we've reduced the number of known issues from 17 to 15.
 
 ### Details
 
@@ -49,6 +49,7 @@ and Apache Felix Gogo (v0.10.0). All in all we've reduced the number of known is
     * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
     * [OPENENGSB-2791] - Prepush JPATestIT fails under Windows
     * [OPENENGSB-2838] - WorkflowTest testLoad_shouldLoadAllWorkflowsFromFolder fails under Windows 7 x64
+    * [OPENENGSB-2974] - Internal domain/connector documentation is not deployed correctly
 
 
 openengsb-2.4.4 2012-04-11
