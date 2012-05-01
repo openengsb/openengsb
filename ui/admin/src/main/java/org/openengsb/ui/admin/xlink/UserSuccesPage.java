@@ -17,23 +17,29 @@
 
 package org.openengsb.ui.admin.xlink;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
+import org.openengsb.core.api.xlink.XLinkToolView;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
@@ -67,6 +73,7 @@ public class UserSuccesPage extends WebPage{
     public void preProcessingPage(){
         
         requestParameters = getRequest().getParameterMap();
+        setLocale(getRequest().getLocale());
         
         HttpServletRequest req = ((WebRequest)getRequest()).getHttpServletRequest();
         HttpServletResponse resp = ((WebResponse)getResponse()).getHttpServletResponse();
@@ -82,10 +89,10 @@ public class UserSuccesPage extends WebPage{
             String sourceModelClass = modelId;           
             XLinkModelInformation destinationModelClass = XLinkMock.getDestinationModelClass(connectorId,viewId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, versionId, identifierValues, destinationModelClass.getClassName(), connectorId, viewId);
-            handleSuccessResponse(resp,null);
+            handleSuccessResponse(resp);
             return;
         }
-        handleSuccessResponse(resp,XLinkMock.getRegisteredToolsFromUser(hostId));      
+        handleSuccessResponse(resp);      
     }
     
     private String getParameterFromMap(String key){
@@ -96,7 +103,12 @@ public class UserSuccesPage extends WebPage{
         fetchXLinkParameters(req);
         checkMandatoryXLinkParameters();
         checkXLinkIsExpired();
-        fetchAndCheckIdentifier(XLinkMock.getModelIdentifierToModelId(modelId,versionId));
+        try {
+            fetchAndCheckIdentifier(XLinkMock.getModelIdentifierToModelId(modelId,versionId));
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UserSuccesPage.class.getName()).log(Level.SEVERE, null, ex);
+            throw new OpenXLinkException(ex.getMessage());
+        }
     }
     
     private void fetchXLinkParameters(HttpServletRequest req){
@@ -154,23 +166,50 @@ public class UserSuccesPage extends WebPage{
         }
     }
     
-    private void handleSuccessResponse(HttpServletResponse resp, List<XLinkRegisteredTool> tools){
+    private void handleSuccessResponse(HttpServletResponse resp){
         if(checkForLocalSwitchingParameters()){
             String successMsg = new StringResourceModel("success.localSwitch", this, null).getString();
             setResponsePage(new MachineResponsePage(successMsg,true));
         }else{         
+            List<XLinkRegisteredTool> tools = XLinkMock.getRegisteredToolsFromUser(hostId);
+            ListView toolList = new ListView("toolList", tools) {
+                protected void populateItem(ListItem item) {
+                    XLinkRegisteredTool tool = (XLinkRegisteredTool) item.getModelObject();
+                    item.add(new Label("toolName", tool.getToolName()));
+                    ListView viewList = new ListView("viewList", tool.getAvailableViews()) {
+                        @Override
+                        protected void populateItem(ListItem li) {
+                            XLinkToolView view = (XLinkToolView) li.getModelObject();
+                            li.add(new Label("viewName", view.getName()));
+                            li.add(new Label("viewDescription", view.getDescriptions().get("en")));
+                        }
+                    };
+                    item.add(viewList);
+                }
+            };
+            add(toolList);            
+                /*
+                 * 5) fetch input of select page
+                 * 6) call parser and return thank you page
+                 */
+            //weiterleiten der registrierten tools, der modelId, der version, der contextId            
         }        
-        add(new Label("successMessage", "Success Processing LocalSwitch!"));
-            /*
-             * 5) fetch input of select page
-             * 6) call parser and return thank you page
-             */
-        //weiterleiten der registrierten tools, der modelId, der version, der contextId
+
      
     }
     
     public void setContextFromId(){
         ContextHolder.get().setCurrentContextId(contextId);
+    }
+    
+    public void setLocale(Locale locale){
+        if (locale != null){
+            getSession().setLocale(locale);
+        }
+    }    
+    
+    public String getLocaleKey(){
+        return getSession().getLocale().getLanguage();
     }
     
 }

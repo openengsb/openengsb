@@ -23,10 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.common.xlink.XLinkUtils;
 
 /**
  */
@@ -51,11 +55,22 @@ public final class XLinkMock {
         return template.getViewToModels().get(viewId);
     }
     
-    public static List<String> getModelIdentifierToModelId(String modelId, String versionId){
+    //tod testing
+    public static List<String> getModelIdentifierToModelId(String modelId, String versionId) throws ClassNotFoundException{
         //Todo fetch real identifiers
-        List<String> identifierKeyNames = Arrays.asList("OOMethodName", "OOClassName", "OOPackageName");
+        OpenEngSBModel model = createInstanceOfModelClass(modelId, versionId);
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        List<String> identifierKeyNames = new ArrayList<String>();
+        for(OpenEngSBModelEntry entry : entries){
+            identifierKeyNames.add(entry.getKey());
+        }
         return identifierKeyNames;
     }
+    
+    //todo convert class string to class object
+    private static OpenEngSBModel createInstanceOfModelClass(String clazz, String versionId) throws ClassNotFoundException{
+        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class) ;
+    }      
     
     public static void transformAndOpenMatch(String sourceModelClass, String sourceModelVersion, Map<String,String> sourceModelIdentifierMap, String destinationModelClass, String connectorToCall, String viewToCall){
         //todo check if transformation can be done
@@ -116,7 +131,7 @@ public final class XLinkMock {
         for(ConnectorId connectorId : connectors){
             tools.add(getToolsFromConnector(connectorId));
         }
-        //return tools;
+        //todo return tools;
         return createMockToolList();
     }
     
@@ -145,7 +160,7 @@ public final class XLinkMock {
     
     private static List<ConnectorId> getConnectorIdsFromHost(String hostId){
         //todo fetch all connectors to a hostid
-        return null;
+        return Arrays.asList(new ConnectorId("dummyDomainType", "dummyConnectorType", "dummyInstanceId"));
     }    
     
     private static XLinkTemplate getXLinkTemplateFromConnector(ConnectorId connectorId){
@@ -154,7 +169,7 @@ public final class XLinkMock {
     
     private static HashMap<String, List<XLinkToolView>> getModelViewCombinationsFromConnector(ConnectorId connectorId){
         //todo fetch model/views for connectorId
-        return null;
+        return new HashMap<String, List<XLinkToolView>>();
     }
    
 }

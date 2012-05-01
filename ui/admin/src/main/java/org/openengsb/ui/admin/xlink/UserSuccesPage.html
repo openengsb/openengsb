@@ -24,6 +24,12 @@
         <title>XLink ToolChooser</title>
     </head>
     <body>
-        <span wicket:id="successMessage" id="successMessage">successMessage goes here</span>
+        <h1><wicket:message key="toolchooser.head"></wicket:message></h1>
+        <span wicket:id="toolList">
+            <h2><span wicket:id="toolName">label</span></h2>
+            <span wicket:id="viewList">
+                <span wicket:id="viewName">label</span> <span wicket:id="viewDescription">label</span> <span>Link goes here</span><br/>
+            </span>            
+        </span>
     </body>
 </html>
