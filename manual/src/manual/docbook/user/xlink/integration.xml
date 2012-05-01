@@ -99,7 +99,10 @@
     <section xml:id="implementation.configs">
         <title>Testconfigurations and Constants</title>
         <ns:para>This are the Configurations that are used in the JUnitTests above.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigs.xml"/>
+        <ns:para>This configurations must be provided by a OpenEngSB client.</ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByClient.xml"/>
+        <ns:para>This configurations must be provided by the OpenEngSB</ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>
         <ns:para>This are the Constants that are used in the Functions above.</ns:para>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>
     </section>   

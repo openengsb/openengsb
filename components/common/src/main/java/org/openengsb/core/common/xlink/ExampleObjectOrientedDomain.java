@@ -14,36 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.api.xlink;
+
+package org.openengsb.core.common.xlink;
+import org.openengsb.core.common.xlink.*;
+
+import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Class used by XLink to identify a certain OpenEngSBModel.
- * Every OpenEngSBModel is identified by it´s classname and version.
+ * Example modelObject for an ObjectOriented-Sourcecode Domain
  */
-public class XLinkModelInformation {
-    
-    private String className;
-    private String version;
+public interface ExampleObjectOrientedDomain extends OpenEngSBModel {
 
-    public XLinkModelInformation(String className, String version) {
-        this.className = className;
-        this.version = version;
-    }
-    
-    public String getClassName() {
-        return className;
-    }
+    String getOOMethodName();
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
+    void setOOMethodName(String ooMethod);
 
-    public String getVersion() {
-        return version;
-    }
+    String getOOClassName();
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
-    
+    void setOOClassName(String ooClass);
+
+    String getOOPackageName();
+
+    void setOOPackageName(String ooPackage);
+
 }

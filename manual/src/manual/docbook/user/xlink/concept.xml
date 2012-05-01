@@ -157,22 +157,24 @@
             accepting. For every view of the tool, the xlink-registry chooses the most appropriate
             model (see the Registrationfunction <link xlink:href="#implementation.registration"
                 >implementation</link>). This means that for every view, the tool must adopt the
-            identfier of a given model. To create valid XLinks, the tool also needs the
-            registry-url. All this information will be returned to the tool via a <emphasis
-                role="bold">XLinkTemplate</emphasis>, containing the <emphasis role="bold"
-                >registry-url</emphasis>, a <emphasis role="bold">map of views with associated
-                models</emphasis> and some additional information for Local Switching (this will be
-            explained later on). Note that the registry-url is already prefilled with some mandatory
-            metadata that does not change during the session. The transported map instructs the tool
-            which models to use and expect for certain views. In this way a tool can fetch the data,
-            necessary to identify a modelobject, dynamically by the instructions in the
-            XLinkTemplate (see the attributes of the XLinkTemplate <link
+            identfier of a given model. To create valid XLinks, the tool also needs the registry-url
+            and the correct OpenEngSB context of the Xlink. All this information will be returned to
+            the tool via a <emphasis role="bold">XLinkTemplate</emphasis>, containing the <emphasis
+                role="bold">registry-url</emphasis>, a <emphasis role="bold">map of views with
+                associated models</emphasis>, the ContextId keyname and some additional information
+            for Local Switching (this will be explained later on). Note that the registry-url is
+            already prefilled with some mandatory metadata that does not change during the session.
+            The transported map instructs the tool which models to use and expect for certain views.
+            In this way a tool can fetch the data, necessary to identify a modelobject, dynamically
+            by the instructions in the XLinkTemplate (see the attributes of the XLinkTemplate <link
                 xlink:href="#implementation.xlinkemplate.attributes">implementation</link> and see
             how an XLinkTemplate is <link xlink:href="#implementation.xlinkemplate.prepareUseCase"
-                >prepared</link> bevor transmission). When an actor clicks on a xlink-url, the
-            xlink-registry identifies the local tools of the Host via the IP of the http-request
-            (since every connector registered itself with it´s host´s IP). Here lies a limitation
-            which will be addressed in future work <link
+                >prepared</link> bevor transmission). The tool must construct valid XLink URLs by
+            adding the identifying fields of the model of the given view, the modelclass and version
+            of the given view and the current OpenEngSB context as GET parameters. When an actor
+            clicks on a xlink-url, the xlink-registry identifies the local tools of the Host via the
+            IP of the http-request (since every connector registered itself with it´s host´s IP).
+            Here lies a limitation which will be addressed in future work <link
                 xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2777">(see on
                 Jira)</link>, currently it is only possible to call this registry-url without proxy,
             since this would change the IP of the http-request. Next the xlink-registry reads the
@@ -227,9 +229,10 @@
             <orderedlist>
                 <listitem>
                     <para>The actors Adam &amp; Eve start their clients, their tools register
-                        themselfes, provide their IP and get a XLinkTemplate assigned, which contain
-                        the servlet-url, information about their modelspecific identifier and
-                        additional data for Local Switching (which is not used here).</para>
+                        themselfes, provide their IP, their available model/view combinations and
+                        get a XLinkTemplate assigned, which contain the servlet-url, information
+                        about which model to use for which view and additional data for Local
+                        Switching (which is not used here).</para>
                     <para>
                         <mediaobject>
                             <imageobject>
@@ -356,15 +359,16 @@
         <para>
             <orderedlist>
                 <listitem>
-                    <para>The actor Adam starts his client, his tools register themselves, provide
-                        their IP and get a XLinkTemplate assigned, which contain the servlet-url,
-                        information about their modelspecific identifier, a list of local, already
-                        registered, tools and the keyNames for the ConnectorId and ViewId. </para>
+                    <para>The actors Adam &amp; Eve start their clients, their tools register
+                        themselfes, provide their IP, their available model/view combinations and
+                        get a XLinkTemplate assigned, which contain the servlet-url, information
+                        about which model to use for which view, a list of local, already
+                        registered, tools,  the ConnectorId and the keyname of the ViewId.</para>
                 </listitem>
                 <listitem>
                     <para>During his work, Adam installes a new Tool that is integrated in OpenEngSB
                         and participates in XLinking. The list of installed tools is updated at each
-                        connector.onnectorId and the ViewId are transfered in </para>
+                        connector.</para>
                 </listitem>
                 <listitem>
                     <para>Adam works in Tool A on a bugfix and wants to view the related datapoint
@@ -423,7 +427,7 @@
             </itemizedlist></para>
     </section>
     <section xml:id="concept.registry.functions">
-        <title>Registry Function Summary</title>
+        <title>XLink - Registry Function Summary</title>
         <ns:para><emphasis role="bold">Nessecary Functions:</emphasis></ns:para>
         <para>
             <itemizedlist>
@@ -431,16 +435,16 @@
                     <para>Manages the identifiers of models.</para>
                 </listitem>
                 <listitem>
-                    <para>Associates tools with models during their registration, e.g. sends the a
-                        XLinkTemplate.</para>
+                    <para>Associates views of tools with models during their registration, e.g.
+                        sends them a XLinkTemplate.</para>
                 </listitem>
                 <listitem>
                     <para>Contains the mapper entity which creates mappings between modelobjects
-                        from different models. To calculate a mapping, the mapper needs two inputs,
-                        the sourcelink (with it´s source-model) and the destination-model. The
-                        sourcelink is transported via the http-link, the destination-model is
-                        manually chosen by the actor. The sourcelink is transformed in a set of
-                        potential links in the destination-model.</para>
+                        from different models. To calculate a mapping, the mapper needs three
+                        inputs, the sourcelink and it´s source-model and the destination-model.
+                        Information about the first two is transported via the http-link, the
+                        destination-model is manually chosen by the actor. The sourcelink is
+                        transformed in a set of potential links in the destination-model.</para>
                 </listitem>
                 <listitem>
                     <para>An user-interface, which identifies the host´s tools via the IP of an
@@ -463,8 +467,8 @@
             <itemizedlist>
                 <listitem>
                     <para>Registeres at startup, provides it´s IP and receives a XLinkTemplate. The
-                        received XLinkTemplate defines the structure of created and accepted
-                        XLinks.</para>
+                        received XLinkTemplate defines which model is to be used for which view and
+                        determines how a valid XLink is created.</para>
                 </listitem>
                 <listitem>
                     <para>Must enable the user to extract a XLink to a selected modelobject.</para>

@@ -65,6 +65,12 @@ public class XLinkTemplate {
     private List<XLinkRegisteredTool> registeredTools;
     
     /**
+     * Keyname of the contextId, must be set by the tool to determine the OpenEngSB context of the XLink.
+     * To select the root context, ad this key with no value.
+     */
+    private String contextIdKeyName;    
+    
+    /**
      * Key/value combination of the connectorId in HTTP GET paramater syntax.
      * Simply concatenate to the baseUrl, when the XLink is 
      * to be used for local switching.
@@ -82,12 +88,20 @@ public class XLinkTemplate {
     public XLinkTemplate() {
     }
 
-    public XLinkTemplate(String baseUrl, Map<String, XLinkModelInformation> viewToModels, String modelClassKey, String modelVersionKey, List<XLinkRegisteredTool> registeredTools, String connectorId, String viewIdKeyName) {
+    public XLinkTemplate(String baseUrl, 
+            Map<String, XLinkModelInformation> viewToModels, 
+            String modelClassKey, 
+            String modelVersionKey, 
+            List<XLinkRegisteredTool> registeredTools, 
+            String contextIdKeyName, 
+            String connectorId, 
+            String viewIdKeyName) {
         this.baseUrl = baseUrl;
         this.viewToModels = viewToModels;
         this.modelClassKey = modelClassKey;
         this.modelVersionKey = modelVersionKey;
         this.registeredTools = registeredTools;
+        this.contextIdKeyName = contextIdKeyName;
         this.connectorId = connectorId;
         this.viewIdKeyName = viewIdKeyName;
     }
@@ -178,6 +192,17 @@ public class XLinkTemplate {
 
     public void setModelVersionKey(String modelVersionKey) {
         this.modelVersionKey = modelVersionKey;
+    }
+
+    /**
+     * Keyname of the contextId, must be set by the tool to determine the OpenEngSB context of the XLink
+     */    
+    public String getContextIdKeyName() {
+        return contextIdKeyName;
+    }
+
+    public void setContextIdKeyName(String contextIdKeyName) {
+        this.contextIdKeyName = contextIdKeyName;
     }
     
 }
