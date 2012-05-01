@@ -27,16 +27,14 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 import org.openengsb.core.api.xlink.XLinkToolView;
-import org.openengsb.core.common.util.ModelUtils;
 
 public class XLinkUtilsTest {
 
-    // @extract-start XLinkUtilsTestConfigs
-    //Information provided by the client
+    // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
     private static HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>();  
@@ -52,6 +50,8 @@ public class XLinkUtilsTest {
     private static HashMap<String, String> descriptions  = new HashMap<String, String>();
     /**Composed viewdata as a list.*/
     private static List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+    /**Id of the Testcontext at the OpenEngSB*/
+    private String contextId = "ExampleContext";
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -62,12 +62,11 @@ public class XLinkUtilsTest {
         views.add(new XLinkToolView(viewId_2, toolName, descriptions));
         modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);
     }
+    // @extract-end
+    // @extract-start XLinkUtilsTestConfigsProvidedByOpenEngSB
     
-    //Information provided by the OpenEngSB
     /**BaseUrl of the xlink-servlet*/
     private String servletUrl = "http://openengsb.org/registryServlet.html";
-    /**Id of the Testcontext at the OpenEngSB*/
-    private String contextId = "ExampleContext";
     /**Days until the XLink expires*/
     private int expiresInDays = 3;
     /**List with already registered tools*/
@@ -78,12 +77,11 @@ public class XLinkUtilsTest {
     @Test
     public void testPrepareXLinkTemplate() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, connectorId, modelsToViews, expiresInDays, registeredTools);    
+            XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);    
 
         //xLinkTemplate.getBaseUrl() = 
         //http://openengsb.org/registryServlet.html?contextId=ExampleContext&expirationDate=20120427190146
 
-        assertTrue(xLinkTemplate.getBaseUrl().contains(XLinkUtils.XLINK_CONTEXTID_KEY + "=" + contextId));
         assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId_1));
         assertTrue(xLinkTemplate.getViewToModels().get(viewId_1).getClassName().equals(ExampleObjectOrientedDomain.class.getName()));
     }
@@ -94,24 +92,22 @@ public class XLinkUtilsTest {
     @Test
     public void testGenerateValidXLinkUrl() throws ClassNotFoundException {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, connectorId, modelsToViews, expiresInDays, registeredTools);  
+            XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
-        OpenEngSBModel modelOfView = createInstanceOfModelClass(xLinkTemplate.getViewToModels().get(viewId_1).getClassName());
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, modelOfView, values);
+        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId_1);
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId);
 
         //xLinkUrl = 
-        //http://openengsb.org/registryServlet.html?contextId=ExampleContext&expirationDate=20120427190146
+        //http://openengsb.org/registryServlet.html?expirationDate=20120504202007&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
+        //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
+
 
         assertTrue(xLinkUrl.contains("OOMethodName=testMethod"));
         assertTrue(xLinkUrl.contains("OOClassName=testClass"));
         assertTrue(xLinkUrl.contains("OOPackageName=testPackage"));
 
-    }
-    
-    private OpenEngSBModel createInstanceOfModelClass(String clazz) throws ClassNotFoundException{
-        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class);
     }
 
     // @extract-end
@@ -120,13 +116,14 @@ public class XLinkUtilsTest {
     @Test
     public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, contextId, connectorId, modelsToViews, expiresInDays, registeredTools);  
+            XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
-        OpenEngSBModel modelOfView = createInstanceOfModelClass(xLinkTemplate.getViewToModels().get(viewId_1).getClassName());
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, modelOfView, values, viewId_1);
+        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId_1);
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, values, modelInformation, contextId, viewId_1);
 
         //xLinkUrl =
-        //http://openengsb.org/registryServlet.html?contextId=ExampleContext&expirationDate=20120427190146
+        //http://openengsb.org/registryServlet.html?expirationDate=20120504202007&null=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
+        //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
 

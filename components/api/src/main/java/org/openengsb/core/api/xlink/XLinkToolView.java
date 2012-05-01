@@ -21,12 +21,24 @@ package org.openengsb.core.api.xlink;
 import java.util.Map;
 
 /**
- * 
+ * Modelclass of a view of a certain tool. Every information about a view must be
+ * sent by the tool. Must provide an id, a human readable name and a descriptions 
+ * in different languages.
  */
 public class XLinkToolView {
     
+    /**
+     * Unique Id of the View
+     */
     private String viewId;
+    /**
+     * Human readable name of the view
+     */
     private String name;
+    /**
+     * Map with locale strings as key (such as "en" and "de") and an description of the
+     * view in the specified language.
+     */
     private Map<String,String> descriptions;
 
     @Override
@@ -67,6 +79,9 @@ public class XLinkToolView {
         this.descriptions = descriptions;
     }
 
+    /**
+     * Human readable name of the view
+     */    
     public String getName() {
         return name;
     }
@@ -74,7 +89,10 @@ public class XLinkToolView {
     public void setName(String name) {
         this.name = name;
     }
-
+    
+    /**
+     * Unique Id of the View
+     */
     public String getViewId() {
         return viewId;
     }
@@ -83,6 +101,10 @@ public class XLinkToolView {
         this.viewId = viewId;
     }
 
+    /**
+     * Map with locale strings as key (such as "en" and "de") and an description of the
+     * view in the specified language.
+     */    
     public Map<String, String> getDescriptions() {
         return descriptions;
     }

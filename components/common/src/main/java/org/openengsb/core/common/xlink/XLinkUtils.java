@@ -30,6 +30,7 @@ import org.openengsb.core.api.xlink.XLinkModelInformation;
 import org.openengsb.core.api.xlink.XLinkRegisteredTool;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
@@ -72,27 +73,28 @@ public final class XLinkUtils {
 
     /**
      * Demonstrates how the baseUrl of a XLinkTemplate may be prepared before it is transmitted to the client. 
-     * Every baseUrl must contain the contextId and the expirationDate as GET-Paramters, before it is 
+     * Every baseUrl must contain the expirationDate as a GET-Paramter, before it is 
      * transmited to the connector. The models are naively assigned to the views.
+     * The contextIdKeyName is added to the template, must be set by the tool to 
+     * determine the OpenEngSB context of the XLink
      * The ConnectorId/value combination and the ViewId-Key are also added to the Template to enable 
      * Local Switching.
      */
-    public static XLinkTemplate prepareXLinkTemplate(String baseUrl, 
-            String contextId, 
+    public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
             String connectorId,
             HashMap<String, List<XLinkToolView>> modelsToViews, 
             int expirationDays, 
             List<XLinkRegisteredTool> registeredTools) {
         baseUrl +=
-            "?" + XLINK_CONTEXTID_KEY + "=" + contextId + 
-                "&" + XLINK_EXPIRATIONDATE_KEY + "=" + getExpirationDate(expirationDays);
+            "?" + XLINK_EXPIRATIONDATE_KEY + "=" + getExpirationDate(expirationDays);
         String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + connectorId;
         Map<String, XLinkModelInformation> viewToModels = assigneModelsToViews(modelsToViews);
         return new XLinkTemplate(baseUrl, 
                 viewToModels, 
-                XLINK_MODELCLASS_KEY, 
-                XLINK_VERSION_KEY, 
-                registeredTools, 
+                XLINK_MODELCLASS_KEY,
+                XLINK_VERSION_KEY,
+                registeredTools,
+                XLINK_CONTEXTID_KEY, 
                 connectorIdParam, 
                 XLINK_VIEW_KEY);
     }
@@ -133,16 +135,25 @@ public final class XLinkUtils {
      * corresponding to the List of keyFields of the Modelclass. 
      * Depending on the contained Keys, the XLink is useable for local switching, or not.
      */
-    public static String generateValidXLinkUrl(XLinkTemplate template, OpenEngSBModel modelOfView, List<String> values) {
+    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> identifierValues, XLinkModelInformation modelInformation, String contextId) throws ClassNotFoundException {
         String completeUrl = template.getBaseUrl();
+        completeUrl += "&" + template.getModelClassKey() + "="+modelInformation.getClassName();
+        completeUrl += "&" + template.getModelVersionKey() + "="+modelInformation.getClass();
+        completeUrl += "&" + template.getContextIdKeyName() + "="+contextId;        
+        OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
-            completeUrl += "&" + keyNames.get(i).getKey() + "=" + values.get(i);
+            completeUrl += "&" + keyNames.get(i).getKey() + "=" + identifierValues.get(i);
         }
         return completeUrl;
     }
 
     // @extract-end
+    
+      
+    private static OpenEngSBModel createInstanceOfModelClass(String clazz) throws ClassNotFoundException{
+        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class) ;
+    }  
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
     /**
@@ -150,9 +161,9 @@ public final class XLinkUtils {
      * corresponding to the List of keyFields of the Modelclass. The connectorId and viewId parameters are added 
      * in the end, to mark the link for Local Switching
      */
-    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, OpenEngSBModel modelOfView, List<String> values,
-            String viewIdValue) {
-        String xLink = generateValidXLinkUrl(template, modelOfView, values);
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
+            XLinkModelInformation modelInformation, String contextId, String viewIdValue) throws ClassNotFoundException {
+        String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId);
         xLink +=
             "&" + template.getConnectorId() +
             "&" + template.getViewIdKeyName() + "=" + viewIdValue;
