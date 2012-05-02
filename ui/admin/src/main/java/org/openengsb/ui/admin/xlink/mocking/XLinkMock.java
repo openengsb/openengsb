@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -45,7 +47,7 @@ public final class XLinkMock {
         return null;
     }
     
-    public static XLinkModelInformation getDestinationModelClass(String cId, String viewId){
+    public static XLinkModelInformation getModelClass(String cId, String viewId){
         ConnectorId connectorId = getConnectorIdClassForStringId(cId);
         return getModelClassOfView(connectorId,viewId);
     }
@@ -72,10 +74,17 @@ public final class XLinkMock {
         return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class) ;
     }      
     
-    public static void transformAndOpenMatch(String sourceModelClass, String sourceModelVersion, Map<String,String> sourceModelIdentifierMap, String destinationModelClass, String connectorToCall, String viewToCall){
+    public static void transformAndOpenMatch(String sourceModelClass, String sourceModelVersion, Map<String,String> sourceModelIdentifierMap, String destinationModelClass, String destinationModelVersion, String connectorToCall, String viewToCall){
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "transformAndOpenMatch was called:");
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelClass - "+sourceModelClass);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelVersion - "+sourceModelVersion);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "destinationModelClass - "+destinationModelClass);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "destinationModelVersion - "+destinationModelVersion);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - "+connectorToCall);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - "+viewToCall);
         //todo check if transformation can be done
         Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
-        List<Object> modelObjectsDestination = transformModelObject(sourceModelClass, sourceModelVersion, destinationModelClass, modelObjectSource);
+        Object modelObjectsDestination = transformModelObject(sourceModelClass, sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
         openPotentialMatches(modelObjectsDestination, getConnectorIdClassForStringId(connectorToCall), viewToCall);
     }
     
@@ -83,11 +92,11 @@ public final class XLinkMock {
         //todo
         return null;
     }
-    private static List<Object> transformModelObject(String sourceModelClass, String sourceModelVersion, String destinationModelClass, Object modelObjectSource){
+    private static Object transformModelObject(String sourceModelClass, String sourceModelVersion, String destinationModelClass, String destinationModelVersion, Object modelObjectSource){
         //todo
         return null;
     }
-    private static void openPotentialMatches(List<Object> modelObjectsDestination, ConnectorId connectorToCall, String viewToCall){
+    private static void openPotentialMatches(Object modelObjectsDestination, ConnectorId connectorToCall, String viewToCall){
         //todo
     }
     
@@ -164,12 +173,39 @@ public final class XLinkMock {
     }    
     
     private static XLinkTemplate getXLinkTemplateFromConnector(ConnectorId connectorId){
-        return null;
+        //todo fetch template
+        return createMockTemplate();
+    }
+    
+    private static XLinkTemplate createMockTemplate(){
+        HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>();  
+        String viewId_1 = "exampleViewId_1";
+        String viewId_2 = "exampleViewId_2";
+        
+        HashMap<String, String> descriptions  = new HashMap<String, String>();
+        descriptions.put("en","This is a demo view.");
+        descriptions.put("de","Das ist eine demonstration view.");
+        
+        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        views.add(new XLinkToolView(viewId_1, "View 1", descriptions));
+        views.add(new XLinkToolView(viewId_2, "View 2", descriptions));          
+        
+        modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);  
+        String connectorId = "exampleConnectorId";
+        String servletUrl = "http://openengsb.org/registryServlet.html";
+        int expiresInDays = 3;
+        List<XLinkRegisteredTool> registeredTools = null;        
+        return XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
     }
     
     private static HashMap<String, List<XLinkToolView>> getModelViewCombinationsFromConnector(ConnectorId connectorId){
         //todo fetch model/views for connectorId
         return new HashMap<String, List<XLinkToolView>>();
+    }
+    
+    public static  boolean isTransformationPossible(String srcModelClass, String srcModelVersion, String destModelClass, String destModelVersion){
+        //todo implement check here
+        return true;
     }
    
 }

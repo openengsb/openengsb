@@ -21,9 +21,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
       xml:lang="en" lang="en">
     <head>
-        <title>XLink Error</title>
+        <title>XLink ToolChooser</title>
     </head>
     <body>
-        <span wicket:id="errorMessage" id="errorMessage">errorMessage goes here</span>
+        <h1><wicket:message key="toolchooser.head"></wicket:message></h1>
+        <span wicket:id="toolList">
+            <h2><span wicket:id="toolName">label</span></h2>
+            <span wicket:id="viewList">
+                <span wicket:id="viewName">label</span> <span wicket:id="viewDescription">label</span> <a href="#" wicket:id="viewLink"><span wicket:id="viewLinkLabel">linkLabel</span></a><br/>
+            </span>            
+        </span>
     </body>
 </html>
