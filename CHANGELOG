@@ -1,3 +1,130 @@
+openengsb-2.5.0 2012-05-03
+--------------------------------------------
+
+The fifth feature release of the openengsb framework contains, besides 32 bug fixes from the 2.4.x line, 6 new
+features, 5 deprecations and 15 improvements. First of all there's a new, better EDB handling via services
+available in 2.5.x which depricates the current EDB handling; next, by the removal of our object DB the
+IgnoreInQuery annotation is no longer required; because of some enhancements to the communictation it's
+no longer required to use the Event#getType method. Version 2.5.x allows the creation of workflows via files
+now; a general persistence interface; a marshling template creation UI and the configuration of the openwire
+and stomp ports via configuration files. Improvements had been done to the EDB, EKB, OpenEngSBModels, README,
+OpenEngSB core service; also we've corrected our source release to look more like an apache one. Looking
+at the most important libraries the framework includes new versions of Google Guava (11.0.1), Apache CXF (2.5.3),
+Paxexam Karaf (0.5.3), OPS4J Pax Exam (2.3.1), Apache Felix Gogo (0.10.0), Apache Felix Fileinstall (3.2.2),
+Apache Karaf (2.2.7), OPS4J Pax Wicket (0.7.8), Apache Wicket (1.4.20), Apache OpenJPA (2.2.0 and the
+Springframework (3.0.7).
+
+### Details
+** Bug
+    * [OPENENGSB-1169] - "create wrapped artifacts" section outdated
+    * [OPENENGSB-1735] - testHandleCallsParallel fails sometimes
+    * [OPENENGSB-1814] - Json-Marshalling: Event class string-representation incorrent
+    * [OPENENGSB-1896] - languages are messed up in core-services bundle.properties
+    * [OPENENGSB-2608] - Typo in OpenEngSBFileModel
+    * [OPENENGSB-2683] - Not all features are started/downloaded for karaf/openengsb
+    * [OPENENGSB-2695] - switching context in UI yields internal error
+    * [OPENENGSB-2712] - createEmptyModel with ModelEntries as parameter discard model oid and model version
+    * [OPENENGSB-2726] - Bug in the querying of models with submodels
+    * [OPENENGSB-2732] - Missing types in wsld generation
+    * [OPENENGSB-2735] - openengsb-framework 2.4.1 starts karaf twice
+    * [OPENENGSB-2736] - m2e-error in internal connector and domains
+    * [OPENENGSB-2747] - Change Class<?> to Class
+    * [OPENENGSB-2792] - Neodatis is incompatible to ASF release
+    * [OPENENGSB-2795] - Processbags in tasks operate on shared instances
+    * [OPENENGSB-2820] - Conflict checking in the EDB has a small error
+    * [OPENENGSB-2824] - test-data from jms-port is stored in src-zip
+    * [OPENENGSB-2825] - README is outdated
+    * [OPENENGSB-2836] - Possible ConcurrentModificationException in AbstractOsgiMockServiceTest
+    * [OPENENGSB-2848] - access to index in DefaultPersistenceIndex is not thread-safe
+    * [OPENENGSB-2856] - Provide maven-profile that enables itests
+    * [OPENENGSB-2859] - "workflow-elements are printed to stdout on error during creation
+    * [OPENENGSB-2860] - jdk-download-link in documentation is broken
+    * [OPENENGSB-2862] - zip-assembly is corrupt when built using java7
+    * [OPENENGSB-2877] - Duplicated distribution tags
+    * [OPENENGSB-2894] - "further information" link in readme point to invalid location
+    * [OPENENGSB-2916] - TestClientTests should not rely on specific ordering of methods
+    * [OPENENGSB-2918] - endless-loops in itests should timeout at some point
+    * [OPENENGSB-2936] - ConsoleIT fail when executed on a non english environment machine
+    * [OPENENGSB-2947] - Uncought nullpointer exception in JPAEntry
+    * [OPENENGSB-2966] - replace custom primitives-handling in test-client with ClassUtils from commons-lang
+    * [OPENENGSB-2968] - ConsoleIT-tests execution-order influences result
+
+** Deprecation
+    * [OPENENGSB-2718] - Deprecate EDB Events usage
+    * [OPENENGSB-2797] - Deprecate no longer required IgnoreInQuery interface
+    * [OPENENGSB-2835] - deprecate OpenEngSBCoreServices
+    * [OPENENGSB-2846] - Deprecate Event#getType
+    * [OPENENGSB-2950] - deprecate unused ProxyFactory-interface
+
+** Improvement
+    * [OPENENGSB-2402] - Refactor org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter.java
+    * [OPENENGSB-2708] - move EDBEntry/OpenEngSBModelEntry converting logic into the EKB
+    * [OPENENGSB-2709] - EDBEvents should be handled by the EKB rather than by the EDB
+    * [OPENENGSB-2711] - EDB should save the model type of models. This value should be considered when the QueryInterface is used
+    * [OPENENGSB-2723] - Add OpenEngSBModel Map support
+    * [OPENENGSB-2733] - OpenEngSBModels should support "equals" and "hashCode"
+    * [OPENENGSB-2740] - Enhance OpenEngSBModels with default/static property values for strings through annotations
+    * [OPENENGSB-2804] - Remove no longer required .gitmodules file
+    * [OPENENGSB-2826] - README should provide more detail on how to compile
+    * [OPENENGSB-2827] - README should not include license header
+    * [OPENENGSB-2844] - Replace OpenEngSBCoreServices with proper injectoin
+    * [OPENENGSB-2849] - provide mandatory config for workflow-engine via config-files in etc
+    * [OPENENGSB-2899] - Change the source releases to look more like typically apache releases
+    * [OPENENGSB-2920] - Remove optional naming of auditing-domain in assembly-pom
+    * [OPENENGSB-2923] - Make openwire & stomp port configurable
+
+** Library Upgrade
+    * [OPENENGSB-2701] - upgrade guava to 11.0.1
+    * [OPENENGSB-2716] - Upgrade to cxf 2.5.2
+    * [OPENENGSB-2769] - Upgrade labs-paxexam-karaf to 0.5.1
+    * [OPENENGSB-2770] - Upgrade openengsb-root to 31
+    * [OPENENGSB-2771] - Upgrade to openjpa 2.2.0
+    * [OPENENGSB-2787] - Upgrade to openengsb-root-32
+    * [OPENENGSB-2790] - Upgrade to pax-wicket 0.7.6
+    * [OPENENGSB-2839] - Upgrade pax-wicket to 0.7.7
+    * [OPENENGSB-2852] - Upgrade to pax-wicket 0.7.8
+    * [OPENENGSB-2875] - Upgrade to labs-paxexam-karaf 0.5.2
+    * [OPENENGSB-2876] - Upgrade to exam 2.3.1
+    * [OPENENGSB-2900] - Upgrade to karaf 2.2.6
+    * [OPENENGSB-2911] - Upgrade to spring 3.0.7.RELEASE
+    * [OPENENGSB-2944] - Upgrade to openengsb-root-33
+    * [OPENENGSB-2948] - Upgrade to labs-paxexam-0.5.3
+    * [OPENENGSB-2951] - Upgrade to cxf 2.5.3
+    * [OPENENGSB-2956] - Upgrade to karaf 2.2.7
+    * [OPENENGSB-2958] - Upgrade to fileinstall 3.2.2
+    * [OPENENGSB-2959] - Upgrade to pax-web 1.0.9
+    * [OPENENGSB-2960] - Upgrade to gogo 0.10.0
+
+** New Feature
+    * [OPENENGSB-947] - Create workflow via configuration files
+    * [OPENENGSB-1411] - Add marshling template creation UI
+    * [OPENENGSB-1873] - Make optional fields show in another way than required fields
+    * [OPENENGSB-2280] - Create a new command to create a new service via commandline
+    * [OPENENGSB-2710] - EKB shall provide in addition to the QueryInterface a PersistInterface
+    * [OPENENGSB-2842] - XLink User Servlet
+
+** Task
+    * [OPENENGSB-711] - Create integration tests for taskbox custom panel replacement functionality
+    * [OPENENGSB-2593] - Release framework 2.5.0
+
+### Known Issues
+    * [OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1568] - License headers are missing in bundle.info
+    * [OPENENGSB-1657] - OpenEngSB crashes when OSGI is loaded as feature dependency
+    * [OPENENGSB-1769] - mvn eclipse:eclipse does not include html-files in build-path of ui-admin and ui-common
+    * [OPENENGSB-1858] - Not all tests run green if another karaf instance is running
+    * [OPENENGSB-1899] - Domain archetype contains reference to openengsb-core-events
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2127] - modifying rulebase disrupts running flows
+    * [OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2187] - ui-admin bundle fails to start when ui-common is redeployed
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2791] - Prepush JPATestIT fails under Windows
+    * [OPENENGSB-2838] - WorkflowTest testLoad_shouldLoadAllWorkflowsFromFolder fails under Windows 7 x64
+    * [OPENENGSB-2974] - Internal domain/connector documentation is not deployed correctly
+
+
 openengsb-2.4.0 2012-01-08
 --------------------------------------------
 
@@ -37,9 +164,9 @@ further. Various bugs in runtime (jetty, archetypes, offline usagage) had been f
     * [OPENENGSB-2512] - Release openengsb-framework 2.4.0
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+   * [OPENENGSB-1956] - activemq web console fails
+   * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+   * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
 openengsb-2.3.0 2012-01-01
@@ -138,9 +265,9 @@ Karaf (2.2.5).
     * [OPENENGSB-2532] - Remove no longer required resources from manual
 
 ### Known Issues
- * [OPENENGSB-1956] - activemq web console fails
- * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
- * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+   * [OPENENGSB-1956] - activemq web console fails
+   * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+   * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
 openengsb-2.2.0 2011-11-17
@@ -289,7 +416,7 @@ Pax Wicket (0.7.5), OpenEngSB Root (24) and the PaxExam Karaf Testframework (0.3
     * [OPENENGSB-2208] - Move startup scripts into filtered-resources/bin
 
 
-openengsb-2.0.0 2011-09-21 
+openengsb-2.0.0 2011-09-21
 --------------------------------------------
 
 The first final release of the 2.x series of the OpenEngSB fixed 105 issues. One of the most important chnanges with the
