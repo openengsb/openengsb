@@ -17,14 +17,15 @@
 
 package org.openengsb.core.api;
 
-import java.util.HashMap;
 
 import java.util.List;
+import java.util.Map;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.xlink.XLinkTemplate;
-import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 
 /**
  * Manages connector instances.
@@ -96,7 +97,7 @@ public interface ConnectorManager {
     
     /**
      * Registers the given Connector for XLinking. 
-     * The Connector must provide the models it accepts for XLink, represented as a HashMap with the modelClass 
+     * The Connector must provide the models it accepts for XLink, represented as a Map with the modelClass 
      * String as key and for each key a list of views which are available for the model. 
      * A Toolname must be provided to display a human readable Name of the Tool in the XLink http-servlet.
      * The parameter named hostId must containing the Host-IP. This Id is used to identify the Host when 
@@ -115,7 +116,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(ConnectorId id, String hostId, 
             String toolName, 
-            HashMap<String, List<XLinkToolView>> modelsToViews);
+            Map<String, List<XLinkToolView>> modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.
@@ -123,4 +124,10 @@ public interface ConnectorManager {
     void disconnectFromXLink(ConnectorId id);
 
     // @extract-end
+    
+    /**
+     * Returns a list of ToolRegistrations to a given hostId. 
+     * If the hostId is unknown, returns an emty list.
+     */
+    List<XLinkToolRegistration> getXLinkRegistration(String hostId);
 }

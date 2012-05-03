@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.api.xlink.model;
 
 /**
  * Class used by XLink to identify a certain OpenEngSBModel.
