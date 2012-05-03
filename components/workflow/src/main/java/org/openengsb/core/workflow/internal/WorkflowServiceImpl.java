@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
@@ -60,6 +61,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowListener;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
@@ -74,6 +76,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Sets;
 
 public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor {
 
@@ -97,6 +101,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private Lock workflowLock = new ReentrantLock();
 
     private DefaultOsgiUtilsService utilsService;
+
+    private Set<WorkflowListener> listeners = Sets.newHashSet();
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
@@ -373,6 +379,24 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 long nodeId = event.getNodeInstance().getNodeId();
                 String nodeName = event.getNodeInstance().getNodeName();
                 LOGGER.info("Now triggering node \"{}\" (\"{}\").", nodeName, nodeId);
+                synchronized (listeners) {
+                    for (WorkflowListener l : listeners) {
+                        ProcessInstance processInstance = event.getProcessInstance();
+                        l.onNodeStart(processInstance.getProcessName(), processInstance.getId(), nodeName);
+                    }
+                }
+            }
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                synchronized (listeners) {
+                    for (WorkflowListener l : listeners) {
+                        LOGGER.info("finished node {}", event.getNodeInstance().getNodeName());
+                        ProcessInstance processInstance = event.getProcessInstance();
+                        l.onNodeFinish(processInstance.getProcessName(), processInstance.getId(),
+                            event.getNodeInstance().getNodeName());
+                    }
+                }
             }
 
             @Override
@@ -426,6 +450,13 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         List<Task> tasksForProcessId = taskbox.getTasksForProcessId(Long.toString(processInstanceId));
         for (Task t : tasksForProcessId) {
             taskbox.finishTask(t);
+        }
+    }
+
+    @Override
+    public void registerWorkflowListener(WorkflowListener listener) {
+        synchronized (listeners) {
+            listeners.add(listener);
         }
     }
 

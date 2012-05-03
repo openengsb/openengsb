@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -51,6 +52,7 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.WorkflowListener;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -204,6 +206,19 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
         verify((DummyDeploy) domains.get("deploy"), times(1)).deployProject();
+    }
+
+    @Test
+    public void testFlowListener_shouldTrigger() throws Exception {
+        WorkflowListener listener = mock(WorkflowListener.class);
+        service.registerWorkflowListener(listener);
+        long id = service.startFlow("ci");
+        service.processEvent(new BuildSuccess());
+        Thread.sleep(300);
+        verify(listener).onNodeStart(eq("ci"), eq(id), eq("Start Tests"));
+        service.processEvent(new TestSuccess());
+        verify(listener).onNodeStart(eq("ci"), eq(id), eq("deployProject"));
+        service.waitForFlowToFinish(id);
     }
 
     @Test
