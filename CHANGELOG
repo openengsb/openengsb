@@ -1,4 +1,4 @@
-openengsb-2.5.0 2012-05-03
+openengsb-framework-2.5.0 2012-05-03
 --------------------------------------------
 
 The fifth feature release of the openengsb framework contains, besides 32 bug fixes from the 2.4.x line, 6 new
@@ -125,7 +125,7 @@ Springframework (3.0.7).
     * [OPENENGSB-2974] - Internal domain/connector documentation is not deployed correctly
 
 
-openengsb-2.4.0 2012-01-08
+openengsb-framework-2.4.0 2012-01-08
 --------------------------------------------
 
 This release was manly required for the addition of the easy WSDL build configuration for domains. In addition a feature
@@ -169,7 +169,7 @@ further. Various bugs in runtime (jetty, archetypes, offline usagage) had been f
    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
-openengsb-2.3.0 2012-01-01
+openengsb-framework-2.3.0 2012-01-01
 --------------------------------------------
 
 The third feature release of the OpenEngSB framework contains various bugfixes already included in the minor releases
@@ -270,7 +270,7 @@ Karaf (2.2.5).
    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
-openengsb-2.2.0 2011-11-17
+openengsb-framework-2.2.0 2011-11-17
 --------------------------------------------
 
 All in all the second minor release of the 2.x series contains 34 closed issues with 13 bugfixes and various 
@@ -329,7 +329,7 @@ DefaultSecureMethodCallFilterFactory. Please update them to be compatible to the
     * [OPENENGSB-2263] - create example for remote connector
 
 
-openengsb-2.1.0 2011-10-21 
+openengsb-framework-2.1.0 2011-10-21 
 --------------------------------------------
 
 The second release of the 2.x series of the OpenEngSB Framework fixed 61 issues. Among the various bugs we where able to
@@ -416,7 +416,7 @@ Pax Wicket (0.7.5), OpenEngSB Root (24) and the PaxExam Karaf Testframework (0.3
     * [OPENENGSB-2208] - Move startup scripts into filtered-resources/bin
 
 
-openengsb-2.0.0 2011-09-21
+openengsb-framework-2.0.0 2011-09-21
 --------------------------------------------
 
 The first final release of the 2.x series of the OpenEngSB fixed 105 issues. One of the most important chnanges with the
@@ -543,7 +543,7 @@ also includes changes to all artifact ids and pom references.
     * [OPENENGSB-1768] - enhance events with every stage
 
 
-openengsb-1.3.0.M3 2011-07-15 
+openengsb-framework-1.3.0.M3 2011-07-15 
 --------------------------------------------
 
 The third milestone release of the OpenEngSB fixes 86 issues. The most important enhancement is the introduction
@@ -665,7 +665,7 @@ The speed and stability of the OpenEngSB had been increased.
     * [OPENENGSB-1786] - Move workflow tests from itest project into workflow project
 
 
-openengsb-1.3.0.M2 2011-05-20 
+openengsb-framework-1.3.0.M2 2011-05-20 
 --------------------------------------------
 
 The second milestone release of the OpenEngSB fixes 43 issues. The most important enhancements are the possibility
@@ -743,7 +743,7 @@ been increased.
     * [OPENENGSB-1532] - Integrate OpenEngSB with http://www.ohloh.net/
 
 
-openengsb-1.3.0.M1 2011-05-03 
+openengsb-framework-1.3.0.M1 2011-05-03 
 --------------------------------------------
 
 First milestone release of the openengsb-1.3.0 series not including any real new features by now but rather 
