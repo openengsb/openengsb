@@ -16,7 +16,7 @@
  */
 
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.api.xlink.model;
 
 import java.util.Map;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.api.xlink.model;
 
 import java.util.List;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class XLinkTemplate {
      * List of all other currently registered tools from the same host. This information is used to support 
      * local switching between tools.
      */
-    private List<XLinkRegisteredTool> registeredTools;
+    private List<XLinkLocalTool> registeredTools;
     
     /**
      * Keyname of the contextId, must be set by the tool to determine the OpenEngSB context of the XLink.
@@ -92,7 +92,7 @@ public class XLinkTemplate {
             Map<String, XLinkModelInformation> viewToModels, 
             String modelClassKey, 
             String modelVersionKey, 
-            List<XLinkRegisteredTool> registeredTools, 
+            List<XLinkLocalTool> registeredTools, 
             String contextIdKeyName, 
             String connectorId, 
             String viewIdKeyName) {
@@ -136,11 +136,11 @@ public class XLinkTemplate {
      * List of all other currently registered tools from the same host. This information is used to support 
      * local switching between tools.
      */    
-    public List<XLinkRegisteredTool> getRegisteredTools() {
+    public List<XLinkLocalTool> getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<XLinkRegisteredTool> registeredTools) {
+    public void setRegisteredTools(List<XLinkLocalTool> registeredTools) {
         this.registeredTools = registeredTools;
     }
 

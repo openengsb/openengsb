@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.XLinkModelInformation;
-import org.openengsb.core.api.xlink.XLinkRegisteredTool;
-import org.openengsb.core.api.xlink.XLinkTemplate;
-import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
 
 /**
@@ -84,7 +84,7 @@ public final class XLinkUtils {
             String connectorId,
             HashMap<String, List<XLinkToolView>> modelsToViews, 
             int expirationDays, 
-            List<XLinkRegisteredTool> registeredTools) {
+            List<XLinkLocalTool> registeredTools) {
         baseUrl +=
             "?" + XLINK_EXPIRATIONDATE_KEY + "=" + getExpirationDate(expirationDays);
         String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + connectorId;

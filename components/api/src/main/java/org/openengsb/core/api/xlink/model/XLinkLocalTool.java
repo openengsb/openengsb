@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.api.xlink.model;
 
 
 import java.util.List;
@@ -27,7 +27,7 @@ import org.openengsb.core.api.model.ConnectorId;
  * as a HashMap of keyNames and short descriptions. The HostId of the tool is not 
  * needed, since this information is only sent to tools of the same host.
  */
-public class XLinkRegisteredTool {
+public class XLinkLocalTool {
     
     // @extract-start XLinkRegisteredTool
     /**
@@ -36,7 +36,7 @@ public class XLinkRegisteredTool {
     private ConnectorId id;
     
     /**
-     * Name of the tool, may be null
+     * Human readable name of the tool
      */
     private String toolName;
     
@@ -47,10 +47,10 @@ public class XLinkRegisteredTool {
     
     // @extract-end
 
-    public XLinkRegisteredTool() {
+    public XLinkLocalTool() {
     }
 
-    public XLinkRegisteredTool(ConnectorId id, String toolName, List<XLinkToolView> availableViews) {
+    public XLinkLocalTool(ConnectorId id, String toolName, List<XLinkToolView> availableViews) {
         this.id = id;
         this.toolName = toolName;
         this.availableViews = availableViews;
