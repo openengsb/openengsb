@@ -32,7 +32,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.openengsb.core.api.model.ConnectorDefinition;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -46,17 +45,22 @@ public class ConnectorFile {
     private static final String ATTRIBUTE = "attribute";
     private static final String LIST_DELIMITER = ",";
 
-    private ConnectorDefinition connectorId;
+    private String name;
+    private String domainType;
+    private String connectorType;
     private ImmutableMap<String, String> attributes;
     private ImmutableMap<String, Object> properties;
 
     public static class ChangeSet {
+        private String domainType;
+        private String connectorType;
         private MapDifference<String, String> changedAttributes;
         private MapDifference<String, Object> changedProperties;
 
-        public ChangeSet(MapDifference<String, String> changedAttributes,
+        public ChangeSet(String domainType, String connectorType, MapDifference<String, String> changedAttributes,
                 MapDifference<String, Object> changedProperties) {
-            super();
+            this.domainType = domainType;
+            this.connectorType = connectorType;
             this.changedAttributes = changedAttributes;
             this.changedProperties = changedProperties;
         }
@@ -68,10 +72,19 @@ public class ConnectorFile {
         public MapDifference<String, Object> getChangedProperties() {
             return changedProperties;
         }
+
+        public String getDomainType() {
+            return domainType;
+        }
+
+        public String getConnectorType() {
+            return connectorType;
+        }
+
     }
 
     public ConnectorFile(File connectorFile) {
-        connectorId = ConnectorDefinition.fromFullId(FilenameUtils.removeExtension(connectorFile.getName()));
+        name = FilenameUtils.removeExtension(connectorFile.getName());
         update(connectorFile);
     }
 
@@ -113,11 +126,14 @@ public class ConnectorFile {
         MapDifference<String, Object> changedProperties =
             Maps.difference(properties, getPropertiesFromMap(newPropertyMap));
 
-        return new ChangeSet(changedAttributes, changedProperties);
+        return new ChangeSet(newPropertyMap.get("domainType"), newPropertyMap.get("connectorType"),
+            changedAttributes, changedProperties);
     }
 
     public void update(File file) {
         ImmutableMap<String, String> newPropertyMap = readProperties(file);
+        domainType = newPropertyMap.get("domainType");
+        connectorType = newPropertyMap.get("connectorType");
         attributes = getAttributesFromMap(newPropertyMap);
         properties = getPropertiesFromMap(newPropertyMap);
     }
@@ -161,6 +177,8 @@ public class ConnectorFile {
 
     public Properties toProperties() {
         Properties result = new Properties();
+        result.put("domainType", domainType);
+        result.put("connectorType", connectorType);
         for (Entry<String, String> entry : attributes.entrySet()) {
             result.put(ATTRIBUTE + "." + entry.getKey(), entry.getValue());
         }
@@ -184,8 +202,16 @@ public class ConnectorFile {
         return directory.isDirectory() && directory.getName().equals("etc");
     }
 
-    public ConnectorDefinition getConnectorId() {
-        return connectorId;
+    public String getName() {
+        return name;
+    }
+
+    public String getDomainType() {
+        return domainType;
+    }
+
+    public String getConnectorType() {
+        return connectorType;
     }
 
     public ImmutableMap<String, String> getAttributes() {

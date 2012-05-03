@@ -172,11 +172,10 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService =
-            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(id=example-remote)", 31000);
 
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+            "(id=example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
@@ -186,7 +185,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         remoteConnector.stop();
         Thread.sleep(5000);
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+            "(id=example-remote)"), nullValue());
     }
 
     @Test

@@ -29,9 +29,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
@@ -49,21 +47,19 @@ public abstract class ServiceEditor extends Panel {
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
-    protected Model<ConnectorDefinition> idModel;
-    private TextField<String> idfield;
+    protected Model<String> idModel;
     protected Map<String, Object> properties;
 
-    public ServiceEditor(String id, ConnectorDefinition serviceId, List<AttributeDefinition> attributes,
+    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
-        idModel = new Model<ConnectorDefinition>(serviceId);
+        idModel = new Model<String>(serviceId);
         createForm(attributes, attributeMap, properties);
-        idfield.setEnabled(false);
     }
 
-    public ServiceEditor(String id, ConnectorDefinition serviceId, List<AttributeDefinition> attributes,
+    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties) {
         this(id, serviceId, attributes, attributeMap, properties, new DefaultPassingFormValidator());
     }
@@ -73,7 +69,6 @@ public abstract class ServiceEditor extends Panel {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
-        idModel = new Model<ConnectorDefinition>(ConnectorDefinition.generate(domainType, connectorType));
         createForm(attributes, attributeMap, properties);
     }
 
@@ -89,9 +84,6 @@ public abstract class ServiceEditor extends Panel {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
-        idfield = new TextField<String>("serviceId", new PropertyModel<String>(idModel.getObject(), "instanceId"));
-        idfield.setRequired(true);
-        form.add(idfield);
 
         serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, attributeMap, properties, form);
         form.add(serviceEditorPanel);
@@ -125,7 +117,7 @@ public abstract class ServiceEditor extends Panel {
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.warn("Error occured during add property action.");
+                LOGGER.error("Error occured during add property action.");
             }
 
         });
