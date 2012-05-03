@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>2.5.0-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
     <relativePath>../../parents/domain</relativePath>
   </parent>
 
@@ -26,7 +26,7 @@
 
   <groupId>org.openengsb.domain</groupId>
   <artifactId>org.openengsb.domain.binarytransformation</artifactId>
-  <version>2.5.0-SNAPSHOT</version>
+  <version>2.6.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Binary Transformation Provider Factory</name>
 
