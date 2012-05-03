@@ -26,8 +26,9 @@ This project includes:
   ANTLR StringTemplate under BSD licence
   AOP alliance under Public Domain
   Apache Aries Blueprint Bundle under The Apache Software License, Version 2.0
+  Apache Aries JMX API under The Apache Software License, Version 2.0
   Apache Aries JMX Blueprint Bundle under The Apache Software License, Version 2.0
-  Apache Aries JMX Bundle under The Apache Software License, Version 2.0
+  Apache Aries JMX Core under The Apache Software License, Version 2.0
   Apache Aries JNDI API under The Apache Software License, Version 2.0
   Apache Aries JNDI Core under The Apache Software License, Version 2.0
   Apache Aries JNDI URL Handler under The Apache Software License, Version 2.0
@@ -98,12 +99,12 @@ This project includes:
   Apache MINA Core under Apache 2.0 License
   Apache Mina SSHD :: Core under Apache 2.0 License
   Apache Neethi under The Apache Software License, Version 2.0
-  Apache Santuario under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: asm under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: cglib under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: commons-dbcp under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: serp under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
+  Apache XML Security for Java under The Apache Software License, Version 2.0
   aQute Bundle Tool Library under All files contained in this JAR are licensed under the Apache
          2.0 license, unless noted differently in their source (see
          swing2swt).
@@ -167,7 +168,6 @@ This project includes:
   Mockito under The MIT License
   mvel under The Apache Software License, Version 2.0
   Neko HTML under The Apache Software License, Version 2.0
-  NeoDatis Object Database under GNU Lesser General Public License
   OpenEngSB :: Bundle Settings under Apache 2
   OpenEngSB :: Connector :: Example under Apache 2
   OpenEngSB :: Connector :: MemoryAuditing under Apache 2
@@ -290,15 +290,11 @@ This project includes:
   spring-web under Apache License, Version 2.0
   Stax2 API under The BSD License
   Streaming API for XML (STAX API 1.0) under The Apache Software License, Version 2.0
-  Velocity under Apache License, Version 2.0
   Web Services Metadata 2.0 under The Apache Software License, Version 2.0
   Wicket under The Apache Software License, Version 2.0
   Wicket Auth Roles under The Apache Software License, Version 2.0
-  Wicket Date/Time under The Apache Software License, Version 2.0
   Wicket Development Utilities under The Apache Software License, Version 2.0
   Wicket Extensions under The Apache Software License, Version 2.0
-  Wicket JMX under The Apache Software License, Version 2.0
-  Wicket Velocity under The Apache Software License, Version 2.0
   Woodstox under The Apache Software License, Version 2.0
   WSDL4J under CPL
   WSS4J under The Apache Software License, Version 2.0
