@@ -27,10 +27,10 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.openengsb.core.api.xlink.XLinkModelInformation;
-import org.openengsb.core.api.xlink.XLinkRegisteredTool;
-import org.openengsb.core.api.xlink.XLinkTemplate;
-import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 
 public class XLinkUtilsTest {
 
@@ -70,7 +70,7 @@ public class XLinkUtilsTest {
     /**Days until the XLink expires*/
     private int expiresInDays = 3;
     /**List with already registered tools*/
-    private List<XLinkRegisteredTool> registeredTools = null;
+    private List<XLinkLocalTool> registeredTools = null;
     // @extract-end
 
     // @extract-start XLinkUtilsTestPrepareTemplate

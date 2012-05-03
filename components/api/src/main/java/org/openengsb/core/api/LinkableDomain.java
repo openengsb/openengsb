@@ -20,7 +20,7 @@ package org.openengsb.core.api;
 import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.xlink.RegisteredToolsUpdateEvent;
+import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
 
 /**
  * Every Domain that wants to offer XLinking to itÂ´s Connectors, must implement this interface. Connectors can choose

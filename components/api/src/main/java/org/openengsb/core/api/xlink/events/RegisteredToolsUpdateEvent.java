@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.api.xlink.events;
 
 import java.util.List;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 
 /**
  * Event, indicating that the list of tools registered for XLinking, at the host,
@@ -31,17 +32,17 @@ public class RegisteredToolsUpdateEvent extends Event {
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */
-    List<XLinkRegisteredTool> registeredTools;
+    List<XLinkLocalTool> registeredTools;
 
     /**
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */    
-    public List<XLinkRegisteredTool> getRegisteredTools() {
+    public List<XLinkLocalTool> getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<XLinkRegisteredTool> registeredTools) {
+    public void setRegisteredTools(List<XLinkLocalTool> registeredTools) {
         this.registeredTools = registeredTools;
     }
     
