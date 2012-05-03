@@ -37,7 +37,10 @@ public class XLinkToolView {
     private String name;
     /**
      * Map with locale strings as key (such as "en" and "de") and an description of the
-     * view in the specified language.
+     * view in the specified language. Implementation must make sure that a default 
+     * value is returned if a locale is not contained. If the system encounters
+     * a null-value for a certain locale, the first entry of the map is taken 
+     * instead.
      */
     private Map<String,String> descriptions;
 

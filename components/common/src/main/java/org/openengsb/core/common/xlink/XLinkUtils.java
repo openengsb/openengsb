@@ -138,7 +138,7 @@ public final class XLinkUtils {
     public static String generateValidXLinkUrl(XLinkTemplate template, List<String> identifierValues, XLinkModelInformation modelInformation, String contextId) throws ClassNotFoundException {
         String completeUrl = template.getBaseUrl();
         completeUrl += "&" + template.getModelClassKey() + "="+modelInformation.getClassName();
-        completeUrl += "&" + template.getModelVersionKey() + "="+modelInformation.getClass();
+        completeUrl += "&" + template.getModelVersionKey() + "="+modelInformation.getVersion();
         completeUrl += "&" + template.getContextIdKeyName() + "="+contextId;        
         OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
