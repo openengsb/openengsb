@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.workflow;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -140,5 +141,12 @@ public interface WorkflowService extends OpenEngSBService {
      * Attaches a {@link WorkflowListener} to the engine that listens to every future workflow run.
      */
     void registerWorkflowListener(WorkflowListener listener);
+
+    /**
+     * Returns a list of nodes that were finished during the execution of the workflow with the given ID.
+     *
+     * @throws IllegalArgumentException if no process with the given id is currently running (maybe already finished)
+     */
+    List<String> getWorkflowProgress(long instanceId);
 
 }

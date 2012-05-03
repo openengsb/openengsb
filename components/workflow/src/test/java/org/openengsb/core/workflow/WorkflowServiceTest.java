@@ -209,6 +209,18 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
+    public void testCiWorkflow_shouldReturnProgress() throws Exception {
+        WorkflowListener listener = mock(WorkflowListener.class);
+        service.registerWorkflowListener(listener);
+        long id = service.startFlow("ci");
+        service.processEvent(new BuildSuccess());
+        assertThat(service.getWorkflowProgress(id), hasItem("Start Tests"));
+        service.processEvent(new TestSuccess());
+        assertThat(service.getWorkflowProgress(id), hasItem("deployProject"));
+        service.waitForFlowToFinish(id);
+    }
+
+    @Test
     public void testFlowListener_shouldTrigger() throws Exception {
         WorkflowListener listener = mock(WorkflowListener.class);
         service.registerWorkflowListener(listener);

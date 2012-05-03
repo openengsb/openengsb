@@ -28,9 +28,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -77,6 +79,7 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor {
@@ -103,6 +106,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private DefaultOsgiUtilsService utilsService;
 
     private Set<WorkflowListener> listeners = Sets.newHashSet();
+
+    private ConcurrentMap<Long, List<String>> workflowProgress = Maps.newConcurrentMap();
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
@@ -368,6 +373,14 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         });
         session.addEventListener(new DefaultProcessEventListener() {
             @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                long id = event.getProcessInstance().getId();
+                synchronized (workflowProgress) {
+                    workflowProgress.put(id, new LinkedList<String>());
+                }
+            }
+
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 String processId2 = event.getProcessInstance().getProcessId();
                 long id = event.getProcessInstance().getId();
@@ -379,6 +392,11 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 long nodeId = event.getNodeInstance().getNodeId();
                 String nodeName = event.getNodeInstance().getNodeName();
                 LOGGER.info("Now triggering node \"{}\" (\"{}\").", nodeName, nodeId);
+                long id = event.getProcessInstance().getId();
+                List<String> list = workflowProgress.get(id);
+                synchronized (list) {
+                    list.add(nodeName);
+                }
                 synchronized (listeners) {
                     for (WorkflowListener l : listeners) {
                         ProcessInstance processInstance = event.getProcessInstance();
@@ -458,6 +476,12 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         synchronized (listeners) {
             listeners.add(listener);
         }
+    }
+
+    @Override
+    public List<String> getWorkflowProgress(long instanceId) {
+        List<String> list = workflowProgress.get(instanceId);
+        return new LinkedList<String>(list);
     }
 
     public void setTaskbox(TaskboxService taskbox) {
