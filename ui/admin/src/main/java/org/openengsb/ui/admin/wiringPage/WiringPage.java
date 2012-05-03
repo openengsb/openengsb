@@ -59,7 +59,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -192,22 +191,20 @@ public class WiringPage extends BasePage {
                     target.add(feedbackPanel);
                     return;
                 }
-                ConnectorDefinition connectorId = null;
-                ConnectorDescription description = null;
+                ConnectorDescription description;
                 try {
-                    connectorId = ConnectorDefinition.fromFullId(instanceId);
-                    if (!typeOfGlobalAndServiceAreEqual(connectorId.getDomainId())) {
+                    description = serviceManager.getAttributeValues(instanceId);
+                    if (!typeOfGlobalAndServiceAreEqual(description.getDomainType())) {
                         target.add(feedbackPanel);
                         return;
                     }
-                    description = serviceManager.getAttributeValues(connectorId);
                 } catch (Exception e) {
                     presentAndLogError(new StringResourceModel("wiringInitError", this, null).getString(), e);
                     resetWiringForm(target);
                     return;
                 }
                 try {
-                    updateLocations(connectorId, description);
+                    updateLocations(instanceId, description);
                 } catch (Exception e) {
                     presentAndLogError(new StringResourceModel("wiringError", this, null).getString(), e);
                 } finally {
@@ -224,7 +221,7 @@ public class WiringPage extends BasePage {
         add(wiringForm);
     }
 
-    private void updateLocations(ConnectorDefinition connectorId, ConnectorDescription description) throws Exception {
+    private void updateLocations(String connectorId, ConnectorDescription description) throws Exception {
         boolean updated = false;
         ValueMap vmap = new ValueMap();
         vmap.put("globalName", globalName);

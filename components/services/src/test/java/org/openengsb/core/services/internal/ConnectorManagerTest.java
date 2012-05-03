@@ -44,7 +44,6 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
@@ -101,10 +100,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.create(connectorId, connectorDescription);
+        serviceManager.create(connectorDescription);
 
         serviceUtils.getService("(foo=bar)", 100L);
     }
@@ -115,14 +113,13 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.create(connectorId, connectorDescription);
+        String uuid = serviceManager.create(connectorDescription);
 
         connectorDescription.getProperties().put("foo", "42");
         connectorDescription.getAttributes().put("answer", "43");
-        serviceManager.update(connectorId, connectorDescription);
+        serviceManager.update(uuid, connectorDescription);
     }
 
     @SuppressWarnings("unchecked")
@@ -135,11 +132,10 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         try {
-            serviceManager.create(connectorId, connectorDescription);
+            serviceManager.create(connectorDescription);
             fail("Exception expected");
         } catch (ConnectorValidationFailedException e) {
             assertThat(e.getErrorMessages(), is(errorMessages));
@@ -163,10 +159,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.forceCreate(connectorId, connectorDescription);
+        serviceManager.forceCreate(connectorDescription);
 
         try {
             serviceUtils.getService("(foo=bar)", 100L);
@@ -185,10 +180,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.create(connectorId, connectorDescription);
+        String connectorId = serviceManager.create(connectorDescription);
         serviceUtils.getService("(foo=bar)", 1L);
 
         connectorDescription.getProperties().put("foo", "42");
@@ -223,10 +217,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.create(connectorId, connectorDescription);
+        String connectorId = serviceManager.create(connectorDescription);
         serviceUtils.getService("(foo=bar)", 1L);
 
         connectorDescription.getProperties().put("foo", "42");
@@ -251,10 +244,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
-        serviceManager.create(connectorId, connectorDescription);
+        String connectorId = serviceManager.create(connectorDescription);
 
         serviceManager.delete(connectorId);
 

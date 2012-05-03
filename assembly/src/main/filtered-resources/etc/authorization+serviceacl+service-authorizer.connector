@@ -15,4 +15,6 @@
 # limitations under the License.
 #
 
+domainType=authorization
+connectorType=serviceacl
 property.location.root=authorization/service

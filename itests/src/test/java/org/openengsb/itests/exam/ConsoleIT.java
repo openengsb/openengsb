@@ -31,7 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.domain.auditing.AuditingDomain;
@@ -129,14 +128,13 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
-        ConnectorDescription connectorDescription = new ConnectorDescription();
+        ConnectorDescription connectorDescription = new ConnectorDescription("authentication", "composite-connector");
         Map<String, String> attributes =
             Maps.newHashMap(
                 ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
         connectorDescription.setAttributes(attributes);
 
-        connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"),
-            connectorDescription);
+        connectorManager.create(connectorDescription);
 
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
@@ -170,8 +168,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         waitForDefaultConnectors();
         System.out.println("starting  ");
-        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing " +
-            "id:testID attr:something");
+        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing "
+                + "id:testID attr:something");
         cs.execute(executeCommand);
         cs.close();
 
