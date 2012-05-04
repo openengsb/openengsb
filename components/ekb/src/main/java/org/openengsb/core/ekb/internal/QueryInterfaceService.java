@@ -57,7 +57,7 @@ public class QueryInterfaceService implements QueryInterface {
             String oid, Long from, Long to) {
         LOGGER.debug("Invoked getModelHistoryForTimeRange with the model %s and the oid %s for the "
                 + "time period of %s to %s", new Object[]{ model.getName(), oid, new Date(from).toString(),
-                                                      new Date(to).toString() });
+            new Date(to).toString() });
         return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid, from, to));
     }
 
@@ -95,6 +95,12 @@ public class QueryInterfaceService implements QueryInterface {
      * Generates a map out of a query string. A query string has the format "propA:valueA and propB:valueB and ..."
      */
     private Map<String, Object> generateMapOutOfString(String query) {
+        String regex = "\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*";
+        if (!query.matches(regex)) {
+            String errorMessage = "Query string must have the form 'a:b [and b:c and ...]'";
+            LOGGER.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         String[] elements = query.split(" and ");
         for (String element : elements) {
