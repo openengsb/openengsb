@@ -47,9 +47,10 @@ public class WorkflowStarter implements Callable<Long> {
     @Override
     public Long call() {
         ProcessBag processBag = getProcessBag();
-        ProcessInstance processInstance = session.startProcess(processId, params);
+        ProcessInstance processInstance = session.createProcessInstance(processId, params);
         session.insert(processInstance);
         processBag.setProcessId(String.valueOf(processInstance.getId()));
+        session.startProcessInstance(processInstance.getId());
         processInstance.signalEvent("FlowStartedEvent", null);
         return processInstance.getId();
     }
