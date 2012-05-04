@@ -22,19 +22,11 @@
         <action type="expression" dialect="java" >processBag.addOrReplaceProperty("taskType", "demo");</action>
       </onEntry>
     </subProcess>
-    <eventNode id="5" name="FlowStarted" x="284" y="133" width="48" height="48" >
-      <eventFilters>
-        <eventFilter type="eventType" eventType="FlowStartedEvent" />
-      </eventFilters>
-    </eventNode>
-    <join id="6" name="Gateway" x="151" y="133" width="49" height="49" type="1" />
   </nodes>
 
   <connections>
     <connection from="3" to="2" />
-    <connection from="6" to="3" />
-    <connection from="1" to="6" />
-    <connection from="5" to="6" />
+    <connection from="1" to="3" />
   </connections>
 
 </process>
