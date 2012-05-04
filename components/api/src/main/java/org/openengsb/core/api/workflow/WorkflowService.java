@@ -73,7 +73,10 @@ public interface WorkflowService extends OpenEngSBService {
      *
      * @throws WorkflowException WorkflowException when there is a problem with obtaining the KnowledgeSession or the
      *         flow could not be started
+     *
+     * @deprecated does the same as {@link WorkflowService#startFlow(String)}
      */
+    @Deprecated
     Future<Long> startFlowInBackground(String processId) throws WorkflowException;
 
     /**
@@ -85,7 +88,10 @@ public interface WorkflowService extends OpenEngSBService {
      *
      * @throws WorkflowException WorkflowException when there is a problem with obtaining the KnowledgeSession or the
      *         flow could not be started
+     *
+     * @deprecated does the same as {@link WorkflowService#startFlow(String, Map))}
      */
+    @Deprecated
     Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap) throws WorkflowException;
 
     /**
@@ -124,13 +130,14 @@ public interface WorkflowService extends OpenEngSBService {
 
     /**
      * cancels a currently ongoing workflow. Use this with caution. There is now error-handling or rollback of any kind.
+     *
      * @throws WorkflowException
      */
     void cancelFlow(Long processInstanceId) throws WorkflowException;
 
     /**
      * returns the processbag used by the given instance.
-     * 
+     *
      * @throws IllegalArgumentException if no instance with the given ID is running
      */
     ProcessBag getProcessBagForInstance(long instanceId);
