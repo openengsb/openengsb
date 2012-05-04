@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -204,6 +205,14 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
         verify((DummyDeploy) domains.get("deploy"), times(1)).deployProject();
+    }
+
+    @Test
+    public void testStartInBackgroundWithoutStartedEvent() throws Exception {
+        Future<Long> processIdFuture = service.startFlowInBackground("backgroundFlow");
+        Long id = processIdFuture.get(5, TimeUnit.SECONDS);
+        service.waitForFlowToFinish(id, 5000);
+        verify(logService).doSomething(eq("" + id));
     }
 
     @Test
