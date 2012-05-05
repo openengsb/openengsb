@@ -59,7 +59,7 @@ public class QueryInterfaceServiceTest {
         edbObject.put("subs0", "suboid2");
         edbObject.put("subs1", "suboid3");
         edbObject.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
-        
+
         EDBObject edbObjectImpl = new EDBObject("testoidimpl");
         edbObjectImpl.put("id", "testid");
         edbObjectImpl.put("date", new Date());
@@ -72,7 +72,7 @@ public class QueryInterfaceServiceTest {
         edbObjectImpl.put("subs0", "suboid2");
         edbObjectImpl.put("subs1", "suboid3");
         edbObjectImpl.put(EDBConstants.MODEL_TYPE, TestModel2.class.toString());
-        
+
         EDBObject mapTest = new EDBObject("mapoid");
         mapTest.put("id", "testid");
         mapTest.put("map0.key", "keyA");
@@ -106,10 +106,10 @@ public class QueryInterfaceServiceTest {
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
 
         service.setEdbService(edbService);
-        
+
         EDBConverter edbConverter = new EDBConverter();
         edbConverter.setEdbService(edbService);
-        
+
         service.setEdbConverter(edbConverter);
     }
 
@@ -171,7 +171,7 @@ public class QueryInterfaceServiceTest {
             if (entry.getKey().equals("subs")) {
                 @SuppressWarnings("unchecked")
                 List<OpenEngSBModelWrapper> subModels = (List<OpenEngSBModelWrapper>) entry.getValue();
-                
+
                 subModel1 = ModelUtils.generateModelOutOfWrapper(subModels.get(0), SubModel.class);
                 subModel2 = ModelUtils.generateModelOutOfWrapper(subModels.get(1), SubModel.class);
             }
@@ -355,19 +355,39 @@ public class QueryInterfaceServiceTest {
         assertThat(testExists, is(true));
         assertThat(testValue, nullValue());
     }
-    
+
     @Test
     public void testLoadEDBObjectWithWrongModel_shouldReturnNull() {
         // testoidimpl returns a TestModel2 object
         TestModel model = service.getModel(TestModel.class, "testoidimpl");
         assertThat(model, nullValue());
     }
-    
+
     @Test
     public void testMapSupportOfProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "mapoid");
         assertThat(model.getMap().get("keyA").toString(), is("valueA"));
         assertThat(model.getMap().get("keyB").toString(), is("valueB"));
         assertThat(model.getMap().get("keyC").toString(), is("valueC"));
+    }
+
+    @Test
+    public void testRegexCheckOfQueryForModels_shouldWork() {
+        assertThat(queryForModelsWithGivenQuery("a:b"), is(true));
+        assertThat(queryForModelsWithGivenQuery("a:b and b:c"), is(true));
+        assertThat(queryForModelsWithGivenQuery("a:b and b:c and c:d"), is(true));
+        assertThat(queryForModelsWithGivenQuery("a:b and "), is(false));
+        assertThat(queryForModelsWithGivenQuery(""), is(false));
+        assertThat(queryForModelsWithGivenQuery("a:b or b:c"), is(false));
+        assertThat(queryForModelsWithGivenQuery("a:b and b:c or c:d"), is(false));
+    }
+
+    private boolean queryForModelsWithGivenQuery(String query) {
+        try {
+            service.queryForModels(TestModel.class, query, new Date().getTime() + "");
+            return true;
+        } catch (IllegalArgumentException e) {
+        }
+        return false;
     }
 }
