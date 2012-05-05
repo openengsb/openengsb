@@ -204,13 +204,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
     }
 
-    @Override
-    public Future<Long> startFlowInBackground(String processId) throws WorkflowException {
-        return startFlowInBackground(processId, new HashMap<String, Object>());
-    }
-
-    @Override
-    public Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
+    private Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
         throws WorkflowException {
         WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
         return executor.submit(workflowStarter);
