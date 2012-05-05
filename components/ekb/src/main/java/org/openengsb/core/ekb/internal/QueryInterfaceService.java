@@ -98,7 +98,6 @@ public class QueryInterfaceService implements QueryInterface {
         String regex = "\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*";
         if (!query.matches(regex)) {
             String errorMessage = "Query string must have the form 'a:b [and b:c and ...]'";
-            LOGGER.error(errorMessage);
             throw new IllegalArgumentException(errorMessage);
         }
         Map<String, Object> map = new HashMap<String, Object>();
