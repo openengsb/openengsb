@@ -376,8 +376,8 @@ public class QueryInterfaceServiceTest {
         assertThat(queryForModelsWithGivenQuery("a:b"), is(true));
         assertThat(queryForModelsWithGivenQuery("a:b and b:c"), is(true));
         assertThat(queryForModelsWithGivenQuery("a:b and b:c and c:d"), is(true));
+        assertThat(queryForModelsWithGivenQuery(""), is(true));
         assertThat(queryForModelsWithGivenQuery("a:b and "), is(false));
-        assertThat(queryForModelsWithGivenQuery(""), is(false));
         assertThat(queryForModelsWithGivenQuery("a:b or b:c"), is(false));
         assertThat(queryForModelsWithGivenQuery("a:b and b:c or c:d"), is(false));
     }
