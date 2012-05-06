@@ -91,6 +91,21 @@ public class QueryInterfaceService implements QueryInterface {
         return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
     }
 
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
+        LOGGER.debug("Invoked queryForActiveModels with the model %s and a query map", model.getName());
+        Long now = System.currentTimeMillis();
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
+    }
+
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model) {
+        LOGGER.debug("Invoked queryForActiveModels with the model %s", model.getName());
+        Long now = System.currentTimeMillis();
+        Map<String, Object> map = new HashMap<String, Object>();
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
+    }
+
     /**
      * Generates a map out of a query string. A query string has the format "propA:valueA and propB:valueB and ..."
      */
