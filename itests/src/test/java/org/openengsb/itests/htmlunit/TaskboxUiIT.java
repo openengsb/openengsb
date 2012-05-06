@@ -24,10 +24,12 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
@@ -75,6 +77,11 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
         probe.setHeader(Constants.EXPORT_PACKAGE, "*,org.openengsb.itests.htmlunit.testpanel");
         return probe;
+    }
+
+    @BeforeClass
+    public static void initialize() {
+        Locale.setDefault(Locale.ENGLISH);
     }
 
     @Before

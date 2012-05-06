@@ -36,7 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.VirtualConnectorProvider;
@@ -68,7 +67,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         MethodResult result = MethodResult.newVoidResult();
         when(callrouter.sendMethodCallWithResult(anyString(), anyString(), any(MethodCall.class))).thenReturn(result);
         registerService(callrouter, new Hashtable<String, Object>(), OutgoingPortUtilService.class);
-        ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
+        ConnectorRegistrationManager serviceManagerImpl = new ConnectorRegistrationManager();
         serviceManagerImpl.setBundleContext(bundleContext);
         registrationManager = serviceManagerImpl;
         ProxyConnectorProvider proxyConnectorProvider = new ProxyConnectorProvider();

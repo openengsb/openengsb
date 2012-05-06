@@ -2,7 +2,7 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="Test FlowStartedEvent" id="flowStartedEvent" package-name="org.openengsb" routerLayout="2" >
+         type="RuleFlow" name="Test flow in background" id="backgroundFlow" package-name="org.openengsb" routerLayout="2" >
 
   <header>
     <variables>
@@ -14,9 +14,11 @@
 
   <nodes>
     <start id="1" name="Start" x="16" y="16" width="49" height="49" />
-    <end id="2" name="End" x="75" y="250" width="49" height="49" />
-    <actionNode id="26" name="Action" x="59" y="178" width="80" height="40" >
-        <action type="expression" dialect="mvel" >kcontext.getVariable("processBag").getProcessId();</action>
+    <end id="2" name="End" x="209" y="16" width="49" height="49" />
+    <actionNode id="26" name="Action" x="97" y="16" width="80" height="49" >
+        <action type="expression" dialect="java" >ProcessBag bag = (ProcessBag) kcontext.getVariable("processBag");
+String mypid = bag.getProcessId();
+example.doSomething("" + mypid);</action>
     </actionNode>
   </nodes>
 

@@ -44,7 +44,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
     public void testRegisterConnectorWithSameNameAfterRemoved_shouldNotFail() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
         defaultOsgiUtilsService.setBundleContext(bundleContext);
-        ConnectorRegistrationManagerImpl connectorRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
+        ConnectorRegistrationManager connectorRegistrationManagerImpl = new ConnectorRegistrationManager();
         connectorRegistrationManagerImpl.setBundleContext(bundleContext);
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Connector connectorMock = mock(Connector.class);
@@ -75,7 +75,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
     public void testNoDomainProviderAvailableForType_shouldThrowIllegalArgumentException() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
         defaultOsgiUtilsService.setBundleContext(bundleContext);
-        ConnectorRegistrationManagerImpl connectorRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
+        ConnectorRegistrationManager connectorRegistrationManagerImpl = new ConnectorRegistrationManager();
         connectorRegistrationManagerImpl.setBundleContext(bundleContext);
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();

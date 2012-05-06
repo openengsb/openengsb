@@ -95,16 +95,17 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             }
         }
 
-        private Object getService() throws InterruptedException {
-            if (timeout < 0) {
-                tracker.open();
-                try {
+        private synchronized Object getService() throws InterruptedException {
+            tracker.open();
+            try {
+                if (timeout < 0) {
                     return tracker.getService();
-                } finally {
-                    tracker.close();
+                } else {
+                    return tracker.waitForService(timeout);
                 }
+            } finally {
+                tracker.close();
             }
-            return waitForServiceFromTracker(tracker, timeout);
         }
     }
 
@@ -152,7 +153,6 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             throw new OsgiServiceNotAvailableException(String.format(
                 "no service matching filter \"%s\" available at the time", filter.toString()));
         }
-        t.close();
         return result;
     }
 
@@ -329,15 +329,17 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      * 
      * @throws OsgiServiceNotAvailableException if the service could not be found within the given timeout
      */
-    private Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)
+    private static Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)
         throws OsgiServiceNotAvailableException {
-        tracker.open();
-        try {
-            return tracker.waitForService(timeout);
-        } catch (InterruptedException e) {
-            throw new OsgiServiceNotAvailableException(e);
-        } finally {
-            tracker.close();
+        synchronized (tracker) {
+            tracker.open();
+            try {
+                return tracker.waitForService(timeout);
+            } catch (InterruptedException e) {
+                throw new OsgiServiceNotAvailableException(e);
+            } finally {
+                tracker.close();
+            }
         }
     }
 

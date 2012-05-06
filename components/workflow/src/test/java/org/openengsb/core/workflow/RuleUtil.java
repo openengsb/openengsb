@@ -58,6 +58,7 @@ public final class RuleUtil {
         addFlow(manager, "blockingFlowtest");
         addFlow(manager, "subFlowtest");
         addFlow(manager, "simpleFlow");
+        addFlow(manager, "backgroundFlow");
     }
 
     private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {
