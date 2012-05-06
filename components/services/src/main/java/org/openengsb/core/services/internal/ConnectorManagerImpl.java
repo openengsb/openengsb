@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import java.util.ArrayList;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -49,12 +50,14 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
+    private List<XLinkToolRegistration> xlinkRegistrations;
 
     public void init() {
         new Thread() {
             @Override
             public void run() {
                 try {
+                    xlinkRegistrations = new ArrayList<XLinkToolRegistration>();
                     Collection<ConnectorConfiguration> configs;
                     try {
                         Map<String, String> emptyMap = Collections.emptyMap();
@@ -245,10 +248,21 @@ public class ConnectorManagerImpl implements ConnectorManager {
     public void disconnectFromXLink(ConnectorId id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    private boolean isRegistered(ConnectorId id, String hostId){
+        for(XLinkToolRegistration registration : xlinkRegistrations){
+            if(registration.getHostId().equals(hostId) && registration.getConnectorId().equals(id))return true;
+        }        
+        return false;
+    }
 
     @Override
     public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<XLinkToolRegistration> registrationsOfHostId = new ArrayList<XLinkToolRegistration>();
+        for(XLinkToolRegistration registration : xlinkRegistrations){
+            if(registration.getHostId().equals(hostId))registrationsOfHostId.add(registration);
+        }
+        return registrationsOfHostId;
     }
 
 }
