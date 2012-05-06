@@ -217,12 +217,10 @@ input[type=submit] {
 	display: hidden;
 	}
 
-.logoSmallSize {
-	height: 34px;
-}
-.logoMediumSize {
-	width: 154px;
-	height: 100px;
+    
+#headerLogo {
+    height: 34px;
+    padding: 10px 10px 10px 10px;
 }
 
 .menuContainer {
@@ -286,11 +284,6 @@ input[type=submit] {
 	background-color: #626262;
     border-bottom: 1px solid #D1D1D1;
 	height: 55px;
-	}
-	
-#topHeader{
-	position:relative;
-	min-width: 550px;
 	}
 
 #topMenuContainer{
