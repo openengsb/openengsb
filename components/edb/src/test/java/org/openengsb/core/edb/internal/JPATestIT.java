@@ -524,6 +524,50 @@ public class JPATestIT {
     }
 
     @Test
+    public void testQueryWithTimestampAndEmptyMap_shouldWork() {
+        HashMap<String, Object> data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Cow", "Milk");
+        data1.put("Dog", "Food");
+        EDBObject v1 = new EDBObject("/test/querynew3", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew3", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew4", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
+        EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
+        assertThat(result.size(), is(2));
+        assertThat(result1.containsKey("K"), is(false));
+        assertThat(result2.containsKey("Dog"), is(true));
+    }
+
+    private EDBObject getEDBObjectOutOfList(List<EDBObject> objects, String oid) {
+        for (EDBObject o : objects) {
+            if (o.getOID().equals(oid)) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    @Test
     public void testQueryOfLastKnownVersionShouldWork() {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
         data1v1.put("KeyA", "Value A 1");
@@ -638,7 +682,23 @@ public class JPATestIT {
         db.commitEDBObjects(inserts, null, null);
         db.commitEDBObjects(inserts, null, null);
     }
-    
+
+    @Test(expected = EDBException.class)
+    public void testIfConflictDetectionIsWorking_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/insert/3");
+        object.put("bla", "blub");
+        List<EDBObject> inserts = new ArrayList<EDBObject>();
+        inserts.add(object);
+
+        db.commitEDBObjects(inserts, null, null);
+
+        object = db.getObject("/commit/test/insert/3");
+        object.put(EDBConstants.MODEL_VERSION, 0);
+        object.put("test", "test");
+
+        db.commitEDBObjects(null, Arrays.asList(object), null);
+    }
+
     @Test
     public void testCommitEDBObjectsUpdate_shouldWork() {
         EDBObject object = new EDBObject("/commit/test/update/1");
