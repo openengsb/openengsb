@@ -59,7 +59,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
     private ConnectorManager serviceManager;
-    private ConnectorRegistrationManagerImpl serviceRegistrationManagerImpl;
+    private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
 
@@ -68,7 +68,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerMockedDomainProvider();
         registerMockedFactory();
         registerConfigPersistence();
-        serviceRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
+        serviceRegistrationManagerImpl = new ConnectorRegistrationManager();
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         createServiceManager();

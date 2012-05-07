@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -39,7 +40,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -207,26 +207,10 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testStartInBackground() throws Exception {
-        Object lock = new Object();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("lock", lock);
-        Future<Long> processIdFuture = service.startFlowInBackground("blockingFlowtest", params);
-        Thread.sleep(200);
-        assertThat(processIdFuture.isDone(), is(false));
-        synchronized (lock) {
-            lock.notify();
-        }
-        processIdFuture.get(2, TimeUnit.SECONDS);
-        assertThat(processIdFuture.isDone(), is(true));
-    }
-
-    @Test
-    public void testStartInBackgroundWithoutParams() throws Exception {
-        Future<Long> processIdFuture = service.startFlowInBackground("flowtest");
-        Thread.sleep(200);
-        processIdFuture.get(2, TimeUnit.SECONDS);
-        assertThat(processIdFuture.isDone(), is(true));
+    public void testStartInBackgroundWithoutStartedEvent() throws Exception {
+        Long id = service.startFlow("backgroundFlow");
+        service.waitForFlowToFinish(id, 5000);
+        verify(logService).doSomething(eq("" + id));
     }
 
     @Test
@@ -373,8 +357,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     public void testWaitForFlow_shouldReturnTrue() throws Exception {
-        Future<Long> pid = service.startFlowInBackground("flowtest");
-        boolean finished = service.waitForFlowToFinish(pid.get(), 400);
+        Long pid = service.startFlow("flowtest");
+        boolean finished = service.waitForFlowToFinish(pid, 400);
         assertThat(finished, is(true));
     }
 
@@ -382,7 +366,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testWaitForFlowThatCannotFinish_shouldReturnFalse() throws Exception {
         Long pid = service.startFlow("floweventtest");
         service.processEvent(new Event("FirstEvent"));
-        service.startFlowInBackground("flowtest");
+        service.startFlow("flowtest");
         boolean finished = service.waitForFlowToFinish(pid, 400);
         assertThat(finished, is(false));
     }

@@ -28,7 +28,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
@@ -84,7 +83,6 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     private void setupTestClientPage() {
         context.putBean(bundleContext);
-        context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
@@ -104,7 +102,6 @@ public class HeaderTemplateTest extends AbstractUITest {
         context.putBean("eventService", eventService);
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         context.putBean("auditing", mock(AuditingDomain.class));
-        context.putBean(mock(ProxyFactory.class));
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

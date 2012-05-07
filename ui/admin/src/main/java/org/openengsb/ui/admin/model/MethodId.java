@@ -20,27 +20,14 @@ package org.openengsb.ui.admin.model;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.apache.commons.lang.ClassUtils;
 
 @SuppressWarnings("serial")
 public class MethodId implements Serializable {
     private String name;
     private List<String> argumentTypes = new ArrayList<String>();
-
-    private static final Map<String, Class<?>> PRIMITIVES = new HashMap<String, Class<?>>();
-    {
-        PRIMITIVES.put("int", int.class);
-        PRIMITIVES.put("long", long.class);
-        PRIMITIVES.put("boolean", boolean.class);
-        PRIMITIVES.put("byte", byte.class);
-        PRIMITIVES.put("short", short.class);
-        PRIMITIVES.put("char", char.class);
-        PRIMITIVES.put("float", float.class);
-        PRIMITIVES.put("double", double.class);
-        PRIMITIVES.put("void", void.class);
-    }
 
     public MethodId(Method method) {
         setName(method.getName());
@@ -50,7 +37,7 @@ public class MethodId implements Serializable {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -58,7 +45,7 @@ public class MethodId implements Serializable {
     }
 
     public List<String> getArgumentTypes() {
-        return this.argumentTypes;
+        return argumentTypes;
     }
 
     public void setArgumentTypes(List<String> argumentTypes) {
@@ -70,10 +57,7 @@ public class MethodId implements Serializable {
         int i = 0;
         for (String s : argumentTypes) {
             try {
-                result[i] = PRIMITIVES.get(s);
-                if (result[i] == null) {
-                    result[i] = Class.forName(s);
-                }
+                result[i] = ClassUtils.getClass(getClass().getClassLoader(), s);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
