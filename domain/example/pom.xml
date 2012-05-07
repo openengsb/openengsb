@@ -128,18 +128,13 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
         <configuration>
-          <archive>
-            <index>true</index>
-            <manifest>
-              <addClasspath>true</addClasspath>
-            </manifest>
-            <manifestEntries>
-              <Provided-Classes-models>org.openengsb.domain.example.model.*</Provided-Classes-models>
-            </manifestEntries>
-          </archive>
+          <instructions>
+            <Provided-Classes-models>org.openengsb.domain.example.model.*</Provided-Classes-models>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
