@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
@@ -38,6 +39,9 @@ public class QueryInterfaceService implements QueryInterface {
 
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
+
+    private static final Pattern MAP_OUT_OF_STRING_QUERY_PATTERN = Pattern
+        .compile("(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?");
 
     @Override
     public <T extends OpenEngSBModel> T getModel(Class<T> model, String oid) {
@@ -114,8 +118,7 @@ public class QueryInterfaceService implements QueryInterface {
         if (query.isEmpty()) {
             return map;
         }
-        String regex = "(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?";
-        if (!query.matches(regex)) {
+        if (!MAP_OUT_OF_STRING_QUERY_PATTERN.matcher(query).matches()) {
             String errorMessage = "Query string must be empty or have the form 'a:b [and b:c and ...]'";
             throw new IllegalArgumentException(errorMessage);
         }
