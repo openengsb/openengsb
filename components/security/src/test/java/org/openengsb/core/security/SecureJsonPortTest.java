@@ -24,9 +24,9 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.util.CipherUtils;
@@ -43,15 +43,15 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    protected SecureResponse decryptAndDecode(String message, SecretKey sessionKey) throws Exception {
+    protected MethodResultMessage decryptAndDecode(String message, SecretKey sessionKey) throws Exception {
         LOGGER.info("decrypting: " + new String(message));
         byte[] decrypt = CipherUtils.decrypt(Base64.decodeBase64(message), sessionKey);
         LOGGER.info("decoding: " + new String(decrypt));
-        return mapper.readValue(decrypt, SecureResponse.class);
+        return mapper.readValue(decrypt, MethodResultMessage.class);
     }
 
     @Override
-    protected String encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
+    protected String encodeAndEncrypt(MethodCallRequest secureRequest, SecretKey sessionKey) throws Exception {
         byte[] content = mapper.writeValueAsBytes(secureRequest);
         LOGGER.info("encrypting: " + new String(content));
         byte[] encryptedContent = CipherUtils.encrypt(content, sessionKey);

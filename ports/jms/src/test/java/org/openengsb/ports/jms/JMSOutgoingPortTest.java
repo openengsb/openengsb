@@ -41,11 +41,9 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
-import org.openengsb.core.security.filter.OutgoingWrapperFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -54,17 +52,14 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String METHOD_RESULT_MESSAGE = ""
             + "{"
-            + "   \"message\":{"
-            + "      \"result\":{"
-            + "         \"type\":\"Object\","
-            + "         \"className\":\"java.lang.String\","
-            + "         \"arg\":\"42\","
-            + "         \"metaData\":{"
-            + ""
-            + "         }"
-            + "      },"
-            + "      \"callId\":\"12345\""
-            + "   },"
+            + "   \"result\":{"
+            + "       \"type\":\"Object\","
+            + "       \"className\":\"java.lang.String\","
+            + "       \"arg\":\"42\","
+            + "       \"metaData\":{"
+            + "       }"
+            + "    },"
+            + "   \"callId\":\"12345\","
             + "   \"timestamp\":1321314411697"
             + "}"
             + "";
@@ -83,7 +78,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     public void setup() throws Exception {
         MethodResult methodResult = new MethodResult("42");
         MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
-        String writeValueAsString = new ObjectMapper().writeValueAsString(SecureResponse.create(methodResultMessage));
+        String writeValueAsString = new ObjectMapper().writeValueAsString(methodResultMessage);
 
         System.out.println(writeValueAsString);
 
@@ -109,7 +104,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         FilterChainFactory<MethodCallRequest, MethodResultMessage> factory =
             new FilterChainFactory<MethodCallRequest, MethodResultMessage>(MethodCallRequest.class,
                 MethodResultMessage.class);
-        factory.setFilters(Arrays.asList(OutgoingWrapperFilter.class, OutgoingJsonSecureMethodCallMarshalFilter.class,
+        factory.setFilters(Arrays.asList(OutgoingJsonSecureMethodCallMarshalFilter.class,
             jmsOutgoingPort));
 
         OutgoingPortImpl outgoingPort = new OutgoingPortImpl();
@@ -125,7 +120,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
-        JsonNode readTree = requestMessage.get("message").get("methodCall");
+        JsonNode readTree = requestMessage.get("methodCall");
 
         assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
                 + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.TestClass\"]"));
@@ -143,9 +138,8 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
 
         String destination =
-            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("message")
-                .get("callId").asText();
+            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
+                .asText();
         assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
     }
-
 }

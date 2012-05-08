@@ -33,19 +33,18 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.security.model.SecureRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Setup to run this app:
- * 
+ *
  * + Start OpenEngSB
- * 
+ *
  * + install the jms-feature: features:install openengsb-ports-jms
- * 
+ *
  * + copy example+external-connector-proxy+example-remote.connector to the openengsb/config-directory
- * 
+ *
  * + copy openengsb/etc/keys/public.key.data to src/main/resources
  */
 public final class SecureSampleConnector {
@@ -165,9 +164,11 @@ public final class SecureSampleConnector {
         methodCall.setMetaData(metaData);
         MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
-        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
+        methodCallRequest.setPrincipal("admin");
+        methodCallRequest.setCredentials(auth);
+
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(create);
+        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
         System.out.println(writeValueAsString);
     }
 
@@ -183,9 +184,10 @@ public final class SecureSampleConnector {
         methodCall.setMetaData(metaData);
         MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
-        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
+        methodCallRequest.setPrincipal("admin");
+        methodCallRequest.setCredentials(auth);
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(create);
+        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
         System.out.println(writeValueAsString);
     }
 }

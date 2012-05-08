@@ -38,10 +38,9 @@ import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,18 +84,20 @@ public final class AuthenticatingSampleApp {
     private static String marshalSecureRequest(MethodCallRequest methodCallRequest,
             String username, Object credentails) throws IOException {
         BeanDescription auth = BeanDescription.fromObject(credentails);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, auth);
-        return MAPPER.writeValueAsString(secureRequest);
+
+        methodCallRequest.setPrincipal(username);
+        methodCallRequest.setCredentials(auth);
+        return MAPPER.writeValueAsString(methodCallRequest);
     }
 
     private static MethodResult convertStringToResult(String resultString) throws IOException,
         ClassNotFoundException, DecryptionException {
-        SecureResponse resultMessage = MAPPER.readValue(resultString, SecureResponse.class);
+        MethodResultMessage resultMessage = MAPPER.readValue(resultString, MethodResultMessage.class);
         return convertResult(resultMessage);
     }
 
-    private static MethodResult convertResult(SecureResponse resultMessage) throws ClassNotFoundException {
-        MethodResult result = resultMessage.getMessage().getResult();
+    private static MethodResult convertResult(MethodResultMessage resultMessage) throws ClassNotFoundException {
+        MethodResult result = resultMessage.getResult();
         Class<?> clazz = Class.forName(result.getClassName());
         Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
         result.setArg(resultValue);

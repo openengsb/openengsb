@@ -24,10 +24,10 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
 import org.osgi.framework.Filter;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * </code>
  */
-public class MessageAuthenticatorFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+public class MessageAuthenticatorFilter extends AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
@@ -62,7 +62,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     }
 
     @Override
-    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
@@ -82,12 +82,12 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
         }
 
         LOGGER.debug("authenticated");
-        return (SecureResponse) next.filter(input, metaData);
+        return (MethodResultMessage) next.filter(input, metaData);
     }
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
         this.next = next;
     }
 

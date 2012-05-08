@@ -17,8 +17,6 @@
 
 package org.openengsb.core.api.remote;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,19 +26,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  * this message. Those could be retrieved via {@link #getMetaData()}.
  */
 @XmlRootElement
-public class MethodResultMessage implements Serializable {
+public class MethodResultMessage extends MessageBase {
 
     private static final long serialVersionUID = 6620312248741724626L;
 
     private MethodResult result;
-    private String callId;
 
     public MethodResultMessage() {
     }
 
     public MethodResultMessage(MethodResult result, String callId) {
+        super(callId);
         this.result = result;
-        this.callId = callId;
     }
 
     public MethodResult getResult() {
@@ -49,14 +46,6 @@ public class MethodResultMessage implements Serializable {
 
     public void setResult(MethodResult result) {
         this.result = result;
-    }
-
-    public String getCallId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
     }
 
 }

@@ -28,8 +28,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +54,7 @@ final class ConnectorMessageListener implements MessageListener {
         String text = getTextFromMessage(content);
         MethodCallRequest request;
         try {
-            request = MAPPER.readValue(text, SecureRequest.class).getMessage();
+            request = MAPPER.readValue(text, MethodCallRequest.class);
         } catch (IOException e1) {
             throw Throwables.propagate(e1);
         }
@@ -80,10 +78,9 @@ final class ConnectorMessageListener implements MessageListener {
 
     private void sendResult(MethodCallRequest request, MethodResult result) throws JMSException {
         MethodResultMessage methodResultMessage = new MethodResultMessage(result, request.getCallId());
-        SecureResponse secureResponse = SecureResponse.create(methodResultMessage);
         String resultText;
         try {
-            resultText = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(secureResponse);
+            resultText = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(methodResultMessage);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

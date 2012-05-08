@@ -38,11 +38,10 @@ import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,25 +123,26 @@ public final class SecureSampleApp {
     private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
             String username, Object credentials) throws IOException {
         BeanDescription credentialsBean = BeanDescription.fromObject(credentials);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, credentialsBean);
-        return MAPPER.writeValueAsBytes(secureRequest);
+        methodCallRequest.setPrincipal(username);
+        methodCallRequest.setCredentials(credentialsBean);
+        return MAPPER.writeValueAsBytes(methodCallRequest);
     }
 
     private static MethodResult convertStringToResult(String resultString, SecretKey sessionKey) throws IOException,
             ClassNotFoundException, DecryptionException {
-        SecureResponse resultMessage = decryptResponse(resultString, sessionKey);
+        MethodResultMessage resultMessage = decryptResponse(resultString, sessionKey);
         return convertResult(resultMessage);
     }
 
-    private static MethodResult convertResult(SecureResponse resultMessage) throws ClassNotFoundException {
-        MethodResult result = resultMessage.getMessage().getResult();
+    private static MethodResult convertResult(MethodResultMessage resultMessage) throws ClassNotFoundException {
+        MethodResult result = resultMessage.getResult();
         Class<?> clazz = Class.forName(result.getClassName());
         Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
         result.setArg(resultValue);
         return result;
     }
 
-    private static SecureResponse decryptResponse(String resultString, SecretKey sessionKey)
+    private static MethodResultMessage decryptResponse(String resultString, SecretKey sessionKey)
         throws DecryptionException, IOException {
         byte[] decryptedContent;
         try {
@@ -151,7 +151,7 @@ public final class SecureSampleApp {
             System.err.println(resultString);
             throw e;
         }
-        SecureResponse resultMessage = MAPPER.readValue(decryptedContent, SecureResponse.class);
+        MethodResultMessage resultMessage = MAPPER.readValue(decryptedContent, MethodResultMessage.class);
         return resultMessage;
     }
 

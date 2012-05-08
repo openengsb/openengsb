@@ -76,7 +76,6 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
-import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
@@ -496,10 +495,12 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
      */
-    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
+    private MethodCallRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
         MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
         BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
-        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+        methodCallRequest.setPrincipal("yourusername");
+        methodCallRequest.setCredentials(beanDescription);
+        return methodCallRequest;
     }
 
     /**
@@ -525,7 +526,7 @@ public class TestClient extends BasePage {
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
-    private String parseRequestToJsonString(SecureRequest secureRequest) {
+    private String parseRequestToJsonString(MethodCallRequest secureRequest) {
         String jsonResult = "";
         try {
             jsonResult =

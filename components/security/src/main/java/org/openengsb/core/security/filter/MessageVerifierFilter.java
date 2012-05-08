@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ import com.google.common.cache.LoadingCache;
  * </pre>
  * </code>
  */
-public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);
 
@@ -69,22 +69,22 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         });
 
     @Override
-    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData) {
         try {
             verify(input);
         } catch (MessageVerificationFailedException e) {
             throw new FilterException(e);
         }
-        return (SecureResponse) next.filter(input, metaData);
+        return (MethodResultMessage) next.filter(input, metaData);
     }
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
         this.next = next;
     }
 
-    private void verify(SecureRequest request) throws MessageVerificationFailedException {
+    private void verify(MethodCallRequest request) throws MessageVerificationFailedException {
         if (Boolean.getBoolean(DISABLE_VERIFICATION)) {
             return;
         }
@@ -94,7 +94,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         checkForReplayedMessage(request);
     }
 
-    private void checkForReplayedMessage(SecureRequest request) throws MessageVerificationFailedException {
+    private void checkForReplayedMessage(MethodCallRequest request) throws MessageVerificationFailedException {
         String authenticationInfo = request.getPrincipal();
         synchronized (lastMessageTimestamp) {
             try {
@@ -111,7 +111,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         }
     }
 
-    private void checkOverallAgeOfRequest(SecureRequest request) throws MessageVerificationFailedException {
+    private void checkOverallAgeOfRequest(MethodCallRequest request) throws MessageVerificationFailedException {
         long ageInMillis = System.currentTimeMillis() - request.getTimestamp();
         LOGGER.debug("request-age in ms: {}", ageInMillis);
         if (ageInMillis < 0) {

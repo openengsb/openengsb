@@ -17,10 +17,11 @@
 
 package org.openengsb.core.api.remote;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.openengsb.core.api.model.BeanDescription;
 
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
@@ -31,24 +32,26 @@ import javax.xml.bind.annotation.XmlRootElement;
  * identify the right method.
  */
 @XmlRootElement
-public class MethodCallRequest implements Serializable {
+public class MethodCallRequest extends MessageBase {
 
     private static final long serialVersionUID = -484867025274841475L;
 
     private MethodCall methodCall;
-    private String callId;
     private boolean answer;
     private String destination;
+
+    private String principal;
+    private BeanDescription credentials;
 
     public MethodCallRequest() {
     }
 
-    public MethodCallRequest(MethodCall methodCall, String callId) {
-        this(methodCall, callId, true);
-    }
-
     public MethodCallRequest(MethodCall methodCall) {
         this(methodCall, UUID.randomUUID().toString());
+    }
+
+    public MethodCallRequest(MethodCall methodCall, String callId) {
+        this(methodCall, callId, true);
     }
 
     public MethodCallRequest(MethodCall methodCall, boolean answer) {
@@ -56,8 +59,8 @@ public class MethodCallRequest implements Serializable {
     }
 
     public MethodCallRequest(MethodCall methodCall, String callId, boolean answer) {
+        super(callId);
         this.methodCall = methodCall;
-        this.callId = callId;
         this.answer = answer;
     }
 
@@ -67,14 +70,6 @@ public class MethodCallRequest implements Serializable {
 
     public void setMethodCall(MethodCall methodCall) {
         this.methodCall = methodCall;
-    }
-
-    public String getCallId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
     }
 
     public boolean isAnswer() {
@@ -91,6 +86,22 @@ public class MethodCallRequest implements Serializable {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public String getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(String principal) {
+        this.principal = principal;
+    }
+
+    public BeanDescription getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(BeanDescription credentials) {
+        this.credentials = credentials;
     }
 
 }

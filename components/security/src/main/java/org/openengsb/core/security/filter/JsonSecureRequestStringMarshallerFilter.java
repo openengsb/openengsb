@@ -24,8 +24,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.util.JsonUtils;
 import org.slf4j.Logger;
@@ -56,20 +56,20 @@ public class JsonSecureRequestStringMarshallerFilter extends AbstractFilterChain
 
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
-        SecureRequest request;
+        MethodCallRequest request;
         try {
             LOGGER.trace("attempt to read SecureRequest from inputData");
-            request = mapper.readValue(input, SecureRequest.class);
+            request = mapper.readValue(input, MethodCallRequest.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
-        String callId = request.getMessage().getCallId();
+        String callId = request.getCallId();
         LOGGER.info("extracted callId \"{}\" from message", callId);
         metaData.put("callId", callId);
         LOGGER.debug("converting arguments of inputmessage");
-        JsonUtils.convertAllArgs(request.getMessage());
+        JsonUtils.convertAllArgs(request);
         LOGGER.debug("invoking next filter: {}", next.getClass().getName());
-        SecureResponse response = (SecureResponse) next.filter(request, metaData);
+        MethodResultMessage response = (MethodResultMessage) next.filter(request, metaData);
         LOGGER.debug("response received for callId {}: {}. serializing to json", callId, response);
         try {
             return mapper.writeValueAsString(response);
@@ -81,7 +81,7 @@ public class JsonSecureRequestStringMarshallerFilter extends AbstractFilterChain
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
         this.next = next;
     }
 }
