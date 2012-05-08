@@ -301,7 +301,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         synchronized (session) {
             while (session.getProcessInstance(id) != null && timeout > 0) {
                 session.wait(timeout);
-                timeout = System.currentTimeMillis() - endTime;
+                timeout = endTime - System.currentTimeMillis();
             }
         }
         return !getRunningFlows().contains(id);
