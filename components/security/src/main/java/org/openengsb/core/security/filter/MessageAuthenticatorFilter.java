@@ -55,7 +55,6 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     private AuthenticationManager authenticationManager;
 
     public MessageAuthenticatorFilter(AuthenticationManager authenticationManager) {
-        super(SecureRequest.class, SecureResponse.class);
         this.authenticationManager = authenticationManager;
     }
 

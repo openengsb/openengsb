@@ -17,6 +17,10 @@
 
 package org.openengsb.core.common.remote;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.openengsb.core.api.remote.FilterAction;
@@ -30,9 +34,28 @@ import com.google.common.base.Preconditions;
  */
 public abstract class AbstractFilterAction<InputType, OutputType> implements FilterAction {
 
-    private Class<InputType> inputType;
-    private Class<OutputType> outputType;
+    private final Class<InputType> inputType;
+    private final Class<OutputType> outputType;
 
+    private static Class<?> getTypeAsClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        }
+        if (type instanceof GenericArrayType) {
+            Class<?> componentType = getTypeAsClass(((GenericArrayType) type).getGenericComponentType());
+            return Array.newInstance(componentType, 0).getClass();
+        }
+        throw new IllegalArgumentException("cannot interpret type " + type);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected AbstractFilterAction() {
+        ParameterizedType superclass = (ParameterizedType) getClass().getGenericSuperclass();
+        inputType = (Class<InputType>) getTypeAsClass(superclass.getActualTypeArguments()[0]);
+        outputType = (Class<OutputType>) getTypeAsClass(superclass.getActualTypeArguments()[1]);
+    }
+
+    @Deprecated
     protected AbstractFilterAction(Class<InputType> inputType, Class<OutputType> outputType) {
         this.inputType = inputType;
         this.outputType = outputType;

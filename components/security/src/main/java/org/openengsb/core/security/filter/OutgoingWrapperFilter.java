@@ -45,10 +45,6 @@ public class OutgoingWrapperFilter extends AbstractFilterChainElement<MethodCall
 
     private FilterAction next;
 
-    public OutgoingWrapperFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
-
     @Override
     protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData) {
         SecureRequest request = SecureRequest.create(input, null);

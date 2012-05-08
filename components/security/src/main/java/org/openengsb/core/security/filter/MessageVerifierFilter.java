@@ -68,10 +68,6 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
             };
         });
 
-    public MessageVerifierFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
-
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
         try {

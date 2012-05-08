@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * converts it to the corresponding OpenEngSBModelObject. The new object is then passed on to the next filter. The
  * returned {@link MethodResultMessage} is checked for OpenEngSBModelObject. If this is the case, it is converted to a
  * OpenEngSBModelWrapper again.
- * 
+ *
  * <code>
  * <pre>
  *      [MethodCallRequest]   > Filter > [MethodCallRequest]     > ...
@@ -52,10 +52,6 @@ public class EKBProxyIncomingFilter extends
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyIncomingFilter.class);
 
     private FilterAction next;
-
-    public EKBProxyIncomingFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
