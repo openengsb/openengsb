@@ -37,7 +37,7 @@ import org.openengsb.core.common.util.JsonUtils;
 /**
  * This filter takes a {@link SecureRequest} and serializes it to JSON. The String s then passed on to the next filter.
  * The returned JSON-String representing a {@link SecureResponse} is then deserialized and returned.
- * 
+ *
  * <code>
  * <pre>
  *      [SecureRequest]   > Filter > [SecureRequest as JSON-string]     > ...
@@ -51,10 +51,6 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
         AbstractFilterChainElement<SecureRequest, SecureResponse> {
 
     private FilterAction next;
-
-    public OutgoingJsonSecureMethodCallMarshalFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
 
     @Override
     public SecureResponse doFilter(SecureRequest input, Map<String, Object> metadata) throws FilterException {
