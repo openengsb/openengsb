@@ -55,11 +55,6 @@ public abstract class AbstractFilterAction<InputType, OutputType> implements Fil
         outputType = (Class<OutputType>) getTypeAsClass(superclass.getActualTypeArguments()[1]);
     }
 
-    protected AbstractFilterAction(Class<InputType> inputType, Class<OutputType> outputType) {
-        this.inputType = inputType;
-        this.outputType = outputType;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public Object filter(Object input, Map<String, Object> metaData) throws FilterException {

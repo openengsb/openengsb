@@ -33,10 +33,6 @@ public abstract class AbstractFilterChainElement<InputType, OutputType> extends
     public AbstractFilterChainElement() {
     }
 
-    protected AbstractFilterChainElement(Class<InputType> inputType, Class<OutputType> outputType) {
-        super(inputType, outputType);
-    }
-
     protected static final void checkNextInputAndOutputTypes(FilterAction next,
             Class<?> inputType, Class<?> outputType) throws FilterConfigurationException {
         if (!next.getSupportedInputType().isAssignableFrom(inputType)) {
