@@ -58,7 +58,6 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     private Unmarshaller unmarshaller;
 
     public XmlMethodCallMarshalFilter() {
-        super(Document.class, Document.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);
             unmarshaller = context.createUnmarshaller();

@@ -32,7 +32,7 @@ import org.openengsb.core.common.util.JsonUtils;
  * This filter takes a JSON-serialized {@link MethodCallRequest} and deserializes it. The {@link MethodCallRequest}
  * object is then passed on to the next filter. The returned {@link MethodResultMessage} is than seralized to JSON
  * again.
- * 
+ *
  * <code>
  * <pre>
  *      [MethodCallRequest as JSON-string]   > Filter > [MethodCallRequest]     > ...
@@ -45,10 +45,6 @@ import org.openengsb.core.common.util.JsonUtils;
 public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<String, String> {
 
     private FilterAction next;
-
-    public JsonMethodCallMarshalFilter() {
-        super(String.class, String.class);
-    }
 
     @Override
     public String doFilter(String input, Map<String, Object> metadata) throws FilterException {

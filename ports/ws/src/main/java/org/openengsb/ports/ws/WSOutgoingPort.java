@@ -34,10 +34,6 @@ public class WSOutgoingPort extends AbstractFilterAction<String, String> {
     };
     private BundleContext bundleContext;
 
-    public WSOutgoingPort() {
-        super(String.class, String.class);
-    }
-
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
         String destination = (String) metaData.get("destination");

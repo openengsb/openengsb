@@ -61,10 +61,6 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<Document, Docum
 
     private FilterAction next;
 
-    public XmlEncoderFilter() {
-        super(Document.class, Document.class);
-    }
-
     @Override
     public Document doFilter(Document input, Map<String, Object> metadata) throws FilterException {
         String docString;

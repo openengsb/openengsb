@@ -30,6 +30,9 @@ public abstract class AbstractFilterChainElement<InputType, OutputType> extends
         AbstractFilterAction<InputType, OutputType>
         implements FilterChainElement {
 
+    public AbstractFilterChainElement() {
+    }
+
     protected AbstractFilterChainElement(Class<InputType> inputType, Class<OutputType> outputType) {
         super(inputType, outputType);
     }

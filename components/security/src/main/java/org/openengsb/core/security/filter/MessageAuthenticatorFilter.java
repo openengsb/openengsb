@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the
  * {@link org.apache.shiro.authc.AuthenticationInfo} and tries to authenticate. If authentication was successful, the
  * filter-chain will proceed. The result of the next filter is just passed through.
- * 
+ *
  * This filter is intended for incoming ports.
- * 
+ *
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -58,7 +58,6 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     private FilterAction next;
 
     public MessageAuthenticatorFilter(OsgiUtilsService utilsService) {
-        super(SecureRequest.class, SecureResponse.class);
         this.utilsService = utilsService;
     }
 

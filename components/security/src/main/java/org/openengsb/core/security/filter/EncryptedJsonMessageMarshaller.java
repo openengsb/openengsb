@@ -54,10 +54,6 @@ public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<S
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public EncryptedJsonMessageMarshaller() {
-        super(String.class, String.class);
-    }
-
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
         EncryptedMessage message;

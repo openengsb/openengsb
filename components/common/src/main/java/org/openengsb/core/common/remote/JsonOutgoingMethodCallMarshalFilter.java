@@ -48,10 +48,6 @@ public class JsonOutgoingMethodCallMarshalFilter extends
 
     private FilterAction next;
 
-    public JsonOutgoingMethodCallMarshalFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
-
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();

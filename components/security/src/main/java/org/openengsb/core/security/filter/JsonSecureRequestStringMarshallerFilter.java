@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This filter takes a {@link String} representing a JSON-encoded {@link SecureRequest} and parses it. The next filter
  * returns a SecureResponse which is marshaled to JSON again.
- * 
+ *
  * This filter is intended for incoming ports.
- * 
+ *
  * <code>
  * <pre>
  *      [JSON-String]         > Filter > [SecureRequest]    > ...
@@ -53,10 +53,6 @@ public class JsonSecureRequestStringMarshallerFilter extends AbstractFilterChain
     private FilterAction next;
 
     private ObjectMapper mapper = new ObjectMapper();
-
-    public JsonSecureRequestStringMarshallerFilter() {
-        super(String.class, String.class);
-    }
 
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
