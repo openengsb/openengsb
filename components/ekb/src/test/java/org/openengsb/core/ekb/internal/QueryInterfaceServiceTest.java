@@ -373,16 +373,16 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testRegexCheckOfQueryForModels_shouldWork() {
-        assertThat(queryForModelsWithGivenQuery("a:b"), is(true));
-        assertThat(queryForModelsWithGivenQuery("a:b and b:c"), is(true));
-        assertThat(queryForModelsWithGivenQuery("a:b and b:c and c:d"), is(true));
-        assertThat(queryForModelsWithGivenQuery(""), is(true));
-        assertThat(queryForModelsWithGivenQuery("a:b and "), is(false));
-        assertThat(queryForModelsWithGivenQuery("a:b or b:c"), is(false));
-        assertThat(queryForModelsWithGivenQuery("a:b and b:c or c:d"), is(false));
+        assertThat("query with one condition don't work", checkQuery("a:b"), is(true));
+        assertThat("combined query with two conditions don't work", checkQuery("a:b and b:c"), is(true));
+        assertThat("combined query with three conditions don't work", checkQuery("a:b and b:c and c:d"), is(true));
+        assertThat("empty query doesn't work", checkQuery(""), is(true));
+        assertThat("query with 'and' and no other condition works", checkQuery("a:b and "), is(false));
+        assertThat("query with 'or' works", checkQuery("a:b or b:c"), is(false));
+        assertThat("query with an other binding word than 'and' works", checkQuery("a:b and b:c or c:d"), is(false));
     }
 
-    private boolean queryForModelsWithGivenQuery(String query) {
+    private boolean checkQuery(String query) {
         try {
             service.queryForModels(TestModel.class, query, new Date().getTime() + "");
             return true;
