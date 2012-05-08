@@ -14,6 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+ $(function() {
+ 
+   $(".ddTrigger").click(function() {
+   
+     var $actList = $(this).find(".dropDownContainer");
+     
+     var callback = function() {
+       $actList.toggle("slide",{direction: 'up'}, 100);
+       $actList.parent().parent().toggleClass('activeTrigger');
+     };
+     
+     if($(".ddTrigger .dropDownContainer:visible").not($actList).length > 0) {
+       $(".ddTrigger .dropDownContainer:visible").not($actList).hide("slide",{direction: 'up'}, 100, callback);
+     } else {
+        callback();
+      } 
+   
+   });
+ 
+ });
  
  $(function() {
 

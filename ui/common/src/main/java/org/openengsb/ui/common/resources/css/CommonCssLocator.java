@@ -26,11 +26,15 @@ public final class CommonCssLocator {
     }
 
     public static ResourceReference getCommonCss() {
-        return new PackageResourceReference(CommonCssLocator.class, "jquery.css");
+        return new PackageResourceReference(CommonCssLocator.class, "style.css");
     }
 
     public static ResourceReference getJqueryUiCss() {
-        return new PackageResourceReference(CommonCssLocator.class, "style.css");
+        return new PackageResourceReference(CommonCssLocator.class, "jquery.css");
+    }
+    
+    public static ResourceReference getLoginPageCss() {
+        return new PackageResourceReference(CommonCssLocator.class, "loginPage.css");
     }
     
     private CommonCssLocator() {

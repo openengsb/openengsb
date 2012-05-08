@@ -24,6 +24,10 @@ public final class CommonPictureLocator {
     public static ResourceReference getGreyscaleLogo() {
         return new PackageResourceReference(CommonPictureLocator.class, "openengsb_small_greyscale.png");
     }
+    
+    public static ResourceReference getGreyscaleLogoBig() {
+        return new PackageResourceReference(CommonPictureLocator.class, "openengsb_greyscale.png");
+    }
 
     public static ResourceReference getFavIcon() {
         return new PackageResourceReference(CommonPictureLocator.class, "openengsb.ico");
