@@ -110,18 +110,19 @@ public class QueryInterfaceService implements QueryInterface {
      * Generates a map out of a query string. A query string has the format "propA:valueA and propB:valueB and ..."
      */
     private Map<String, Object> generateMapOutOfString(String query) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (query.isEmpty()) {
+            return map;
+        }
         String regex = "(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?";
         if (!query.matches(regex)) {
-            String errorMessage = "Query string must have the form 'a:b [and b:c and ...]'";
+            String errorMessage = "Query string must be empty or have the form 'a:b [and b:c and ...]'";
             throw new IllegalArgumentException(errorMessage);
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        if (!query.isEmpty()) {
-            String[] elements = query.split(" and ");
-            for (String element : elements) {
-                String[] parts = element.split(":");
-                map.put(parts[0], parts[1]);
-            }
+        String[] elements = query.split(" and ");
+        for (String element : elements) {
+            String[] parts = element.split(":");
+            map.put(parts[0], parts[1]);
         }
         return map;
     }
