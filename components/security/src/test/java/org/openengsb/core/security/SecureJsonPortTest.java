@@ -24,7 +24,7 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.FilterChain;
@@ -51,7 +51,7 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
     }
 
     @Override
-    protected String encodeAndEncrypt(MethodCallRequest secureRequest, SecretKey sessionKey) throws Exception {
+    protected String encodeAndEncrypt(MethodCallMessage secureRequest, SecretKey sessionKey) throws Exception {
         byte[] content = mapper.writeValueAsBytes(secureRequest);
         LOGGER.info("encrypting: " + new String(content));
         byte[] encryptedContent = CipherUtils.encrypt(content, sessionKey);

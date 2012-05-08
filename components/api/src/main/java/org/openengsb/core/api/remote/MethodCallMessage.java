@@ -32,7 +32,7 @@ import org.openengsb.core.api.model.BeanDescription;
  * identify the right method.
  */
 @XmlRootElement
-public class MethodCallRequest extends MessageBase {
+public class MethodCallMessage extends MessageBase {
 
     private static final long serialVersionUID = -484867025274841475L;
 
@@ -43,22 +43,22 @@ public class MethodCallRequest extends MessageBase {
     private String principal;
     private BeanDescription credentials;
 
-    public MethodCallRequest() {
+    public MethodCallMessage() {
     }
 
-    public MethodCallRequest(MethodCall methodCall) {
+    public MethodCallMessage(MethodCall methodCall) {
         this(methodCall, UUID.randomUUID().toString());
     }
 
-    public MethodCallRequest(MethodCall methodCall, String callId) {
+    public MethodCallMessage(MethodCall methodCall, String callId) {
         this(methodCall, callId, true);
     }
 
-    public MethodCallRequest(MethodCall methodCall, boolean answer) {
+    public MethodCallMessage(MethodCall methodCall, boolean answer) {
         this(methodCall, UUID.randomUUID().toString(), answer);
     }
 
-    public MethodCallRequest(MethodCall methodCall, String callId, boolean answer) {
+    public MethodCallMessage(MethodCall methodCall, String callId, boolean answer) {
         super(callId);
         this.methodCall = methodCall;
         this.answer = answer;

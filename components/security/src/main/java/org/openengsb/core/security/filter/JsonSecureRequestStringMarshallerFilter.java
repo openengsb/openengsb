@@ -24,7 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.util.JsonUtils;
@@ -56,10 +56,10 @@ public class JsonSecureRequestStringMarshallerFilter extends AbstractFilterChain
 
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
-        MethodCallRequest request;
+        MethodCallMessage request;
         try {
             LOGGER.trace("attempt to read SecureRequest from inputData");
-            request = mapper.readValue(input, MethodCallRequest.class);
+            request = mapper.readValue(input, MethodCallMessage.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
@@ -81,7 +81,7 @@ public class JsonSecureRequestStringMarshallerFilter extends AbstractFilterChain
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 }

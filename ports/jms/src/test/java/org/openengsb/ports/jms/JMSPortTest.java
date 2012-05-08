@@ -68,7 +68,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -178,7 +178,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             + "  </methodCall>"
             + "</MethodCallRequest>";
 
-    private MethodCallRequest call;
+    private MethodCallMessage call;
     private MethodResultMessage methodReturn;
     private JMSTemplateFactory jmsTemplateFactory;
     private JMSIncomingPort incomingPort;
@@ -228,7 +228,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
         Map<String, String> metaData = Maps.newHashMap(ImmutableMap.of("serviceId", "test"));
         MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
-        call = new MethodCallRequest(methodCall, "123");
+        call = new MethodCallMessage(methodCall, "123");
         call.setDestination("host?receive");
 
         MethodResult result = new MethodResult(new TestClass("test"));
@@ -379,7 +379,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void requestMapping_shouldDeserialiseRequest() throws IOException {
-        OBJECT_MAPPER.readValue(METHOD_CALL_REQUEST, MethodCallRequest.class);
+        OBJECT_MAPPER.readValue(METHOD_CALL_REQUEST, MethodCallMessage.class);
     }
 
     @Test

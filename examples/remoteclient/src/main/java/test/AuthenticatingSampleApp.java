@@ -36,7 +36,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
@@ -74,17 +74,16 @@ public final class AuthenticatingSampleApp {
 
     private static MethodResult call(MethodCall call, String username, Object credentials) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
-        MethodCallRequest methodCallRequest = new MethodCallRequest(call);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(call);
         String requestString = marshalSecureRequest(methodCallRequest, username, credentials);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());
         return convertStringToResult(resultString);
     }
 
-    private static String marshalSecureRequest(MethodCallRequest methodCallRequest,
+    private static String marshalSecureRequest(MethodCallMessage methodCallRequest,
             String username, Object credentails) throws IOException {
         BeanDescription auth = BeanDescription.fromObject(credentails);
-
         methodCallRequest.setPrincipal(username);
         methodCallRequest.setCredentials(auth);
         return MAPPER.writeValueAsString(methodCallRequest);

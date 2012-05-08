@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -79,13 +79,13 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                        requestHandler.handleCall(((MethodCallRequest) invocation.getArguments()[0]).getMethodCall());
+                        requestHandler.handleCall(((MethodCallMessage) invocation.getArguments()[0]).getMethodCall());
                     };
                 };
                 executorService.execute(runnable);
                 return null;
             }
-        }).when(outgoingPort).send(any(MethodCallRequest.class));
+        }).when(outgoingPort).send(any(MethodCallMessage.class));
 
         DefaultOutgoingPortUtilService outgoingPortUtilService =
             new DefaultOutgoingPortUtilService(new DefaultOsgiUtilsService(bundleContext));
@@ -119,7 +119,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
         service.processEvent(new TestEvent());
-        verify(outgoingPort, timeout(5000)).send(any(MethodCallRequest.class));
+        verify(outgoingPort, timeout(5000)).send(any(MethodCallMessage.class));
     }
 
     @Test

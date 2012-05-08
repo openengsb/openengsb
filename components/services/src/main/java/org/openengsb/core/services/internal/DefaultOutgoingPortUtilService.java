@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -42,9 +42,9 @@ public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
 
     private final class SendMethodCallTask implements Runnable {
         private final OutgoingPort port;
-        private final MethodCallRequest request;
+        private final MethodCallMessage request;
 
-        private SendMethodCallTask(OutgoingPort port, MethodCallRequest request) {
+        private SendMethodCallTask(OutgoingPort port, MethodCallMessage request) {
             this.port = port;
             this.request = request;
         }
@@ -60,7 +60,7 @@ public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
     @Override
     public void sendMethodCall(String portId, String destination, MethodCall call) {
         OutgoingPort port = getPort(portId);
-        MethodCallRequest request = new MethodCallRequest(call, false);
+        MethodCallMessage request = new MethodCallMessage(call, false);
         request.setDestination(destination);
         Runnable callHandler = new SendMethodCallTask(port, request);
         executor.execute(callHandler);
@@ -69,7 +69,7 @@ public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
     @Override
     public MethodResult sendMethodCallWithResult(String portId, String destination, MethodCall call) {
         OutgoingPort port = getPort(portId);
-        MethodCallRequest request = new MethodCallRequest(call, true);
+        MethodCallMessage request = new MethodCallMessage(call, true);
         request.setDestination(destination);
         MethodResultMessage requestResult = port.sendSync(request);
         return requestResult.getResult();

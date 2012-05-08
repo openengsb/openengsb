@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
@@ -50,7 +50,7 @@ import com.google.common.cache.LoadingCache;
  * </pre>
  * </code>
  */
-public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
+public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);
 
@@ -69,7 +69,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCall
         });
 
     @Override
-    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData) {
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         try {
             verify(input);
         } catch (MessageVerificationFailedException e) {
@@ -80,11 +80,11 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCall
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 
-    private void verify(MethodCallRequest request) throws MessageVerificationFailedException {
+    private void verify(MethodCallMessage request) throws MessageVerificationFailedException {
         if (Boolean.getBoolean(DISABLE_VERIFICATION)) {
             return;
         }
@@ -94,7 +94,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCall
         checkForReplayedMessage(request);
     }
 
-    private void checkForReplayedMessage(MethodCallRequest request) throws MessageVerificationFailedException {
+    private void checkForReplayedMessage(MethodCallMessage request) throws MessageVerificationFailedException {
         String authenticationInfo = request.getPrincipal();
         synchronized (lastMessageTimestamp) {
             try {
@@ -111,7 +111,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCall
         }
     }
 
-    private void checkOverallAgeOfRequest(MethodCallRequest request) throws MessageVerificationFailedException {
+    private void checkOverallAgeOfRequest(MethodCallMessage request) throws MessageVerificationFailedException {
         long ageInMillis = System.currentTimeMillis() - request.getTimestamp();
         LOGGER.debug("request-age in ms: {}", ageInMillis);
         if (ageInMillis < 0) {

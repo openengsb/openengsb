@@ -31,7 +31,7 @@ import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,7 +162,7 @@ public final class SecureSampleConnector {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
-        MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
         methodCallRequest.setPrincipal("admin");
         methodCallRequest.setCredentials(auth);
@@ -182,7 +182,7 @@ public final class SecureSampleConnector {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
-        MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
         methodCallRequest.setPrincipal("admin");
         methodCallRequest.setCredentials(auth);

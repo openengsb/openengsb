@@ -27,7 +27,7 @@ import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
@@ -35,7 +35,7 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.util.JsonUtils;
 
 /**
- * This filter takes a {@link MethodCallRequest} and serializes it to JSON. The String s then passed on to the next
+ * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
  * filter. The returned JSON-String representing a {@link MethodResultMessage} is then deserialized and returned.
  *
  * <code>
@@ -48,12 +48,12 @@ import org.openengsb.core.common.util.JsonUtils;
  * </code>
  */
 public class OutgoingJsonSecureMethodCallMarshalFilter extends
-        AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
+        AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private FilterAction next;
 
     @Override
-    public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
+    public MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = createObjectMapper();
         MethodResultMessage resultMessage;
         try {

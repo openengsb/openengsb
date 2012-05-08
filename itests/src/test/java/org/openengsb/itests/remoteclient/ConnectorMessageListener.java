@@ -25,7 +25,7 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
@@ -52,9 +52,9 @@ final class ConnectorMessageListener implements MessageListener {
         LOGGER.info("recieved JMS-message");
         TextMessage content = (TextMessage) message;
         String text = getTextFromMessage(content);
-        MethodCallRequest request;
+        MethodCallMessage request;
         try {
-            request = MAPPER.readValue(text, MethodCallRequest.class);
+            request = MAPPER.readValue(text, MethodCallMessage.class);
         } catch (IOException e1) {
             throw Throwables.propagate(e1);
         }
@@ -76,7 +76,7 @@ final class ConnectorMessageListener implements MessageListener {
         return text;
     }
 
-    private void sendResult(MethodCallRequest request, MethodResult result) throws JMSException {
+    private void sendResult(MethodCallMessage request, MethodResult result) throws JMSException {
         MethodResultMessage methodResultMessage = new MethodResultMessage(result, request.getCallId());
         String resultText;
         try {
