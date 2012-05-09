@@ -127,6 +127,8 @@
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
 
+    <bundle>mvn:org.openengsb.labs.delegation/org.openengsb.labs.delegation.service/${labs.delegation.version}</bundle>
+
     <!-- JPA Infrastructure -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>

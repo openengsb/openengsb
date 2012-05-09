@@ -86,6 +86,7 @@
               org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -112,6 +113,11 @@
       <artifactId>org.openengsb.framework.test</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
 
     <!-- OpenEngSB Domain References -->
