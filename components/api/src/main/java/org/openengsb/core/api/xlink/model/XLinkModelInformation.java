@@ -45,5 +45,31 @@ public class XLinkModelInformation {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final XLinkModelInformation other = (XLinkModelInformation) obj;
+        if ((this.className == null) ? (other.className != null) : !this.className.equals(other.className)) {
+            return false;
+        }
+        if ((this.version == null) ? (other.version != null) : !this.version.equals(other.version)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (this.className != null ? this.className.hashCode() : 0);
+        hash = 79 * hash + (this.version != null ? this.version.hashCode() : 0);
+        return hash;
+    }
     
 }
