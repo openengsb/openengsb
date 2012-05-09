@@ -17,27 +17,28 @@
 package org.openengsb.ui.admin.xlink;
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.WebResponse;
 
-public class MachineResponsePage extends WebPage{
+public class MachineResponsePage extends WebPage {
     
-    public MachineResponsePage(String msg, boolean isSuccess){
-        createPage(msg,isSuccess);
+    public MachineResponsePage(String msg, boolean isSuccess) {
+        createPage(msg, isSuccess);
     }
     
-    public MachineResponsePage(PageParameters parameters, String msg, boolean isSuccess){
-        createPage(msg,isSuccess);
+    public MachineResponsePage(PageParameters parameters, String msg, boolean isSuccess) {
+        createPage(msg, isSuccess);
     }
     
-    private void createPage(String msg, boolean isSuccess){
-        add(new Label("message",msg));
-        HttpServletResponse httpServletResponse = ((WebResponse)getResponse()).getHttpServletResponse();
-        if(isSuccess){
+    private void createPage(String msg, boolean isSuccess) {
+        add(new Label("message", msg));
+        HttpServletResponse httpServletResponse = ((WebResponse) getResponse()).getHttpServletResponse();
+        if (isSuccess) {
             httpServletResponse.setStatus(httpServletResponse.SC_OK);
-        }else{
+        } else {
             httpServletResponse.setStatus(httpServletResponse.SC_BAD_REQUEST);
         }
     }

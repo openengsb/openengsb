@@ -23,17 +23,17 @@ import org.apache.wicket.markup.html.basic.Label;
 /**
  *
  */
-public class UserResponsePage extends WebPage{
+public class UserResponsePage extends WebPage {
     
-    public UserResponsePage(String msg, boolean isError){
+    public UserResponsePage(String msg, boolean isError) {
         createPage(msg, isError);
     }
     
-    public UserResponsePage(PageParameters parameters, String msg, boolean isError){
+    public UserResponsePage(PageParameters parameters, String msg, boolean isError) {
         createPage(msg, isError);
     }
     
-    private void createPage(String msg, boolean isError){
-        add(new Label("responseMessage",msg));
+    private void createPage(String msg, boolean isError) {
+        add(new Label("responseMessage", msg));
     }
 }
