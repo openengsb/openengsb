@@ -62,14 +62,11 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     private LoadingCache<String, Long> lastMessageTimestamp = CacheBuilder.newBuilder()
         .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)
         .build(new CacheLoader<String, Long>() {
+            @Override
             public Long load(String key) throws Exception {
                 return 0L;
             };
         });
-
-    public MessageVerifierFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
 
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {

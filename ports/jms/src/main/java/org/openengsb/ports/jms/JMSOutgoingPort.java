@@ -32,10 +32,6 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
     private JMSTemplateFactory factory;
     private int timeout;
 
-    public JMSOutgoingPort() {
-        super(String.class, String.class);
-    }
-
     @Override
     protected String doFilter(String input, Map<String, Object> metaData) {
         String destination = (String) metaData.get("destination");

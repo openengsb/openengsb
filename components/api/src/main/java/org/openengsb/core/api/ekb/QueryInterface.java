@@ -63,4 +63,15 @@ public interface QueryInterface {
      * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+    
+    /**
+     * Queries for active models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries.
+     * Active models mean models which are in the newest version.
+     */
+    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap);
+    
+    /**
+     * Queries for active models of the given model type. Active models mean models which are in the newest version.
+     */
+    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model);
 }
