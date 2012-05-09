@@ -248,7 +248,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public XLinkTemplate connectToXLink(ConnectorId id, String hostId, String toolName, Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
+    public XLinkTemplate connectToXLink(
+            ConnectorId id, 
+            String hostId, 
+            String toolName, 
+            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
