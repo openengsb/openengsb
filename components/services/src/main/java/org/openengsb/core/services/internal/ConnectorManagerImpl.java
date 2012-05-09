@@ -44,6 +44,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import java.util.ArrayList;
+import org.openengsb.core.common.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -51,14 +52,16 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
-    private List<XLinkToolRegistration> xlinkRegistrations;
+    private Map<XLinkRegistrationKey,XLinkToolRegistration> xlinkRegistrations;
+    private String xLinkBaseUrl = "http://localhost/openXLink";
+    private int xLinkExpiresIn = 3;
 
     public void init() {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    xlinkRegistrations = new ArrayList<XLinkToolRegistration>();
+                    xlinkRegistrations = new HashMap<XLinkRegistrationKey,XLinkToolRegistration>();
                     Collection<ConnectorConfiguration> configs;
                     try {
                         Map<String, String> emptyMap = Collections.emptyMap();
@@ -242,26 +245,81 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     @Override
     public void disconnectFromXLink(ConnectorId id) {
+        //api change: add hostId to disconnect
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     private boolean isRegistered(ConnectorId id, String hostId){
-        for(XLinkToolRegistration registration : xlinkRegistrations){
-            if(registration.getHostId().equals(hostId) && registration.getConnectorId().equals(id))return true;
-        }        
-        return false;
+        XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+        return xlinkRegistrations.containsKey(key);
     }
 
     @Override
     public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
         List<XLinkToolRegistration> registrationsOfHostId = new ArrayList<XLinkToolRegistration>();
-        for(XLinkToolRegistration registration : xlinkRegistrations){
-            if(registration.getHostId().equals(hostId))registrationsOfHostId.add(registration);
+        for(XLinkRegistrationKey key : xlinkRegistrations.keySet()){
+            if(key.getHostId().equals(hostId))registrationsOfHostId.add(xlinkRegistrations.get(key));
         }
         return registrationsOfHostId;
     }
+    
     public XLinkTemplate connectToXLink(ConnectorId id, String hostId, String toolName, Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(xLinkBaseUrl, id.toFullID(), modelsToViews, xLinkExpiresIn, null);
+        return null;
+    }
+    
+    private class XLinkRegistrationKey{
+        private ConnectorId connectorId;
+        private String hostId;
+
+        public XLinkRegistrationKey(ConnectorId connectorId, String hostId) {
+            this.connectorId = connectorId;
+            this.hostId = hostId;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
+            if (this.connectorId != other.connectorId && (this.connectorId == null || !this.connectorId.equals(other.connectorId))) {
+                return false;
+            }
+            if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 89 * hash + (this.connectorId != null ? this.connectorId.hashCode() : 0);
+            hash = 89 * hash + (this.hostId != null ? this.hostId.hashCode() : 0);
+            return hash;
+        }
+        
+        public ConnectorId getConnectorId() {
+            return connectorId;
+        }
+
+        public void setConnectorId(ConnectorId connectorId) {
+            this.connectorId = connectorId;
+        }
+
+        public String getHostId() {
+            return hostId;
+        }
+
+        public void setHostId(String hostId) {
+            this.hostId = hostId;
+        }
+        
+        
     }
 
 }
