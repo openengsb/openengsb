@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,18 +34,19 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.common.xlink.XLinkUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import java.util.ArrayList;
-import org.openengsb.core.common.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -52,7 +54,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
-    private Map<XLinkRegistrationKey,XLinkToolRegistration> xlinkRegistrations;
+    private Map<XLinkRegistrationKey, XLinkToolRegistration> xlinkRegistrations;
     private String xLinkBaseUrl = "http://localhost/openXLink";
     private int xLinkExpiresIn = 3;
 
@@ -61,7 +63,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             @Override
             public void run() {
                 try {
-                    xlinkRegistrations = new HashMap<XLinkRegistrationKey,XLinkToolRegistration>();
+                    xlinkRegistrations = new HashMap<XLinkRegistrationKey, XLinkToolRegistration>();
                     Collection<ConnectorConfiguration> configs;
                     try {
                         Map<String, String> emptyMap = Collections.emptyMap();
@@ -249,7 +251,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    private boolean isRegistered(ConnectorId id, String hostId){
+    private boolean isRegistered(ConnectorId id, String hostId) {
         XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
         return xlinkRegistrations.containsKey(key);
     }
@@ -257,18 +259,65 @@ public class ConnectorManagerImpl implements ConnectorManager {
     @Override
     public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
         List<XLinkToolRegistration> registrationsOfHostId = new ArrayList<XLinkToolRegistration>();
-        for(XLinkRegistrationKey key : xlinkRegistrations.keySet()){
-            if(key.getHostId().equals(hostId))registrationsOfHostId.add(xlinkRegistrations.get(key));
+        synchronized (xlinkRegistrations) {
+            for (XLinkRegistrationKey key : xlinkRegistrations.keySet()) {
+                if (key.getHostId().equals(hostId)) {
+                    registrationsOfHostId.add(xlinkRegistrations.get(key));
+                }
+            }
         }
         return registrationsOfHostId;
     }
     
-    public XLinkTemplate connectToXLink(ConnectorId id, String hostId, String toolName, Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
-        //XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(xLinkBaseUrl, id.toFullID(), modelsToViews, xLinkExpiresIn, null);
-        return null;
+    private List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
+        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
+        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
+        for (List<XLinkToolView> views : modelsToViews.values()) {
+            for (XLinkToolView view : views) {
+                if (!viewsOfRegistration.contains(view)) {
+                    viewsOfRegistration.add(view);
+                }
+            }
+        }
+        return viewsOfRegistration;
     }
     
-    private class XLinkRegistrationKey{
+    private List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
+        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
+        for (XLinkToolRegistration registration : registrations) {
+            XLinkLocalTool newLocalTools 
+                = new XLinkLocalTool(
+                        registration.getConnectorId(), 
+                        registration.getToolName(), 
+                        getViewsOfRegistration(registration));
+            tools.add(newLocalTools);
+        }
+        return tools;
+    }
+    
+    public XLinkTemplate connectToXLink(
+            ConnectorId id, 
+            String hostId, 
+            String toolName, 
+            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
+        List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
+        XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
+                xLinkBaseUrl, 
+                id.toFullID(), 
+                modelsToViews, 
+                xLinkExpiresIn, 
+                getLocalToolFromRegistrations(registrations));
+        synchronized (xlinkRegistrations) {
+            XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+            XLinkToolRegistration newRegistration 
+                = new XLinkToolRegistration(hostId, id, toolName, modelsToViews, template);
+            xlinkRegistrations.put(key, newRegistration);
+        }
+        //TODO notify other tools of Host about registration here
+        return template;
+    }
+    
+    private class XLinkRegistrationKey {
         private ConnectorId connectorId;
         private String hostId;
 
@@ -286,7 +335,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 return false;
             }
             final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
-            if (this.connectorId != other.connectorId && (this.connectorId == null || !this.connectorId.equals(other.connectorId))) {
+            if (this.connectorId != other.connectorId 
+                    && (this.connectorId == null 
+                    || !this.connectorId.equals(other.connectorId))) {
                 return false;
             }
             if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {
