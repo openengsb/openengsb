@@ -73,6 +73,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         if (localName.equals("transformation")) {
             String source = attributes.getValue("source");
             String target = attributes.getValue("target");
+            String id = attributes.getValue("id");
             
             String[] split = source.split(";");
             String className = split[0];
@@ -84,7 +85,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             version = split.length > 1 ? split[1] : "1.0.0";
             ModelDescription targetModel = new ModelDescription(className, version);
             
-            activeDescription = new TransformationDescription(sourceModel, targetModel);
+            activeDescription = new TransformationDescription(sourceModel, targetModel, id);
             activeDescription.setFileName(fileName);
         } else if (localName.equals("source-field")) {
             activeSourceField = true;

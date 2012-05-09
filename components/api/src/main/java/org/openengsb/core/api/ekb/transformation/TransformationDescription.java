@@ -34,10 +34,16 @@ public class TransformationDescription {
     private ModelDescription targetModel;
     private List<TransformationStep> steps;
     private String fileName;
+    private String id;
 
     public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel) {
+        this(sourceModel, targetModel, null);
+    }
+    
+    public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel, String id) {
         this.sourceModel = sourceModel;
         this.targetModel = targetModel;
+        this.id = id;
         steps = new ArrayList<TransformationStep>();
     }
 
@@ -361,6 +367,14 @@ public class TransformationDescription {
         this.fileName = fileName;
     }
     
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -368,6 +382,7 @@ public class TransformationDescription {
         result = prime * result + ((sourceModel == null) ? 0 : sourceModel.hashCode());
         result = prime * result + ((steps == null) ? 0 : steps.hashCode());
         result = prime * result + ((targetModel == null) ? 0 : targetModel.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 

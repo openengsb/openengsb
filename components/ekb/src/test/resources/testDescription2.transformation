@@ -19,7 +19,9 @@
 -->
 
 <transformations>
-  <transformation source="org.openengsb.core.ekb.internal.models.ModelA;1.0.0" target="org.openengsb.core.ekb.internal.models.ModelB;1.0.0">
+  <transformation source="org.openengsb.core.ekb.internal.models.ModelA;1.0.0" 
+                  target="org.openengsb.core.ekb.internal.models.ModelB;1.0.0"
+                  id="transformModelAToModelB_2"> <!-- optional -->
     <trim>
       <source-field>idA</source-field>
       <target-field>idB</target-field>
@@ -43,7 +45,9 @@
       </params>
     </replace>
   </transformation>
-  <transformation target="org.openengsb.core.ekb.internal.models.ModelA;1.0.0" source="org.openengsb.core.ekb.internal.models.ModelB;1.0.0">
+  <transformation target="org.openengsb.core.ekb.internal.models.ModelA;1.0.0" 
+                  source="org.openengsb.core.ekb.internal.models.ModelB;1.0.0"
+                  id="transformModelBToModelA_2"> <!-- optional -->
     <toLower>
       <source-field>idB</source-field>
       <target-field>idA</target-field>

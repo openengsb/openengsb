@@ -56,8 +56,16 @@ public class TransformationEngineServiceTest {
         return new TransformationDescription(getModelADescription(), getModelBDescription());
     }
 
+    private TransformationDescription getDescriptionForModelAToModelB(String id) {
+        return new TransformationDescription(getModelADescription(), getModelBDescription(), id);
+    }
+
     private TransformationDescription getDescriptionForModelBToModelA() {
         return new TransformationDescription(getModelBDescription(), getModelADescription());
+    }
+
+    private TransformationDescription getDescriptionForModelBToModelA(String id) {
+        return new TransformationDescription(getModelBDescription(), getModelADescription(), id);
     }
 
     private ModelB transformModelAToModelB(ModelA model) {
@@ -66,6 +74,20 @@ public class TransformationEngineServiceTest {
 
     private ModelA transformModelBToModelA(ModelB model) {
         return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model);
+    }
+
+    @Test
+    public void testIfTransformationDescriptionsBuiltCorrectly_shouldWork() {
+        TransformationDescription desc1 = getDescriptionForModelAToModelB("aTob");
+        desc1.forwardField("bla", "blub");
+
+        TransformationDescription desc2 = getDescriptionForModelBToModelA("bToa");
+
+        assertThat(desc1.getId(), is("aTob"));
+        assertThat(desc1.getTransformingSteps().size(), is(1));
+        assertThat(desc2.getId(), is("bToa"));
+        assertThat(desc2.getSourceModel(), is(getModelBDescription()));
+        assertThat(desc2.getTargetModel(), is(getModelADescription()));
     }
 
     @Test
@@ -373,6 +395,19 @@ public class TransformationEngineServiceTest {
         ModelB result = transformModelAToModelB(model);
 
         assertThat(result.getIntValue(), is(42));
+    }
+
+    @Test
+    public void testReadTransformationMetaDataFromFile_shouldWork() {
+        File descriptionFile =
+            new File(getClass().getClassLoader().getResource("testDescription.transformation").getFile());
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
+        assertThat(descriptions.get(0).getId(), is("transformModelAToModelB_1"));
+        assertThat(descriptions.get(0).getSourceModel(), is(getModelADescription()));
+        assertThat(descriptions.get(0).getTargetModel(), is(getModelBDescription()));
+        assertThat(descriptions.get(1).getId(), is("transformModelBToModelA_1"));
+        assertThat(descriptions.get(1).getSourceModel(), is(getModelBDescription()));
+        assertThat(descriptions.get(1).getTargetModel(), is(getModelADescription()));
     }
 
     @Test
