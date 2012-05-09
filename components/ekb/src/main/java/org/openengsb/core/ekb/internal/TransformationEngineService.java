@@ -88,6 +88,8 @@ public class TransformationEngineService implements TransformationEngine {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         throw new IllegalArgumentException("No transformation description for this model pair defined");
     }

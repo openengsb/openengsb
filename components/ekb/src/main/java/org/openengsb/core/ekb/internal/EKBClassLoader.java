@@ -17,43 +17,31 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.util.List;
-
-import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.core.api.Constants;
+import org.openengsb.labs.delegation.service.DelegationClassLoader;
+import org.osgi.framework.BundleContext;
 
 /**
  * Simple class loading service for EKB internal usage.
  */
 public class EKBClassLoader {
-    private List<ClassProvider> providers;
+    private ClassLoader loader;
+
+    public EKBClassLoader(BundleContext context) {
+        loader = new DelegationClassLoader(context, Constants.DELEGATION_CONTEXT_MODELS,
+            this.getClass().getClassLoader());
+    }
 
     public EKBClassLoader() {
+        loader = this.getClass().getClassLoader();
     }
 
     /**
-     * Tries to load the class with the given class name. First it uses the classloader of the EKB bundle. If the class
-     * can't be loaded by this classloader, this function iterates through the ClassProviders which are in the OSGi
-     * environment (see lab project about delegated classloading). If the class can't again been loaded, an
-     * IllegalArgumentException is thrown.
+     * Tries to load the class with the given class name. It uses a delegation class loader, which first try to load the
+     * the class with the EKB bundle classloader and if that fails, it searches the OSGi environment if another bundle
+     * provide this class.
      */
-    public Class<?> loadClass(String className) {
-        try {
-            return this.getClass().getClassLoader().loadClass(className);
-        } catch (Exception e) {
-            if (providers != null) {
-                try {
-                    for (ClassProvider provider : providers) {
-                        return provider.loadClass(className);
-                    }
-                } catch (ClassNotFoundException ex) {
-                    // ignore
-                }
-            }
-            throw new IllegalArgumentException("Unable to load class \"" + className + "\"", e);
-        }
-    }
-
-    public void setProviders(List<ClassProvider> providers) {
-        this.providers = providers;
+    public Class<?> loadClass(String classname) throws ClassNotFoundException {
+        return loader.loadClass(classname);
     }
 }

@@ -53,8 +53,8 @@ public class TransformationPerformer {
     }
 
     /**
-     * Does the checking of all necessary values of the TransformationDescription which are needed
-     * to process the description
+     * Does the checking of all necessary values of the TransformationDescription which are needed to process the
+     * description
      */
     private void checkNeededValues(TransformationDescription description) {
         String message = "The TransformationDescription doesn't contain a %s. Description loading aborted";
@@ -70,15 +70,16 @@ public class TransformationPerformer {
      * Transforms the given object based on the given TransformationDescription.
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
-        IllegalAccessException {
+        IllegalAccessException, ClassNotFoundException {
         // TODO: when the model registry is completed, then take also the versions into account while loading the
         // classes.
         checkNeededValues(description);
         String sourceModel = description.getSourceModel().getModelClassName();
         String targetModel = description.getTargetModel().getModelClassName();
+        
         sourceClass = classLoader.loadClass(sourceModel);
         targetClass = classLoader.loadClass(targetModel);
-        
+
         this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {
             target = ModelUtils.createModelObject(targetClass);
