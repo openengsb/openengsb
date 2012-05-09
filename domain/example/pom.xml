@@ -133,7 +133,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Provided-Classes-models>org.openengsb.domain.example.model.*</Provided-Classes-models>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -152,6 +152,11 @@
       <artifactId>org.openengsb.framework.common</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+	  <scope>provided</scope>
     </dependency>
   </dependencies>
 
