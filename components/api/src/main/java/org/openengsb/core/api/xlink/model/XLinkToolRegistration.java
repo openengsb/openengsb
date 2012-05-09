@@ -41,13 +41,13 @@ public class XLinkToolRegistration {
     /**
      * Model/View associations, provided by the client during registration
      */
-    private Map<String, List<XLinkToolView>> modelsToViews;
+    private Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews;
     /**
      * Template that was generated and returned to the client during registration
      */
     private XLinkTemplate xLinkTemplate;
 
-    public XLinkToolRegistration(String hostId, ConnectorId connectorId, String toolName, Map<String, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
+    public XLinkToolRegistration(String hostId, ConnectorId connectorId, String toolName, Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;
@@ -71,11 +71,11 @@ public class XLinkToolRegistration {
         this.hostId = hostId;
     }
 
-    public Map<String, List<XLinkToolView>> getModelsToViews() {
+    public Map<XLinkModelInformation, List<XLinkToolView>> getModelsToViews() {
         return modelsToViews;
     }
 
-    public void setModelsToViews(Map<String, List<XLinkToolView>> modelsToViews) {
+    public void setModelsToViews(Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
         this.modelsToViews = modelsToViews;
     }
 
