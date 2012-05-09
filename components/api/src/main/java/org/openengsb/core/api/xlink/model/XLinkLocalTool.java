@@ -20,6 +20,7 @@ package org.openengsb.core.api.xlink.model;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.openengsb.core.api.model.ConnectorId;
 
 /**
@@ -28,7 +29,7 @@ import org.openengsb.core.api.model.ConnectorId;
  * as a HashMap of keyNames and short descriptions. The HostId of the tool is not 
  * needed, since this information is only sent to tools of the same host.
  */
-public class XLinkLocalTool implements Serializable{
+public class XLinkLocalTool implements Serializable {
     
     // @extract-start XLinkRegisteredTool
     /**

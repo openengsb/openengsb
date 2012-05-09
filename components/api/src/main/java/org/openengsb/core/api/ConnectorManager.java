@@ -20,6 +20,7 @@ package org.openengsb.core.api;
 
 import java.util.List;
 import java.util.Map;
+
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
