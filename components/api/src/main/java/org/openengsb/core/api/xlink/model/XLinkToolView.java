@@ -18,6 +18,7 @@
 
 package org.openengsb.core.api.xlink.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Map;
  * sent by the tool. Must provide an id, a human readable name and a descriptions 
  * in different languages.
  */
-public class XLinkToolView {
+public class XLinkToolView  implements Serializable{
     
     /**
      * Unique Id of the View
