@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
@@ -353,6 +354,22 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         populateGlobals(session);
         LOGGER.debug("globals have been set");
         session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeStart(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeFinish(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
             @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {
                 synchronized (session) {

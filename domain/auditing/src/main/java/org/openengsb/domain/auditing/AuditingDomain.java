@@ -33,6 +33,13 @@ public interface AuditingDomain extends Domain {
     void audit(Event event);
 
     List<Event> getAllAudits();
+
+    @Anonymous
+    void onNodeStart(String process, long instance, String name);
+
+    @Anonymous
+    void onNodeFinish(String process, long instance, String name);
+
 }
 // @extract-end
 
