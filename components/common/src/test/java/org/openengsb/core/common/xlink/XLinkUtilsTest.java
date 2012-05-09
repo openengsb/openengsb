@@ -18,7 +18,8 @@
 package org.openengsb.core.common.xlink;
 
 import java.util.ArrayList;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,8 +28,8 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 
@@ -37,15 +38,16 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+    private static HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
+        = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
     private static String toolName = "TestTool";
     /**Key of a demo view*/
-    private static String viewId_1 = "exampleViewId_1";
+    private static String viewId1 = "exampleViewId_1";
     /**Key of a demo view*/    
-    private static String viewId_2 = "exampleViewId_2";
+    private static String viewId2 = "exampleViewId_2";
     /**Descriptions in different languages for a view*/    
     private static HashMap<String, String> descriptions  = new HashMap<String, String>();
     /**Composed viewdata as a list.*/
@@ -55,12 +57,12 @@ public class XLinkUtilsTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        descriptions.put("en","This is a demo view.");
-        descriptions.put("de","Das ist eine demonstration view.");
+        descriptions.put("en", "This is a demo view.");
+        descriptions.put("de", "Das ist eine demonstration view.");
         views = new ArrayList();
-        views.add(new XLinkToolView(viewId_1, toolName, descriptions));
-        views.add(new XLinkToolView(viewId_2, toolName, descriptions));
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(),"1.0"), views);
+        views.add(new XLinkToolView(viewId1, toolName, descriptions));
+        views.add(new XLinkToolView(viewId2, toolName, descriptions));
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(), "1.0"), views);
     }
     // @extract-end
     // @extract-start XLinkUtilsTestConfigsProvidedByOpenEngSB
@@ -82,8 +84,9 @@ public class XLinkUtilsTest {
         //xLinkTemplate.getBaseUrl() = 
         //http://openengsb.org/registryServlet.html?contextId=ExampleContext&expirationDate=20120427190146
 
-        assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId_1));
-        assertTrue(xLinkTemplate.getViewToModels().get(viewId_1).getClassName().equals(ExampleObjectOrientedDomain.class.getName()));
+        assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId1));
+        assertTrue(xLinkTemplate.getViewToModels().get(viewId1)
+                .getClassName().equals(ExampleObjectOrientedDomain.class.getName()));
     }
 
     // @extract-end
@@ -95,11 +98,12 @@ public class XLinkUtilsTest {
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
-        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId_1);
+        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId);
 
         //xLinkUrl = 
-        //http://openengsb.org/registryServlet.html?expirationDate=20120504202007&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
+        //http://openengsb.org/registryServlet.html?
+        //expirationDate=20120504202007&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
         //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
 
@@ -118,18 +122,20 @@ public class XLinkUtilsTest {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
-        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId_1);
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, values, modelInformation, contextId, viewId_1);
+        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
+                values, modelInformation, contextId, viewId1);
 
         //xLinkUrl =
-        //http://openengsb.org/registryServlet.html?expirationDate=20120504202007&null=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
+        //http://openengsb.org/registryServlet.html?
+        //expirationDate=20120504202007&null=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
         //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
 
 
         assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_CONNECTORID_KEY + "=" + connectorId));
-        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId_1));
+        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId1));
 
     }
     // @extract-end

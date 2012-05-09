@@ -16,7 +16,6 @@
  */
 
 package org.openengsb.core.common.xlink;
-import org.openengsb.core.common.xlink.*;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 

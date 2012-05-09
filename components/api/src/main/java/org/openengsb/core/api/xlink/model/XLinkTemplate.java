@@ -44,7 +44,7 @@ public class XLinkTemplate {
      * view. When in use, the identifing fields of the model must be concatenated 
      * with their values to the baseUrl as GET-Parameters. 
      */
-    private Map<String,XLinkModelInformation> viewToModels;
+    private Map<String, XLinkModelInformation> viewToModels;
     
     /**
      * Keyname of the modelClass, which must be concatenated to the baseUrl as 
