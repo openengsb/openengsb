@@ -178,7 +178,7 @@ public final class XLinkMock {
     }
     
     private static XLinkTemplate createMockTemplate(){
-        HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>();  
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
         String viewId_1 = "exampleViewId_1";
         String viewId_2 = "exampleViewId_2";
         
@@ -190,7 +190,7 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId_1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId_2, "View 2", descriptions));          
         
-        modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);  
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(),"1.0"), views);  
         String connectorId = "exampleConnectorId";
         String servletUrl = "http://openengsb.org/registryServlet.html";
         int expiresInDays = 3;
