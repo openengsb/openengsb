@@ -53,7 +53,7 @@
   </service>
   
   <!-- Model Registry -->
-  <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" />
+  <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" factory-method="getInstance"/>
   
   <service interface="org.openengsb.core.api.ekb.ModelRegistry">
     <ref component-id="modelRegistryService"/>

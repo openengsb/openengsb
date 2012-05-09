@@ -17,8 +17,119 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.openengsb.core.api.ekb.ModelRegistry;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ModelRegistryService implements ModelRegistry {
+public class ModelRegistryService implements ModelRegistry, BundleListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
+    private static ModelRegistryService instance;
+    private Map<Bundle, Set<Class<?>>> cache;
+    
+    private ModelRegistryService() {
+        cache = new HashMap<Bundle, Set<Class<?>>>();
+    }
+    
+    public static ModelRegistryService getInstance() {
+        if(instance == null) {
+            instance = new ModelRegistryService();
+        }
+        return instance;
+    }
 
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        if(event.getType() != BundleEvent.INSTALLED && event.getType() != BundleEvent.UNINSTALLED) {
+            return;
+        }
+        System.out.println("get models for bundle " + event.getBundle() + ":");
+        for(Class<?> clazz : getModels(event.getBundle())) {
+            System.out.println(clazz.getName());
+        }
+        Set<Class<?>> models = null;
+        if(cache.containsKey(event.getBundle())) {
+            models = cache.get(event.getBundle());
+        } else {
+            models = getModels(event.getBundle());
+        }
+        performModelActions(event, models);
+    }
+    
+    private void performModelActions(BundleEvent event, Set<Class<?>> models) {
+        if(event.getType() == BundleEvent.INSTALLED) {
+            for(Class<?> model : models) {
+                addModel(model);
+            }
+        } else if(event.getType() == BundleEvent.UNINSTALLED) {
+            for(Class<?> model : models) {
+                removeModel(model);
+            }
+        }
+    }
+    
+    private Set<Class<?>> getModels(Bundle bundle) {
+        Set<String> classes = discoverClasses(bundle);
+        Set<Class<?>> models = new HashSet<Class<?>>();
+        
+        for(String classname : classes) {
+            Class<?> clazz;
+            try {
+                clazz = bundle.loadClass(classname);
+            } catch (ClassNotFoundException e) {
+                LOGGER.warn("bundle could not find own class: " + classname, e);
+                continue;
+            }
+            if(isModelClass(clazz)) {
+                models.add(clazz);
+            }
+        }
+        return models;
+    }
+    
+    private boolean isModelClass(Class<?> model) {
+        return OpenEngSBModel.class.isAssignableFrom(model);
+    }
+    
+    private void addModel(Class<?> model) {
+        // TODO add model to the graph database
+    }
+    
+    private void removeModel(Class<?> model) {
+        // TODO remove model from the graph database
+    }
+
+    private static Set<String> discoverClasses(Bundle bundle) {
+        @SuppressWarnings("unchecked")
+        Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
+        Set<String> discoveredClasses = new HashSet<String>();
+        if(classEntries == null) {
+            LOGGER.debug("found no classes in the bundle {}", bundle);
+            return discoveredClasses;
+        }
+        while (classEntries.hasMoreElements()) {
+            URL classURL = classEntries.nextElement();
+            String className = extractClassName(classURL);
+            discoveredClasses.add(className);
+        }
+        return discoveredClasses;
+    }
+
+    private static String extractClassName(URL classURL) {
+        String path = classURL.getPath();
+        return path
+            .replaceAll("^/", "")
+            .replaceAll(".class$", "")
+            .replaceAll("\\/", ".");
+    }
 }

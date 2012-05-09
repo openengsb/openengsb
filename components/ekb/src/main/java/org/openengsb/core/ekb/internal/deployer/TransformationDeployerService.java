@@ -43,7 +43,7 @@ public class TransformationDeployerService extends AbstractOpenEngSBService impl
     public boolean canHandle(File artifact) {
         LOGGER.debug("TransformationDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
         String fileEnding = FilenameUtils.getExtension(artifact.getName());
-
+        
         if (artifact.isFile() && TRANSFORM_ENDING.equals(fileEnding)) {
             LOGGER.info("Found \"{}\" to deploy.", artifact);
             return true;
