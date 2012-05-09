@@ -82,7 +82,7 @@ public final class XLinkUtils {
      */
     public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews, 
+            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, 
             int expirationDays, 
             List<XLinkLocalTool> registeredTools) {
         baseUrl +=
