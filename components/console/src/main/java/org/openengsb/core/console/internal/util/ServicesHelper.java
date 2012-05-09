@@ -38,7 +38,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
@@ -48,22 +47,19 @@ import org.openengsb.core.security.SecurityContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-
 public class ServicesHelper {
-
 
     private DefaultOsgiUtilsService osgiUtilsService;
     private ConnectorManager serviceManager;
     private InputStream keyboard;
     private BundleContext bundleContext;
 
-
     public ServicesHelper() {
     }
 
     public void init() {
-        this.osgiUtilsService = new DefaultOsgiUtilsService();
-        this.osgiUtilsService.setBundleContext(bundleContext);
+        osgiUtilsService = new DefaultOsgiUtilsService();
+        osgiUtilsService.setBundleContext(bundleContext);
         serviceManager = osgiUtilsService.getService(ConnectorManager.class);
         CommandProcessor commandProcessor = osgiUtilsService
             .getService(org.apache.felix.service.command.CommandProcessor.class);
@@ -136,8 +132,7 @@ public class ServicesHelper {
                 SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
-                        ConnectorDefinition fullId = ConnectorDefinition.fromFullId(idFinal);
-                        serviceManager.delete(fullId);
+                        serviceManager.delete(idFinal);
                         return null;
                     }
                 });
@@ -154,7 +149,7 @@ public class ServicesHelper {
 
     /**
      * let the user chose one of the running services
-     *
+     * 
      * @return
      */
     private String selectRunningService() {
@@ -222,14 +217,14 @@ public class ServicesHelper {
         OutputStreamFormater.printValue(String.format("Please enter the attributes for %s, keep empty for default",
             descriptor.getName().getString(Locale.getDefault())));
 
-        //get attributes for connector
+        // get attributes for connector
         Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes(), attributes);
         Map<String, Object> properties = new HashMap<String, Object>();
 
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
-        ConnectorDefinition idProvider = new ConnectorDefinition(domainProviderId, connectorProvider.getId(), id);
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription(domainProviderId, connectorProvider.getId(), attributeMap, properties);
         if (force) {
-            serviceManager.forceCreate(idProvider, connectorDescription);
+            serviceManager.forceCreate(connectorDescription);
             OutputStreamFormater.printValue("Connector successfully created");
         } else {
             OutputStreamFormater.printValue("Do you want to create the connector with the following attributes:", "");
@@ -240,7 +235,7 @@ public class ServicesHelper {
             OutputStreamFormater.printValue("Create connector: (Y/n)");
             if (!readUserInput().equalsIgnoreCase("n")) {
                 try {
-                    serviceManager.create(idProvider, connectorDescription);
+                    serviceManager.create(connectorDescription);
                     OutputStreamFormater.printValue("Connector successfully created");
                 } catch (ConnectorValidationFailedException e) {
                     e.printStackTrace();
@@ -272,7 +267,7 @@ public class ServicesHelper {
     }
 
     protected Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
-                                                         Map<String, String> attributesFromInput) {
+            Map<String, String> attributesFromInput) {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
             String fieldName = attributeDefinition.getName().getString(Locale.getDefault());
@@ -371,7 +366,6 @@ public class ServicesHelper {
         }
         return positionString;
     }
-
 
     public void setOsgiUtilsService(DefaultOsgiUtilsService osgiUtilsService) {
         this.osgiUtilsService = osgiUtilsService;

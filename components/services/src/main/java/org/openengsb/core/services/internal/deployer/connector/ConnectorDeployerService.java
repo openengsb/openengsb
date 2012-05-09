@@ -19,7 +19,6 @@ package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -31,7 +30,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
@@ -97,14 +95,19 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
                 && ConnectorFile.isRootService(artifact)) {
             properties.put(Constants.SERVICE_RANKING, -1);
         }
-        LOGGER.info("Loading instance {}", configFile.getConnectorId());
+        LOGGER.info("Loading instance {}", configFile.getName());
+
+        final String name = FilenameUtils.removeExtension(artifact.getName());
+
+        final Map<String, String> attributes = configFile.getAttributes();
 
         SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                serviceManager.create(configFile.getConnectorId(),
-                    new ConnectorDescription(new HashMap<String, String>(
-                        configFile.getAttributes()), properties));
+                ConnectorDescription connectorDescription =
+                    new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
+                        attributes, properties);
+                serviceManager.createWithId(name, connectorDescription);
                 return null;
             }
         });
@@ -126,7 +129,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private void doUpdate(File artifact) throws Exception {
         ConnectorFile connectorFile = oldConfigs.get(artifact);
-        final ConnectorDefinition connectorId = connectorFile.getConnectorId();
+        final String connectorId = connectorFile.getName();
         ConnectorDescription persistenceContent = serviceManager
             .getAttributeValues(connectorId);
         ChangeSet changes = connectorFile.getChanges(artifact);
@@ -180,7 +183,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         Map<String, Object> newProperties = ConfigUtils.updateMap(
             persistenceContent.getProperties(),
             changes.getChangedProperties());
-        return new ConnectorDescription(newAttributes,
+        return new ConnectorDescription(changes.getDomainType(), changes.getConnectorType(), newAttributes,
             new Hashtable<String, Object>(newProperties));
     }
 
@@ -192,8 +195,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             @Override
             public Object call() throws Exception {
                 String name = FilenameUtils.removeExtension(artifact.getName());
-                ConnectorDefinition fullId = ConnectorDefinition.fromFullId(name);
-                serviceManager.delete(fullId);
+                serviceManager.delete(name);
                 return null;
             }
         });

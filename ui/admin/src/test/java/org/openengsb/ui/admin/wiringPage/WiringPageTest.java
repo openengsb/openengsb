@@ -58,7 +58,6 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -76,7 +75,7 @@ public class WiringPageTest extends AbstractUITest {
 
     private RuleManager ruleManager;
 
-    private ConnectorDefinition testdomainConnectorId;
+    private String testdomainConnectorId;
     private final String globTest = "globTest";
     private final String anotherGlob = "anotherGlob";
     private Map<String, Object> startproperties;
@@ -157,7 +156,7 @@ public class WiringPageTest extends AbstractUITest {
         LinkTree endpoints = (LinkTree) tester.getComponentFromLastRenderedPage("endpoints");
         TreeModel tree = endpoints.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(1));
-        assertThat(tree.getChild(tree.getRoot(), 0).toString(), is(testdomainConnectorId.toFullID()));
+        assertThat(tree.getChild(tree.getRoot(), 0).toString(), is(testdomainConnectorId));
     }
 
     @Test
@@ -185,7 +184,7 @@ public class WiringPageTest extends AbstractUITest {
         selectFirstEndpoint();
 
         TextField<?> txtServiceId = (TextField<?>) tester.getComponentFromLastRenderedPage("wiringForm:instanceId");
-        assertThat(txtServiceId.getDefaultModelObjectAsString(), is(testdomainConnectorId.toFullID()));
+        assertThat(txtServiceId.getDefaultModelObjectAsString(), is(testdomainConnectorId));
     }
 
     @Test
@@ -392,8 +391,8 @@ public class WiringPageTest extends AbstractUITest {
         properties.put("location.twotimes1", globTest);
         properties.put("location.twotimes2", new Object[]{ "foo", globTest });
         startproperties = new HashMap<String, Object>(properties);
-        testdomainConnectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
-        serviceManager.create(testdomainConnectorId, new ConnectorDescription(attributes, properties));
+        testdomainConnectorId =
+            serviceManager.create(new ConnectorDescription("testdomain", "testconnector", attributes, properties));
     }
 
     private void createProviderMocks() {

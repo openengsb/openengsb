@@ -78,7 +78,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -210,9 +209,7 @@ public class TestClientTest extends AbstractUITest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference =
-            new ServiceId(TestInterface.class.getName(),
-                new ConnectorDefinition("testdomain", "testconnector", "test-service").toString());
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), "testdomain+testconnector+test-service");
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -220,7 +217,7 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ConnectorDefinition connectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
+        String connectorId = "testdomain+testconnector+test-service";
         ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
@@ -689,8 +686,8 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.create(new ConnectorDefinition("testdomain", "testconnector", "test-service"),
-            new ConnectorDescription(
+        serviceManager.createWithId("testdomain+testconnector+test-service",
+            new ConnectorDescription("testdomain", "testconnector",
                 attributes, properties));
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
