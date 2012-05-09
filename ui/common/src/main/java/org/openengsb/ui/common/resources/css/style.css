@@ -101,9 +101,17 @@ hr {
 }
 
 .lightbox .separator {
-	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/lightbox_separator.png") repeat-x scroll 0 35px transparent;
     height: 40px;
 }
+
+.lightbox .separator .separator-left{
+	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/lightbox_separator_left.png") repeat-x scroll 0 35px transparent;
+}
+
+.lightbox .separator .separator-center{
+	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/lightbox_separator_center.png") repeat-x scroll 0 35px transparent;
+}
+
 
 .lightbox h1 {
 	font-size: 1.0em;
@@ -386,71 +394,7 @@ input[type=submit] {
     top: 20px;
 }
 
-#loginContainer {
-    width: 700px;
-    height: 220px;
-    position:absolute; 
-    top: 50%;
-    left: 50%; 
-    margin-left:-350px; 
-    margin-top: -110px;
-    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/loginMask_background.png") repeat-x scroll 0 0 #eeeeee;
-}
 
-#loginContainer h1 {
-    font-family: Century Gothic;
-    font-size: 1.2em;
-    margin-bottom: 0;
-    padding-top: 2px;
-    position: absolute;
-    text-align:center;
-}
-
-#loginContainer p{
-	font-size: 0.9em;
-}
-
-#loginMaskContainer {
-	border: 2px solid #56738C;
-	width: 700px;
-	height: 220px;
-	position:absolute; 
-	top: 50%;
-	left: 50%; 
-	margin-left:-350px; 
-	margin-top: -110px;
-}
-#loginMaskContainer .background{
-	background: #56738C;
-}
-#loginMaskContainer .line{
-	height: 100%;
-}
-#loginMaskContainer .unit{
-	padding: 10px 10px 17px;
-}
-#loginMaskContainer h3{
-	padding-bottom: 0px;
-}
-#loginMaskContainer input[type="text"],#loginMaskContainer input[type="password"]{
-	height:25px;
-	width:300px;
-	border: 1px solid ##56738C;
-	color:#56738C;
-}
-#loginMaskContainer form {
-	margin: 20px 0px 0px 0px;
-}
-#loginMaskContainer label {
-	font-size: 0.6em;
-	font-weight: bold;
-	color: #56738C;
-}
-#loginMaskContainer .headerLabel {
-	position: absolute;
-	right: 0px;
-	top: 0px;
-}
 
 #menu{
 }

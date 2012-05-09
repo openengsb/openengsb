@@ -1,0 +1,206 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+ /* Reset */
+html {margin:0;padding:0;border:0;}
+body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, hgroup, nav, section {margin:0;padding:0;border:0;font-size:100.1%;font:inherit;vertical-align:baseline;}
+article, aside, details, figcaption, figure, dialog, footer, header, hgroup, menu, nav, section {display:block;}
+body {line-height:1.5;background:white;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;float:none !important;}
+table, th, td {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:'';}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+:focus {outline:0;}
+ 
+ 
+body, html{
+	height:100%;
+}
+
+body {
+ 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+ 	font-size: 100.1%;
+}
+
+p {
+  font-size: 0.9em;
+}
+
+h1 {
+    font-family: Century Gothic;
+    font-size: 1.2em;
+    text-align:center;
+    color: #f9f9f9;
+    padding: 0 0 15px 0;
+}
+
+.hidden {
+	display: none;
+	}
+
+
+input[type=text],input[type=password] {
+    height: 25px;
+    width: 350px;
+    padding: 3px 7px;
+}
+
+input[type=submit] {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #999999;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.7em;
+    padding: 4px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+input[type=submit]:hover {
+    background: none repeat scroll 0 0 #4890BB;
+    color: #ffffff;
+}
+
+.lightbox {
+	background-color: #626262;
+	box-shadow: 0 0 10px #D2D2D2;
+	padding: 15px;
+	margin: 12px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #a2a2a2;
+}
+
+.languageSelector {
+    list-style: none outside none;
+}
+
+.languageSelector a, .languageSelector a:visited{
+    color: #4890BB;
+    float: left;
+    font-family: Helvetica,Arial;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+.activeTrigger {
+  background: -moz-linear-gradient(#E1E1E1, #BEBEBE) repeat scroll 0 0 transparent;
+}
+
+.dropDownContainer {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #4890BB;
+    border-radius: 5px 5px 5px 5px;
+    margin: 15px 0 0 -58px;
+    padding: 15px 0 15px 20px;
+    width: 100px;
+    overflow: visible;
+    position: absolute;
+}
+
+.boxArrow {
+  background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/box_arrow.png") no-repeat scroll 0 0 transparent;
+  left: 77px;
+  position: absolute;
+  top: -10px;
+  width: 20px;
+}
+
+.languageSelectorButton {
+  background: -moz-linear-gradient(#909090, #737373) repeat scroll 0 0 transparent;
+  border: 1px solid #9D9D9D;
+  border-radius: 3px 3px 3px 3px;
+  color: #E9E9E9;
+  font-size: 0.7em;
+  left: 333px;
+  margin-bottom: -5px;
+  padding: 3px;
+  position: relative;
+  width: 60px;
+  overflow: visible;
+}
+
+.feedbackPanel{
+  background-color: #FEF1EC;
+  border: 1px solid #CD0A0A;
+  border-radius: 3px 3px 3px 3px;
+  color: #CD0A0A;
+  font-size: 0.7em;
+  list-style: none;
+  padding: 5px 5px 5px 25px;
+}
+
+#loginContainer {
+    width: 400px;
+    min-height: 345px;
+    position:absolute; 
+    top: 50%;
+    left: 50%; 
+    margin-left:-350px; 
+    margin-top: -110px;
+    margin-left: -200px;
+    margin-top: -172px;
+}
+
+
+.dropDownArrow{
+  background: url("../org.openengsb.ui.admin.loginPage.LoginPage/arrow_dark.png") no-repeat scroll 43px -4px transparent;
+  padding-right: 20px;
+}
+
+.logoContainer{
+  width: 100%;
+  text-align: center;
+  }
+
+#logo{
+	height: 80px;
+}
+
+label{
+	color: #4890BB;
+    font-size: 0.7em;
+}
+
+.formContainer {
+  background: #F9F9F9;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.inputSet{
+  padding: 5px;
+  margin: 0 0 8px;
+}
+
+.aboutLink{
+    font-size: 0.7em;
+    padding: 5px 0 0;
+    text-align: right;
+    top: 380px;
+}
+
+.aboutLink a{
+    color: #626262;
+    text-decoration: none;
+}
+
+.aboutLink a:hover{
+    text-decoration: underline;
+}
+

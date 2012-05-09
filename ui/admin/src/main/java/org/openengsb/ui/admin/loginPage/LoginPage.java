@@ -18,6 +18,8 @@
 package org.openengsb.ui.admin.loginPage;
 
 
+import java.util.Locale;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
@@ -26,6 +28,7 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -66,13 +69,20 @@ public class LoginPage extends OpenEngSBPage {
     @Override
     public void renderHead(IHeaderResponse response) {
     response.renderCSSReference(CommonCssLocator.getGridsCss());
-    response.renderCSSReference(CommonCssLocator.getCommonCss());
+    response.renderCSSReference(CommonCssLocator.getLoginPageCss());
     response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
     response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
     response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
     response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
     /*add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
               .getFavIcon())); */
+    //Javascript code to set the focus on the unsername input field. Only necessary for loginpage, 
+    //therefore injected directly
+    response.renderJavaScript("" +
+    		"$(function() {" +
+            "  $(\"#username\").focus();" +
+            "});" +
+    		"", "setFocusOnload");
     } 
     
     private void initContent() {
@@ -103,7 +113,7 @@ public class LoginPage extends OpenEngSBPage {
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
         
-        add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
+        add(new Image("topImage", CommonPictureLocator.getGreyscaleLogoBig()));
 
         MyImprintPanel imprintDialogue = new MyImprintPanel("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);
@@ -113,6 +123,28 @@ public class LoginPage extends OpenEngSBPage {
         addUserLink.add(AttributeModifier.replace("onClick",
                 "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
                 + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
-        add(addUserLink);
+        loginForm.add(addUserLink);
+        
+        add(new Link<Object>("lang.en") {
+            
+			private static final long serialVersionUID = -2740581767694866689L;
+
+			@Override
+            public void onClick() {
+                getSession().setLocale(Locale.ENGLISH);
+                setResponsePage(this.getPage());
+            }
+        });
+
+        add(new Link<Object>("lang.de") {
+
+			private static final long serialVersionUID = -6858440905643185661L;
+
+			@Override
+            public void onClick() {
+                getSession().setLocale(Locale.GERMAN);
+                setResponsePage(this.getPage());
+            }
+        });
     }
 }
