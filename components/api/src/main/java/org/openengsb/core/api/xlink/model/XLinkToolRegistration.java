@@ -19,6 +19,7 @@ package org.openengsb.core.api.xlink.model;
 
 import java.util.List;
 import java.util.Map;
+
 import org.openengsb.core.api.model.ConnectorId;
 
 /**
@@ -47,7 +48,8 @@ public class XLinkToolRegistration {
      */
     private XLinkTemplate xLinkTemplate;
 
-    public XLinkToolRegistration(String hostId, ConnectorId connectorId, String toolName, Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
+    public XLinkToolRegistration(String hostId, ConnectorId connectorId, String toolName, 
+            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;

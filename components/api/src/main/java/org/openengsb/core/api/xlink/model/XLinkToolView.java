@@ -26,7 +26,7 @@ import java.util.Map;
  * sent by the tool. Must provide an id, a human readable name and a descriptions 
  * in different languages.
  */
-public class XLinkToolView  implements Serializable{
+public class XLinkToolView  implements Serializable {
     
     /**
      * Unique Id of the View
@@ -43,7 +43,7 @@ public class XLinkToolView  implements Serializable{
      * a null-value for a certain locale, the first entry of the map is taken 
      * instead.
      */
-    private Map<String,String> descriptions;
+    private Map<String, String> descriptions;
 
     @Override
     public boolean equals(Object obj) {
@@ -60,7 +60,8 @@ public class XLinkToolView  implements Serializable{
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (this.descriptions != other.descriptions && (this.descriptions == null || !this.descriptions.equals(other.descriptions))) {
+        if (this.descriptions != other.descriptions 
+                && (this.descriptions == null || !this.descriptions.equals(other.descriptions))) {
             return false;
         }
         return true;
@@ -77,7 +78,7 @@ public class XLinkToolView  implements Serializable{
     
     
 
-    public XLinkToolView(String viewId, String name, Map<String,String> descriptions) {
+    public XLinkToolView(String viewId, String name, Map<String, String> descriptions) {
         this.viewId = viewId;
         this.name = name;
         this.descriptions = descriptions;

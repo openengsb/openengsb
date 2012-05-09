@@ -24,10 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
+
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
@@ -65,7 +66,7 @@ public final class XLinkUtils {
     public static final String XLINK_HOST_HEADERNAME = "Host";
     
     /**Format of the ExpirationDate*/
-    private static final String DateFormat = "yyyyMMddkkmmss";
+    private static final String DATEFORMAT = "yyyyMMddkkmmss";
 
     // @extract-end
 
@@ -103,12 +104,13 @@ public final class XLinkUtils {
      * Naive model to view assignment. 
      * Current model is choosen for the first occurence of the view.
      */
-    private static Map<String, XLinkModelInformation> assigneModelsToViews(Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews){
-        HashMap<String, XLinkModelInformation> viewsToModels = new HashMap<String, XLinkModelInformation> ();
-        for(XLinkModelInformation modelInfo: modelsToViews.keySet()){
+    private static Map<String, XLinkModelInformation> assigneModelsToViews(Map<XLinkModelInformation, 
+            List<XLinkToolView>> modelsToViews) {
+        HashMap<String, XLinkModelInformation> viewsToModels = new HashMap<String, XLinkModelInformation>();
+        for (XLinkModelInformation modelInfo : modelsToViews.keySet()) {
             List<XLinkToolView> currentViewList = modelsToViews.get(modelInfo);
-            for(XLinkToolView view : currentViewList){
-                if(!viewsToModels.containsKey(view.getViewId())){
+            for (XLinkToolView view : currentViewList) {
+                if (!viewsToModels.containsKey(view.getViewId())) {
                     viewsToModels.put(view.getViewId(), modelInfo);
                 }
             }
@@ -122,7 +124,7 @@ public final class XLinkUtils {
     private static String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
-        Format formatter = new SimpleDateFormat(DateFormat);
+        Format formatter = new SimpleDateFormat(DATEFORMAT);
         return formatter.format(calendar.getTime());
     }
 
@@ -134,11 +136,14 @@ public final class XLinkUtils {
      * corresponding to the List of keyFields of the Modelclass. 
      * Depending on the contained Keys, the XLink is useable for local switching, or not.
      */
-    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> identifierValues, XLinkModelInformation modelInformation, String contextId) throws ClassNotFoundException {
+    public static String generateValidXLinkUrl(XLinkTemplate template, 
+            List<String> identifierValues, 
+            XLinkModelInformation modelInformation, 
+            String contextId) throws ClassNotFoundException {
         String completeUrl = template.getBaseUrl();
-        completeUrl += "&" + template.getModelClassKey() + "="+modelInformation.getClassName();
-        completeUrl += "&" + template.getModelVersionKey() + "="+modelInformation.getVersion();
-        completeUrl += "&" + template.getContextIdKeyName() + "="+contextId;        
+        completeUrl += "&" + template.getModelClassKey() + "=" + modelInformation.getClassName();
+        completeUrl += "&" + template.getModelVersionKey() + "=" + modelInformation.getVersion();
+        completeUrl += "&" + template.getContextIdKeyName() + "=" + contextId;        
         OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
@@ -150,7 +155,7 @@ public final class XLinkUtils {
     // @extract-end
     
       
-    private static OpenEngSBModel createInstanceOfModelClass(String clazz) throws ClassNotFoundException{
+    private static OpenEngSBModel createInstanceOfModelClass(String clazz) throws ClassNotFoundException {
         return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class) ;
     }  
 
@@ -161,19 +166,21 @@ public final class XLinkUtils {
      * in the end, to mark the link for Local Switching
      */
     public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
-            XLinkModelInformation modelInformation, String contextId, String viewIdValue) throws ClassNotFoundException {
+            XLinkModelInformation modelInformation, 
+            String contextId, 
+            String viewIdValue) throws ClassNotFoundException {
         String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId);
-        xLink +=
-            "&" + template.getConnectorId() +
-            "&" + template.getViewIdKeyName() + "=" + viewIdValue;
+        xLink += "&" 
+                + template.getConnectorId() + "&" 
+                + template.getViewIdKeyName() + "=" + viewIdValue;
         return xLink;
     }
 
     // @extract-end
     
-    public static Calendar dateStringToCalendar(String dateString){
+    public static Calendar dateStringToCalendar(String dateString) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat(DateFormat);
+        SimpleDateFormat formatter = new SimpleDateFormat(DATEFORMAT);
         try {
             calendar.setTime(formatter.parse(dateString));
         } catch (Exception ex) {
