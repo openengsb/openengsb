@@ -38,9 +38,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.xlink.XLinkModelInformation;
-import org.openengsb.core.api.xlink.XLinkRegisteredTool;
-import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
@@ -180,10 +180,10 @@ public class ToolChooserPage extends WebPage{
     }
     
     private void buildToolChooserPage(final HttpServletResponse resp){
-        List<XLinkRegisteredTool> tools = XLinkMock.getRegisteredToolsFromUser(hostId);
+        List<XLinkLocalTool> tools = XLinkMock.getRegisteredToolsFromUser(hostId);
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
-                final XLinkRegisteredTool tool = (XLinkRegisteredTool) item.getModelObject();
+                final XLinkLocalTool tool = (XLinkLocalTool) item.getModelObject();
                 item.add(new Label("toolName", tool.getToolName()));
                 ListView viewList = new ListView("viewList", tool.getAvailableViews()) {
                     @Override

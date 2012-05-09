@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.XLinkModelInformation;
-import org.openengsb.core.api.xlink.XLinkRegisteredTool;
-import org.openengsb.core.api.xlink.XLinkTemplate;
-import org.openengsb.core.api.xlink.XLinkToolView;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.common.xlink.XLinkUtils;
 
@@ -100,14 +100,14 @@ public final class XLinkMock {
         //todo
     }
     
-    public static List<XLinkRegisteredTool> getRegisteredToolsFromUser(String hostId){
+    public static List<XLinkLocalTool> getRegisteredToolsFromUser(String hostId){
         List<ConnectorId> connectors = getConnectorIdsFromHost(hostId);
         return getToolsFromConnectors(connectors);
     }
     
-    private static List<XLinkRegisteredTool> createMockToolList(){
-        List<XLinkRegisteredTool> tools = new ArrayList<XLinkRegisteredTool>();
-        XLinkRegisteredTool dummyTool1 = new XLinkRegisteredTool();
+    private static List<XLinkLocalTool> createMockToolList(){
+        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
+        XLinkLocalTool dummyTool1 = new XLinkLocalTool();
         dummyTool1.setId(new ConnectorId());
         
         String viewId_1 = "exampleViewId_1";
@@ -127,7 +127,7 @@ public final class XLinkMock {
         dummyTool1.setAvailableViews(views);
         dummyTool1.setToolName("Tool A");     
         tools.add(dummyTool1);
-        XLinkRegisteredTool dummyTool2 = new XLinkRegisteredTool();
+        XLinkLocalTool dummyTool2 = new XLinkLocalTool();
         dummyTool2.setId(new ConnectorId());
         dummyTool2.setAvailableViews(views);
         dummyTool2.setToolName("Tool B");     
@@ -135,8 +135,8 @@ public final class XLinkMock {
         return tools;
     }
     
-    private static List<XLinkRegisteredTool> getToolsFromConnectors(List<ConnectorId> connectors){
-        List<XLinkRegisteredTool> tools = new ArrayList();
+    private static List<XLinkLocalTool> getToolsFromConnectors(List<ConnectorId> connectors){
+        List<XLinkLocalTool> tools = new ArrayList();
         for(ConnectorId connectorId : connectors){
             tools.add(getToolsFromConnector(connectorId));
         }
@@ -144,10 +144,10 @@ public final class XLinkMock {
         return createMockToolList();
     }
     
-    private static XLinkRegisteredTool getToolsFromConnector(ConnectorId connectorId){
+    private static XLinkLocalTool getToolsFromConnector(ConnectorId connectorId){
         String name = getToolNameFromConnector(connectorId);
         List<XLinkToolView> availableViews = getViewsFromConnector(connectorId);
-        return new XLinkRegisteredTool(connectorId, name, availableViews);
+        return new XLinkLocalTool(connectorId, name, availableViews);
     }
     
     private static List<XLinkToolView> getViewsFromConnector(ConnectorId connectorId) {
@@ -194,7 +194,7 @@ public final class XLinkMock {
         String connectorId = "exampleConnectorId";
         String servletUrl = "http://openengsb.org/registryServlet.html";
         int expiresInDays = 3;
-        List<XLinkRegisteredTool> registeredTools = null;        
+        List<XLinkLocalTool> registeredTools = null;        
         return XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
     }
     
