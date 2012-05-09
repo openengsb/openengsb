@@ -70,6 +70,7 @@ import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -98,9 +99,14 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private DefaultOsgiUtilsService utilsService;
 
+    private Collection<AuditingDomain> auditingConnectors;
+
     @Override
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
+        for (AuditingDomain connector : auditingConnectors) {
+            connector.audit(event);
+        }
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = null;
         try {
@@ -425,6 +431,10 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     public void setTaskbox(TaskboxService taskbox) {
         this.taskbox = taskbox;
+    }
+
+    public void setAuditingConnectors(Collection<AuditingDomain> auditingConnectors) {
+        this.auditingConnectors = auditingConnectors;
     }
 
 }

@@ -46,8 +46,11 @@
     <property name="rulemanager" ref="ruleManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="taskbox" ref="taskbox" />
+    <property name="auditingConnectors" ref="auditingConnectors" />
   </bean>
-  
+
+  <reference-list id="auditingConnectors" availability="optional" interface="org.openengsb.domain.auditing.AuditingDomain" />
+
   <bean id="taskbox" class="org.openengsb.core.workflow.internal.TaskboxServiceImpl" init-method="init">
     <property name="workflowService" ref="workflowService" />
     <property name="persistenceManager" ref="persistenceManager" />
