@@ -82,7 +82,7 @@ public final class XLinkUtils {
      */
     public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            HashMap<String, List<XLinkToolView>> modelsToViews, 
+            HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews, 
             int expirationDays, 
             List<XLinkLocalTool> registeredTools) {
         baseUrl +=
@@ -102,15 +102,14 @@ public final class XLinkUtils {
     /**
      * Naive model to view assignment. 
      * Current model is choosen for the first occurence of the view.
-     * Version is always '1.0'
      */
-    private static Map<String, XLinkModelInformation> assigneModelsToViews(HashMap<String, List<XLinkToolView>> modelsToViews){
+    private static Map<String, XLinkModelInformation> assigneModelsToViews(Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews){
         HashMap<String, XLinkModelInformation> viewsToModels = new HashMap<String, XLinkModelInformation> ();
-        for(String className: modelsToViews.keySet()){
-            List<XLinkToolView> currentViewList = modelsToViews.get(className);
+        for(XLinkModelInformation modelInfo: modelsToViews.keySet()){
+            List<XLinkToolView> currentViewList = modelsToViews.get(modelInfo);
             for(XLinkToolView view : currentViewList){
                 if(!viewsToModels.containsKey(view.getViewId())){
-                    viewsToModels.put(view.getViewId(), new XLinkModelInformation(className, "1.0"));
+                    viewsToModels.put(view.getViewId(), modelInfo);
                 }
             }
         }
