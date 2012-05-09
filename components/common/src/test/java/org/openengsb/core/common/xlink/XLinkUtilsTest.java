@@ -37,7 +37,7 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>();  
+    private static HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
@@ -60,7 +60,7 @@ public class XLinkUtilsTest {
         views = new ArrayList();
         views.add(new XLinkToolView(viewId_1, toolName, descriptions));
         views.add(new XLinkToolView(viewId_2, toolName, descriptions));
-        modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(),"1.0"), views);
     }
     // @extract-end
     // @extract-start XLinkUtilsTestConfigsProvidedByOpenEngSB
