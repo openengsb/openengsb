@@ -106,7 +106,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
         for (AuditingDomain connector : auditingConnectors) {
-            connector.audit(event);
+            connector.onEvent(event);
         }
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = null;

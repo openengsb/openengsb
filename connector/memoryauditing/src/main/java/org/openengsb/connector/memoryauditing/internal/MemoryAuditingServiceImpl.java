@@ -48,7 +48,7 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBConnectorService
     }
 
     @Override
-    public void audit(Event event) {
+    public void onEvent(Event event) {
         events.add(event);
     }
 
