@@ -138,7 +138,6 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     @Override
     public void unregisterModel(ModelDescription model) {
-        
         // TODO remove model from the graph database
     }
 

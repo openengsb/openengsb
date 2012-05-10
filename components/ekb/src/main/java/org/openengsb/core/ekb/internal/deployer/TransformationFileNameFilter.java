@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.deployer;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.transformation;
 
 /**
  * A helper exception for the transformation process. It is used for the easier handling of null values at the source

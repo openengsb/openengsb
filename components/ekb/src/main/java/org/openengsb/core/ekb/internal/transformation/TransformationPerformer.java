@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.transformation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
