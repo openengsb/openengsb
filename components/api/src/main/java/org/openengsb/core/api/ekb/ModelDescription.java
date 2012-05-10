@@ -56,6 +56,10 @@ public class ModelDescription {
     public String getModelClassName() {
         return modelClassName;
     }
+    
+    public void setModelClassName(String modelClassName) {
+        this.modelClassName = modelClassName;
+    }
 
     public String getModelVersionString() {
         return version.toString();
@@ -63,6 +67,21 @@ public class ModelDescription {
 
     public Version getModelVersion() {
         return version;
+    }
+    
+    public void setModelVersion(Version version) {
+        this.version = version;
+    }
+    
+    public void setModelVersion(String versionString) {
+        this.version = Version.parseVersion(versionString);
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(modelClassName).append(";").append(version);
+        return builder.toString();
     }
 
     @Override

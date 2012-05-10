@@ -36,15 +36,19 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
 @RunWith(JUnit4TestRunner.class)
 public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     private TransformationEngine transformationEngine;
+    private Version exampleDomainVersion;
 
     @Before
     public void setup() throws Exception {
         transformationEngine = getOsgiService(TransformationEngine.class);
+        Bundle b = getInstalledBundle("org.openengsb.domain.example");
+        exampleDomainVersion = b.getVersion();
     }
 
     @Test
@@ -53,11 +57,11 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private ModelDescription getExampleRequestDescription() {
-        return new ModelDescription(ExampleRequestModel.class, new Version(1, 0, 0));
+        return new ModelDescription(ExampleRequestModel.class, exampleDomainVersion);
     }
 
     private ModelDescription getExampleResponseDescription() {
-        return new ModelDescription(ExampleResponseModel.class, new Version(1, 0, 0));
+        return new ModelDescription(ExampleResponseModel.class, exampleDomainVersion);
     }
 
     private ExampleResponseModel transformRequestToResponse(ExampleRequestModel model) {
@@ -93,8 +97,12 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         InputStream stream =
             getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
+        for(TransformationDescription description : descriptions) {
+            description.getSourceModel().setModelVersion(exampleDomainVersion);
+            description.getTargetModel().setModelVersion(exampleDomainVersion);
+        }
         transformationEngine.saveDescriptions(descriptions);
-
+        
         ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         modelA.setResult("test-42");
 

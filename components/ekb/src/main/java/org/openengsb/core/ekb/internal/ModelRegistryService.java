@@ -37,7 +37,7 @@ import org.osgi.framework.BundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModelRegistryService implements ModelRegistry, BundleListener {
+public final class ModelRegistryService implements ModelRegistry, BundleListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
@@ -133,11 +133,12 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
 
     @Override
     public void registerModel(ModelDescription model) {
-        // TODO add model to the graph database
+        // TODO add model to the graph database        
     }
 
     @Override
     public void unregisterModel(ModelDescription model) {
+        
         // TODO remove model from the graph database
     }
 
@@ -150,14 +151,14 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
     public List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException {
         Class<?> clazz = loadModel(model);
         List<String> result = new ArrayList<String>();
-        for(Field field : clazz.getFields()) {
-            if(field.isAnnotationPresent(annot.annotationType())) {
+        for (Field field : clazz.getFields()) {
+            if (field.isAnnotationPresent(annot.annotationType())) {
                 result.add(field.getName());
             }
         }
         return result;
     }
-    
+
     public void setEkbClassLoader(EKBClassLoader ekbClassLoader) {
         this.ekbClassLoader = ekbClassLoader;
     }

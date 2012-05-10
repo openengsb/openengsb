@@ -19,8 +19,8 @@
 -->
 
 <transformations>
-  <transformation source="org.openengsb.domain.example.model.ExampleResponseModel;1.0.0" 
-                  target="org.openengsb.domain.example.model.ExampleRequestModel;1.0.0"
+  <transformation source="org.openengsb.domain.example.model.ExampleResponseModel;3.0.0" 
+                  target="org.openengsb.domain.example.model.ExampleRequestModel;3.0.0"
                   <!-- id="testId" optional meta data to do identify transformation descriptions --> 
                   >
     <split>
