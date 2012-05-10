@@ -41,7 +41,9 @@ public class TransformationEngineServiceTest {
     @Before
     public void init() {
         service = new TransformationEngineService();
-        service.setClassLoader(new EKBClassLoader());
+        ModelRegistryService registry = ModelRegistryService.getInstance();
+        registry.setEkbClassLoader(new EKBClassLoader());
+        service.setModelRegistry(registry);
     }
 
     private ModelDescription getModelADescription() {

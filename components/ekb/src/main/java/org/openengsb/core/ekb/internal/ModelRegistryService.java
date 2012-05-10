@@ -39,6 +39,7 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
+    private EKBClassLoader ekbClassLoader;
 
     private ModelRegistryService() {
         cache = new HashMap<Bundle, Set<ModelDescription>>();
@@ -140,13 +141,16 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
 
     @Override
     public Class<?> loadModel(ModelDescription model) throws ClassNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        return ekbClassLoader.loadClass(model.getModelClassName());
     }
 
     @Override
     public List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    public void setEkbClassLoader(EKBClassLoader ekbClassLoader) {
+        this.ekbClassLoader = ekbClassLoader;
     }
 }

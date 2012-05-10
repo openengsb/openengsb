@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.ekb.transformation.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationStep;
@@ -45,11 +46,11 @@ public class TransformationPerformer {
     private Class<?> targetClass;
     private Object source;
     private Object target;
-    private EKBClassLoader classLoader;
+    private ModelRegistry modelRegistry;
 
-    public TransformationPerformer(EKBClassLoader classLoader) {
+    public TransformationPerformer(ModelRegistry modelRegistry) {
         temporaryFields = new HashMap<String, Object>();
-        this.classLoader = classLoader;
+        this.modelRegistry = modelRegistry;
     }
 
     /**
@@ -71,14 +72,9 @@ public class TransformationPerformer {
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException, ClassNotFoundException {
-        // TODO: when the model registry is completed, then take also the versions into account while loading the
-        // classes.
         checkNeededValues(description);
-        String sourceModel = description.getSourceModel().getModelClassName();
-        String targetModel = description.getTargetModel().getModelClassName();
-        
-        sourceClass = classLoader.loadClass(sourceModel);
-        targetClass = classLoader.loadClass(targetModel);
+        sourceClass = modelRegistry.loadModel(description.getSourceModel());
+        targetClass = modelRegistry.loadModel(description.getTargetModel());
 
         this.source = source;
         if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {

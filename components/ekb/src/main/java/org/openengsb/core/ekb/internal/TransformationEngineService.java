@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
 public class TransformationEngineService implements TransformationEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
     private List<TransformationDescription> descriptions;
-    private EKBClassLoader classLoader;
+    private ModelRegistry modelRegistry;
 
     public TransformationEngineService() {
         descriptions = new ArrayList<TransformationDescription>();
@@ -81,7 +82,7 @@ public class TransformationEngineService implements TransformationEngine {
         try {
             TransformationDescription desc = getTransformationDescription(sourceModel, targetModel);
             if (desc != null) {
-                TransformationPerformer performer = new TransformationPerformer(classLoader);
+                TransformationPerformer performer = new TransformationPerformer(modelRegistry);
                 return performer.transformObject(desc, source);
             }
         } catch (InstantiationException e) {
@@ -117,7 +118,7 @@ public class TransformationEngineService implements TransformationEngine {
         return result;
     }
 
-    public void setClassLoader(EKBClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public void setModelRegistry(ModelRegistry modelRegistry) {
+        this.modelRegistry = modelRegistry;
     }
 }

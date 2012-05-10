@@ -53,7 +53,9 @@
   </service>
   
   <!-- Model Registry -->
-  <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" factory-method="getInstance"/>
+  <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" factory-method="getInstance">
+    <property name="ekbClassLoader" ref="classLoader" />
+  </bean>
   
   <service interface="org.openengsb.core.api.ekb.ModelRegistry">
     <ref component-id="modelRegistryService"/>
@@ -61,7 +63,7 @@
   
   <!-- Transformation Engine -->
   <bean id="transformationEngineService" class="org.openengsb.core.ekb.internal.TransformationEngineService">
-    <property name="classLoader" ref="classLoader" />
+    <property name="modelRegistry" ref="modelRegistryService" />
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.TransformationEngine">
