@@ -17,13 +17,16 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.osgi.framework.Bundle;
@@ -35,14 +38,14 @@ import org.slf4j.LoggerFactory;
 public class ModelRegistryService implements ModelRegistry, BundleListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
-    private Map<Bundle, Set<Class<?>>> cache;
-    
+    private Map<Bundle, Set<ModelDescription>> cache;
+
     private ModelRegistryService() {
-        cache = new HashMap<Bundle, Set<Class<?>>>();
+        cache = new HashMap<Bundle, Set<ModelDescription>>();
     }
-    
+
     public static ModelRegistryService getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new ModelRegistryService();
         }
         return instance;
@@ -50,39 +53,39 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
 
     @Override
     public void bundleChanged(BundleEvent event) {
-        if(event.getType() != BundleEvent.INSTALLED && event.getType() != BundleEvent.UNINSTALLED) {
+        if (event.getType() != BundleEvent.INSTALLED && event.getType() != BundleEvent.UNINSTALLED) {
             return;
         }
         System.out.println("get models for bundle " + event.getBundle() + ":");
-        for(Class<?> clazz : getModels(event.getBundle())) {
-            System.out.println(clazz.getName());
+        for (ModelDescription model : getModels(event.getBundle())) {
+            System.out.println(model);
         }
-        Set<Class<?>> models = null;
-        if(cache.containsKey(event.getBundle())) {
+        Set<ModelDescription> models = null;
+        if (cache.containsKey(event.getBundle())) {
             models = cache.get(event.getBundle());
         } else {
             models = getModels(event.getBundle());
         }
         performModelActions(event, models);
     }
-    
-    private void performModelActions(BundleEvent event, Set<Class<?>> models) {
-        if(event.getType() == BundleEvent.INSTALLED) {
-            for(Class<?> model : models) {
-                addModel(model);
+
+    private void performModelActions(BundleEvent event, Set<ModelDescription> models) {
+        if (event.getType() == BundleEvent.INSTALLED) {
+            for (ModelDescription model : models) {
+                registerModel(model);
             }
-        } else if(event.getType() == BundleEvent.UNINSTALLED) {
-            for(Class<?> model : models) {
-                removeModel(model);
+        } else if (event.getType() == BundleEvent.UNINSTALLED) {
+            for (ModelDescription model : models) {
+                unregisterModel(model);
             }
         }
     }
-    
-    private Set<Class<?>> getModels(Bundle bundle) {
+
+    private Set<ModelDescription> getModels(Bundle bundle) {
         Set<String> classes = discoverClasses(bundle);
-        Set<Class<?>> models = new HashSet<Class<?>>();
-        
-        for(String classname : classes) {
+        Set<ModelDescription> models = new HashSet<ModelDescription>();
+
+        for (String classname : classes) {
             Class<?> clazz;
             try {
                 clazz = bundle.loadClass(classname);
@@ -90,30 +93,22 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
                 LOGGER.warn("bundle could not find own class: " + classname, e);
                 continue;
             }
-            if(isModelClass(clazz)) {
-                models.add(clazz);
+            if (isModelClass(clazz)) {
+                models.add(new ModelDescription(classname, bundle.getVersion()));
             }
         }
         return models;
     }
-    
+
     private boolean isModelClass(Class<?> model) {
         return OpenEngSBModel.class.isAssignableFrom(model);
-    }
-    
-    private void addModel(Class<?> model) {
-        // TODO add model to the graph database
-    }
-    
-    private void removeModel(Class<?> model) {
-        // TODO remove model from the graph database
     }
 
     private static Set<String> discoverClasses(Bundle bundle) {
         @SuppressWarnings("unchecked")
         Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
         Set<String> discoveredClasses = new HashSet<String>();
-        if(classEntries == null) {
+        if (classEntries == null) {
             LOGGER.debug("found no classes in the bundle {}", bundle);
             return discoveredClasses;
         }
@@ -131,5 +126,27 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
             .replaceAll("^/", "")
             .replaceAll(".class$", "")
             .replaceAll("\\/", ".");
+    }
+
+    @Override
+    public void registerModel(ModelDescription model) {
+        // TODO add model to the graph database
+    }
+
+    @Override
+    public void unregisterModel(ModelDescription model) {
+        // TODO remove model from the graph database
+    }
+
+    @Override
+    public Class<?> loadModel(ModelDescription model) throws ClassNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
