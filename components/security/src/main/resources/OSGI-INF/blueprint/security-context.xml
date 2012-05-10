@@ -119,15 +119,6 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.api.security.PermissionProvider">
-    <service-properties>
-      <entry key="connector" value="root" />
-      <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
-    </service-properties>
-    <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
-  </service>
-
-
   <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)"
     activation="lazy" availability="optional" />
 
