@@ -18,7 +18,9 @@
 package org.openengsb.core.ekb.internal;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -146,8 +148,14 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
 
     @Override
     public List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        Class<?> clazz = loadModel(model);
+        List<String> result = new ArrayList<String>();
+        for(Field field : clazz.getFields()) {
+            if(field.isAnnotationPresent(annot.annotationType())) {
+                result.add(field.getName());
+            }
+        }
+        return result;
     }
     
     public void setEkbClassLoader(EKBClassLoader ekbClassLoader) {
