@@ -74,7 +74,7 @@
   </service>
   
   <!-- EKB ClassLoader -->
-  <bean id="classLoader" class="org.openengsb.core.ekb.internal.EKBClassLoader">
+  <bean id="classLoader" class="org.openengsb.core.ekb.internal.EKBClassLoaderService">
    	<argument ref="blueprintBundleContext" />  
   </bean>
   

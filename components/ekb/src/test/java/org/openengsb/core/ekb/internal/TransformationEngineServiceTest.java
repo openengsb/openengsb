@@ -42,7 +42,7 @@ public class TransformationEngineServiceTest {
     public void init() {
         service = new TransformationEngineService();
         ModelRegistryService registry = ModelRegistryService.getInstance();
-        registry.setEkbClassLoader(new EKBClassLoader());
+        registry.setEkbClassLoader(new EKBTestClassLoader());
         service.setModelRegistry(registry);
     }
 

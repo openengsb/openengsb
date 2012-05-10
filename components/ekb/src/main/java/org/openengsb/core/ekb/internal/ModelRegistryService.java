@@ -141,7 +141,7 @@ public class ModelRegistryService implements ModelRegistry, BundleListener {
 
     @Override
     public Class<?> loadModel(ModelDescription model) throws ClassNotFoundException {
-        return ekbClassLoader.loadClass(model.getModelClassName());
+        return ekbClassLoader.loadModel(model);
     }
 
     @Override
