@@ -166,6 +166,7 @@
     <scripting.version>1.5.0</scripting.version>
     <xbean.blueprint.version>3.7</xbean.blueprint.version>
     <h2.version>1.3.163</h2.version>
+    <labs.delegation.version>0.1.0</labs.delegation.version>
   </properties>
 
   <dependencyManagement>
@@ -660,6 +661,11 @@
         <artifactId>paxexam-karaf-container</artifactId>
         <version>${karaf.exam.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.labs.delegation</groupId>
+        <artifactId>org.openengsb.labs.delegation.service</artifactId>
+        <version>${labs.delegation.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
