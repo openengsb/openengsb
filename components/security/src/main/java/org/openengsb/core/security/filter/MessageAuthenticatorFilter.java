@@ -30,7 +30,7 @@ import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.labs.delegation.service.ClassProvider;
-import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,14 +86,9 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     @SuppressWarnings("unchecked")
     private Class<? extends Credentials> loadCredentialsType(String className)
         throws ClassNotFoundException {
-        Filter filter =
-            utilsService.makeFilter(ClassProvider.class,
-                String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, className));
-        Class<? extends Credentials> credentialType;
-        credentialType =
-            (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
-                .loadClass(className);
-        return credentialType;
+        Filter filter = DelegationUtil.createClassProviderFilter(className);
+        return (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
+            .loadClass(className);
     }
 
     @Override
