@@ -99,7 +99,7 @@ public class TransformationEngineService implements TransformationEngine {
     public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
         return getTransformationDescription(sourceModel, targetModel) != null;
     }
-    
+
     @Override
     public void deleteDescriptionsByFile(String fileName) {
         for (TransformationDescription description : getDescriptionsByFile(fileName)) {
@@ -118,7 +118,22 @@ public class TransformationEngineService implements TransformationEngine {
         return result;
     }
 
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            List<String> ids) {
+        // TODO: implement this correctly when the graph db is added
+        return performTransformation(sourceModel, targetModel, source);
+    }
+
+    @Override
+    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel,
+            List<String> ids) {
+        // TODO: implement this correctly when the graph db is added
+        return isTransformationPossible(sourceModel, targetModel);
+    }
+
     public void setModelRegistry(ModelRegistry modelRegistry) {
         this.modelRegistry = modelRegistry;
     }
+
 }

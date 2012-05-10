@@ -43,12 +43,12 @@ public interface TransformationEngine {
      * Deletes a transformation description from the transformation engine memory.
      */
     void deleteDescription(TransformationDescription description);
-    
+
     /**
      * Deletes all transformation descriptions which are added through a file with the given file name.
      */
     void deleteDescriptionsByFile(String fileName);
-    
+
     /**
      * Returns a list of transformation descriptions which were added through a file with the given file name.
      */
@@ -61,7 +61,21 @@ public interface TransformationEngine {
     Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source);
 
     /**
+     * Transforms the source object of the source model type to the target model type with a path where transformations
+     * with all given ids are used. Throws an IllegalArgumentException if no transformation descriptions for this
+     * transformation are available.
+     */
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            List<String> ids);
+
+    /**
      * Returns true if there is a transformation possible from source to target model. Returns false if not.
      */
     Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel);
+
+    /**
+     * Returns true if there is a transformation possible from source to target model with a path where transformations
+     * with all given ids are used. Returns false if not.
+     */
+    Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel, List<String> ids);
 }
