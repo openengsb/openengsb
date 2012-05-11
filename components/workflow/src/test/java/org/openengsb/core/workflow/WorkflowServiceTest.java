@@ -449,4 +449,11 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
     }
 
+    @Test
+    public void throwEvent_shouldAuditEvent() throws Exception {
+        Event event = new Event("good");
+        service.processEvent(event);
+        verify(auditingMock).audit(event);
+    }
+
 }

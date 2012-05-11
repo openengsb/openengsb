@@ -68,6 +68,8 @@
     <feature>shiro-web</feature>
     <feature>shiro-spring</feature>
 
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
+
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
@@ -276,7 +278,6 @@
       Based on the OpenEngSB UI Core this feature setup a complete administration UI to control and configure
       the OpenEngSB according to the needs of a project.
     </details>
-    <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.admin/${project.version}</bundle>
   </feature>
