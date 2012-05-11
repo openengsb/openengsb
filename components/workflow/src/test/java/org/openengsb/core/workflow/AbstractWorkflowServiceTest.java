@@ -42,6 +42,7 @@ import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -51,6 +52,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     protected HashMap<String, Domain> domains;
     protected TaskboxService taskbox;
     protected TaskboxServiceInternal taskboxInternal;
+    protected AuditingDomain auditingMock;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -61,7 +63,13 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     public void setUp() throws Exception {
         OsgiHelper.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         setupRulemanager();
+
+        auditingMock = mock(AuditingDomain.class);
+        registerServiceAtLocation(auditingMock, "auditing-root", AuditingDomain.class);
+
         service = new WorkflowServiceImpl();
+        service.setAuditingConnectors(makeServiceList(AuditingDomain.class));
+
         setupTaskbox();
         service.setRulemanager(manager);
         service.setTaskbox(taskbox);
