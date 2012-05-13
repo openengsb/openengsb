@@ -42,6 +42,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
+    private EKBModelGraph graphDb;
 
     private ModelRegistryService() {
         cache = new HashMap<Bundle, Set<ModelDescription>>();
@@ -58,10 +59,6 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
     public void bundleChanged(BundleEvent event) {
         if (event.getType() != BundleEvent.INSTALLED && event.getType() != BundleEvent.UNINSTALLED) {
             return;
-        }
-        System.out.println("get models for bundle " + event.getBundle() + ":");
-        for (ModelDescription model : getModels(event.getBundle())) {
-            System.out.println(model);
         }
         Set<ModelDescription> models = null;
         if (cache.containsKey(event.getBundle())) {
@@ -133,12 +130,12 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     @Override
     public void registerModel(ModelDescription model) {
-        // TODO add model to the graph database        
+        graphDb.addModel(model);        
     }
 
     @Override
     public void unregisterModel(ModelDescription model) {
-        // TODO remove model from the graph database
+        graphDb.removeModel(model);
     }
 
     @Override
@@ -160,5 +157,9 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     public void setEkbClassLoader(EKBClassLoader ekbClassLoader) {
         this.ekbClassLoader = ekbClassLoader;
+    }
+    
+    public void setGraphDb(EKBModelGraph graphDb) {
+        this.graphDb = graphDb;
     }
 }

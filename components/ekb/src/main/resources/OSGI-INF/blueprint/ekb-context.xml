@@ -55,6 +55,7 @@
   <!-- Model Registry -->
   <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" factory-method="getInstance">
     <property name="ekbClassLoader" ref="classLoader" />
+    <property name="graphDb" ref="graphDB" />
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.ModelRegistry">
@@ -64,6 +65,7 @@
   <!-- Transformation Engine -->
   <bean id="transformationEngineService" class="org.openengsb.core.ekb.internal.TransformationEngineService">
     <property name="modelRegistry" ref="modelRegistryService" />
+    <property name="graphDb" ref="graphDB" />
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.TransformationEngine">
@@ -77,6 +79,8 @@
   <bean id="classLoader" class="org.openengsb.core.ekb.internal.EKBClassLoaderService">
    	<argument ref="blueprintBundleContext" />  
   </bean>
+  
+  <bean id="graphDB" class="org.openengsb.core.ekb.internal.EKBModelGraph" factory-method="getInstance" />
   
   <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.ekb.internal.deployer.TransformationDeployerService">

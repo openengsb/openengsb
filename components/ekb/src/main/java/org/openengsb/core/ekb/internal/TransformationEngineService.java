@@ -34,18 +34,13 @@ import org.slf4j.LoggerFactory;
  */
 public class TransformationEngineService implements TransformationEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
-    private List<TransformationDescription> descriptions;
     private ModelRegistry modelRegistry;
-
-    public TransformationEngineService() {
-        descriptions = new ArrayList<TransformationDescription>();
-    }
+    private EKBModelGraph graphDb;
 
     @Override
     public void saveDescription(TransformationDescription description) {
         deleteDescription(description);
-        descriptions.add(description);
-        LOGGER.debug("Added transformation description to the TransformationEngine");
+        graphDb.addTransformation(description);
     }
 
     @Override
@@ -57,48 +52,7 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public void deleteDescription(TransformationDescription description) {
-        for (TransformationDescription desc : descriptions) {
-            if (desc.equals(description)) {
-                descriptions.remove(desc);
-                return;
-            }
-        }
-    }
-
-    /**
-     * Returns the first possible way to transform an object of the source model to an object of the target model.
-     */
-    private TransformationDescription getTransformationDescription(ModelDescription source, ModelDescription target) {
-        TransformationDescription compare = new TransformationDescription(source, target);
-        for (TransformationDescription td : descriptions) {
-            if (td.equals(compare)) {
-                return td;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
-        try {
-            TransformationDescription desc = getTransformationDescription(sourceModel, targetModel);
-            if (desc != null) {
-                TransformationPerformer performer = new TransformationPerformer(modelRegistry);
-                return performer.transformObject(desc, source);
-            }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        throw new IllegalArgumentException("No transformation description for this model pair defined");
-    }
-
-    @Override
-    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
-        return getTransformationDescription(sourceModel, targetModel) != null;
+        graphDb.removeTransformation(description);
     }
 
     @Override
@@ -110,31 +64,52 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public List<TransformationDescription> getDescriptionsByFile(String fileName) {
-        List<TransformationDescription> result = new ArrayList<TransformationDescription>();
-        for (TransformationDescription description : descriptions) {
-            if (fileName.equals(description.getFileName())) {
-                result.add(description);
-            }
-        }
-        return result;
+        return graphDb.getTransformationsPerFileName(fileName);
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
+        return performTransformation(sourceModel, targetModel, source, new ArrayList<String>());
     }
 
     @Override
     public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
             List<String> ids) {
-        // TODO: implement this correctly when the graph db is added
-        return performTransformation(sourceModel, targetModel, source);
+        try {
+            List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
+            if (result != null && !result.isEmpty()) {
+                TransformationDescription description = result.get(0);
+                TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                return performer.transformObject(description, source);
+                // TODO: implement this correctly when the graph db is added
+            }
+        } catch (InstantiationException e) {
+            LOGGER.error("Instantiation exception while trying to perform transformations", e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error("Illegal accesss exception while trying to perform transformations", e);
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Class not found exception while trying to perform transformations", e);
+        }
+        throw new IllegalArgumentException("No transformation description for the given parameters defined");
+    }
+
+    @Override
+    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
+        return isTransformationPossible(sourceModel, targetModel, new ArrayList<String>());
     }
 
     @Override
     public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel,
             List<String> ids) {
-        // TODO: implement this correctly when the graph db is added
-        return isTransformationPossible(sourceModel, targetModel);
+        return graphDb.isTransformationPossible(sourceModel, targetModel, ids);
     }
 
     public void setModelRegistry(ModelRegistry modelRegistry) {
         this.modelRegistry = modelRegistry;
+    }
+
+    public void setGraphDb(EKBModelGraph graphDb) {
+        this.graphDb = graphDb;
     }
 
 }

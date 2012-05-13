@@ -18,10 +18,13 @@
 package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +44,14 @@ public class TransformationEngineServiceTest {
     @Before
     public void init() {
         service = new TransformationEngineService();
+        EKBModelGraph graph = EKBModelGraph.getInstance();
         ModelRegistryService registry = ModelRegistryService.getInstance();
         registry.setEkbClassLoader(new EKBTestClassLoader());
+        registry.setGraphDb(graph);
         service.setModelRegistry(registry);
+        service.setGraphDb(graph);
+        graph.addModel(getModelADescription());
+        graph.addModel(getModelBDescription());
     }
 
     private ModelDescription getModelADescription() {
@@ -73,9 +81,17 @@ public class TransformationEngineServiceTest {
     private ModelB transformModelAToModelB(ModelA model) {
         return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model);
     }
+    
+    private ModelB transformModelAToModelB(ModelA model, String id) {
+        return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model, Arrays.asList(id));
+    }
 
     private ModelA transformModelBToModelA(ModelB model) {
         return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model);
+    }
+    
+    private ModelA transformModelBToModelA(ModelB model, String id) {
+        return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model, Arrays.asList(id));
     }
 
     @Test
@@ -106,6 +122,7 @@ public class TransformationEngineServiceTest {
         model.setBlubA("test3");
 
         ModelB result = transformModelAToModelB(model);
+        
         assertThat(result.getIdB(), is("test1"));
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
@@ -126,6 +143,7 @@ public class TransformationEngineServiceTest {
         model.setBlubA("test3");
 
         ModelB result = transformModelAToModelB(model);
+        
         assertThat(result.getIdB(), is("test1"));
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
@@ -398,6 +416,31 @@ public class TransformationEngineServiceTest {
 
         assertThat(result.getIntValue(), is(42));
     }
+    
+    @Test
+    public void testIdBasedTransformation_shouldWork() throws Exception {
+        TransformationDescription desc = getDescriptionForModelBToModelA();
+        desc.forwardField("idB", "idA");
+        desc.setId("id1");
+        service.saveDescription(desc);
+        
+        desc = getDescriptionForModelBToModelA();
+        desc.setId("id2");
+        desc.forwardField("testB", "testA");
+        service.saveDescription(desc);
+        
+        ModelB model = new ModelB();
+        model.setIdB("testId");
+        model.setTestB("testString");
+        
+        ModelA result1 = transformModelBToModelA(model, "id1");
+        ModelA result2 = transformModelBToModelA(model, "id2");
+        
+        assertThat(result1.getIdA(), is(model.getIdB()));
+        assertThat(result1.getTestA(), nullValue());
+        assertThat(result2.getTestA(), is(model.getTestB()));
+        assertThat(result2.getIdA(), nullValue());
+    }
 
     @Test
     public void testReadTransformationMetaDataFromFile_shouldWork() {
@@ -430,8 +473,8 @@ public class TransformationEngineServiceTest {
         modelB.setTestB("hello");
         modelB.setBlubB("test3#test4");
 
-        ModelB resultB = transformModelAToModelB(modelA);
-        ModelA resultA = transformModelBToModelA(modelB);
+        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_1");
+        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_1");
 
         assertThat(resultB.getIdB(), is("test1"));
         assertThat(resultB.getTestB(), is("test"));
@@ -464,8 +507,8 @@ public class TransformationEngineServiceTest {
         modelA.setTestA("Hello");
         modelA.setBlubA("testHellotest");
 
-        ModelB resultB = transformModelAToModelB(modelA);
-        ModelA resultA = transformModelBToModelA(modelB);
+        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_2");
+        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_2");
 
         assertThat(resultA.getIdA(), is(modelB.getIdB().toLowerCase()));
         assertThat(resultA.getTestA(), is(modelB.getTestB().toUpperCase()));
@@ -492,8 +535,8 @@ public class TransformationEngineServiceTest {
         modelA.setIdA("1");
         modelA.setTestA("works?");
 
-        ModelB resultB = transformModelAToModelB(modelA);
-        ModelA resultA = transformModelBToModelA(modelB);
+        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_3");
+        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_3");
 
         assertThat(resultA.getIdA(), is("id"));
         assertThat(resultA.getTestA(), is("olleh"));
@@ -503,5 +546,15 @@ public class TransformationEngineServiceTest {
         assertThat(resultB.getIdB(), is("0001"));
         assertThat(resultB.getTestB(), is("works?!"));
         assertThat(resultB.getIntValue(), is(1));
+    }
+
+    @Test
+    public void testGetDescriptionsByFile_shouldWork() {
+        File descriptionFile =
+            new File(getClass().getClassLoader().getResource("testDescription3.transformation").getFile());
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
+        service.saveDescriptions(descriptions);
+
+        assertThat(service.getDescriptionsByFile("testDescription3.transformation").size(), not(0));
     }
 }
