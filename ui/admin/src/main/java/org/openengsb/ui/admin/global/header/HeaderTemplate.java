@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -65,13 +66,13 @@ public class HeaderTemplate extends Panel {
 
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
-                //add(new Label("version", new StringResourceModel("unknown.version", this, null)));
+                add(new Label("version", new StringResourceModel("unknown.version", this, null)));
             } else {
-                //add(new Label("version", openengsbVersion.getVersionNumber()));
+                add(new Label("version", openengsbVersion.getVersionNumber()));
             }
             return;
         } else {
-            //add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
+            add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }
     }
 

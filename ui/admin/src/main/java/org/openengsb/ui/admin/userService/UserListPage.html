@@ -23,7 +23,13 @@
    <body>
 
     <wicket:extend>
-      <div wicket:id="lazy"></div>
+      <div class="sectionContainer lightbox">
+        <ul class="sectionMenuSelector">
+          <li class="separator"><wicket:message key="userList" /></li>
+          <li class="separator">test</li>
+        </ul>
+        <div wicket:id="lazy"></div>
+      </div>      
       <div id="userDialogue" wicket:id="userDialogue" class="hidden"></div>
     </wicket:extend>
   </body>

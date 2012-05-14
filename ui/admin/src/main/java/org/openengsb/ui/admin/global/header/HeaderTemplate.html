@@ -29,16 +29,13 @@
 	  </a>
     </div>
 	    <div id="topMenu" class="unit size1of3 lastUnit header">
+	      <span id="topVersionContainer">OpenEngSB version: <span wicket:id="version"/></span>
 	      <ul id="topMenuContainer">
-	    	<li class="tmc-left" />
-	    	<li class="tmc-center">
-	    	  <span class="topMenuLabel">Max Meier</span>
-	    	</li>
-	    	  <li class="tmc-seperator" />
-	    	  <li class="tmc-center dropdownTrigger">
-	    	    <span class="topMenuLabel" wicket:id="currentProject">Project</span>
-	    		<span class="dropdownIcon">&nbsp;</span>
-	    		<ul id="availableContexts" class="dropdownContainer hidden">
+	        <li class="ddTrigger">
+	          <span class="topMenuLabel" wicket:id="currentProject">Project</span>
+	          <div class="dropDownContainer hidden">
+	            <div class="line boxArrow">&nbsp;</div>
+	            <ul id="availableContexts">
 	    		  <li class="dropdownContainerHeadline"><wicket:message key="context.select" /></li>
 	    		  <li wicket:id="availableContexts">
 	    		    <a wicket:id="availableContext">
@@ -46,23 +43,23 @@
 	    		    </a>
 	    		  </li>
 	    		</ul>
-		      </li>
-	          <li class="tmc-seperator" />
-	    	  <li class="tmc-center dropdownTrigger">
-	    		<span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
-	    		<span class="dropdownIcon">&nbsp;</span>
-	    		<ul id="availableLanguages" class="dropdownContainer hidden">
+	          </div>
+	        </li>
+	        <li class="ddTrigger">
+	          <span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
+	          <div class="dropDownContainer hidden">
+	            <div class="line boxArrow">&nbsp;</div> 
+	            <ul id="availableLanguages">
 	    		  <li class="dropdownContainerHeadline"><wicket:message key="language.select" /></li>
 	    		  <li><a wicket:id="lang.en">English (EN)</a></li>
 	    		  <li><a wicket:id="lang.de">German (DE)</a></li>
-	    		</ul>
-	    	  </li>
-	    	  <li class="tmc-seperator" />
-			  <li class="tmc-center">
-				<a href="BasePage.html#" class="topMenuLabel" wicket:id="logout" >Logout</a>
-	    	  </li>
-	    	  <li class="tmc-right" />
-	    	</ul>
+	            </ul>
+	          </div> 
+	        </li>
+	        <li>
+			  <a href="BasePage.html#" class="topMenuLabel" wicket:id="logout" >Logout</a>
+	    	</li>
+	      </ul>
 	    </div>
   </wicket:panel>
 </body>
