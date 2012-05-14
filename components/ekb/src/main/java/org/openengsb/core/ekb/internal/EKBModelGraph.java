@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,8 @@ public class EKBModelGraph {
      */
     public void addModel(ModelDescription model) {
         ODocument node = graph.createVertex("Models");
-        node.field(OGraphDatabase.LABEL, model.toString());
-        node.field(ACTIVE_FIELD, "true");
+        setIdFieldValue(node, model.toString());
+        setActiveFieldValue(node, true);
         node.save();
         LOGGER.debug("Added model {} to the graph database", model);
     }
@@ -79,7 +80,7 @@ public class EKBModelGraph {
             LOGGER.warn("Couldn't remove model {} since it wasn't present in the graph database", model);
             return;
         }
-        node.field(ACTIVE_FIELD, "false");
+        setActiveFieldValue(node, false);
         node.save();
         LOGGER.debug("Removed model {} from the graph database", model);
     }
@@ -109,9 +110,9 @@ public class EKBModelGraph {
         ODocument source = getOrCreateModel(description.getSourceModel().toString());
         ODocument target = getOrCreateModel(description.getTargetModel().toString());
         ODocument edge = graph.createEdge(source, target);
-        edge.field(OGraphDatabase.LABEL, description.getId());
+        setIdFieldValue(edge, description.getId());
         if (description.getFileName() != null) {
-            edge.field(FILENAME, description.getFileName());
+            setFilenameFieldValue(edge, description.getFileName());
         }
         edge.save();
         descriptions.put(description.getId(), description);
@@ -126,7 +127,7 @@ public class EKBModelGraph {
         String source = description.getSourceModel().toString();
         String target = description.getTargetModel().toString();
         for (ODocument edge : getEdgesBetweenModels(source, target)) {
-            String id = (String) edge.field(OGraphDatabase.LABEL);
+            String id = getIdFieldValue(edge);
             if (description.getId() == null && isInternalId(id)) {
                 edge.delete();
                 descriptions.remove(id);
@@ -148,7 +149,7 @@ public class EKBModelGraph {
         List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>(query), filename);
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         for (ODocument edge : edges) {
-            result.add(descriptions.get((String) edge.field(FILENAME)));
+            result.add(descriptions.get(getIdFieldValue(edge)));
         }
         return result;
     }
@@ -167,7 +168,7 @@ public class EKBModelGraph {
         }
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         if (edge != null) {
-            result.add(descriptions.get((String) edge.field(OGraphDatabase.LABEL)));
+            result.add(descriptions.get(getIdFieldValue(edge)));
             return result;
         }
         throw new IllegalArgumentException("no transformation description found");
@@ -221,7 +222,6 @@ public class EKBModelGraph {
     /**
      * Returns all neighbors of a model.
      */
-    @SuppressWarnings("unused")
     private List<ODocument> getNeighborsOfModel(String model) {
         ODocument from = getModel(model);
         List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>("select from E where out = ?"), from);
@@ -242,8 +242,8 @@ public class EKBModelGraph {
         ODocument node = getModel(model);
         if (node == null) {
             node = graph.createVertex("Models");
-            node.field(OGraphDatabase.LABEL, model.toString());
-            node.field(ACTIVE_FIELD, "false");
+            setIdFieldValue(node, model.toString());
+            setActiveFieldValue(node, false);
             node.save();
         }
         return node;
@@ -260,5 +260,97 @@ public class EKBModelGraph {
         } else {
             return null;
         }
+    }
+    
+    
+    private List<ODocument> getPath(String start, String end, List<String> ids, ODocument... steps) {
+        List<ODocument> neighbors = getNeighborsOfModel(start);
+        for (ODocument neighbor : neighbors) {
+            if (alreadyVisited(neighbor, steps) || !getActiveFieldValue(neighbor)) {
+                continue;
+            }
+            ODocument nextStep = getEdgeWithPossibleId(start, getIdFieldValue(neighbor), ids);
+            if (getIdFieldValue(neighbor).equals(end)) {
+                List<ODocument> result = new ArrayList<ODocument>();
+                List<String> copyIds = new ArrayList<String>(ids);
+                for (ODocument step : steps) {
+                    String id = getIdFieldValue(step);
+                    if (id != null && copyIds.contains(id)) {
+                        copyIds.remove(id);
+                    }
+                    result.add(step);
+                }
+                String id = getIdFieldValue(nextStep);
+                if (id != null && copyIds.contains(id)) {
+                    copyIds.remove(id);
+                }
+                result.add(nextStep);
+                if (copyIds.isEmpty()) {
+                    return result;
+                } else {
+                    continue;
+                }
+            }
+            ODocument[] path = Arrays.copyOf(steps, steps.length + 1);
+            path[path.length - 1] = nextStep;
+            List<ODocument> check = getPath(getIdFieldValue(neighbor), end, ids, path);
+            if (check != null) {
+                return check;
+            }
+        }
+        return null;
+    }
+
+    private ODocument getEdgeWithPossibleId(String start, String end, List<String> ids) {
+        List<ODocument> edges = getEdgesBetweenModels(start, end);
+        for (ODocument edge : edges) {
+            if (ids.contains(getIdFieldValue(edge))) {
+                return edge;
+            }
+        }
+        return edges.get(0);
+    }
+
+    private boolean alreadyVisited(ODocument neighbor, ODocument[] steps) {
+        for (ODocument step : steps) {
+            ODocument out = graph.getOutVertex(step);
+            if (out.equals(neighbor)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    private String getIdFieldValue(ODocument document) {
+        return getFieldValue(document, OGraphDatabase.LABEL);
+    }
+    
+    private void setIdFieldValue(ODocument document, String value) {
+        setFieldValue(document, OGraphDatabase.LABEL, value);
+    }
+    
+    private Boolean getActiveFieldValue(ODocument document) {
+        return Boolean.parseBoolean(getFieldValue(document, ACTIVE_FIELD));
+    }
+    
+    private void setActiveFieldValue(ODocument document, Boolean active) {
+        setFieldValue(document, ACTIVE_FIELD, active.toString());
+    }
+    
+    private String getFilenameFieldValue(ODocument document) {
+        return getFieldValue(document, FILENAME);
+    }
+    
+    private void setFilenameFieldValue(ODocument document, String value) {
+        setFieldValue(document, FILENAME, value);
+    }
+    
+    private String getFieldValue(ODocument document, String fieldname) {
+        return (String) document.field(fieldname);
+    }
+    
+    private void setFieldValue(ODocument document, String fieldname, String value) {
+        document.field(fieldname, value);
     }
 }
