@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
  * the OpenEngSB osgi registry.
- * 
+ *
  * ServiceManagement-operations are performed via the {@link BundleContext}. All these calls are handled using two maps
  * to mock a service-registry (serviceReferences, services)
  */
@@ -200,7 +200,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
-        when(bundle.getHeaders()).thenReturn(new Hashtable<String, Object>());
+        when(bundle.getHeaders()).thenReturn(new Hashtable<String, String>());
     }
 
     public void clearRegistry() throws Exception {
@@ -308,10 +308,10 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
 
     /**
      * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
-     * 
+     *
      * Only {@link ConnectorInstanceFactory#createNewInstance(String)} is mocked to return a {@link Connector}-mock that
      * contains the given String as id.
-     * 
+     *
      * Also the factory is registered as a service with the required properties
      */
     protected ConnectorInstanceFactory createFactoryMock(String connector,
@@ -337,7 +337,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
     /**
      * creates a DomainProvider with for the given interface and name. This creates a mock of {@link DomainProvider}
      * where all String-methods return the name again.
-     * 
+     *
      * Also the service is registered with the mocked service-registry with the given name as domain-value
      */
     protected DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {

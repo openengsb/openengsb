@@ -17,6 +17,7 @@
 
 package org.openengsb.core.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -159,6 +160,24 @@ public class DummyBundle implements Bundle {
 
     @Override
     public Version getVersion() {
+        return null;
+    }
+
+    @Override
+    public int compareTo(Bundle o) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public <A> A adapt(Class<A> arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public File getDataFile(String arg0) {
+        // TODO Auto-generated method stub
         return null;
     }
 

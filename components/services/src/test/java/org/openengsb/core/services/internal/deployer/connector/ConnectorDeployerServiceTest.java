@@ -125,9 +125,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
         testConnectorId = new ConnectorDefinition("mydomain", "aconnector", "serviceid");
-        
+
         wiringService = defaultWiringService;
-        
+
     }
 
     private void setupPersistence() {
@@ -195,7 +195,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         serviceUtils.getService("(bla=foo)", 100L);
 
-        ServiceReference serviceReference = bundleContext.getServiceReferences(null, "(bla=foo)")[0];
+        ServiceReference serviceReference = bundleContext.getServiceReferences((String) null, "(bla=foo)")[0];
         Integer ranking = (Integer) serviceReference.getProperty(Constants.SERVICE_RANKING);
         assertThat(ranking, notNullValue());
     }
