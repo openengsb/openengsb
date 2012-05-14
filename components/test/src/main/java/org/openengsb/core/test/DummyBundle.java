@@ -21,8 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
@@ -66,9 +68,8 @@ public class DummyBundle implements Bundle {
     public void uninstall() throws BundleException {
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Dictionary getHeaders() {
+    public Dictionary<String, String> getHeaders() {
         return null;
     }
 
@@ -83,12 +84,12 @@ public class DummyBundle implements Bundle {
     }
 
     @Override
-    public ServiceReference[] getRegisteredServices() {
+    public ServiceReference<?>[] getRegisteredServices() {
         return null;
     }
 
     @Override
-    public ServiceReference[] getServicesInUse() {
+    public ServiceReference<?>[] getServicesInUse() {
         return null;
     }
 
@@ -102,9 +103,8 @@ public class DummyBundle implements Bundle {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Dictionary getHeaders(String locale) {
+    public Dictionary<String, String> getHeaders(String locale) {
         return null;
     }
 
@@ -113,21 +113,18 @@ public class DummyBundle implements Bundle {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Class loadClass(String name) throws ClassNotFoundException {
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
         return getClass().getClassLoader().loadClass(name);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Override
-    public Enumeration getResources(String name) throws IOException {
+    public Enumeration<URL> getResources(String name) throws IOException {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Enumeration getEntryPaths(String path) {
+    public Enumeration<String> getEntryPaths(String path) {
         return null;
     }
 
@@ -141,9 +138,8 @@ public class DummyBundle implements Bundle {
         return 0;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Enumeration findEntries(String path, String filePattern, boolean recurse) {
+    public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
         return null;
     }
 
@@ -152,9 +148,9 @@ public class DummyBundle implements Bundle {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Map getSignerCertificates(int signersType) {
+    public Map<X509Certificate, List<X509Certificate>> getSignerCertificates(int signersType) {
+        // TODO Auto-generated method stub
         return null;
     }
 
