@@ -181,7 +181,7 @@
     <bundle>mvn:org.apache.activemq/activemq-pool/${activemq.version}</bundle>
     <!--<bundle>mvn:org.apache.activemq/activemq-karaf/${activemq.version}</bundle>-->
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${smx.specs.version}</bundle>
-    <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle>
+<!--     <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle> -->
   </feature>
 
   <feature name="activemq-web-console" version="${project.version}" description="ActiveMQ Webconsole">
