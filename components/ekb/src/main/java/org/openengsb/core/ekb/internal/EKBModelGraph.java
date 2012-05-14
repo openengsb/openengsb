@@ -64,8 +64,11 @@ public class EKBModelGraph {
      * Adds a model to the graph database and defines it as an active model.
      */
     public void addModel(ModelDescription model) {
-        ODocument node = graph.createVertex("Models");
-        setIdFieldValue(node, model.toString());
+        ODocument node = getModel(model.toString());
+        if (node == null) {
+            node = graph.createVertex("Models");
+            setIdFieldValue(node, model.toString());
+        }
         setActiveFieldValue(node, true);
         node.save();
         LOGGER.debug("Added model {} to the graph database", model);
@@ -83,22 +86,6 @@ public class EKBModelGraph {
         setActiveFieldValue(node, false);
         node.save();
         LOGGER.debug("Removed model {} from the graph database", model);
-    }
-
-    /**
-     * Tests if a transformation description has an id and adds an unique id if it hasn't one.
-     */
-    private void checkTransformationDescriptionId(TransformationDescription description) {
-        if (description.getId() == null) {
-            description.setId("EKBInternal-" + counter.incrementAndGet());
-        }
-    }
-
-    /**
-     * Returns true if the given id is an automatically generated id, or a user defined one.
-     */
-    private boolean isInternalId(String id) {
-        return id.startsWith("EKBInternal-");
     }
 
     /**
@@ -160,15 +147,15 @@ public class EKBModelGraph {
      */
     public List<TransformationDescription> getTransformationPath(ModelDescription source, ModelDescription target,
             List<String> ids) {
-        ODocument edge;
-        if (ids == null || ids.isEmpty()) {
-            edge = getEdgeBetweenModels(source.toString(), target.toString(), null);
-        } else {
-            edge = getEdgeBetweenModels(source.toString(), target.toString(), ids.get(0));
+        if (ids == null) {
+            ids = new ArrayList<String>();
         }
+        List<ODocument> path = recursivePathSearch(source.toString(), target.toString(), ids, new ODocument[0]);
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
-        if (edge != null) {
-            result.add(descriptions.get(getIdFieldValue(edge)));
+        if (path != null) {
+            for (ODocument edge : path) {
+                result.add(descriptions.get(getIdFieldValue(edge)));
+            }
             return result;
         }
         throw new IllegalArgumentException("no transformation description found");
@@ -179,34 +166,23 @@ public class EKBModelGraph {
      * model type where all given transformation description ids appear in the path. Returns false if not.
      */
     public Boolean isTransformationPossible(ModelDescription source, ModelDescription target, List<String> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return getEdgeBetweenModels(source.toString(), target.toString(), null) != null;
-        } else {
-            return getEdgeBetweenModels(source.toString(), target.toString(), ids.get(0)) != null;
+        return getTransformationPath(source, target, ids) != null;
+    }
+
+    /**
+     * Tests if a transformation description has an id and adds an unique id if it hasn't one.
+     */
+    private void checkTransformationDescriptionId(TransformationDescription description) {
+        if (description.getId() == null) {
+            description.setId("EKBInternal-" + counter.incrementAndGet());
         }
     }
 
     /**
-     * Returns the first edge which is found between the source model and the target model. If an id is given, then the
-     * edge with the given id is returned, if this edge exists.
+     * Returns true if the given id is an automatically generated id, or a user defined one.
      */
-    private ODocument getEdgeBetweenModels(String source, String target, String id) {
-        ODocument from = getModel(source);
-        ODocument to = getModel(target);
-        String query = "select from E where out = ? AND in = ?";
-        Object[] args;
-        if (id != null) {
-            query = String.format("%s AND %s = ?", query, OGraphDatabase.LABEL);
-            args = new Object[]{ from, to, id };
-        } else {
-            args = new Object[]{ from, to };
-        }
-        List<ODocument> result = graph.query(new OSQLSynchQuery<ODocument>(query), args);
-        if (result.isEmpty()) {
-            return null;
-        } else {
-            return result.get(0);
-        }
+    private boolean isInternalId(String id) {
+        return id.startsWith("EKBInternal-");
     }
 
     /**
@@ -228,6 +204,7 @@ public class EKBModelGraph {
         List<ODocument> result = new ArrayList<ODocument>();
         for (ODocument edge : edges) {
             ODocument vertex = graph.getInVertex(edge);
+            vertex.reload();
             if (!result.contains(vertex)) {
                 result.add(vertex);
             }
@@ -261,9 +238,14 @@ public class EKBModelGraph {
             return null;
         }
     }
-    
-    
-    private List<ODocument> getPath(String start, String end, List<String> ids, ODocument... steps) {
+
+    /**
+     * Recursive path search function. It performs a depth first search with integrated loop check to find a path from
+     * the start model to the end model. If the id list is not empty, then the function only returns a path as valid if
+     * all transformations defined with the id list are in the path. It also takes care of models which aren't
+     * available. Returns null if there is no path found.
+     */
+    private List<ODocument> recursivePathSearch(String start, String end, List<String> ids, ODocument... steps) {
         List<ODocument> neighbors = getNeighborsOfModel(start);
         for (ODocument neighbor : neighbors) {
             if (alreadyVisited(neighbor, steps) || !getActiveFieldValue(neighbor)) {
@@ -287,13 +269,11 @@ public class EKBModelGraph {
                 result.add(nextStep);
                 if (copyIds.isEmpty()) {
                     return result;
-                } else {
-                    continue;
                 }
             }
             ODocument[] path = Arrays.copyOf(steps, steps.length + 1);
             path[path.length - 1] = nextStep;
-            List<ODocument> check = getPath(getIdFieldValue(neighbor), end, ids, path);
+            List<ODocument> check = recursivePathSearch(getIdFieldValue(neighbor), end, ids, path);
             if (check != null) {
                 return check;
             }
@@ -301,6 +281,10 @@ public class EKBModelGraph {
         return null;
     }
 
+    /**
+     * Returns an edge between the start and the end model. If there is an edge which has an id which is contained in
+     * the given id list, then this transformation is returned. If not, then the first found is returned.
+     */
     private ODocument getEdgeWithPossibleId(String start, String end, List<String> ids) {
         List<ODocument> edges = getEdgesBetweenModels(start, end);
         for (ODocument edge : edges) {
@@ -311,6 +295,9 @@ public class EKBModelGraph {
         return edges.get(0);
     }
 
+    /**
+     * Checks if a model is already visited in the path search algorithm. Needed for the loop detection.
+     */
     private boolean alreadyVisited(ODocument neighbor, ODocument[] steps) {
         for (ODocument step : steps) {
             ODocument out = graph.getOutVertex(step);
@@ -320,36 +307,52 @@ public class EKBModelGraph {
         }
         return false;
     }
-    
-    
+
+    /**
+     * Gets the value for the id field of a graph object.
+     */
     private String getIdFieldValue(ODocument document) {
         return getFieldValue(document, OGraphDatabase.LABEL);
     }
-    
+
+    /**
+     * Sets the value for the id field of a graph object.
+     */
     private void setIdFieldValue(ODocument document, String value) {
         setFieldValue(document, OGraphDatabase.LABEL, value);
     }
-    
+
+    /**
+     * Gets the value for the active field of a graph object.
+     */
     private Boolean getActiveFieldValue(ODocument document) {
         return Boolean.parseBoolean(getFieldValue(document, ACTIVE_FIELD));
     }
-    
+
+    /**
+     * Sets the value for the active field of a graph object.
+     */
     private void setActiveFieldValue(ODocument document, Boolean active) {
         setFieldValue(document, ACTIVE_FIELD, active.toString());
     }
-    
-    private String getFilenameFieldValue(ODocument document) {
-        return getFieldValue(document, FILENAME);
-    }
-    
+
+    /**
+     * Sets the value for the filename field of a graph object.
+     */
     private void setFilenameFieldValue(ODocument document, String value) {
         setFieldValue(document, FILENAME, value);
     }
-    
+
+    /**
+     * Gets the value for the given field of a graph object.
+     */
     private String getFieldValue(ODocument document, String fieldname) {
         return (String) document.field(fieldname);
     }
-    
+
+    /**
+     * Sets the value for the given field of an graph object.
+     */
     private void setFieldValue(ODocument document, String fieldname, String value) {
         document.field(fieldname, value);
     }

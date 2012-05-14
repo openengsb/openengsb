@@ -78,11 +78,12 @@ public class TransformationEngineService implements TransformationEngine {
         try {
             List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
             if (result != null && !result.isEmpty()) {
-                TransformationDescription description = result.get(0);
-                TransformationPerformer performer = new TransformationPerformer(modelRegistry);
-                return performer.transformObject(description, source);
-                // TODO: implement this correctly when the graph db is added
+                for (TransformationDescription step : result) {
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                    source = performer.transformObject(step, source);
+                }
             }
+            return source;
         } catch (InstantiationException e) {
             LOGGER.error("Instantiation exception while trying to perform transformations", e);
         } catch (IllegalAccessException e) {

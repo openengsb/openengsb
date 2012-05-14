@@ -36,6 +36,7 @@ import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.internal.models.ModelA;
 import org.openengsb.core.ekb.internal.models.ModelB;
+import org.openengsb.core.ekb.internal.models.ModelC;
 import org.osgi.framework.Version;
 
 public class TransformationEngineServiceTest {
@@ -52,6 +53,7 @@ public class TransformationEngineServiceTest {
         service.setGraphDb(graph);
         graph.addModel(getModelADescription());
         graph.addModel(getModelBDescription());
+        graph.addModel(getModelCDescription());
     }
 
     private ModelDescription getModelADescription() {
@@ -62,44 +64,58 @@ public class TransformationEngineServiceTest {
         return new ModelDescription(ModelB.class, new Version(1, 0, 0));
     }
 
-    private TransformationDescription getDescriptionForModelAToModelB() {
-        return new TransformationDescription(getModelADescription(), getModelBDescription());
+    private ModelDescription getModelCDescription() {
+        return new ModelDescription(ModelC.class, new Version(1, 0, 0));
     }
 
-    private TransformationDescription getDescriptionForModelAToModelB(String id) {
-        return new TransformationDescription(getModelADescription(), getModelBDescription(), id);
+    private TransformationDescription getDescriptionForModelAToModelB() {
+        return new TransformationDescription(getModelADescription(), getModelBDescription());
     }
 
     private TransformationDescription getDescriptionForModelBToModelA() {
         return new TransformationDescription(getModelBDescription(), getModelADescription());
     }
 
-    private TransformationDescription getDescriptionForModelBToModelA(String id) {
-        return new TransformationDescription(getModelBDescription(), getModelADescription(), id);
+    private TransformationDescription getDescriptionForModelBToModelC() {
+        return new TransformationDescription(getModelBDescription(), getModelCDescription());
+    }
+
+    private TransformationDescription getDescriptionForModelAToModelC() {
+        return new TransformationDescription(getModelADescription(), getModelCDescription());
     }
 
     private ModelB transformModelAToModelB(ModelA model) {
         return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model);
     }
-    
-    private ModelB transformModelAToModelB(ModelA model, String id) {
-        return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model, Arrays.asList(id));
+
+    private ModelB transformModelAToModelB(ModelA model, List<String> ids) {
+        return (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(), model, ids);
     }
 
     private ModelA transformModelBToModelA(ModelB model) {
         return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model);
     }
-    
-    private ModelA transformModelBToModelA(ModelB model, String id) {
-        return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model, Arrays.asList(id));
+
+    private ModelA transformModelBToModelA(ModelB model, List<String> ids) {
+        return (ModelA) service.performTransformation(getModelBDescription(), getModelADescription(), model, ids);
+    }
+
+    private ModelC transformModelAToModelC(ModelA model) {
+        return (ModelC) service.performTransformation(getModelADescription(), getModelCDescription(), model);
+    }
+
+    private ModelC transformModelAToModelC(ModelA model, List<String> ids) {
+        return (ModelC) service.performTransformation(getModelADescription(), getModelCDescription(), model, ids);
     }
 
     @Test
     public void testIfTransformationDescriptionsBuiltCorrectly_shouldWork() {
-        TransformationDescription desc1 = getDescriptionForModelAToModelB("aTob");
+        TransformationDescription desc1 = getDescriptionForModelAToModelB();
+        desc1.setId("aTob");
         desc1.forwardField("bla", "blub");
 
-        TransformationDescription desc2 = getDescriptionForModelBToModelA("bToa");
+        TransformationDescription desc2 = getDescriptionForModelBToModelA();
+        desc2.setId("bToa");
 
         assertThat(desc1.getId(), is("aTob"));
         assertThat(desc1.getTransformingSteps().size(), is(1));
@@ -122,7 +138,7 @@ public class TransformationEngineServiceTest {
         model.setBlubA("test3");
 
         ModelB result = transformModelAToModelB(model);
-        
+
         assertThat(result.getIdB(), is("test1"));
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
@@ -143,7 +159,7 @@ public class TransformationEngineServiceTest {
         model.setBlubA("test3");
 
         ModelB result = transformModelAToModelB(model);
-        
+
         assertThat(result.getIdB(), is("test1"));
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
@@ -416,30 +432,108 @@ public class TransformationEngineServiceTest {
 
         assertThat(result.getIntValue(), is(42));
     }
-    
+
     @Test
     public void testIdBasedTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.forwardField("idB", "idA");
         desc.setId("id1");
         service.saveDescription(desc);
-        
+
         desc = getDescriptionForModelBToModelA();
         desc.setId("id2");
         desc.forwardField("testB", "testA");
         service.saveDescription(desc);
-        
+
         ModelB model = new ModelB();
         model.setIdB("testId");
         model.setTestB("testString");
-        
-        ModelA result1 = transformModelBToModelA(model, "id1");
-        ModelA result2 = transformModelBToModelA(model, "id2");
-        
+
+        ModelA result1 = transformModelBToModelA(model, Arrays.asList("id1"));
+        ModelA result2 = transformModelBToModelA(model, Arrays.asList("id2"));
+
         assertThat(result1.getIdA(), is(model.getIdB()));
         assertThat(result1.getTestA(), nullValue());
         assertThat(result2.getTestA(), is(model.getTestB()));
         assertThat(result2.getIdA(), nullValue());
+    }
+
+    private void setupPathSearchEnvironment() {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.forwardField("idA", "idB");
+        desc.forwardField("testA", "testB");
+        service.saveDescription(desc);
+        desc = getDescriptionForModelAToModelB();
+        desc.setId("inverseAtoB");
+        desc.forwardField("idA", "testB");
+        desc.forwardField("testA", "idB");
+        service.saveDescription(desc);
+
+        desc = getDescriptionForModelBToModelC();
+        desc.forwardField("idB", "idC");
+        desc.forwardField("testB", "testC");
+        service.saveDescription(desc);
+        desc = getDescriptionForModelBToModelC();
+        desc.setId("inverseBtoC");
+        desc.forwardField("idB", "testC");
+        desc.forwardField("testB", "idC");
+        service.saveDescription(desc);
+
+        desc = getDescriptionForModelAToModelC();
+        desc.forwardField("idA", "idC");
+        desc.forwardField("testA", "testC");
+        service.saveDescription(desc);
+        desc = getDescriptionForModelAToModelC();
+        desc.setId("inverseAtoC");
+        desc.forwardField("idA", "testC");
+        desc.forwardField("testA", "idC");
+        service.saveDescription(desc);
+    }
+
+    @Test
+    public void testIfTransformationPathSearchIsWorking_shouldWork() {
+        setupPathSearchEnvironment();
+        ModelA model = new ModelA();
+        model.setIdA("testid");
+        model.setTestA("teststring");
+
+        ModelC result = transformModelAToModelC(model);
+        assertThat(result.getIdC(), is(model.getIdA()));
+        assertThat(result.getTestC(), is(model.getTestA()));
+    }
+
+    @Test
+    public void testIfTransformationPathWithIdsSearchIsWorking_shouldWork() {
+        setupPathSearchEnvironment();
+        ModelA model = new ModelA();
+        model.setIdA("testid");
+        model.setTestA("teststring");
+
+        ModelC result = transformModelAToModelC(model, Arrays.asList("inverseAtoB"));
+        assertThat(result.getIdC(), is(model.getTestA()));
+        assertThat(result.getTestC(), is(model.getIdA()));
+    }
+
+    @Test
+    public void testIfTransformationPathChecksInactiveModels_shouldWork() {
+        setupPathSearchEnvironment();
+        ModelRegistryService.getInstance().unregisterModel(getModelBDescription());
+
+        ModelA model = new ModelA();
+        model.setIdA("testid");
+        model.setTestA("teststring");
+
+        ModelC result = transformModelAToModelC(model);
+        boolean notFound = false;
+        try {
+            transformModelAToModelC(model, Arrays.asList("inverseAtoB"));
+        } catch (Exception e) {
+            notFound = true;
+        }
+        ModelRegistryService.getInstance().registerModel(getModelBDescription());
+        assertThat(result.getIdC(), is(model.getIdA()));
+        assertThat(result.getTestC(), is(model.getTestA()));
+        assertThat(notFound, is(true));
     }
 
     @Test
@@ -473,8 +567,8 @@ public class TransformationEngineServiceTest {
         modelB.setTestB("hello");
         modelB.setBlubB("test3#test4");
 
-        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_1");
-        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_1");
+        ModelB resultB = transformModelAToModelB(modelA, Arrays.asList("transformModelAToModelB_1"));
+        ModelA resultA = transformModelBToModelA(modelB, Arrays.asList("transformModelBToModelA_1"));
 
         assertThat(resultB.getIdB(), is("test1"));
         assertThat(resultB.getTestB(), is("test"));
@@ -507,8 +601,8 @@ public class TransformationEngineServiceTest {
         modelA.setTestA("Hello");
         modelA.setBlubA("testHellotest");
 
-        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_2");
-        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_2");
+        ModelB resultB = transformModelAToModelB(modelA, Arrays.asList("transformModelAToModelB_2"));
+        ModelA resultA = transformModelBToModelA(modelB, Arrays.asList("transformModelBToModelA_2"));
 
         assertThat(resultA.getIdA(), is(modelB.getIdB().toLowerCase()));
         assertThat(resultA.getTestA(), is(modelB.getTestB().toUpperCase()));
@@ -535,8 +629,8 @@ public class TransformationEngineServiceTest {
         modelA.setIdA("1");
         modelA.setTestA("works?");
 
-        ModelB resultB = transformModelAToModelB(modelA, "transformModelAToModelB_3");
-        ModelA resultA = transformModelBToModelA(modelB, "transformModelBToModelA_3");
+        ModelB resultB = transformModelAToModelB(modelA, Arrays.asList("transformModelAToModelB_3"));
+        ModelA resultA = transformModelBToModelA(modelB, Arrays.asList("transformModelBToModelA_3"));
 
         assertThat(resultA.getIdA(), is("id"));
         assertThat(resultA.getTestA(), is("olleh"));
