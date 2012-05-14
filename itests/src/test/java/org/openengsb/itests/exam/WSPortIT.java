@@ -17,11 +17,11 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.ByteArrayInputStream;
@@ -39,13 +39,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;

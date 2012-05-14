@@ -17,13 +17,13 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
@@ -39,6 +39,7 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,6 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;

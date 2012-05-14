@@ -73,6 +73,12 @@
     <dependency>
       <groupId>org.apache.karaf.tooling.exam</groupId>
       <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ops4j.pax.url</groupId>
+          <artifactId>pax-url-aether</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
