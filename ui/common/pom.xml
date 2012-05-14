@@ -115,6 +115,7 @@
         <configuration>
           <instructions>
             <Import-Package>org.ops4j.pax.wicket.util.proxy,
+              javax.servlet.*;version="[2.5,4)",
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)",

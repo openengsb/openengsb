@@ -66,13 +66,11 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
@@ -96,6 +94,9 @@ import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -103,6 +104,7 @@ import org.springframework.jms.support.JmsUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
@@ -242,8 +244,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         result.setMetaData(metaData);
         methodReturn = new MethodResultMessage(result, "123");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("credentialClass", Password.class.getName());
-        registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
+        props.put(Constants.PROVIDED_CLASSES_KEY, Password.class.getName());
+        props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_CREDENTIALS);
+        registerService(new ClassProviderImpl(bundle, Sets.newHashSet(Password.class.getName())), props,
+            ClassProvider.class);
         DefaultSecurityManager securityManager = new DefaultSecurityManager();
         securityManager.setAuthenticator(new Authenticator() {
             @Override
@@ -289,7 +293,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
                 producer.send(message);
-                TextMessage response = (TextMessage) consumer.receive(1000);
+                TextMessage response = (TextMessage) consumer.receive(10000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
                     response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);

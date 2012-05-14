@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,6 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.itests.util.AbstractExamTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.KarafDistributionConfigurationFilePutOption;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;

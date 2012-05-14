@@ -121,6 +121,7 @@
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
               org.ops4j.pax.wicket.util.proxy,
+              javax.servlet.*;version="[2.5,4)",
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)", *
