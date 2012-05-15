@@ -134,11 +134,11 @@ public final class EKBModelGraph {
             if (description.getId() == null && isInternalId(id)) {
                 edge.delete();
                 descriptions.remove(id);
-                LOGGER.debug("Removed transformation description {} to the graph database", id);
+                LOGGER.debug("Removed transformation description {} from the graph database", id);
             } else if (id.equals(description.getId())) {
                 edge.delete();
                 descriptions.remove(id);
-                LOGGER.debug("Removed transformation description {} to the graph database", id);
+                LOGGER.debug("Removed transformation description {} from the graph database", id);
                 break;
             }
         }
@@ -182,7 +182,12 @@ public final class EKBModelGraph {
      * model type where all given transformation description ids appear in the path. Returns false if not.
      */
     public Boolean isTransformationPossible(ModelDescription source, ModelDescription target, List<String> ids) {
-        return getTransformationPath(source, target, ids) != null;
+        try {
+            getTransformationPath(source, target, ids);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /**
@@ -215,17 +220,9 @@ public final class EKBModelGraph {
      * Returns all neighbors of a model.
      */
     private List<ODocument> getNeighborsOfModel(String model) {
-        ODocument from = getModel(model);
-        List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>("select from E where out = ?"), from);
-        List<ODocument> result = new ArrayList<ODocument>();
-        for (ODocument edge : edges) {
-            ODocument vertex = graph.getInVertex(edge);
-            vertex.reload();
-            if (!result.contains(vertex)) {
-                result.add(vertex);
-            }
-        }
-        return result;
+        String query = String.format("select from Models where in.out.%s in [?]", OGraphDatabase.LABEL);
+        List<ODocument> neighbors = graph.query(new OSQLSynchQuery<ODocument>(query), model);
+        return neighbors;
     }
 
     /**
