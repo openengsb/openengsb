@@ -123,7 +123,7 @@ public interface ConnectorManager {
     /**
      * Unregisters the given Connector from XLink.
      */
-    void disconnectFromXLink(ConnectorId id);
+    void disconnectFromXLink(ConnectorId id, String hostId);
 
     // @extract-end
     
