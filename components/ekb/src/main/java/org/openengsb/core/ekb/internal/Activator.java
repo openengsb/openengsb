@@ -33,6 +33,7 @@ public class Activator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         context.removeBundleListener(ModelRegistryService.getInstance());
+        EKBModelGraph.shutdown();
     }
 
 }

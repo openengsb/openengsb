@@ -57,7 +57,13 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     @Override
     public void bundleChanged(BundleEvent event) {
-        if (event.getType() != BundleEvent.INSTALLED && event.getType() != BundleEvent.UNINSTALLED) {
+        if (event.getType() != BundleEvent.STARTED && event.getType() != BundleEvent.STOPPED) {
+            return;
+        }
+        if(event.getBundle().getSymbolicName().equals("org.apache.servicemix.bundles.xmlbeans")) {
+            return;
+        }
+        if(event.getBundle().getSymbolicName().equals("org.ops4j.pax.wicket.service")) {
             return;
         }
         Set<ModelDescription> models = null;
@@ -65,16 +71,17 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
             models = cache.get(event.getBundle());
         } else {
             models = getModels(event.getBundle());
+            cache.put(event.getBundle(), models);
         }
         performModelActions(event, models);
     }
 
     private void performModelActions(BundleEvent event, Set<ModelDescription> models) {
-        if (event.getType() == BundleEvent.INSTALLED) {
+        if (event.getType() == BundleEvent.STARTED) {
             for (ModelDescription model : models) {
                 registerModel(model);
             }
-        } else if (event.getType() == BundleEvent.UNINSTALLED) {
+        } else if (event.getType() == BundleEvent.STOPPED) {
             for (ModelDescription model : models) {
                 unregisterModel(model);
             }
@@ -130,7 +137,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     @Override
     public void registerModel(ModelDescription model) {
-        graphDb.addModel(model);        
+        graphDb.addModel(model);
     }
 
     @Override

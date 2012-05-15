@@ -37,7 +37,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
  * The EKB model graph is used as base for the finding of transformation descriptions. It is using a graph database as
  * storage and is able to perform graph based algorithm on the transformation graph.
  */
-public class EKBModelGraph {
+public final class EKBModelGraph {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBModelGraph.class);
     private static final String ACTIVE_FIELD = "isActive";
     private static final String FILENAME = "filename";
@@ -52,12 +52,22 @@ public class EKBModelGraph {
         }
         return instance;
     }
+    
+    public static void shutdown() {
+        if(instance != null) {
+            instance.cleanup();
+        }
+    }
 
     private EKBModelGraph() {
         graph = new OGraphDatabase("memory:ekbgraphdb").create();
         graph.createVertexType("Models");
         descriptions = new HashMap<String, TransformationDescription>();
         counter = new AtomicLong(0L);
+    }
+    
+    private void cleanup() {
+        graph.close();
     }
 
     /**
