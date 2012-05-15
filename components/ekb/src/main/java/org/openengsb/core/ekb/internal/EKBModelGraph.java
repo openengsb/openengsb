@@ -52,9 +52,12 @@ public final class EKBModelGraph {
         }
         return instance;
     }
-    
+
+    /**
+     * Shuts down the graph database
+     */
     public static void shutdown() {
-        if(instance != null) {
+        if (instance != null) {
             instance.cleanup();
         }
     }
@@ -65,7 +68,10 @@ public final class EKBModelGraph {
         descriptions = new HashMap<String, TransformationDescription>();
         counter = new AtomicLong(0L);
     }
-    
+
+    /**
+     * Shuts down the graph database
+     */
     private void cleanup() {
         graph.close();
     }

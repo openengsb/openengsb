@@ -37,16 +37,16 @@ import org.osgi.framework.BundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of the model registry. It also implements a bundle listener which checks bundles for models and
+ * register/unregister them.
+ */
 public final class ModelRegistryService implements ModelRegistry, BundleListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
     private EKBModelGraph graphDb;
-
-    private ModelRegistryService() {
-        cache = new HashMap<Bundle, Set<ModelDescription>>();
-    }
 
     public static ModelRegistryService getInstance() {
         if (instance == null) {
@@ -55,15 +55,13 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         return instance;
     }
 
+    private ModelRegistryService() {
+        cache = new HashMap<Bundle, Set<ModelDescription>>();
+    }
+
     @Override
     public void bundleChanged(BundleEvent event) {
-        if (event.getType() != BundleEvent.STARTED && event.getType() != BundleEvent.STOPPED) {
-            return;
-        }
-        if(event.getBundle().getSymbolicName().equals("org.apache.servicemix.bundles.xmlbeans")) {
-            return;
-        }
-        if(event.getBundle().getSymbolicName().equals("org.ops4j.pax.wicket.service")) {
+        if (!shouldHandleEvent(event)) {
             return;
         }
         Set<ModelDescription> models = null;
@@ -76,6 +74,26 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         performModelActions(event, models);
     }
 
+    /**
+     * Returns true if a bundle event should be handled by the model registry and false if not.
+     */
+    private Boolean shouldHandleEvent(BundleEvent event) {
+        if (event.getType() != BundleEvent.STARTED && event.getType() != BundleEvent.STOPPED) {
+            return false;
+        }
+        String symbolicName = event.getBundle().getSymbolicName();
+        if (symbolicName.equals("org.apache.servicemix.bundles.xmlbeans")) {
+            return false;
+        }
+        if (symbolicName.equals("org.ops4j.pax.wicket.service")) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Performs the action with the received models, based on the bundle event type.
+     */
     private void performModelActions(BundleEvent event, Set<ModelDescription> models) {
         if (event.getType() == BundleEvent.STARTED) {
             for (ModelDescription model : models) {
@@ -88,30 +106,40 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         }
     }
 
+    /**
+     * Check all found classes of the bundle if they are models and return a set of all found model descriptions.
+     */
     private Set<ModelDescription> getModels(Bundle bundle) {
         Set<String> classes = discoverClasses(bundle);
         Set<ModelDescription> models = new HashSet<ModelDescription>();
 
         for (String classname : classes) {
-            Class<?> clazz;
-            try {
-                clazz = bundle.loadClass(classname);
-            } catch (ClassNotFoundException e) {
-                LOGGER.warn("bundle could not find own class: " + classname, e);
-                continue;
-            }
-            if (isModelClass(clazz)) {
+            if (isModelClass(classname, bundle)) {
                 models.add(new ModelDescription(classname, bundle.getVersion()));
             }
         }
         return models;
     }
 
-    private boolean isModelClass(Class<?> model) {
-        return OpenEngSBModel.class.isAssignableFrom(model);
+    /**
+     * Returns true if the class with the given class name contained in the given bundle is a model and false if not or
+     * the class couldn't be loaded.
+     */
+    private boolean isModelClass(String classname, Bundle bundle) {
+        Class<?> clazz;
+        try {
+            clazz = bundle.loadClass(classname);
+        } catch (ClassNotFoundException e) {
+            LOGGER.warn("bundle could not find own class: " + classname, e);
+            return false;
+        }
+        return OpenEngSBModel.class.isAssignableFrom(clazz);
     }
 
-    private static Set<String> discoverClasses(Bundle bundle) {
+    /**
+     * Searches the bundle for classes and return a set of all class names.
+     */
+    private Set<String> discoverClasses(Bundle bundle) {
         @SuppressWarnings("unchecked")
         Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
         Set<String> discoveredClasses = new HashSet<String>();
@@ -127,7 +155,10 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         return discoveredClasses;
     }
 
-    private static String extractClassName(URL classURL) {
+    /**
+     * Converts an URL to a class into a class name
+     */
+    private String extractClassName(URL classURL) {
         String path = classURL.getPath();
         return path
             .replaceAll("^/", "")
@@ -165,7 +196,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
     public void setEkbClassLoader(EKBClassLoader ekbClassLoader) {
         this.ekbClassLoader = ekbClassLoader;
     }
-    
+
     public void setGraphDb(EKBModelGraph graphDb) {
         this.graphDb = graphDb;
     }
