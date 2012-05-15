@@ -133,6 +133,7 @@
     <!--<bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>-->
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
 
+    <!-- Labs-delegation for handling delegated classloading -->
     <bundle>mvn:org.openengsb.labs.delegation/org.openengsb.labs.delegation.service/${labs.delegation.version}</bundle>
 
     <!-- JPA Infrastructure -->
