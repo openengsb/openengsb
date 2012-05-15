@@ -107,7 +107,7 @@ input[type=submit]:hover {
     border-radius: 5px 5px 5px 5px;
     margin: 15px 0 0 -58px;
     padding: 15px 0 15px 20px;
-    width: 100px;
+    min-width: 100px;
     overflow: visible;
     position: absolute;
 }

@@ -289,22 +289,68 @@ input[type=submit] {
 }
 
 .header {
-	background-color: #626262;
-    border-bottom: 1px solid #D1D1D1;
-	height: 55px;
-	}
+  background-color: #626262;
+  border-bottom: 1px solid #D1D1D1;
+  height: 55px;
+  color: #ffffff;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 0.75em;
+}
+
+#topVersionContainer{
+  position: absolute;
+  right: 15px;
+  top: 6px;
+  color: #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+}
 
 #topMenuContainer{
-	position: absolute;
-    right: 15px;
+  position: absolute;
+  right: 15px;
+  top: 24px;
 }
+
+.dropDownContainer {
+  background: none repeat scroll 0 0 #FFFFFF;
+  border: 1px solid #4890BB;
+  border-radius: 5px 5px 5px 5px;
+  margin: 15px 0 0 -58px;
+  padding: 15px 0 15px 20px;
+  min-width: 100px;
+  overflow: visible;
+  position: absolute;
+}
+
+.dropdownContainerHeadline{
+  color: #adadad;
+  font-weight: bold;
+}
+
+.dropDownContainer a, .dropDownContainer a:visited{
+    color: #4890BB;
+    float: left;
+    font-family: Helvetica,Arial;
+    font-size: 1em;
+    text-decoration: none;
+}
+
 
 #topMenuContainer li{
 	display: inline;
 	float: left;
 	list-style-type:none;
-	height: 38px;
+	height: 24px;
 	line-height: 30px;
+}
+
+.greyButton{
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #999999;
+    border-radius: 5px 5px 5px 5px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 0.7em;
+    padding: 4px;
 }
 
 #topMenuContainer a, #topMenuContainer span{
@@ -378,7 +424,32 @@ input[type=submit] {
 
 .topMenuLabel{
 	color: #ffffff;
-	font-size: 0.75em;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.sectionMenuSelector {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_background.png") repeat-x scroll 0 0 transparent;
+    border-bottom: 2px solid #75A8CF;
+    border-radius: 5px 5px 0 0;
+    height: 45px;
+    margin: -15px -15px 40px;
+  }
+  
+.sectionMenuSelector li {
+    display: inline;
+    float: left;
+    font-family: "Helvetica Neue",Helvetica,sans-serif,arial;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 14px;
+    width: 100px;
+    color: #75A8CF;
+    text-align: center;
+}
+
+.sectionMenuSelector li.separator {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_separator.png") no-repeat scroll 126px 0 transparent;
 }
 
 #topLogo{
@@ -394,6 +465,13 @@ input[type=submit] {
     top: 20px;
 }
 
+.boxArrow {
+  background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/box_arrow.png") no-repeat scroll 0 0 transparent;
+  left: 77px;
+  position: absolute;
+  top: -10px;
+  width: 20px;
+}
 
 
 #menu{
@@ -427,14 +505,12 @@ input[type=submit] {
 }
 
 .mainArea h1.sectionName{
-    border-bottom: 1px dashed #BB8483;
-    color: #BB8483;
-    font-family: Georgia;
+    border-bottom: 1px solid #D4AC76;
+    color: #D4AC76;
+    font-family: "Helvetica Neue",Helvetica,sans-serif,Arial;
     font-size: 1.4em;
-    font-style: italic;
-    margin: 0px 13px 15px 10px;
+    margin: 19px 13px 15px 19px;
     padding: 0 0 5px;
-    text-align: right;
 }
 
 .dropdownTrigger, .dropdownTrigger ul li a{
