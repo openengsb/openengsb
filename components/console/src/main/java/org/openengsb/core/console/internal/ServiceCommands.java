@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.felix.gogo.commands.Argument;
-import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.gogo.commands.Option;
+import org.apache.karaf.shell.commands.Argument;
+import org.apache.karaf.shell.commands.Command;
+import org.apache.karaf.shell.commands.Option;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
@@ -54,6 +54,7 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     private ServicesHelper serviceHelper;
 
+    @Override
     protected Object doExecute() throws Exception {
         try {
             ServiceCommandArguments arguments = retrieveArgumentOrDefault();
@@ -89,7 +90,7 @@ public class ServiceCommands extends OsgiCommandSupport {
     }
 
     private boolean retrieveOption() {
-        return Boolean.parseBoolean(this.force);
+        return Boolean.parseBoolean(force);
     }
 
     private Map<String, String> retrieveAttributes(List<String> attributes) {

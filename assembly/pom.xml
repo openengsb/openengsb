@@ -69,13 +69,19 @@
       <type>tar.gz</type>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
+      <groupId>org.apache.karaf.features</groupId>
       <artifactId>standard</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>spring</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
       <artifactId>enterprise</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
@@ -161,18 +167,19 @@
       </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>features-maven-plugin</artifactId>
+        <artifactId>karaf-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>add-features-to-repo</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>add-features-to-repo</goal>
+              <goal>features-add-to-repository</goal>
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-                <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
@@ -180,11 +187,10 @@
                 <!-- Missing Karaf Features -->
                 <feature>config</feature>
                 <feature>management</feature>
-                <feature>karaf-framework</feature>
                 <feature>kar</feature>
                 <feature>eventadmin</feature>
-                <feature>spring/${spring.version}</feature>
-                <feature>spring-web/${spring.version}</feature>
+                <feature>spring</feature>
+                <feature>spring-web</feature>
                 <feature>spring-dm</feature>
                 <feature>war</feature>
                 <feature>transaction</feature>
