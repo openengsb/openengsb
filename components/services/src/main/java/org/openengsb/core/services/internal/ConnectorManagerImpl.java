@@ -246,9 +246,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void disconnectFromXLink(ConnectorId id) {
-        //api change: add hostId to disconnect
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void disconnectFromXLink(ConnectorId id, String hostId) {
+        synchronized (xlinkRegistrations) {
+            XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+            xlinkRegistrations.remove(key);
+        }
     }
     
     private boolean isRegistered(ConnectorId id, String hostId) {
@@ -295,6 +297,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return tools;
     }
     
+    @Override
     public XLinkTemplate connectToXLink(
             ConnectorId id, 
             String hostId, 
