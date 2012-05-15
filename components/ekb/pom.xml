@@ -116,11 +116,13 @@
     <dependency>
       <groupId>com.orientechnologies</groupId>
       <artifactId>orient-commons</artifactId>
+      <type>bundle</type>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.orientechnologies</groupId>
       <artifactId>orientdb-core</artifactId>
+      <type>bundle</type>
       <scope>provided</scope>
     </dependency>
   </dependencies>
