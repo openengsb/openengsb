@@ -251,6 +251,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             xlinkRegistrations.remove(key);
         }
+        //TODO notify other tools of Host about deregistration here
     }
     
     private boolean isRegistered(ConnectorId id, String hostId) {
