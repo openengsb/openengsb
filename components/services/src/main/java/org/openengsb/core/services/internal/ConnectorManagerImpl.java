@@ -54,8 +54,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
-    private Map<XLinkRegistrationKey, XLinkToolRegistration> xlinkRegistrations;
-    private String xLinkBaseUrl = "http://localhost/openXLink";
+    private Map<XLinkRegistrationKey, XLinkToolRegistration> xlinkRegistrations
+        = new HashMap<XLinkRegistrationKey, XLinkToolRegistration>();
+    private String xLinkBaseUrl;
     private int xLinkExpiresIn = 3;
 
     public void init() {
@@ -63,7 +64,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
             @Override
             public void run() {
                 try {
-                    xlinkRegistrations = new HashMap<XLinkRegistrationKey, XLinkToolRegistration>();
                     Collection<ConnectorConfiguration> configs;
                     try {
                         Map<String, String> emptyMap = Collections.emptyMap();
@@ -249,9 +249,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
     public void disconnectFromXLink(ConnectorId id, String hostId) {
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
-            xlinkRegistrations.remove(key);
-        }
-        //TODO notify other tools of Host about deregistration here
+            if (xlinkRegistrations.get(key) != null) {
+                notifyAboutDeRegistration(xlinkRegistrations.get(key));
+                xlinkRegistrations.remove(key);
+            }
+        }       
     }
     
     private boolean isRegistered(ConnectorId id, String hostId) {
@@ -311,14 +313,31 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 modelsToViews, 
                 xLinkExpiresIn, 
                 getLocalToolFromRegistrations(registrations));
+        XLinkToolRegistration newRegistration;
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
-            XLinkToolRegistration newRegistration 
+            newRegistration
                 = new XLinkToolRegistration(hostId, id, toolName, modelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
-        //TODO notify other tools of Host about registration here
+        notifyAboutRegistration(newRegistration);
         return template;
+    }
+    
+    private void notifyAboutRegistration(XLinkToolRegistration newRegistration) {
+        //TODO notify other tools of Host about registration here
+    }
+    
+    private void notifyAboutDeRegistration(XLinkToolRegistration oldRegistration) {
+        //TODO notify other tools of Host about deregistration here
+    }
+
+    public void setxLinkBaseUrl(String xLinkBaseUrl) {
+        this.xLinkBaseUrl = xLinkBaseUrl;
+    }
+
+    public void setxLinkExpiresIn(int xLinkExpiresIn) {
+        this.xLinkExpiresIn = xLinkExpiresIn;
     }
     
     private class XLinkRegistrationKey {

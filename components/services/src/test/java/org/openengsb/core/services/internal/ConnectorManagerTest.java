@@ -18,7 +18,10 @@
 package org.openengsb.core.services.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
@@ -26,9 +29,11 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -47,8 +52,12 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.xlink.ExampleObjectOrientedDomain;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -272,6 +281,130 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         } catch (IllegalArgumentException e) {
             // expected
         }
+    }
+    
+    @Test
+    public void testConnectToXLink_ReturnsTemplate() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        XLinkTemplate template 
+                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertNotNull(template);
+    }
+    
+    @Test
+    public void testConnectToXLink_TemplateContainsCorrectIdentifier() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        XLinkTemplate template 
+                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertTrue(template.getConnectorId().contains(connectorId.toFullID()));
+    }    
+    
+    @Test
+    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        String viewId1 = "exampleViewId_1";
+        String viewId2 = "exampleViewId_2";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        XLinkTemplate template 
+                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        System.out.println(template.getBaseUrl());
+        assertNotNull(template.getViewToModels().get(viewId1));
+        assertNotNull(template.getViewToModels().get(viewId2));
+    }   
+    
+    @Test
+    public void testGetXLinkRegistration_isEmptyOnInitial() {
+        String hostId="127.0.0.1";
+        assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
+    } 
+   
+    @Test
+    public void testGetXLinkRegistration_returnsConnectedRegistration() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertFalse(serviceManager.getXLinkRegistration(hostId).isEmpty());
+    }     
+    
+    @Test
+    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        XLinkTemplate template 
+                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getHostId(),is(hostId));
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getConnectorId(),is(connectorId));
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getToolName(),is(toolName));
+    }     
+    
+    @Test
+    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        String viewId1 = "exampleViewId_1";
+        String viewId2 = "exampleViewId_2";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        XLinkTemplate template 
+            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertTrue(template.getConnectorId().contains(connectorId.toFullID()));
+        assertNotNull(template.getViewToModels().get(viewId1));
+        assertNotNull(template.getViewToModels().get(viewId2));
+    }     
+    
+    @Test
+    public void testDisconnectFromXLink_OnMissingRegistration_NoFail() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        serviceManager.disconnectFromXLink(connectorId, hostId);
+    }         
+    
+    @Test
+    public void testDisconnectFromXLink_isEmptyAfterDisconnect() {
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        String hostId="127.0.0.1";
+        String toolName="myTool";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
+                = createModelViewsMap(toolName);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.disconnectFromXLink(connectorId, hostId);
+        assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
+    }     
+    
+    private HashMap<XLinkModelInformation, List<XLinkToolView>> createModelViewsMap(String toolName) {
+        String viewId1 = "exampleViewId_1";
+        String viewId2 = "exampleViewId_2";
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
+            = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+        HashMap<String, String> descriptions  = new HashMap<String, String>();
+        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        
+        descriptions.put("en", "This is a demo view.");
+        descriptions.put("de", "Das ist eine demonstration view.");
+        views = new ArrayList();
+        views.add(new XLinkToolView(viewId1, toolName, descriptions));
+        views.add(new XLinkToolView(viewId2, toolName, descriptions));        
+        
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(), "1.0"), views);
+        return modelsToViews;
     }
 
     private void registerMockedFactory() throws Exception {
