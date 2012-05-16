@@ -105,7 +105,6 @@ public final class EKBModelGraph {
         setActiveFieldValue(node, true);
         node.save();
         LOGGER.debug("Added model {} to the graph database", model);
-        System.out.println("added model " + model);
     }
 
     /**
