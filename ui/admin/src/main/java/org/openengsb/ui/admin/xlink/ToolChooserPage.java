@@ -75,10 +75,10 @@ public class ToolChooserPage extends WebPage {
         preProcessingPage();
     }
     
-    public void preProcessingPage() {
+    private void preProcessingPage() {
         
         requestParameters = getRequest().getParameterMap();
-        setLocale(getRequest().getLocale());
+        //setLocale(getRequest().getLocale());
         
         HttpServletRequest req = ((WebRequest) getRequest()).getHttpServletRequest();
         HttpServletResponse resp = ((WebResponse) getResponse()).getHttpServletResponse();
@@ -203,7 +203,7 @@ public class ToolChooserPage extends WebPage {
                         final XLinkToolView view = (XLinkToolView) li.getModelObject();
                         li.add(new Label("viewName", view.getName()));
                         li.add(new Label("viewDescription", 
-                                view.getDescriptions().get("en")));                              
+                                returnLocalizedDescription(view.getDescriptions())));                              
                         final XLinkModelInformation destModelInfo 
                             = XLinkMock.getModelClass(tool.getId().toFullID(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
@@ -234,18 +234,28 @@ public class ToolChooserPage extends WebPage {
         add(toolList);        
     }
     
-    public void setContextFromId() {
+    private void setContextFromId() {
         ContextHolder.get().setCurrentContextId(contextId);
     }
     
-    public void setLocale(Locale locale) {
+    private void setLocale(Locale locale) {
         if (locale != null) {
             getSession().setLocale(locale);
         }
     }    
     
-    public String getLocaleKey() {
-        return getSession().getLocale().getLanguage();
+    private String returnLocalizedDescription(Map<String, String> descriptions) {
+        if (descriptions.isEmpty()) {
+            return null;
+        }
+        if (!descriptions.containsKey(getLocaleKey())) {
+            return descriptions.values().iterator().next();
+        }
+        return descriptions.get(getLocaleKey());
+    }
+    
+    private String getLocaleKey() {
+        return getLocale().getLanguage();
     }
     
 }
