@@ -29,6 +29,7 @@ import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
 import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -66,12 +67,13 @@ public final class EKBModelGraph {
     private EKBModelGraph() {
         ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-          ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
-          Thread.currentThread().setContextClassLoader(orientClassLoader);
-          graph = new OGraphDatabase("memory:ekbgraphdb").create();
+            ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
+            Thread.currentThread().setContextClassLoader(orientClassLoader);
+            graph = new OGraphDatabase("memory:ekbgraphdb").create();
         } finally {
-          Thread.currentThread().setContextClassLoader(origClassLoader);
+            Thread.currentThread().setContextClassLoader(origClassLoader);
         }
+        Orient.instance().removeShutdownHook();
         graph.createVertexType("Models");
         descriptions = new HashMap<String, TransformationDescription>();
         counter = new AtomicLong(0L);
@@ -83,11 +85,11 @@ public final class EKBModelGraph {
     private void cleanup() {
         ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-          ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
-          Thread.currentThread().setContextClassLoader(orientClassLoader);
-          graph.close();
+            ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
+            Thread.currentThread().setContextClassLoader(orientClassLoader);
+            graph.close();
         } finally {
-          Thread.currentThread().setContextClassLoader(origClassLoader);
+            Thread.currentThread().setContextClassLoader(origClassLoader);
         }
     }
 
