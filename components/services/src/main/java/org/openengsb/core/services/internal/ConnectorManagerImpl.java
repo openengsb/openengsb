@@ -274,32 +274,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return registrationsOfHostId;
     }
     
-    private List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
-        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
-        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
-        for (List<XLinkToolView> views : modelsToViews.values()) {
-            for (XLinkToolView view : views) {
-                if (!viewsOfRegistration.contains(view)) {
-                    viewsOfRegistration.add(view);
-                }
-            }
-        }
-        return viewsOfRegistration;
-    }
-    
-    private List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
-        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
-        for (XLinkToolRegistration registration : registrations) {
-            XLinkLocalTool newLocalTools 
-                = new XLinkLocalTool(
-                        registration.getConnectorId(), 
-                        registration.getToolName(), 
-                        getViewsOfRegistration(registration));
-            tools.add(newLocalTools);
-        }
-        return tools;
-    }
-    
     @Override
     public XLinkTemplate connectToXLink(
             ConnectorId id, 
@@ -312,7 +286,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 id.toFullID(), 
                 modelsToViews, 
                 xLinkExpiresIn, 
-                getLocalToolFromRegistrations(registrations));
+                XLinkUtils.getLocalToolFromRegistrations(registrations));
         XLinkToolRegistration newRegistration;
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
