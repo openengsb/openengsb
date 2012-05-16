@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -52,7 +53,7 @@ public class ToolChooserLogic {
     }    
     
     private XLinkToolRegistration getRegistration(String hostId, ConnectorId connectorId) {
-        for(XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration;
             }

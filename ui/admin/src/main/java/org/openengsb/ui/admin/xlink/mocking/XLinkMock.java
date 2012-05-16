@@ -18,25 +18,17 @@
 package org.openengsb.ui.admin.xlink.mocking;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
-import org.openengsb.core.common.xlink.XLinkUtils;
 
 /**
  */
@@ -105,7 +97,7 @@ public final class XLinkMock {
         return true;
     }    
     
-    public static void dummyRegistrationOfTools(ConnectorManager serviceManager){
+    public static void dummyRegistrationOfTools(ConnectorManager serviceManager) {
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
             = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
         String viewId1 = "exampleViewId_1";

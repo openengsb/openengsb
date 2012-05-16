@@ -202,7 +202,7 @@ public class ToolChooserPage extends WebPage {
     private void buildToolChooserPage(final HttpServletResponse resp) {
         String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
         hostIdMsg = String.format(hostIdMsg, hostId);
-        add(new Label("hostId",hostIdMsg));
+        add(new Label("hostId", hostIdMsg));
         List<XLinkLocalTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
