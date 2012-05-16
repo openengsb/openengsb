@@ -80,6 +80,7 @@
         <configuration>
           <instructions>
             <Bundle-Activator>org.openengsb.core.ekb.internal.Activator</Bundle-Activator>
+            <Embed-Dependency>orient-commons, orientdb-core</Embed-Dependency>
           </instructions>
         </configuration>
       </plugin>

@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
+import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
@@ -63,7 +64,14 @@ public final class EKBModelGraph {
     }
 
     private EKBModelGraph() {
-        graph = new OGraphDatabase("memory:ekbgraphdb").create();
+        ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+          ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
+          Thread.currentThread().setContextClassLoader(orientClassLoader);
+          graph = new OGraphDatabase("memory:ekbgraphdb").create();
+        } finally {
+          Thread.currentThread().setContextClassLoader(origClassLoader);
+        }
         graph.createVertexType("Models");
         descriptions = new HashMap<String, TransformationDescription>();
         counter = new AtomicLong(0L);
@@ -73,7 +81,14 @@ public final class EKBModelGraph {
      * Shuts down the graph database
      */
     private void cleanup() {
-        graph.close();
+        ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+          ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
+          Thread.currentThread().setContextClassLoader(orientClassLoader);
+          graph.close();
+        } finally {
+          Thread.currentThread().setContextClassLoader(origClassLoader);
+        }
     }
 
     /**
@@ -88,6 +103,7 @@ public final class EKBModelGraph {
         setActiveFieldValue(node, true);
         node.save();
         LOGGER.debug("Added model {} to the graph database", model);
+        System.out.println("added model " + model);
     }
 
     /**
