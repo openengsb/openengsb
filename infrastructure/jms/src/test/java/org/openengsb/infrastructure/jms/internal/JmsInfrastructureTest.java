@@ -46,6 +46,7 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
 
         activator = new Activator();
         activator.start(bundleContext);
+        activator.startThread.join();
     }
 
     @After

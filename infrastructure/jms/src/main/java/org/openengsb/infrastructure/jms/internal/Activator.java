@@ -9,12 +9,19 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
+
     private BrokerService brokerService;
 
+    Thread startThread;
+
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         brokerService = new BrokerService();
         brokerService.setBrokerName("openengsb");
 
@@ -30,15 +37,24 @@ public class Activator implements BundleActivator {
         brokerService.getSystemUsage().getStoreUsage().setLimit(1024 * 1024 * 1024);
         brokerService.getSystemUsage().getTempUsage().setLimit(100 * 1024 * 1024);
 
-        ConfigurationAdmin configadmin = context.getService(context.getServiceReference(ConfigurationAdmin.class));
-        Configuration configuration = configadmin.getConfiguration("org.openengsb.infrastructure.jms");
-        @SuppressWarnings("unchecked")
-        Dictionary<String, Object> props = configuration.getProperties();
-
-        brokerService.addConnector("tcp://0.0.0.0:" + props.get("openwire"));
-        brokerService.addConnector("stomp://0.0.0.0:" + props.get("stomp"));
-
-        brokerService.start();
+        final ServiceTracker serviceTracker = new ServiceTracker(context, ConfigurationAdmin.class.getName(), null);
+        serviceTracker.open();
+        startThread = new Thread() {
+            public void run() {
+                try {
+                    ConfigurationAdmin configadmin = (ConfigurationAdmin) serviceTracker.waitForService(60000);
+                    Configuration configuration = configadmin.getConfiguration("org.openengsb.infrastructure.jms");
+                    @SuppressWarnings("unchecked")
+                    Dictionary<String, Object> props = configuration.getProperties();
+                    brokerService.addConnector("tcp://0.0.0.0:" + props.get("openwire"));
+                    brokerService.addConnector("stomp://0.0.0.0:" + props.get("stomp"));
+                    brokerService.start();
+                } catch (Exception e) {
+                    LOGGER.error("could not initialize brokerService", e);
+                }
+            };
+        };
+        startThread.start();
     }
 
     @Override
