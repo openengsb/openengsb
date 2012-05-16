@@ -17,6 +17,8 @@
 
 package org.openengsb.core.services.internal;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -306,7 +308,15 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
                 = createModelViewsMap(toolName);
         XLinkTemplate template 
                 = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertTrue(template.getConnectorId().contains(connectorId.toFullID()));
+        assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId.toFullID())));
+    }    
+    
+    private static String urlEncodeParameter(String parameter){
+        try {
+            return URLEncoder.encode(parameter,"UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return parameter;
     }    
     
     @Test
@@ -366,7 +376,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
                 = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertTrue(template.getConnectorId().contains(connectorId.toFullID()));
+        assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId.toFullID())));
         assertNotNull(template.getViewToModels().get(viewId1));
         assertNotNull(template.getViewToModels().get(viewId2));
     }     
