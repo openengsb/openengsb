@@ -102,6 +102,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         serviceManagerImpl.setRegistrationManager(serviceRegistrationManagerImpl);
         serviceManagerImpl.setConfigPersistence(configPersistence);
+        serviceManagerImpl.setxLinkBaseUrl("http://localhost/openXLink");
+        serviceManagerImpl.setxLinkExpiresIn(3);
         serviceManager = serviceManagerImpl;
     }
 
@@ -318,7 +320,6 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
                 = createModelViewsMap(toolName);
         XLinkTemplate template 
                 = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        System.out.println(template.getBaseUrl());
         assertNotNull(template.getViewToModels().get(viewId1));
         assertNotNull(template.getViewToModels().get(viewId2));
     }   
