@@ -19,6 +19,7 @@ package org.openengsb.core.services.internal;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -290,30 +291,30 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testConnectToXLink_ReturnsTemplate() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         XLinkTemplate template 
-                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertNotNull(template);
     }
     
     @Test
     public void testConnectToXLink_TemplateContainsCorrectIdentifier() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         XLinkTemplate template 
-                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId.toFullID())));
     }    
     
-    private static String urlEncodeParameter(String parameter){
+    private static String urlEncodeParameter(String parameter) {
         try {
-            return URLEncoder.encode(parameter,"UTF-8");
+            return URLEncoder.encode(parameter, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
         }
         return parameter;
@@ -322,31 +323,31 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         XLinkTemplate template 
-                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertNotNull(template.getViewToModels().get(viewId1));
         assertNotNull(template.getViewToModels().get(viewId2));
     }   
     
     @Test
     public void testGetXLinkRegistration_isEmptyOnInitial() {
-        String hostId="127.0.0.1";
+        String hostId = "127.0.0.1";
         assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
     } 
    
     @Test
     public void testGetXLinkRegistration_returnsConnectedRegistration() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertFalse(serviceManager.getXLinkRegistration(hostId).isEmpty());
     }     
@@ -354,26 +355,26 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testGetXLinkRegistration_returnsToolRegistrationGlobals() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         XLinkTemplate template 
-                = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getHostId(),is(hostId));
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getConnectorId(),is(connectorId));
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getToolName(),is(toolName));
+            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
+        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
     }     
     
     @Test
     public void testGetXLinkRegistration_returnsToolRegistrationTemplate() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId.toFullID())));
@@ -384,17 +385,17 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testDisconnectFromXLink_OnMissingRegistration_NoFail() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
+        String hostId = "127.0.0.1";
         serviceManager.disconnectFromXLink(connectorId, hostId);
     }         
     
     @Test
     public void testDisconnectFromXLink_isEmptyAfterDisconnect() {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        String hostId="127.0.0.1";
-        String toolName="myTool";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews
-                = createModelViewsMap(toolName);
+            = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
         assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
