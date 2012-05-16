@@ -57,7 +57,7 @@ import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.xlink.ExampleObjectOrientedDomain;
+import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -404,7 +404,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         views.add(new XLinkToolView(viewId1, toolName, descriptions));
         views.add(new XLinkToolView(viewId2, toolName, descriptions));        
         
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(), "1.0"), views);
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);
         return modelsToViews;
     }
 
