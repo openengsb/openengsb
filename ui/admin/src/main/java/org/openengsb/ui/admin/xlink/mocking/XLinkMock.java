@@ -128,6 +128,7 @@ public final class XLinkMock {
         ConnectorId cId2 = new ConnectorId("test2", "test2", "test2");
         
         //test2+test2+test2
+        //test2%2Btest2%2Btest2
         serviceManager.connectToXLink(cId1, hostId, toolName1, modelsToViews);
         serviceManager.connectToXLink(cId2, hostId, toolName2, modelsToViews);
     }
