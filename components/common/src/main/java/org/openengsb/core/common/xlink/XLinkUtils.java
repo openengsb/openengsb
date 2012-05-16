@@ -191,7 +191,7 @@ public final class XLinkUtils {
         return calendar;
     }
     
-    public List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
+    public static List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
         List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
         Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
         for (List<XLinkToolView> views : modelsToViews.values()) {
@@ -204,7 +204,7 @@ public final class XLinkUtils {
         return viewsOfRegistration;
     }
     
-    public List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
+    public static List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
         List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
         for (XLinkToolRegistration registration : registrations) {
             XLinkLocalTool newLocalTools 
