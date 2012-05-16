@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -33,6 +35,7 @@ import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.common.xlink.XLinkUtils;
 
 /**
@@ -60,10 +63,14 @@ public final class XLinkMock {
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
         //todo check if transformation can be done
-        Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
-        Object modelObjectsDestination = transformModelObject(sourceModelClass, 
-                sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
-        openPotentialMatches(modelObjectsDestination, ConnectorId.fromFullId(connectorToCall), viewToCall);
+        if (isTransformationPossible(sourceModelClass, 
+                sourceModelVersion, destinationModelClass, destinationModelVersion)) {
+            Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
+            Object modelObjectsDestination = transformModelObject(sourceModelClass, 
+                    sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
+            ConnectorId cId = ConnectorId.fromFullId(connectorToCall);
+            openPotentialMatches(modelObjectsDestination, cId, viewToCall);
+        }
     }
     
     private static Object queryEngine(
@@ -89,7 +96,43 @@ public final class XLinkMock {
         //todo
     }
     
-    private static List<XLinkLocalTool> createMockToolList() {
+    public static  boolean isTransformationPossible(
+            String srcModelClass, 
+            String srcModelVersion, 
+            String destModelClass, 
+            String destModelVersion) {
+        //todo implement check here
+        return true;
+    }    
+    
+    public static void dummyRegistrationOfTools(ConnectorManager serviceManager){
+        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
+            = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+        String viewId1 = "exampleViewId_1";
+        String viewId2 = "exampleViewId_2";
+        
+        HashMap<String, String> descriptions  = new HashMap<String, String>();
+        descriptions.put("en", "This is a demo view.");
+        descriptions.put("de", "Das ist eine demonstration view.");
+        
+        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        views.add(new XLinkToolView(viewId1, "View 1", descriptions));
+        views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
+        
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views); 
+        
+        String toolName1 = "Tool A";
+        String toolName2 = "Tool B";
+        String hostId = "localhost:8090";
+        ConnectorId cId1 = new ConnectorId("test1", "test1", "test1");
+        ConnectorId cId2 = new ConnectorId("test2", "test2", "test2");
+        
+        //test2+test2+test2
+        serviceManager.connectToXLink(cId1, hostId, toolName1, modelsToViews);
+        serviceManager.connectToXLink(cId2, hostId, toolName2, modelsToViews);
+    }
+    
+    /*private static List<XLinkLocalTool> createMockToolList() {
         List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
         XLinkLocalTool dummyTool1 = new XLinkLocalTool();
         dummyTool1.setId(new ConnectorId());
@@ -106,7 +149,7 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId2, "View 2", descriptions));
         
         HashMap<String, List<XLinkToolView>> modelsToViews = new HashMap<String, List<XLinkToolView>>(); 
-        modelsToViews.put(ExampleObjectOrientedDomain.class.getName(), views);
+        modelsToViews.put(ExampleObjectOrientedModel.class.getName(), views);
         
         dummyTool1.setAvailableViews(views);
         dummyTool1.setToolName("Tool A");     
@@ -133,22 +176,13 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
         
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(), "1.0"), views);  
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);  
         String connectorId = "exampleConnectorId";
         String servletUrl = "http://openengsb.org/registryServlet.html";
         int expiresInDays = 3;
         List<XLinkLocalTool> registeredTools = null;        
         return XLinkUtils.prepareXLinkTemplate(
                 servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
-    }
-    
-    public static  boolean isTransformationPossible(
-            String srcModelClass, 
-            String srcModelVersion, 
-            String destModelClass, 
-            String destModelVersion) {
-        //todo implement check here
-        return true;
-    }
+    }*/
    
 }

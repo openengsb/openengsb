@@ -73,18 +73,19 @@ public class ToolChooserPage extends WebPage {
     private Map<String, String[]> requestParameters;
     
     public ToolChooserPage() {
-        preProcessingPage();
+        processPage();
     }
     
     
     public ToolChooserPage(PageParameters parameters) {
-        preProcessingPage();
+        processPage();
     }
     
-    private void preProcessingPage() {
-        
+    private void processPage() {
+        XLinkMock.dummyRegistrationOfTools(serviceManager);
         chooserLogic = new ToolChooserLogic(serviceManager);
         requestParameters = getRequest().getParameterMap();
+        
         //setLocale(getRequest().getLocale());
         
         HttpServletRequest req = ((WebRequest) getRequest()).getHttpServletRequest();
@@ -99,7 +100,7 @@ public class ToolChooserPage extends WebPage {
         setContextFromId();
         if (checkForLocalSwitchingParameters()) {
             String sourceModelClass = modelId;           
-            XLinkModelInformation destinationModelClass = chooserLogic.getModelClassOfView(connectorId, viewId, hostId);
+            XLinkModelInformation destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, 
                     versionId, identifierValues, destinationModelClass.getClassName(), 
                     destinationModelClass.getVersion(), connectorId, viewId);
@@ -118,7 +119,7 @@ public class ToolChooserPage extends WebPage {
         checkMandatoryXLinkParameters();
         checkXLinkIsExpired();
         try {
-            fetchAndCheckIdentifier(XLinkMock.getModelIdentifierToModelId(modelId, versionId));
+            fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ToolChooserPage.class.getName()).log(Level.SEVERE, null, ex);
             throw new OpenXLinkException(ex.getMessage());
@@ -130,7 +131,7 @@ public class ToolChooserPage extends WebPage {
         modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
-        hostId = req.getRemoteHost(); //.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME);
+        hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); //.getRemoteHost();
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
     }    
@@ -199,7 +200,10 @@ public class ToolChooserPage extends WebPage {
     }
     
     private void buildToolChooserPage(final HttpServletResponse resp) {
-        List<XLinkLocalTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);
+        String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
+        hostIdMsg = String.format(hostIdMsg, hostId);
+        add(new Label("hostId",hostIdMsg));
+        List<XLinkLocalTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
                 final XLinkLocalTool tool = (XLinkLocalTool) item.getModelObject();
@@ -212,7 +216,7 @@ public class ToolChooserPage extends WebPage {
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              
                         final XLinkModelInformation destModelInfo 
-                            = chooserLogic.getModelClassOfView(tool.getId().toFullID(), view.getViewId(), hostId);
+                            = chooserLogic.getModelClassOfView(hostId, tool.getId().toFullID(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
                                 String sourceModelClass = modelId;   

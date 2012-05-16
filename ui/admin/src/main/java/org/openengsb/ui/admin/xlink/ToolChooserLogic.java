@@ -19,7 +19,8 @@ package org.openengsb.ui.admin.xlink;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -28,13 +29,9 @@ import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.common.xlink.XLinkUtils;
 
 public class ToolChooserLogic {
-
-    private static OpenEngSBModel createInstanceOfModelClass(String modelId, String versionId) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
     
     private ConnectorManager serviceManager;
 
@@ -43,11 +40,13 @@ public class ToolChooserLogic {
     }
     
     public List<XLinkLocalTool> getRegisteredToolsFromHost(String hostId) {
-        return getLocalToolFromRegistrations(serviceManager.getXLinkRegistration(hostId));
+        return XLinkUtils.getLocalToolFromRegistrations(
+                serviceManager.getXLinkRegistration(hostId));
     } 
     
     public XLinkModelInformation getModelClassOfView(String hostId, String cId, String viewId) {
-        ConnectorId connectorId = ConnectorId.fromFullId(cId);
+        Logger.getLogger(ToolChooserLogic.class.getName()).log(Level.INFO, "cId - " + cId);
+        ConnectorId connectorId = ConnectorId.fromFullId(cId); 
         XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();
         return template.getViewToModels().get(viewId);
     }    
@@ -60,45 +59,18 @@ public class ToolChooserLogic {
         }
         return null;
     }
-    
-    //todo testing
+ 
     public static List<String> getModelIdentifierToModelId(
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
-        OpenEngSBModel model = createInstanceOfModelClass(modelId, versionId);
+        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId);
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
         for (OpenEngSBModelEntry entry : entries) {
             identifierKeyNames.add(entry.getKey());
         }
         return identifierKeyNames;
-    }    
-    
-    private List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
-        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
-        for (XLinkToolRegistration registration : registrations) {
-            XLinkLocalTool newLocalTools 
-                = new XLinkLocalTool(
-                        registration.getConnectorId(), 
-                        registration.getToolName(), 
-                        getViewsOfRegistration(registration));
-            tools.add(newLocalTools);
-        }
-        return tools;
-    }    
-
-    private List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
-        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
-        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
-        for (List<XLinkToolView> views : modelsToViews.values()) {
-            for (XLinkToolView view : views) {
-                if (!viewsOfRegistration.contains(view)) {
-                    viewsOfRegistration.add(view);
-                }
-            }
-        }
-        return viewsOfRegistration;
     }    
     
 }
