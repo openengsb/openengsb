@@ -432,8 +432,8 @@ input[type=submit] {
     background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_background.png") repeat-x scroll 0 0 transparent;
     border-bottom: 2px solid #75A8CF;
     border-radius: 5px 5px 0 0;
-    height: 45px;
-    margin: -15px -15px 40px;
+    height: 35px;
+    margin: -15px -15px 25px;
   }
   
 .sectionMenuSelector li {
@@ -442,7 +442,7 @@ input[type=submit] {
     font-family: "Helvetica Neue",Helvetica,sans-serif,arial;
     font-size: 0.8em;
     font-weight: bold;
-    padding: 14px;
+    padding: 9px 14px;
     width: 100px;
     color: #75A8CF;
     text-align: center;
@@ -450,6 +450,10 @@ input[type=submit] {
 
 .sectionMenuSelector li.separator {
     background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_separator.png") no-repeat scroll 126px 0 transparent;
+}
+
+.activeSectionMenu {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_arrow.png") no-repeat scroll 126px 0 transparent;
 }
 
 #topLogo{
