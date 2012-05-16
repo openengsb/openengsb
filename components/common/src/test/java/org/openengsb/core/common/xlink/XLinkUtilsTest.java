@@ -62,7 +62,7 @@ public class XLinkUtilsTest {
         views = new ArrayList();
         views.add(new XLinkToolView(viewId1, toolName, descriptions));
         views.add(new XLinkToolView(viewId2, toolName, descriptions));
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedDomain.class.getName(), "1.0"), views);
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);
     }
     // @extract-end
     // @extract-start XLinkUtilsTestConfigsProvidedByOpenEngSB
@@ -86,7 +86,7 @@ public class XLinkUtilsTest {
 
         assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId1));
         assertTrue(xLinkTemplate.getViewToModels().get(viewId1)
-                .getClassName().equals(ExampleObjectOrientedDomain.class.getName()));
+                .getClassName().equals(ExampleObjectOrientedModel.class.getName()));
     }
 
     // @extract-end

@@ -19,6 +19,7 @@ package org.openengsb.core.common.xlink;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
 
@@ -144,7 +146,7 @@ public final class XLinkUtils {
         completeUrl += "&" + template.getModelClassKey() + "=" + modelInformation.getClassName();
         completeUrl += "&" + template.getModelVersionKey() + "=" + modelInformation.getVersion();
         completeUrl += "&" + template.getContextIdKeyName() + "=" + contextId;        
-        OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName());
+        OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName(), modelInformation.getVersion());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i).getKey() + "=" + identifierValues.get(i);
@@ -155,8 +157,8 @@ public final class XLinkUtils {
     // @extract-end
     
       
-    private static OpenEngSBModel createInstanceOfModelClass(String clazz) throws ClassNotFoundException {
-        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class) ;
+    public static OpenEngSBModel createInstanceOfModelClass(String clazz, String version) throws ClassNotFoundException {
+        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedModel.class) ;
     }  
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
@@ -188,5 +190,31 @@ public final class XLinkUtils {
         }
         return calendar;
     }
+    
+    public List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
+        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
+        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
+        for (List<XLinkToolView> views : modelsToViews.values()) {
+            for (XLinkToolView view : views) {
+                if (!viewsOfRegistration.contains(view)) {
+                    viewsOfRegistration.add(view);
+                }
+            }
+        }
+        return viewsOfRegistration;
+    }
+    
+    public List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
+        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
+        for (XLinkToolRegistration registration : registrations) {
+            XLinkLocalTool newLocalTools 
+                = new XLinkLocalTool(
+                        registration.getConnectorId(), 
+                        registration.getToolName(), 
+                        getViewsOfRegistration(registration));
+            tools.add(newLocalTools);
+        }
+        return tools;
+    }    
 
 }
