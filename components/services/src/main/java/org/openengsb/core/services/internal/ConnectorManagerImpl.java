@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,10 +34,13 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.common.xlink.XLinkUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +54,10 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
+    private Map<XLinkRegistrationKey, XLinkToolRegistration> xlinkRegistrations
+        = new HashMap<XLinkRegistrationKey, XLinkToolRegistration>();
+    private String xLinkBaseUrl;
+    private int xLinkExpiresIn = 3;
 
     public void init() {
         new Thread() {
@@ -239,21 +247,152 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     @Override
     public void disconnectFromXLink(ConnectorId id, String hostId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        synchronized (xlinkRegistrations) {
+            XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+            if (xlinkRegistrations.get(key) != null) {
+                notifyAboutDeRegistration(xlinkRegistrations.get(key));
+                xlinkRegistrations.remove(key);
+            }
+        }       
+    }
+    
+    private boolean isRegistered(ConnectorId id, String hostId) {
+        XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+        return xlinkRegistrations.containsKey(key);
     }
 
     @Override
     public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<XLinkToolRegistration> registrationsOfHostId = new ArrayList<XLinkToolRegistration>();
+        synchronized (xlinkRegistrations) {
+            for (XLinkRegistrationKey key : xlinkRegistrations.keySet()) {
+                if (key.getHostId().equals(hostId)) {
+                    registrationsOfHostId.add(xlinkRegistrations.get(key));
+                }
+            }
+        }
+        return registrationsOfHostId;
     }
-
+    
+    private List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
+        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
+        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
+        for (List<XLinkToolView> views : modelsToViews.values()) {
+            for (XLinkToolView view : views) {
+                if (!viewsOfRegistration.contains(view)) {
+                    viewsOfRegistration.add(view);
+                }
+            }
+        }
+        return viewsOfRegistration;
+    }
+    
+    private List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
+        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
+        for (XLinkToolRegistration registration : registrations) {
+            XLinkLocalTool newLocalTools 
+                = new XLinkLocalTool(
+                        registration.getConnectorId(), 
+                        registration.getToolName(), 
+                        getViewsOfRegistration(registration));
+            tools.add(newLocalTools);
+        }
+        return tools;
+    }
+    
     @Override
     public XLinkTemplate connectToXLink(
             ConnectorId id, 
             String hostId, 
             String toolName, 
             Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
+        XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
+                xLinkBaseUrl, 
+                id.toFullID(), 
+                modelsToViews, 
+                xLinkExpiresIn, 
+                getLocalToolFromRegistrations(registrations));
+        XLinkToolRegistration newRegistration;
+        synchronized (xlinkRegistrations) {
+            XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+            newRegistration
+                = new XLinkToolRegistration(hostId, id, toolName, modelsToViews, template);
+            xlinkRegistrations.put(key, newRegistration);
+        }
+        notifyAboutRegistration(newRegistration);
+        return template;
+    }
+    
+    private void notifyAboutRegistration(XLinkToolRegistration newRegistration) {
+        //TODO notify other tools of Host about registration here
+    }
+    
+    private void notifyAboutDeRegistration(XLinkToolRegistration oldRegistration) {
+        //TODO notify other tools of Host about deregistration here
+    }
+
+    public void setxLinkBaseUrl(String xLinkBaseUrl) {
+        this.xLinkBaseUrl = xLinkBaseUrl;
+    }
+
+    public void setxLinkExpiresIn(int xLinkExpiresIn) {
+        this.xLinkExpiresIn = xLinkExpiresIn;
+    }
+    
+    private class XLinkRegistrationKey {
+        private ConnectorId connectorId;
+        private String hostId;
+
+        public XLinkRegistrationKey(ConnectorId connectorId, String hostId) {
+            this.connectorId = connectorId;
+            this.hostId = hostId;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
+            if (this.connectorId != other.connectorId 
+                    && (this.connectorId == null 
+                    || !this.connectorId.equals(other.connectorId))) {
+                return false;
+            }
+            if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 89 * hash + (this.connectorId != null ? this.connectorId.hashCode() : 0);
+            hash = 89 * hash + (this.hostId != null ? this.hostId.hashCode() : 0);
+            return hash;
+        }
+        
+        public ConnectorId getConnectorId() {
+            return connectorId;
+        }
+
+        public void setConnectorId(ConnectorId connectorId) {
+            this.connectorId = connectorId;
+        }
+
+        public String getHostId() {
+            return hostId;
+        }
+
+        public void setHostId(String hostId) {
+            this.hostId = hostId;
+        }
+        
     }
 
 }

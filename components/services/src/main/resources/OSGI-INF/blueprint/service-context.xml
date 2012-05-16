@@ -24,6 +24,14 @@
   <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl">
     <property name="configPersistence" ref="contextConfigPersistence" />
   </bean>
+  
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.core.services.internal.connectormanager">
+    <cm:default-properties>
+      <cm:property name="xlink.url" value="" />
+      <cm:property name="xlink.expiresIn" value="2" />
+    </cm:default-properties>
+  </cm:property-placeholder>  
 
   <reference id="contextConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=CONTEXT)" />
@@ -48,6 +56,8 @@
   <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
     <property name="registrationManager" ref="registrationManager" />
     <property name="configPersistence" ref="connectorConfigPersistence" />
+    <property name="xLinkBaseUrl" value="${xlink.url}" />
+    <property name="xLinkExpiresIn" value="${xlink.expiresIn}" />
   </bean>
 
   <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
