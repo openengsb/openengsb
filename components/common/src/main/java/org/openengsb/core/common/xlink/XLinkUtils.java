@@ -30,6 +30,7 @@ import java.util.Map;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -150,7 +151,8 @@ public final class XLinkUtils {
         completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getClassName());
         completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersion());
         completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);        
-        OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName(), modelInformation.getVersion());
+        OpenEngSBModel modelOfView = createInstanceOfModelClass(
+                modelInformation.getClassName(), modelInformation.getVersion());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i).getKey() + "=" + urlEncodeParameter(identifierValues.get(i));
@@ -161,7 +163,9 @@ public final class XLinkUtils {
     // @extract-end
     
       
-    public static OpenEngSBModel createInstanceOfModelClass(String clazz, String version) throws ClassNotFoundException {
+    public static OpenEngSBModel createInstanceOfModelClass(
+            String clazz, 
+            String version) throws ClassNotFoundException {
         return ModelUtils.createEmptyModelObject(ExampleObjectOrientedModel.class) ;
     }  
 
@@ -195,9 +199,9 @@ public final class XLinkUtils {
         return calendar;
     }
     
-    private static String urlEncodeParameter(String parameter){
+    private static String urlEncodeParameter(String parameter) {
         try {
-            return URLEncoder.encode(parameter,"UTF-8");
+            return URLEncoder.encode(parameter, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(XLinkUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
