@@ -43,42 +43,6 @@ public final class XLinkMock {
         
     }
     
-    private static ConnectorId getConnectorIdClassForStringId(String id) {
-        //todo fetch ConnectorInstance for String Id
-        return null;
-    }
-    
-    public static XLinkModelInformation getModelClass(String cId, String viewId) {
-        ConnectorId connectorId = getConnectorIdClassForStringId(cId);
-        return getModelClassOfView(connectorId, viewId);
-    }
-    
-    private static XLinkModelInformation getModelClassOfView(ConnectorId connectorId, String viewId) {
-        XLinkTemplate template = getXLinkTemplateFromConnector(connectorId);
-        return template.getViewToModels().get(viewId);
-    }
-    
-    //tod testing
-    public static List<String> getModelIdentifierToModelId(
-            String modelId, 
-            String versionId) throws ClassNotFoundException {
-        //Todo fetch real identifiers
-        OpenEngSBModel model = createInstanceOfModelClass(modelId, versionId);
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-        List<String> identifierKeyNames = new ArrayList<String>();
-        for (OpenEngSBModelEntry entry : entries) {
-            identifierKeyNames.add(entry.getKey());
-        }
-        return identifierKeyNames;
-    }
-    
-    //todo convert class string to class object
-    private static OpenEngSBModel createInstanceOfModelClass(
-            String clazz, 
-            String versionId) throws ClassNotFoundException {
-        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedDomain.class);
-    }      
-    
     public static void transformAndOpenMatch(
             String sourceModelClass, 
             String sourceModelVersion, 
@@ -99,7 +63,7 @@ public final class XLinkMock {
         Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
         Object modelObjectsDestination = transformModelObject(sourceModelClass, 
                 sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
-        openPotentialMatches(modelObjectsDestination, getConnectorIdClassForStringId(connectorToCall), viewToCall);
+        openPotentialMatches(modelObjectsDestination, ConnectorId.fromFullId(connectorToCall), viewToCall);
     }
     
     private static Object queryEngine(
@@ -123,11 +87,6 @@ public final class XLinkMock {
             ConnectorId connectorToCall, 
             String viewToCall) {
         //todo
-    }
-    
-    public static List<XLinkLocalTool> getRegisteredToolsFromUser(String hostId) {
-        List<ConnectorId> connectors = getConnectorIdsFromHost(hostId);
-        return getToolsFromConnectors(connectors);
     }
     
     private static List<XLinkLocalTool> createMockToolList() {
@@ -158,52 +117,8 @@ public final class XLinkMock {
         dummyTool2.setToolName("Tool B");     
         tools.add(dummyTool2);
         return tools;
-    }
-    
-    private static List<XLinkLocalTool> getToolsFromConnectors(List<ConnectorId> connectors) {
-        List<XLinkLocalTool> tools = new ArrayList();
-        for (ConnectorId connectorId : connectors) {
-            tools.add(getToolsFromConnector(connectorId));
-        }
-        //todo return tools;
-        return createMockToolList();
-    }
-    
-    private static XLinkLocalTool getToolsFromConnector(ConnectorId connectorId) {
-        String name = getToolNameFromConnector(connectorId);
-        List<XLinkToolView> availableViews = getViewsFromConnector(connectorId);
-        return new XLinkLocalTool(connectorId, name, availableViews);
-    }
-    
-    private static List<XLinkToolView> getViewsFromConnector(ConnectorId connectorId) {
-        HashMap<String, List<XLinkToolView>> modelToViews = getModelViewCombinationsFromConnector(connectorId);
-        List<XLinkToolView> viewList = new ArrayList<XLinkToolView>();
-        for (String className : modelToViews.keySet()) {
-            List<XLinkToolView> currentViewList = modelToViews.get(className);
-            for (XLinkToolView view : currentViewList) {
-                if (!viewList.contains(view)) {
-                    viewList.add(view);
-                }
-            }
-        }
-        return viewList;
-    }        
-
-    private static String getToolNameFromConnector(ConnectorId connectorId) {
-        //todo fetch toolName for ConnectorId
-        return null;
-    }
-    
-    private static List<ConnectorId> getConnectorIdsFromHost(String hostId) {
-        //todo fetch all connectors to a hostid
-        return Arrays.asList(new ConnectorId("dummyDomainType", "dummyConnectorType", "dummyInstanceId"));
     }    
-    
-    private static XLinkTemplate getXLinkTemplateFromConnector(ConnectorId connectorId) {
-        //todo fetch template
-        return createMockTemplate();
-    }
-    
+
     private static XLinkTemplate createMockTemplate() {
         HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
             = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
@@ -225,11 +140,6 @@ public final class XLinkMock {
         List<XLinkLocalTool> registeredTools = null;        
         return XLinkUtils.prepareXLinkTemplate(
                 servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
-    }
-    
-    private static HashMap<String, List<XLinkToolView>> getModelViewCombinationsFromConnector(ConnectorId connectorId) {
-        //todo fetch model/views for connectorId
-        return new HashMap<String, List<XLinkToolView>>();
     }
     
     public static  boolean isTransformationPossible(

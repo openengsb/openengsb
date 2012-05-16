@@ -39,6 +39,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
@@ -46,12 +47,17 @@ import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 /**
  */
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
+    
+    @PaxWicketBean
+    private ConnectorManager serviceManager;
+    private ToolChooserLogic chooserLogic;
     
     private String contextId;
     private String modelId;
@@ -77,6 +83,7 @@ public class ToolChooserPage extends WebPage {
     
     private void preProcessingPage() {
         
+        chooserLogic = new ToolChooserLogic(serviceManager);
         requestParameters = getRequest().getParameterMap();
         //setLocale(getRequest().getLocale());
         
@@ -92,7 +99,7 @@ public class ToolChooserPage extends WebPage {
         setContextFromId();
         if (checkForLocalSwitchingParameters()) {
             String sourceModelClass = modelId;           
-            XLinkModelInformation destinationModelClass = XLinkMock.getModelClass(connectorId, viewId);
+            XLinkModelInformation destinationModelClass = chooserLogic.getModelClassOfView(connectorId, viewId, hostId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, 
                     versionId, identifierValues, destinationModelClass.getClassName(), 
                     destinationModelClass.getVersion(), connectorId, viewId);
@@ -192,7 +199,7 @@ public class ToolChooserPage extends WebPage {
     }
     
     private void buildToolChooserPage(final HttpServletResponse resp) {
-        List<XLinkLocalTool> tools = XLinkMock.getRegisteredToolsFromUser(hostId);
+        List<XLinkLocalTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
                 final XLinkLocalTool tool = (XLinkLocalTool) item.getModelObject();
@@ -205,7 +212,7 @@ public class ToolChooserPage extends WebPage {
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              
                         final XLinkModelInformation destModelInfo 
-                            = XLinkMock.getModelClass(tool.getId().toFullID(), view.getViewId());
+                            = chooserLogic.getModelClassOfView(tool.getId().toFullID(), view.getViewId(), hostId);
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
                                 String sourceModelClass = modelId;   
