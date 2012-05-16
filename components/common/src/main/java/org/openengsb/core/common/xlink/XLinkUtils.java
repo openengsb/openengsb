@@ -17,6 +17,8 @@
 
 package org.openengsb.core.common.xlink;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import java.util.List;
 
 import java.util.Map;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -89,8 +93,8 @@ public final class XLinkUtils {
             int expirationDays, 
             List<XLinkLocalTool> registeredTools) {
         baseUrl +=
-            "?" + XLINK_EXPIRATIONDATE_KEY + "=" + getExpirationDate(expirationDays);
-        String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + connectorId;
+            "?" + XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
+        String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
         Map<String, XLinkModelInformation> viewToModels = assigneModelsToViews(modelsToViews);
         return new XLinkTemplate(baseUrl, 
                 viewToModels, 
@@ -142,15 +146,15 @@ public final class XLinkUtils {
             List<String> identifierValues, 
             XLinkModelInformation modelInformation, 
             String contextId) throws ClassNotFoundException {
-        String completeUrl = template.getBaseUrl();
-        completeUrl += "&" + template.getModelClassKey() + "=" + modelInformation.getClassName();
-        completeUrl += "&" + template.getModelVersionKey() + "=" + modelInformation.getVersion();
-        completeUrl += "&" + template.getContextIdKeyName() + "=" + contextId;        
+        String completeUrl = template.getBaseUrl();    
+        completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getClassName());
+        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersion());
+        completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);        
         OpenEngSBModel modelOfView = createInstanceOfModelClass(modelInformation.getClassName(), modelInformation.getVersion());
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
-            completeUrl += "&" + keyNames.get(i).getKey() + "=" + identifierValues.get(i);
-        }
+            completeUrl += "&" + keyNames.get(i).getKey() + "=" + urlEncodeParameter(identifierValues.get(i));
+        } 
         return completeUrl;
     }
 
@@ -174,7 +178,7 @@ public final class XLinkUtils {
         String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId);
         xLink += "&" 
                 + template.getConnectorId() + "&" 
-                + template.getViewIdKeyName() + "=" + viewIdValue;
+                + template.getViewIdKeyName() + "=" + urlEncodeParameter(viewIdValue);
         return xLink;
     }
 
@@ -189,6 +193,15 @@ public final class XLinkUtils {
             return null;
         }
         return calendar;
+    }
+    
+    private static String urlEncodeParameter(String parameter){
+        try {
+            return URLEncoder.encode(parameter,"UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(XLinkUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return parameter;
     }
     
     public static List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {

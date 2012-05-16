@@ -82,7 +82,7 @@ public class XLinkUtilsTest {
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);    
 
         //xLinkTemplate.getBaseUrl() = 
-        //http://openengsb.org/registryServlet.html?contextId=ExampleContext&expirationDate=20120427190146
+        //http://openengsb.org/registryServlet.html?expirationDate=20120519212036
 
         assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId1));
         assertTrue(xLinkTemplate.getViewToModels().get(viewId1)
@@ -103,10 +103,9 @@ public class XLinkUtilsTest {
 
         //xLinkUrl = 
         //http://openengsb.org/registryServlet.html?
-        //expirationDate=20120504202007&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
-        //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
+        //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        //&versionId=1.0&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
-
 
         assertTrue(xLinkUrl.contains("OOMethodName=testMethod"));
         assertTrue(xLinkUrl.contains("OOClassName=testClass"));
@@ -128,11 +127,10 @@ public class XLinkUtilsTest {
 
         //xLinkUrl =
         //http://openengsb.org/registryServlet.html?
-        //expirationDate=20120504202007&null=org.openengsb.core.common.xlink.ExampleObjectOrientedDomain
-        //&versionId=class org.openengsb.core.api.xlink.XLinkModelInformation&contextId=ExampleContext
+        //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        //&versionId=1.0&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
-
 
         assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_CONNECTORID_KEY + "=" + connectorId));
         assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId1));
