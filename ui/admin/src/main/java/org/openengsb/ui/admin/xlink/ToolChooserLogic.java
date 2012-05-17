@@ -46,7 +46,6 @@ public class ToolChooserLogic {
     } 
     
     public XLinkModelInformation getModelClassOfView(String hostId, String cId, String viewId) {
-        Logger.getLogger(ToolChooserLogic.class.getName()).log(Level.INFO, "cId - " + cId);
         ConnectorId connectorId = ConnectorId.fromFullId(cId); 
         XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();
         return template.getViewToModels().get(viewId);

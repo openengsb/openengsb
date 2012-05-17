@@ -41,6 +41,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -85,19 +86,15 @@ public class ToolChooserPage extends WebPage {
         XLinkMock.dummyRegistrationOfTools(serviceManager);
         chooserLogic = new ToolChooserLogic(serviceManager);
         requestParameters = getRequest().getParameterMap();
-        
-        //setLocale(getRequest().getLocale());
-        
         HttpServletRequest req = ((WebRequest) getRequest()).getHttpServletRequest();
-        HttpServletResponse resp = ((WebResponse) getResponse()).getHttpServletResponse();
-        
+        HttpServletResponse resp = ((WebResponse) getResponse()).getHttpServletResponse();  
         try {
             checkIfXLinkIsValid(req);
         } catch (OpenXLinkException ex) {
             handleErrorResponse(ex.getMessage());
             return;
         }
-        setContextFromId();
+        //setContextFromId();
         if (checkForLocalSwitchingParameters()) {
             String sourceModelClass = modelId;           
             XLinkModelInformation destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
@@ -117,6 +114,9 @@ public class ToolChooserPage extends WebPage {
     private void checkIfXLinkIsValid(HttpServletRequest req) throws OpenXLinkException {
         fetchXLinkParameters(req);
         checkMandatoryXLinkParameters();
+        if (checkForLocalSwitchingParameters()) {
+            checkConnectorIdFormat();
+        }
         checkXLinkIsExpired();
         try {
             fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
@@ -131,7 +131,7 @@ public class ToolChooserPage extends WebPage {
         modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
-        hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); //.getRemoteHost();
+        hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); 
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
     }    
@@ -159,6 +159,15 @@ public class ToolChooserPage extends WebPage {
         }        
     }    
     
+    private void checkConnectorIdFormat() throws OpenXLinkException {
+        try {
+            ConnectorId.fromFullId(connectorId);
+        } catch (Exception e) {
+            String wrongFormatMsg = new StringResourceModel("error.connectorId.wrongFormat", this, null).getString();
+            throw new OpenXLinkException(wrongFormatMsg);
+        }
+    }
+    
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {
         String errorMsgFormat = new StringResourceModel("error.missingIdentifier", this, null).getString();
         String errorMsg = "";
@@ -183,7 +192,9 @@ public class ToolChooserPage extends WebPage {
         if (checkForLocalSwitchingParameters()) {
             setResponsePage(new MachineResponsePage(error, false));
         } else {   
-            setResponsePage(new UserResponsePage(error, true));        
+            String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
+            hostIdMsg = String.format(hostIdMsg, hostId);              
+            setResponsePage(new UserResponsePage(error, hostIdMsg, true));        
         }
     }
     
@@ -193,7 +204,9 @@ public class ToolChooserPage extends WebPage {
             setResponsePage(new MachineResponsePage(successMsg, true));
         } else {         
             String successMsg = new StringResourceModel("success.normalSwitch", this, null).getString();
-            setResponsePage(new UserResponsePage(successMsg, false));                  
+            String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
+            hostIdMsg = String.format(hostIdMsg, hostId);            
+            setResponsePage(new UserResponsePage(successMsg, hostIdMsg, false));                  
         }        
 
      
