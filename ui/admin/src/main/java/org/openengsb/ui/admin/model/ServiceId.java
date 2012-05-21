@@ -21,16 +21,16 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class ServiceId implements Serializable {
-    private String serviceClass;
+    private Class<?> serviceClass;
     private String serviceId;
     private String domainName;
 
-    public ServiceId(String serviceClass, String serviceId) {
+    public ServiceId(Class<?> serviceClass, String serviceId) {
         this.serviceClass = serviceClass;
         this.serviceId = serviceId;
     }
 
-    public ServiceId(String serviceClass, String serviceId, String domainName) {
+    public ServiceId(Class<?> serviceClass, String serviceId, String domainName) {
         this.serviceClass = serviceClass;
         this.serviceId = serviceId;
         this.domainName = domainName;
@@ -39,11 +39,11 @@ public class ServiceId implements Serializable {
     public ServiceId() {
     }
 
-    public String getServiceClass() {
+    public Class<?> getServiceClass() {
         return serviceClass;
     }
 
-    public void setServiceClass(String serviceClass) {
+    public void setServiceClass(Class<?> serviceClass) {
         this.serviceClass = serviceClass;
     }
 
