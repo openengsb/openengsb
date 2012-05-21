@@ -22,7 +22,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 
@@ -43,7 +43,7 @@ final class ConnectorMessageListener implements MessageListener {
         SecureSampleConnector.LOGGER.info("recieved JMS-message");
         TextMessage content = (TextMessage) message;
         String text = getTextFromMessage(content);
-        MethodCallRequest request = handler.unmarshal(text);
+        MethodCallMessage request = handler.unmarshal(text);
         MethodResult result = requestHander.process(request.getMethodCall());
         try {
             sendResult(request, result);
@@ -62,7 +62,7 @@ final class ConnectorMessageListener implements MessageListener {
         return text;
     }
 
-    private void sendResult(MethodCallRequest request, MethodResult result) throws JMSException {
+    private void sendResult(MethodCallMessage request, MethodResult result) throws JMSException {
         MethodResultMessage methodResultMessage = new MethodResultMessage(result, request.getCallId());
         String resultText = handler.marshal(methodResultMessage);
         jmsConfig.sendMessage(request.getCallId(), resultText);

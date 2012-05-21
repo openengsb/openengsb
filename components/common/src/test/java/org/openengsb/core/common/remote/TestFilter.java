@@ -30,7 +30,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.ModelUtils;
@@ -39,7 +39,7 @@ public class TestFilter implements FilterAction {
 
     @Override
     public Object filter(Object input, Map<String, Object> metaData) throws FilterException {
-        MethodCallRequest request = (MethodCallRequest) input;
+        MethodCallMessage request = (MethodCallMessage) input;
         MethodResultMessage message = new MethodResultMessage();
 
         if (request.getCallId().equals("outgoing1")) {
@@ -62,7 +62,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
 
-    private MethodResultMessage createOutputForOutgoing1(MethodCallRequest request) {
+    private MethodResultMessage createOutputForOutgoing1(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         Object arg = request.getMethodCall().getArgs()[0];
         if (arg.getClass().equals(OpenEngSBModelWrapper.class)) {
@@ -80,7 +80,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
 
-    private MethodResultMessage createOutputForOutgoing2(MethodCallRequest request) {
+    private MethodResultMessage createOutputForOutgoing2(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
         wrapper.setModelClass(TestModel.class.getName());
@@ -95,7 +95,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
 
-    private MethodResultMessage createOutputForOutgoing3(MethodCallRequest request) {
+    private MethodResultMessage createOutputForOutgoing3(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         Object arg = request.getMethodCall().getArgs()[0];
         if (arg.getClass().equals(OpenEngSBModelWrapper.class)) {
@@ -119,7 +119,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
 
-    private MethodResultMessage createOutputForIncoming1(MethodCallRequest request) {
+    private MethodResultMessage createOutputForIncoming1(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         Object arg = request.getMethodCall().getArgs()[0];
         if (OpenEngSBModel.class.isAssignableFrom(arg.getClass())) {
@@ -136,7 +136,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
 
-    private MethodResultMessage createOutputForIncoming2(MethodCallRequest request) {
+    private MethodResultMessage createOutputForIncoming2(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setId(60);
@@ -148,7 +148,7 @@ public class TestFilter implements FilterAction {
         return message;
     }
     
-    private MethodResultMessage createOutputForIncoming3(MethodCallRequest request) {
+    private MethodResultMessage createOutputForIncoming3(MethodCallMessage request) {
         MethodResultMessage message = new MethodResultMessage();
         Object arg = request.getMethodCall().getArgs()[0];
         if (TestModel.class.isAssignableFrom(arg.getClass())) {
@@ -165,7 +165,7 @@ public class TestFilter implements FilterAction {
 
     @Override
     public Class<?> getSupportedInputType() {
-        return MethodCallRequest.class;
+        return MethodCallMessage.class;
     }
 
     @Override

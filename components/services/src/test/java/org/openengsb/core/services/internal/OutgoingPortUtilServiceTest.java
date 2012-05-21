@@ -46,7 +46,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
@@ -119,7 +119,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     public void testSendMethodCall_shouldCallPort() throws Exception {
         callrouter.sendMethodCall("jms+json-out", testURI, new MethodCall());
         Thread.sleep(300);
-        verify(outgoingPortMock, times(1)).send(any(MethodCallRequest.class));
+        verify(outgoingPortMock, times(1)).send(any(MethodCallMessage.class));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
         MethodResult expectedResult = new MethodResult();
         MethodResultMessage value = mock(MethodResultMessage.class);
         when(value.getResult()).thenReturn(expectedResult);
-        when(outgoingPortMock.sendSync(any(MethodCallRequest.class))).thenReturn(value);
+        when(outgoingPortMock.sendSync(any(MethodCallMessage.class))).thenReturn(value);
         MethodResult result = callrouter.sendMethodCallWithResult("jms+json-out", "jms://localhost", methodCall);
         assertThat(result, is(expectedResult));
     }
