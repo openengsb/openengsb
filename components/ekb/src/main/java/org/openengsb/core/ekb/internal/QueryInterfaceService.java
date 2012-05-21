@@ -87,6 +87,11 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query) {
+        return queryForModels(model, query, new Date().getTime() + "");
+    }
+
+    @Override
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
         Long time = Long.parseLong(timestamp);
         LOGGER.debug("Invoked queryForModels with the model %s and the querystring %s for the time %s",
