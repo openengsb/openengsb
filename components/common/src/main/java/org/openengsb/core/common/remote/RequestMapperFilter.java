@@ -30,7 +30,7 @@ import org.openengsb.core.api.remote.RequestHandler;
  *
  * <code>
  * <pre>
- *      [MethodCallRequest]   > Filter > [MethodCall]
+ *      [MethodCallMessage]   > Filter > [MethodCall]
  *                                             |
  *                                             v
  *                                       RequestHandler

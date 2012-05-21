@@ -36,17 +36,17 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
- * verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
+ * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the verification information
+ * and verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
  *
  * This filter is intended for incoming ports.
  *
  * <code>
  * <pre>
- *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
  *                                                        |
  *                                                        v
- *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ *      [MethodResultMessage] < Filter < [MethodResultMessage]   < ...
  * </pre>
  * </code>
  */

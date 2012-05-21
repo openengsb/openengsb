@@ -20,10 +20,10 @@ package org.openengsb.core.api.remote;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This object wraps the return values of a remote method call. The different types which could be returned are stored
- * in {@link #type}. The object itself is available via {@link #getArg()}. Since this is the result of an remote call it
- * is possible that additional meta-data was added (describing e.g. context, username, ...) could have been added to
- * this message. Those could be retrieved via {@link #getMetaData()}.
+ *
+ * Container for sending {@link MethodResult} to remote destinations. It contains the necessary routing- and
+ * security-information.
+ *
  */
 @XmlRootElement
 public class MethodResultMessage extends MessageBase {
