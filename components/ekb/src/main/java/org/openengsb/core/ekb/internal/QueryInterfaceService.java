@@ -93,6 +93,10 @@ public class QueryInterfaceService implements QueryInterface {
 
     @Override
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+        if (timestamp == null || timestamp.isEmpty()) {
+            LOGGER.debug("Got invalid timestamp string. Use the current timestamp instead");
+            timestamp = new Date().getTime() + "";
+        }
         Long time = Long.parseLong(timestamp);
         LOGGER.debug("Invoked queryForModels with the model %s and the querystring %s for the time %s",
             new Object[]{ model.getName(), query, new Date(time).toString() });
