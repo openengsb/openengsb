@@ -165,6 +165,10 @@
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.auditing</artifactId>
+    </dependency>
   </dependencies>
 </project>
 
