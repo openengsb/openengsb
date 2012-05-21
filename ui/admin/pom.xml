@@ -132,6 +132,13 @@
               org.apache.wicket.session,
               org.apache.wicket.util.file,
               org.apache.wicket.request,
+              org.apache.wicket.event,
+              org.apache.wicket.request.http,
+              org.apache.wicket.request.mapper,
+              org.apache.wicket.request.resource,
+              org.apache.wicket.util,
+              org.apache.wicket.request.cycle,
+              org.apache.wicket.page,
               *
             </Import-Package>
           </instructions>
