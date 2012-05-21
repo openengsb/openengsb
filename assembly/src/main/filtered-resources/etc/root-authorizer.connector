@@ -15,5 +15,8 @@
 # limitations under the License.
 #
 
-
-property.location.root=auditing
+domainType=authorization
+connectorType=composite-connector
+property.location.root=authorization-root
+attribute.queryString=(&(location.root=authorization/*)(objectClass=org.openengsb.domain.authorization.AuthorizationDomain))
+attribute.compositeStrategy=authorization.affirmativebased

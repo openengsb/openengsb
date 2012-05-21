@@ -15,6 +15,6 @@
 # limitations under the License.
 #
 
-property.location.root=authentication-root
-attribute.queryString=(&(location.root=authentication/*)(objectClass=org.openengsb.domain.authentication.AuthenticationDomain))
-attribute.compositeStrategy=authentication.provider
+domainType=authorization
+connectorType=serviceacl
+property.location.root=authorization/service

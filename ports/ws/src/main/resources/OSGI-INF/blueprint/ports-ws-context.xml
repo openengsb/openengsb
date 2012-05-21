@@ -42,7 +42,6 @@
     </property>
   </bean>
 
-
   <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />

@@ -71,7 +71,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
@@ -271,8 +270,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("edit button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
-                setResponsePage(new ConnectorEditorPage(connectorId));
+                setResponsePage(new ConnectorEditorPage(serviceId));
             }
 
             @Override
@@ -289,9 +287,8 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("delete button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
                 try {
-                    serviceManager.delete(connectorId);
+                    serviceManager.delete(serviceId);
                     info("service " + serviceId + " successfully deleted");
                     serviceList.setModelObject(createModel());
                     serviceList.getTreeState().expandAll();
@@ -442,7 +439,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Service or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Service or null if none was selected
      */
     private ServiceId fetchCurrentSelectService() {
@@ -451,7 +448,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Method or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Method or null if none was selected
      */
     private MethodId fetchCurrentSelectMethod() {
@@ -460,7 +457,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns a Standard MethodCall with of the selected Method
-     *
+     * 
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
@@ -476,7 +473,7 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
      * Returns this MethodCallRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
@@ -490,7 +487,7 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message
      * Returns this SecureRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
@@ -505,7 +502,7 @@ public class TestClient extends BasePage {
 
     /**
      * create nessecary MetaData for the Json Message
-     *
+     * 
      * @param serviceId to fetch the context Data of the message
      * @return a Map with the nessecary MetaData for the Message
      */
@@ -522,7 +519,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
-     *
+     * 
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
@@ -542,7 +539,7 @@ public class TestClient extends BasePage {
     /**
      * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
      * TODO [Openengsb 1411] replace this with stable filter mechanism
-     *
+     * 
      * @param jsonMessage Message to filter
      * @return the jsonMessage filtered from the unnessecary data
      */

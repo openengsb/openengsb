@@ -51,7 +51,7 @@
   </bean>
 
 
-  <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"
+  <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.InfoProvider"
                   availability="optional">
   </reference-list>
 </blueprint>

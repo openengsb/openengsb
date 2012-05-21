@@ -26,10 +26,11 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +67,9 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
-        Filter filter =
-            utilsService.makeFilter(CredentialTypeProvider.class, String.format("(credentialClass=%s)", className));
         Class<? extends Credentials> credentialType;
         try {
-            credentialType =
-                utilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(className);
+            credentialType = loadCredentialsType(className);
         } catch (ClassNotFoundException e) {
             throw new FilterException(e);
         }
@@ -83,6 +81,14 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
 
         LOGGER.debug("authenticated");
         return (MethodResultMessage) next.filter(input, metaData);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Credentials> loadCredentialsType(String className)
+        throws ClassNotFoundException {
+        Filter filter = DelegationUtil.createClassProviderFilter(className);
+        return (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
+            .loadClass(className);
     }
 
     @Override

@@ -45,16 +45,23 @@ public class ConfigFileTest {
 
     @Test
     public void testInitialize_shouldReturnCorrectConfiguration() throws Exception {
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.test=42"));
+        FileUtils.writeLines(connectorFile, Arrays.asList(
+            "domainType=d",
+            "connectorType=c",
+            "property.foo=bar",
+            "attribute.test=42"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
-        assertThat(fileObject.getConnectorId().equals("d+c+my"), is(true));
+        assertThat(fileObject.getName().equals("d+c+my"), is(true));
         assertThat((String) fileObject.getProperties().get("foo"), is("bar"));
         assertThat(fileObject.getAttributes().get("test"), is("42"));
     }
 
     @Test
     public void testInitialzeWithArray_shouldReturnArrayProperty() throws Exception {
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42"));
+        FileUtils.writeLines(connectorFile, Arrays.asList(
+            "domainType=d",
+            "connectorType=c",
+            "property.foo=bar,42"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
         String[] values = (String[]) fileObject.getProperties().get("foo");
         assertThat(Arrays.asList(values), hasItems("bar", "42"));
@@ -62,7 +69,8 @@ public class ConfigFileTest {
 
     @Test
     public void testUpdateAddNewProperty_shouldShowChangedValueInResult() throws Exception {
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=d",
+            "connectorType=c", "property.foo=bar,42"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42", "property.test=xxx"));
         ChangeSet update = fileObject.getChanges(connectorFile);
@@ -71,9 +79,11 @@ public class ConfigFileTest {
 
     @Test
     public void testChangeProperty_shouldShowChangedValueInResult() throws Exception {
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=d",
+            "connectorType=c", "property.foo=bar"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=d",
+            "connectorType=c", "property.foo=bar,42"));
         ChangeSet update = fileObject.getChanges(connectorFile);
         update.getChangedProperties().entriesOnlyOnRight().containsKey("test");
     }

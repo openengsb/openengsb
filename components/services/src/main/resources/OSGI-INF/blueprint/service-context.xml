@@ -144,7 +144,7 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
+  <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.InfoProvider" />
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference id="securityInterceptor" availability="optional" interface="org.aopalliance.intercept.MethodInterceptor"
