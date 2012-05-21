@@ -38,12 +38,35 @@
     <property name="url" value="${url}" />
     <property name="username" value="${username}" />
     <property name="password" value="${password}" />
+    <property name="maxIdle" value="1" />
   </bean>
 
-  <service id="xaDataSource" ref="dataSource" interface="javax.sql.DataSource">
+  <bean id="connectionFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
+    <argument ref="dataSource" />
+  </bean>
+
+  <bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool" >
+    <argument><null/></argument>
+  </bean>
+
+  <bean id="pooledConnectionFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory" >
+    <argument ref="connectionFactory" />
+    <argument ref="connectionPool" />
+    <argument><null/></argument>
+    <argument value="SELECT 1" />
+    <argument value="false" />
+    <argument value="false" />
+  </bean>
+
+  <bean id="poolingDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="pooledConnectionFactory">
+    <argument ref="connectionPool" />
+  </bean>
+
+  <service id="xaDataSource" ref="poolingDataSource" interface="javax.sql.DataSource">
     <service-properties>
       <entry key="osgi.jndi.service.name" value="jdbc/openengsb"/>
     </service-properties>
   </service>
-  
+
 </blueprint>
+
