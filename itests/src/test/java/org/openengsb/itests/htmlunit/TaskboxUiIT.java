@@ -96,7 +96,8 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(WebTaskboxService.class);
 
-        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);        
+        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        authenticateAsAdmin();
         addWorkflow();
         loginAsAdmin();
     }

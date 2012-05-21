@@ -57,6 +57,11 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.core.workflow.OsgiHelper;
+import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
+import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
+import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
+import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
@@ -96,7 +101,15 @@ public abstract class AbstractExamTestHelper {
         waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         int count = 0;
-        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+        while (rm.getGlobalType("auditing") == null) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
+        }
+        count = 0;
+        while (!rm.listImports().contains(OsgiHelper.class.getName())) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
             if (count++ > 100) {

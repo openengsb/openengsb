@@ -76,7 +76,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "    \"classes\": ["
             + "        \"" + Event.class.getName() + "\""
             + "    ],"
-            + "    \"methodName\": \"audit\","
+            + "    \"methodName\": \"onEvent\","
             + "    \"metaData\": {"
             + "        \"serviceId\": \"auditing+memoryauditing+auditing-root\","
             + "        \"contextId\": \"foo\""
