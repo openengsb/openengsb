@@ -17,7 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
@@ -30,6 +30,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
@@ -79,6 +80,16 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
         registerService(mockService, props, TestInterface.class);
         return mockService;
+    }
+
+    @Test
+    public void testMethodCallWithNullParameters_shouldBeSerialized() throws Exception {
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 });
+        ObjectMapper objectMapper = new ObjectMapper();
+        String writeValueAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCall);
+        System.out.println(writeValueAsString);
+        MethodCall readValue = objectMapper.readValue(writeValueAsString, MethodCall.class);
+        assertThat(readValue, is(methodCall));
     }
 
     @Test
