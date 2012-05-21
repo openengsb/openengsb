@@ -228,7 +228,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
                 producer.send(message);
-                TextMessage response = (TextMessage) consumer.receive(1000);
+                TextMessage response = (TextMessage) consumer.receive(30000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
                     response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);

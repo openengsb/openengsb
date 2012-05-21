@@ -78,7 +78,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "    ],"
             + "    \"methodName\": \"onEvent\","
             + "    \"metaData\": {"
-            + "        \"serviceId\": \"auditing+memoryauditing+auditing-root\","
+            + "        \"serviceId\": \"auditing-root\","
             + "        \"contextId\": \"foo\""
             + "    },"
             + "    \"args\": ["
