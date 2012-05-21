@@ -672,14 +672,12 @@ public class TestClient extends BasePage {
     }
 
     private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException {
-        Method method;
         if (methodId == null) {
             String string = new StringResourceModel("serviceError", this, null).getString();
             error(string);
             return null;
         }
-        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypes());
-        return method;
+        return service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypes());
     }
 
     protected void performCall() {
@@ -796,8 +794,7 @@ public class TestClient extends BasePage {
         if (service == null) {
             return Collections.emptyList();
         }
-        Class<?> connectorInterface;
-        connectorInterface = service.getServiceClass();
+        Class<?> connectorInterface = service.getServiceClass();
         if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             List<Method> result = Arrays.asList(connectorInterface.getMethods());
@@ -812,16 +809,12 @@ public class TestClient extends BasePage {
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         String serviceId = service.getServiceId();
         if (serviceId != null) {
-            return utilsService.getServiceWithId(service.getServiceClass(),
-                serviceId);
+            return utilsService.getServiceWithId(service.getServiceClass(), serviceId);
         } else {
             String domainName = service.getDomainName();
             String location = "domain/" + domainName + "/default";
-            Class<?> serviceClazz;
-            serviceClazz = service.getServiceClass();
-
-            return utilsService.getServiceForLocation(serviceClazz,
-                location);
+            Class<?> serviceClazz = service.getServiceClass();
+            return utilsService.getServiceForLocation(serviceClazz, location);
         }
 
     }
@@ -831,7 +824,6 @@ public class TestClient extends BasePage {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;
         aClass = (Class<? extends Domain>) service.getServiceClass();
-
         if (wiringService.isConnectorCurrentlyPresent(aClass)) {
             return wiringService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
