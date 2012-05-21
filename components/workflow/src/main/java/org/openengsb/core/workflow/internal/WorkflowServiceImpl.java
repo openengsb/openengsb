@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
@@ -69,6 +70,7 @@ import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -97,10 +99,15 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private DefaultOsgiUtilsService utilsService;
 
+    private Collection<AuditingDomain> auditingConnectors;
+
     @SuppressWarnings("deprecation") // will be removed in 3.0 (OPENENGSB-2789)
     @Override
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
+        for (AuditingDomain connector : auditingConnectors) {
+            connector.audit(event);
+        }
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = null;
         try {
@@ -354,6 +361,22 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         LOGGER.debug("globals have been set");
         session.addEventListener(new DefaultProcessEventListener() {
             @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeStart(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeFinish(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
+            @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {
                 synchronized (session) {
                     session.notifyAll();
@@ -431,6 +454,10 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     public void setTaskbox(TaskboxService taskbox) {
         this.taskbox = taskbox;
+    }
+
+    public void setAuditingConnectors(Collection<AuditingDomain> auditingConnectors) {
+        this.auditingConnectors = auditingConnectors;
     }
 
 }

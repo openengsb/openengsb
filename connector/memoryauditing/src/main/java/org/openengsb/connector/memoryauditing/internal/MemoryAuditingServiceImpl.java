@@ -19,16 +19,21 @@ package org.openengsb.connector.memoryauditing.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.auditing.AuditingDomain;
 
+import com.google.common.collect.Maps;
+
 public class MemoryAuditingServiceImpl extends AbstractOpenEngSBConnectorService implements AuditingDomain {
 
     private final List<Event> events = Collections.synchronizedList(new ArrayList<Event>());
+    private final ConcurrentMap<Long, List<String>> workflowProgress = Maps.newConcurrentMap();
 
     public MemoryAuditingServiceImpl() {
     }
@@ -50,6 +55,17 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBConnectorService
     @Override
     public List<Event> getAllAudits() {
         return Collections.unmodifiableList(events);
+    }
+
+    @Override
+    public void onNodeStart(String process, long instance, String name) {
+        workflowProgress.putIfAbsent(instance, new LinkedList<String>());
+        workflowProgress.get(instance).add(name);
+    }
+
+    @Override
+    public void onNodeFinish(String process, long instance, String name) {
+        // do nothing
     }
 
 }

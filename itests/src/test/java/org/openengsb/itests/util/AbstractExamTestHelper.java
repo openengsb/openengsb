@@ -46,6 +46,7 @@ import org.junit.Before;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.OsgiHelper;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
@@ -91,7 +92,15 @@ public abstract class AbstractExamTestHelper {
     public void waitForRequiredTasks() throws Exception {
         RuleManager rm = getOsgiService(RuleManager.class);
         int count = 0;
-        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+        while (rm.getGlobalType("auditing") == null) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
+        }
+        count = 0;
+        while (!rm.listImports().contains(OsgiHelper.class.getName())) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
             if (count++ > 100) {
