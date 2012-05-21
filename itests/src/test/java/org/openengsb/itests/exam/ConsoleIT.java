@@ -120,9 +120,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
-        assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
-        assertTrue(contains(result, "authorization+composite-connector+root-authorizer", "ONLINE"));
+        assertTrue(contains(result, "root-authenticator", "ONLINE"));
+        assertTrue(contains(result, "auditing-root", "ONLINE"));
+        assertTrue(contains(result, "root-authorizer", "ONLINE"));
     }
 
     @Test
@@ -147,12 +147,12 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
-        cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
+        cs.execute("openengsb:service -f true delete root-authenticator ");
         cs.execute("openengsb:service list");
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+        assertFalse(contains(result, "root-authenticator", "ONLINE"));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     private void waitForDefaultConnectors() {
         getOsgiService(AuditingDomain.class);
-        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 30000);
-        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
+        getOsgiService(AuthenticationDomain.class, "(id=root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(id=root-authorizer)", 30000);
     }
 }
