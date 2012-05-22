@@ -186,27 +186,6 @@ input[type=submit] {
   padding-bottom: 25px;
 }
 
-.dropdownIcon {
- background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownIcon.png");
- background-position: right center;
- background-repeat: no-repeat;
- position:relative;
- padding-right: 3px;
- padding-bottom: 7px;
-}
-
-.dropdown ul{
- list-style:none;
- border-left: 1px solid #56738C;
- border-right: 1px solid #56738C;
- border-bottom: 1px solid #56738C;
- font-size: 1.2em;
- line-height: 1.2em;
- padding-top:20px;
- background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownBackground.png");
- 
-}
-
 .dropdownContainer {
 	backgound-color:#ffffff;
 }
@@ -345,7 +324,7 @@ input[type=submit] {
 }
 
 .greyButton{
-    background: none repeat scroll 0 0 #EEEEEE;
+    background: none repeat scroll 0 0 #eeeeee;
     border: 1px solid #999999;
     border-radius: 5px 5px 5px 5px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -353,74 +332,17 @@ input[type=submit] {
     padding: 4px;
 }
 
-#topMenuContainer a, #topMenuContainer span{
-	padding: 0px 8px 0px 8px;
-	text-decoration:none;
+.greyButton a, .greyButton a:active, .greyButton a:hover {
+  color: #999999;
+  text-decoration: none;
 }
 
-#topMenuContainer li.tmc-left {
-	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_left.png");
-	width: 14px;
-}
-#topMenuContainer li.tmc-center {
-	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_center.png");
-}
-#topMenuContainer li.tmc-right {
-	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_right.png");
-	width: 14px;
-	margin: 0px; 0px; 5px; 0px;
-}
-#topMenuContainer li.tmc-seperator {
-	background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_seperator.png");
-	width: 2px;
+.greyButton a:hover {
+  background: #4890bb;
+  color: #ffffff;
+  text-decoration: none;
 }
 
-#topMenuContainer ul.dropdownContainer {
-	background-color: white;
-	border-top: none;
-	border-left: 1px solid #6f6f6f;
-    border-right: 1px solid #6f6f6f;
-    border-bottom: 1px solid #6f6f6f;
-	margin-top: 6px;
-	position: absolute;
-	min-width: 150px;
-}
-
-
-#topMenuContainer ul.dropdownContainer li{
-	float: none;
-	display: block;
-	text-decoration: none;
-	font-color: black;
-	font-size: 0.75em;
-	height: 1.8em;
-	padding-bottom: 8px;
-	padding-top: 0px;
-    padding-left: 6px;
-}
-
-#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline{
-	border-bottom: 1px solid #EBEBEB;
-    font-weight: bold;
-    margin-bottom: 5px;
-	padding-left: 8px;
-    padding-top: 0px;
-    padding-bottom: 8px;
-}
-
-#topMenuContainer ul.dropdownContainer li:hover{
-	background-color: #ebebeb;
-}
-
-#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline:hover{
-	background-color: #ffffff;
-}
-
-
-#topMenuContainer ul.dropdownContainer li a{
-	text-decoration:none;
-	color: #6f6f6f;
-}
 
 .topMenuLabel{
 	color: #ffffff;
@@ -547,3 +469,101 @@ input[type=submit] {
 #footerContainer a:hover{
     text-decoraton:none;
 }
+
+/* To be removed
+
+
+
+
+#topMenuContainer a, #topMenuContainer span{
+    padding: 0px 8px 0px 8px;
+    text-decoration:none;
+}
+
+#topMenuContainer li.tmc-left {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_left.png");
+    width: 14px;
+}
+#topMenuContainer li.tmc-center {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_center.png");
+}
+#topMenuContainer li.tmc-right {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_right.png");
+    width: 14px;
+    margin: 0px; 0px; 5px; 0px;
+}
+#topMenuContainer li.tmc-seperator {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_seperator.png");
+    width: 2px;
+}
+
+#topMenuContainer ul.dropdownContainer {
+    background-color: white;
+    border-top: none;
+    border-left: 1px solid #6f6f6f;
+    border-right: 1px solid #6f6f6f;
+    border-bottom: 1px solid #6f6f6f;
+    margin-top: 6px;
+    position: absolute;
+    min-width: 150px;
+}
+
+
+#topMenuContainer ul.dropdownContainer li{
+    float: none;
+    display: block;
+    text-decoration: none;
+    font-color: black;
+    font-size: 0.75em;
+    height: 1.8em;
+    padding-bottom: 8px;
+    padding-top: 0px;
+    padding-left: 6px;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline{
+    border-bottom: 1px solid #EBEBEB;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-left: 8px;
+    padding-top: 0px;
+    padding-bottom: 8px;
+}
+
+#topMenuContainer ul.dropdownContainer li:hover{
+    background-color: #ebebeb;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline:hover{
+    background-color: #ffffff;
+}
+
+
+#topMenuContainer ul.dropdownContainer li a{
+    text-decoration:none;
+    color: #6f6f6f;
+}
+
+.dropdownIcon {
+ background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownIcon.png");
+ background-position: right center;
+ background-repeat: no-repeat;
+ position:relative;
+ padding-right: 3px;
+ padding-bottom: 7px;
+}
+
+.dropdown ul{
+ list-style:none;
+ border-left: 1px solid #56738C;
+ border-right: 1px solid #56738C;
+ border-bottom: 1px solid #56738C;
+ font-size: 1.2em;
+ line-height: 1.2em;
+ padding-top:20px;
+ background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownBackground.png");
+ 
+}
+
+
+*/
