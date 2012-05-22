@@ -38,8 +38,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +45,6 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.ui.common.editor.fields.AbstractField;
 
-@SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
 
     private WicketTester tester;
@@ -165,13 +162,10 @@ public class ServiceEditorPanelTest {
             editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        editor = (ServiceEditorPanel) tester.startPanel(new ITestPanelSource() {
-            @Override
-            public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties,
-                    mock(Form.class));
-            }
-        });
+        editor =
+            tester.startComponentInPage(new ServiceEditorPanel("panel", Arrays.asList(attributes),
+                editorValues, properties,
+                mock(Form.class)));
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {

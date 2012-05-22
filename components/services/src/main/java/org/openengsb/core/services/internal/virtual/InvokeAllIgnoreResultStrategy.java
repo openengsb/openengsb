@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -33,11 +32,12 @@ import org.osgi.framework.ServiceReference;
  */
 public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy {
 
+    private OsgiUtilsService utilsService;
+
     @Override
     public Object invoke(List<ServiceReference> services, Method method, Object... args) throws Throwable {
-        OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
         for (ServiceReference ref : services) {
-            Object service = serviceUtils.getService(ref);
+            Object service = utilsService.getService(ref);
             try {
                 method.invoke(service, args);
             } catch (InvocationTargetException e) {
@@ -50,6 +50,10 @@ public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy
     @Override
     public boolean supports(Class<?> domainClass) {
         return true;
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

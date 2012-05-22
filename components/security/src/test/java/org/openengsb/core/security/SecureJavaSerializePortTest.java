@@ -68,7 +68,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
         FilterChainElementFactory unpackerFactory = new FilterChainElementFactory() {
             @Override
             public FilterChainElement newInstance() throws FilterConfigurationException {
-                return new AbstractFilterChainElement<byte[], byte[]>(byte[].class, byte[].class) {
+                return new AbstractFilterChainElement<byte[], byte[]>() {
                     private FilterAction next;
 
                     @Override
@@ -89,7 +89,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
         FilterChainElementFactory parserFactory = new FilterChainElementFactory() {
             @Override
             public FilterChainElement newInstance() throws FilterConfigurationException {
-                return new AbstractFilterChainElement<byte[], byte[]>(byte[].class, byte[].class) {
+                return new AbstractFilterChainElement<byte[], byte[]>() {
                     private FilterAction next;
 
                     @Override

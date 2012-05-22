@@ -176,7 +176,9 @@ public class RulebaseBuilder {
     private StringBuffer initNewPackageString(String packageName) {
         StringBuffer result = new StringBuffer();
         result.append(String.format("package %s;", packageName));
-        result.append(declarations);
+        if (declarations != null) {
+            result.append(declarations);
+        }
         return result;
     }
 
@@ -202,7 +204,6 @@ public class RulebaseBuilder {
             }
         }
         if (builder.hasErrors()) {
-            System.out.println(content.toString());
             throw new RuleBaseException(builder.getErrors().toString());
         }
         return builder.getKnowledgePackages();

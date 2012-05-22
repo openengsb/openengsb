@@ -20,7 +20,6 @@ package org.openengsb.core.api.xlink.model;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.ConnectorId;
 
 /**
  * Simple Modelclass to store a registration to XLink
@@ -34,7 +33,7 @@ public class XLinkToolRegistration {
     /**
      * Id of the connector, identifying the tool
      */    
-    private ConnectorId connectorId;
+    private String connectorId;
     /**
      * Human readable name of the tool
      */    
@@ -48,7 +47,7 @@ public class XLinkToolRegistration {
      */
     private XLinkTemplate xLinkTemplate;
 
-    public XLinkToolRegistration(String hostId, ConnectorId connectorId, String toolName, 
+    public XLinkToolRegistration(String hostId, String connectorId, String toolName, 
             Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
@@ -57,11 +56,11 @@ public class XLinkToolRegistration {
         this.xLinkTemplate = xLinkTemplate;
     }
 
-    public ConnectorId getConnectorId() {
+    public String getConnectorId() {
         return connectorId;
     }
 
-    public void setConnectorId(ConnectorId connectorId) {
+    public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
 

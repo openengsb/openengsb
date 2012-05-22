@@ -21,7 +21,7 @@ package org.openengsb.core.common.util;
 /**
  * wraps a {@link Runnable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
  */
-class ContextAwareRunnable extends ContextAware implements Runnable {
+public class ContextAwareRunnable extends ContextAware implements Runnable {
     private Runnable original;
 
     public ContextAwareRunnable(Runnable original) {

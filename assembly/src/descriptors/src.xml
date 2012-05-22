@@ -24,11 +24,10 @@
   <formats>
     <format>zip</format>
   </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
       <directory>${project.basedir}/../</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>src/</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
         <exclude>**/${project.build.directory}/**</exclude>
@@ -37,6 +36,23 @@
         <exclude>**/.classpath/**</exclude>
       </excludes>
     </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../</directory>
+      <outputDirectory>/</outputDirectory>
+      <useDefaultExcludes>true</useDefaultExcludes>
+      <includes>
+        <include>NOTICE</include>
+        <include>LICENSE</include>
+        <include>CHANGELOG</include>
+      </includes>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>../README.md</source>
+      <!--<outputDirectory>/</outputDirectory>-->
+      <destName>README</destName>
+    </file>
+  </files>
 </assembly>
 

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
@@ -38,6 +37,19 @@ import org.openengsb.core.api.xlink.model.XLinkToolView;
 public interface ConnectorManager {
 
     /**
+     * creates a new connector instance with the given description and returns the id of the newly created service. The
+     * new connectorDescription is validated before the connector instance is created. In this validation-step only the
+     * combination of the attributes is validated. Each valid is assumed to be valid by itself (e.g. number-attributes)
+     * 
+     * The connector instance is then registered in the OSGi-registry and persisted using
+     * {@link org.opaenengsb.core.api.persistence.ConfigPersistenceService}
+     * 
+     * 
+     * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
+     */
+    String create(ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
+
+    /**
      * creates a new connector instance with the given id and description. The new connectorDescription is validated
      * before the connector instance is created. In this validation-step only the combination of the attributes is
      * validated. Each valid is assumed to be valid by itself (e.g. number-attributes)
@@ -47,7 +59,7 @@ public interface ConnectorManager {
      * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void create(ConnectorId id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
+    void createWithId(String id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
 
     /**
      * creates a new connector instance with the given id and description. It works similar to
@@ -59,7 +71,7 @@ public interface ConnectorManager {
      * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void forceCreate(ConnectorId id, ConnectorDescription connectorDescription);
+    String forceCreate(ConnectorDescription connectorDescription);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
@@ -70,8 +82,8 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the combination of the new attributes are not valid
      * @throws IllegalArgumentException if no connector instance with the given id is available
      */
-    void update(ConnectorId id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException,
-        IllegalArgumentException;
+    void update(String connectorId, ConnectorDescription connectorDescription)
+        throws ConnectorValidationFailedException, IllegalArgumentException;
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
@@ -81,19 +93,20 @@ public interface ConnectorManager {
      * 
      * @throws IllegalArgumentException if no connector instancewith the given id is available
      */
-    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException;
+    void forceUpdate(String connectorId, ConnectorDescription connectorDescription)
+        throws IllegalArgumentException;
 
     /**
      * Deletes the connector instance with the given {@code id}.
      * 
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(ConnectorId id) throws PersistenceException;
+    void delete(String connectorId) throws PersistenceException;
 
     /**
      * Returns the description for the specified connector instance.
      */
-    ConnectorDescription getAttributeValues(ConnectorId id);
+    ConnectorDescription getAttributeValues(String connectorId);
 
     // @extract-start ConnectorManager
     
@@ -116,14 +129,14 @@ public interface ConnectorManager {
      * 
      * @see org.openengsb.core.api.xlink.XLinkTemplate
      */    
-    XLinkTemplate connectToXLink(ConnectorId id, String hostId, 
+    XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
             Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.
      */
-    void disconnectFromXLink(ConnectorId id, String hostId);
+    void disconnectFromXLink(String id, String hostId);
 
     // @extract-end
     

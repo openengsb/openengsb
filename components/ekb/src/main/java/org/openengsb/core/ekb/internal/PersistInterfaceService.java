@@ -17,16 +17,12 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.util.List;
-
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
 import org.openengsb.core.api.ekb.SanityCheckReport;
-import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,30 +37,23 @@ public class PersistInterfaceService implements PersistInterface {
     private EDBConverter edbConverter;
 
     @Override
-    public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id)
-        throws SanityCheckException, EDBException {
+    public void commit(EKBCommit commit) throws SanityCheckException, EDBException {
         LOGGER.debug("Commit of models was called");
-        runPersistingLogic(inserts, updates, deletes, true, true, id);
+        runPersistingLogic(commit, true, true);
         LOGGER.debug("Commit of models was successful");
     }
 
     @Override
-    public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id)
-        throws EDBException {
+    public void forceCommit(EKBCommit commit) throws EDBException {
         LOGGER.debug("Force commit of models was called");
-        runPersistingLogic(inserts, updates, deletes, false, true, id);
+        runPersistingLogic(commit, false, true);
         LOGGER.debug("Force commit of models was successful");
     }
 
     @Override
-    public SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
-            List<OpenEngSBModel> deletes,
-            ConnectorId id)
-        throws SanityCheckException, EDBException {
+    public SanityCheckReport check(EKBCommit commit) throws SanityCheckException, EDBException {
         LOGGER.debug("Sanity checks of models was called");
-        SanityCheckReport report = performSanityChecks(inserts, updates, deletes);
+        SanityCheckReport report = performSanityChecks(commit);
         LOGGER.debug("Sanity checks of models passed successful");
         return report;
     }
@@ -73,25 +62,21 @@ public class PersistInterfaceService implements PersistInterface {
      * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true and does the persisting of
      * models if persist is set to true.
      */
-    private void runPersistingLogic(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
-            List<OpenEngSBModel> deletes, boolean check, boolean persist, ConnectorId id) throws SanityCheckException,
-        EDBException {
+    private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
+        throws SanityCheckException, EDBException {
         if (check) {
-            performSanityChecks(inserts, updates, deletes);
+            performSanityChecks(commit);
         }
         if (persist) {
-            List<EDBObject> ins = edbConverter.convertModelsToEDBObjects(inserts, id);
-            List<EDBObject> upd = edbConverter.convertModelsToEDBObjects(updates, id);
-            List<EDBObject> del = edbConverter.convertModelsToEDBObjects(deletes, id);
-            performPersisting(ins, upd, del);
+            ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
+            performPersisting(converted);
         }
     }
 
     /**
      * Performs the sanity checks of the given models.
      */
-    private SanityCheckReport performSanityChecks(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
-            List<OpenEngSBModel> deletes) throws SanityCheckException {
+    private SanityCheckReport performSanityChecks(EKBCommit commit) throws SanityCheckException {
         // TODO: [OPENENGSB-2717] implement sanity check logic
         return null;
     }
@@ -99,9 +84,8 @@ public class PersistInterfaceService implements PersistInterface {
     /**
      * Performs the persisting of the models into the EDB.
      */
-    private void performPersisting(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
-        throws EDBException {
-        edbService.commitEDBObjects(inserts, updates, deletes);
+    private void performPersisting(ConvertedCommit commit) throws EDBException {
+        edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {

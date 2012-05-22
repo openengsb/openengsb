@@ -25,6 +25,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Transient;
 
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
@@ -56,6 +57,10 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
 
     private List<EDBObject> objects;
 
+    @Transient
+    private List<EDBObject> inserts;
+    @Transient
+    private List<EDBObject> updates;
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
@@ -68,8 +73,9 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
         this.context = contextId;
 
         oids = new ArrayList<String>();
-        objects = new ArrayList<EDBObject>();
         deletions = new ArrayList<String>();
+        inserts = new ArrayList<EDBObject>();
+        updates = new ArrayList<EDBObject>();
     }
 
     @Override
@@ -88,8 +94,10 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
         return oids;
     }
 
-    @Override
     public final List<EDBObject> getObjects() {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.addAll(inserts);
+        objects.addAll(updates);
         return objects;
     }
 
@@ -119,14 +127,6 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
     }
 
     @Override
-    public void add(EDBObject obj) throws EDBException {
-        if (!objects.contains(obj)) {
-            objects.add(obj);
-            LOGGER.debug("Added object " + obj.getOID() + " to the commit");
-        }
-    }
-
-    @Override
     public void delete(String oid) throws EDBException {
         if (deletions.contains(oid)) {
             LOGGER.debug("could not delete object " + oid + " because it was never added");
@@ -145,5 +145,31 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
         for (EDBObject o : objects) {
             oids.add(o.getOID());
         }
+    }
+
+    @Override
+    public void insert(EDBObject obj) throws EDBException {
+        if (!inserts.contains(obj)) {
+            inserts.add(obj);
+            LOGGER.debug("Added object " + obj.getOID() + " to the commit for inserting");
+        }
+    }
+
+    @Override
+    public void update(EDBObject obj) throws EDBException {
+        if (!updates.contains(obj)) {
+            updates.add(obj);
+            LOGGER.debug("Added object " + obj.getOID() + " to the commit for updating");
+        }
+    }
+
+    @Override
+    public List<EDBObject> getInserts() {
+        return inserts;
+    }
+
+    @Override
+    public List<EDBObject> getUpdates() {
+        return updates;
     }
 }

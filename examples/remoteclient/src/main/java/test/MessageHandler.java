@@ -42,7 +42,7 @@ class MessageHandler {
 
     public String marshal(MethodResultMessage methodResultMessage) {
         try {
-            return MAPPER.defaultPrettyPrintingWriter().writeValueAsString(methodResultMessage);
+            return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(methodResultMessage);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

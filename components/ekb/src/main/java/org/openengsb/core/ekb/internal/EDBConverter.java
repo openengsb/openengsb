@@ -32,7 +32,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -269,14 +269,27 @@ public class EDBConverter {
     }
 
     /**
+     * Converts the models of an EKBCommit to EDBObjects and return an object which contains the three corresponding
+     * lists
+     */
+    public ConvertedCommit convertEKBCommit(EKBCommit commit) {
+        ConvertedCommit result = new ConvertedCommit();
+        ConnectorInformation information = EDBConverterUtils.getConnectorInformationOfEKBCommit(commit);
+        result.setInserts(convertModelsToEDBObjects(commit.getInserts(), information));
+        result.setUpdates(convertModelsToEDBObjects(commit.getUpdates(), information));
+        result.setDeletes(convertModelsToEDBObjects(commit.getDeletes(), information));
+        return result;
+    }
+    
+    /**
      * Convert a list of models to a list of EDBObjects (the version retrieving is not considered here. This is done in
      * the EDB directly).
      */
-    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorId id) {
+    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorInformation info) {
         List<EDBObject> result = new ArrayList<EDBObject>();
         if (models != null) {
             for (OpenEngSBModel model : models) {
-                result.addAll(convertModelToEDBObject(model, id));
+                result.addAll(convertModelToEDBObject(model, info));
             }
         }
         return result;
@@ -286,10 +299,10 @@ public class EDBConverter {
      * Converts an OpenEngSBModel object to an EDBObject (the version retrieving is not considered here. This is done in
      * the EDB directly).
      */
-    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, ConnectorId id) {
+    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, ConnectorInformation info) {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         if (model != null) {
-            convertSubModel(model, objects, id);
+            convertSubModel(model, objects, info);
         }
         return objects;
     }
@@ -297,8 +310,8 @@ public class EDBConverter {
     /**
      * Recursive function to generate a list of EDBObjects out of a model object.
      */
-    private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorId id) {
-        String oid = EDBConverterUtils.createOID(model, id.getDomainType(), id.getConnectorType());
+    private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorInformation info) {
+        String oid = EDBConverterUtils.createOID(model, info.getDomainId(), info.getConnectorId());
         EDBObject object = new EDBObject(oid);
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             if (entry.getValue() == null) {
@@ -312,7 +325,7 @@ public class EDBConverter {
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
                 OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
                     model.getClass().getClassLoader());
-                String subOid = convertSubModel(temp, objects, id);
+                String subOid = convertSubModel(temp, objects, info);
                 object.put(entry.getKey(), subOid);
             } else if (List.class.isAssignableFrom(entry.getType())) {
                 List<?> list = (List<?>) entry.getValue();
@@ -326,7 +339,7 @@ public class EDBConverter {
                         modelItems = item.getClass().equals(OpenEngSBModelWrapper.class);
                     }
                     if (modelItems) {
-                        item = createSubModelOutOfWrapper(item, model, objects, id);
+                        item = createSubModelOutOfWrapper(item, model, objects, info);
                     }
                     object.put(entry.getKey() + i, item);
                 }
@@ -348,10 +361,10 @@ public class EDBConverter {
                     Object key = ent.getKey();
                     Object value = ent.getValue();
                     if (keyIsModel) {
-                        key = createSubModelOutOfWrapper(key, model, objects, id);
+                        key = createSubModelOutOfWrapper(key, model, objects, info);
                     }
                     if (valueIsModel) {
-                        value = createSubModelOutOfWrapper(key, model, objects, id);
+                        value = createSubModelOutOfWrapper(key, model, objects, info);
                     }
                     object.put(entry.getKey() + i + ".key", key);
                     object.put(entry.getKey() + i + ".value", value);
@@ -363,9 +376,9 @@ public class EDBConverter {
         }
         Class<?> modelType = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
         object.put(EDBConstants.MODEL_TYPE, modelType.toString());
-        object.put("domainId", id.getDomainType());
-        object.put("connectorId", id.getConnectorType());
-        object.put("instanceId", id.getInstanceId());
+        object.put("domainId", info.getDomainId());
+        object.put("connectorId", info.getConnectorId());
+        object.put("instanceId", info.getInstanceId());
         objects.add(object);
         return oid;
     }
@@ -374,12 +387,12 @@ public class EDBConverter {
      * Create a sub model out of a wrapper object and returns the oid of the sub model.
      */
     private String createSubModelOutOfWrapper(Object subModel, OpenEngSBModel parent, List<EDBObject> objects,
-            ConnectorId id) {
+            ConnectorInformation info) {
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) subModel;
         OpenEngSBModel temp =
             (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
                 parent.getClass().getClassLoader());
-        return convertSubModel(temp, objects, id);
+        return convertSubModel(temp, objects, info);
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {

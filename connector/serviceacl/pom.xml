@@ -31,8 +31,6 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.serviceacl</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.serviceacl</bundle.namespace>
-    <openengsb.domain.version>3.0.0-SNAPSHOT</openengsb.domain.version>
-    <openengsb.domain.range>3.0.0-SNAPSHOT</openengsb.domain.range>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -69,13 +67,6 @@
         </includes>
       </resource>
       <resource>
-        <directory>${project.basedir}/src/main/filtered-resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      <resource>
         <directory>${project.basedir}/src/main/resources</directory>
         <filtering>true</filtering>
         <includes>
@@ -84,10 +75,6 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -99,6 +86,7 @@
               org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -125,6 +113,11 @@
       <artifactId>org.openengsb.framework.test</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
 
     <!-- OpenEngSB Domain References -->

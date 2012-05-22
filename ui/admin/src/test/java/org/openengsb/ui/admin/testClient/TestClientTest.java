@@ -21,8 +21,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -44,12 +46,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -58,6 +63,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,14 +79,13 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
@@ -142,8 +147,7 @@ public class TestClientTest extends AbstractUITest {
 
     @Before
     public void setupTest() throws Exception {
-        context.putBean(bundleContext);
-        context.putBean(mock(ProxyFactory.class));
+        context.putBean("blueprintBundleContext", bundleContext);
     }
 
     @Test
@@ -200,14 +204,12 @@ public class TestClientTest extends AbstractUITest {
     @Test
     public void testServiceListSelect() throws Exception {
         setupAndStartTestClientPage();
-        setServiceInDropDown(2);
+        setServiceInDropDown("testdomain+testconnector+test-service");
 
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference =
-            new ServiceId(TestInterface.class.getName(),
-                new ConnectorId("testdomain", "testconnector", "test-service").toString());
+        ServiceId reference = new ServiceId(TestInterface.class, "testdomain+testconnector+test-service");
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -215,8 +217,8 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
+        String connectorId = "testdomain+testconnector+test-service";
+        ServiceId reference = new ServiceId(TestInterface.class, connectorId);
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -238,14 +240,16 @@ public class TestClientTest extends AbstractUITest {
         DropDownChoice<MethodId> methodList =
             (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
-        setServiceInDropDown(2);
+        setServiceInDropDown("testdomain+testconnector+test-service");
 
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
         for (MethodId mid : choices) {
-            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypes()));
         }
-        Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
+        List<Method> list = Arrays.asList(TestInterface.class.getMethods());
+        Collections.sort(list, new MethodComparator());
+        Assert.assertEquals(list, choiceMethods);
     }
 
     @Test
@@ -265,8 +269,8 @@ public class TestClientTest extends AbstractUITest {
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
         while (iterator.hasNext()) {
@@ -282,17 +286,12 @@ public class TestClientTest extends AbstractUITest {
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(2);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", UpdateEnum.class);
 
         Assert.assertEquals(1, argList.size());
         tester.assertComponent("methodCallForm:argumentListContainer:argumentList:arg0panel:valueEditor",
             DropdownField.class);
-    }
-
-    private void setMethodInDropDown(int index) {
-        formTester.select("methodList", index);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
     }
 
     @Test
@@ -302,12 +301,11 @@ public class TestClientTest extends AbstractUITest {
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(1);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", TestBean.class);
 
         Assert.assertEquals(1, argList.size());
         Assert.assertEquals(BeanEditorPanel.class, argList.get("arg0panel:valueEditor").getClass());
-        tester.debugComponentTrees();
         RepeatingView panel = (RepeatingView) argList.get("arg0panel:valueEditor:fields");
         Assert.assertEquals(2, panel.size());
     }
@@ -319,9 +317,8 @@ public class TestClientTest extends AbstractUITest {
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
-        tester.debugComponentTrees();
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
@@ -333,14 +330,12 @@ public class TestClientTest extends AbstractUITest {
     @Test
     public void testPerformMethodCallOnDomain() throws Exception {
         setupAndStartTestClientPage();
-        tester.debugComponentTrees();
         RepeatingView argList =
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
-        tester.debugComponentTrees();
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
@@ -353,8 +348,8 @@ public class TestClientTest extends AbstractUITest {
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(1);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", TestBean.class);
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
         BeanEditorPanel beanPanel =
@@ -372,25 +367,14 @@ public class TestClientTest extends AbstractUITest {
     public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(3);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", Integer.class);
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
-        tester.debugComponentTrees();
         formTester.setValue(beanPanelPath + ":field", "42");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         verify(testService).update(new Integer(42));
-    }
-
-    private void setServiceInDropDown(int index) {
-        if (!serviceListExpanded) {
-            expandServiceListTree();
-        }
-        tester.debugComponentTrees();
-        tester.clickLink("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", true);
-        tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink",
-            "onclick");
     }
 
     @Test
@@ -400,8 +384,8 @@ public class TestClientTest extends AbstractUITest {
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
 
         Assert.assertEquals(2, argList.size());
     }
@@ -410,8 +394,8 @@ public class TestClientTest extends AbstractUITest {
     public void testFormResetAfterCall() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
 
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
@@ -433,8 +417,8 @@ public class TestClientTest extends AbstractUITest {
     public void testFeedbackPanelContainsText() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
@@ -449,21 +433,20 @@ public class TestClientTest extends AbstractUITest {
     public void testExceptionInFeedback() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "fail");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-        String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
-        assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
+        assertTrue(tester.getMessages(FeedbackMessage.ERROR).get(0).toString().contains("IllegalArgumentException"));
     }
 
     @Test
     public void testSelectOtherService_shouldClearArgumentList() throws Exception {
         setupAndStartTestClientPage();
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
-        setServiceInDropDown(2);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
+        setServiceInDropDown("testdomain+testconnector+test-service");
         RepeatingView argList =
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
@@ -471,14 +454,13 @@ public class TestClientTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
     public void testListToCreateNewServices() throws Exception {
         setupAndStartTestClientPage();
-        tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
             (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
@@ -487,7 +469,6 @@ public class TestClientTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
         Label domainClass =
             (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
-        tester.debugComponentTrees();
         Label name =
             (Label) tester
                 .getComponentFromLastRenderedPage(
@@ -553,14 +534,12 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
         Assert.assertEquals(true, editButton.isEnabled());
         tester.executeAjaxEvent(editButton, "onclick");
 
-        ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
-        tester.assertRenderedPage(editorPage.getPageClass());
+        tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
@@ -581,37 +560,30 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
         Assert.assertEquals(true, deleteButton.isEnabled());
         tester.executeAjaxEvent(deleteButton, "onclick");
 
-        boolean works = false;
         try {
             tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
-        } catch (Exception e) {
-            works = true;
+        } catch (AssertionFailedError e) {
+            return;
         }
-        if (!works) {
-            assertFalse(true);
-        } else {
-            assertFalse(false);
-        }
+        fail("Deleation wasn't successful.");
     }
 
     @Test
     public void testStartWithContextAsParam() throws Exception {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
-        tester.startPage(TestClient.class, new PageParameters(parameterMap));
+        PageParameters pageParameters = new PageParameters();
+        pageParameters.set(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
+        tester.startPage(TestClient.class, pageParameters);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
@@ -619,11 +591,10 @@ public class TestClientTest extends AbstractUITest {
         List<String> availableInTree = new ArrayList<String>();
         List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
 
-        int count =
-            ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                    .getDefaultModelObject()).size();
+        Component domainsComponent = tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains");
+        int count = ((ArrayList<?>) domainsComponent.getDefaultModelObject()).size();
+
         // get all domains
-        tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
@@ -654,13 +625,50 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(2);
-        setMethodInDropDown(0);
+        setServiceInDropDown("testdomain+testconnector+test-service");
+        setMethodInDropDown("update", String.class, String.class);
         RepeatingView argList =
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(2, argList.size());
 
+    }
+
+    private void setServiceInDropDown(String serviceName) {
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        tester.debugComponentTrees();
+        WebMarkupContainer component =
+            (WebMarkupContainer) tester.getComponentFromLastRenderedPage("methodCallForm:serviceList:i");
+        for (int i = 0; i < component.size(); i++) {
+            WebMarkupContainer component2 = (WebMarkupContainer) component.get(i);
+            if (component2.getDefaultModelObjectAsString().startsWith(serviceName)) {
+                tester.clickLink("methodCallForm:serviceList:i:" + i + ":nodeComponent:contentLink", true);
+                tester.executeAjaxEvent("methodCallForm:serviceList:i:" + i + ":nodeComponent:contentLink",
+                    "onclick");
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Service with name " + serviceName + " not found in tree");
+    }
+
+    private void setMethodInDropDown(String name, Class<?>... parameterTypes) {
+        @SuppressWarnings("unchecked")
+        List<? extends MethodId> choices =
+            ((DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList"))
+                .getChoices();
+        for (int i = 0; i < choices.size(); i++) {
+            MethodId methodId = choices.get(i);
+            if (methodId.getName().equals(name)
+                    && ArrayUtils.isEquals(methodId.getArgumentTypes(), parameterTypes)) {
+                formTester.select("methodList", i);
+                tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+                return;
+            }
+        }
+        throw new IllegalArgumentException(String.format("could not find method %s(%s) in dropdown (%s)", name,
+            StringUtils.join(parameterTypes, ", "), choices));
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws Exception {
@@ -678,8 +686,8 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.create(new ConnectorId("testdomain", "testconnector", "test-service"),
-            new ConnectorDescription(
+        serviceManager.createWithId("testdomain+testconnector+test-service",
+            new ConnectorDescription("testdomain", "testconnector",
                 attributes, properties));
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);

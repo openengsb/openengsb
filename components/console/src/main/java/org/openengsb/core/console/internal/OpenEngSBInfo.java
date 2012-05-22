@@ -20,8 +20,8 @@ package org.openengsb.core.console.internal;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.felix.gogo.commands.Command;
-import org.apache.karaf.shell.commands.info.InfoProvider;
+import org.apache.karaf.shell.commands.Command;
+import org.apache.karaf.shell.commands.InfoProvider;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.osgi.framework.Bundle;

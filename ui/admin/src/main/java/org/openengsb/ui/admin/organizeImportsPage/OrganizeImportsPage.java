@@ -47,9 +47,12 @@ import org.slf4j.LoggerFactory;
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "imports")
 public class OrganizeImportsPage extends BasePage {
+
+    private static final long serialVersionUID = 2792895510843828152L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeImportsPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private String importName = "";
@@ -76,8 +79,8 @@ public class OrganizeImportsPage extends BasePage {
                 importName = imp;
 
                 info("");
-                target.addComponent(importField);
-                target.addComponent(feedbackPanel);
+                target.add(importField);
+                target.add(feedbackPanel);
             }
 
         };
@@ -95,7 +98,7 @@ public class OrganizeImportsPage extends BasePage {
                 if (importName == null || importName.equals("")) {
                     String message = new StringResourceModel("emptyError", this, null).getString();
                     error(message);
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
 
@@ -112,9 +115,14 @@ public class OrganizeImportsPage extends BasePage {
                 }
                 tree.setModelObject(createTreeModel());
                 importName = "";
-                target.addComponent(importField);
-                target.addComponent(tree);
-                target.addComponent(feedbackPanel);
+                target.add(importField);
+                target.add(tree);
+                target.add(feedbackPanel);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submitButton submit action.");
             }
         };
         submitButton.setOutputMarkupId(true);
@@ -139,16 +147,21 @@ public class OrganizeImportsPage extends BasePage {
                         String message = new StringResourceModel("notExistingError", this, null).getString();
                         error(importName + " " + message);
                     }
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
                 tree.setModelObject(createTreeModel());
 
                 importName = "";
 
-                target.addComponent(feedbackPanel);
-                target.addComponent(importField);
-                target.addComponent(tree);
+                target.add(feedbackPanel);
+                target.add(importField);
+                target.add(tree);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during handling deleteButton request cycle.");
             }
         };
         deleteButton.setOutputMarkupId(true);

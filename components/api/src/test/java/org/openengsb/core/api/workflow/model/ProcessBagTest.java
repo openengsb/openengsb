@@ -23,11 +23,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.workflow.ProcessBagException;
+
+import com.google.common.collect.Maps;
 
 public class ProcessBagTest {
     private ProcessBag pb;
@@ -92,4 +96,59 @@ public class ProcessBagTest {
         pb.removeAllProperties();
         assertTrue(pb.propertyCount() == 0);
     }
+
+    @Test
+    public void testWildeCatComperator_shouldSucceed() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        processBag.setContext("blub");
+        processBag.setProcessId("lala");
+        processBag.setUser("cool");
+        assertTrue(new ProcessBag().equals(processBag));
+    }
+
+    @Test
+    public void testSame_shouldSucceed() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        processBag.setContext("blub");
+        processBag.setProcessId("lala");
+        processBag.setUser("cool");
+        assertTrue(processBag.equals(processBag));
+    }
+
+    @Test
+    public void testRhsNull_shouldFail() throws Exception {
+        assertFalse(new ProcessBag().equals(null));
+    }
+
+    @Test
+    public void testRhsInequalToLhs_shouldFail() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        processBag.setContext("blub");
+        processBag.setProcessId("lala");
+        processBag.setUser("uncool");
+        ProcessBag processBag2 = new ProcessBag();
+        processBag2.setContext("blub");
+        processBag2.setProcessId("lala");
+        processBag2.setUser("cool");
+        assertFalse(processBag.equals(processBag2));
+    }
+
+    @Test
+    public void testLhsEmptyProperties_shouldSucceed() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        HashMap<String, Object> props = Maps.newHashMap();
+        props.put("a", "b");
+        processBag.setProperties(props);
+        assertTrue(new ProcessBag().equals(processBag));
+    }
+
+    @Test
+    public void testRhsEmptyProperties_shouldFail() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        Map<String, Object> props = Maps.newHashMap();
+        props.put("a", "b");
+        processBag.setProperties(props);
+        assertFalse(processBag.equals(new ProcessBag()));
+    }
+
 }

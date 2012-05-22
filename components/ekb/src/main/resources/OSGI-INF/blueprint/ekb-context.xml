@@ -26,13 +26,6 @@
     <property name="edbService" ref="edbService"/>
   </bean>
   
-  <!-- Model Factory -->
-  <bean id="modelFactoryService" class="org.openengsb.core.ekb.internal.ModelFactoryService" />
-  
-  <service interface="org.openengsb.core.api.ekb.ModelFactory">
-    <ref component-id="modelFactoryService"/>
-  </service>
-  
   <!-- Query Interface -->
   <bean id="queryInterfaceService" class="org.openengsb.core.ekb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
@@ -71,19 +64,6 @@
   
   <service interface="org.openengsb.core.api.ekb.TransformationEngine">
     <ref component-id="transformationEngineService"/>
-  </service>
-
-  <!-- EKB Service -->
-  <bean id="ekbServiceProvider" class="org.openengsb.core.ekb.internal.EKBService">
-    <property name="queryInterface" ref="queryInterfaceService"/>
-    <property name="modelFactory" ref="modelFactoryService"/>
-  </bean>
-
-  <service interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService">
-    <service-properties>
-      <entry key="location.root" value="ekbService" />
-    </service-properties>
-    <ref component-id="ekbServiceProvider" />
   </service>
   
   <!-- References to other bundles -->

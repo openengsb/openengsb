@@ -22,10 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.TagTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -36,57 +33,40 @@ public class CheckedPanelTest {
     private WicketTester tester;
     private Model<Boolean> checkModel;
     private Model<String> labelModel;
-    private CheckedPanel checkedPanel;
-    
-    @SuppressWarnings("serial")
+
     @Before
     public void setUp() {
         checkModel = new Model<Boolean>();
         checkModel.setObject(Boolean.FALSE);
-        
+
         labelModel = new Model<String>();
         labelModel.setObject("testlabel");
-        
+
         tester = new WicketTester();
-        tester.startPanel(new ITestPanelSource() {
-            @Override
-            public Panel getTestPanel(String panelId) {
-                checkedPanel = new CheckedPanel(panelId, checkModel, labelModel);
-                return checkedPanel;
-            }
-        });
+        tester.startComponentInPage(new CheckedPanel("panel", checkModel, labelModel));
     }
-    
+
     @Test
     public void testRendered() {
-        tester.assertComponent(checkedPanel.getId() + ":check", CheckBox.class);
-        tester.assertComponent(checkedPanel.getId() + ":label", SimpleFormComponentLabel.class);
+        tester.debugComponentTrees();
+        tester.assertComponent("panel:check", CheckBox.class);
+        tester.assertComponent("panel:label", SimpleFormComponentLabel.class);
     }
-    
+
     @Test
     public void testLabel_shouldShowLabelModelObject() {
-        SimpleFormComponentLabel label = (SimpleFormComponentLabel) 
-            tester.getComponentFromLastRenderedPage(checkedPanel.getId() + ":label");
+        SimpleFormComponentLabel label = (SimpleFormComponentLabel)
+            tester.getComponentFromLastRenderedPage("panel:label");
         assertThat(label.getDefaultModelObjectAsString(), is("testlabel"));
     }
-    
+
     @Test
     public void testAttributeOfLabel_shouldBeIdOfTheCheckBox() {
-        CheckBox checkBox = (CheckBox) 
-            tester.getComponentFromLastRenderedPage(checkedPanel.getId() + ":check");
+        CheckBox checkBox = (CheckBox)
+            tester.getComponentFromLastRenderedPage("panel:check");
         TagTester tagTester = tester.getTagByWicketId("label");
         assertThat(tagTester.hasAttribute("for"), is(true));
         assertThat(tagTester.getAttribute("for"), is(checkBox.getMarkupId()));
     }
-    
-    @Test
-    public void testSelectCheckBox_shouldChangeModelValue() {
-        tester.setParameterForNextRequest(checkedPanel.getId() + ":check", Boolean.TRUE);
-        WebRequestCycle requestCycle = tester.setupRequestAndResponse(false);
-        tester.getServletRequest().setRequestToComponent(checkedPanel.get(0));
-        tester.processRequestCycle(requestCycle);
-        
-        assertThat(checkModel.getObject(), is(Boolean.TRUE));
-    }
-    
+
 }

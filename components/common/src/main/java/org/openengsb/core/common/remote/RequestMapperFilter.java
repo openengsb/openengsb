@@ -45,11 +45,9 @@ public class RequestMapperFilter extends AbstractFilterAction<MethodCallRequest,
     private RequestHandler requestHandler;
 
     public RequestMapperFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
     }
 
     public RequestMapperFilter(RequestHandler requestHandler) {
-        this();
         this.requestHandler = requestHandler;
     }
 

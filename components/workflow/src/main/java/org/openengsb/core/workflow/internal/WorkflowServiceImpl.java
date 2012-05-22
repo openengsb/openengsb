@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
@@ -54,7 +55,6 @@ import org.drools.runtime.rule.ConsequenceException;
 import org.drools.runtime.rule.FactHandle;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RemoteEventProcessor;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -69,8 +69,9 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -97,9 +98,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private Lock workflowLock = new ReentrantLock();
 
+    private DefaultOsgiUtilsService utilsService;
+
+    private Collection<AuditingDomain> auditingConnectors;
+
     @Override
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
+        for (AuditingDomain connector : auditingConnectors) {
+            connector.onEvent(event);
+        }
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = null;
         try {
@@ -116,7 +124,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
             if (processIds.isEmpty()) {
                 for (ProcessInstance p : session.getProcessInstances()) {
-                    p.signalEvent(event.getType(), event);
+                    p.signalEvent(event.getClass().getSimpleName(), event);
                 }
             } else {
                 signalEventToProcesses(event, session, processIds);
@@ -137,7 +145,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             if (processInstance == null) {
                 LOGGER.warn("processInstance with ID {} not found, maybe it already terminated", pid);
             } else {
-                processInstance.signalEvent(event.getType(), event);
+                processInstance.signalEvent(event.getClass().getSimpleName(), event);
             }
         }
     }
@@ -203,13 +211,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
     }
 
-    @Override
-    public Future<Long> startFlowInBackground(String processId) throws WorkflowException {
-        return startFlowInBackground(processId, new HashMap<String, Object>());
-    }
-
-    @Override
-    public Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
+    private Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
         throws WorkflowException {
         WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
         return executor.submit(workflowStarter);
@@ -299,10 +301,20 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         synchronized (session) {
             while (session.getProcessInstance(id) != null && timeout > 0) {
                 session.wait(timeout);
-                timeout = System.currentTimeMillis() - endTime;
+                timeout = endTime - System.currentTimeMillis();
             }
         }
         return !getRunningFlows().contains(id);
+    }
+
+    @Override
+    public ProcessBag getProcessBagForInstance(long instanceId) {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance instance = session.getProcessInstance(instanceId);
+        if (instance == null || !(instance instanceof WorkflowProcessInstance)) {
+            throw new IllegalArgumentException("Process instance with id " + instanceId + " not found");
+        }
+        return (ProcessBag) ((WorkflowProcessInstance) instance).getVariable("processBag");
     }
 
     public Collection<Long> getRunningFlows() throws WorkflowException {
@@ -342,6 +354,22 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         populateGlobals(session);
         LOGGER.debug("globals have been set");
         session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeStart(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                for (AuditingDomain ac : auditingConnectors) {
+                    ProcessInstance instance = event.getProcessInstance();
+                    ac.onNodeFinish(instance.getProcessName(), instance.getId(), event.getNodeInstance().getNodeName());
+                }
+            }
+
             @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {
                 synchronized (session) {
@@ -393,19 +421,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
             Filter filter =
-                getServiceUtils().getFilterForLocation(globalClass, global.getKey(),
+                utilsService.getFilterForLocation(globalClass, global.getKey(),
                     ContextHolder.get().getCurrentContextId());
-            Object osgiServiceProxy = getServiceUtils().getOsgiServiceProxy(filter, globalClass);
+            Object osgiServiceProxy = utilsService.getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);
         }
     }
 
-    private OsgiUtilsService getServiceUtils() {
-        return OpenEngSBCoreServices.getServiceUtilsService();
-    }
-
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
     public void setRulemanager(RuleManager rulemanager) {
@@ -419,11 +444,14 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         for (Task t : tasksForProcessId) {
             taskbox.finishTask(t);
         }
-
     }
 
     public void setTaskbox(TaskboxService taskbox) {
         this.taskbox = taskbox;
+    }
+
+    public void setAuditingConnectors(Collection<AuditingDomain> auditingConnectors) {
+        this.auditingConnectors = auditingConnectors;
     }
 
 }

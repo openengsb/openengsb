@@ -23,8 +23,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -33,7 +34,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -51,14 +51,19 @@ import org.slf4j.LoggerFactory;
 @PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
 
+    private static final long serialVersionUID = -8199301932270437500L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;
     private ServiceEditor editor;
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
+
+    private String domainType;
+    private String connectorType;
 
     @SuppressWarnings("serial")
     private final class ConnectorServiceEditor extends ServiceEditor {
@@ -74,7 +79,7 @@ public class ConnectorEditorPage extends BasePage {
             this.attributeMap = attributeMap;
         }
 
-        private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+        private ConnectorServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
                 Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
             super(id, serviceId, attributes, attributeMap, properties, validator);
             createMode = false;
@@ -83,13 +88,14 @@ public class ConnectorEditorPage extends BasePage {
 
         @Override
         public void onSubmit() {
-            ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
+            ConnectorDescription connectorDescription =
+                new ConnectorDescription(domainType, connectorType, attributeMap, properties);
             try {
                 if (createMode) {
                     if (isValidating()) {
-                        serviceManager.create(idModel.getObject(), connectorDescription);
+                        serviceManager.create(connectorDescription);
                     } else {
-                        serviceManager.forceCreate(idModel.getObject(), connectorDescription);
+                        serviceManager.forceCreate(connectorDescription);
                     }
                 } else {
                     if (isValidating()) {
@@ -111,17 +117,8 @@ public class ConnectorEditorPage extends BasePage {
         }
 
         private void returnToTestClient() {
-            // String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
-            // ServiceId reference = new ServiceId(serviceClass, idModel.getObject());
-            // setResponsePage(new TestClient(reference));
             setResponsePage(TestClient.class);
         }
-    }
-
-    public ConnectorEditorPage(String domain, String connectorType) {
-        retrieveDescriptor(connectorType);
-        initEditor(connectorType);
-        createEditor(domain, connectorType);
     }
 
     private void retrieveDescriptor(String connectorType) {
@@ -133,30 +130,50 @@ public class ConnectorEditorPage extends BasePage {
         descriptor = connectorProvider.getDescriptor();
     }
 
-    public ConnectorEditorPage(ConnectorId id) {
-        retrieveDescriptor(id.getConnectorType());
-        // ConnectorDescription connectorDesc = serviceManager.getAttributeValues(id);
-        initEditor(id.getConnectorType());
-        createEditor(id);
+    /*
+     * edit an existing connector
+     */
+    public ConnectorEditorPage(String id) {
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+        connectorType = desc.getConnectorType();
+        domainType = desc.getDomainType();
+        initEditor();
+        createEditor(id, desc);
     }
 
     public ConnectorEditorPage(PageParameters parameters) {
         super(parameters);
-        String serviceId = parameters.getString("id");
-        String domainType = parameters.getString("domainType");
-        String connectorType = parameters.getString("connectorType");
-        ConnectorId connectorId = new ConnectorId(domainType, connectorType, serviceId);
-        retrieveDescriptor(connectorType);
-        initEditor(connectorType);
-        createEditor(connectorId);
+        domainType = parameters.get("domainType").toOptionalString();
+        connectorType = parameters.get("connectorType").toOptionalString();
+        initEditor();
+        StringValue idValue = parameters.get("id");
+        if (!idValue.isEmpty()) {
+            String id = idValue.toString();
+            ConnectorDescription desc = serviceManager.getAttributeValues(id);
+            createEditor(id, desc);
+        } else {
+            createEditor();
+        }
+
     }
 
-    private void initEditor(String connectorType) {
+    /*
+     * create a new connector
+     */
+    public ConnectorEditorPage(String domainType, String connectorType) {
+        this.domainType = domainType;
+        this.connectorType = connectorType;
+        initEditor();
+        createEditor();
+    }
+
+    private void initEditor() {
+        retrieveDescriptor(connectorType);
         add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
         add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
     }
 
-    private void createEditor(String domainType, String connectorType) {
+    private void createEditor() {
         List<AttributeDefinition> attributes = descriptor.getAttributes();
         Map<String, String> values = new HashMap<String, String>();
         for (AttributeDefinition def : attributes) {
@@ -165,18 +182,16 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(def.getId(), value);
             }
         }
-        ConnectorDescription description = new ConnectorDescription(values, null);
+        ConnectorDescription description = new ConnectorDescription(domainType, connectorType, values, null);
         editor =
             new ConnectorServiceEditor("editor", domainType, connectorType, attributes, description.getAttributes(),
                 description.getProperties(), descriptor.getFormValidator());
         add(editor);
     }
 
-    private void createEditor(final ConnectorId serviceId) {
-        ConnectorDescription description = serviceManager.getAttributeValues(serviceId);
-
+    private void createEditor(String id, ConnectorDescription description) {
         editor =
-            new ConnectorServiceEditor("editor", serviceId, descriptor.getAttributes(), description.getAttributes(),
+            new ConnectorServiceEditor("editor", id, descriptor.getAttributes(), description.getAttributes(),
                 description.getProperties(), descriptor.getFormValidator());
         add(editor);
     }

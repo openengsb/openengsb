@@ -66,13 +66,13 @@ class ExampleConnector implements ExampleDomain, Connector {
     }
 
     @Override
-    public String doSomething(String message) {
+    public String doSomethingWithMessage(String message) {
         LOGGER.info(message);
         return message;
     }
 
     @Override
-    public String doSomething(ExampleEnum exampleEnum) {
+    public String doSomethingWithEnum(ExampleEnum exampleEnum) {
         LOGGER.info("ExampleEnum: {}", exampleEnum);
         return exampleEnum.toString();
     }
@@ -84,7 +84,7 @@ class ExampleConnector implements ExampleDomain, Connector {
     }
 
     @Override
-    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+    public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
         LOGGER.info("RequestModelEvent: {}", model);
         ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         response.setResult("success");

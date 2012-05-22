@@ -15,33 +15,25 @@
   <nodes>
     <start id="1" name="Start" x="151" y="23" width="49" height="49" />
     <end id="2" name="End" x="151" y="434" width="49" height="49" />
-    <subProcess id="3" name="Human interaction 1" x="96" y="232" width="159" height="48" processId="humantask" waitForCompletion="true" >
+    <subProcess id="3" name="Human interaction 1" x="96" y="232" width="159" height="48" processId="humantask" >
       <mapping type="in" from="processBag" to="processBag" />
       <mapping type="out" from="processBag" to="processBag" />
       <onEntry>
         <action type="expression" dialect="java" >processBag.addOrReplaceProperty("taskType", "step1");</action>
       </onEntry>
     </subProcess>
-    <subProcess id="4" name="Human interaction 2" x="96" y="340" width="159" height="48" processId="humantask" waitForCompletion="true" >
+    <subProcess id="4" name="Human interaction 2" x="96" y="340" width="159" height="48" processId="humantask" >
       <mapping type="in" from="processBag" to="processBag" />
       <mapping type="out" from="processBag" to="processBag" />
       <onEntry>
         <action type="expression" dialect="java" >processBag.addOrReplaceProperty("taskType", "step2");</action>
       </onEntry>
     </subProcess>
-    <eventNode id="5" name="FlowStarted" x="284" y="133" width="48" height="48" >
-      <eventFilters>
-        <eventFilter type="eventType" eventType="FlowStartedEvent" />
-      </eventFilters>
-    </eventNode>
-    <join id="6" name="Gateway" x="151" y="133" width="49" height="49" type="1" />
   </nodes>
 
   <connections>
     <connection from="4" to="2" />
-    <connection from="6" to="3" />
-    <connection from="1" to="6" />
-    <connection from="5" to="6" />
+    <connection from="1" to="3" />
     <connection from="3" to="4" />
   </connections>
 

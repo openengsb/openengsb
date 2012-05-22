@@ -21,15 +21,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
+
+    private OsgiUtilsService utilsService;
+
+    public DefaultOutgoingPortUtilService() {
+    }
+    
+    public DefaultOutgoingPortUtilService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
 
     private final class SendMethodCallTask implements Runnable {
         private final OutgoingPort port;
@@ -67,9 +76,11 @@ public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
     }
 
     private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {
-        final OutgoingPort port =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
-        return port;
+        return utilsService.getServiceWithId(OutgoingPort.class, portId);
+    }
+    
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

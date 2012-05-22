@@ -29,10 +29,10 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.security.PermissionProvider;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +57,9 @@ public abstract class PermissionEditorPanel extends Panel {
 
     private UserInput user;
 
+    @PaxWicketBean(name = "permissionProviders")
+    private List<ClassProvider> providers;
+
     public PermissionEditorPanel(String id, UserInput user) {
         super(id);
         this.user = user;
@@ -78,11 +81,9 @@ public abstract class PermissionEditorPanel extends Panel {
 
                 @Override
                 protected List<Class<?>> load() {
-                    List<PermissionProvider> providers =
-                        OpenEngSBCoreServices.getServiceUtilsService().listServices(PermissionProvider.class);
                     List<Class<?>> result = Lists.newArrayList();
-                    for (PermissionProvider p : providers) {
-                        result.addAll(p.getSupportedPermissionClasses());
+                    for (ClassProvider p : providers) {
+                        result.addAll(p.listClasses());
                     }
                     return result;
                 }
@@ -97,9 +98,14 @@ public abstract class PermissionEditorPanel extends Panel {
                 user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
                 editorPanel.replaceWith(new EmptyPanel("permissionEditor"));
                 submitButton.setVisible(false);
-                target.addComponent(container);
+                target.add(container);
                 afterSubmit(target, form);
                 LOGGER.info("got values {}", values.toString());
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error occured during submit of form via submitButton");
             }
         };
         form.add(submitButton);
@@ -118,7 +124,7 @@ public abstract class PermissionEditorPanel extends Panel {
                 editorPanel.replaceWith(beanEditorPanel);
                 editorPanel = beanEditorPanel;
                 submitButton.setVisible(true);
-                target.addComponent(container);
+                target.add(container);
             }
         });
 

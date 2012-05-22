@@ -17,11 +17,15 @@
 
 package org.openengsb.itests.exam;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.ObjectUtils;
 
-public class PersistenceTestObject {
-    private String string;
+public class PersistenceTestObject implements Serializable {
 
+    private static final long serialVersionUID = 490651433247221771L;
+
+    private String string;
     private Integer integer;
 
     public PersistenceTestObject(String string, Integer integer) {
@@ -62,7 +66,8 @@ public class PersistenceTestObject {
             return false;
         }
         PersistenceTestObject other = (PersistenceTestObject) obj;
-        return ObjectUtils.equals(string, other.string) && ObjectUtils.equals(integer, other.integer);
+        return (string == null || ObjectUtils.equals(string, other.string))
+                && (integer == null || ObjectUtils.equals(integer, other.integer));
     }
 
 }

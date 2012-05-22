@@ -36,11 +36,11 @@ public interface ExampleDomain extends Domain {
 
     @SecurityAttribute("something")
     @Raises(LogEvent.class)
-    String doSomething(String message);
-    
-    ExampleResponseModel doSomething(ExampleRequestModel model);
+    String doSomethingWithMessage(String message);
 
-    String doSomething(ExampleEnum exampleEnum);
+    ExampleResponseModel doSomethingWithModel(ExampleRequestModel model);
+
+    String doSomethingWithEnum(ExampleEnum exampleEnum);
 
     @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);

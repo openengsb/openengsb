@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -43,8 +42,6 @@ import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -55,7 +52,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         private boolean wasCalled = false;
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             wasCalled = true;
             return "something";
         }
@@ -66,7 +63,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
             wasCalled = true;
             return "something";
         }
@@ -82,17 +79,11 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;
             return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         }
 
-    }
-
-    @Test
-    public void testCorrectContextHolderStrategy() throws Exception {
-        assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
-            is("InheritableThreadLocalSecurityContextHolderStrategy"));
     }
 
     @Test
@@ -115,7 +106,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
                 "when\n" +
                 "    l : LogEvent()\n" +
                 "then\n" +
-                "    example2.doSomething(\"42\");\n"
+                "    example2.doSomethingWithMessage(\"42\");\n"
             );
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -149,7 +140,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
                 + "    l : LogEvent()\n"
                 + "then\n"
                 + "   ExampleDomain origin = (ExampleDomain) OsgiHelper.getResponseProxy(l, ExampleDomain.class);"
-                + "   origin.doSomething(\"42\");"
+                + "   origin.doSomethingWithMessage(\"42\");"
             );
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -165,8 +156,8 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     /**
      * Ignored because security manager is commented in the moment.
      */
-    @Ignore
-    @Test(expected = AccessDeniedException.class)
+    @Test
+    /* (expected = Exception.class) */
     public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
     }

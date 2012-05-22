@@ -59,7 +59,6 @@ public class XmlMethodCallMarshalOutgoingFilter extends
     private Unmarshaller unmarshaller;
 
     public XmlMethodCallMarshalOutgoingFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);
             unmarshaller = context.createUnmarshaller();

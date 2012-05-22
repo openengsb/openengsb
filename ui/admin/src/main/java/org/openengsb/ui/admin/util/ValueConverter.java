@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.apache.wicket.util.convert.converters.AbstractConverter;
-import org.apache.wicket.util.convert.converters.IntegerConverter;
-import org.apache.wicket.util.convert.converters.LongConverter;
+import org.apache.wicket.util.convert.converter.AbstractConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
+import org.apache.wicket.util.convert.converter.LongConverter;
 
 @SuppressWarnings("rawtypes")
 public class ValueConverter implements Serializable {
