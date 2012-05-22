@@ -235,7 +235,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void disconnectFromXLink(ConnectorId id, String hostId) {
+    public void disconnectFromXLink(String id, String hostId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -246,7 +246,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     @Override
     public XLinkTemplate connectToXLink(
-            ConnectorId id, 
+            String id, 
             String hostId, 
             String toolName, 
             Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
