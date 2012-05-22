@@ -58,7 +58,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
     
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ToolChooserLogic chooserLogic;
     
@@ -118,7 +118,7 @@ public class ToolChooserPage extends WebPage {
             for (StringValue stringvalue : values) {
                 valuesAsString.add(stringvalue.toString());
             }
-            parameterMap.put(key, (String[]) valuesAsString.toArray());
+            parameterMap.put(key, (String[]) valuesAsString.toArray(new String[0]));
         }
         return parameterMap;
     }
