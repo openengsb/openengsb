@@ -55,7 +55,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         private boolean wasCalled = false;
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             wasCalled = true;
             return "something";
         }
@@ -66,7 +66,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
             wasCalled = true;
             return "something";
         }
@@ -82,7 +82,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;
             return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         }

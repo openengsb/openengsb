@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,23 +35,18 @@ import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
-import org.osgi.framework.BundleContext;
 
 public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
-    private DefaultOsgiUtilsService serviceUtils;
     private ContextCurrentService cs;
     private DefaultConfigPersistenceService configPersistence;
 
@@ -64,7 +60,8 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
     private void registerConfigPersistence() {
         final CorePersistenceServiceBackend<?> persistenceBackend = new CorePersistenceServiceBackend<Object>();
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
+        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         persistenceBackend.setPersistenceManager(persistenceManager);
         persistenceBackend.setBundleContext(bundleContext);
         persistenceBackend.init();
@@ -166,11 +163,4 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(cs.getAvailableContexts(), not(hasItem("foobar")));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-    }
 }

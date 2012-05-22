@@ -27,10 +27,13 @@ import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Objects;
 
 public class TaskboxServiceImpl implements TaskboxService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskboxServiceImpl.class);
@@ -86,12 +89,13 @@ public class TaskboxServiceImpl implements TaskboxService {
 
     @Override
     public synchronized void finishTask(Task task) throws WorkflowException {
-        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
+        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent(task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
-
-        if (getTasksForExample(t).size() > 0) {
+        List<Task> old = getTasksForExample(t);
+        if (old.size() > 0) {
             try {
+                updateInRunningWorkflow(old.get(0), task);
                 persistence.delete(t);
             } catch (PersistenceException e) {
                 throw new WorkflowException(e);
@@ -109,10 +113,27 @@ public class TaskboxServiceImpl implements TaskboxService {
         Task oldTask = getTaskForId(task.getTaskId());
         try {
             persistence.update(oldTask, task);
+            updateInRunningWorkflow(oldTask, task);
             LOGGER.info("updated task {}", task.getTaskId());
         } catch (PersistenceException e) {
             LOGGER.error("tried to update task {}, but it didnt work!", task.getTaskId());
             throw new WorkflowException(e);
+        }
+    }
+
+    private void updateInRunningWorkflow(Task oldTask, Task task) {
+        if (oldTask.getProcessId() == null) {
+            return;
+        }
+        long id = Long.parseLong(oldTask.getProcessId());
+        ProcessBag bag = null;
+        try {
+            bag = workflowService.getProcessBagForInstance(id);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        if (Objects.equal(oldTask, bag)) {
+            bag.setProperties(task.getProperties());
         }
     }
 }

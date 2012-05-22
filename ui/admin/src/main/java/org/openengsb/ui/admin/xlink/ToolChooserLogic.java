@@ -19,11 +19,8 @@ package org.openengsb.ui.admin.xlink;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -46,12 +43,12 @@ public class ToolChooserLogic {
     } 
     
     public XLinkModelInformation getModelClassOfView(String hostId, String cId, String viewId) {
-        ConnectorId connectorId = ConnectorId.fromFullId(cId); 
+        String connectorId = cId;
         XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();
         return template.getViewToModels().get(viewId);
     }    
     
-    private XLinkToolRegistration getRegistration(String hostId, ConnectorId connectorId) {
+    private XLinkToolRegistration getRegistration(String hostId, String connectorId) {
         for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration;

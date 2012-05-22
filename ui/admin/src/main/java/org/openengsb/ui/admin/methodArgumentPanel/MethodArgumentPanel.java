@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.IModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
@@ -35,11 +35,9 @@ import org.openengsb.ui.common.util.MethodUtil;
 @SuppressWarnings("serial")
 public class MethodArgumentPanel extends Panel {
 
-    public MethodArgumentPanel(String id, Argument arg) {
+    public MethodArgumentPanel(String id, final Argument arg) {
         super(id);
-
         add(new Label("index", String.format("Argument #%d", arg.getIndex())));
-
         Class<?> type = arg.getType();
         if (type.isPrimitive() || type.isEnum() || hasStringOnlyConstructor(type)) {
             Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
@@ -48,9 +46,22 @@ public class MethodArgumentPanel extends Panel {
             if (type.equals(boolean.class) || type.equals(Boolean.class)) {
                 builder.asBoolean();
             }
-            AbstractField<?> field =
-                AttributeEditorUtil.createEditorField("valueEditor", new PropertyModel<String>(arg, "value"),
-                    builder.build());
+            AbstractField<?> field = AttributeEditorUtil.createEditorField("valueEditor", new IModel<String>() {
+                @Override
+                public void detach() {
+                    // not required
+                }
+
+                @Override
+                public void setObject(String object) {
+                    arg.setValue(object);
+                }
+
+                @Override
+                public String getObject() {
+                    return arg.getValue() != null ? arg.getValue().toString() : null;
+                }
+            }, builder.build());
             add(field);
         } else {
             Map<String, String> beanAttrs = new HashMap<String, String>();

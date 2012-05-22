@@ -19,6 +19,7 @@ package org.openengsb.core.workflow;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -57,6 +58,7 @@ public final class RuleUtil {
         addFlow(manager, "blockingFlowtest");
         addFlow(manager, "subFlowtest");
         addFlow(manager, "simpleFlow");
+        addFlow(manager, "backgroundFlow");
     }
 
     private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {
@@ -69,6 +71,33 @@ public final class RuleUtil {
         InputStream flowStream =
             RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + string + ".rf");
         return IOUtils.toString(flowStream);
+    }
+
+    public static void addImportsAndGlobals(RuleManager manager) throws IOException {
+        InputStream inputStream = RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/imports");
+        List<String> importLines = IOUtils.readLines(inputStream);
+        for (String s : importLines) {
+            String importLine = s.trim();
+            if (importLine.isEmpty() || importLine.startsWith("#")) {
+                continue;
+            }
+            manager.addImport(importLine);
+        }
+
+        inputStream = RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/globals");
+        List<String> globalLines = IOUtils.readLines(inputStream);
+        for (String s : globalLines) {
+            String globalLine = s.trim();
+            if (globalLine.isEmpty() || globalLine.startsWith("#")) {
+                continue;
+            }
+            String[] parts = globalLine.split(" ");
+            if (parts.length != 2) {
+                continue;
+            }
+            manager.addGlobalIfNotPresent(parts[0], parts[1]);
+        }
+
     }
 
 }

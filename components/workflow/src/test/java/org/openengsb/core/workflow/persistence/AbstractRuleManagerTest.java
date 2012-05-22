@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -41,6 +42,7 @@ public abstract class AbstractRuleManagerTest {
     @Before
     public void setUp() throws Exception {
         ruleManager = PersistenceTestUtil.getRuleManagerWithPersistenceService();
+        RuleUtil.addImportsAndGlobals(ruleManager);
         rulebase = ruleManager.getRulebase();
     }
 
@@ -91,17 +93,17 @@ public abstract class AbstractRuleManagerTest {
             }
 
             @Override
-            public String doSomething(ExampleEnum exampleEnum) {
+            public String doSomethingWithEnum(ExampleEnum exampleEnum) {
                 return null;
             }
 
             @Override
-            public String doSomething(String message) {
+            public String doSomethingWithMessage(String message) {
                 return null;
             }
 
             @Override
-            public ExampleResponseModel doSomething(ExampleRequestModel model) {
+            public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
                 return null;
             }
 

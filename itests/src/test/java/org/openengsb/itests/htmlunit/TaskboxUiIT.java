@@ -18,29 +18,36 @@
 package org.openengsb.itests.htmlunit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.itests.htmlunit.testpanel.TestTaskPanel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.openengsb.ui.common.taskbox.WebTaskboxService;
+import org.ops4j.pax.exam.TestProbeBuilder;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.osgi.framework.Constants;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -62,9 +69,20 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
     private WebClient webClient;
-    private TaskboxService taskboxService;
+    private WebTaskboxService taskboxService;
     private WorkflowService workflowService;
     private RuleManager ruleManager;
+
+    @ProbeBuilder
+    public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
+        probe.setHeader(Constants.EXPORT_PACKAGE, "*,org.openengsb.itests.htmlunit.testpanel");
+        return probe;
+    }
+
+    @BeforeClass
+    public static void initialize() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -76,8 +94,12 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         ContextHolder.get().setCurrentContextId(CONTEXT);
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
-        taskboxService = getOsgiService(TaskboxService.class);
+        taskboxService = getOsgiService(WebTaskboxService.class);
+
         waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        authenticateAsAdmin();
+        addWorkflow();
+        loginAsAdmin();
     }
 
     @After
@@ -87,20 +109,18 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testIfTaskOverviewInteractionWorks() throws Exception {
-        addWorkflow();
-        loginAsAdmin();
 
         HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
-        assertTrue(taskOverviewPage.asText().contains("No Records Found"));
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertTrue("Page does not contain: No Records Found", taskOverviewPage.asText().contains("No Records Found"));
+        assertEquals("The taskbox is not empty", 0, taskboxService.getOpenTasks().size());
 
         workflowService.startFlow(WORKFLOW);
         workflowService.startFlow(WORKFLOW);
-        assertTrue(taskboxService.getOpenTasks().size() == 2);
+        assertEquals("The taskbox does not contain the new tasks", 2, taskboxService.getOpenTasks().size());
 
         taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
         HtmlTable table = taskOverviewPage.getFirstByXPath("//table");
-        assertTrue(table != null);
+        assertNotNull("Table on Overviewpage not found", table);
         assertEquals("Not all tasks found on page", 4, table.getRowCount());
         HtmlTableRow headerRow = table.getRow(0);
         assertTrue(headerRow.asText().contains("TaskId"));
@@ -142,11 +162,13 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
             fail("Could not process click event in time!");
         }
 
-        assertEquals(2, taskboxService.getOpenTasks().size());
+        assertEquals("The taskbox should contain 2 tasks", 2, taskboxService.getOpenTasks().size());
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
         detailForm = taskOverviewPage.getForms().get(2);
-        assertEquals("taskname", detailForm.getInputByName("taskname").getValueAttribute());
-        assertEquals("taskdescription", detailForm.getTextAreaByName("taskdescription").getText());
+        assertEquals("The taskname column is missing", "taskname", detailForm.getInputByName("taskname")
+            .getValueAttribute());
+        assertEquals("The taskdescription column is missing", "taskdescription",
+            detailForm.getTextAreaByName("taskdescription").getText());
         finishButton = detailForm.getInputByName("submitButton");
         taskOverviewPage = finishButton.click();
 
@@ -169,8 +191,25 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
             fail("Could not process click event in time!");
         }
 
-        assertEquals(rowTwoText, taskOneRow.asText());
-        assertEquals(1, taskboxService.getOpenTasks().size());
+        assertEquals("The second row should not have changed", rowTwoText, taskOneRow.asText());
+        assertEquals("One task should be remaining", 1, taskboxService.getOpenTasks().size());
+    }
+
+    @Test
+    public void testIfTaskPanelGetsReplaced() throws Exception {
+
+        taskboxService.registerTaskPanel("step1", TestTaskPanel.class);
+        workflowService.startFlow(WORKFLOW);
+
+        HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+        taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
+        HtmlTable table = taskOverviewPage.getFirstByXPath("//table");
+        assertNotNull("Table on Overviewpage not found", table);
+
+        HtmlTableRow taskOneRow = table.getRow(2);
+        taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        assertTrue("Testpanel was not found!", taskOverviewPage.asText().contains("I am a test message!"));
+
     }
 
     private void addWorkflow() throws IOException, RuleBaseException {

@@ -18,10 +18,9 @@ package org.openengsb.ui.admin.xlink;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class MachineResponsePage extends WebPage {
     
@@ -35,7 +34,7 @@ public class MachineResponsePage extends WebPage {
     
     private void createPage(String msg, boolean isSuccess) {
         add(new Label("message", msg));
-        HttpServletResponse httpServletResponse = ((WebResponse) getResponse()).getHttpServletResponse();
+        HttpServletResponse httpServletResponse = (HttpServletResponse) getResponse().getContainerResponse();
         if (isSuccess) {
             httpServletResponse.setStatus(httpServletResponse.SC_OK);
         } else {

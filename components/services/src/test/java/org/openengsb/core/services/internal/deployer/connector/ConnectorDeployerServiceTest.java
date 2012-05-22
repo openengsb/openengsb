@@ -43,11 +43,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -56,24 +58,21 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
-import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
+import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
@@ -87,11 +86,21 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private NullDomainImpl createdService;
     private ConnectorManager serviceManager;
-    private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
-    private String testConnectorData = "attribute.a-key=a-value";
+    private static final String TEST_FILE_NAME = "test-connector-instance.connector";
+    private String testConnectorData = "domainType=mydomain\n"
+            + "connectorType=aconnector\n"
+            + "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
-    private ConnectorId testConnectorId;
+    private String testConnectorId;
     private DefaultConfigPersistenceService configPersistence;
+
+    private DefaultOsgiUtilsService serviceUtils;
+    private WiringService wiringService;
+
+    @BeforeClass
+    public static void setUpClass() {
+        RootSubjectHolder.init();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -116,11 +125,13 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         DefaultWiringService defaultWiringService = new DefaultWiringService();
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
-        testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
+        testConnectorId = "test-connector-instance";
+        wiringService = defaultWiringService;
     }
 
     private void setupPersistence() {
-        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager dummyPersistenceManager = new DefaultPersistenceManager();
+        dummyPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
         backend.setBundleContext(bundleContext);
         backend.setPersistenceManager(dummyPersistenceManager);
@@ -133,9 +144,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private ConnectorManagerImpl createServiceManagerMock() {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
-        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
+        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager();
         registrationManager.setBundleContext(bundleContext);
-        registrationManager.setServiceUtils(OpenEngSBCoreServices.getServiceUtilsService());
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
         serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManager = serviceManagerImpl;
@@ -159,7 +170,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
 
-        NullDomain domainEndpoints = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(NullDomain.class, "*");
+        NullDomain domainEndpoints = wiringService.getDomainEndpoint(NullDomain.class, "*");
         domainEndpoints.nullMethod(42);
         verify(createdService).nullMethod(42);
     }
@@ -170,8 +181,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo,bar");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=bar)", 100L);
     }
 
     @Test
@@ -181,9 +192,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             .writeStringToFile(connectorFile, testConnectorData + "\nproperty.service.ranking=2\nproperty.bla=foo");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
 
-        ServiceReference serviceReference = bundleContext.getServiceReferences(null, "(bla=foo)")[0];
+        ServiceReference serviceReference = bundleContext.getServiceReferences((String) null, "(bla=foo)")[0];
         Integer ranking = (Integer) serviceReference.getProperty(Constants.SERVICE_RANKING);
         assertThat(ranking, notNullValue());
     }
@@ -194,8 +205,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo , bar");
         connectorDeployerService.install(connectorFile);
 
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
-        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+        serviceUtils.getService("(bla=foo)", 100L);
+        serviceUtils.getService("(bla=bar)", 100L);
     }
 
     private File createSampleConnectorFile() throws IOException {
@@ -292,8 +303,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription =
-            new ConnectorDescription(new HashMap<String, String>(), properties);
-        serviceManager.create(testConnectorId, connectorDescription);
+            new ConnectorDescription("mydomain", "aconnector", null, properties);
+        serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
         try {
@@ -314,7 +325,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
         Map<String, Object> propertyValues = attributeValues.getProperties();
         propertyValues.put("foo", "bar");
-        ConnectorDescription newDesc = new ConnectorDescription(attributeValues.getAttributes(), propertyValues);
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            attributeValues.getAttributes(), propertyValues);
         serviceManager.update(testConnectorId, newDesc);
 
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.foo=notbar");
@@ -331,13 +343,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testUpdateServiceViaPersistence_shouldNotOverwriteProperties() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
         ConnectorDescription desc =
             serviceManager.getAttributeValues(testConnectorId);
         desc.getProperties().put("foo", "42");
         serviceManager.update(testConnectorId, desc);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=y", "property.x=y"));
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
@@ -346,12 +360,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testUpdateAttributeViaPersistence_shouldNotOverwrite() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
         ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
-        ConnectorDescription newDesc = new ConnectorDescription(ImmutableMap.of("x", "z"), desc.getProperties());
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            ImmutableMap.of("x", "z"), desc.getProperties());
         serviceManager.update(testConnectorId, newDesc);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=y", "property.x=y"));
         connectorDeployerService.update(connectorFile);
         ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
         assertThat(attributeValues.getAttributes().get("x"), is("z"));
@@ -360,9 +377,11 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testRemovePropertyFromConfig_shouldRemoveProperty() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
-        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=y", "property.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "attribute.x=y", "property.x=y"));
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
@@ -371,13 +390,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testModifyAttributeInBothPlaces_shouldThrowException() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        String id = testConnectorId;
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
-        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            attributes, desc.getProperties());
 
         serviceManager.update(id, newDesc);
         FileUtils.writeLines(connectorFile,
@@ -393,14 +414,17 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testRemovePropertyOnBothEnds_shouldStayRemovedWithoutError() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
         ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
         Map<String, Object> properties = new Hashtable<String, Object>();
-        ConnectorDescription newDesc = new ConnectorDescription(desc.getAttributes(), properties);
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            desc.getAttributes(), properties);
 
         serviceManager.update(testConnectorId, newDesc);
-        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "attribute.x=original-file-value"));
 
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
@@ -409,8 +433,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testUpdateAttributeViaFileTwice_shouldUpdateTwice() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=43", "attribute.x=y"));
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=42", "attribute.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=43", "attribute.x=y"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=42", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=43)"), nullValue());
@@ -420,13 +446,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void updateFailure_shouldCreateBackupFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        String id = testConnectorId;
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
-        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            attributes, desc.getProperties());
 
         serviceManager.update(id, newDesc);
         FileUtils.writeLines(connectorFile,
@@ -444,8 +472,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     public void installFailure_shouldLeaveFileAsIs() throws Exception {
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(new HashMap<String, String>(), properties);
-        serviceManager.create(testConnectorId, connectorDescription);
+        ConnectorDescription connectorDescription = new ConnectorDescription("mydomain", "aconnector",
+            new HashMap<String, String>(), properties);
+        serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
         try {
@@ -462,16 +491,19 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void updateFailure_shouldReplaceWithOldConfigFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        String id = testConnectorId;
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
-        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+        ConnectorDescription newDesc = new ConnectorDescription("mydomain", "aconnector",
+            attributes, desc.getProperties());
 
         serviceManager.update(id, newDesc);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=new-value-value"));
         try {
             connectorDeployerService.update(connectorFile);
             fail("update should have failed, because of a merge-conflict");
@@ -484,11 +516,14 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void updateTwice_shouldUpdateCachedVersion() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar2", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar2", "attribute.x=original-file-value"));
         connectorDeployerService.update(connectorFile);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar3", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar3", "attribute.x=original-file-value"));
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar3)"), not(nullValue()));
     }
@@ -512,9 +547,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
                     return invocation.callRealMethod();
                 }
             })
-            .when(spy2).update(any(ConnectorId.class), any(ConnectorDescription.class));
+            .when(spy2).update(anyString(), any(ConnectorDescription.class));
         final File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
 
         final AtomicReference<Exception> thrown = new AtomicReference<Exception>();
@@ -530,11 +566,13 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         };
 
         Thread t1 = new Thread(updateTask);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar2", "property.foo2=bar"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar2", "property.foo2=bar"));
         t1.start();
 
         Thread t2 = new Thread(updateTask);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar3", "attribute.x=original-file-value"));
+        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
+            "property.foo=bar3", "attribute.x=original-file-value"));
         t2.start();
 
         Thread.sleep(500); // give t2 some time to try stuff. If it is not done, the worst that could happen is that the
@@ -554,11 +592,4 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         }
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

@@ -17,9 +17,12 @@
 
 package org.openengsb.ui.common;
 
+import org.apache.shiro.web.env.DefaultWebEnvironment;
+import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.util.IContextProvider;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 
 /**
@@ -31,18 +34,33 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
     @Override
     protected void init() {
         super.init();
+        initWebEnvironment();
         DomainAuthorizationStrategy strategy = new DomainAuthorizationStrategy();
         InjectorHolder.getInjector().inject(strategy, DomainAuthorizationStrategy.class);
         getSecuritySettings().setAuthorizationStrategy(strategy);
-        getResourceSettings().setAddLastModifiedTimeToResourceReferenceUrl(true);
+    }
+
+    private void initWebEnvironment() {
+        DefaultWebEnvironment environment = new DefaultWebEnvironment();
+        SecurityManagerHolder manager = new SecurityManagerHolder();
+        InjectorHolder.getInjector().inject(manager, SecurityManagerHolder.class);
+        environment.setSecurityManager(manager.getWebSecurityManager());
+        getServletContext().setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
     }
 
     @Override
-    public AjaxRequestTarget newAjaxRequestTarget(Page page) {
-        if (page instanceof OpenEngSBPage) {
-            ((OpenEngSBPage) page).initContextForCurrentThread();
-        }
-        return super.newAjaxRequestTarget(page);
+    public void setAjaxRequestTargetProvider(
+            final IContextProvider<AjaxRequestTarget, Page> ajaxRequestTargetProvider) {
+        super.setAjaxRequestTargetProvider(new IContextProvider<AjaxRequestTarget, Page>() {
+            @Override
+            public AjaxRequestTarget get(Page page) {
+                if (page instanceof OpenEngSBPage) {
+                    ((OpenEngSBPage) page).initContextForCurrentThread();
+                }
+                return ajaxRequestTargetProvider.get(page);
+            }
+
+        });
     }
 
 }

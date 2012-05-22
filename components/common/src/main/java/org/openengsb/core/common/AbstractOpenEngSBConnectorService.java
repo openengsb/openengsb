@@ -17,26 +17,18 @@
 
 package org.openengsb.core.common;
 
+import java.util.List;
+
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.DomainEvents;
-import org.openengsb.core.api.DomainMethodExecutionException;
-import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
-import org.openengsb.core.api.edb.EDBEvent;
-import org.openengsb.core.api.edb.EDBEventType;
-import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Base class for implementations of connector services. It also contains the method for sending EDB events to the EDB.
+ * Base class for implementations of connector services. It can also prepare an EKBCommit for you.
  */
 public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
-
     protected String domainId;
     protected String connectorId;
-    protected EDBBatchEvent batchEvent;
 
     public AbstractOpenEngSBConnectorService() {
         super();
@@ -44,95 +36,6 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
 
     public AbstractOpenEngSBConnectorService(String instanceId) {
         super(instanceId);
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events)
-        throws EDBException {
-        switch (type) {
-            case INSERT:
-                EDBInsertEvent create = new EDBInsertEvent(model);
-                enrichEDBEvent(create);
-                events.raiseEvent(create);
-                break;
-            case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(model);
-                enrichEDBEvent(delete);
-                events.raiseEvent(delete);
-                break;
-            case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model);
-                enrichEDBEvent(update);
-                events.raiseEvent(update);
-                break;
-            default:
-                throw new DomainMethodExecutionException("unsupported type of event --> " + type);
-        }
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void initiateEDBBatch() {
-        batchEvent = new EDBBatchEvent();
-        enrichEDBEvent(batchEvent);
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void addInsertModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelInsert(model);
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void addDeleteModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelDelete(model);
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void addUpdateModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelUpdate(model);
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    public void sendEDBBatchEvent(DomainEvents events) throws EDBException {
-        checkEDBBatchEvent();
-        events.raiseEvent(batchEvent);
-        batchEvent = null;
-    }
-
-    @Deprecated
-    /**
-     * DEPRECATED: use EKB PersistInterface instead!
-     */
-    private void checkEDBBatchEvent() {
-        if (batchEvent == null) {
-            throw new EDBException("EDBBatchEvent wasn't initiated");
-        }
-    }
-
-    private void enrichEDBEvent(EDBEvent event) {
-        event.setDomainId(domainId);
-        event.setConnectorId(connectorId);
-        event.setInstanceId(instanceId);
     }
 
     @Override
@@ -153,5 +56,25 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
     @Override
     public String getConnectorId() {
         return connectorId;
+    }
+
+    /**
+     * Generates an EKBCommit with the informations about the domain inserted. Also attaches the given models
+     * to the commit.
+     */
+    public EKBCommit createEKBCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes) {
+        EKBCommit commit = createEKBCommit();
+        commit.addInserts(inserts).addUpdates(updates).addDeletes(deletes);
+        return commit;
+    }
+
+    /**
+     * Generates an EKBCommit with the informations about the domain inserted.
+     */
+    public EKBCommit createEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId(domainId).setConnectorId(connectorId);
+        commit.setInstanceId(instanceId);
+        return commit;
     }
 }

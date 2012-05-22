@@ -1,7 +1,135 @@
-openengsb-3.0.0 ????-??-??
+openengsb-framework-3.0.0 ????-??-??
 --------------------------------------------
 
 TBW
 
 ### Details
+
+### Known Issues
+
+openengsb-framework-2.0.0 2011-09-21 
+--------------------------------------------
+
+The first final release of the 2.x series of the OpenEngSB fixed 105 issues. One of the most important chnanges with the
+2.0.0 release is the introduction of semantic versioning. There had been mostly minor fixes and enhancements to this work.
+In addition tons of bug fixes and version upgrades. Finally the package structure had been completely refactored. This
+also includes changes to all artifact ids and pom references.
+
+### Details
+** Bug
+    * [OPENENGSB-1301] - ConfigPersistence does not work in itests
+    * [OPENENGSB-1470] - artifactinstaller does not work in itests
+    * [OPENENGSB-1570] - taskboxService.getTaskPanel throws wicket rendering error, when used in subproject at version: 1.2.0.RC1
+    * [OPENENGSB-1680] - Superclass setup-method is not called before subclass setup-methods
+    * [OPENENGSB-1779] - Instance Id cannot be reused
+    * [OPENENGSB-1848] - Karaf seems to start fine, but doesnt load any bundles
+    * [OPENENGSB-1859] - Connecotr & Domain links in documentation do not work
+    * [OPENENGSB-1868] - Unused interface ContextConnectorService
+    * [OPENENGSB-1875] - Icons are not shown correctly
+    * [OPENENGSB-1879] - Choosing WiringPage auditing connector on wiring page throws ClassCastException
+    * [OPENENGSB-1881] - Update service page throws a WicketNotSerializableException:
+    * [OPENENGSB-1911] - Possible concurrent modification exception in DummyPersistence
+    * [OPENENGSB-1912] - Clash between lib and framework exporting both xml.stream
+    * [OPENENGSB-1918] - Remove developer and contributor from openengsb-root to openengsb
+    * [OPENENGSB-1928] - license-mapping.xml lists antlr as Apache licensed
+    * [OPENENGSB-1932] - ConnectorManager reads configs from ConfigPersistence which don't concern him. 
+    * [OPENENGSB-1934] - Core-Common bundle needs the EKB bundle, features.xml isn't quite correct
+    * [OPENENGSB-1935] - improve EDB performance
+    * [OPENENGSB-1949] - Referencing openengsb-core in port features fails terrible at installing them one after the other
+    * [OPENENGSB-1952] - Refreshing openengsb-core does not work
+    * [OPENENGSB-1955] - ClassCastException in Testclient
+    * [OPENENGSB-1960] - Not a directory bug thrown in ContextFilePersistenceService
+    * [OPENENGSB-1969] - example remoteclient does not compile because of api-changes
+    * [OPENENGSB-1998] - connector-deployer puts a string in service.ranking property
+    * [OPENENGSB-2000] - ServiceEditorPanel uses a cast to String which fails for non Strings
+    * [OPENENGSB-2002] - add itests for EDB
+    * [OPENENGSB-2023] - WSPortIT has unneeded Thread.sleep calls
+    * [OPENENGSB-2031] - AuditingDomain does not container a proper description
+    * [OPENENGSB-2054] - WSPortIT has problems under windows
+    * [OPENENGSB-2055] - TaskboxUIIT fails under windows
+
+** Improvement
+    * [OPENENGSB-279] - Use openengsb UI not as own war file but include pages into client configuration
+    * [OPENENGSB-917] - Restructure domain model for ekb/edb
+    * [OPENENGSB-1358] - Document features.xml
+    * [OPENENGSB-1478] - kill orphan karaf-instances in itests spawned by previous exam-runs
+    * [OPENENGSB-1571] - Increase default memory used during windows bootup
+    * [OPENENGSB-1916] - Add description and details section to features.xml
+    * [OPENENGSB-1921] - Use same mail dependency as karaf
+    * [OPENENGSB-1929] - OpenEngSB window shows karaf instead of OpenEngSB
+    * [OPENENGSB-1942] - EDB shall use slf4j for logging
+    * [OPENENGSB-1964] - ConfigPersistenceServices should be consistently configured.
+    * [OPENENGSB-1975] - Make JsonUtils#convertArgument private
+    * [OPENENGSB-1999] - Remove export of javax.transaction* in jre.properties
+    * [OPENENGSB-2003] - Remove no longer required transaction deps
+    * [OPENENGSB-2004] - Remove referenced felix bundles
+    * [OPENENGSB-2005] - Remove no longer required jgit libs
+
+** Library Upgrade
+    * [OPENENGSB-1235] - Upgrade to pax-exam 2.3.0.M1
+    * [OPENENGSB-1856] - Upgrade openjpa to 2.1.1
+    * [OPENENGSB-1857] - Upgrade openjpa-maven-plugin to 1.2
+    * [OPENENGSB-1926] - Upgrade to openengsb-root-20
+    * [OPENENGSB-1946] - Upgrade to karaf-2.2.3
+    * [OPENENGSB-1979] - Upgrade to paxexam-karaf-0.1.0
+    * [OPENENGSB-1989] - Upgrade to guava 9
+    * [OPENENGSB-1994] - Upgrade java mail api to 1.4.4
+    * [OPENENGSB-2006] - Upgrade jaxb to 2.2.4
+    * [OPENENGSB-2007] - Upgrade cxf to 2.4.2
+    * [OPENENGSB-2008] - Upgrade spring-security to 3.0.7.RELEASE
+    * [OPENENGSB-2009] - Upgrade jackson libs to 1.8.5
+    * [OPENENGSB-2010] - Upgrade commons-compress to 1.2
+    * [OPENENGSB-2011] - Upgrade commons-codec to 1.5.6
+    * [OPENENGSB-2012] - Upgrade slf4j to 1.6.2
+    * [OPENENGSB-2013] - Upgrade commons-pool to 1.5.6
+    * [OPENENGSB-2014] - Upgrade h2 to 1.3.160
+    * [OPENENGSB-2021] - Upgrade jsch to 0.1.44
+    * [OPENENGSB-2043] - Upgrade to openengsb-root-22
+
+** New Feature
+    * [OPENENGSB-937] - Provide general possibility to handle oauth
+    * [OPENENGSB-1651] - handle multiple connectors with same location
+    * [OPENENGSB-1795] - add method to delete context
+    * [OPENENGSB-1831] - Show openengsb system information if info is issued in karaf shell
+    * [OPENENGSB-1852] - Create a new command to show all available domains
+    * [OPENENGSB-1853] - Show openengsb system information if info is issued in karaf shell
+    * [OPENENGSB-1945] - Add base infrastructure to build loom bridge components
+    * [OPENENGSB-1973] - Allow custom transformations in remote mappings
+    * [OPENENGSB-2018] - Allow version branding of admin UI
+    * [OPENENGSB-2026] - Introduce openengsb-ui-admin project
+
+** Task
+    * [OPENENGSB-845] - Using a service involving wicket from a thread, not running in a wicketapplication fails.
+    * [OPENENGSB-928] - auditing-root-connector-instance should be deployed via ConnectorDeployer (config-file)
+    * [OPENENGSB-1693] - add an explanation for every bundle which uses Dynamic Import
+    * [OPENENGSB-1695] - move ./docs/examples to ./examples
+    * [OPENENGSB-1709] - Rename Level Enum in org.openengsb.domain.example.event.LogEvent to LogLevel
+    * [OPENENGSB-1760] - Release framework-2.0.0
+    * [OPENENGSB-1855] - increase timeout while service lookup in itests
+    * [OPENENGSB-1871] - ArtifactId should be equal to symbolic name like for aries, pw, karaf, ...
+    * [OPENENGSB-1877] - AbstractOsgiMockServiceTest does not mock registerService(String,Object,Dictionary)
+    * [OPENENGSB-1878] - AbstractOsgiMockServiceTest does not work for ServiceTrackers
+    * [OPENENGSB-1941] - Add intellij idea to sponsers page
+    * [OPENENGSB-1944] - Update Felix as PMC
+    * [OPENENGSB-1951] - Check if tcp://xyz:asf?blub also works in json-jms definitions
+    * [OPENENGSB-1961] - Add oxygenxml to sponsors page
+    * [OPENENGSB-1967] - add option to disable security features for remoting
+    * [OPENENGSB-1968] - Use org.openengsb.labs.paxexam.karaf for integration testing
+    * [OPENENGSB-1970] - correct scm-property in all framework-poms
+    * [OPENENGSB-1971] - remove warnings
+    * [OPENENGSB-1972] - run-script does not always repackage assembly correctly
+    * [OPENENGSB-1992] - move homepage and branding from framework to homepage
+    * [OPENENGSB-1993] - move documentation from framework to openengsb
+    * [OPENENGSB-1995] - use new group/artifactId for java mail api
+    * [OPENENGSB-2001] - Rename artifacts from openengsb to openengsb-framework
+    * [OPENENGSB-2015] - Use servicemix wrapped guava libs instead of own
+    * [OPENENGSB-2017] - Move branding from framework to openengsb
+    * [OPENENGSB-2019] - Remove name from framework branding
+    * [OPENENGSB-2020] - Remove versions from spring, spring-dm and http feature
+    * [OPENENGSB-2022] - Replace own wrapped jsch wrapped lib with smx ones
+    * [OPENENGSB-2029] - Change openengsb:info command to OpenEngSB Framework Information
+    * [OPENENGSB-2032] - Move some plugin versions to openengsb-root
+
+** TBD
+    * [OPENENGSB-1768] - enhance events with every stage
 

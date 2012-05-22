@@ -23,14 +23,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -43,9 +43,9 @@ import org.openengsb.core.common.xlink.XLinkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableMap;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -95,9 +95,15 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void create(ConnectorId id, ConnectorDescription connectorDescription)
+    public String create(ConnectorDescription connectorDescription) throws ConnectorValidationFailedException {
+        String id = UUID.randomUUID().toString();
+        createWithId(id, connectorDescription);
+        return id;
+    }
+
+    @Override
+    public void createWithId(String id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
-        validateId(id);
         checkForExistingServices(id);
         addDefaultLocations(id, connectorDescription);
         registrationManager.updateRegistration(id, connectorDescription);
@@ -109,20 +115,19 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }
     }
 
-    private void addDefaultLocations(ConnectorId id, ConnectorDescription connectorDescription) {
+    private void addDefaultLocations(String id, ConnectorDescription connectorDescription) {
         Map<String, Object> properties = connectorDescription.getProperties();
         if (properties.get("location.root") != null) {
             return;
         }
         Map<String, Object> copy = new HashMap<String, Object>(properties);
-        copy.put("location.root", id.getInstanceId());
+        copy.put("location.root", id);
         connectorDescription.setProperties(copy);
     }
 
     @Override
-    public void forceCreate(ConnectorId id, ConnectorDescription connectorDescription) {
-        validateId(id);
-        checkForExistingServices(id);
+    public String forceCreate(ConnectorDescription connectorDescription) {
+        String id = UUID.randomUUID().toString();
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
@@ -130,18 +135,12 @@ public class ConnectorManagerImpl implements ConnectorManager {
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
+        return id;
     }
 
-    private void validateId(ConnectorId id) {
-        Preconditions.checkNotNull(id);
-        Preconditions.checkNotNull(id.getConnectorType());
-        Preconditions.checkNotNull(id.getDomainType());
-        Preconditions.checkNotNull(id.getInstanceId());
-    }
-
-    private void checkForExistingServices(ConnectorId id) {
+    private void checkForExistingServices(String id) {
         try {
-            List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
+            List<ConnectorConfiguration> list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
             if (!list.isEmpty()) {
                 throw new IllegalArgumentException("connector already exists");
             }
@@ -151,9 +150,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void update(ConnectorId id, ConnectorDescription connectorDescpription)
+    public void update(String id, ConnectorDescription connectorDescpription)
         throws ConnectorValidationFailedException, IllegalArgumentException {
-        validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.updateRegistration(id, connectorDescpription);
         applyConfigChanges(old, connectorDescpription);
@@ -165,8 +163,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException {
-        validateId(id);
+    public void forceUpdate(String id, ConnectorDescription connectorDescription) throws IllegalArgumentException {
         ConnectorDescription old = getOldConfig(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         applyConfigChanges(old, connectorDescription);
@@ -193,10 +190,10 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return result;
     }
 
-    private ConnectorDescription getOldConfig(ConnectorId id) {
+    private ConnectorDescription getOldConfig(String id) {
         List<ConnectorConfiguration> list;
         try {
-            list = getConfigPersistence().load(id.toMetaData());
+            list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -210,15 +207,15 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void delete(ConnectorId id) throws PersistenceException {
+    public void delete(String id) throws PersistenceException {
         registrationManager.remove(id);
-        getConfigPersistence().remove(id.toMetaData());
+        getConfigPersistence().remove(ImmutableMap.of(Constants.ID_KEY, id));
     }
 
     @Override
-    public ConnectorDescription getAttributeValues(ConnectorId id) {
+    public ConnectorDescription getAttributeValues(String id) {
         try {
-            List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
+            List<ConnectorConfiguration> list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
             if (list.isEmpty()) {
                 throw new IllegalArgumentException("no connector with metadata: " + id + " found");
             }
@@ -245,7 +242,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void disconnectFromXLink(ConnectorId id, String hostId) {
+    public void disconnectFromXLink(String id, String hostId) {
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             if (xlinkRegistrations.get(key) != null) {
@@ -255,7 +252,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }       
     }
     
-    private boolean isRegistered(ConnectorId id, String hostId) {
+    private boolean isRegistered(String id, String hostId) {
         XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
         return xlinkRegistrations.containsKey(key);
     }
@@ -275,14 +272,14 @@ public class ConnectorManagerImpl implements ConnectorManager {
     
     @Override
     public XLinkTemplate connectToXLink(
-            ConnectorId id, 
+            String id, 
             String hostId, 
             String toolName, 
             Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews) {
         List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
         XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
                 xLinkBaseUrl, 
-                id.toFullID(), 
+                id, 
                 modelsToViews, 
                 xLinkExpiresIn, 
                 XLinkUtils.getLocalToolFromRegistrations(registrations));
@@ -314,10 +311,10 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
     
     private class XLinkRegistrationKey {
-        private ConnectorId connectorId;
+        private String connectorId;
         private String hostId;
 
-        public XLinkRegistrationKey(ConnectorId connectorId, String hostId) {
+        public XLinkRegistrationKey(String connectorId, String hostId) {
             this.connectorId = connectorId;
             this.hostId = hostId;
         }
@@ -331,9 +328,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 return false;
             }
             final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
-            if (this.connectorId != other.connectorId 
-                    && (this.connectorId == null 
-                    || !this.connectorId.equals(other.connectorId))) {
+            if ((this.connectorId == null) ? (other.connectorId != null) : !this.connectorId.equals(other.connectorId)) {
                 return false;
             }
             if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {
@@ -345,16 +340,16 @@ public class ConnectorManagerImpl implements ConnectorManager {
         @Override
         public int hashCode() {
             int hash = 5;
-            hash = 89 * hash + (this.connectorId != null ? this.connectorId.hashCode() : 0);
-            hash = 89 * hash + (this.hostId != null ? this.hostId.hashCode() : 0);
+            hash = 59 * hash + (this.connectorId != null ? this.connectorId.hashCode() : 0);
+            hash = 59 * hash + (this.hostId != null ? this.hostId.hashCode() : 0);
             return hash;
         }
         
-        public ConnectorId getConnectorId() {
+        public String getConnectorId() {
             return connectorId;
         }
 
-        public void setConnectorId(ConnectorId connectorId) {
+        public void setConnectorId(String connectorId) {
             this.connectorId = connectorId;
         }
 

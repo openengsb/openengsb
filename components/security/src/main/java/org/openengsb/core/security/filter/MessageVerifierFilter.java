@@ -18,7 +18,7 @@
 package org.openengsb.core.security.filter;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.openengsb.core.api.remote.FilterAction;
@@ -31,8 +31,9 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
@@ -58,18 +59,14 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     private FilterAction next;
 
     private long timeout = 10 * 60 * 1000; // 10 minutes
-    private ConcurrentMap<String, Long> lastMessageTimestamp = new MapMaker()
+    private LoadingCache<String, Long> lastMessageTimestamp = CacheBuilder.newBuilder()
         .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)
-        .makeComputingMap(new Function<String, Long>() {
+        .build(new CacheLoader<String, Long>() {
             @Override
-            public Long apply(String input) {
+            public Long load(String key) throws Exception {
                 return 0L;
             };
         });
-
-    public MessageVerifierFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
 
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
@@ -100,10 +97,14 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     private void checkForReplayedMessage(SecureRequest request) throws MessageVerificationFailedException {
         String authenticationInfo = request.getPrincipal();
         synchronized (lastMessageTimestamp) {
-            if (lastMessageTimestamp.get(authenticationInfo) >= request.getTimestamp()) {
-                throw new MessageVerificationFailedException(
-                    "Message's timestamp was too old. Message with higher timestamp already receiverd."
-                            + "Possible replay detected.");
+            try {
+                if (lastMessageTimestamp.get(authenticationInfo) >= request.getTimestamp()) {
+                    throw new MessageVerificationFailedException(
+                        "Message's timestamp was too old. Message with higher timestamp already receiverd."
+                                + "Possible replay detected.");
+                }
+            } catch (ExecutionException e) {
+                LOGGER.error("error when accessing cache", e);
             }
             lastMessageTimestamp.put(authenticationInfo, request.getTimestamp());
             LOGGER.debug("updated lastMessageTimestamp for {} to {}", authenticationInfo, request.getTimestamp());

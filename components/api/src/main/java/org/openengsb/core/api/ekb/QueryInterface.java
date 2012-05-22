@@ -26,7 +26,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * The query interface provides the functions to access the data stored in the EDB.
  */
 public interface QueryInterface {
-    
+
     /**
      * Loads the most actual tool data from the given oid
      */
@@ -51,16 +51,33 @@ public interface QueryInterface {
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
      */
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap);
-    
+
     /**
-     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a
+     * Queries for models which have all key/value pairs given by the query saved in the OpenEngSBModelEntries for a
      * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp);
-    
+
     /**
-     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a
-     * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
+     * Queries for the most actual models which have all key/value pairs given by the query saved in the
+     * OpenEngSBModelEntries
+     */
+    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query);
+
+    /**
+     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a given
+     * timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+
+    /**
+     * Queries for active models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries.
+     * Active models mean models which are in the newest version.
+     */
+    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap);
+
+    /**
+     * Queries for active models of the given model type. Active models mean models which are in the newest version.
+     */
+    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model);
 }

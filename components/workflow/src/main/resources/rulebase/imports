@@ -2,9 +2,11 @@ java.util.List
 java.util.ArrayList
 java.util.Map
 java.util.HashMap
+java.net.URI
+
 org.openengsb.core.api.Event
 org.openengsb.core.api.workflow.model.Value
+org.openengsb.core.api.workflow.model.RemoteEvent
+
 org.openengsb.core.workflow.WorkflowHelper
 org.openengsb.core.workflow.OsgiHelper
-java.net.URI
-org.openengsb.core.api.workflow.model.RemoteEvent

@@ -60,8 +60,8 @@ public class SendEventPageTest extends AbstractUITest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);
@@ -77,9 +77,9 @@ public class SendEventPageTest extends AbstractUITest {
         allAudits.add(event2);
 
         Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         context.putBean("eventService", eventService);
-        context.putBean("audit", domain);
+        context.putBean("auditing", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");

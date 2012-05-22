@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBConstants;
+import org.openengsb.core.api.ekb.annotations.DefaultStringValue;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
@@ -153,8 +154,8 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
         String propertyName = ModelUtils.getPropertyName(method);
         if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
-            OpenEngSBModelEntry entry = 
-                    new OpenEngSBModelEntry(EDBConstants.MODEL_OID, args[0].toString(), String.class);
+            OpenEngSBModelEntry entry =
+                new OpenEngSBModelEntry(EDBConstants.MODEL_OID, args[0].toString(), String.class);
             objects.put(EDBConstants.MODEL_OID, entry);
         }
         Class<?> clasz = method.getParameterTypes()[0];
@@ -167,7 +168,12 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     private Object handleGetMethod(Method method) throws Throwable {
         String propertyName = ModelUtils.getPropertyName(method);
         checkForGetterResultConversion(propertyName);
-        return objects.get(propertyName).getValue();
+        Object returnValue = objects.get(propertyName).getValue();
+        if (returnValue == null && method.isAnnotationPresent(DefaultStringValue.class)) {
+            DefaultStringValue value = method.getAnnotation(DefaultStringValue.class);
+            returnValue = value.value();
+        }
+        return returnValue;
     }
 
     /**
@@ -178,20 +184,21 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         if (List.class.isAssignableFrom(entry.getType())) {
             @SuppressWarnings("unchecked")
             List<Object> list = (List<Object>) entry.getValue();
-            if (list.size() != 0) {
+            if (list != null && list.size() != 0) {
                 List<Object> temp = doListConversion(list, true);
                 objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
             }
         } else if (Map.class.isAssignableFrom(entry.getType())) {
             @SuppressWarnings("unchecked")
             Map<Object, Object> map = (Map<Object, Object>) entry.getValue();
-            if (map.size() != 0) {
+            if (map != null && map.size() != 0) {
                 Map<Object, Object> temp = doMapConversion(map, true);
                 objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
             }
         } else {
             Object obj = doObjectConversion(entry.getValue(), true);
-            objects.put(propertyName, new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
+            Class<?> clazz = obj != null ? obj.getClass() : entry.getType();
+            objects.put(propertyName, new OpenEngSBModelEntry(propertyName, obj, clazz));
         }
     }
 

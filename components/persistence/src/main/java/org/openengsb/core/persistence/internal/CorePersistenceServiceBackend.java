@@ -47,29 +47,27 @@ public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBacken
     public List<ConfigItem<E>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
         List<ConfigItem<E>> configItems = new ArrayList<ConfigItem<E>>();
-        List<InternalConfigurationItem<E>> result =
-            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(metadata, null)));
-        for (InternalConfigurationItem<E> configItem : result) {
-            configItems.add(configItem.getConfigItem());
+        List<ConfigItem<E>> result = persistenceService.query(new ConfigItem<E>(metadata, null));
+        for (ConfigItem<E> configItem : result) {
+            configItems.add(configItem);
         }
         return configItems;
     }
 
     @Override
     public void persist(ConfigItem<E> config) throws PersistenceException, InvalidConfigurationException {
-        List<InternalConfigurationItem<E>> alreadyPresent =
-            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(config.getMetaData(), null)));
+        List<ConfigItem<E>> alreadyPresent = persistenceService.query(new ConfigItem<E>(config.getMetaData(), null));
         if (alreadyPresent.isEmpty()) {
-            persistenceService.create(new InternalConfigurationItem<E>(config));
+            persistenceService.create(config);
         } else {
-            persistenceService.update(alreadyPresent.get(0), new InternalConfigurationItem<E>(config));
+            persistenceService.update(alreadyPresent.get(0), config);
         }
     }
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
-        List<InternalConfigurationItem<E>> result =
-            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(metadata, null)));
+        List<ConfigItem<E>> result =
+            persistenceService.query(new ConfigItem<E>(metadata, null));
         persistenceService.delete(result);
     }
 

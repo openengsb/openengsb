@@ -30,18 +30,17 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -85,9 +84,9 @@ public class ToolChooserPage extends WebPage {
     private void processPage() {
         XLinkMock.dummyRegistrationOfTools(serviceManager);
         chooserLogic = new ToolChooserLogic(serviceManager);
-        requestParameters = getRequest().getParameterMap();
-        HttpServletRequest req = ((WebRequest) getRequest()).getHttpServletRequest();
-        HttpServletResponse resp = ((WebResponse) getResponse()).getHttpServletResponse();  
+        requestParameters = getRequestParametersAsAMap();
+        HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
+        HttpServletResponse resp = (HttpServletResponse) getResponse().getContainerResponse();
         try {
             checkIfXLinkIsValid(req);
         } catch (OpenXLinkException ex) {
@@ -107,6 +106,10 @@ public class ToolChooserPage extends WebPage {
         buildToolChooserPage(resp);      
     }
     
+    private Map<String, String[]> getRequestParametersAsAMap(){
+        return null;//getRequest().getQueryParameters().
+    }
+    
     private String getParameterFromMap(String key) {
         return requestParameters.get(key) == null ? null : requestParameters.get(key)[0];
     }
@@ -114,9 +117,9 @@ public class ToolChooserPage extends WebPage {
     private void checkIfXLinkIsValid(HttpServletRequest req) throws OpenXLinkException {
         fetchXLinkParameters(req);
         checkMandatoryXLinkParameters();
-        if (checkForLocalSwitchingParameters()) {
+        /*if (checkForLocalSwitchingParameters()) {
             checkConnectorIdFormat();
-        }
+        }*/
         checkXLinkIsExpired();
         try {
             fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
@@ -159,14 +162,14 @@ public class ToolChooserPage extends WebPage {
         }        
     }    
     
-    private void checkConnectorIdFormat() throws OpenXLinkException {
+    /*private void checkConnectorIdFormat() throws OpenXLinkException {
         try {
             ConnectorId.fromFullId(connectorId);
         } catch (Exception e) {
             String wrongFormatMsg = new StringResourceModel("error.connectorId.wrongFormat", this, null).getString();
             throw new OpenXLinkException(wrongFormatMsg);
         }
-    }
+    }*/
     
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {
         String errorMsgFormat = new StringResourceModel("error.missingIdentifier", this, null).getString();
@@ -229,13 +232,13 @@ public class ToolChooserPage extends WebPage {
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              
                         final XLinkModelInformation destModelInfo 
-                            = chooserLogic.getModelClassOfView(hostId, tool.getId().toFullID(), view.getViewId());
+                            = chooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
                                 String sourceModelClass = modelId;   
                                 XLinkMock.transformAndOpenMatch(sourceModelClass, 
                                         versionId, identifierValues, destModelInfo.getClassName(), 
-                                        destModelInfo.getVersion(), tool.getId().toFullID(), 
+                                        destModelInfo.getVersion(), tool.getId(), 
                                         view.getViewId());
                                 handleSuccessResponse(resp);
                             }

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -37,11 +38,14 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
@@ -82,10 +86,15 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                 return null;
             }
         }).when(outgoingPort).send(any(MethodCallRequest.class));
+
+        DefaultOutgoingPortUtilService outgoingPortUtilService =
+            new DefaultOutgoingPortUtilService(new DefaultOsgiUtilsService(bundleContext));
+        registerService(outgoingPortUtilService, new Hashtable<String, Object>(), OutgoingPortUtilService.class);
     }
 
     private RequestHandler getRequestHandler() {
         RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
+        requestHandlerImpl.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         return requestHandlerImpl;
     }
 
@@ -131,7 +140,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
+        assertThat("did not call example.doSomething() after RemoteEvent", latch.await(5, TimeUnit.SECONDS), is(true));
 
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);

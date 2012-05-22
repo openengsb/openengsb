@@ -60,7 +60,6 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
     private String secretKeyAlgorithm;
 
     public MessageCryptoFilter(PrivateKeySource privateKeySource, String secretKeyAlgorithm) {
-        super(EncryptedMessage.class, byte[].class);
         this.privateKeySource = privateKeySource;
         this.secretKeyAlgorithm = secretKeyAlgorithm;
     }

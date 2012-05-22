@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RuleConfiguration extends ConfigItem<String> {
 
+    private static final long serialVersionUID = 5451541282607978079L;
+
     public static final String TYPE_ID = "RULE";
 
     public RuleConfiguration() {

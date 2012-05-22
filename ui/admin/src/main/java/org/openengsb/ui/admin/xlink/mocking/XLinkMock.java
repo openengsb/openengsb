@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
@@ -60,7 +59,7 @@ public final class XLinkMock {
             Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
             Object modelObjectsDestination = transformModelObject(sourceModelClass, 
                     sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
-            ConnectorId cId = ConnectorId.fromFullId(connectorToCall);
+            String cId = connectorToCall;
             openPotentialMatches(modelObjectsDestination, cId, viewToCall);
         }
     }
@@ -83,7 +82,7 @@ public final class XLinkMock {
     }
     private static void openPotentialMatches(
             Object modelObjectsDestination, 
-            ConnectorId connectorToCall, 
+            String connectorToCall, 
             String viewToCall) {
         //todo
     }
@@ -116,8 +115,8 @@ public final class XLinkMock {
         String toolName1 = "Tool A";
         String toolName2 = "Tool B";
         String hostId = "localhost:8090";
-        ConnectorId cId1 = new ConnectorId("test1", "test1", "test1");
-        ConnectorId cId2 = new ConnectorId("test2", "test2", "test2");
+        String cId1 = "test1+test1+test1";
+        String cId2 = "test2+test2+test2";
         
         //test2+test2+test2
         //test2%2Btest2%2Btest2

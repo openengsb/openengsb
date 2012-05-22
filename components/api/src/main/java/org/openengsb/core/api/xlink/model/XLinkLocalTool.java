@@ -21,8 +21,6 @@ package org.openengsb.core.api.xlink.model;
 import java.io.Serializable;
 import java.util.List;
 
-import org.openengsb.core.api.model.ConnectorId;
-
 /**
  * Modelclass to transfere information about a tool that is registered for XLink.
  * Carries the ConnectorId of the tool and the views it offers for XLink, represented
@@ -35,7 +33,7 @@ public class XLinkLocalTool implements Serializable {
     /**
      * Id of the connector, identifying the tool
      */
-    private ConnectorId id;
+    private String id;
     
     /**
      * Human readable name of the tool
@@ -52,7 +50,7 @@ public class XLinkLocalTool implements Serializable {
     public XLinkLocalTool() {
     }
 
-    public XLinkLocalTool(ConnectorId id, String toolName, List<XLinkToolView> availableViews) {
+    public XLinkLocalTool(String id, String toolName, List<XLinkToolView> availableViews) {
         this.id = id;
         this.toolName = toolName;
         this.availableViews = availableViews;
@@ -72,11 +70,11 @@ public class XLinkLocalTool implements Serializable {
     /**
      * Id of the connector, identifying the tool
      */    
-    public ConnectorId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ConnectorId id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
@@ -31,7 +32,7 @@ import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings({ "serial" })
-public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Object> {
+public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Task> {
 
     @PaxWicketBean(name = "taskboxService")
     private TaskboxService taskboxService;
@@ -40,7 +41,7 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
 
     public TaskDataProvider() {
         InjectorHolder.getInjector().inject(this, TaskDataProvider.class);
-        this.setSort("taskId", true);
+        this.setSort("taskId", SortOrder.ASCENDING);
     }
 
     public TaskboxService gett() {
@@ -114,12 +115,12 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
     }
 
     @Override
-    public Object getFilterState() {
+    public Task getFilterState() {
         return filter;
     }
 
     @Override
-    public void setFilterState(Object state) {
+    public void setFilterState(Task state) {
         filter = (TaskFilter) state;
     }
 

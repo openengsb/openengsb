@@ -103,7 +103,9 @@ public class MethodCall implements Serializable {
         List<String> argsClasses = new ArrayList<String>();
         if (getArgs() != null) {
             for (Object object : getArgs()) {
-                if (object instanceof List<?>) {
+                if (object == null) {
+                    argsClasses.add(null);
+                } else if (object instanceof List<?>) {
                     argsClasses.add(List.class.getName());
                 } else {
                     argsClasses.add(object.getClass().getName());

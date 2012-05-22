@@ -33,7 +33,10 @@
       data with no explicit performance requirements. If special persistence features need to be used it is recommended to
       use a specialized storage rather than the general storage mechanism.</para>
 
-    <para>The persistence service can store any Java Object, but was specifically designed for Java Beans.</para>
+    <para>The persistence service can store any Java Object, but was specifically designed for Java Beans. With the following additional
+      conditions: First of all the bean to persist needs to be serializable. In addition the equals method needs to be overwritten. If a
+      field on the lhs of the comparision is null every field on the rhs is accepted; otherwise the fields are compared dirctly.
+    </para>
 
     <para>
       The interface of the
@@ -50,13 +53,12 @@
     <para>
       Queries with the OpenEngSB persistence done via the 
       <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>.
-      Behind this service an easy query-by-example logic is used to retrieve your results. In some cases the comparison and storage can create some
-      wired problems for your specific use cases. For those cases the 
-      <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/IgnoreInQueries.java">IgnoreInQueries</link> annotation had
-      been added. Using this annotation on getters in classes persisted via the
-      <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>
-      querying them ignores those fields during trying to compare them to stored data.
-    </para> 
+      Behind this service an easy query-by-example logic is used to retrieve your results. Since the current persistence implementation of
+      the OpenEngSB builds on serialisation it can happen that some additional actions are required to restore the object. In that case make use of the
+      <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/SpecialActionsAfterSerialisation.java">SpecialActionsAfterSerialisation</link>
+      interface. If your entities implement the interface the "doSpecialActions" method is called after restoring allowing you to do additional actions 
+      to the bean before it's returned to the caller.
+    </para>
 
     <para>
       The persistence solution of the OpenEngSB was designed to support different possible back-end database systems.

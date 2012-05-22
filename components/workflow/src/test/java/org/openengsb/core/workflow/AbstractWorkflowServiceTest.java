@@ -21,32 +21,28 @@ import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.TaskboxServiceInternal;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
-import org.osgi.framework.BundleContext;
+import org.openengsb.domain.auditing.AuditingDomain;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -56,6 +52,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     protected HashMap<String, Domain> domains;
     protected TaskboxService taskbox;
     protected TaskboxServiceInternal taskboxInternal;
+    protected AuditingDomain auditingMock;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -64,8 +61,15 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     @Before
     public void setUp() throws Exception {
+        OsgiHelper.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         setupRulemanager();
+
+        auditingMock = mock(AuditingDomain.class);
+        registerServiceAtLocation(auditingMock, "auditing-root", AuditingDomain.class);
+
         service = new WorkflowServiceImpl();
+        service.setAuditingConnectors(makeServiceList(AuditingDomain.class));
+
         setupTaskbox();
         service.setRulemanager(manager);
         service.setTaskbox(taskbox);
@@ -76,7 +80,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupTaskbox() {
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
+        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         TaskboxServiceImpl taskboxServiceImpl = new TaskboxServiceImpl();
         taskboxServiceImpl.setPersistenceManager(persistenceManager);
         taskboxServiceImpl.setBundleContext(bundleContext);
@@ -92,6 +97,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     private void setupRulemanager() throws Exception {
         manager = PersistenceTestUtil.getRuleManager();
+        RuleUtil.addImportsAndGlobals(manager);
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
@@ -133,16 +139,6 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         while (ruleDir.exists()) {
             FileUtils.deleteQuietly(ruleDir);
         }
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        registerService(new DefaultOutgoingPortUtilService(), new Hashtable<String, Object>(),
-            OutgoingPortUtilService.class);
     }
 
 }

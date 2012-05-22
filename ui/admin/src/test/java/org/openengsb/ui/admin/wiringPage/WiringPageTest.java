@@ -59,7 +59,6 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -76,10 +75,11 @@ public class WiringPageTest extends AbstractUITest {
 
     private RuleManager ruleManager;
 
-    private ConnectorId testdomainConnectorId;
+    private String testdomainConnectorId;
     private final String globTest = "globTest";
     private final String anotherGlob = "anotherGlob";
     private Map<String, Object> startproperties;
+    private FormTester formTester;
 
     @Before
     public void setUp() throws Exception {
@@ -90,7 +90,7 @@ public class WiringPageTest extends AbstractUITest {
         when(ruleManager.listGlobals()).thenReturn(globals);
         when(ruleManager.getGlobalType(globTest)).thenReturn(globals.get(globTest));
         when(ruleManager.getGlobalType(anotherGlob)).thenReturn(globals.get(anotherGlob));
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         List<String> contextList = new ArrayList<String>();
         contextList.add("bar");
         contextList.add("one");
@@ -102,9 +102,10 @@ public class WiringPageTest extends AbstractUITest {
             (ContextCurrentService) context.getBean("contextCurrentService");
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(WiringPage.class);
+        formTester = tester.newFormTester("wiringForm");
     }
 
     @Test
@@ -143,7 +144,6 @@ public class WiringPageTest extends AbstractUITest {
     @Test
     public void testSelectDomain_shouldUpdateGlobals() {
         selectDomain(1); // TestDomainInterface
-
         LinkTree globals = (LinkTree) tester.getComponentFromLastRenderedPage("globals");
         TreeModel tree = globals.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(1));
@@ -153,11 +153,10 @@ public class WiringPageTest extends AbstractUITest {
     @Test
     public void testSelectDomain_shouldUpdateEndpoints() {
         selectDomain(1); // TestDomainInterface
-
         LinkTree endpoints = (LinkTree) tester.getComponentFromLastRenderedPage("endpoints");
         TreeModel tree = endpoints.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(1));
-        assertThat(tree.getChild(tree.getRoot(), 0).toString(), is(testdomainConnectorId.toFullID()));
+        assertThat(tree.getChild(tree.getRoot(), 0).toString(), is(testdomainConnectorId));
     }
 
     @Test
@@ -185,7 +184,7 @@ public class WiringPageTest extends AbstractUITest {
         selectFirstEndpoint();
 
         TextField<?> txtServiceId = (TextField<?>) tester.getComponentFromLastRenderedPage("wiringForm:instanceId");
-        assertThat(txtServiceId.getDefaultModelObjectAsString(), is(testdomainConnectorId.toFullID()));
+        assertThat(txtServiceId.getDefaultModelObjectAsString(), is(testdomainConnectorId));
     }
 
     @Test
@@ -362,12 +361,11 @@ public class WiringPageTest extends AbstractUITest {
     private void selectDomain(int index) {
         FormTester formTester = tester.newFormTester("domainChooseForm");
         formTester.select("domains", index);
-        formTester.submit();
         tester.executeAjaxEvent("domainChooseForm:domains", "onchange");
     }
 
     private void setGlobal(String global) {
-        tester.setParameterForNextRequest("wiringForm:globalName", global);
+        formTester.setValue("globalName", global);
     }
 
     private void selectFirstGlobal() {
@@ -379,7 +377,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     private void selectContext(int i) {
-        tester.setParameterForNextRequest("wiringForm:contextList:i:" + i + ":nodeComponent:check", true);
+        formTester.setValue("contextList:i:" + i + ":nodeComponent:check", true);
     }
 
     private void createConnectors() throws Exception {
@@ -393,8 +391,8 @@ public class WiringPageTest extends AbstractUITest {
         properties.put("location.twotimes1", globTest);
         properties.put("location.twotimes2", new Object[]{ "foo", globTest });
         startproperties = new HashMap<String, Object>(properties);
-        testdomainConnectorId = new ConnectorId("testdomain", "testconnector", "test-service");
-        serviceManager.create(testdomainConnectorId, new ConnectorDescription(attributes, properties));
+        testdomainConnectorId =
+            serviceManager.create(new ConnectorDescription("testdomain", "testconnector", attributes, properties));
     }
 
     private void createProviderMocks() {

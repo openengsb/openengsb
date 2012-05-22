@@ -27,7 +27,7 @@
     <title>Engineering Knowledge Base - EKB</title>
     <para>
         The EKB, as it is now, is at the very beginning of its development, so there is not much to write here for now.
-        The most important thing which is provided by the EKB at the moment is the <link linkend="developer.ekb.queryservice">QueryService</link>.
+        The most important thing which is provided by the EKB at the moment is the <link linkend="contributor.ekb.queryservice">QueryService</link>.
     </para>
     
     <section>
@@ -75,5 +75,43 @@
             The "check" function only performs the sanity checks and give back the result of the sanity checks.
         </para>
     </section>
-    
+    <section xml:id='contributor.ekb.sanitychecker'>
+        <title>Sanity Checker</title>
+        <para>
+            The sanity checker is a part of the EKB environment. It's purpose is the controlling of models before they get
+            persisted. The control mechanism is able to run so called sanity checks over models when they should get saved
+            into the EDB.
+        </para>
+        <para>
+            This component is currently under development and can't be used by now.
+            <link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2717">Issue</link>
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.modeldefinitioncomponent'>
+        <title>Model definition component</title>
+        <para>
+            The purpose of this component is the possibility to let an external script language define models for the OpenEngSB.
+            It has the responsibility to convert a script based defined model into an OpenEngSBModel and the other way round.
+        </para>
+        <para>
+            Conceptional it is possible to write such a component with every script language, but for now we will provide OWL
+            as scripting possibility.
+        </para>
+        <para>
+            This component is currently under development and can't be used by now.
+            <link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2754">Issue</link>
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.transformer'>
+        <title>Transformation unit</title>
+        <para>
+            This units purpose is the transformation from one model in a specific version into another model in a specific version.
+            It gets it informations how it should do that from the model/transformation definition. See the specific UI chapter for
+            more information.
+        </para>
+        <para>
+            This component is currently under development and can't be used by now.
+            <link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2756">Issue</link>
+        </para>
+    </section>
 </chapter>

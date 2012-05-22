@@ -17,7 +17,14 @@
 
 package org.openengsb.core.workflow.model;
 
-public class ImportDeclaration {
+import java.io.Serializable;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+public class ImportDeclaration implements Serializable {
+
+    private static final long serialVersionUID = 4988417812120411259L;
+
     private String className;
 
     public ImportDeclaration(String className) {
@@ -28,11 +35,27 @@ public class ImportDeclaration {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ImportDeclaration)) {
+            return false;
+        }
+        if (className == null) {
+            return true;
+        }
+        return className.equals(((ImportDeclaration) obj).className);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(className).toHashCode();
     }
 
 }

@@ -37,10 +37,15 @@ import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
-@SuppressWarnings("serial")
 public class RuleEditorPanel extends Panel {
+
+    private static final long serialVersionUID = 3743136687567466406L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleEditorPanel.class);
 
     private RuleManagerProvider ruleManagerProvider;
     private TextArea<String> textArea;
@@ -77,6 +82,7 @@ public class RuleEditorPanel extends Panel {
         add(feedbackPanel);
     }
 
+    @SuppressWarnings("serial")
     private void initTextArea(Form<Object> form) {
         Model<String> textAreaModel = new Model<String>();
         textArea = new TextArea<String>("text", textAreaModel);
@@ -93,33 +99,34 @@ public class RuleEditorPanel extends Panel {
 
     private void enableButtons(AjaxRequestTarget target) {
         saveButton.setEnabled(true);
-        target.addComponent(saveButton);
+        target.add(saveButton);
         cancelButton.setEnabled(true);
-        target.addComponent(cancelButton);
+        target.add(cancelButton);
     }
 
     private void disableButtons(AjaxRequestTarget target) {
         saveButton.setEnabled(false);
-        target.addComponent(saveButton);
+        target.add(saveButton);
         cancelButton.setEnabled(false);
-        target.addComponent(cancelButton);
+        target.add(cancelButton);
     }
 
     private void enableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(true);
-        target.addComponent(deleteButton);
+        target.add(deleteButton);
     }
 
     private void disableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(false);
-        target.addComponent(deleteButton);
+        target.add(deleteButton);
     }
 
+    @SuppressWarnings("serial")
     private void initButtons(Form<Object> form) {
         saveButton = new IndicatingAjaxButton("save") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(textArea);
+                target.add(textArea);
                 if (newRuleMode) {
                     boolean error = false;
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
@@ -128,20 +135,26 @@ public class RuleEditorPanel extends Panel {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
                         error = true;
-                        target.addComponent(feedbackPanel);
+                        target.add(feedbackPanel);
                         error(e.getLocalizedMessage());
                     }
                     resetAfterNew(target);
                     ruleChoice.setModelObject(ruleBaseElementId);
                     if (!error) {
                         error("");
-                        target.addComponent(feedbackPanel);
+                        target.add(feedbackPanel);
                     }
                 } else {
                     updateRule(target);
                 }
                 enableDeleteButton(target);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submit with save.");
+            }
+
         };
         saveButton.setEnabled(false);
         saveButton.setOutputMarkupId(true);
@@ -157,6 +170,11 @@ public class RuleEditorPanel extends Panel {
                     enableDeleteButton(target);
                 }
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Submit error during cancle button.");
+            }
         };
         cancelButton.setEnabled(false);
         cancelButton.setOutputMarkupId(true);
@@ -167,6 +185,11 @@ public class RuleEditorPanel extends Panel {
                 enterNewRuleMode(target);
                 disableDeleteButton(target);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Submit error during new buttion");
+            }
         };
         form.add(newButton);
         deleteButton = new AjaxButton("delete") {
@@ -175,12 +198,18 @@ public class RuleEditorPanel extends Panel {
                 deleteRule(target);
                 disableDeleteButton(target);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Submit error during delete button");
+            }
         };
         deleteButton.setEnabled(false);
         deleteButton.setOutputMarkupId(true);
         form.add(deleteButton);
     }
 
+    @SuppressWarnings("serial")
     private void initRuleChoice(Form<Object> form) {
         ruleChoice = new DropDownChoice<RuleBaseElementId>("ruleChoice");
         loadRuleChoice();
@@ -194,6 +223,7 @@ public class RuleEditorPanel extends Panel {
         form.add(ruleChoice);
     }
 
+    @SuppressWarnings("serial")
     private void initTypeChoice(Form<Object> form) {
         List<RuleBaseElementType> ruleTypes = Arrays.asList(RuleBaseElementType.values());
         typeChoice = new DropDownChoice<RuleBaseElementType>("typeChoice", ruleTypes);
@@ -212,7 +242,7 @@ public class RuleEditorPanel extends Panel {
     }
 
     private void reloadRuleChoice(AjaxRequestTarget target) {
-        target.addComponent(ruleChoice);
+        target.add(ruleChoice);
         loadRuleChoice();
     }
 
@@ -225,7 +255,7 @@ public class RuleEditorPanel extends Panel {
     }
 
     private void reloadTextArea(AjaxRequestTarget target) {
-        target.addComponent(textArea);
+        target.add(textArea);
         RuleBaseElementId selection = ruleChoice.getModelObject();
         if (selection != null) {
             textArea.setModel(new Model<String>(ruleManagerProvider.getRuleManager().get(selection)));
@@ -248,13 +278,13 @@ public class RuleEditorPanel extends Panel {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
                 error = true;
-                target.addComponent(feedbackPanel);
+                target.add(feedbackPanel);
                 error(e.getLocalizedMessage());
             }
         }
         if (!error) {
             error("");
-            target.addComponent(feedbackPanel);
+            target.add(feedbackPanel);
         }
         disableButtons(target);
     }
@@ -272,9 +302,9 @@ public class RuleEditorPanel extends Panel {
         newRuleTextField.setVisible(false);
         ruleChoice.setVisible(true);
         loadRuleChoice();
-        target.addComponent(form);
-        target.addComponent(newButton);
-        target.addComponent(ruleChoice);
+        target.add(form);
+        target.add(newButton);
+        target.add(ruleChoice);
         disableButtons(target);
     }
 
@@ -290,11 +320,11 @@ public class RuleEditorPanel extends Panel {
         saveButton.setEnabled(true);
         cancelButton.setEnabled(true);
         deleteButton.setEnabled(false);
-        target.addComponent(form);
-        target.addComponent(newRuleTextField);
-        target.addComponent(newRuleTextField);
-        target.addComponent(ruleChoice);
-        target.addComponent(textArea);
-        target.addComponent(newButton);
+        target.add(form);
+        target.add(newRuleTextField);
+        target.add(newRuleTextField);
+        target.add(ruleChoice);
+        target.add(textArea);
+        target.add(newButton);
     }
 }

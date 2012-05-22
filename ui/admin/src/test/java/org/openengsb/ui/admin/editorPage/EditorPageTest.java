@@ -30,13 +30,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.AbstractRepeater;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,6 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -74,8 +73,8 @@ public class EditorPageTest extends AbstractUITest {
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
         factoryMock = createFactoryMock("testconnector", NullDomainImpl.class, "testdomain");
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
@@ -91,13 +90,15 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     public void testIfValuesOfAttributesAreShown() throws Exception {
-        ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
-        serviceManager.create(connectorId, new ConnectorDescription(attributes, null));
-        PageParameters pageParams =
-            new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
-        tester.startPage(ConnectorEditorPage.class, pageParams);
+        String connectorId = serviceManager.create(
+            new ConnectorDescription("testdomain", "testconnector", attributes, null));
+        PageParameters pageParameters = new PageParameters();
+        pageParameters.set("domainType", "testdomain");
+        pageParameters.set("connectorType", "testconnector");
+        pageParameters.set("id", connectorId);
+        tester.startPage(ConnectorEditorPage.class, pageParameters);
         FormComponentLabel nameLabel =
             (FormComponentLabel) tester
                 .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:name");
@@ -107,16 +108,6 @@ public class EditorPageTest extends AbstractUITest {
             (TextField<String>) tester
                 .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:field");
         assertThat(value.getValue(), is("testValue"));
-    }
-
-    @Test
-    public void testIdFieldIsEditable() {
-        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
-        tester.debugComponentTrees();
-        @SuppressWarnings("unchecked")
-        TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
-        assertThat(idField.isEnabled(), is(true));
     }
 
     @Test
@@ -174,10 +165,9 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     public void testEditService() throws Exception {
-        ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("test", "val");
-        serviceManager.create(id, new ConnectorDescription(null, props));
+        String id = serviceManager.create(new ConnectorDescription("testdomain", "testconnector", null, props));
 
         try {
             serviceUtils.getService("(test=val)", 100L);
@@ -276,24 +266,6 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent(button, "onclick");
         assertThat(properties.size(), is(0));
     }
-
-    // @SuppressWarnings("unchecked")
-    // @Test
-    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
-    // Map<String, String> errorMessages = new HashMap<String, String>();
-    // errorMessages.put("a", "Service Validation Error");
-    // when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
-    //
-    // tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
-    // FormTester formTester = tester.newFormTester("editor:form");
-    // formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
-    // AjaxButton submitButton =
-    // (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
-    // tester.executeAjaxEvent(submitButton, "onclick");
-    //
-    // tester.assertErrorMessages(new String[]{ "a: Service Validation Error" });
-    // tester.assertRenderedPage(ConnectorEditorPage.class);
-    // }
 
     @Test
     public void testAddPropertyWithSameName_shouldLeaveListUnchanged() throws Exception {

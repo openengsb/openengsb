@@ -17,12 +17,15 @@
 
 package org.openengsb.ui.admin.index;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "index")
 public class Index extends BasePage {
+
+    private static final long serialVersionUID = -445277092895685296L;
+
     public Index() {
 
     }
