@@ -19,6 +19,7 @@ package org.openengsb.ui.admin.xlink;
 
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +37,11 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -106,8 +109,18 @@ public class ToolChooserPage extends WebPage {
         buildToolChooserPage(resp);      
     }
     
-    private Map<String, String[]> getRequestParametersAsAMap(){
-        return null;//getRequest().getQueryParameters().
+    private Map<String, String[]> getRequestParametersAsAMap() {
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+        IRequestParameters parameters = getRequest().getQueryParameters();
+        for (String key : parameters.getParameterNames()) {
+            List<StringValue> values = parameters.getParameterValues(key);
+            List<String> valuesAsString = new ArrayList<String>();
+            for (StringValue stringvalue : values) {
+                valuesAsString.add(stringvalue.toString());
+            }
+            parameterMap.put(key, (String[]) valuesAsString.toArray());
+        }
+        return parameterMap;
     }
     
     private String getParameterFromMap(String key) {
