@@ -53,7 +53,7 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     }
 
     /**
-     * creates a new {@link VirtualConnector} used as {@link InvocationHandler} for the proxy.
+     * creates a new {@link VirtualConnector} used as {@link java.lang.reflect.InvocationHandler} for the proxy.
      */
     protected abstract VirtualType createNewHandler(String id);
 

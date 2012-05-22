@@ -13,24 +13,16 @@
   </header>
 
   <nodes>
-    <join id="17" name="Gateway" x="75" y="97" width="49" height="49" type="1" />
     <start id="1" name="Start" x="16" y="16" width="49" height="49" />
     <end id="2" name="End" x="75" y="250" width="49" height="49" />
-    <eventNode id="25" name="flowStarted" x="97" y="16" width="124" height="49" scope="external" >
-      <eventFilters>
-        <eventFilter type="eventType" eventType="FlowStartedEvent" />
-      </eventFilters>
-    </eventNode>
     <actionNode id="26" name="Action" x="59" y="178" width="80" height="40" >
         <action type="expression" dialect="mvel" >kcontext.getVariable("processBag").getProcessId();</action>
     </actionNode>
   </nodes>
 
   <connections>
-    <connection from="25" to="17" />
-    <connection from="1" to="17" />
     <connection from="26" to="2" />
-    <connection from="17" to="26" />
+    <connection from="1" to="26" />
   </connections>
 
 </process>

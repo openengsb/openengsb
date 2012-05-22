@@ -57,7 +57,7 @@ public class RuleEditorTest extends AbstractUITest {
     @Before
     public void init() throws RuleBaseException {
         ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         // tester.getApplication().addComponentInstantiationListener(
         // new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");

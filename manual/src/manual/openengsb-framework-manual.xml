@@ -70,6 +70,7 @@
     <xi:include href="docbook/user/deployers.xml"/>
     <xi:include href="docbook/user/clients.xml"/>
     <xi:include href="docbook/user/platform.xml"/>
+    <xi:include href="docbook/user/edbHooks.xml"/>
     <xi:include href="docbook/user/howto/howtoSetup.xml"/>
     <xi:include href="docbook/user/howto/howtoSimpleUsecase.xml"/>
     <xi:include href="docbook/user/howto/howtoContextEditor.xml"/>
@@ -104,6 +105,7 @@
     </partintro>
     <xi:include href="docbook/ui/testclient.xml"/>
     <xi:include href="docbook/ui/wiring.xml"/>
+    <xi:include href="docbook/ui/transform.xml"/>
   </part>
   <part xml:id="contributor.manual">
     <title>OpenEngSB Contributor Detail Informations</title>

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -58,6 +57,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,69 +78,93 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
     /**
      * This map keeps track of service-references and their properties
      */
-    private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
-        new HashMap<ServiceReference, Dictionary<String, Object>>();
+    private Map<ServiceReference<?>, Dictionary<String, Object>> serviceReferences =
+        new HashMap<ServiceReference<?>, Dictionary<String, Object>>();
 
     private Map<ServiceListener, Filter> listeners = new HashMap<ServiceListener, Filter>();
 
     /**
      * This map keeps track of service-references and their corresponding service-object
      */
-    private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
+    private Map<ServiceReference<?>, Object> services = new HashMap<ServiceReference<?>, Object>();
     private Long serviceId = Long.MAX_VALUE;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void prepareServiceRegistry() throws Exception {
         bundleContext = mock(BundleContext.class);
-        setBundleContext(bundleContext);
         /*
          * redirect calls to getAllServiceReferences to getServiceReferences, since we do not care for
          * Classloader-restrictions in unit-tests
          */
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
-            new Answer<ServiceReference[]>() {
+            new Answer<ServiceReference<?>[]>() {
                 @Override
-                public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
-                    Method method =
-                        invocation.getMock().getClass().getMethod("getServiceReferences", String.class, String.class);
-                    return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
+                public ServiceReference<?>[] answer(InvocationOnMock invocation) throws Throwable {
+                    String clazz = (String) invocation.getArguments()[0];
+                    String filter = (String) invocation.getArguments()[1];
+                    return bundleContext.getServiceReferences(clazz, filter);
                 }
             });
+
+        when(bundleContext.getServiceReference(any(Class.class))).thenAnswer(new Answer<ServiceReference<?>>() {
+            @Override
+            public ServiceReference<?> answer(InvocationOnMock invocation) throws Throwable {
+                Class<?> clazz = (Class<?>) invocation.getArguments()[0];
+                return bundleContext.getServiceReference(clazz.getName());
+            }
+        });
+
+        when(bundleContext.getServiceReference(anyString())).thenAnswer(new Answer<ServiceReference<?>>() {
+            @Override
+            public ServiceReference<?> answer(InvocationOnMock invocation) throws Throwable {
+                String clazz = (String) invocation.getArguments()[0];
+                ServiceReference<?>[] serviceReferences = bundleContext.getServiceReferences(clazz, null);
+                if (serviceReferences == null) {
+                    return null;
+                }
+                return serviceReferences[0];
+            }
+        });
         /*
          * retrieve a service-instance from the serviceReferencesMap
          */
-        when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(new Answer<ServiceReference[]>() {
-            @Override
-            public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
-                String clazz = (String) invocation.getArguments()[0];
-                String filterString = (String) invocation.getArguments()[1];
-                if (clazz != null) {
-                    if (filterString == null) {
-                        filterString = String.format("(%s=%s)", Constants.OBJECTCLASS, clazz);
-                    } else {
-                        filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
+        when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(
+            new Answer<ServiceReference<?>[]>() {
+                @Override
+                public ServiceReference<?>[] answer(InvocationOnMock invocation) throws Throwable {
+                    String clazz = (String) invocation.getArguments()[0];
+                    String filterString = (String) invocation.getArguments()[1];
+                    if (clazz != null) {
+                        if (filterString == null) {
+                            filterString = String.format("(%s=%s)", Constants.OBJECTCLASS, clazz);
+                        } else {
+                            filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
+                        }
+                    }
+                    Filter filter = FrameworkUtil.createFilter(filterString);
+                    Collection<ServiceReference<?>> result = new ArrayList<ServiceReference<?>>();
+                    synchronized (serviceReferences) {
+                        for (Map.Entry<ServiceReference<?>, Dictionary<String, Object>> entry : serviceReferences
+                            .entrySet()) {
+                            if (filter.match(entry.getValue())) {
+                                result.add(entry.getKey());
+                            }
+                        }
+                        if (result.isEmpty()) {
+                            return null;
+                        }
+                        return result.toArray(new ServiceReference<?>[result.size()]);
                     }
                 }
-                Filter filter = FrameworkUtil.createFilter(filterString);
-                Collection<ServiceReference> result = new ArrayList<ServiceReference>();
-                for (Map.Entry<ServiceReference, Dictionary<String, Object>> entry : serviceReferences.entrySet()) {
-                    if (filter.match(entry.getValue())) {
-                        result.add(entry.getKey());
-                    }
-                }
-                if (result.isEmpty()) {
-                    return null;
-                }
-                return result.toArray(new ServiceReference[result.size()]);
-            }
-        });
+            });
         /*
          * retrieves a service-object from the services-map
          */
         when(bundleContext.getService(any(ServiceReference.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                ServiceReference ref = (ServiceReference) invocation.getArguments()[0];
+                ServiceReference<?> ref = (ServiceReference<?>) invocation.getArguments()[0];
                 return services.get(ref);
             }
         });
@@ -149,23 +173,21 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
          * ServiceReference.
          */
         when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
-            new Answer<ServiceRegistration>() {
+            new Answer<ServiceRegistration<?>>() {
                 @Override
-                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                public ServiceRegistration<?> answer(InvocationOnMock invocation) throws Throwable {
                     String[] clazzes = (String[]) invocation.getArguments()[0];
                     final Object service = invocation.getArguments()[1];
-                    @SuppressWarnings("unchecked")
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
                     return registerServiceInBundlecontext(clazzes, service, dict);
                 }
             });
         when(bundleContext.registerService(anyString(), any(), any(Dictionary.class))).thenAnswer(
-            new Answer<ServiceRegistration>() {
+            new Answer<ServiceRegistration<?>>() {
                 @Override
-                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                public ServiceRegistration<?> answer(InvocationOnMock invocation) throws Throwable {
                     String clazz = (String) invocation.getArguments()[0];
                     final Object service = invocation.getArguments()[1];
-                    @SuppressWarnings("unchecked")
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
                     return registerServiceInBundlecontext(new String[]{ clazz }, service, dict);
                 }
@@ -175,10 +197,12 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 ServiceListener listener = (ServiceListener) invocation.getArguments()[0];
                 String filter = (String) invocation.getArguments()[1];
-                if (filter == null) {
-                    listeners.put(listener, null);
-                } else {
-                    listeners.put(listener, FrameworkUtil.createFilter(filter));
+                synchronized (listeners) {
+                    if (filter == null) {
+                        listeners.put(listener, null);
+                    } else {
+                        listeners.put(listener, FrameworkUtil.createFilter(filter));
+                    }
                 }
                 return null;
             }
@@ -196,6 +220,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
+        when(bundle.getHeaders()).thenReturn(new Hashtable<String, String>());
     }
 
     public void clearRegistry() throws Exception {
@@ -228,7 +253,8 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
     /**
      * registers the service with the given properties under the given interfaces
      */
-    protected ServiceReference registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
+    protected ServiceReference<?> registerService(Object service, Dictionary<String, Object> props,
+            String... interfazes) {
         return registerServiceInBundlecontext(interfazes, service, props).getReference();
     }
 
@@ -272,13 +298,16 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         registerService(service, id, interfaces);
     }
 
-    private ServiceReference putService(Object service, Dictionary<String, Object> props) {
-        ServiceReference serviceReference = mock(ServiceReference.class);
+    private <T> ServiceReference<T> putService(T service, Dictionary<String, Object> props) {
+        @SuppressWarnings("unchecked")
+        ServiceReference<T> serviceReference = mock(ServiceReference.class);
         long serviceId = --this.serviceId;
         LOGGER.info("registering service with ID: " + serviceId);
         props.put(Constants.SERVICE_ID, serviceId);
         services.put(serviceReference, service);
-        serviceReferences.put(serviceReference, props);
+        synchronized (serviceReference) {
+            serviceReferences.put(serviceReference, props);
+        }
         when(serviceReference.getProperty(anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -298,8 +327,6 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         });
         return serviceReference;
     }
-
-    protected abstract void setBundleContext(BundleContext bundleContext);
 
     /**
      * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
@@ -387,20 +414,23 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         return connectorProvider;
     }
 
-    private ServiceRegistration registerServiceInBundlecontext(String[] clazzes, final Object service,
+    @SuppressWarnings("unchecked")
+    private ServiceRegistration<?> registerServiceInBundlecontext(String[] clazzes, final Object service,
             Dictionary<String, Object> dict) {
         dict.put(Constants.OBJECTCLASS, clazzes);
-        final ServiceReference serviceReference = putService(service, dict);
-        ServiceRegistration result = mock(ServiceRegistration.class);
+        final ServiceReference<?> serviceReference = putService(service, dict);
+        ServiceRegistration<?> result = mock(ServiceRegistration.class);
 
         // unregistering removes the service from both maps
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                services.remove(serviceReference);
-                Dictionary<String, Object> props = serviceReferences.remove(serviceReference);
-                updateServiceListeners(ServiceEvent.UNREGISTERING, serviceReference, props);
-                return null;
+                synchronized (serviceReferences) {
+                    services.remove(serviceReference);
+                    Dictionary<String, Object> props = serviceReferences.remove(serviceReference);
+                    updateServiceListeners(ServiceEvent.UNREGISTERING, serviceReference, props);
+                    return null;
+                }
             }
         }).when(result).unregister();
 
@@ -409,7 +439,6 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                @SuppressWarnings("unchecked")
                 Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
                 Dictionary<String, Object> newDict = new Hashtable<String, Object>();
                 Enumeration<String> keys = arg.keys();
@@ -417,24 +446,34 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                     String next = keys.nextElement();
                     newDict.put(next, arg.get(next));
                 }
-                serviceReferences.put(serviceReference, newDict);
+                synchronized (serviceReferences) {
+                    serviceReferences.put(serviceReference, newDict);
+                }
                 return null;
             }
         }).when(result).setProperties(any(Dictionary.class));
 
-        when(result.getReference()).thenReturn(serviceReference);
+        when(result.getReference()).thenAnswer(new ValueAnswer<ServiceReference<?>>(serviceReference));
         updateServiceListeners(ServiceEvent.REGISTERED, serviceReference, dict);
         return result;
     }
 
-    public void updateServiceListeners(int eventType, final ServiceReference serviceReference,
+    public void updateServiceListeners(int eventType, final ServiceReference<?> serviceReference,
             Dictionary<String, Object> dict) {
-        for (Entry<ServiceListener, Filter> entry : listeners.entrySet()) {
-            Filter filter = entry.getValue();
-            if (filter == null || filter.match(dict)) {
-                entry.getKey().serviceChanged(new ServiceEvent(eventType, serviceReference));
+        synchronized (listeners) {
+            for (Entry<ServiceListener, Filter> entry : listeners.entrySet()) {
+                Filter filter = entry.getValue();
+                if (filter == null || filter.match(dict)) {
+                    entry.getKey().serviceChanged(new ServiceEvent(eventType, serviceReference));
+                }
             }
         }
+    }
+
+    protected <T> ServiceList<T> makeServiceList(Class<T> serviceClass) {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
+        ServiceList<T> serviceList = new ServiceList<T>(serviceTracker);
+        return serviceList;
     }
 
 }

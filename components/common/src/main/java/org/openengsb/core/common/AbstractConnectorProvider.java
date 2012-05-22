@@ -32,6 +32,7 @@ import org.osgi.framework.BundleContext;
  */
 public abstract class AbstractConnectorProvider implements ConnectorProvider {
 
+    protected BundleContext bundleContext;
     protected BundleStrings strings;
     protected String id;
 
@@ -58,7 +59,8 @@ public abstract class AbstractConnectorProvider implements ConnectorProvider {
      * It is important to set the bundlecontext here so that the localized strings are found
      */
     public void setBundleContext(BundleContext bundleContext) {
-        this.strings = new BundleStrings(bundleContext.getBundle());
+        this.bundleContext = bundleContext;
+        strings = new BundleStrings(bundleContext.getBundle());
     }
 
 }

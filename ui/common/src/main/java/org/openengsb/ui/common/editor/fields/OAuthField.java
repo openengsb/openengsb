@@ -23,14 +23,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Request;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PopupSettings;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.oauth.OAuthData;
@@ -44,7 +45,7 @@ import org.openengsb.ui.common.model.OAuthPageModel;
  */
 @SuppressWarnings("serial")
 public class OAuthField extends AbstractField<String> {
-    
+
     public OAuthField(String id, IModel<String> model, AttributeDefinition attribute,
             IValidator<String> fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
@@ -54,7 +55,6 @@ public class OAuthField extends AbstractField<String> {
     protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, final IModel<String> model) {
         PopupSettings popupSettings =
             new PopupSettings("popuppagemap").setHeight(300).setWidth(600).setLeft(50).setTop(50);
-
         Link<OAuthData> pageLink =
             new Link<OAuthData>("popupLink", new OAuthPageModel(
                 new Model<OAuthData>(attribute.getOAuthConfiguration()))) {
@@ -65,15 +65,13 @@ public class OAuthField extends AbstractField<String> {
                     oauth.setRedirectURL(redirectURL);
                     String link = oauth.generateFirstCallLink();
                     OAuthPageFactory.putOAuthObject(getSession().getId(), oauth);
-
-                    getRequestCycle().setRequestTarget(new RedirectRequestTarget(link));
+                    getRequestCycle().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(link));
                 }
             };
         pageLink.setPopupSettings(popupSettings);
         final TextField<String> tokenResult = new TextField<String>("field", model);
         tokenResult.setRequired(true);
         tokenResult.setOutputMarkupId(true);
-
         List<Component> list = new ArrayList<Component>();
         list.add(pageLink);
         ModelFacade<String> container = new ModelFacade<String>();
@@ -84,7 +82,7 @@ public class OAuthField extends AbstractField<String> {
 
     private String buildRedirectURL(Request request) {
         if (request instanceof WebRequest) {
-            HttpServletRequest hsr = ((WebRequest) request).getHttpServletRequest();
+            HttpServletRequest hsr = ((ServletWebRequest) request).getContainerRequest();
             String currentURL = hsr.getRequestURL().toString();
             currentURL += "oauth";
             return currentURL;

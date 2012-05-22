@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
@@ -59,7 +58,7 @@ public class EDBConverterTest {
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorInformation id = getTestConnectorInformation();
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
@@ -86,7 +85,7 @@ public class EDBConverterTest {
         sub.setValue("teststring");
         model.setSub(sub);
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorInformation id = getTestConnectorInformation();
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(1);
@@ -113,7 +112,7 @@ public class EDBConverterTest {
 
         model.setSubs(subs);
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorInformation id = getTestConnectorInformation();
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
@@ -140,7 +139,7 @@ public class EDBConverterTest {
         model.setId("test");
         model.setMap(map);
         
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorInformation id = getTestConnectorInformation();
         
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
         
@@ -148,5 +147,9 @@ public class EDBConverterTest {
         assertThat(object.get("map0.value").toString(), is("valueA"));
         assertThat(object.get("map1.key").toString(), is("keyB"));
         assertThat(object.get("map1.value").toString(), is("valueB"));
+    }
+    
+    private ConnectorInformation getTestConnectorInformation() {
+        return new ConnectorInformation("testdomain", "testconnector", "testinstance");
     }
 }

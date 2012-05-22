@@ -71,8 +71,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.openengsb.labs.paxexam.karaf</groupId>
-      <artifactId>paxexam-karaf-container</artifactId>
+      <groupId>org.apache.karaf.tooling.exam</groupId>
+      <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ops4j.pax.url</groupId>
+          <artifactId>pax-url-aether</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -143,11 +149,12 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
+    
     <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <scope>test</scope>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>org.openengsb.ui.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -156,12 +163,24 @@
       <version>1.0.0.r08.w1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 
     <!-- Drools Dependencies -->
     <dependency>

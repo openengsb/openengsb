@@ -20,11 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.osgi.framework.ServiceReference;
@@ -36,29 +36,32 @@ import com.google.common.collect.Iterators;
 
 /**
  * CompositeStrategy for {@link AuthenticationDomain} connectors
- *
+ * 
  * Tries all associated connectors if they support the supplied credentials. If so, the connector is chosen to attempt
  * authentication.
- *
+ * 
  * As soon as the first connector can successfully authenticate the user, the result of that authentication is returned.
  */
 public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAuthenticationProviderStrategy.class);
 
+    private OsgiUtilsService utilsService;
+
     private static class CompositeAuthenticationProvider extends AbstractOpenEngSBConnectorService implements
             AuthenticationDomain {
         private List<ServiceReference> providers;
+        private OsgiUtilsService utilsService;
 
-        public CompositeAuthenticationProvider(List<ServiceReference> providers) {
+        public CompositeAuthenticationProvider(List<ServiceReference> providers, OsgiUtilsService utilsService) {
             this.providers = providers;
+            this.utilsService = utilsService;
         }
 
         @Override
         public Authentication authenticate(String username, Credentials credentials) throws AuthenticationException {
             Iterator<AuthenticationDomain> serviceIterator =
-                OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthenticationDomain.class);
+                utilsService.getServiceIterator(providers, AuthenticationDomain.class);
             AuthenticationException lastException = null;
             LOGGER.debug("iterating {} authenticationProviderServices", providers.size());
             while (serviceIterator.hasNext()) {
@@ -88,8 +91,7 @@ public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrat
         @Override
         public boolean supports(final Credentials credentials) {
             Iterator<AuthenticationDomain> serviceIterator =
-                OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthenticationDomain.class);
+                utilsService.getServiceIterator(providers, AuthenticationDomain.class);
             return Iterators.any(serviceIterator, new Predicate<AuthenticationDomain>() {
                 @Override
                 public boolean apply(AuthenticationDomain input) {
@@ -103,12 +105,16 @@ public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrat
 
     @Override
     protected Object createDelegate(List<ServiceReference> services) {
-        return new CompositeAuthenticationProvider(services);
+        return new CompositeAuthenticationProvider(services, utilsService);
     }
 
     @Override
     public boolean supports(Class<?> domainClass) {
         return AuthenticationDomain.class.isAssignableFrom(domainClass);
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

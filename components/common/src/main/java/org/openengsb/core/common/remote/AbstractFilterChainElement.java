@@ -30,8 +30,7 @@ public abstract class AbstractFilterChainElement<InputType, OutputType> extends
         AbstractFilterAction<InputType, OutputType>
         implements FilterChainElement {
 
-    protected AbstractFilterChainElement(Class<InputType> inputType, Class<OutputType> outputType) {
-        super(inputType, outputType);
+    public AbstractFilterChainElement() {
     }
 
     protected static final void checkNextInputAndOutputTypes(FilterAction next,

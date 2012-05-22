@@ -17,13 +17,13 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
@@ -39,6 +39,7 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +49,10 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
@@ -61,7 +61,6 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
@@ -79,6 +78,7 @@ import org.springframework.jms.support.JmsUtils;
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
+    private DefaultOsgiUtilsService utilsService;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -90,21 +90,21 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        RuleManager rm = getOsgiService(RuleManager.class);
         addWorkflow("simpleFlow");
         String string = null;
         while (string == null) {
             // TODO OPENENGSB-2097 find a better way than an endless loop
             LOGGER.warn("checking for simpleFlow to be present");
-            string = rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
+            string = ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
             Thread.sleep(1000);
         }
+
+        utilsService = new DefaultOsgiUtilsService(getBundleContext());
     }
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+        OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
 
     }
@@ -168,25 +168,24 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         System.setProperty("org.openengsb.security.noverify", "true");
 
         // make sure jms is up and running
-        OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+        utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService =
-            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(id=example-remote)", 31000);
 
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+            "(id=example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
-        osgiService.doSomething("test");
+        osgiService.doSomethingWithMessage("test");
         assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
 
         remoteConnector.stop();
         Thread.sleep(5000);
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+            "(id=example-remote)"), nullValue());
     }
 
     @Test
@@ -229,9 +228,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
                 producer.send(message);
-                TextMessage response = (TextMessage) consumer.receive(1000);
+                TextMessage response = (TextMessage) consumer.receive(30000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
-                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                    response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);
                 JmsUtils.closeMessageConsumer(consumer);
                 return response.getText();
@@ -254,12 +253,12 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             return "success : " + message;
         }
 
@@ -274,7 +273,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
             response.setResult("successful");
             return response;

@@ -29,7 +29,7 @@ public class TestObject {
     }
 
     public String getValue() {
-        return this.value;
+        return value;
     }
 
     public void setValue(String value) {

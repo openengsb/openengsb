@@ -45,10 +45,6 @@ public class WrapperFilter extends AbstractFilterChainElement<SecureRequest, Sec
 
     private FilterAction next;
 
-    public WrapperFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
-
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
         MethodResultMessage resultMessage = (MethodResultMessage) next.filter(input.getMessage(), metaData);

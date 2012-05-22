@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * converts it to the corresponding OpenEngSBModelWrapper. The new object is then passed on to the next filter. The
  * returned {@link MethodResultMessage} is checked for OpenEngSBModelWrapper. If this is the case, it is converted to a
  * OpenEngSBModelObject again.
- * 
+ *
  * <code>
  * <pre>
  *      [MethodCallRequest]   > Filter > [MethodCallRequest]     > ...
@@ -52,10 +52,6 @@ public class EKBProxyOutgoingFilter extends
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyOutgoingFilter.class);
 
     private FilterAction next;
-
-    public EKBProxyOutgoingFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
@@ -83,7 +79,7 @@ public class EKBProxyOutgoingFilter extends
                     OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
                     LOGGER.debug("successfully generated wrapper");
                     parameters[i] = wrapper;
-                    newClasses.add(OpenEngSBModelWrapper.class.getName());                    
+                    newClasses.add(OpenEngSBModelWrapper.class.getName());
                 } else {
                     if (classes != null && classes.size() >= (i + 1)) {
                         newClasses.add(classes.get(i));

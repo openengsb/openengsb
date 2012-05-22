@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +35,8 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -57,6 +58,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
@@ -69,14 +71,12 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.JsonUtils;
@@ -89,11 +89,15 @@ import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
+import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 @SecurityAttributes({
     @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER"),
@@ -102,18 +106,20 @@ import org.slf4j.LoggerFactory;
 @PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 
+    private static final long serialVersionUID = 2993665629913347770L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
-    private OsgiUtilsService serviceUtils;
+    @PaxWicketBean(name = "osgiUtilsService")
+    private OsgiUtilsService utilsService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
 
     private DropDownChoice<MethodId> methodList;
@@ -138,11 +144,11 @@ public class TestClient extends BasePage {
         new LoadableDetachableModel<List<? extends DomainProvider>>() {
             @Override
             protected List<? extends DomainProvider> load() {
-                List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
+                List<DomainProvider> serviceList = utilsService.listServices(DomainProvider.class);
                 Collections.sort(serviceList, Comparators.forDomainProvider());
                 return serviceList;
             }
-        };;
+        };
 
     public TestClient() {
         super();
@@ -179,37 +185,11 @@ public class TestClient extends BasePage {
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
 
-        editButton = new AjaxButton("editButton", form) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.info("edit button pressed");
-                String serviceId = call.getService().getServiceId();
-                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
-                setResponsePage(new ConnectorEditorPage(connectorId));
-            }
-        };
+        editButton = initializeEditButton(form);
         editButton.setEnabled(false);
         editButton.setOutputMarkupId(true);
 
-        deleteButton = new AjaxButton("deleteButton", form) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.info("delete button pressed");
-                String serviceId = call.getService().getServiceId();
-                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
-                try {
-                    serviceManager.delete(connectorId);
-                    info("service " + serviceId + " successfully deleted");
-                    serviceList.setModelObject(createModel());
-                    serviceList.getTreeState().expandAll();
-                    target.addComponent(serviceList);
-                } catch (PersistenceException e) {
-                    error("Unable to delete Service due to: " + e.getLocalizedMessage());
-                }
-
-                target.addComponent(feedbackPanel);
-            }
-        };
+        deleteButton = initializeDeleteButton(form);
         deleteButton.setEnabled(false);
         deleteButton.setOutputMarkupId(true);
 
@@ -220,9 +200,9 @@ public class TestClient extends BasePage {
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-
+                LOGGER.info("method selected: " + call.getMethod());
                 populateArgumentList();
-                target.addComponent(argumentListContainer);
+                target.add(argumentListContainer);
             }
         });
         form.add(methodList);
@@ -234,39 +214,8 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
-        submitButton = new IndicatingAjaxButton("submitButton", form) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(feedbackPanel);
-                performCall();
-                call.getArguments().clear();
-                argumentList.removeAll();
-
-                call.setMethod(null);
-                populateMethodList();
-
-                target.addComponent(methodList);
-                target.addComponent(argumentListContainer);
-            }
-        };
-
-        jsonButton = new IndicatingAjaxButton("jsonButton", form) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(feedbackPanel);
-
-                displayJSONMessages();
-
-                call.getArguments().clear();
-                argumentList.removeAll();
-
-                call.setMethod(null);
-                populateMethodList();
-
-                target.addComponent(methodList);
-                target.addComponent(argumentListContainer);
-            }
-        };
+        submitButton = initializeSubmitButton(form);
+        jsonButton = initializeJsonButton(form);
 
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
@@ -274,7 +223,7 @@ public class TestClient extends BasePage {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
                 try {
                     argumentList.removeAll();
-                    target.addComponent(argumentListContainer);
+                    target.add(argumentListContainer);
                     ServiceId service = (ServiceId) mnode.getUserObject();
                     LOGGER.info("clicked on node {} of type {}", node, node.getClass());
                     call.setService(service);
@@ -289,12 +238,12 @@ public class TestClient extends BasePage {
                     submitButton.setEnabled(false);
                     jsonButton.setEnabled(false);
                 }
-                target.addComponent(methodList);
-                target.addComponent(editButton);
-                target.addComponent(deleteButton);
-                target.addComponent(submitButton);
-                target.addComponent(jsonButton);
-                target.addComponent(feedbackPanel);
+                target.add(methodList);
+                target.add(editButton);
+                target.add(deleteButton);
+                target.add(submitButton);
+                target.add(jsonButton);
+                target.add(feedbackPanel);
             }
         };
         serviceList.setOutputMarkupId(true);
@@ -315,6 +264,93 @@ public class TestClient extends BasePage {
         return form;
     }
 
+    @SuppressWarnings("serial")
+    private AjaxButton initializeEditButton(Form<MethodCall> form) {
+        return new AjaxButton("editButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.info("edit button pressed");
+                String serviceId = call.getService().getServiceId();
+                setResponsePage(new ConnectorEditorPage(serviceId));
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Submit error during editButton.");
+            }
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private AjaxButton initializeDeleteButton(Form<MethodCall> form) {
+        return new AjaxButton("deleteButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.info("delete button pressed");
+                String serviceId = call.getService().getServiceId();
+                try {
+                    serviceManager.delete(serviceId);
+                    info("service " + serviceId + " successfully deleted");
+                    serviceList.setModelObject(createModel());
+                    serviceList.getTreeState().expandAll();
+                    target.add(serviceList);
+                } catch (PersistenceException e) {
+                    error("Unable to delete Service due to: " + e.getLocalizedMessage());
+                }
+                target.add(feedbackPanel);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Submit error during editButton.");
+            }
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private IndicatingAjaxButton initializeSubmitButton(Form<MethodCall> form) {
+        return new IndicatingAjaxButton("submitButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.add(feedbackPanel);
+                performCall();
+                call.getArguments().clear();
+                argumentList.removeAll();
+                call.setMethod(null);
+                populateMethodList();
+                target.add(methodList);
+                target.add(argumentListContainer);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submitting with submitButton");
+            }
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private IndicatingAjaxButton initializeJsonButton(Form<MethodCall> form) {
+        return new IndicatingAjaxButton("jsonButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.add(feedbackPanel);
+                displayJSONMessages();
+                call.getArguments().clear();
+                argumentList.removeAll();
+                call.setMethod(null);
+                populateMethodList();
+                target.add(methodList);
+                target.add(argumentListContainer);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submissiong with jsonButton");
+            }
+        };
+    }
+
     /**
      * creates the form for organize section (globals, imports)
      */
@@ -328,6 +364,11 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 setResponsePage(OrganizeGlobalsPage.class);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submit of globalButton ajax link");
+            }
         };
         globalsButton.setOutputMarkupId(true);
         organize.add(globalsButton);
@@ -337,6 +378,11 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 setResponsePage(OrganizeImportsPage.class);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Error during submit of importsButton page");
             }
         };
         importsButton.setOutputMarkupId(true);
@@ -368,7 +414,7 @@ public class TestClient extends BasePage {
                     new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
-                            return serviceUtils.listServices(ConnectorProvider.class,
+                            return utilsService.listServices(ConnectorProvider.class,
                                 String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
                         }
                     };
@@ -394,7 +440,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Service or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Service or null if none was selected
      */
     private ServiceId fetchCurrentSelectService() {
@@ -403,7 +449,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Method or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Method or null if none was selected
      */
     private MethodId fetchCurrentSelectMethod() {
@@ -412,24 +458,23 @@ public class TestClient extends BasePage {
 
     /**
      * Returns a Standard MethodCall with of the selected Method
-     *
+     * 
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
     private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
-        Class<?>[] classes = methodId.getArgumentTypesAsClasses();
-        List classList = new ArrayList();
+        Class<?>[] classes = methodId.getArgumentTypes();
+        List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
         }
         return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray(), classList);
-
     }
 
     /**
      * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
      * Returns this MethodCallRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
@@ -443,7 +488,7 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message
      * Returns this SecureRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
@@ -456,7 +501,7 @@ public class TestClient extends BasePage {
 
     /**
      * create nessecary MetaData for the Json Message
-     *
+     * 
      * @param serviceId to fetch the context Data of the message
      * @return a Map with the nessecary MetaData for the Message
      */
@@ -473,7 +518,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
-     *
+     * 
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
@@ -493,7 +538,7 @@ public class TestClient extends BasePage {
     /**
      * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
      * TODO [Openengsb 1411] replace this with stable filter mechanism
-     *
+     * 
      * @param jsonMessage Message to filter
      * @return the jsonMessage filtered from the unnessecary data
      */
@@ -606,7 +651,7 @@ public class TestClient extends BasePage {
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
-        domainProviderServiceId.setServiceClass(domainInterface.getName());
+        domainProviderServiceId.setServiceClass(domainInterface);
         domainProviderServiceId.setDomainName(provider.getId());
 
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
@@ -619,7 +664,7 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                serviceId.setServiceClass(domainInterface.getName());
+                serviceId.setServiceClass(domainInterface);
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
@@ -627,14 +672,12 @@ public class TestClient extends BasePage {
     }
 
     private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException {
-        Method method;
         if (methodId == null) {
             String string = new StringResourceModel("serviceError", this, null).getString();
             error(string);
             return null;
         }
-        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
-        return method;
+        return service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypes());
     }
 
     protected void performCall() {
@@ -723,6 +766,21 @@ public class TestClient extends BasePage {
     private void populateMethodList() {
         ServiceId service = call.getService();
         List<Method> methods = getServiceMethods(service);
+        Collection<String> methodSignatures = Collections2.transform(methods, new Function<Method, String>() {
+            @Override
+            public String apply(Method input) {
+                Class<?>[] parameterTypes = input.getParameterTypes();
+                String[] parameterTypeNames = new String[parameterTypes.length];
+                for (int i = 0; i < parameterTypeNames.length; i++) {
+                    parameterTypeNames[i] = parameterTypes[i].getSimpleName();
+                }
+                return input.getName() + "(" + StringUtils.join(parameterTypeNames, ", ") + ")";
+            }
+        });
+        LOGGER.info("found {} methods: {}", methods.size());
+        for (String s : methodSignatures) {
+            LOGGER.info("# " + s);
+        }
         List<MethodId> methodChoices = new ArrayList<MethodId>();
         for (Method m : methods) {
             methodChoices.add(new MethodId(m));
@@ -736,16 +794,12 @@ public class TestClient extends BasePage {
         if (service == null) {
             return Collections.emptyList();
         }
-        Class<?> connectorInterface;
-        try {
-            connectorInterface = Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
-        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
-        if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+        Class<?> connectorInterface = service.getServiceClass();
+        if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
-            return Arrays.asList(connectorInterface.getMethods());
+            List<Method> result = Arrays.asList(connectorInterface.getMethods());
+            Collections.sort(result, new MethodComparator());
+            return result;
         }
         error("No service found for domain: " + connectorInterface.getName());
         submitButton.setEnabled(false);
@@ -755,19 +809,12 @@ public class TestClient extends BasePage {
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         String serviceId = service.getServiceId();
         if (serviceId != null) {
-            return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
-                serviceId);
+            return utilsService.getServiceWithId(service.getServiceClass(), serviceId);
         } else {
             String domainName = service.getDomainName();
             String location = "domain/" + domainName + "/default";
-            Class<?> serviceClazz;
-            try {
-                serviceClazz = this.getClass().getClassLoader().loadClass(service.getServiceClass());
-            } catch (ClassNotFoundException e) {
-                throw new OsgiServiceNotAvailableException(e);
-            }
-            return OpenEngSBCoreServices.getServiceUtilsService().getServiceForLocation(serviceClazz,
-                location);
+            Class<?> serviceClazz = service.getServiceClass();
+            return utilsService.getServiceForLocation(serviceClazz, location);
         }
 
     }
@@ -776,13 +823,7 @@ public class TestClient extends BasePage {
     private Object getServiceViaDomainEndpointFactory(ServiceId service) {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;
-        try {
-            aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
-
+        aClass = (Class<? extends Domain>) service.getServiceClass();
         if (wiringService.isConnectorCurrentlyPresent(aClass)) {
             return wiringService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
@@ -792,7 +833,7 @@ public class TestClient extends BasePage {
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {
         try {
-            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypes());
         } catch (SecurityException e) {
             throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {

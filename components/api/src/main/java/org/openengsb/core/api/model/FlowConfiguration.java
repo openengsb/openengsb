@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class FlowConfiguration extends ConfigItem<String> {
 
+    private static final long serialVersionUID = 5387662470457118571L;
+
     public static final String TYPE_ID = "FLOW";
 
     public FlowConfiguration() {

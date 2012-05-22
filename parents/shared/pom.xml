@@ -57,22 +57,18 @@
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
-    <karaf.version>2.2.5</karaf.version>
-    <felix.gogo.version>0.6.1</felix.gogo.version>
-    <pax.exam.version>2.3.0</pax.exam.version>
-    <pax.wicket.version>0.8.1</pax.wicket.version>
-    <pax.web.version>1.0.8</pax.web.version>
+    <karaf.version>3.0.0-SNAPSHOT</karaf.version>
+    <felix.gogo.version>0.10.0</felix.gogo.version>
+    <pax.exam.version>2.3.1</pax.exam.version>
+    <pax.wicket.version>1.0.1-SNAPSHOT</pax.wicket.version>
+    <pax.web.version>2.0.0-SNAPSHOT</pax.web.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>3</openengsb.version.min>
     <openengsb.version.max>4</openengsb.version.max>
     <openengsb.version.range>[${openengsb.version.min},${openengsb.version.max})</openengsb.version.range>
-    <!-- Plugin Versions -->
-    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
-    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
 
     <!-- Component Versions -->
-    <osgi.version>4.2.0</osgi.version>
+    <osgi.compendium.version>4.2.0</osgi.compendium.version>
 
     <!-- Library Versions -->
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
@@ -82,21 +78,16 @@
     <abdera.version>1.1.2</abdera.version>
     <xmlsec.version>1.4.5_1</xmlsec.version>
     <xmlschema.version>2.0.1</xmlschema.version>
-    <cxf.version>2.5.2</cxf.version>
-    <jaxb.api.version>1.8.0</jaxb.api.version>
-    <jaxws.api.version>1.1</jaxws.api.version>
-    <jsr311.api.version>1.8.0</jsr311.api.version>
+    <cxf.version>2.5.3</cxf.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
-    <karaf.exam.version>0.5.0</karaf.exam.version>
-    <saaj.api.version>1.8.0</saaj.api.version>
     <saaj.impl.version>1.3.9_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
-    <guava.version>10.0.1</guava.version>
-    <guava.wrapped.version>10.0.1_1</guava.wrapped.version>
+    <guava.version>11.0.1</guava.version>
+    <guava.wrapped.version>11.0.1_1</guava.wrapped.version>
     <spring.osgi.version>1.2.1</spring.osgi.version>
-    <spring.version>3.0.6.RELEASE</spring.version>
-    <spring.security.version>3.0.7.RELEASE</spring.security.version>
+    <spring.version>3.1.1.RELEASE</spring.version>
+    <shiro.version>1.2.0</shiro.version>
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
@@ -114,7 +105,7 @@
     <rhino.version>1.7R2_2</rhino.version>
     <xmlresolver.version>1.2_4</xmlresolver.version>
     <mockito.version>1.8.5</mockito.version>
-    <felix.fileinstall.version>3.1.10</felix.fileinstall.version>
+    <felix.fileinstall.version>3.2.2</felix.fileinstall.version>
     <jsch.wrapped.version>0.1.44_2</jsch.wrapped.version>
     <activemq.version>5.5.1</activemq.version>
     <hamcrest.version>1.1</hamcrest.version>
@@ -122,7 +113,7 @@
     <opensaml.version>2.5.1_1</opensaml.version>
     <wss4j.version>1.6.3</wss4j.version>
     <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
-    <servicemix.dbcp.version>1.4_1</servicemix.dbcp.version>
+    <servicemix.dbcp.version>1.4_2</servicemix.dbcp.version>
     <slf4j.version>1.6.4</slf4j.version>
     <xerces.version>2.9.1_5</xerces.version>
     <bcel.version>5.2_4</bcel.version>
@@ -132,6 +123,7 @@
     <velocity.version>1.7</velocity.version>
     <jdom.version>1.1_4</jdom.version>
     <geronimo.jms.version>1.1.1</geronimo.jms.version>
+    <geronimo.locator.version>1.1</geronimo.locator.version>
     <geronimo.registry.version>1.1</geronimo.registry.version>
     <geronimo.servlet.version>1.2</geronimo.servlet.version>
     <geronimo.annotation.version>1.1.1</geronimo.annotation.version>
@@ -140,7 +132,6 @@
     <geronimo.ws.metadata.version>1.1.3</geronimo.ws.metadata.version>
     <geronimo.jpa2.version>1.1</geronimo.jpa2.version>
     <geronimo.jta.version>1.1.1</geronimo.jta.version>
-    <stax.api.version>1.8.0</stax.api.version>
     <stax2.api.version>3.1.1</stax2.api.version>
     <staxex.version>1.0.0</staxex.version>
     <woodstox.version>4.1.2</woodstox.version>
@@ -151,7 +142,7 @@
     <jasypt.version>1.6_1</jasypt.version>
     <mvel2.version>2.1.0.drools4</mvel2.version>
     <fastinfoset.version>1.2.7_4</fastinfoset.version>
-    <activation.api.version>1.8.0</activation.api.version>
+    <smx.specs.version>2.0-SNAPSHOT</smx.specs.version>
     <xstream.version>1.3.1</xstream.version>
     <xmlpull.version>1.1.4.c</xmlpull.version>
     <antlr.version>3.1.3</antlr.version>
@@ -161,10 +152,10 @@
     <junit.version>4.8.2</junit.version>
     <commons.pool.version>1.5.7</commons.pool.version>
     <commons.jexl.version>2.0.1</commons.jexl.version>
-    <openjpa.version>2.1.1</openjpa.version>
-    <scripting.version>1.5.0</scripting.version>
-    <xbean.blueprint.version>3.7</xbean.blueprint.version>
+    <openjpa.version>2.2.0</openjpa.version>
+    <xbean.blueprint.version>3.10</xbean.blueprint.version>
     <h2.version>1.3.163</h2.version>
+    <labs.delegation.version>0.1.0</labs.delegation.version>
   </properties>
 
   <dependencyManagement>
@@ -233,6 +224,12 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-core</artifactId>
         <version>${activemq.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.activemq</groupId>
@@ -283,6 +280,16 @@
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-osgi-registry</artifactId>
+        <version>${geronimo.registry.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-osgi-locator</artifactId>
+        <version>${geronimo.locator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-annotation_1.0_spec</artifactId>
         <version>${geronimo.annotation.version}</version>
       </dependency>
@@ -324,37 +331,37 @@
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.activation-api-1.1</artifactId>
-        <version>${activation.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.stax-api-1.0</artifactId>
-        <version>${stax.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.jaxb-api-2.2</artifactId>
-        <version>${jaxb.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.saaj-api-1.3</artifactId>
-        <version>${saaj.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.jaxws-api-2.2</artifactId>
-        <version>${jaxws.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.jsr311-api-1.1</artifactId>
-        <version>${jsr311.api.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.specs</groupId>
         <artifactId>org.apache.servicemix.specs.scripting-api-1.0</artifactId>
-        <version>${scripting.version}</version>
+        <version>${smx.specs.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
@@ -417,14 +424,21 @@
         <version>${openjpa.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.karaf.assemblies.features</groupId>
+        <groupId>org.apache.karaf.features</groupId>
         <artifactId>standard</artifactId>
         <type>xml</type>
         <classifier>features</classifier>
         <version>${karaf.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.karaf.assemblies.features</groupId>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>spring</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
         <artifactId>enterprise</artifactId>
         <type>xml</type>
         <classifier>features</classifier>
@@ -655,15 +669,15 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.neodatis.odb</groupId>
-        <artifactId>neodatis-odb</artifactId>
-        <version>${odb.version}</version>
+        <groupId>org.apache.karaf.tooling.exam</groupId>
+        <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+        <version>${karaf.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.labs.paxexam.karaf</groupId>
-        <artifactId>paxexam-karaf-container</artifactId>
-        <version>${karaf.exam.version}</version>
-        <scope>test</scope>
+        <groupId>org.openengsb.labs.delegation</groupId>
+        <artifactId>org.openengsb.labs.delegation.service</artifactId>
+        <version>${labs.delegation.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
@@ -678,14 +692,14 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.osgi</groupId>
-        <artifactId>org.osgi.compendium</artifactId>
-        <version>${osgi.version}</version>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${karaf.version}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
-        <artifactId>org.osgi.core</artifactId>
-        <version>${osgi.version}</version>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>${osgi.compendium.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -701,6 +715,36 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-asm</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -750,49 +794,6 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-config</artifactId>
-        <version>${spring.security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>${spring.security.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-support</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-openid</artifactId>
-        <version>${spring.security.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
-        <version>${spring.security.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-bundle</artifactId>
         <version>${cxf.version}</version>
@@ -802,11 +803,6 @@
         <artifactId>net.sourceforge.htmlunit-all</artifactId>
         <version>${htmlunit.wrapped.version}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.wrapped</groupId>
-        <artifactId>org.neodatis.odb-all</artifactId>
-        <version>${odb.wrapped.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.wrapped</groupId>
@@ -973,6 +969,16 @@
         <groupId>org.apache.abdera</groupId>
         <artifactId>abdera-parser</artifactId>
         <version>${abdera.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>${shiro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-web</artifactId>
+        <version>${shiro.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -1262,7 +1268,7 @@
         </plugin>
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
-          <artifactId>features-maven-plugin</artifactId>
+          <artifactId>karaf-maven-plugin</artifactId>
           <version>${karaf.version}</version>
         </plugin>
         <plugin>

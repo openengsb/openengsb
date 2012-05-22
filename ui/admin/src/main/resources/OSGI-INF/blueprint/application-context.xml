@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" xmlns:wicket="http://www.ops4j.org/schema/wicket">
+
+  <cm:property-placeholder id="settings" persistent-id="org.openengsb.settings">
+    <!-- list some properties for this test -->
+    <cm:default-properties>
+      <cm:property name="openengsb.version.number" value="UNKNOWN version" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="openengsbVersion" class="org.openengsb.ui.admin.model.OpenEngSBFallbackVersion">
+    <property name="versionNumber" value="${openengsb.version.number}" />
+  </bean>
+
+  <reference-list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService"
+    availability="optional" />
+  <reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
+  <reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
+  <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
+  <reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
+  <reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
+  <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
+  <reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
+  <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
+
+  <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <wicket:application id="openengsbApplication" mountPoint="openengsb" applicationName="openengsb"
+    class="org.openengsb.ui.admin.WicketApplication">
+    <wicket:context-param>
+      <wicket:param-name>configuration</wicket:param-name>
+      <wicket:param-value>deployment</wicket:param-value>
+    </wicket:context-param>
+  </wicket:application>
+
+  <wicket:filter id="contextIdFilter" filterClass="org.openengsb.ui.common.util.ContextIdFilter" priority="1"
+    applicationName="openengsb" />
+
+  <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
+
+  <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+
+  <wicket:filter id="shiroFilter" filterClass="org.apache.shiro.web.servlet.ShiroFilter" priority="2"
+    applicationName="openengsb" />
+
+  <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
+
+</blueprint>

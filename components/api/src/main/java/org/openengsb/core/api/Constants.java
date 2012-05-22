@@ -60,6 +60,10 @@ public final class Constants {
      * the OpenEngSB and can represent any domain.
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
+    
+    public static final String DELEGATION_CONTEXT_CREDENTIALS = "credentials";
+    
+    public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
 
     private Constants() {
         // this class should not be instanciated.

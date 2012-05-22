@@ -41,8 +41,9 @@ public class ProxyConnector extends VirtualConnector {
 
     private OutgoingPortUtilService portUtil;
 
-    public ProxyConnector(String instanceId) {
+    public ProxyConnector(String instanceId, OutgoingPortUtilService portUtil) {
         super(instanceId);
+        this.portUtil = portUtil;
     }
 
     @Override

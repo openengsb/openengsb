@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -34,44 +35,46 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.services.internal.virtual.ProxyConnector;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 
-public class ProxyConnectorTest {
+public class ProxyConnectorTest extends AbstractOpenEngSBTest {
+
+    private OutgoingPortUtilService router;
+    private ProxyConnector proxy;
+
+    @Before
+    public void setUp() {
+        router = mock(OutgoingPortUtilService.class);
+        proxy = new ProxyConnector("foo", null);
+        proxy.setOutgoingPortUtilService(router);
+        proxy.setPortId("id");
+        proxy.setDestination("test");
+        proxy.addMetadata("key", "value");
+    }
 
     @Test
     public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
-        OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector("foo");
-        proxy.setOutgoingPortUtilService(router);
-        String id = "id";
-        String test = "test";
-
-        proxy.setPortId(id);
-        proxy.setDestination(test);
-
-        proxy.addMetadata("key", "value");
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
-        MethodResult result2 = new MethodResult(id);
-        when(router.sendMethodCallWithResult(Mockito.eq(id), Mockito.eq(test), captor.capture())).thenReturn(result2);
+        MethodResult result2 = new MethodResult("id");
+        when(router.sendMethodCallWithResult(Mockito.eq("id"), Mockito.eq("test"), captor.capture())).thenReturn(
+            result2);
 
-        Object[] args = new Object[]{ id, test };
+        Object[] args = new Object[]{ "id", "test" };
         Interface newProxyInstance =
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);
-        String result = newProxyInstance.test(id, test);
+        String result = newProxyInstance.test("id", "test");
 
         MethodCall value = captor.getValue();
-        assertThat(value.getMethodName(), equalTo(test));
+        assertThat(value.getMethodName(), equalTo("test"));
         assertThat(value.getArgs(), equalTo(args));
         assertThat(value.getMetaData().size(), equalTo(1));
         assertThat(value.getMetaData().get("key"), equalTo("value"));
         assertThat(value.getClasses().size(), equalTo(2));
-        assertThat(result, equalTo(id));
+        assertThat(result, equalTo("id"));
     }
 
     @Test
     public void callInvokeWithException_ShouldThrowException() {
-        OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector("foo");
-        proxy.setOutgoingPortUtilService(router);
         String message = "Message";
         MethodResult result = new MethodResult(message, ReturnType.Exception);
         when(router.sendMethodCallWithResult(any(String.class), any(String.class), any(MethodCall.class)))

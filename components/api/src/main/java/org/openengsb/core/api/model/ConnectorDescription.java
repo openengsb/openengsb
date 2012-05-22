@@ -18,11 +18,12 @@
 package org.openengsb.core.api.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 
 /**
  * Container class that describes a connector. It serves as common model for
@@ -43,26 +44,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ConnectorDescription implements Serializable {
 
-    private Map<String, String> attributes;
-    private Map<String, Object> properties;
+    private String domainType;
+    private String connectorType;
+    private Map<String, String> attributes = Maps.newHashMap();
+    private Map<String, Object> properties = Maps.newHashMap();
 
     public ConnectorDescription() {
-        this(new HashMap<String, String>(), new Hashtable<String, Object>());
     }
 
-    /**
-     * Both values could be null, since they will be replaced automatically with an empty hashmap
-     */
-    public ConnectorDescription(Map<String, String> attributes,
+    public ConnectorDescription(String domainType, String connectorType) {
+        this.domainType = domainType;
+        this.connectorType = connectorType;
+    }
+
+    public ConnectorDescription(String domainType, String connectorType, Map<String, String> attributes,
             Map<String, Object> properties) {
-        if (attributes == null) {
-            attributes = new HashMap<String, String>();
+        this(domainType, connectorType);
+        if (attributes != null) {
+            this.attributes.putAll(attributes);
         }
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
+        if (properties != null) {
+            this.properties.putAll(properties);
         }
-        this.attributes = attributes;
-        this.properties = properties;
+    }
+
+    public String getDomainType() {
+        return domainType;
+    }
+
+    public void setDomainType(String domainType) {
+        this.domainType = domainType;
+    }
+
+    public String getConnectorType() {
+        return connectorType;
+    }
+
+    public void setConnectorType(String connectorType) {
+        this.connectorType = connectorType;
     }
 
     public Map<String, String> getAttributes() {
@@ -83,12 +102,11 @@ public class ConnectorDescription implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("Attributes: ");
-        result.append(attributes);
-        result.append(" - ");
-        result.append("Properties: ");
-        result.append(properties);
-        return result.toString();
+        return Objects.toStringHelper(this)
+            .add("domainType", domainType)
+            .add("connectorType", connectorType)
+            .add("attributes", attributes)
+            .add("properties", properties)
+            .toString();
     }
 }

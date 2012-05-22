@@ -30,6 +30,8 @@ import org.openengsb.core.api.context.Context;
 @XmlRootElement
 public class ContextConfiguration extends ConfigItem<Map<String, String>> {
 
+    private static final long serialVersionUID = 2161478004569866231L;
+
     public static final String TYPE_ID = "CONTEXT";
 
     public ContextConfiguration() {
@@ -41,7 +43,7 @@ public class ContextConfiguration extends ConfigItem<Map<String, String>> {
     }
 
     public Context toContext() {
-        ContextId contextId = ContextId.fromMetaData(this.getMetaData());
+        ContextId contextId = ContextId.fromMetaData(getMetaData());
         Context c = new Context();
         c.setId(contextId.getId());
         return c;

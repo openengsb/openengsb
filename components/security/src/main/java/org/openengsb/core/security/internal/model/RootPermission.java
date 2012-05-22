@@ -16,12 +16,15 @@
  */
 package org.openengsb.core.security.internal.model;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * When a user is granted an instance of this permission, every action and access is allowed. This is ensured by the
  * {@link org.openengsb.core.security.internal.AdminAccessConnector}.
  */
+@Provide(context = Constants.DELEGATION_CONTEXT_PERMISSIONS)
 public class RootPermission implements Permission {
     @Override
     public String describe() {

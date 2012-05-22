@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.RuleConfiguration;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
-import org.openengsb.core.persistence.internal.NeodatisPersistenceManager;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -132,7 +132,7 @@ public class CorePersistenceServiceBackendTest {
 
         CorePersistenceServiceBackend<String> corePersistenceServiceBackend =
             new CorePersistenceServiceBackend<String>();
-        NeodatisPersistenceManager persistenceManager = new NeodatisPersistenceManager();
+        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
         persistenceManager.setPersistenceRootDir("target/data");
         corePersistenceServiceBackend.setPersistenceManager(persistenceManager);
         corePersistenceServiceBackend.setBundleContext(bundleContextMock);

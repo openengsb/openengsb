@@ -27,10 +27,8 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -45,7 +43,7 @@ public class UserManagerStub implements UserDataManager {
             throw new UserExistsException("user exists");
         }
         credentialsData.put(username, new HashMap<String, String>());
-        permissionData.put(username, makePermissionData());
+        permissionData.put(username, new HashMap<Class<?>, Collection<Permission>>());
     }
 
     @Override
@@ -57,15 +55,6 @@ public class UserManagerStub implements UserDataManager {
     @Override
     public String getUserCredentials(String username, String key) {
         return credentialsData.get(username).get(key);
-    }
-
-    private <T> Map<Class<?>, Collection<Permission>> makePermissionData() {
-        return new MapMaker().makeComputingMap(new Function<Class<?>, Collection<Permission>>() {
-            @Override
-            public Collection<Permission> apply(Class<?> input) {
-                return Sets.newHashSet();
-            }
-        });
     }
 
     @Override
@@ -99,20 +88,35 @@ public class UserManagerStub implements UserDataManager {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) {
-        return (Collection<T>) permissionData.get(username).get(type);
+        return (Collection<T>) getPermissionsForUsername(username).get(type);
+    }
+
+    private Map<Class<?>, Collection<Permission>> getPermissionsForUsername(String username) {
+        Map<Class<?>, Collection<Permission>> result = permissionData.get(username);
+        if (result == null) {
+            result = Maps.newHashMap();
+            permissionData.put(username, result);
+        }
+        return result;
     }
 
     @Override
     public void addPermissionToUser(String username, Permission... permissions) {
         for (Permission permission : permissions) {
-            permissionData.get(username).get(permission.getClass()).add(permission);
+            Map<Class<?>, Collection<Permission>> permissionsForUsername = getPermissionsForUsername(username);
+            Collection<Permission> p = permissionsForUsername.get(permission.getClass());
+            if (p == null) {
+                p = Sets.newHashSet();
+                permissionsForUsername.put(permission.getClass(), p);
+            }
+            p.add(permission);
         }
     }
 
     @Override
     public void removePermissionFromUser(String username, Permission... permissions) {
         for (Permission permission : permissions) {
-            permissionData.get(username).get(permission.getClass()).remove(permission);
+            getPermissionsForUsername(username).get(permission.getClass()).remove(permission);
         }
     }
 
@@ -123,7 +127,7 @@ public class UserManagerStub implements UserDataManager {
 
     @Override
     public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
-        Collection<Collection<Permission>> values = permissionData.get(username).values();
+        Collection<Collection<Permission>> values = getPermissionsForUsername(username).values();
         Collection<Permission> result = new ArrayList<Permission>();
         for (Collection<Permission> c : values) {
             result.addAll(c);

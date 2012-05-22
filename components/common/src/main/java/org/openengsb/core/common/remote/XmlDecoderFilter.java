@@ -61,10 +61,6 @@ public class XmlDecoderFilter extends AbstractFilterChainElement<String, String>
 
     private FilterAction next;
 
-    public XmlDecoderFilter() {
-        super(String.class, String.class);
-    }
-
     @Override
     public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
         Document doc = parseDocument(input);

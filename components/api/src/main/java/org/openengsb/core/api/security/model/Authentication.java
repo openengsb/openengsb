@@ -29,7 +29,7 @@ public class Authentication {
     public Authentication() {
     }
 
-    public Authentication(String principal, String credentials) {
+    public Authentication(String principal, Object credentials) {
         this.principal = principal;
         this.credentials = credentials;
     }

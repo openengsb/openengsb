@@ -344,10 +344,6 @@ public class DefaultJPADao implements JPADao {
         }
     }
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException {
@@ -404,5 +400,9 @@ public class DefaultJPADao implements JPADao {
         }
 
         return result;
+    }
+    
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

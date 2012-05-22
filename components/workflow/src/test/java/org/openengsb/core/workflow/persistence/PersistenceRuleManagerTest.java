@@ -61,7 +61,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     public void testAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         ruleManager.add(id, "when\n" + "  e : Event()\n" + "then\n"
-                + "  example2.doSomething(\"this rule was added by the addrule-function\");\n");
+                + "  example2.doSomethingWithMessage(\"this rule was added by the addrule-function\");\n");
 
         createSession();
         executeTestSession();
@@ -101,7 +101,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     public void testAddGlobal() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla");
         ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
-            "when\n then example2.doSomething(\"\" + bla.nextInt());");
+            "when\n then example2.doSomethingWithMessage(\"\" + bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
         session.insert(new Event());
@@ -165,7 +165,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     @Test
     public void testAddOtherPackages() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
-        ruleManager.add(id, "when\nthen\nexample2.doSomething(\"bla\");");
+        ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("at.ac.tuwien.hello42"));
@@ -174,9 +174,9 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     @Test
     public void testRulesInDifferentPackages() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
-        ruleManager.add(id, "when\nthen\nexample2.doSomething(\"bla\");");
+        ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello42");
-        ruleManager.add(id, "when\nthen\nexample2.doSomething(\"bla\");");
+        ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42"));

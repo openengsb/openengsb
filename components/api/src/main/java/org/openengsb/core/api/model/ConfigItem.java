@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +28,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * ConfigurationObject.
  */
 @XmlRootElement
-public class ConfigItem<ContentType> {
+public class ConfigItem<ContentType> implements Serializable {
+
+    private static final long serialVersionUID = -4928423948529188671L;
 
     protected Map<String, String> metaData;
     protected ContentType content;

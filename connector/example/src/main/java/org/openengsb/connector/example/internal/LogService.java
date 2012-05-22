@@ -46,7 +46,7 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public String doSomething(String message) {
+    public String doSomethingWithMessage(String message) {
         message = prefix + ": " + message;
         LogLevel level = LogLevel.INFO;
         if ("DEBUG".equals(outputMode)) {
@@ -88,7 +88,7 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public String doSomething(ExampleEnum exampleEnum) {
+    public String doSomethingWithEnum(ExampleEnum exampleEnum) {
         LOGGER.info("{}", exampleEnum);
         return "Called with: " + exampleEnum.toString();
     }
@@ -99,7 +99,7 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+    public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
         LOGGER.info("received model with the id \"{}\" and name \"{}\"", model.getId(), model.getName());
         ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         return response;
