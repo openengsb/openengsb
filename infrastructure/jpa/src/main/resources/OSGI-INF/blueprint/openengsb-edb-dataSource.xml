@@ -55,7 +55,7 @@
     <argument><null/></argument>
     <argument value="SELECT 1" />
     <argument value="false" />
-    <argument value="false" />
+    <argument value="true" />
   </bean>
 
   <bean id="poolingDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="pooledConnectionFactory">
