@@ -865,6 +865,12 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.ports</groupId>
         <artifactId>org.openengsb.ports.jms</artifactId>
         <version>${project.version}</version>
