@@ -94,6 +94,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- OpenEngSb dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
