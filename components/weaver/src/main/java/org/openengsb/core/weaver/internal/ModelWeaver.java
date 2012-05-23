@@ -17,18 +17,38 @@
 
 package org.openengsb.core.weaver.internal;
 
+import java.io.IOException;
+
+import org.openengsb.core.weaver.internal.model.ManipulationUtils;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
+
+import javassist.CannotCompileException;
 
 public class ModelWeaver implements WeavingHook {
     
     public ModelWeaver() {
-        super();
+        ManipulationUtils.appendClassLoader(ModelWeaver.class.getClassLoader());
     }
     
     @Override
     public void weave(WovenClass wovenClass) {
         String className = wovenClass.getClassName();
-        System.out.println("Class to weave: " + className);
+        if (className.equals("org.openengsb.core.api.ekb.annotations.Model")
+                || className.contains("javassist") || className.contains("JavassistHelper")) {
+            return;
+        }
+        try {
+            wovenClass.setBytes(doActualWeaving(wovenClass.getBytes()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
     }
+    
+    private byte[] doActualWeaving(byte[] wovenClass) throws IOException, CannotCompileException {
+        return ManipulationUtils.enhanceModel(wovenClass);
+    }
+    
 }

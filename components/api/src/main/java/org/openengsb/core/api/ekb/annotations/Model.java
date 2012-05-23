@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * all semantic tools of the OpenEngSB.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 public @interface Model {
 
 }
