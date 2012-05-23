@@ -46,6 +46,39 @@ public final class ModelUtils {
     }
 
     /**
+     * Performs the getOpenEngSBModelEntries function on a model object. Throws an IllegalArgumentException if the
+     * passed object is not an OpenEngSBModel instance.
+     */
+    public static List<OpenEngSBModelEntry> getOpenEngSBModelEntries(Object model) {
+        if (model instanceof OpenEngSBModel) {
+            return ((OpenEngSBModel) model).getOpenEngSBModelEntries();
+        }
+        throw new IllegalArgumentException("Can only be performed with models");
+    }
+
+    /**
+     * Performs the addOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
+        if (model instanceof OpenEngSBModel) {
+            ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
+        }
+        throw new IllegalArgumentException("Can only be performed with models");
+    }
+
+    /**
+     * Performs the removeOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the
+     * passed object is not an OpenEngSBModel instance.
+     */
+    public void removeOpenEngSBModelEntry(Object model, String key) {
+        if (model instanceof OpenEngSBModel) {
+            ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
+        }
+        throw new IllegalArgumentException("Can only be performed with models");
+    }
+
+    /**
      * Creates a proxy for the model interface which simulates an implementation of the interface.
      */
     @SuppressWarnings("unchecked")
