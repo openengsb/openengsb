@@ -48,7 +48,6 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -206,8 +205,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String decryptedResult = decryptResult(sessionKey, result);
 
         ObjectMapper mapper = new ObjectMapper();
-        SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
-        MethodResultMessage methodResult = response.getMessage();
+        MethodResultMessage response = mapper.readValue(decryptedResult, MethodResultMessage.class);
+        MethodResultMessage methodResult = response;
         JsonUtils.convertResult(methodResult);
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
         ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);

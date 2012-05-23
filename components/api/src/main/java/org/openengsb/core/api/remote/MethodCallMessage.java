@@ -17,47 +17,46 @@
 
 package org.openengsb.core.api.remote;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.model.BeanDescription;
+
 /**
- * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
- * method and so called {@link #metaData}. Since the target system often requires additional information for calling
- * specific methods (e.g. context setup, target thread, security, active user, ...) it is allowed to add additional
- * information to each method call to make. Finally this abstraction can extract all {@link Class} objects in the
- * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
- * identify the right method.
+ * Container for sending {@link MethodCall}s to remote destinations. It contains the necessary routing- and
+ * security-information.
  */
 @XmlRootElement
-public class MethodCallRequest implements Serializable {
+public class MethodCallMessage extends MessageBase {
 
     private static final long serialVersionUID = -484867025274841475L;
 
     private MethodCall methodCall;
-    private String callId;
     private boolean answer;
     private String destination;
 
-    public MethodCallRequest() {
+    private String principal;
+    private BeanDescription credentials;
+
+    public MethodCallMessage() {
     }
 
-    public MethodCallRequest(MethodCall methodCall, String callId) {
-        this(methodCall, callId, true);
-    }
-
-    public MethodCallRequest(MethodCall methodCall) {
+    public MethodCallMessage(MethodCall methodCall) {
         this(methodCall, UUID.randomUUID().toString());
     }
 
-    public MethodCallRequest(MethodCall methodCall, boolean answer) {
+    public MethodCallMessage(MethodCall methodCall, String callId) {
+        this(methodCall, callId, true);
+    }
+
+    public MethodCallMessage(MethodCall methodCall, boolean answer) {
         this(methodCall, UUID.randomUUID().toString(), answer);
     }
 
-    public MethodCallRequest(MethodCall methodCall, String callId, boolean answer) {
+    public MethodCallMessage(MethodCall methodCall, String callId, boolean answer) {
+        super(callId);
         this.methodCall = methodCall;
-        this.callId = callId;
         this.answer = answer;
     }
 
@@ -67,14 +66,6 @@ public class MethodCallRequest implements Serializable {
 
     public void setMethodCall(MethodCall methodCall) {
         this.methodCall = methodCall;
-    }
-
-    public String getCallId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
     }
 
     public boolean isAnswer() {
@@ -91,6 +82,22 @@ public class MethodCallRequest implements Serializable {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public String getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(String principal) {
+        this.principal = principal;
+    }
+
+    public BeanDescription getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(BeanDescription credentials) {
+        this.credentials = credentials;
     }
 
 }
