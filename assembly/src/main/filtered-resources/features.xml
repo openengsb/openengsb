@@ -146,6 +146,7 @@
     <bundle start-level='20'>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>	
     <!-- OpenEngSB Core Features -->
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.weaver/${project.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>

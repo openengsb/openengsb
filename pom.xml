@@ -76,6 +76,7 @@
     <module>components/api</module>
     <module>components/test</module>
     <module>components/common</module>
+    <module>components/weaver</module>
     <module>components/console</module>
     <module>components/edb</module>
     <module>components/ekb</module>
