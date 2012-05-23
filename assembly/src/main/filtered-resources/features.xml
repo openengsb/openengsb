@@ -150,9 +150,6 @@
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
     <!-- OpenEngSB Console -->
     <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
-    <!-- extended core domains and connectors -->
-    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
