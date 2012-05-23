@@ -29,8 +29,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConfigItem;
@@ -41,14 +39,13 @@ import org.openengsb.core.common.AbstractDataRow;
 
 @SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_CONFIGURATION")
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "DOMAINTYPE", "CONNECTORTYPE", "INSTANCEID" }))
 public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
 
     @Column(name = "DOMAINTYPE", nullable = false, length = 63)
     private String domainType;
     @Column(name = "CONNECTORTYPE", nullable = false, length = 63)
     private String connectorType;
-    @Column(name = "INSTANCEID", nullable = false, length = 63)
+    @Column(name = "INSTANCEID", nullable = false, length = 63, unique = true)
     private String instanceId;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONNECTOR_ATTRIBUTES")
@@ -91,7 +88,8 @@ public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
         this.attributes = attributes;
     }
 
-    public void setProperties(Map<String, ConnectorPropertiesWrapperJPAEntity> properties) {
+    public void setProperties(
+            Map<String, ConnectorPropertiesWrapperJPAEntity> properties) {
         this.properties = properties;
     }
 
@@ -99,49 +97,56 @@ public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
         return properties;
     }
 
-    public static ConnectorConfigurationJPAEntity generateFromConfigItem(ConfigItem<ConnectorDescription> config) {
+    public static ConnectorConfigurationJPAEntity generateFromConfigItem(
+            ConfigItem<ConnectorDescription> config) {
         ConnectorConfigurationJPAEntity entity = new ConnectorConfigurationJPAEntity();
         ConnectorDescription desc = config.getContent();
         Map<String, String> metaData = config.getMetaData();
 
         entity.setInstanceId(metaData.get(Constants.ID_KEY));
-        entity.setConnectorType(metaData.get(Constants.CONNECTOR_KEY));
-        entity.setDomainType(metaData.get(Constants.DOMAIN_KEY));
+        entity.setConnectorType(desc.getConnectorType());
+        entity.setDomainType(desc.getDomainType());
         entity.setAttributes(desc.getAttributes());
         entity.setProperties(convertProperties(desc.getProperties()));
         return entity;
     }
 
-    public static ConnectorConfiguration toConfigItem(ConnectorConfigurationJPAEntity entity)
-        throws PersistenceException {
+    public static ConnectorConfiguration toConfigItem(
+            ConnectorConfigurationJPAEntity entity) throws PersistenceException {
         Map<String, String> metaData = new HashMap<String, String>();
+
         metaData.put(Constants.ID_KEY, entity.getInstanceId());
-        metaData.put(Constants.DOMAIN_KEY, entity.getDomainType());
-        metaData.put(Constants.CONNECTOR_KEY, entity.getConnectorType());
 
         ConnectorDescription desc = new ConnectorDescription();
+        desc.setConnectorType(entity.getConnectorType());
+        desc.setDomainType(entity.getDomainType());
         desc.setAttributes(entity.getAttributes());
         desc.setProperties(readProperties(entity.getProperties()));
 
-        ConnectorConfiguration config = new ConnectorConfiguration(metaData, desc);
+        ConnectorConfiguration config = new ConnectorConfiguration(metaData,
+            desc);
         return config;
     }
 
-    private static Map<String, Object> readProperties(Map<String, ConnectorPropertiesWrapperJPAEntity> map)
+    private static Map<String, Object> readProperties(
+            Map<String, ConnectorPropertiesWrapperJPAEntity> map)
         throws PersistenceException {
         Map<String, Object> ret = new HashMap<String, Object>();
-        for (Entry<String, ConnectorPropertiesWrapperJPAEntity> entry : map.entrySet()) {
+        for (Entry<String, ConnectorPropertiesWrapperJPAEntity> entry : map
+            .entrySet()) {
             ret.put(entry.getKey(), entry.getValue().toObject());
         }
         return ret;
     }
 
-    private static Map<String, ConnectorPropertiesWrapperJPAEntity> convertProperties(Map<String, Object> properties) {
+    private static Map<String, ConnectorPropertiesWrapperJPAEntity> convertProperties(
+            Map<String, Object> properties) {
         Map<String, ConnectorPropertiesWrapperJPAEntity> ret =
             new HashMap<String, ConnectorPropertiesWrapperJPAEntity>();
 
         for (Entry<String, Object> entry : properties.entrySet()) {
-            ret.put(entry.getKey(), ConnectorPropertiesWrapperJPAEntity.getFromObject(entry.getValue()));
+            ret.put(entry.getKey(), ConnectorPropertiesWrapperJPAEntity
+                .getFromObject(entry.getValue()));
         }
         return ret;
     }

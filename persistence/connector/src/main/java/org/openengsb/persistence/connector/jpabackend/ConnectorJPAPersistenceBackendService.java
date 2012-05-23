@@ -39,14 +39,17 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceBackendService<ConnectorDescription> {
+public class ConnectorJPAPersistenceBackendService implements
+        ConfigPersistenceBackendService<ConnectorDescription> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorJPAPersistenceBackendService.class);
+    private static final Logger LOGGER = LoggerFactory
+        .getLogger(ConnectorJPAPersistenceBackendService.class);
 
     private EntityManager entityManager;
 
     @Override
-    public List<ConfigItem<ConnectorDescription>> load(Map<String, String> metadata) throws PersistenceException,
+    public List<ConfigItem<ConnectorDescription>> load(
+            Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
         LOGGER.debug("load ConnectorConfiguration");
         List<ConnectorConfigurationJPAEntity> entities = searchForMetadata(metadata);
@@ -60,24 +63,31 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
 
     @SuppressWarnings("unchecked")
     @Override
-    public void persist(ConfigItem<ConnectorDescription> config) throws PersistenceException,
-        InvalidConfigurationException {
+    public void persist(ConfigItem<ConnectorDescription> config)
+        throws PersistenceException, InvalidConfigurationException {
         LOGGER.debug("persisting ConnectorConfiguration");
-        Preconditions.checkArgument(supports((Class<? extends ConfigItem<?>>) config.getClass()),
+        Preconditions.checkArgument(
+            supports((Class<? extends ConfigItem<?>>) config.getClass()),
             "Argument type not supported");
         Preconditions.checkNotNull(config, "Config must not be null");
-        Preconditions.checkNotNull(config.getMetaData(), "Invalid metadata");
+        Preconditions.checkNotNull(config.getMetaData().get(Constants.ID_KEY),
+            "No id set!");
         Preconditions.checkNotNull(config.getContent(), "Invalid content");
 
-        List<ConnectorConfigurationJPAEntity> oldEntities = searchForMetadata(config.getMetaData());
+        List<ConnectorConfigurationJPAEntity> oldEntities = searchForMetadata(config
+            .getMetaData());
 
         if (oldEntities.size() > 1) {
-            throw new PersistenceException("Unexpected error: Found more than 1 object fitting the metadata!");
+            throw new PersistenceException(
+                "Unexpected error: Found more than 1 object fitting the metadata!");
         }
 
-        ConnectorConfigurationJPAEntity entity = ConnectorConfigurationJPAEntity.generateFromConfigItem(config);
+        ConnectorConfigurationJPAEntity entity = ConnectorConfigurationJPAEntity
+            .generateFromConfigItem(config);
         if (oldEntities.size() == 1) {
             ConnectorConfigurationJPAEntity old = oldEntities.get(0);
+            old.setConnectorType(entity.getConnectorType());
+            old.setDomainType(entity.getDomainType());
             old.setAttributes(entity.getAttributes());
             old.setProperties(entity.getProperties());
             try {
@@ -99,13 +109,17 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
     }
 
     @Override
-    public void remove(Map<String, String> metadata) throws PersistenceException {
+    public void remove(Map<String, String> metadata)
+        throws PersistenceException {
         LOGGER.debug("removing ConnectorConfiguration");
         Preconditions.checkNotNull(metadata, "Invalid metadata");
+        Preconditions
+            .checkNotNull(metadata.get(Constants.ID_KEY), "No Id set!");
 
         List<ConnectorConfigurationJPAEntity> ret = searchForMetadata(metadata);
         if (ret.size() == 0) {
-            throw new PersistenceException("Configuration to delete, could not be found!");
+            throw new PersistenceException(
+                "Configuration to delete could not be found!");
         }
         for (ConnectorConfigurationJPAEntity entity : ret) {
             try {
@@ -126,22 +140,19 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
         this.entityManager = entityManager;
     }
 
-    private List<ConnectorConfigurationJPAEntity> searchForMetadata(Map<String, String> metaData)
-        throws PersistenceException {
+    private List<ConnectorConfigurationJPAEntity> searchForMetadata(
+            Map<String, String> metaData) throws PersistenceException {
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ConnectorConfigurationJPAEntity> query = cb.createQuery(ConnectorConfigurationJPAEntity.class);
-        Root<ConnectorConfigurationJPAEntity> from = query.from(ConnectorConfigurationJPAEntity.class);
+        CriteriaQuery<ConnectorConfigurationJPAEntity> query = cb
+            .createQuery(ConnectorConfigurationJPAEntity.class);
+        Root<ConnectorConfigurationJPAEntity> from = query
+            .from(ConnectorConfigurationJPAEntity.class);
 
         List<Predicate> predicates = new ArrayList<Predicate>();
         if (metaData.get(Constants.ID_KEY) != null) {
-            predicates.add(cb.equal(from.get("instanceId"), metaData.get(Constants.ID_KEY)));
-        }
-        if (metaData.get(Constants.DOMAIN_KEY) != null) {
-            predicates.add(cb.equal(from.get("domainType"), metaData.get(Constants.DOMAIN_KEY)));
-        }
-        if (metaData.get(Constants.CONNECTOR_KEY) != null) {
-            predicates.add(cb.equal(from.get("connectorType"), metaData.get(Constants.CONNECTOR_KEY)));
+            predicates.add(cb.equal(from.get("instanceId"),
+                metaData.get(Constants.ID_KEY)));
         }
 
         query.select(from);

@@ -27,8 +27,6 @@ import java.util.UUID;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.ConfigItem;
-
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -37,10 +35,7 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.base.Preconditions;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
