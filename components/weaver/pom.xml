@@ -21,6 +21,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
@@ -30,10 +32,9 @@
 
   <properties>
     <bundle.symbolicName>org.openengsb.framework.weaver</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.framweork.weaver</bundle.namespace>
+    <bundle.namespace>org.openengsb.core.weaver</bundle.namespace>
   </properties>
 
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.weaver</artifactId>
   <version>3.0.0-SNAPSHOT</version>
