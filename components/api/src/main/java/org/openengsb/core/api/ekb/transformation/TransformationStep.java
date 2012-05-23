@@ -80,20 +80,17 @@ public class TransformationStep {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("{ ").append(operation);
-        if (operation == TransformationOperation.SPLIT) {
-            builder.append(" targets: {");
-        } else {
-            builder.append(" sources: {");
-        }
+        builder.append(" sources: {");
+        boolean firstSource = true;
         for (String source : sourceFields) {
-            builder.append(source).append(", ");
+            if(!firstSource) {
+                builder.append(", ");
+            }
+            builder.append(source);
+            firstSource = false;
         }
         builder.append("} ");
-        if (operation == TransformationOperation.SPLIT) {
-            builder.append(" source: {");
-        } else {
-            builder.append(" target: {");
-        }
+        builder.append(" target: {");
         builder.append(targetField).append("}}");
         return builder.toString();
     }

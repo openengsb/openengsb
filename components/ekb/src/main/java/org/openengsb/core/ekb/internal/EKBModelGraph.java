@@ -65,6 +65,12 @@ public final class EKBModelGraph {
     }
 
     private EKBModelGraph() {
+        startup();
+        descriptions = new HashMap<String, TransformationDescription>();
+        counter = new AtomicLong(0L);
+    }
+    
+    private void startup() {
         ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             ClassLoader orientClassLoader = OIndexes.class.getClassLoader();
@@ -75,8 +81,6 @@ public final class EKBModelGraph {
         }
         Orient.instance().removeShutdownHook();
         graph.createVertexType("Models");
-        descriptions = new HashMap<String, TransformationDescription>();
-        counter = new AtomicLong(0L);
     }
 
     /**
@@ -191,7 +195,7 @@ public final class EKBModelGraph {
             }
             return result;
         }
-        throw new IllegalArgumentException("no transformation description found");
+        throw new IllegalArgumentException("No transformation description found");
     }
 
     /**

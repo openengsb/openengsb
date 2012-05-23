@@ -243,8 +243,10 @@ public class TransformationPerformer {
         int from = TransformationPerformUtils.parseIntString(fromString, false, 0);
         int to = TransformationPerformUtils.parseIntString(toString, false, value.length());
         if (to > value.length()) {
-            LOGGER.warn("The end index is bigger than the length of the input string. "
-                    + "The length of the input string will be taken instead.");
+            StringBuilder builder = new StringBuilder();
+            builder.append("The end index is bigger than the length of the input string. ");
+            builder.append("The length of the input string will be taken instead.");
+            LOGGER.warn(builder.toString());
             to = value.length();
         }
         value = value.substring(from, to);
@@ -275,8 +277,10 @@ public class TransformationPerformer {
             Method method = value.getClass().getMethod(function);
             length = method.invoke(value).toString();
         } catch (NoSuchMethodException e) {
-            LOGGER.warn("The type of the given field for the length step doesn't support " + function + " method. "
-                    + "So 0 will be used as standard value.");
+            StringBuilder builder = new StringBuilder();
+            builder.append("The type of the given field for the length step doesn't support ");
+            builder.append(function).append(" method. So 0 will be used as standard value.");
+            LOGGER.warn(builder.toString());
         }
         setObjectToTargetField(step.getTargetField(), length);
     }

@@ -43,7 +43,7 @@ public class TransformationDeployerService extends AbstractOpenEngSBService impl
     public boolean canHandle(File artifact) {
         LOGGER.debug("TransformationDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
         String fileEnding = FilenameUtils.getExtension(artifact.getName());
-        
+
         if (artifact.isFile() && TRANSFORM_ENDING.equals(fileEnding)) {
             LOGGER.info("Found \"{}\" to deploy.", artifact);
             return true;
@@ -69,7 +69,7 @@ public class TransformationDeployerService extends AbstractOpenEngSBService impl
             LOGGER.info("Read the transformation description file " + artifact.getName());
             engine.saveDescriptions(TransformationUtils.getDescriptionsFromXMLFile(artifact));
         } catch (Exception e) {
-            LOGGER.error("Error while reading the content of file " + artifact.getName(), e);
+            LOGGER.error(String.format("Error while reading the content of file %s", artifact.getName()), e);
         }
     }
 

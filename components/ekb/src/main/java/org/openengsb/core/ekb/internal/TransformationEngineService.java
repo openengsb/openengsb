@@ -39,6 +39,7 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public void saveDescription(TransformationDescription description) {
+        LOGGER.debug("Added transformation description {} to transformation engine service", description);
         deleteDescription(description);
         graphDb.addTransformation(description);
     }
@@ -52,6 +53,7 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public void deleteDescription(TransformationDescription description) {
+        LOGGER.debug("Deleted transformation description {} from transformation engine service", description);
         graphDb.removeTransformation(description);
     }
 

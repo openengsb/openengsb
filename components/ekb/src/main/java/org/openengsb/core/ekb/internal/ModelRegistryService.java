@@ -130,7 +130,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         try {
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
-            LOGGER.warn("bundle could not find own class: " + classname, e);
+            LOGGER.warn(String.format("Bundle could not find own class: %s", classname), e);
             return false;
         }
         return OpenEngSBModel.class.isAssignableFrom(clazz);
@@ -144,7 +144,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
         Set<String> discoveredClasses = new HashSet<String>();
         if (classEntries == null) {
-            LOGGER.debug("found no classes in the bundle {}", bundle);
+            LOGGER.debug("Found no classes in the bundle {}", bundle);
             return discoveredClasses;
         }
         while (classEntries.hasMoreElements()) {
@@ -168,11 +168,13 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
 
     @Override
     public void registerModel(ModelDescription model) {
+        LOGGER.debug("Added model {} to model registry", model);
         graphDb.addModel(model);
     }
 
     @Override
     public void unregisterModel(ModelDescription model) {
+        LOGGER.debug("Removed model {} from model registry", model);
         graphDb.removeModel(model);
     }
 
