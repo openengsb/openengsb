@@ -83,73 +83,73 @@
     <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle> 
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
     <!-- Templating -->
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
-    <bundle>mvn:org.apache.velocity/velocity/${velocity.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.velocity/velocity/${velocity.version}</bundle>
     <!-- jaxb -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/${jaxb.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
     <!-- AspectJ -->
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
     <!-- Spring Security -->
-    <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
+    <bundle start-level='20'>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
+    <bundle start-level='20'>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
+    <bundle start-level='20'>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
     <!-- Drools -->
-    <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
-    <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
-    <bundle>mvn:org.mvel/mvel2/${mvel2.version}</bundle>
-    <bundle>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
-    <bundle>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
-    <bundle>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
-    <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
-    <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
-    <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
-    <bundle>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
-    <bundle>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
+    <bundle start-level='20'>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
+    <bundle start-level='20'>mvn:org.mvel/mvel2/${mvel2.version}</bundle>
+    <bundle start-level='20'>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
+    <bundle start-level='20'>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/knowledge-api/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/drools-core/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
 
     <!-- OpenEngSB Commons Dependencies -->
-    <bundle>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
-    <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
-    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
-    <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
-    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
-    <bundle>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
+    <bundle start-level='20'>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
+    <bundle start-level='20'>mvn:commons-io/commons-io/${commons.io.version}</bundle>
+    <bundle start-level='20'>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+    <bundle start-level='20'>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
+    <bundle start-level='20'>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
-    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
-    <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
-    <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.springframework/spring-tx/${spring.version}</bundle>
 
     <!-- JPA Infrastructure -->
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
-    <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
+    <bundle start-level='20'>mvn:com.h2database/h2/${h2.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
     <!-- OpenEngSB ConfigPersistence Implementations -->
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>	
+    <bundle start-level='20'>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>	
     <!-- OpenEngSB Core Features -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
     <!-- OpenEngSB Console -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
     <!-- extended core domains and connectors -->
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
