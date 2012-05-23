@@ -38,8 +38,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.IRequestParameters;
-import org.apache.wicket.request.http.WebRequest;
-import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.ConnectorManager;
@@ -174,15 +172,6 @@ public class ToolChooserPage extends WebPage {
             throw new OpenXLinkException(expiredMsg);
         }        
     }    
-    
-    /*private void checkConnectorIdFormat() throws OpenXLinkException {
-        try {
-            ConnectorId.fromFullId(connectorId);
-        } catch (Exception e) {
-            String wrongFormatMsg = new StringResourceModel("error.connectorId.wrongFormat", this, null).getString();
-            throw new OpenXLinkException(wrongFormatMsg);
-        }
-    }*/
     
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {
         String errorMsgFormat = new StringResourceModel("error.missingIdentifier", this, null).getString();

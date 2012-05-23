@@ -57,7 +57,7 @@ public class ToolChooserLogic {
         return null;
     }
  
-    public static List<String> getModelIdentifierToModelId(
+    public List<String> getModelIdentifierToModelId(
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
