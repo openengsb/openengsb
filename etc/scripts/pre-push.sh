@@ -20,5 +20,5 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
-mvn openengsb:prePush
+mvn clean install -Pitests,checkstyle,licenseCheck $@
 
