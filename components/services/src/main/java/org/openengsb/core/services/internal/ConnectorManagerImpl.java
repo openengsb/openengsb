@@ -328,7 +328,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 return false;
             }
             final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
-            if ((this.connectorId == null) ? (other.connectorId != null) : !this.connectorId.equals(other.connectorId)) {
+            if ((this.connectorId == null) 
+                    ? (other.connectorId != null) : !this.connectorId.equals(other.connectorId)) {
                 return false;
             }
             if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {

@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -92,7 +93,6 @@ public class ToolChooserPage extends WebPage {
             checkIfXLinkIsValid(req);
         } catch (OpenXLinkException ex) {
             handleErrorResponse(ex.getMessage());
-            return;
         }
         //setContextFromId();
         if (checkForLocalSwitchingParameters()) {
@@ -195,23 +195,23 @@ public class ToolChooserPage extends WebPage {
     
     private void handleErrorResponse(String error) {
         if (checkForLocalSwitchingParameters()) {
-            setResponsePage(new MachineResponsePage(error, false));
+            throw new RestartResponseException(new MachineResponsePage(error, false));
         } else {   
             String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
             hostIdMsg = String.format(hostIdMsg, hostId);              
-            setResponsePage(new UserResponsePage(error, hostIdMsg, true));        
+            throw new RestartResponseException(new UserResponsePage(error, hostIdMsg, true));        
         }
     }
     
     private void handleSuccessResponse(HttpServletResponse resp) {
         if (checkForLocalSwitchingParameters()) {
             String successMsg = new StringResourceModel("success.localSwitch", this, null).getString();
-            setResponsePage(new MachineResponsePage(successMsg, true));
+            throw new RestartResponseException(new MachineResponsePage(successMsg, true));
         } else {         
             String successMsg = new StringResourceModel("success.normalSwitch", this, null).getString();
             String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
             hostIdMsg = String.format(hostIdMsg, hostId);            
-            setResponsePage(new UserResponsePage(successMsg, hostIdMsg, false));                  
+            throw new RestartResponseException(new UserResponsePage(successMsg, hostIdMsg, false));                  
         }        
 
      
