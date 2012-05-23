@@ -21,7 +21,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -36,6 +38,7 @@ import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
@@ -140,6 +143,8 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         setupRulemanager();
         workflowService.setRulemanager(manager);
         workflowService.setBundleContext(bundleContext);
+        List<AuditingDomain> emptyList = Collections.emptyList();
+        workflowService.setAuditingConnectors(emptyList);
     }
 
     private void setupRulemanager() throws Exception {

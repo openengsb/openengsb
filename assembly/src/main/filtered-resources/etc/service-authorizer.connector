@@ -15,4 +15,6 @@
 # limitations under the License.
 #
 
-property.location.root=authorization/wicket
+domainType=authorization
+connectorType=serviceacl
+property.location.root=authorization/service

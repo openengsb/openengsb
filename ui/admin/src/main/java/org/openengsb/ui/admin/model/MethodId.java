@@ -19,21 +19,15 @@ package org.openengsb.ui.admin.model;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.ClassUtils;
 
 @SuppressWarnings("serial")
 public class MethodId implements Serializable {
     private String name;
-    private List<String> argumentTypes = new ArrayList<String>();
+    private Class<?>[] argumentTypes;
 
     public MethodId(Method method) {
-        setName(method.getName());
-        for (Class<?> type : method.getParameterTypes()) {
-            argumentTypes.add(type.getName());
-        }
+        name = method.getName();
+        argumentTypes = method.getParameterTypes();
     }
 
     public String getName() {
@@ -44,26 +38,12 @@ public class MethodId implements Serializable {
         this.name = name;
     }
 
-    public List<String> getArgumentTypes() {
+    public Class<?>[] getArgumentTypes() {
         return argumentTypes;
     }
 
-    public void setArgumentTypes(List<String> argumentTypes) {
+    public void setArgumentTypes(Class<?>[] argumentTypes) {
         this.argumentTypes = argumentTypes;
-    }
-
-    public Class<?>[] getArgumentTypesAsClasses() {
-        Class<?>[] result = new Class<?>[argumentTypes.size()];
-        int i = 0;
-        for (String s : argumentTypes) {
-            try {
-                result[i] = ClassUtils.getClass(getClass().getClassLoader(), s);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            i++;
-        }
-        return result;
     }
 
     @Override
@@ -72,13 +52,13 @@ public class MethodId implements Serializable {
         result.append(name);
         result.append('(');
         boolean first = true;
-        for (String s : argumentTypes) {
+        for (Class<?> s : argumentTypes) {
             if (first) {
                 first = false;
             } else {
                 result.append(", ");
             }
-            result.append(s);
+            result.append(s.getSimpleName());
         }
         result.append(')');
         return result.toString();

@@ -74,6 +74,8 @@
     <feature>shiro-web</feature>
     <feature>shiro-spring</feature>
 
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
+
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-locator/${geronimo.locator.version}</bundle>
@@ -177,7 +179,6 @@
     <bundle>mvn:org.apache.activemq/activemq-ra/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-pool/${activemq.version}</bundle>
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${smx.specs.version}</bundle>
-    <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle>
   </feature>
 
   <feature name="activemq-web-console" version="${project.version}" description="ActiveMQ Webconsole">
@@ -277,7 +278,6 @@
       Based on the OpenEngSB UI Core this feature setup a complete administration UI to control and configure
       the OpenEngSB according to the needs of a project.
     </details>
-    <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.admin/${project.version}</bundle>
   </feature>

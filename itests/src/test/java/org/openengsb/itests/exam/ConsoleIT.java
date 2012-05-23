@@ -31,7 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.domain.auditing.AuditingDomain;
@@ -121,22 +120,21 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
-        assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
-        assertTrue(contains(result, "authorization+composite-connector+root-authorizer", "ONLINE"));
+        assertTrue(contains(result, "root-authenticator", "ONLINE"));
+        assertTrue(contains(result, "auditing-root", "ONLINE"));
+        assertTrue(contains(result, "root-authorizer", "ONLINE"));
     }
 
     @Test
     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
-        ConnectorDescription connectorDescription = new ConnectorDescription();
+        ConnectorDescription connectorDescription = new ConnectorDescription("authentication", "composite-connector");
         Map<String, String> attributes =
         Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
 
         connectorDescription.setAttributes(attributes);
 
-        connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"),
-            connectorDescription);
+        connectorManager.create(connectorDescription);
 
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
@@ -149,12 +147,12 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
-        cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
+        cs.execute("openengsb:service -f true delete root-authenticator ");
         cs.execute("openengsb:service list");
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
-        assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+        assertFalse(contains(result, "root-authenticator", "ONLINE"));
     }
 
     @Test
@@ -170,8 +168,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         waitForDefaultConnectors();
         System.out.println("starting  ");
-        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing " +
-            "id:testID attr:something");
+        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing "
+                + "id:testID attr:something");
         cs.execute(executeCommand);
         cs.close();
 
@@ -191,7 +189,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     private void waitForDefaultConnectors() {
         getOsgiService(AuditingDomain.class);
-        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 30000);
-        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
+        getOsgiService(AuthenticationDomain.class, "(id=root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(id=root-authorizer)", 30000);
     }
 }

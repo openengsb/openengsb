@@ -28,7 +28,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
@@ -63,66 +62,58 @@ public final class SecureSampleConnector {
             + "  },\n"
             + "  \"message\" : {\n"
             + "    \"methodCall\" : {\n"
-            + "      \"classes\" : [ \"org.openengsb.core.api.model.ConnectorDefinition\", "
-            + "           \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
-            + "      \"methodName\" : \"create\",\n"
-            + "      \"realClassImplementation\" : [ \"org.openengsb.core.api.model.ConnectorDefinition\", "
-            + "           \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
-            + "      \"args\" : [ {\n"
-            + "        \"domainId\" : \"example\",\n"
-            + "        \"connectorId\" : \"external-connector-proxy\",\n"
-            + "        \"instanceId\" : \"example-remote\"\n"
-            + "      }, {\n"
-            + "        \"properties\" : {\n"
-            + "        },\n"
+            + "      \"methodName\" : \"createWithId\",\n"
+            + "      \"args\" : [ \"example-remote\", {\n"
+            + "        \"domainType\" : \"example\",\n"
+            + "        \"connectorType\" : \"external-connector-proxy\",\n"
             + "        \"attributes\" : {\n"
             + "          \"serviceId\" : \"example-remote\",\n"
             + "          \"portId\" : \"jms-json\",\n"
             + "          \"destination\" : \"tcp://127.0.0.1:6549?example-remote\"\n"
+            + "        },\n"
+            + "        \"properties\" : {\n"
             + "        }\n"
             + "      } ],\n"
             + "      \"metaData\" : {\n"
             + "        \"serviceId\" : \"connectorManager\"\n"
-            + "      }\n"
+            + "      },\n"
+            + "      \"classes\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
+            + "      \"realClassImplementation\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
             + "    },\n"
             + "    \"callId\" : \"1d075f48-53ee-427a-ae8a-8e9d5b6db229\",\n"
             + "    \"answer\" : false,\n"
             + "    \"destination\" : null\n"
             + "  },\n"
-            + "  \"timestamp\" : 1322173854513\n"
+            + "  \"timestamp\" : 1336060640851\n"
             + "}\n";
 
     private static final String UNREGISTER_MESSAGE = ""
-            + "{\n"
-            + "  \"principal\" : \"admin\",\n"
-            + "  \"credentials\" : {\n"
-            + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\",\n"
-            + "    \"data\" : {\n"
-            + "      \"value\" : \"password\"\n"
-            + "    },\n"
-            + "    \"binaryData\" : {\n"
-            + "    }\n"
-            + "  },\n"
-            + "  \"message\" : {\n"
-            + "    \"methodCall\" : {\n"
-            + "      \"classes\" : [ \"org.openengsb.core.api.model.ConnectorDefinition\" ],\n"
-            + "      \"methodName\" : \"delete\",\n"
-            + "      \"realClassImplementation\" : [ \"org.openengsb.core.api.model.ConnectorDefinition\" ],\n"
-            + "      \"args\" : [ {\n"
-            + "        \"domainId\" : \"example\",\n"
-            + "        \"connectorId\" : \"external-connector-proxy\",\n"
-            + "        \"instanceId\" : \"example-remote\"\n"
-            + "      } ],\n"
-            + "      \"metaData\" : {\n"
-            + "        \"serviceId\" : \"connectorManager\"\n"
-            + "      }\n"
-            + "    },\n"
-            + "    \"callId\" : \"963718b8-07bf-4478-af12-b28bd47248b1\",\n"
-            + "    \"answer\" : false,\n"
-            + "    \"destination\" : null\n"
-            + "  },\n"
-            + "  \"timestamp\" : 1322174540600\n"
-            + "}\n";
+            + "{"
+            + "  \"message\" : {"
+            + "    \"methodCall\" : {"
+            + "      \"methodName\" : \"delete\","
+            + "      \"args\" : [ \"example-remote\" ],"
+            + "      \"metaData\" : {"
+            + "        \"serviceId\" : \"connectorManager\""
+            + "      },"
+            + "      \"classes\" : [ \"java.lang.String\" ],"
+            + "      \"realClassImplementation\" : [ \"java.lang.String\" ]"
+            + "    },"
+            + "    \"callId\" : \"62259d96-bcae-4450-bded-850a7f06f2ac\","
+            + "    \"answer\" : false,"
+            + "    \"destination\" : null"
+            + "  },"
+            + "  \"timestamp\" : 1336060561647,"
+            + "  \"principal\" : \"admin\","
+            + "  \"credentials\" : {"
+            + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\","
+            + "    \"data\" : {"
+            + "      \"value\" : \"password\""
+            + "    },"
+            + "    \"binaryData\" : {"
+            + "    }"
+            + "  }"
+            + "}";
 
     static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
     private static final String URL = "failover:(tcp://localhost:6549)?timeout=60000";
@@ -155,11 +146,11 @@ public final class SecureSampleConnector {
         attributes.put("portId", "jms-json");
         attributes.put("destination", "tcp://127.0.0.1:6549?example-remote");
         attributes.put("serviceId", "example-remote");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-        ConnectorDefinition connectorId =
-            new ConnectorDefinition("example", "external-connector-proxy", "example-remote");
+        ConnectorDescription connectorDescription = new ConnectorDescription("example", "external-connector-proxy",
+            attributes, properties);
 
-        MethodCall methodCall = new MethodCall("create", new Object[]{ connectorId, connectorDescription });
+        String connectorId = "example-remote";
+        MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription });
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
@@ -173,10 +164,7 @@ public final class SecureSampleConnector {
 
     public static void main(String[] args) throws JsonGenerationException,
         JsonMappingException, IOException {
-
-        ConnectorDefinition connectorId =
-            new ConnectorDefinition("example", "external-connector-proxy", "example-remote");
-
+        String connectorId = "example-remote";
         MethodCall methodCall = new MethodCall("delete", new Object[]{ connectorId });
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");

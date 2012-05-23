@@ -78,7 +78,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -210,9 +209,7 @@ public class TestClientTest extends AbstractUITest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference =
-            new ServiceId(TestInterface.class.getName(),
-                new ConnectorDefinition("testdomain", "testconnector", "test-service").toString());
+        ServiceId reference = new ServiceId(TestInterface.class, "testdomain+testconnector+test-service");
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -220,8 +217,8 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ConnectorDefinition connectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
+        String connectorId = "testdomain+testconnector+test-service";
+        ServiceId reference = new ServiceId(TestInterface.class, connectorId);
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -248,7 +245,7 @@ public class TestClientTest extends AbstractUITest {
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
         for (MethodId mid : choices) {
-            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypes()));
         }
         List<Method> list = Arrays.asList(TestInterface.class.getMethods());
         Collections.sort(list, new MethodComparator());
@@ -664,7 +661,7 @@ public class TestClientTest extends AbstractUITest {
         for (int i = 0; i < choices.size(); i++) {
             MethodId methodId = choices.get(i);
             if (methodId.getName().equals(name)
-                    && ArrayUtils.isEquals(methodId.getArgumentTypesAsClasses(), parameterTypes)) {
+                    && ArrayUtils.isEquals(methodId.getArgumentTypes(), parameterTypes)) {
                 formTester.select("methodList", i);
                 tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
                 return;
@@ -689,8 +686,8 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.create(new ConnectorDefinition("testdomain", "testconnector", "test-service"),
-            new ConnectorDescription(
+        serviceManager.createWithId("testdomain+testconnector+test-service",
+            new ConnectorDescription("testdomain", "testconnector",
                 attributes, properties));
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);

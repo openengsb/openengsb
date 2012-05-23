@@ -449,4 +449,22 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
     }
 
+    @Test
+    public void throwEvent_shouldAuditEvent() throws Exception {
+        Event event = new Event("good");
+        service.processEvent(event);
+        verify(auditingMock).onEvent(event);
+    }
+
+    @Test
+    public void testFlowListener_shouldTrigger() throws Exception {
+        long id = service.startFlow("ci");
+        service.processEvent(new BuildSuccess());
+        Thread.sleep(300);
+        verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("Start Tests"));
+        service.processEvent(new TestSuccess());
+        verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("deployProject"));
+        service.waitForFlowToFinish(id);
+    }
+
 }
