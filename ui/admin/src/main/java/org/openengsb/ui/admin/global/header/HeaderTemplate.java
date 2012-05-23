@@ -43,23 +43,23 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
-    
+
     @PaxWicketBean(name = "openengsbVersion")
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
     @PaxWicketBean(name = "contextCurrentService")
     private ContextCurrentService contextService;
-    
+
     public HeaderTemplate(String id) {
         super(id);
-        
+
         baseInitialization();
         initializeTopMenu();
     }
 
     private void baseInitialization() {
-        
+
         BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
         homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
         add(homelink);
@@ -88,8 +88,8 @@ public class HeaderTemplate extends Panel {
             }
         };
         add(link);
-        
-        //Adds the context choice list
+
+        // Adds the context choice list
         final Label projectLabel = new Label("currentProject", new IModel<String>() {
 
             @Override
@@ -106,9 +106,9 @@ public class HeaderTemplate extends Panel {
             }
         });
         add(projectLabel);
-        
-        ListView<String>avaliableContexts = new ListView<String>("availableContexts", 
-                contextService.getAvailableContexts()) {
+
+        ListView<String> avaliableContexts = new ListView<String>("availableContexts",
+            contextService.getAvailableContexts()) {
 
             @Override
             protected void populateItem(ListItem<String> item) {
@@ -124,7 +124,7 @@ public class HeaderTemplate extends Panel {
             }
         };
         add(avaliableContexts);
-        
+
         // Adds the language choice list
         final Label languageLabel = new Label("currentLanguage", new IModel<String>() {
 
@@ -143,9 +143,9 @@ public class HeaderTemplate extends Panel {
         });
         languageLabel.setOutputMarkupId(true);
         add(languageLabel);
-        
+
         add(new Link<Object>("lang.en") {
-            
+
             @Override
             public void onClick() {
                 getSession().setLocale(Locale.ENGLISH);

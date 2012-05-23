@@ -163,6 +163,4 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
 
-
-
 }

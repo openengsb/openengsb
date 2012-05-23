@@ -50,9 +50,9 @@ public class OrganizeGlobalsPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);
 
-    public static final String pageNameKey="organizeGlobals.tile";
-    public static final String pageDescriptionKey="organizeGlobals.description";
-    
+    public static final String PAGE_NAME_KEY = "organizeGlobals.tile";
+    public static final String PAGE_DESCRIPTION_KEY = "organizeGlobals.description";
+
     @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 

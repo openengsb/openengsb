@@ -35,9 +35,9 @@ public class UserListPage extends BasePage {
     Panel userDialogue;
 
     private static final long serialVersionUID = -6841313899998597640L;
-    
-    public static final String pageNameKey="userListPage.title";
-    public static final String pageDescriptionKey="userListPage.description";
+
+    public static final String PAGE_NAME_KEY = "userListPage.title";
+    public static final String PAGE_DESCRIPTION_KEY = "userListPage.description";
 
     private final class MyUserListPanel extends UserListPanel {
         private static final long serialVersionUID = 4561294480791309137L;
@@ -48,29 +48,29 @@ public class UserListPage extends BasePage {
 
         @Override
         protected void openCreatePage(AjaxRequestTarget target) {
-            EditPanel createUser = new EditPanel("userDialogue");  
+            EditPanel createUser = new EditPanel("userDialogue");
             createUser.setOutputMarkupId(true);
             userDialogue.replaceWith(createUser);
-            userDialogue = createUser;	
+            userDialogue = createUser;
             target.add(userDialogue);
             target.appendJavaScript("showModalDialogue('" + createUser.getMarkupId()
                     + "','" + getLocalizer().getString("add.user", this) + "',false,500,400);");
-            
+
         }
 
         @Override
         protected void openEditorPage(AjaxRequestTarget target, String user) {
-            EditPanel editUser = new EditPanel("userDialogue", user);  
+            EditPanel editUser = new EditPanel("userDialogue", user);
             editUser.setOutputMarkupId(true);
             userDialogue.replaceWith(editUser);
             userDialogue = editUser;
             target.add(userDialogue);
             target.appendJavaScript("showModalDialogue('" + editUser.getMarkupId()
-                + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false,500,400);");
+                    + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false,500,400);");
         }
     }
-    
-    //TODO CHECK IF NEEDED? //
+
+    // TODO CHECK IF NEEDED? //
     private final class EditPanel extends UserEditPanel {
         private static final long serialVersionUID = -4646745795328499771L;
 
@@ -95,18 +95,18 @@ public class UserListPage extends BasePage {
     }
 
     public UserListPage() {
-        super(pageNameKey);
-    	initContent();
+        super(PAGE_NAME_KEY);
+        initContent();
     }
 
     public UserListPage(PageParameters parameters) {
-        super(parameters, pageNameKey);
+        super(parameters, PAGE_NAME_KEY);
         initContent();
     }
 
     private void initContent() {
         add(new MyUserListPanel("lazy"));
-        //Panel for Modal Dialog for User add/edit form
+        // Panel for Modal Dialog for User add/edit form
         userDialogue = new EmptyPanel("userDialogue");
         userDialogue.setOutputMarkupId(true);
         add(userDialogue);

@@ -26,14 +26,14 @@ public class Index extends BasePage {
 
     private static final long serialVersionUID = -445277092895685296L;
 
-    public static final String pageNameKey="dashboard.title";
-    public static final String pageDescriptionKey="dashboard.description";
-	
-	public Index() {
-		super(pageNameKey);
+    public static final String PAGE_NAME_KEY = "dashboard.title";
+    public static final String PAGE_DESCRIPTION_KEY = "dashboard.description";
+
+    public Index() {
+        super(PAGE_NAME_KEY);
     }
 
     public Index(PageParameters parameters) {
-        super(parameters,pageNameKey);
+        super(parameters, PAGE_NAME_KEY);
     }
 }

@@ -78,9 +78,9 @@ public class WiringPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
-    public static final String pageNameKey = "wiringPage.title";
-    public static final String pageDescriptionKey = "wiringPage.description";
-    
+    public static final String PAGE_NAME_KEY = "wiringPage.title";
+    public static final String PAGE_DESCRIPTION_KEY = "wiringPage.description";
+
     @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 

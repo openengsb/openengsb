@@ -45,29 +45,32 @@ public class MenuTemplate extends Panel {
 
     private final ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
     private final ArrayList<String> avialableItems = new ArrayList<String>();
-    
+
     private static String menuIndex;
-    
+
     @PaxWicketBean(name = "attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
 
-
     public MenuTemplate(String id, String menuIndex) {
         super(id);
-        
+
         MenuTemplate.menuIndex = menuIndex;
         initMainMenuItems();
         initMainMenu();
     }
 
     private void initMainMenuItems() {
-        addMenuItem("Index", Index.class, Index.pageNameKey, Index.pageDescriptionKey);
-        addMenuItem("UserService", UserListPage.class, UserListPage.pageNameKey, UserListPage.pageDescriptionKey, "ROLE_ADMIN");
-        addMenuItem("TestClient", TestClient.class, TestClient.pageNameKey, TestClient.pageDescriptionKey);
-        addMenuItem("SendEventPage", SendEventPage.class, SendEventPage.pageNameKey, SendEventPage.pageDescriptionKey);
-        addMenuItem("ServiceListPage", ServiceListPage.class, ServiceListPage.pageNameKey, ServiceListPage.pageDescriptionKey);
-        addMenuItem("TaskOverview", TaskOverview.class, TaskOverview.pageNameKey, TaskOverview.pageDescriptionKey);
-        addMenuItem("WiringPage", WiringPage.class, WiringPage.pageNameKey, WiringPage.pageDescriptionKey , "ROLE_ADMIN");
+        addMenuItem("Index", Index.class, Index.PAGE_NAME_KEY, Index.PAGE_DESCRIPTION_KEY);
+        addMenuItem("UserService", UserListPage.class, UserListPage.PAGE_NAME_KEY, UserListPage.PAGE_DESCRIPTION_KEY,
+            "ROLE_ADMIN");
+        addMenuItem("TestClient", TestClient.class, TestClient.PAGE_NAME_KEY, TestClient.PAGE_DESCRIPTION_KEY);
+        addMenuItem("SendEventPage", SendEventPage.class, SendEventPage.PAGE_NAME_KEY,
+            SendEventPage.PAGE_DESCRIPTION_KEY);
+        addMenuItem("ServiceListPage", ServiceListPage.class, ServiceListPage.PAGE_NAME_KEY,
+            ServiceListPage.PAGE_DESCRIPTION_KEY);
+        addMenuItem("TaskOverview", TaskOverview.class, TaskOverview.PAGE_NAME_KEY, TaskOverview.PAGE_DESCRIPTION_KEY);
+        addMenuItem("WiringPage", WiringPage.class, WiringPage.PAGE_NAME_KEY, WiringPage.PAGE_DESCRIPTION_KEY,
+            "ROLE_ADMIN");
     }
 
     private void initMainMenu() {
@@ -78,25 +81,25 @@ public class MenuTemplate extends Panel {
         }
 
         // generate main navigation
-        ListView<MenuItem>menuItemsList = new ListView<MenuItem>("menuItems", menuItems) {
+        ListView<MenuItem> menuItemsList = new ListView<MenuItem>("menuItems", menuItems) {
             @Override
             protected void populateItem(ListItem<MenuItem> item) {
                 MenuItem menuItem = item.getModelObject();
                 item.add(menuItem.getLink());
-                
+
                 Label itemDescription = new Label("itemDescripton", menuItem.getItemDescription());
                 item.add(itemDescription);
-                
+
                 if (menuItem.getIcon() != null) {
                     String backgroundAttribute = "background:url('resources/"
-                        + menuItem.getIcon().getExtension() + "') no-repeat scroll left center transparent;";
+                            + menuItem.getIcon().getExtension() + "') no-repeat scroll left center transparent;";
                     item.add(AttributeModifier.replace("style", backgroundAttribute));
                 }
-                
+
                 if (item.getIndex() == menuItems.size() - 1) {
                     item.add(AttributeModifier.replace("class", "lastElement"));
                 }
-                
+
                 // set menu item to active
                 if (menuItem.getItemName().equals(MenuTemplate.getActiveIndex())) {
                     item.add(AttributeModifier.replace("class", "activeElement"));
@@ -105,14 +108,14 @@ public class MenuTemplate extends Panel {
         };
         add(menuItemsList);
     }
-    
+
     /**
      * get the name of the current active menu item
      */
     public static String getActiveIndex() {
         return MenuTemplate.menuIndex;
     }
-    
+
     /**
      * Adds a new item to main header navigation where the index defines the name of the index, which should be the
      * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
@@ -122,17 +125,19 @@ public class MenuTemplate extends Panel {
             String... authority) {
         addMenuItem(index, linkClass, langKey, langDescKey, null, authority);
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String langDescKey, 
+    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String langDescKey,
             ResourceReference icon, String... authority) {
-        
-    	ComponentStringResourceLoader csrl = new ComponentStringResourceLoader();
-        String label = csrl.loadStringResource(linkClass, langKey, getSession().getLocale(), getSession().getStyle(),"");
-        String description = csrl.loadStringResource(linkClass, langDescKey, getSession().getLocale(), getSession().getStyle(),"");
+
+        ComponentStringResourceLoader csrl = new ComponentStringResourceLoader();
+        String label =
+            csrl.loadStringResource(linkClass, langKey, getSession().getLocale(), getSession().getStyle(), "");
+        String description =
+            csrl.loadStringResource(linkClass, langDescKey, getSession().getLocale(), getSession().getStyle(), "");
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
         addAuthorizationRoles(pageLabelLink, authority);
-        
+
         if (icon == null) {
             menuItems.add(new MenuItem(index, pageLabelLink, description));
         } else {
@@ -178,14 +183,14 @@ public class MenuTemplate extends Panel {
         public BookmarkablePageLabelLink<? extends WebPage> getLink() {
             return link;
         }
-        
+
         public ResourceReference getIcon() {
             return icon;
         }
-        
+
         public String getItemDescription() {
             return itemDescription;
         }
-    } 
+    }
 
 }

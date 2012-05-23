@@ -32,9 +32,9 @@ public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
     private static final long serialVersionUID = 3042519856428070188L;
 
-    public static final String pageNameKey="ruleeditor.tile";
-    public static final String pageDescriptionKey="ruleeditor.description";
-	
+    public static final String PAGE_NAME_KEY = "ruleeditor.tile";
+    public static final String PAGE_DESCRIPTION_KEY = "ruleeditor.description";
+
     @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
@@ -43,7 +43,7 @@ public class RuleEditorPage extends BasePage implements RuleManagerProvider {
     }
 
     public RuleEditorPage(PageParameters parameters) {
-        super(parameters, pageNameKey);
+        super(parameters, PAGE_NAME_KEY);
         initContent();
     }
 

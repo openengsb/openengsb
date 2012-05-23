@@ -17,8 +17,8 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -36,49 +36,50 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
 public abstract class BasePage extends OpenEngSBPage {
 
-	private static final long serialVersionUID = 4189867438159317921L;
+    private static final long serialVersionUID = 4189867438159317921L;
 
-	private String pageNameKey;
-	
-	public BasePage() {
-		checkAuthentication();
+    private String pageNameKey;
+
+    public BasePage() {
+        checkAuthentication();
         initCommonContent();
     }
-	
-	public BasePage(String pageNameKey) {
-		checkAuthentication();
-		this.pageNameKey=pageNameKey;
+
+    public BasePage(String pageNameKey) {
+        checkAuthentication();
+        this.pageNameKey = pageNameKey;
         initCommonContent();
     }
-	
-	private void checkAuthentication() {
-		if (!((AuthenticatedWebSession) getSession()).isSignedIn()) {
+
+    private void checkAuthentication() {
+        if (!((AuthenticatedWebSession) getSession()).isSignedIn()) {
             throw new RestartResponseAtInterceptPageException(LoginPage.class);
         }
-	}
+    }
 
-	@Override
-	  public void renderHead(IHeaderResponse response) {
+    @Override
+    public void renderHead(IHeaderResponse response) {
         response.renderCSSReference(CommonCssLocator.getGridsCss());
         response.renderCSSReference(CommonCssLocator.getCommonCss());
         response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
-        /*add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
-                .getFavIcon())); */
-	  }
-	
+        /*
+         * add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator .getFavIcon()));
+         */
+    }
+
     private void initCommonContent() {
         initializeHeader();
         initializeMenu();
         initializeFooter();
-        
+
         if (pageNameKey != null) {
-            Label sectionName = new Label("sectionName",new StringResourceModel(pageNameKey, this, null));
+            Label sectionName = new Label("sectionName", new StringResourceModel(pageNameKey, this, null));
             add(sectionName);
         } else {
-        	add(new EmptyPanel("sectionName"));
+            add(new EmptyPanel("sectionName"));
         }
     }
 
@@ -86,11 +87,11 @@ public abstract class BasePage extends OpenEngSBPage {
         super(parameters);
         initCommonContent();
     }
-    
+
     public BasePage(PageParameters parameters, String pageNameKey) {
         super(parameters);
         initCommonContent();
-        this.pageNameKey=pageNameKey;
+        this.pageNameKey = pageNameKey;
     }
 
     private void initializeFooter() {
@@ -107,7 +108,7 @@ public abstract class BasePage extends OpenEngSBPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *  
+     * 
      */
     public String getMenuItem() {
         return this.getClass().getSimpleName();
@@ -115,7 +116,7 @@ public abstract class BasePage extends OpenEngSBPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     @Override
     public String getHeaderMenuItem() {

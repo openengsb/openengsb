@@ -258,9 +258,9 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     private static void logRequest(Object o) {
         if (o.getClass().isArray()) {
-            LOGGER.info(ArrayUtils.toString(o));
+            LOGGER.trace(ArrayUtils.toString(o));
         } else {
-            LOGGER.info(o.toString());
+            LOGGER.trace(o.toString());
         }
     }
 }

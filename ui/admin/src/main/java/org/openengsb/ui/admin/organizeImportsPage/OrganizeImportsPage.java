@@ -52,9 +52,9 @@ public class OrganizeImportsPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeImportsPage.class);
 
-    public static final String pageNameKey="organizeImports.tile";
-    public static final String pageDescriptionKey="ogranizeImports.description";
-    
+    public static final String PAGE_NAME_KEY = "organizeImports.tile";
+    public static final String PAGE_DESCRIPTION_KEY = "ogranizeImports.description";
+
     @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 

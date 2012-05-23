@@ -110,9 +110,9 @@ public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    public static final String pageNameKey="testClient.title";
-    public static final String pageDescriptionKey="testClient.description";
-    
+    public static final String PAGE_NAME_KEY = "testClient.title";
+    public static final String PAGE_DESCRIPTION_KEY = "testClient.description";
+
     @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
@@ -159,7 +159,7 @@ public class TestClient extends BasePage {
     }
 
     public TestClient(PageParameters parameters) {
-        super(parameters, pageNameKey);
+        super(parameters, PAGE_NAME_KEY);
         initContent();
     }
 
@@ -394,7 +394,6 @@ public class TestClient extends BasePage {
         return organize;
     }
 
-    
     @SuppressWarnings("serial")
     private ListView<DomainProvider> makeServiceList() {
         return new ListView<DomainProvider>("domains", domainProvider) {

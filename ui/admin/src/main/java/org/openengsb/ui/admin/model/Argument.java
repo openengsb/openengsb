@@ -72,7 +72,7 @@ public class Argument implements Serializable {
         if (value == null) {
             return null;
         }
-        
+
         if (!isBean) {
             return MethodUtil.convertToCorrectClass(type, value);
         } else {

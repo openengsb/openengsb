@@ -28,7 +28,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
@@ -39,6 +38,7 @@ import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
+import org.springframework.aop.framework.ProxyFactory;
 
 public class MenuTemplateTest extends AbstractUITest {
 
@@ -81,7 +81,7 @@ public class MenuTemplateTest extends AbstractUITest {
         tester.startPage(page);
         return MenuTemplate.getActiveIndex().equals(expectedIndexName);
     }
-    
+
     private void setupTestClientPage() {
         context.putBean(bundleContext);
         context.putBean(mock(ProxyFactory.class));

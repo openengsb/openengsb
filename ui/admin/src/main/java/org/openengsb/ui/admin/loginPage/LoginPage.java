@@ -17,12 +17,11 @@
 
 package org.openengsb.ui.admin.loginPage;
 
-
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -42,7 +41,6 @@ import org.openengsb.ui.common.resources.js.CommonJsLocator;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
-
 public class LoginPage extends OpenEngSBPage {
 
     private static final long serialVersionUID = 4704550987311760491L;
@@ -57,34 +55,35 @@ public class LoginPage extends OpenEngSBPage {
             super(id);
         }
     }
-    
+
     public LoginPage() {
         initContent();
     }
-    
+
     public LoginPage(PageParameters parameters) {
         super(parameters);
     }
 
     @Override
     public void renderHead(IHeaderResponse response) {
-    response.renderCSSReference(CommonCssLocator.getGridsCss());
-    response.renderCSSReference(CommonCssLocator.getLoginPageCss());
-    response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
-    response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
-    response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
-    response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
-    /*add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator
-              .getFavIcon())); */
-    //Javascript code to set the focus on the unsername input field. Only necessary for loginpage, 
-    //therefore injected directly
-    response.renderJavaScript("" +
-    		"$(function() {" +
-            "  $(\"#username\").focus();" +
-            "});" +
-    		"", "setFocusOnload");
-    } 
-    
+        response.renderCSSReference(CommonCssLocator.getGridsCss());
+        response.renderCSSReference(CommonCssLocator.getLoginPageCss());
+        response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
+        /*
+         * add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator .getFavIcon()));
+         */
+        // Javascript code to set the focus on the unsername input field. Only necessary for loginpage,
+        // therefore injected directly
+        response.renderJavaScript(""
+                + "$(function() {"
+                + "  $(\"#username\").focus();"
+                + "});"
+                + "", "setFocusOnload");
+    }
+
     private void initContent() {
         @SuppressWarnings("serial")
         Form<UsernamePassword> loginForm = new Form<UsernamePassword>("loginForm") {
@@ -108,28 +107,28 @@ public class LoginPage extends OpenEngSBPage {
         add(loginForm);
         loginForm.add(new RequiredTextField<String>("username"));
         loginForm.add(new PasswordTextField("password"));
-        
+
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-        
+
         add(new Image("topImage", CommonPictureLocator.getGreyscaleLogoBig()));
 
         MyImprintPanel imprintDialogue = new MyImprintPanel("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);
         add(imprintDialogue);
-        
+
         ExternalLink addUserLink = new ExternalLink("imprint", "#");
         addUserLink.add(AttributeModifier.replace("onClick",
-                "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
-                + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
+            "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
+                    + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
         loginForm.add(addUserLink);
-        
-        add(new Link<Object>("lang.en") {
-            
-			private static final long serialVersionUID = -2740581767694866689L;
 
-			@Override
+        add(new Link<Object>("lang.en") {
+
+            private static final long serialVersionUID = -2740581767694866689L;
+
+            @Override
             public void onClick() {
                 getSession().setLocale(Locale.ENGLISH);
                 setResponsePage(this.getPage());
@@ -138,9 +137,9 @@ public class LoginPage extends OpenEngSBPage {
 
         add(new Link<Object>("lang.de") {
 
-			private static final long serialVersionUID = -6858440905643185661L;
+            private static final long serialVersionUID = -6858440905643185661L;
 
-			@Override
+            @Override
             public void onClick() {
                 getSession().setLocale(Locale.GERMAN);
                 setResponsePage(this.getPage());

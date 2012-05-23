@@ -64,7 +64,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
 
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
-        LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
+        LOGGER.info("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
         Class<? extends Credentials> credentialType;
@@ -79,7 +79,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
             throw new FilterException(e);
         }
 
-        LOGGER.debug("authenticated");
+        LOGGER.info("authenticated {}", input.getPrincipal());
         return (SecureResponse) next.filter(input, metaData);
     }
 
