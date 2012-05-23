@@ -5,34 +5,43 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
+import java.util.Arrays;
+import java.util.List;
 
 import org.openengsb.core.weaver.internal.model.ManipulationUtils;
 
 import javassist.CannotCompileException;
 
 public class ModelAgent implements ClassFileTransformer {
-    
+
     public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.println("MyAgent was started - new version");
         inst.addTransformer(new ModelAgent());
     }
 
     @Override
-    public byte[] transform(ClassLoader arg0, String arg1, Class<?> arg2, ProtectionDomain arg3, byte[] arg4)
+    public byte[] transform(ClassLoader classLoader, String className, Class<?> clazz, ProtectionDomain domain,
+            byte[] bytecode)
         throws IllegalClassFormatException {
 
-        if (arg1.startsWith("java") || arg1.startsWith("$") || arg1.startsWith("sun")
-                || arg1.startsWith("org/junit")) {
-            return arg4;
+        if(tryEnhancement(className)) {
+            try {
+                return ManipulationUtils.enhanceModel(bytecode);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
         }
-        
-        try {
-            return ManipulationUtils.enhanceModel(arg4);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
+        return bytecode;
+    }
+    
+    private boolean tryEnhancement(String className) {
+        List<String> filter = Arrays.asList("java", "$", "sun", "org/junit");
+        for(String element : filter) {
+            if(className.startsWith(element)) {
+                return false;
+            }
         }
-        return arg4;
+        return true;
     }
 }
