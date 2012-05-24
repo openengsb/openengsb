@@ -121,13 +121,13 @@
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
-      <scope>provided</scope>
+      <version>${javassist.version}</version>
     </dependency>
     <!-- OpenEngSb dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <scope>provided</scope>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
