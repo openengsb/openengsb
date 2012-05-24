@@ -18,25 +18,27 @@
 package org.openengsb.core.weaver.model;
 
 import org.openengsb.core.api.ekb.annotations.Model;
+import org.openengsb.core.api.model.OpenEngSBModelId;
 
 @Model
 public class TestModel {
 
     private String id;
     private String name;
-    
+
+    @OpenEngSBModelId
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }

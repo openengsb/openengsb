@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.Test;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
@@ -44,33 +45,33 @@ public class ManipulationUtilsTest {
         String id = null;
         String name = null;
         for (OpenEngSBModelEntry entry : entries) {
-            if(entry.getKey().equals("id")) {
+            if (entry.getKey().equals("id")) {
                 id = (String) entry.getValue();
-            } else if(entry.getKey().equals("name")) {
+            } else if (entry.getKey().equals("name")) {
                 name = (String) entry.getValue();
             }
         }
         assertThat(id, is(model.getId()));
         assertThat(name, is(model.getName()));
     }
-    
+
     @Test
     public void testIfAddOpenEngSBModelEntryWork_shouldWork() {
         TestModel model = new TestModel();
         OpenEngSBModel bla = (OpenEngSBModel) model;
-        
+
         ModelUtils.addOpenEngSBModelEntry(bla, new OpenEngSBModelEntry("test", "test", String.class));
-        
+
         List<OpenEngSBModelEntry> entries = bla.getOpenEngSBModelEntries();
         String test = null;
         for (OpenEngSBModelEntry entry : entries) {
-            if(entry.getKey().equals("test")) {
+            if (entry.getKey().equals("test")) {
                 test = (String) entry.getValue();
             }
         }
         assertThat(test, is("test"));
     }
-    
+
     @Test
     public void testIfRemoveOpenEngSBModelEntryWork_shouldWork() {
         TestModel model = new TestModel();
@@ -79,4 +80,16 @@ public class ManipulationUtilsTest {
         assertThat(ModelUtils.getOpenEngSBModelEntries(model).size(), is(2));
     }
 
+    @Test
+    public void testIfModelIdInsertionWorks_shouldWork() {
+        TestModel model = new TestModel();
+        model.setId("id");
+        String id = null;
+        for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(model)) {
+            if (entry.getKey().equals(EDBConstants.MODEL_OID)) {
+                id = (String) entry.getValue();
+            }
+        }
+        assertThat(id, is(model.getId()));
+    }
 }

@@ -19,14 +19,20 @@ package org.openengsb.core.weaver.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.hooks.weaving.WeavingHook;
 
 public class Activator implements BundleActivator {
+    private ServiceRegistration<?> weavingHookService;
 
     @Override
     public void start(BundleContext context) throws Exception {
+        ModelWeaver service = new ModelWeaver();
+        weavingHookService = context.registerService(WeavingHook.class.getName(), service, null);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        weavingHookService.unregister();
     }
 }

@@ -21,10 +21,10 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
   
-  <bean id="weavingHookService" class="org.openengsb.core.weaver.internal.ModelWeaver" />
+  <!-- <bean id="weavingHookService" class="org.openengsb.core.weaver.internal.ModelWeaver" />
 
   <service interface="org.osgi.framework.hooks.weaving.WeavingHook">
     <ref component-id="weavingHookService" />
-  </service>
+  </service> -->
   
 </blueprint>

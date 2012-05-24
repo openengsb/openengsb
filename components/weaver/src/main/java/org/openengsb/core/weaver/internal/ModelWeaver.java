@@ -26,11 +26,11 @@ import org.osgi.framework.hooks.weaving.WovenClass;
 import javassist.CannotCompileException;
 
 public class ModelWeaver implements WeavingHook {
-    
+
     public ModelWeaver() {
         ManipulationUtils.appendClassLoader(ModelWeaver.class.getClassLoader());
     }
-    
+
     @Override
     public void weave(WovenClass wovenClass) {
         String className = wovenClass.getClassName();
@@ -46,9 +46,9 @@ public class ModelWeaver implements WeavingHook {
             e.printStackTrace();
         }
     }
-    
+
     private byte[] doActualWeaving(byte[] wovenClass) throws IOException, CannotCompileException {
         return ManipulationUtils.enhanceModel(wovenClass);
     }
-    
+
 }
