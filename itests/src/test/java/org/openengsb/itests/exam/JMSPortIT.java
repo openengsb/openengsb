@@ -45,7 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -54,7 +53,6 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.JsonUtils;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -209,11 +207,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
         MethodResultMessage methodResult = response.getMessage();
         JsonUtils.convertResult(methodResult);
-        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
-        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
 
         assertThat(decryptedResult.contains("successful"), is(true));
-        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
         assertThat(model.getResult(), is("successful"));
     }
 
@@ -274,7 +270,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         @Override
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
-            ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            ExampleResponseModel response = new ExampleResponseModel();
             response.setResult("successful");
             return response;
         }

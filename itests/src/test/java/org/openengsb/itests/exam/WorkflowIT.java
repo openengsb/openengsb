@@ -33,7 +33,6 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -81,7 +80,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         @Override
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;
-            return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            return new ExampleResponseModel();
         }
     }
 

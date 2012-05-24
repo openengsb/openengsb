@@ -43,7 +43,7 @@ import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.util.ModelUtils;
@@ -161,7 +161,7 @@ public class EDBIT extends AbstractExamTestHelper {
         fw.flush();
         fw.close();
 
-        TestFileModel model = ModelUtils.createEmptyModelObject(TestFileModel.class);
+        TestFileModel model = new TestFileModel();
         model.setTestId("testId");
         model.setFile(f);
 
@@ -184,7 +184,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EDBException.class)
     public void testDoubleCommit_shouldThrowError() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setEdbId("createevent/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
 
@@ -194,7 +194,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBInsertCommit_shouldSaveModel() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("createevent/2");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
@@ -211,7 +211,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBUpdateCommit_shouldWork() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("batchevent/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
@@ -224,7 +224,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.setName("blab");
         commit = getTestEKBCommit().addUpdate(model);
-        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model2 = new TestModel();
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
         commit.addInsert(model2);
@@ -250,7 +250,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EDBException.class)
     public void testEKBDeleteCommitWithNonExistingOid_shouldThrowError() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setEdbId("deleteevent/1");
         EKBCommit commit = getTestEKBCommit().addDelete(model);
         persist.commit(commit);
@@ -258,7 +258,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBUpdateCommit_shouldUpdateModel() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/2");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
@@ -287,7 +287,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBConflictCommitEvent_shouldResolveInNoConflict() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/3");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
@@ -295,7 +295,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
         Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
+        OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
+        ModelUtils.addOpenEngSBModelEntry(model, entry);
         commit = getTestEKBCommit().addUpdate(model);
         persist.commit(commit);
 
@@ -309,14 +310,15 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EDBException.class)
     public void testEKBConflictCommitEvent_shouldResolveInConflict() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/4");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
         persist.commit(commit);
 
         model.setName("blab");
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
+        OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
+        ModelUtils.addOpenEngSBModelEntry(model, entry);
 
         commit = getTestEKBCommit().addUpdate(model);
         persist.commit(commit);
@@ -324,10 +326,10 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testSupportOfSimpleSubModels_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("testSub/1");
-        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub = new SubModel();
         sub.setEdbId("testSub/2");
         sub.setName("sub");
         model.setSubModel(sub);
@@ -344,14 +346,14 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testSupportOfListOfSubModels_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("testSub/3");
 
-        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub1 = new SubModel();
         sub1.setEdbId("testSub/4");
         sub1.setName("sub1");
-        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub2 = new SubModel();
         sub2.setEdbId("testSub/5");
         sub2.setName("sub2");
 
@@ -376,48 +378,98 @@ public class EDBIT extends AbstractExamTestHelper {
         return commit;
     }
 
-    public interface TestModel extends OpenEngSBModel {
-        void setName(String name);
+    @Model
+    public class TestModel{
+        private String name;
+        private String edbId;
+        private SubModel subModel;
+        private List<SubModel> subs;
+        private List<Integer> ids;
+        
+        public void setName(String name) {
+            this.name = name;
+        }
 
-        String getName();
+        public String getName() {
+            return name;
+        }
 
         @OpenEngSBModelId
-        void setEdbId(String edbId);
+        public void setEdbId(String edbId) {
+            this.edbId = edbId;
+        }
 
-        String getEdbId();
+        public String getEdbId() {
+            return edbId;
+        }
 
-        void setSubModel(SubModel subModel);
+        public void setSubModel(SubModel subModel) {
+            this.subModel = subModel;
+        }
 
-        SubModel getSubModel();
+        public SubModel getSubModel() {
+            return subModel;
+        }
 
-        void setSubs(List<SubModel> subs);
+        public void setSubs(List<SubModel> subs) {
+            this.subs = subs;
+        }
 
-        List<SubModel> getSubs();
+        public List<SubModel> getSubs() {
+            return subs;
+        }
 
-        void setIds(List<Integer> ids);
+        public void setIds(List<Integer> ids) {
+            this.ids = ids;
+        }
 
-        List<Integer> getIds();
+        public List<Integer> getIds() {
+            return ids;
+        }
     }
 
-    public interface SubModel extends OpenEngSBModel {
+    @Model
+    public class SubModel {
+        private String name;
+        private String edbId;
 
-        void setName(String name);
+        public void setName(String name) {
+            this.name = name;
+        }
 
-        String getName();
+        public String getName() {
+            return name;
+        }
 
-        void setEdbId(String edbId);
+        public void setEdbId(String edbId) {
+            this.edbId = edbId;
+        }
 
-        String getEdbId();
+        public String getEdbId() {
+            return edbId;
+        }
     }
 
-    public interface TestFileModel extends OpenEngSBModel {
+    @Model
+    public class TestFileModel {
+        private String testId;
+        private File file;
+        
         @OpenEngSBModelId
-        void setTestId(String testId);
+        public void setTestId(String testId) {
+            this.testId = testId;
+        }
 
-        String getTestId();
+        public String getTestId() {
+            return testId;
+        }
 
-        void setFile(File file);
+        public void setFile(File file) {
+            this.file = file;
+        }
 
-        File getFile();
+        public File getFile() {
+            return file;
+        }
     }
 }
