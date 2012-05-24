@@ -50,7 +50,7 @@ public final class ModelUtils {
      * passed object is not an OpenEngSBModel instance.
      */
     public static List<OpenEngSBModelEntry> getOpenEngSBModelEntries(Object model) {
-        if (model instanceof OpenEngSBModel) {
+        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             return ((OpenEngSBModel) model).getOpenEngSBModelEntries();
         }
         throw new IllegalArgumentException("Can only be performed with models");
@@ -60,9 +60,10 @@ public final class ModelUtils {
      * Performs the addOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
-    public void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
-        if (model instanceof OpenEngSBModel) {
+    public static void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
+        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
+            return;
         }
         throw new IllegalArgumentException("Can only be performed with models");
     }
@@ -71,9 +72,10 @@ public final class ModelUtils {
      * Performs the removeOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the
      * passed object is not an OpenEngSBModel instance.
      */
-    public void removeOpenEngSBModelEntry(Object model, String key) {
-        if (model instanceof OpenEngSBModel) {
+    public static void removeOpenEngSBModelEntry(Object model, String key) {
+        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
+            return;
         }
         throw new IllegalArgumentException("Can only be performed with models");
     }
