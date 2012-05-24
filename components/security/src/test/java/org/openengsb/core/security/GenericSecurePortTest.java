@@ -69,6 +69,7 @@ import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.internal.FileKeySource;
 import org.openengsb.core.security.internal.OpenEngSBSecurityManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.delegation.service.ClassProvider;
@@ -83,6 +84,9 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     @Rule
     public TemporaryFolder dataFolder = new TemporaryFolder();
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     private static final String LOREM_IPSUM = ""
             + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "

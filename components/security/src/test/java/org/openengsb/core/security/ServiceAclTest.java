@@ -25,6 +25,7 @@ import java.util.Hashtable;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.connector.serviceacl.internal.ServiceAclServiceImpl;
@@ -47,6 +48,7 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 
@@ -56,6 +58,9 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     private AuthorizationDomain servicePermissionAccessConnector;
     private UserDataManager userManager;
     private SecurityAttributeProviderImpl attributeStore;
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     @Before
     public void setUp() throws Exception {
