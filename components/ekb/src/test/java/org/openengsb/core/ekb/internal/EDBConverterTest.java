@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
@@ -51,7 +50,7 @@ public class EDBConverterTest {
 
     @Test
     public void testSimpleModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
         Date date = new Date();
         model.setDate(date);
@@ -77,10 +76,10 @@ public class EDBConverterTest {
 
     @Test
     public void testComplexModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
 
-        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub = new SubModel();
         sub.setId("sub");
         sub.setValue("teststring");
         model.setSub(sub);
@@ -97,13 +96,13 @@ public class EDBConverterTest {
 
     @Test
     public void testComplexListModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
 
-        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub1 = new SubModel();
         sub1.setId("sub1");
         sub1.setValue("teststring1");
-        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub2 = new SubModel();
         sub2.setId("sub2");
         sub2.setValue("teststring2");
         List<SubModel> subs = new ArrayList<SubModel>();
@@ -135,7 +134,7 @@ public class EDBConverterTest {
         Map<String, String> map = new HashMap<String, String>();
         map.put("keyA", "valueA");
         map.put("keyB", "valueB");
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
         model.setMap(map);
         

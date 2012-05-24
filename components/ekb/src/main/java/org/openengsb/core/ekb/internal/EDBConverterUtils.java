@@ -75,6 +75,13 @@ public final class EDBConverterUtils {
         return builder.toString();
     }
 
+    public static String createOID(Object model, String domainId, String connectorId) {
+        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
+            throw new IllegalArgumentException("This function need to get a model passed.");
+        }
+        return createOID((OpenEngSBModel) model, domainId, connectorId);
+    }
+
     /**
      * Creates the OID prefix for a model
      */

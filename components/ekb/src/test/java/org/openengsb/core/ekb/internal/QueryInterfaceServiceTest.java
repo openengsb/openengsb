@@ -35,7 +35,6 @@ import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
@@ -116,9 +115,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelGeneral_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        TestModel model2 =
-            ModelUtils.createEmptyModelObject(TestModel.class,
-                model.getOpenEngSBModelEntries().toArray(new OpenEngSBModelEntry[0]));
+        TestModel model2 = ModelUtils.createModel(TestModel.class, ModelUtils.getOpenEngSBModelEntries(model));
 
         assertThat(model.getId().equals(model2.getId()), is(true));
         assertThat(model.getDate().equals(model2.getDate()), is(true));
@@ -130,23 +127,18 @@ public class QueryInterfaceServiceTest {
         for (int i = 0; i < list.size(); i++) {
             assertThat(list.get(i).toString().equals(list2.get(i).toString()), is(true));
         }
-        assertThat(model.toString().equals(model2.toString()), is(true));
     }
 
     @Test
     public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
-
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         SubModel sub = model.getSub();
-
         boolean subValue = false;
 
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("sub")) {
-                OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
-                SubModel s = ModelUtils.generateModelOutOfWrapper(wrapper, SubModel.class);
+                SubModel s = (SubModel) entry.getValue();
                 if (s.getId().equals(sub.getId()) && s.getValue().equals(sub.getValue())) {
                     subValue = true;
                 }
@@ -161,8 +153,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
-
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
 
         SubModel subModel1 = null;
         SubModel subModel2 = null;
@@ -170,10 +161,9 @@ public class QueryInterfaceServiceTest {
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("subs")) {
                 @SuppressWarnings("unchecked")
-                List<OpenEngSBModelWrapper> subModels = (List<OpenEngSBModelWrapper>) entry.getValue();
-
-                subModel1 = ModelUtils.generateModelOutOfWrapper(subModels.get(0), SubModel.class);
-                subModel2 = ModelUtils.generateModelOutOfWrapper(subModels.get(1), SubModel.class);
+                List<SubModel> subModels = (List<SubModel>) entry.getValue();
+                subModel1 = subModels.get(0);
+                subModel2 = subModels.get(1);
             }
         }
 
@@ -339,8 +329,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
-
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
 
         boolean testExists = false;
         Object testValue = null;
