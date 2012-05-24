@@ -50,10 +50,10 @@ public final class ModelUtils {
      * passed object is not an OpenEngSBModel instance.
      */
     public static List<OpenEngSBModelEntry> getOpenEngSBModelEntries(Object model) {
-        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            return ((OpenEngSBModel) model).getOpenEngSBModelEntries();
+        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
+            throw new IllegalArgumentException("Can only be performed with models");            
         }
-        throw new IllegalArgumentException("Can only be performed with models");
+        return ((OpenEngSBModel) model).getOpenEngSBModelEntries();
     }
 
     /**
@@ -61,11 +61,10 @@ public final class ModelUtils {
      * object is not an OpenEngSBModel instance.
      */
     public static void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
-        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
-            return;
+        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
+            throw new IllegalArgumentException("Can only be performed with models");            
         }
-        throw new IllegalArgumentException("Can only be performed with models");
+        ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
     }
 
     /**
@@ -73,11 +72,10 @@ public final class ModelUtils {
      * passed object is not an OpenEngSBModel instance.
      */
     public static void removeOpenEngSBModelEntry(Object model, String key) {
-        if (OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
-            return;
+        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
+            throw new IllegalArgumentException("Can only be performed with models");
         }
-        throw new IllegalArgumentException("Can only be performed with models");
+        ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
     }
 
     /**
