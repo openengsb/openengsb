@@ -91,6 +91,17 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>
+            -javaagent:${user.home}/.m2/repository/org/openengsb/framework/org.openengsb.framework.weaver/${project.version}/org.openengsb.framework.weaver-${project.version}-jar-with-dependencies.jar
+          </argLine>
+          <useSystemClassloader>true</useSystemClassloader>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
