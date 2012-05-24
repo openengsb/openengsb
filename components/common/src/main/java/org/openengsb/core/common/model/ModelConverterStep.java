@@ -19,7 +19,6 @@ package org.openengsb.core.common.model;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
-import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * The model converter step has the purpose to does the conversion work OpenEngSBModel <-> OpenEngSBModelWrapper in the
@@ -45,8 +44,9 @@ public final class ModelConverterStep implements ModelEntryConverterStep {
 
     @Override
     public Object convertForGetModelEntries(Object object) {
-        OpenEngSBModel model = (OpenEngSBModel) object;
-        return ModelUtils.generateWrapperOutOfModel(model);
+//        OpenEngSBModel model = (OpenEngSBModel) object;
+//        return ModelUtils.generateWrapperOutOfModel(model);
+        return null;
     }
 
     @Override
@@ -56,8 +56,9 @@ public final class ModelConverterStep implements ModelEntryConverterStep {
 
     @Override
     public Object convertForGetter(Object object) {
-        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) object;
-        return ModelUtils.generateModelOutOfWrapper(wrapper);
+        return null;
+//        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) object;
+//        return ModelUtils.generateModelOutOfWrapper(wrapper);
     }
 
 }

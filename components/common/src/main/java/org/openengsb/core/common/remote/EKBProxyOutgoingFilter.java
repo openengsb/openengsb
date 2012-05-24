@@ -17,20 +17,13 @@
 
 package org.openengsb.core.common.remote;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.ModelUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This filter takes a {@link MethodCallRequest} and checks if any parameter is type of OpenEngSBModel. If so, it
@@ -49,75 +42,76 @@ import org.slf4j.LoggerFactory;
  */
 public class EKBProxyOutgoingFilter extends
         AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyOutgoingFilter.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyOutgoingFilter.class);
 
     private FilterAction next;
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
-        LOGGER.debug("entered EKBProxyOutgoingFilter");
-        Object[] parameters = input.getMethodCall().getArgs();
-        if (parameters != null) {
-            List<String> classes = input.getMethodCall().getClasses();
-            List<String> newClasses = new ArrayList<String>();
-
-            for (int i = 0; i < parameters.length; i++) {
-                if (List.class.isAssignableFrom(parameters[i].getClass())) {
-                    List<?> list = (List<?>) parameters[i];
-                    List<Object> wrappers = new ArrayList<Object>();
-                    if (list.size() != 0 && OpenEngSBModel.class.isAssignableFrom(list.get(0).getClass())) {
-                        for (int j = 0; j < list.size(); j++) {
-                            OpenEngSBModel model = (OpenEngSBModel) list.get(j);
-                            OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
-                            wrappers.add(wrapper);
-                        }
-                    }
-                    parameters[i] = wrappers;
-                } else if (OpenEngSBModel.class.isAssignableFrom(parameters[i].getClass())) {
-                    LOGGER.debug("try to generate wrapper from model");
-                    OpenEngSBModel model = (OpenEngSBModel) parameters[i];
-                    OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
-                    LOGGER.debug("successfully generated wrapper");
-                    parameters[i] = wrapper;
-                    newClasses.add(OpenEngSBModelWrapper.class.getName());
-                } else {
-                    if (classes != null && classes.size() >= (i + 1)) {
-                        newClasses.add(classes.get(i));
-                    } else {
-                        newClasses.add(parameters[i].getClass().getName());
-                    }
-                }
-            }
-            input.getMethodCall().setArgs(parameters);
-            input.getMethodCall().setClasses(newClasses);
-        }
-
-        LOGGER.debug("forward to next filter");
+//        LOGGER.debug("entered EKBProxyOutgoingFilter");
+//        Object[] parameters = input.getMethodCall().getArgs();
+//        if (parameters != null) {
+//            List<String> classes = input.getMethodCall().getClasses();
+//            List<String> newClasses = new ArrayList<String>();
+//
+//            for (int i = 0; i < parameters.length; i++) {
+//                if (List.class.isAssignableFrom(parameters[i].getClass())) {
+//                    List<?> list = (List<?>) parameters[i];
+//                    List<Object> wrappers = new ArrayList<Object>();
+//                    if (list.size() != 0 && OpenEngSBModel.class.isAssignableFrom(list.get(0).getClass())) {
+//                        for (int j = 0; j < list.size(); j++) {
+//                            OpenEngSBModel model = (OpenEngSBModel) list.get(j);
+//                            OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
+//                            wrappers.add(wrapper);
+//                        }
+//                    }
+//                    parameters[i] = wrappers;
+//                } else if (OpenEngSBModel.class.isAssignableFrom(parameters[i].getClass())) {
+//                    LOGGER.debug("try to generate wrapper from model");
+//                    OpenEngSBModel model = (OpenEngSBModel) parameters[i];
+//                    OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
+//                    LOGGER.debug("successfully generated wrapper");
+//                    parameters[i] = wrapper;
+//                    newClasses.add(OpenEngSBModelWrapper.class.getName());
+//                } else {
+//                    if (classes != null && classes.size() >= (i + 1)) {
+//                        newClasses.add(classes.get(i));
+//                    } else {
+//                        newClasses.add(parameters[i].getClass().getName());
+//                    }
+//                }
+//            }
+//            input.getMethodCall().setArgs(parameters);
+//            input.getMethodCall().setClasses(newClasses);
+//        }
+//
+//        LOGGER.debug("forward to next filter");
+//        MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
+//
+//        LOGGER.debug("receiving answer from next filter");
+//        if (message.getResult().getArg() != null
+//                && message.getResult().getArg().getClass().equals(OpenEngSBModelWrapper.class)) {
+//            LOGGER.debug("try to generate model out of wrapper");
+//            OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) message.getResult().getArg();
+//            Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
+//            LOGGER.debug("successfully generated model");
+//            message.getResult().setArg(modelObject);
+//            message.getResult().setClassName(wrapper.getModelClass());
+//        } else if (message.getResult().getArg() != null
+//                && List.class.isAssignableFrom(message.getResult().getArg().getClass())) {
+//            List<?> list = (List<?>) message.getResult().getArg();
+//            List<Object> arg = new ArrayList<Object>();
+//            if (list.size() > 0 && OpenEngSBModel.class.isAssignableFrom(list.get(0).getClass())) {
+//                for (int j = 0; j < list.size(); j++) {
+//                    OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) list.get(j);
+//                    Object model = ModelUtils.generateModelOutOfWrapper(wrapper);
+//                    arg.add(model);
+//                }
+//                message.getResult().setArg(arg);
+//            }
+//        }
+//        LOGGER.debug("leaving EKBProxyIncomingFilter");
         MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
-
-        LOGGER.debug("receiving answer from next filter");
-        if (message.getResult().getArg() != null
-                && message.getResult().getArg().getClass().equals(OpenEngSBModelWrapper.class)) {
-            LOGGER.debug("try to generate model out of wrapper");
-            OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) message.getResult().getArg();
-            Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
-            LOGGER.debug("successfully generated model");
-            message.getResult().setArg(modelObject);
-            message.getResult().setClassName(wrapper.getModelClass());
-        } else if (message.getResult().getArg() != null
-                && List.class.isAssignableFrom(message.getResult().getArg().getClass())) {
-            List<?> list = (List<?>) message.getResult().getArg();
-            List<Object> arg = new ArrayList<Object>();
-            if (list.size() > 0 && OpenEngSBModel.class.isAssignableFrom(list.get(0).getClass())) {
-                for (int j = 0; j < list.size(); j++) {
-                    OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) list.get(j);
-                    Object model = ModelUtils.generateModelOutOfWrapper(wrapper);
-                    arg.add(model);
-                }
-                message.getResult().setArg(arg);
-            }
-        }
-        LOGGER.debug("leaving EKBProxyIncomingFilter");
         return message;
     }
 

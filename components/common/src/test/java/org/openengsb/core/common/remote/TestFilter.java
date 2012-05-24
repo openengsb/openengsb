@@ -33,7 +33,6 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.ModelUtils;
 
 public class TestFilter implements FilterAction {
 
@@ -138,7 +137,7 @@ public class TestFilter implements FilterAction {
 
     private MethodResultMessage createOutputForIncoming2(MethodCallRequest request) {
         MethodResultMessage message = new MethodResultMessage();
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId(60);
         model.setName("test");
         MethodResult r = new MethodResult();
