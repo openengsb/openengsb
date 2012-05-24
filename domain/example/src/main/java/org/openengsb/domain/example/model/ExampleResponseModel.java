@@ -17,10 +17,17 @@
 
 package org.openengsb.domain.example.model;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.ekb.annotations.Model;
 
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+@Model
+public class ExampleResponseModel {
+    private String result;
 
-    void setResult(String result);
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 }

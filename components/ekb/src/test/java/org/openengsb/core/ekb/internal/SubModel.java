@@ -17,17 +17,28 @@
 
 package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 
-public interface SubModel extends OpenEngSBModel {
+@Model
+public class SubModel {
+    private String id;
+    private String value;
     
     @OpenEngSBModelId
-    void setId(String id);
+    public void setId(String id) {
+        this.id = id;
+    }
     
-    String getId();
+    public String getId() {
+        return id;
+    }
     
-    void setValue(String value);
+    public void setValue(String value) {
+        this.value = value;
+    }
     
-    String getValue();
+    public String getValue() {
+        return value;
+    }
 }

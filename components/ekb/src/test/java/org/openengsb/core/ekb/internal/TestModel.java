@@ -21,51 +21,99 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
  * little interface for testing the proxy functionality of the EKBServiceTest
  */
-interface TestModel extends OpenEngSBModel {
+@Model
+public class TestModel {
+    private String id;
+    private Date date;
+    private String name;
+    private String test;
+    private ENUM enumeration;
+    private List<String> list;
+    private SubModel sub;
+    private List<SubModel> subs;
+    private Map<String, String> map;
     
     @OpenEngSBModelId
-    void setId(String id);
+    public void setId(String id) {
+        this.id = id;
+    }
     
-    String getId();
-    
-    void setDate(Date date);
-    
-    Date getDate();
-    
-    String getName();
-    
-    void setName(String name);
-    
-    void testMethod();
-    
-    void setTest(String test);
-    
-    String getTest();
-    
-    void setEnumeration(ENUM enumeration);
-    
-    ENUM getEnumeration();
-    
-    void setList(List<String> list);
-    
-    List<String> getList();
+    public String getId() {
+        return id;
+    }
+  
+    public void testMethod() {
+        
+    }
 
-    void setSub(SubModel sub);
-    
-    SubModel getSub();
-    
-    void setSubs(List<SubModel> subs);
-    
-    List<SubModel> getSubs();
-    
-    void setMap(Map<String, String> map);
-    
-    Map<String, String> getMap();
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
+    public ENUM getEnumeration() {
+        return enumeration;
+    }
+
+    public void setEnumeration(ENUM enumeration) {
+        this.enumeration = enumeration;
+    }
+
+    public List<String> getList() {
+        return list;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
+    }
+
+    public SubModel getSub() {
+        return sub;
+    }
+
+    public void setSub(SubModel sub) {
+        this.sub = sub;
+    }
+
+    public List<SubModel> getSubs() {
+        return subs;
+    }
+
+    public void setSubs(List<SubModel> subs) {
+        this.subs = subs;
+    }
+
+    public Map<String, String> getMap() {
+        return map;
+    }
+
+    public void setMap(Map<String, String> map) {
+        this.map = map;
+    }    
 }

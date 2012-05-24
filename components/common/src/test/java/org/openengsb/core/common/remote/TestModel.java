@@ -17,14 +17,26 @@
 
 package org.openengsb.core.common.remote;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.ekb.annotations.Model;
 
-public interface TestModel extends OpenEngSBModel {
-    Integer getId();
+@Model
+public class TestModel {
+    private Integer id;
+    private String name;
+    
+    public Integer getId() {
+        return id;
+    }
 
-    void setId(Integer id);
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    String getName();
+    public String getName() {
+        return name;
+    }
 
-    void setName(String name);
+    public void setName(String name) {
+        this.name = name;
+    }
 }
