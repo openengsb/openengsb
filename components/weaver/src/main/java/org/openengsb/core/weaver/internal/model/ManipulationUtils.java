@@ -116,16 +116,20 @@ public final class ManipulationUtils {
             if (methodName.startsWith("get") && !methodName.equals("getOpenEngSBModelEntries")) {
                 if (method.getReturnType().equals(cp.get(File.class.getName()))) {
                     String wrapperName = property + "wrapper";
+                    builder.append("if(").append(methodName).append("() == null) {");
+                    builder.append("elements.add(new OpenEngSBModelEntry(\"");
+                    builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
+                    builder.append("else {");
                     builder.append("FileWrapper ").append(wrapperName).append(" = new FileWrapper(");
                     builder.append(methodName).append("());\n").append(wrapperName).append(".serialize();\n");
                     builder.append("elements.add(new OpenEngSBModelEntry(\"");
                     builder.append(wrapperName).append("\", ").append(wrapperName);
-                    builder.append(", ").append(wrapperName).append(".getClass()));\n");
+                    builder.append(", ").append(wrapperName).append(".getClass()));}\n");
                     addFileFunction(clazz, property);
                 } else {
                     builder.append("elements.add(new OpenEngSBModelEntry(\"");
                     builder.append(property).append("\", ").append(methodName).append("()");
-                    builder.append(", ").append(methodName).append("().getClass()));\n");
+                    builder.append(", ").append(method.getReturnType().getName()).append(".class));\n");
                 }
             }
             if (methodName.startsWith("set") && JavassistHelper.hasAnnotation(method,
