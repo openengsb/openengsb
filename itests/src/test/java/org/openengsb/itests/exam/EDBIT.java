@@ -43,10 +43,11 @@ import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.itests.exam.models.SubModel;
+import org.openengsb.itests.exam.models.TestFileModel;
+import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -376,100 +377,5 @@ public class EDBIT extends AbstractExamTestHelper {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
         commit.setInstanceId("testinstance");
         return commit;
-    }
-
-    @Model
-    public class TestModel{
-        private String name;
-        private String edbId;
-        private SubModel subModel;
-        private List<SubModel> subs;
-        private List<Integer> ids;
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        @OpenEngSBModelId
-        public void setEdbId(String edbId) {
-            this.edbId = edbId;
-        }
-
-        public String getEdbId() {
-            return edbId;
-        }
-
-        public void setSubModel(SubModel subModel) {
-            this.subModel = subModel;
-        }
-
-        public SubModel getSubModel() {
-            return subModel;
-        }
-
-        public void setSubs(List<SubModel> subs) {
-            this.subs = subs;
-        }
-
-        public List<SubModel> getSubs() {
-            return subs;
-        }
-
-        public void setIds(List<Integer> ids) {
-            this.ids = ids;
-        }
-
-        public List<Integer> getIds() {
-            return ids;
-        }
-    }
-
-    @Model
-    public class SubModel {
-        private String name;
-        private String edbId;
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setEdbId(String edbId) {
-            this.edbId = edbId;
-        }
-
-        public String getEdbId() {
-            return edbId;
-        }
-    }
-
-    @Model
-    public class TestFileModel {
-        private String testId;
-        private File file;
-        
-        @OpenEngSBModelId
-        public void setTestId(String testId) {
-            this.testId = testId;
-        }
-
-        public String getTestId() {
-            return testId;
-        }
-
-        public void setFile(File file) {
-            this.file = file;
-        }
-
-        public File getFile() {
-            return file;
-        }
     }
 }

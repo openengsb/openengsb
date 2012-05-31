@@ -22,10 +22,13 @@ import java.io.IOException;
 import org.openengsb.core.weaver.internal.model.ManipulationUtils;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javassist.CannotCompileException;
 
 public class ModelWeaver implements WeavingHook {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelWeaver.class);
 
     public ModelWeaver() {
         ManipulationUtils.appendClassLoader(ModelWeaver.class.getClassLoader());
@@ -39,7 +42,9 @@ public class ModelWeaver implements WeavingHook {
             return;
         }
         try {
+            LOGGER.debug("try to enhance {}", className);
             wovenClass.setBytes(doActualWeaving(wovenClass.getBytes()));
+            LOGGER.debug("finished enhancing {}", className);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CannotCompileException e) {

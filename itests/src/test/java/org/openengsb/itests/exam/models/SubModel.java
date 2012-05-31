@@ -15,24 +15,28 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
-
-import java.io.File;
+package org.openengsb.itests.exam.models;
 
 import org.openengsb.core.api.ekb.annotations.Model;
 
-/**
- * This model object purpose is a pre-defined possibility to send Files to domains/connectors.
- */
 @Model
-public class OpenEngSBFileModel {
-    private File file;
+public class SubModel {
+    private String name;
+    private String edbId;
 
-    public File getFile() {
-        return file;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public String getName() {
+        return name;
+    }
+
+    public void setEdbId(String edbId) {
+        this.edbId = edbId;
+    }
+
+    public String getEdbId() {
+        return edbId;
     }
 }

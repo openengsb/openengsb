@@ -29,6 +29,8 @@ import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -40,6 +42,7 @@ import javassist.Modifier;
 import javassist.NotFoundException;
 
 public final class ManipulationUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManipulationUtils.class);
     private static ClassPool cp = ClassPool.getDefault();
     private static boolean initiated = false;
 
@@ -69,13 +72,14 @@ public final class ManipulationUtils {
         if (!initiated) {
             initiate();
         }
+        CtClass cc = null;
         try {
             InputStream stream = new ByteArrayInputStream(byteCode);
-            CtClass cc = cp.makeClass(stream);
+            cc = cp.makeClass(stream);
             if (!JavassistHelper.hasAnnotation(cc, Model.class.getName())) {
                 return cc;
             }
-            System.out.println("Model to enhance: " + cc.getName());
+            LOGGER.info("Model to enhance: {}", cc.getName());
             CtClass inter = cp.get(OpenEngSBModel.class.getName());
             cc.addInterface(inter);
 
@@ -85,7 +89,7 @@ public final class ManipulationUtils {
             addGetOpenEngSBModelEntries(cc);
 
             cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
-            return cc;
+            LOGGER.info("Finished model enhancing for class {}", cc.getName());
         } catch (IOException e1) {
             e1.printStackTrace();
         } catch (RuntimeException e1) {
@@ -96,8 +100,8 @@ public final class ManipulationUtils {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-        return null;
+        } 
+        return cc;
     }
 
     private static void addTail(CtClass clazz) throws CannotCompileException, NotFoundException {
