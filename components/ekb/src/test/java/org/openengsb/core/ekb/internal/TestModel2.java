@@ -17,6 +17,7 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,16 +36,14 @@ public class TestModel2 implements OpenEngSBModel {
     private String name;
     private Date date;
     private ENUM enumeration;
-    private List<String> list;
+    private List<String> list = new ArrayList<String>();
     private SubModel sub;
     private String edbId;
-
-    private List<SubModel> subs;
-
+    private List<SubModel> subs = new ArrayList<SubModel>();
     private Map<String, OpenEngSBModelEntry> tail = new HashMap<String, OpenEngSBModelEntry>();
 
     enum ENUM {
-            A,
+        A,
             B,
             C
     }
@@ -58,8 +57,10 @@ public class TestModel2 implements OpenEngSBModel {
         for (int i = 0; i < list.size(); i++) {
             entries.add(new OpenEngSBModelEntry("list" + i, list.get(i), String.class));
         }
-        entries.add(new OpenEngSBModelEntry("sub.id", sub.getId(), String.class));
-        entries.add(new OpenEngSBModelEntry("sub.value", sub.getValue(), String.class));
+        if (sub != null) {
+            entries.add(new OpenEngSBModelEntry("sub.id", sub.getId(), String.class));
+            entries.add(new OpenEngSBModelEntry("sub.value", sub.getValue(), String.class));
+        }
         entries.addAll(tail.values());
         return entries;
     }
@@ -71,11 +72,11 @@ public class TestModel2 implements OpenEngSBModel {
     public String getId() {
         return id;
     }
-    
+
     public void setEdbId(String edbId) {
         this.edbId = edbId;
     }
-    
+
     public String getEdbId() {
         return edbId;
     }
