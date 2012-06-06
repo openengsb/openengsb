@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.ekb.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.internal.models.ModelA;
 import org.openengsb.core.ekb.internal.models.TestAnnotation;
 import org.openengsb.core.ekb.internal.models.TestModel;

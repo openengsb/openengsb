@@ -37,6 +37,7 @@ import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.openengsb.core.ekb.internal.models.SubModel;
 import org.openengsb.core.ekb.internal.models.TestModel;
 import org.openengsb.core.ekb.internal.models.TestModel2;

@@ -31,6 +31,8 @@ import java.util.Set;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.ekb.internal.graph.ModelGraph;
+import org.openengsb.core.ekb.internal.loader.EKBClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;

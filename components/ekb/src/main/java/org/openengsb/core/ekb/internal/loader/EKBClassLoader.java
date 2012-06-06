@@ -15,25 +15,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.loader;
 
-import static org.mockito.Mockito.mock;
+import org.openengsb.core.api.ekb.ModelDescription;
 
-import org.junit.Before;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.ekb.internal.converter.EDBConverter;
-
-public class PersistInterfaceServiceTest {
-    private PersistInterfaceService service;
+/**
+ * The class loader needed for EKB internal use. 
+ */
+public interface EKBClassLoader {
     
-    @Before
-    public void setUp() {
-        this.service = new PersistInterfaceService();
-        EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
-        
-        service.setEdbService(edbService);
-        EDBConverter converter = new EDBConverter();
-        converter.setEdbService(edbService);
-        service.setEdbConverter(converter);
-    }
+    /**
+     * Tries to load the class with the given class name. It uses a delegation class loader, which first try to load the
+     * the class with the EKB bundle classloader and if that fails, it searches the OSGi environment if another bundle
+     * provide this class.
+     */
+    Class<?> loadClass(String classname) throws ClassNotFoundException;
+
+    /**
+     * Try to load a model based on the given model description. Throws a ClassNotFoundException if the model can't be
+     * loaded.
+     */
+    Class<?> loadModel(ModelDescription model) throws ClassNotFoundException;
 }

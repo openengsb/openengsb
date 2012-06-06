@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.ekb.internal.loader.EKBClassLoader;
 
 /**
  * EKB class loader for the EKB tests. It only uses the local class loader and ignores model versions.

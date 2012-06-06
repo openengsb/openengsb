@@ -15,25 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
-
-import org.openengsb.core.api.ekb.ModelDescription;
+package org.openengsb.core.ekb.internal.converter;
 
 /**
- * The class loader needed for EKB internal use. 
+ * Helper class for easier working with the informations that define a connector: domainId, connectorId and instanceId.
  */
-public interface EKBClassLoader {
-    
-    /**
-     * Tries to load the class with the given class name. It uses a delegation class loader, which first try to load the
-     * the class with the EKB bundle classloader and if that fails, it searches the OSGi environment if another bundle
-     * provide this class.
-     */
-    Class<?> loadClass(String classname) throws ClassNotFoundException;
+public class ConnectorInformation {
+    private String domainId;
+    private String connectorId;
+    private String instanceId;
 
-    /**
-     * Try to load a model based on the given model description. Throws a ClassNotFoundException if the model can't be
-     * loaded.
-     */
-    Class<?> loadModel(ModelDescription model) throws ClassNotFoundException;
+    public ConnectorInformation(String domainId, String connectorId, String instanceId) {
+        this.domainId = domainId;
+        this.connectorId = connectorId;
+        this.instanceId = instanceId;
+    }
+
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
 }

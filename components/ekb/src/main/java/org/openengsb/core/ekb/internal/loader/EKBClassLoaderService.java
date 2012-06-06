@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.loader;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.ekb.ModelDescription;

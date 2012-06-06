@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;

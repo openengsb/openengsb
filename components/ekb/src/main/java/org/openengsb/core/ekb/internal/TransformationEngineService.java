@@ -24,6 +24,7 @@ import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.ekb.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.internal.transformation.TransformationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.common.transformations.TransformationUtils;
+import org.openengsb.core.ekb.internal.graph.EKBModelGraph;
 import org.openengsb.core.ekb.internal.models.ModelA;
 import org.openengsb.core.ekb.internal.models.ModelB;
 import org.openengsb.core.ekb.internal.models.ModelC;

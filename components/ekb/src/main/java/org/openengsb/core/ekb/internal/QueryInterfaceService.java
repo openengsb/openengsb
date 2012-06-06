@@ -26,6 +26,7 @@ import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

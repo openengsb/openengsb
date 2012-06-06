@@ -17,6 +17,7 @@
 
 package org.openengsb.core.ekb.internal;
 
+import org.openengsb.core.ekb.internal.graph.EKBModelGraph;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
