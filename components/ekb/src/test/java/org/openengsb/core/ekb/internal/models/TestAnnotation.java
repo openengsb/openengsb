@@ -17,45 +17,13 @@
 
 package org.openengsb.core.ekb.internal.models;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ModelA {
-    @TestAnnotation
-    private String idA;
-    @TestAnnotation
-    private String testA;
-    private String blubA;
-    private String blaA;
-
-    public String getIdA() {
-        return idA;
-    }
-
-    public void setIdA(String idA) {
-        this.idA = idA;
-    }
-
-    public String getTestA() {
-        return testA;
-    }
-
-    public void setTestA(String testA) {
-        this.testA = testA;
-    }
-
-    public String getBlubA() {
-        return blubA;
-    }
-
-    public void setBlubA(String blubA) {
-        this.blubA = blubA;
-    }
-
-    public String getBlaA() {
-        return blaA;
-    }
-
-    public void setBlaA(String blaA) {
-        this.blaA = blaA;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface TestAnnotation {
 
 }

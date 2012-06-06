@@ -36,14 +36,13 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 /**
- * The EKB model graph is used as base for the finding of transformation descriptions. It is using a graph database as
- * storage and is able to perform graph based algorithm on the transformation graph.
+ * The EKB model graph is an implementation of the model graph. It uses a graph database as storage.
  * 
  * It usually get filled by two components: the TransformationEngineService and the ModelRegistryService.
  * The TransformationEngineService inserts all transformations it get saved as new edges into the graph database.
  * The ModelRegistry notifies the graph whenever new models get available or models get unavailable.
  */
-public final class EKBModelGraph {
+public final class EKBModelGraph implements ModelGraph {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBModelGraph.class);
     private static final String ACTIVE_FIELD = "isActive";
     private static final String FILENAME = "filename";
@@ -101,9 +100,7 @@ public final class EKBModelGraph {
         }
     }
 
-    /**
-     * Adds a model to the graph database and defines it as an active model.
-     */
+    @Override
     public void addModel(ModelDescription model) {
         ODocument node = getModel(model.toString());
         if (node == null) {
@@ -115,9 +112,7 @@ public final class EKBModelGraph {
         LOGGER.debug("Added model {} to the graph database", model);
     }
 
-    /**
-     * Removes a model from the graph database by defining it as an inactive model.
-     */
+    @Override
     public void removeModel(ModelDescription model) {
         ODocument node = getModel(model.toString());
         if (node == null) {
@@ -129,10 +124,7 @@ public final class EKBModelGraph {
         LOGGER.debug("Removed model {} from the graph database", model);
     }
 
-    /**
-     * Adds a transformation description to the graph database. It also adds the models which are the source and the
-     * target of the description, if they are not yet added, as inactive models.
-     */
+    @Override
     public void addTransformation(TransformationDescription description) {
         checkTransformationDescriptionId(description);
         ODocument source = getOrCreateModel(description.getSourceModel().toString());
@@ -147,10 +139,7 @@ public final class EKBModelGraph {
         LOGGER.debug("Added transformation description {} to the graph database", description);
     }
 
-    /**
-     * Removes a transformation description from the graph database. If the given description has no defined id, then
-     * all transformation descriptions in the given edge are deleted, which have ids which were automatically added.
-     */
+    @Override
     public void removeTransformation(TransformationDescription description) {
         String source = description.getSourceModel().toString();
         String target = description.getTargetModel().toString();
@@ -169,9 +158,7 @@ public final class EKBModelGraph {
         }
     }
 
-    /**
-     * Returns all transformation descriptions which were added by the file with the given filename.
-     */
+    @Override
     public List<TransformationDescription> getTransformationsPerFileName(String filename) {
         String query = String.format("select from E where %s = ?", FILENAME);
         List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>(query), filename);
@@ -182,10 +169,7 @@ public final class EKBModelGraph {
         return result;
     }
 
-    /**
-     * Returns a possible transformation path, beginning at the source model type and ending with the target model type
-     * where all given transformation description ids appear in the path.
-     */
+    @Override
     public List<TransformationDescription> getTransformationPath(ModelDescription source, ModelDescription target,
             List<String> ids) {
         if (ids == null) {
@@ -202,10 +186,7 @@ public final class EKBModelGraph {
         throw new IllegalArgumentException("No transformation description found");
     }
 
-    /**
-     * Returns true if there is a transformation path, beginning at the source model type and ending with the target
-     * model type where all given transformation description ids appear in the path. Returns false if not.
-     */
+    @Override
     public Boolean isTransformationPossible(ModelDescription source, ModelDescription target, List<String> ids) {
         try {
             getTransformationPath(source, target, ids);

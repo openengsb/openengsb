@@ -47,5 +47,6 @@ public interface ModelRegistry {
      * The model registry tries to identify all fields of the described model which have the given annotation. If the
      * model is inactive or not registered, a class not found exception is thrown.
      */
-    List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException;
+    List<String> getAnnotatedFields(ModelDescription model, Class<? extends Annotation> annotationClass)
+        throws ClassNotFoundException;
 }

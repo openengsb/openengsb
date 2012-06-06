@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class TransformationEngineService implements TransformationEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
     private ModelRegistry modelRegistry;
-    private EKBModelGraph graphDb;
+    private ModelGraph graphDb;
 
     @Override
     public void saveDescription(TransformationDescription description) {
@@ -111,7 +111,7 @@ public class TransformationEngineService implements TransformationEngine {
         this.modelRegistry = modelRegistry;
     }
 
-    public void setGraphDb(EKBModelGraph graphDb) {
+    public void setGraphDb(ModelGraph graphDb) {
         this.graphDb = graphDb;
     }
 

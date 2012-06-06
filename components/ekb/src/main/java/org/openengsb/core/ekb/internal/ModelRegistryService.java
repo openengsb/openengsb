@@ -46,7 +46,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
-    private EKBModelGraph graphDb;
+    private ModelGraph graphDb;
 
     public static ModelRegistryService getInstance() {
         if (instance == null) {
@@ -180,11 +180,12 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
     }
 
     @Override
-    public List<String> getAnnotatedFields(ModelDescription model, Annotation annot) throws ClassNotFoundException {
+    public List<String> getAnnotatedFields(ModelDescription model, Class<? extends Annotation> annotationClass)
+        throws ClassNotFoundException {
         Class<?> clazz = loadModel(model);
         List<String> result = new ArrayList<String>();
-        for (Field field : clazz.getFields()) {
-            if (field.isAnnotationPresent(annot.annotationType())) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(annotationClass)) {
                 result.add(field.getName());
             }
         }
@@ -195,7 +196,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         this.ekbClassLoader = ekbClassLoader;
     }
 
-    public void setGraphDb(EKBModelGraph graphDb) {
+    public void setGraphDb(ModelGraph graphDb) {
         this.graphDb = graphDb;
     }
 }
