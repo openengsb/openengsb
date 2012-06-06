@@ -82,6 +82,9 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
             return false;
         }
         String symbolicName = event.getBundle().getSymbolicName();
+        // this two bundles contain references which would be checked during the bundle scanning,
+        // which aren't there since they are optional. So the bundle scanning would throw 
+        // ClassNotFoundExceptions which don't make a problem, but maybe worry the user
         if (symbolicName.equals("org.apache.servicemix.bundles.xmlbeans")) {
             return false;
         }

@@ -38,6 +38,10 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 /**
  * The EKB model graph is used as base for the finding of transformation descriptions. It is using a graph database as
  * storage and is able to perform graph based algorithm on the transformation graph.
+ * 
+ * It usually get filled by two components: the TransformationEngineService and the ModelRegistryService.
+ * The TransformationEngineService inserts all transformations it get saved as new edges into the graph database.
+ * The ModelRegistry notifies the graph whenever new models get available or models get unavailable.
  */
 public final class EKBModelGraph {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBModelGraph.class);
