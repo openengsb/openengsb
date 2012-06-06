@@ -81,16 +81,6 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
         if (event.getType() != BundleEvent.STARTED && event.getType() != BundleEvent.STOPPED) {
             return false;
         }
-        String symbolicName = event.getBundle().getSymbolicName();
-        // this two bundles contain references which would be checked during the bundle scanning,
-        // which aren't there since they are optional. So the bundle scanning would throw 
-        // ClassNotFoundExceptions which don't make a problem, but maybe worry the user
-        if (symbolicName.equals("org.apache.servicemix.bundles.xmlbeans")) {
-            return false;
-        }
-        if (symbolicName.equals("org.ops4j.pax.wicket.service")) {
-            return false;
-        }
         return true;
     }
 
@@ -134,6 +124,9 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
             LOGGER.warn(String.format("Bundle could not find own class: %s", classname), e);
+            return false;
+        } catch (NoClassDefFoundError e) {
+            // ignore since this happens if bundle have optional imports
             return false;
         }
         return OpenEngSBModel.class.isAssignableFrom(clazz);
