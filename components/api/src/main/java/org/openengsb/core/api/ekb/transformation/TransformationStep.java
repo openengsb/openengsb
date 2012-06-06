@@ -83,7 +83,7 @@ public class TransformationStep {
         builder.append(" sources: {");
         boolean firstSource = true;
         for (String source : sourceFields) {
-            if(!firstSource) {
+            if (!firstSource) {
                 builder.append(", ");
             }
             builder.append(source);
