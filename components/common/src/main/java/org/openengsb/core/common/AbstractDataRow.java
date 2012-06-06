@@ -26,7 +26,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -36,8 +35,9 @@ import javax.persistence.Version;
 public abstract class AbstractDataRow implements Serializable {
 
     @Id
-    @TableGenerator(name = "OPENENGSB_ID", table = "OPENENGSB_ID", allocationSize = 1)
-    @GeneratedValue(generator = "OPENENGSB_ID", strategy = GenerationType.TABLE)
+    // @TableGenerator(name = "OPENENGSB_ID", table = "OPENENGSB_ID", allocationSize = 1)
+    // @GeneratedValue(generator = "OPENENGSB_ID", strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     @Version
