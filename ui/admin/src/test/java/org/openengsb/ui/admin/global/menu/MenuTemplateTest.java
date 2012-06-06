@@ -37,6 +37,7 @@ import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
+import org.openengsb.ui.admin.userService.UserListPage;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.springframework.aop.framework.ProxyFactory;
 
@@ -44,7 +45,6 @@ public class MenuTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
-
     }
 
     @Test
@@ -71,10 +71,11 @@ public class MenuTemplateTest extends AbstractUITest {
     public void testToNavigate() {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
-        tester.clickLink("header:headerMenuItems:0:link");
+        tester.clickLink("menu:menuItems:0:link");
+        tester.debugComponentTrees();
         tester.assertRenderedPage(Index.class);
-        tester.clickLink("header:headerMenuItems:1:link");
-        tester.assertRenderedPage(TestClient.class);
+        tester.clickLink("menu:menuItems:1:link");
+        tester.assertRenderedPage(UserListPage.class);
     }
 
     private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
@@ -102,9 +103,8 @@ public class MenuTemplateTest extends AbstractUITest {
     private void setUpSendEventPage() {
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("ruleManagerBean", mock(RuleManager.class));
+        context.putBean("ruleManager", mock(RuleManager.class));
         context.putBean("auditing", mock(AuditingDomain.class));
-        context.putBean(mock(ProxyFactory.class));
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

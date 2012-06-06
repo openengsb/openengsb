@@ -84,7 +84,7 @@ public class HeaderTemplate extends Panel {
                 if (signedIn) {
                     ((AuthenticatedWebSession) getSession()).signOut();
                 }
-                setResponsePage(signedIn ? Index.class : LoginPage.class);
+                setResponsePage(LoginPage.class);
             }
         };
         add(link);

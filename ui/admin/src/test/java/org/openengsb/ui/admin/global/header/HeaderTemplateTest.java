@@ -19,93 +19,19 @@ package org.openengsb.ui.admin.global.header;
 
 import static org.mockito.Mockito.mock;
 
-import java.util.Arrays;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
-import org.junit.Test;
-import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.test.NullEvent;
-import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.ui.admin.AbstractUITest;
-import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
-import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.sendEventPage.SendEventPage;
-import org.openengsb.ui.admin.testClient.TestClient;
-import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
-public class HeaderTemplateTest extends AbstractUITest {
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.ui.admin.AbstractLoginTest;
+
+
+public class HeaderTemplateTest extends AbstractLoginTest {
 
     @Before
     public void setup() {
         context.putBean("ruleManager", mock(RuleManager.class));
     }
 
-    @Test
-    public void testNavigationFieldForIndex() {
-        setupIndexPage();
-        Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
-        Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
-    }
 
-    @Test
-    public void testNavigationFieldForTestClient() {
-        setupTestClientPage();
-        Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
-        Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
-    }
-
-    @Test
-    public void testNavigationForNonExistingNavigationButton() {
-        Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
-        Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
-    }
-
-    @Test
-    public void testToNavigate() {
-        setUpSendEventPage();
-        Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
-        tester.clickLink("header:headerMenuItems:0:link");
-        tester.assertRenderedPage(Index.class);
-        tester.clickLink("header:headerMenuItems:1:link");
-        tester.assertRenderedPage(TestClient.class);
-    }
-
-    private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
-        tester.startPage(page);
-        // return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
-        return false;
-    }
-
-    private void setupTestClientPage() {
-        context.putBean(bundleContext);
-        setupTesterWithSpringMockContext();
-    }
-
-    private void setupIndexPage() {
-        setupTesterWithSpringMockContext();
-        tester.startPage(Index.class);
-    }
-
-    private void setupTesterWithSpringMockContext() {
-        tester.getApplication().getComponentInstantiationListeners()
-            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setUpSendEventPage() {
-        WorkflowService eventService = mock(WorkflowService.class);
-        context.putBean("eventService", eventService);
-        context.putBean("ruleManagerBean", mock(RuleManager.class));
-        context.putBean("auditing", mock(AuditingDomain.class));
-        List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
-        tester.startPage(new SendEventPage(eventClasses));
-        tester.startPage(Index.class);
-    }
 
 }

@@ -26,6 +26,7 @@ import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractLoginTest;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;

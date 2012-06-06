@@ -17,8 +17,6 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.RestartResponseAtInterceptPageException;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -28,7 +26,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.global.menu.MenuTemplate;
-import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.openengsb.ui.common.resources.css.CommonCssLocator;
@@ -41,20 +38,12 @@ public abstract class BasePage extends OpenEngSBPage {
     private String pageNameKey;
 
     public BasePage() {
-        checkAuthentication();
         initCommonContent();
     }
 
     public BasePage(String pageNameKey) {
-        checkAuthentication();
         this.pageNameKey = pageNameKey;
         initCommonContent();
-    }
-
-    private void checkAuthentication() {
-        if (!((AuthenticatedWebSession) getSession()).isSignedIn()) {
-            throw new RestartResponseAtInterceptPageException(LoginPage.class);
-        }
     }
 
     @Override
