@@ -49,20 +49,20 @@ public class HeaderTemplateTest extends AbstractUITest {
     @Test
     public void testNavigationFieldForIndex() {
         setupIndexPage();
-        testNavigation(Index.class, Index.class.getSimpleName());
+        Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
     public void testNavigationFieldForTestClient() {
         setupTestClientPage();
-        testNavigation(TestClient.class, TestClient.class.getSimpleName());
+        Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
         Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
     public void testNavigationForNonExistingNavigationButton() {
-        testNavigation(ImprintPage.class, Index.class.getSimpleName());
+        Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
         Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
     }
 
@@ -76,10 +76,10 @@ public class HeaderTemplateTest extends AbstractUITest {
         tester.assertRenderedPage(TestClient.class);
     }
 
-    private void testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
+    private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
         tester.startPage(page);
-//         return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
-        tester.assertRenderedPage(page);
+        // return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
+        return false;
     }
 
     private void setupTestClientPage() {
