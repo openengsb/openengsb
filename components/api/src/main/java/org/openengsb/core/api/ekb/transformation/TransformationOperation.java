@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.api.ekb.transformation;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
-
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
-
-    void setResult(String result);
+/**
+ * The TransformOperation enum describes all possible transformation operations during model transformations
+ */
+public enum TransformationOperation {
+    FORWARD, SPLIT, SPLITREGEX, CONCAT, MAP, SUBSTRING, VALUE, LENGTH, TRIM,
+        TOLOWER, TOUPPER, REPLACE, REVERSE, PAD, REMOVELEADING, INSTANTIATE, NONE
 }

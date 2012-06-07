@@ -15,15 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.ekb.internal.deployer;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+import java.io.File;
+import java.io.FilenameFilter;
 
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+/**
+ * This filter filters all files with the transformation file ending.
+ */
+public class TransformationFileNameFilter implements FilenameFilter {
 
-    void setResult(String result);
+    @Override
+    public boolean accept(File f, String s) {
+        return s.toLowerCase().endsWith(".transformation");
+    }
+
 }

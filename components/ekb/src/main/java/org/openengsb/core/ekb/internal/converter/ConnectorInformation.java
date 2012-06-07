@@ -15,36 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
-
-import java.util.List;
-
-import org.openengsb.core.api.edb.EDBObject;
+package org.openengsb.core.ekb.internal.converter;
 
 /**
- * A ConvertedCommit class is a helper class. It contains to EDBObjects converted models of an EKBCommit.
+ * Helper class for easier working with the informations that define a connector: domainId, connectorId and instanceId.
  */
-public class ConvertedCommit {
-    private List<EDBObject> inserts;
-    private List<EDBObject> updates;
-    private List<EDBObject> deletes;
-    
-    public List<EDBObject> getInserts() {
-        return inserts;
+public class ConnectorInformation {
+    private String domainId;
+    private String connectorId;
+    private String instanceId;
+
+    public ConnectorInformation(String domainId, String connectorId, String instanceId) {
+        this.domainId = domainId;
+        this.connectorId = connectorId;
+        this.instanceId = instanceId;
     }
-    public void setInserts(List<EDBObject> inserts) {
-        this.inserts = inserts;
+
+    public String getDomainId() {
+        return domainId;
     }
-    public List<EDBObject> getUpdates() {
-        return updates;
+
+    public String getConnectorId() {
+        return connectorId;
     }
-    public void setUpdates(List<EDBObject> updates) {
-        this.updates = updates;
-    }
-    public List<EDBObject> getDeletes() {
-        return deletes;
-    }
-    public void setDeletes(List<EDBObject> deletes) {
-        this.deletes = deletes;
+
+    public String getInstanceId() {
+        return instanceId;
     }
 }

@@ -15,15 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.ekb.internal.loader.EKBClassLoader;
 
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+/**
+ * EKB class loader for the EKB tests. It only uses the local class loader and ignores model versions.
+ */
+public class EKBTestClassLoader implements EKBClassLoader {
 
-    void setResult(String result);
+    @Override
+    public Class<?> loadClass(String classname) throws ClassNotFoundException {
+        return this.getClass().getClassLoader().loadClass(classname);
+    }
+
+    @Override
+    public Class<?> loadModel(ModelDescription model) throws ClassNotFoundException {
+        return this.getClass().getClassLoader().loadClass(model.getModelClassName());
+    }
+
 }

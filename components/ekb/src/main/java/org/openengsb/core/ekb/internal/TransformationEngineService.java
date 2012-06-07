@@ -17,8 +17,103 @@
 
 package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.ekb.TransformationEngine;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.ekb.ModelRegistry;
+import org.openengsb.core.api.ekb.TransformationEngine;
+import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.ekb.internal.graph.ModelGraph;
+import org.openengsb.core.ekb.internal.transformation.TransformationPerformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Implementation of the transformation engine. Only supports the transformations from OpenEngSBModels to
+ * OpenEngSBModels.
+ */
 public class TransformationEngineService implements TransformationEngine {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
+    private ModelRegistry modelRegistry;
+    private ModelGraph graphDb;
+
+    @Override
+    public void saveDescription(TransformationDescription description) {
+        LOGGER.debug("Added transformation description {} to transformation engine service", description);
+        deleteDescription(description);
+        graphDb.addTransformation(description);
+    }
+
+    @Override
+    public void saveDescriptions(List<TransformationDescription> descriptions) {
+        for (TransformationDescription description : descriptions) {
+            saveDescription(description);
+        }
+    }
+
+    @Override
+    public void deleteDescription(TransformationDescription description) {
+        LOGGER.debug("Deleted transformation description {} from transformation engine service", description);
+        graphDb.removeTransformation(description);
+    }
+
+    @Override
+    public void deleteDescriptionsByFile(String fileName) {
+        for (TransformationDescription description : getDescriptionsByFile(fileName)) {
+            deleteDescription(description);
+        }
+    }
+
+    @Override
+    public List<TransformationDescription> getDescriptionsByFile(String fileName) {
+        return graphDb.getTransformationsPerFileName(fileName);
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
+        return performTransformation(sourceModel, targetModel, source, new ArrayList<String>());
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            List<String> ids) {
+        try {
+            List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
+            if (result != null && !result.isEmpty()) {
+                for (TransformationDescription step : result) {
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                    source = performer.transformObject(step, source);
+                }
+            }
+            return source;
+        } catch (InstantiationException e) {
+            LOGGER.error("Instantiation exception while trying to perform transformations", e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error("Illegal accesss exception while trying to perform transformations", e);
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Class not found exception while trying to perform transformations", e);
+        }
+        throw new IllegalArgumentException("No transformation description for the given parameters defined");
+    }
+
+    @Override
+    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel) {
+        return isTransformationPossible(sourceModel, targetModel, new ArrayList<String>());
+    }
+
+    @Override
+    public Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel,
+            List<String> ids) {
+        return graphDb.isTransformationPossible(sourceModel, targetModel, ids);
+    }
+
+    public void setModelRegistry(ModelRegistry modelRegistry) {
+        this.modelRegistry = modelRegistry;
+    }
+
+    public void setGraphDb(ModelGraph graphDb) {
+        this.graphDb = graphDb;
+    }
 
 }

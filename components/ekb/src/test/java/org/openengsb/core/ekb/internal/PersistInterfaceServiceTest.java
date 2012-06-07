@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EKBCommit;
+import org.openengsb.core.ekb.internal.converter.EDBConverter;
+import org.openengsb.core.ekb.internal.models.TestModel2;
 
 public class PersistInterfaceServiceTest {
     private PersistInterfaceService service;

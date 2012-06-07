@@ -15,15 +15,47 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.ekb.internal.models;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
 
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+public class ModelA {
+    @TestAnnotation
+    private String idA;
+    @TestAnnotation
+    private String testA;
+    private String blubA;
+    private String blaA;
 
-    void setResult(String result);
+    public String getIdA() {
+        return idA;
+    }
+
+    public void setIdA(String idA) {
+        this.idA = idA;
+    }
+
+    public String getTestA() {
+        return testA;
+    }
+
+    public void setTestA(String testA) {
+        this.testA = testA;
+    }
+
+    public String getBlubA() {
+        return blubA;
+    }
+
+    public void setBlubA(String blubA) {
+        this.blubA = blubA;
+    }
+
+    public String getBlaA() {
+        return blaA;
+    }
+
+    public void setBlaA(String blaA) {
+        this.blaA = blaA;
+    }
+
 }
