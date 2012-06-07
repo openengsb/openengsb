@@ -22,16 +22,28 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.TransformationEngine;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
@@ -109,6 +121,94 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         ExampleRequestModel modelB = transformResponseToRequest(modelA);
 
         assertThat(modelB.getName(), is("test"));
+    }
+    
+    @Test
+    public void testCallTransformerFromWorkflowRule_shouldWork() throws Exception {
+        DummyLogDomain exampleMock = new DummyLogDomain();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("domain", "example");
+        properties.put("connector", "example");
+        properties.put("location.foo", "example2");
+        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
+
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
+
+        ruleManager.addImport(ExampleDomain.class.getName());
+        ruleManager.addImport(LogEvent.class.getName());
+        ruleManager.addImport(TransformationEngine.class.getName());
+        ruleManager.addImport(ModelUtils.class.getName());
+        ruleManager.addImport(ExampleResponseModel.class.getName());
+        ruleManager.addImport(ExampleRequestModel.class.getName());
+        ruleManager.addImport(ModelDescription.class.getName());
+        ruleManager.addImport(OpenEngSBModelEntry.class.getName());
+
+        ruleManager.addGlobal(ExampleDomain.class.getName(), "example2");
+        ruleManager.addGlobal(TransformationEngine.class.getName(), "ekbTransformationService");
+        
+        String sourceDescription = "ModelDescription source = new ModelDescription(\"%s\", \"%s\");";
+        String targetDescription = "ModelDescription target = new ModelDescription(\"%s\", \"%s\");";
+        sourceDescription = String.format(sourceDescription, ExampleResponseModel.class.getName(), exampleDomainVersion.toString());
+        targetDescription = String.format(targetDescription, ExampleRequestModel.class.getName(), exampleDomainVersion.toString());
+
+        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example"), "" +
+                "when\n" +
+                "    event : LogEvent()\n" +
+                "then\n" +
+                sourceDescription + 
+                targetDescription +
+                "    ExampleResponseModel object = (ExampleResponseModel) ModelUtils.createEmptyModelObject(ExampleResponseModel.class, new OpenEngSBModelEntry[] {});" +
+                "    object.setResult(\"test-42\");" +     
+                "    ExampleRequestModel model = (ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);" +
+                "    example2.doSomethingWithModel(model);\n"
+            );
+
+        ContextHolder.get().setCurrentContextId("foo");
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+
+        authenticate("admin", "password");
+        workflowService.processEvent(new LogEvent());
+
+        ExampleRequestModel result = exampleMock.getModel();
+        assertThat(result.getName(), is("test"));
+    }
+    
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
+        private ExampleRequestModel model;
+
+        @Override
+        public String doSomethingWithMessage(String message) {
+            return "something";
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
+        }
+
+        @Override
+        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
+            return "something";
+        }
+
+        @Override
+        public String doSomethingWithLogEvent(LogEvent event) {
+            return "something";
+        }
+
+        public boolean isWasCalled() {
+            return true;
+        }
+
+        @Override
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
+            this.model = model;
+            return null;
+        }
+        
+        public ExampleRequestModel getModel() {
+            return model;
+        }
     }
 
 }
