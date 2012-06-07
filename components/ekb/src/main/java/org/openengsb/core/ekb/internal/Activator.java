@@ -15,15 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+import org.openengsb.core.ekb.internal.graph.EKBModelGraph;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+/**
+ * Activator for the EKB bundle. It adds the model registry as bundle listener
+ */
+public class Activator implements BundleActivator {
 
-    void setResult(String result);
+    @Override
+    public void start(BundleContext context) throws Exception {
+        context.addBundleListener(ModelRegistryService.getInstance());
+    }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        context.removeBundleListener(ModelRegistryService.getInstance());
+        EKBModelGraph.shutdown();
+    }
+
 }

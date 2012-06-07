@@ -17,11 +17,36 @@
 
 package org.openengsb.core.api.ekb;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
 /**
- * The model registry service provides the possibilty that a connector, which want to use the
- * transformation work of the EKB, can register their model and provide the actions which are
- * needed to perform the transformations.
+ * The model registry service provides the possibility to register models, which than can be used by the EKB for
+ * transformations.
  */
 public interface ModelRegistry {
 
+    /**
+     * Registers a model in the model registry. As long as a model is registered, it can be used by the EKB for
+     * transformations and model querying out of the EDB.
+     */
+    void registerModel(ModelDescription model);
+
+    /**
+     * Unregisters a model from the model registry.
+     */
+    void unregisterModel(ModelDescription model);
+
+    /**
+     * The model registry tries to load the model based on the given description. If the model is inactive or not
+     * registered, a class not found exception is thrown.
+     */
+    Class<?> loadModel(ModelDescription model) throws ClassNotFoundException;
+
+    /**
+     * The model registry tries to identify all fields of the described model which have the given annotation. If the
+     * model is inactive or not registered, a class not found exception is thrown.
+     */
+    List<String> getAnnotatedFields(ModelDescription model, Class<? extends Annotation> annotationClass)
+        throws ClassNotFoundException;
 }

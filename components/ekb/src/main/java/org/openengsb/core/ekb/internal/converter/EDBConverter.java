@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.converter;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;

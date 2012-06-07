@@ -15,15 +15,28 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.core.ekb.internal.transformation;
 
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.labs.delegation.service.Provide;
+/**
+ * A helper exception for the transformation process. It is used for the easier handling of null values at the source
+ * side or if the source field hasn't the correct format.
+ */
+@SuppressWarnings("serial")
+public class TransformationStepException extends Exception {
 
-@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
-
-    void setResult(String result);
+    public TransformationStepException() {
+        super();
+    }
+    
+    public TransformationStepException(String message) {
+        super(message);
+    }
+    
+    public TransformationStepException(Throwable cause) {
+        super(cause);
+    }
+    
+    public TransformationStepException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

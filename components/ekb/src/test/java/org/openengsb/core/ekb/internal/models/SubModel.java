@@ -15,57 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+package org.openengsb.core.ekb.internal.models;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelId;
-import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
-/**
- * little interface for testing the proxy functionality of the EKBServiceTest
- */
-interface TestModel extends OpenEngSBModel {
+public interface SubModel extends OpenEngSBModel {
     
     @OpenEngSBModelId
     void setId(String id);
     
     String getId();
     
-    void setDate(Date date);
+    void setValue(String value);
     
-    Date getDate();
-    
-    String getName();
-    
-    void setName(String name);
-    
-    void testMethod();
-    
-    void setTest(String test);
-    
-    String getTest();
-    
-    void setEnumeration(ENUM enumeration);
-    
-    ENUM getEnumeration();
-    
-    void setList(List<String> list);
-    
-    List<String> getList();
-
-    void setSub(SubModel sub);
-    
-    SubModel getSub();
-    
-    void setSubs(List<SubModel> subs);
-    
-    List<SubModel> getSubs();
-    
-    void setMap(Map<String, String> map);
-    
-    Map<String, String> getMap();
+    String getValue();
 }

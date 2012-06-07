@@ -15,19 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.ekb.internal.models;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+public class ModelC {
+    private String idC;
+    private String testC;
 
-public interface SubModel extends OpenEngSBModel {
-    
-    @OpenEngSBModelId
-    void setId(String id);
-    
-    String getId();
-    
-    void setValue(String value);
-    
-    String getValue();
+    public String getIdC() {
+        return idC;
+    }
+
+    public void setIdC(String idC) {
+        this.idC = idC;
+    }
+
+    public String getTestC() {
+        return testC;
+    }
+
+    public void setTestC(String testC) {
+        this.testC = testC;
+    }
+
 }
