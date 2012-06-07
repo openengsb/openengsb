@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
@@ -40,6 +41,9 @@ public class QueryInterfaceService implements QueryInterface {
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
 
+    private static final Pattern MAP_OUT_OF_STRING_QUERY_PATTERN = Pattern
+        .compile("(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?");
+
     @Override
     public <T extends OpenEngSBModel> T getModel(Class<T> model, String oid) {
         LOGGER.debug("Invoked getModel with the model %s and the oid %s", model.getName(), oid);
@@ -58,7 +62,7 @@ public class QueryInterfaceService implements QueryInterface {
             String oid, Long from, Long to) {
         LOGGER.debug("Invoked getModelHistoryForTimeRange with the model %s and the oid %s for the "
                 + "time period of %s to %s", new Object[]{ model.getName(), oid, new Date(from).toString(),
-                                                      new Date(to).toString() });
+            new Date(to).toString() });
         return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid, from, to));
     }
 
@@ -84,7 +88,16 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query) {
+        return queryForModels(model, query, new Date().getTime() + "");
+    }
+
+    @Override
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+        if (timestamp == null || timestamp.isEmpty()) {
+            LOGGER.debug("Got invalid timestamp string. Use the current timestamp instead");
+            timestamp = new Date().getTime() + "";
+        }
         Long time = Long.parseLong(timestamp);
         LOGGER.debug("Invoked queryForModels with the model %s and the querystring %s for the time %s",
             new Object[]{ model.getName(), query, new Date(time).toString() });
@@ -92,11 +105,33 @@ public class QueryInterfaceService implements QueryInterface {
         return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
     }
 
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
+        LOGGER.debug("Invoked queryForActiveModels with the model %s and a query map", model.getName());
+        Long now = System.currentTimeMillis();
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
+    }
+
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model) {
+        LOGGER.debug("Invoked queryForActiveModels with the model %s", model.getName());
+        Long now = System.currentTimeMillis();
+        Map<String, Object> map = new HashMap<String, Object>();
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
+    }
+
     /**
      * Generates a map out of a query string. A query string has the format "propA:valueA and propB:valueB and ..."
      */
     private Map<String, Object> generateMapOutOfString(String query) {
         Map<String, Object> map = new HashMap<String, Object>();
+        if (query.isEmpty()) {
+            return map;
+        }
+        if (!MAP_OUT_OF_STRING_QUERY_PATTERN.matcher(query).matches()) {
+            String errorMessage = "Query string must be empty or have the form 'a:b [and b:c and ...]'";
+            throw new IllegalArgumentException(errorMessage);
+        }
         String[] elements = query.split(" and ");
         for (String element : elements) {
             String[] parts = element.split(":");

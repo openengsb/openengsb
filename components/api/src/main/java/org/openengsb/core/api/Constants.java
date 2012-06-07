@@ -66,6 +66,11 @@ public final class Constants {
      */
     public static final String DELEGATION_CONTEXT_MODELS = "models";
 
+    public static final String DELEGATION_CONTEXT_CREDENTIALS = "credentials";
+    
+    public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
+
+
     private Constants() {
         // this class should not be instanciated.
     }

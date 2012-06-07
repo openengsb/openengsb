@@ -20,7 +20,7 @@ package test;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 
 import com.google.common.base.Throwables;
@@ -32,9 +32,9 @@ class MessageHandler {
     protected MessageHandler() {
     }
 
-    public MethodCallRequest unmarshal(String text) {
+    public MethodCallMessage unmarshal(String text) {
         try {
-            return MAPPER.readValue(text, MethodCallRequest.class);
+            return MAPPER.readValue(text, MethodCallMessage.class);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

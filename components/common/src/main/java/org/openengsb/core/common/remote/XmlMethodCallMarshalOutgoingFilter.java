@@ -31,21 +31,21 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * This filter takes a {@link MethodCallRequest} and serializes it into a {@link Document}. The document is then passed
+ * This filter takes a {@link MethodCallMessage} and serializes it into a {@link Document}. The document is then passed
  * to the next filter. The resulting document is then deseralized and returned.
  *
  * This filter is intended for outgoing ports.
  *
  * <code>
  * <pre>
- *      [MethodCallRequest] > Filter > [org.w3c.dom.Document]     > ...
+ *      [MethodCallMessage] > Filter > [org.w3c.dom.Document]     > ...
  *                                                                   |
  *                                                                   v
  *      [MethodResultMessage] < Filter < [org.w3c.dom.Document]   < ...
@@ -53,15 +53,14 @@ import org.w3c.dom.Node;
  * </code>
  */
 public class XmlMethodCallMarshalOutgoingFilter extends
-        AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
+        AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private FilterAction next;
     private Unmarshaller unmarshaller;
 
     public XmlMethodCallMarshalOutgoingFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
         try {
-            JAXBContext context = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);
+            JAXBContext context = JAXBContext.newInstance(MethodCallMessage.class, MethodResultMessage.class);
             unmarshaller = context.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
@@ -69,7 +68,7 @@ public class XmlMethodCallMarshalOutgoingFilter extends
     }
 
     @Override
-    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData)
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData)
         throws FilterException {
         Document serializeRequest = serializeRequest(input);
         Document resultDocument = (Document) next.filter(serializeRequest, metaData);
@@ -80,7 +79,7 @@ public class XmlMethodCallMarshalOutgoingFilter extends
         }
     }
 
-    private Document serializeRequest(MethodCallRequest result) {
+    private Document serializeRequest(MethodCallMessage result) {
         DOMResult domResult = new DOMResult();
         try {
             @SuppressWarnings("unchecked")
@@ -89,12 +88,12 @@ public class XmlMethodCallMarshalOutgoingFilter extends
                 throw new FilterException("Could not load all required classes. Require: "
                         + result.getMethodCall().getClasses() + " got: " + classes);
             }
-            classes.add(MethodCallRequest.class);
+            classes.add(MethodCallMessage.class);
             JAXBContext jaxbContext =
                 JAXBContext.newInstance(classes.toArray(new Class<?>[classes.size()]));
             Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.marshal(new JAXBElement<MethodCallRequest>(new QName(MethodCallRequest.class.getSimpleName()),
-                MethodCallRequest.class, result), domResult);
+            marshaller.marshal(new JAXBElement<MethodCallMessage>(new QName(MethodCallMessage.class.getSimpleName()),
+                MethodCallMessage.class, result), domResult);
         } catch (JAXBException e) {
             throw new FilterException(e);
         }

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -32,7 +33,6 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -63,12 +63,12 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
         propsDomainProvider.put("domain", "a");
         registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
-        ConnectorDefinition connectorId = new ConnectorDefinition("a", "a", "a");
-        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription(
+        String connectorId = UUID.randomUUID().toString();
+        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription("a", "a",
             new HashMap<String, String>(), new HashMap<String, Object>()));
         connectorRegistrationManagerImpl.remove(connectorId);
-        connectorRegistrationManagerImpl.updateRegistration(new ConnectorDefinition("a", "a", "a"),
-            new ConnectorDescription(new HashMap<String, String>(), new HashMap<String, Object>()));
+        connectorRegistrationManagerImpl.updateRegistration(connectorId,
+            new ConnectorDescription("a", "a", new HashMap<String, String>(), new HashMap<String, Object>()));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -92,8 +92,8 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
         propsDomainProvider.put("domain", "a");
         registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
-        ConnectorDefinition connectorId = new ConnectorDefinition("a", "a", "a");
-        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription(
+        String connectorId = UUID.randomUUID().toString();
+        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription("a", "a",
             new HashMap<String, String>(), new HashMap<String, Object>()));
     }
 

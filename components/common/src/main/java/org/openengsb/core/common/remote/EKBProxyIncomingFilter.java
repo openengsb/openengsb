@@ -26,18 +26,18 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This filter takes a {@link MethodCallRequest} and checks if any parameter is type of OpenEngSBModelWrapper. If so, it
+ * This filter takes a {@link MethodCallMessage} and checks if any parameter is type of OpenEngSBModelWrapper. If so, it
  * converts it to the corresponding OpenEngSBModelObject. The new object is then passed on to the next filter. The
  * returned {@link MethodResultMessage} is checked for OpenEngSBModelObject. If this is the case, it is converted to a
  * OpenEngSBModelWrapper again.
- * 
+ *
  * <code>
  * <pre>
  *      [MethodCallRequest]   > Filter > [MethodCallRequest]     > ...
@@ -48,17 +48,13 @@ import org.slf4j.LoggerFactory;
  * </code>
  */
 public class EKBProxyIncomingFilter extends
-        AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
+        AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyIncomingFilter.class);
 
     private FilterAction next;
 
-    public EKBProxyIncomingFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
-
     @Override
-    public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
+    public MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) throws FilterException {
         Object[] parameters = input.getMethodCall().getArgs();
         LOGGER.debug("entered EKBProxyIncomingFilter");
         if (parameters != null) {
@@ -129,7 +125,7 @@ public class EKBProxyIncomingFilter extends
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 }

@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,6 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.VirtualConnectorProvider;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
@@ -84,9 +84,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+        String connectorId = UUID.randomUUID().toString();
         registrationManager.updateRegistration(connectorId, connectorDescription);
 
         Object service2 = serviceUtils.getService("(foo=bar)", 100L);
@@ -103,9 +102,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+        String connectorId = UUID.randomUUID().toString();
         registrationManager.updateRegistration(connectorId, connectorDescription);
         registrationManager.remove(connectorId);
         try {
@@ -122,11 +120,10 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+        String connectorId = UUID.randomUUID().toString();
         registrationManager.updateRegistration(connectorId, connectorDescription);
-        ConnectorDescription updated = new ConnectorDescription();
+        ConnectorDescription updated = new ConnectorDescription("test", "testc");
         Map<String, Object> newProperties = new Hashtable<String, Object>();
         newProperties.put("foo", "xxx");
         updated.setProperties(newProperties);
@@ -147,11 +144,10 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("answer", "42");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+        String connectorId = UUID.randomUUID().toString();
         registrationManager.updateRegistration(connectorId, connectorDescription);
-        ConnectorDescription updated = new ConnectorDescription();
+        ConnectorDescription updated = new ConnectorDescription("test", "testc");
         Map<String, String> newAttrs = new HashMap<String, String>();
         newAttrs.put("answer", "43");
         updated.setAttributes(newAttrs);
@@ -172,9 +168,10 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("serviceId", "foo");
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
-        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription("test", Constants.EXTERNAL_CONNECTOR_PROXY, attributes, properties);
+        String connectorId = UUID.randomUUID().toString();
 
-        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", Constants.EXTERNAL_CONNECTOR_PROXY);
         registrationManager.updateRegistration(connectorId, connectorDescription);
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);

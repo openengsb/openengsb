@@ -24,33 +24,34 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.CredentialTypeProvider;
+import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the
+ * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the
  * {@link org.apache.shiro.authc.AuthenticationInfo} and tries to authenticate. If authentication was successful, the
  * filter-chain will proceed. The result of the next filter is just passed through.
- * 
+ *
  * This filter is intended for incoming ports.
- * 
+ *
  * <code>
  * <pre>
- *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
  *                                                        |
  *                                                        v
- *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ *      [MethodResultMessage] < Filter < [MethodResultMessage]   < ...
  * </pre>
  * </code>
  */
-public class MessageAuthenticatorFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+public class MessageAuthenticatorFilter extends AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
@@ -58,21 +59,17 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     private FilterAction next;
 
     public MessageAuthenticatorFilter(OsgiUtilsService utilsService) {
-        super(SecureRequest.class, SecureResponse.class);
         this.utilsService = utilsService;
     }
 
     @Override
-    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
-        Filter filter =
-            utilsService.makeFilter(CredentialTypeProvider.class, String.format("(credentialClass=%s)", className));
         Class<? extends Credentials> credentialType;
         try {
-            credentialType =
-                utilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(className);
+            credentialType = loadCredentialsType(className);
         } catch (ClassNotFoundException e) {
             throw new FilterException(e);
         }
@@ -83,12 +80,20 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
         }
 
         LOGGER.debug("authenticated");
-        return (SecureResponse) next.filter(input, metaData);
+        return (MethodResultMessage) next.filter(input, metaData);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Credentials> loadCredentialsType(String className)
+        throws ClassNotFoundException {
+        Filter filter = DelegationUtil.createClassProviderFilter(className);
+        return (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
+            .loadClass(className);
     }
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 

@@ -81,6 +81,7 @@
               org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
       </plugin>
@@ -108,6 +109,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+    </dependency>
+      
     <!-- OpenEngSB Domain References -->
     <dependency>
       <groupId>org.openengsb.domain</groupId>

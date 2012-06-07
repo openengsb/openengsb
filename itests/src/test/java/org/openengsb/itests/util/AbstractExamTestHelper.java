@@ -17,11 +17,11 @@
 
 package org.openengsb.itests.util;
 
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.debugConfiguration;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.logLevel;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -41,6 +41,10 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.karaf.tooling.exam.options.LogLevelOption.LogLevel;
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
+import org.apache.karaf.tooling.exam.options.configs.ManagementCfg;
+import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
@@ -51,12 +55,9 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.workflow.OsgiHelper;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
-import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
-import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
-import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
@@ -96,7 +97,15 @@ public abstract class AbstractExamTestHelper {
         waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         int count = 0;
-        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+        while (rm.getGlobalType("auditing") == null) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
+        }
+        count = 0;
+        while (!rm.listImports().contains(OsgiHelper.class.getName())) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
             if (count++ > 100) {

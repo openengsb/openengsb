@@ -17,13 +17,13 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
@@ -39,6 +39,7 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,6 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -60,7 +60,6 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
@@ -172,11 +171,10 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService =
-            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(id=example-remote)", 31000);
 
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+            "(id=example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
@@ -186,7 +184,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         remoteConnector.stop();
         Thread.sleep(5000);
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+            "(id=example-remote)"), nullValue());
     }
 
     @Test
@@ -207,8 +205,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String decryptedResult = decryptResult(sessionKey, result);
 
         ObjectMapper mapper = new ObjectMapper();
-        SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
-        MethodResultMessage methodResult = response.getMessage();
+        MethodResultMessage response = mapper.readValue(decryptedResult, MethodResultMessage.class);
+        MethodResultMessage methodResult = response;
         JsonUtils.convertResult(methodResult);
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
         ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
@@ -229,7 +227,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
                 producer.send(message);
-                TextMessage response = (TextMessage) consumer.receive(1000);
+                TextMessage response = (TextMessage) consumer.receive(30000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
                     response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);

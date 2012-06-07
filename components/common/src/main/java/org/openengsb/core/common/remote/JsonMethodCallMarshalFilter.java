@@ -24,15 +24,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.JsonUtils;
 
 /**
- * This filter takes a JSON-serialized {@link MethodCallRequest} and deserializes it. The {@link MethodCallRequest}
+ * This filter takes a JSON-serialized {@link MethodCallMessage} and deserializes it. The {@link MethodCallMessage}
  * object is then passed on to the next filter. The returned {@link MethodResultMessage} is than seralized to JSON
  * again.
- * 
+ *
  * <code>
  * <pre>
  *      [MethodCallRequest as JSON-string]   > Filter > [MethodCallRequest]     > ...
@@ -46,16 +46,12 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     private FilterAction next;
 
-    public JsonMethodCallMarshalFilter() {
-        super(String.class, String.class);
-    }
-
     @Override
     public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
-        MethodCallRequest call;
+        MethodCallMessage call;
         try {
-            call = objectMapper.readValue(input, MethodCallRequest.class);
+            call = objectMapper.readValue(input, MethodCallMessage.class);
             JsonUtils.convertAllArgs(call);
             MethodResultMessage returnValue = (MethodResultMessage) next.filter(call, metadata);
             return objectMapper.writeValueAsString(returnValue);
@@ -66,7 +62,7 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 

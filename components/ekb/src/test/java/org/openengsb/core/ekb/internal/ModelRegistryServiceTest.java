@@ -24,9 +24,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
 import java.util.List;
-import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,29 +51,9 @@ public class ModelRegistryServiceTest {
 
     private BundleEvent getMockedBundleEvent(boolean full) throws Exception {
         BundleEvent event = mock(BundleEvent.class);
-        Bundle bundle = full ? getFullMockedBundle() : getEmptyMockedBundle();
+        Bundle bundle = new MockedBundle(full);
         when(event.getBundle()).thenReturn(bundle);
         return event;
-    }
-    
-    private Bundle getFullMockedBundle() throws Exception {
-        Bundle bundle = mock(Bundle.class);
-        when(bundle.getVersion()).thenReturn(new Version(1, 0, 0));
-        Vector<URL> classes = new Vector<URL>();
-        classes.add(new URL("file:/org/openengsb/core/ekb/internal/models/ModelA.class"));
-        classes.add(new URL("file:/org/openengsb/core/ekb/internal/models/TestModel.class"));
-        when(bundle.findEntries("/", "*.class", true)).thenReturn(classes.elements());
-        when(bundle.loadClass("org.openengsb.core.ekb.internal.models.ModelA")).thenReturn(ModelA.class);
-        when(bundle.loadClass("org.openengsb.core.ekb.internal.models.TestModel")).thenReturn(TestModel.class);
-        return bundle;
-    }
-    
-    private Bundle getEmptyMockedBundle() throws Exception {
-        Bundle bundle = mock(Bundle.class);
-        when(bundle.getVersion()).thenReturn(new Version(1, 0, 0));
-        Vector<URL> classes = new Vector<URL>();
-        when(bundle.findEntries("/", "*.class", true)).thenReturn(classes.elements());
-        return bundle;
     }
     
     private ModelDescription getCorrectModel() {

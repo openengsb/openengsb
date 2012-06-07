@@ -48,41 +48,45 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
-import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.security.internal.FileKeySource;
 import org.openengsb.core.security.internal.OpenEngSBSecurityManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Sets;
 
 public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMockServiceTest {
 
     @Rule
     public TemporaryFolder dataFolder = new TemporaryFolder();
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     private static final String LOREM_IPSUM = ""
             + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
@@ -102,7 +106,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
     protected PublicKey serverPublicKey;
     protected AuthenticationDomain authManager;
 
-    protected FilterChainFactory<SecureRequest, SecureResponse> filterTop;
+    protected FilterChainFactory<MethodCallMessage, MethodResultMessage> filterTop;
 
     @After
     public void cleanupShiro() {
@@ -136,12 +140,12 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             }
         });
 
-        FilterChainFactory<SecureRequest, SecureResponse> factory =
-            new FilterChainFactory<SecureRequest, SecureResponse>(SecureRequest.class, SecureResponse.class);
+        FilterChainFactory<MethodCallMessage, MethodResultMessage> factory =
+            new FilterChainFactory<MethodCallMessage, MethodResultMessage>(MethodCallMessage.class,
+                MethodResultMessage.class);
         List<Object> filterFactories = new LinkedList<Object>();
         filterFactories.add(MessageVerifierFilter.class);
         filterFactories.add(new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)));
-        filterFactories.add(WrapperFilter.class);
         filterFactories.add(new RequestMapperFilter(requestHandler));
         factory.setFilters(filterFactories);
         factory.create();
@@ -151,8 +155,10 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         secureRequestHandler = getSecureRequestHandlerFilterChain();
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("credentialClass", Password.class.getName());
-        registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
+        props.put(Constants.PROVIDED_CLASSES_KEY, Password.class.getName());
+        props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_CREDENTIALS);
+        registerService(new ClassProviderImpl(bundle, Sets.newHashSet(Password.class.getName())), props,
+            ClassProvider.class);
     }
 
     private void setupSecurityManager() {
@@ -167,37 +173,39 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     protected abstract EncodingType manipulateMessage(EncodingType encryptedRequest);
 
-    protected abstract EncodingType encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey)
+    protected abstract EncodingType encodeAndEncrypt(MethodCallMessage secureRequest, SecretKey sessionKey)
         throws Exception;
 
-    protected abstract SecureResponse decryptAndDecode(EncodingType message, SecretKey sessionKey) throws Exception;
+    protected abstract MethodResultMessage decryptAndDecode(EncodingType message, SecretKey sessionKey)
+        throws Exception;
 
     @Test
     public void processMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
-        SecureRequest secureRequest = prepareSecureRequest();
+        MethodCallMessage secureRequest = prepareSecureRequest();
 
-        SecureResponse response = processRequest(secureRequest);
+        MethodResultMessage response = processRequest(secureRequest);
 
-        MethodResultMessage mr = response.getMessage();
+        MethodResultMessage mr = response;
         assertThat((String) mr.getResult().getArg(), is(METHOD_ARG));
     }
 
-    protected SecureRequest prepareSecureRequest() {
+    protected MethodCallMessage prepareSecureRequest() {
         return prepareSecureRequest("test", new Password("password"));
     }
 
-    private SecureRequest prepareSecureRequest(String username, Object credentials) {
+    private MethodCallMessage prepareSecureRequest(String username, Object credentials) {
         MethodCall methodCall = new MethodCall("doSomething", new Object[]{ METHOD_ARG, });
-        MethodCallRequest request = new MethodCallRequest(methodCall, "c42");
-        SecureRequest secureRequest = SecureRequest.create(request, username, BeanDescription.fromObject(credentials));
-        return secureRequest;
+        MethodCallMessage request = new MethodCallMessage(methodCall, "c42");
+        request.setPrincipal(username);
+        request.setCredentials(BeanDescription.fromObject(credentials));
+        return request;
     }
 
     @Test
     public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
         when(authManager.authenticate(anyString(), any(Credentials.class))).thenThrow(
             new AuthenticationException("bad"));
-        SecureRequest secureRequest = prepareSecureRequest();
+        MethodCallMessage secureRequest = prepareSecureRequest();
         try {
             processRequest(secureRequest);
             fail("Expected exception");
@@ -209,7 +217,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     @Test
     public void testManipulateMessage_shouldCauseVerificationException() throws Exception {
-        SecureRequest secureRequest = prepareSecureRequest();
+        MethodCallMessage secureRequest = prepareSecureRequest();
 
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
@@ -228,7 +236,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     @Test
     public void testReplayMessage_shouldBeRejected() throws Exception {
-        SecureRequest secureRequest = prepareSecureRequest();
+        MethodCallMessage secureRequest = prepareSecureRequest();
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
@@ -240,7 +248,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         }
     }
 
-    private SecureResponse processRequest(SecureRequest secureRequest) throws Exception {
+    private MethodResultMessage processRequest(MethodCallMessage secureRequest) throws Exception {
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         logRequest(encryptedRequest);

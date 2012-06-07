@@ -71,12 +71,10 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
-import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
@@ -272,8 +270,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("edit button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
-                setResponsePage(new ConnectorEditorPage(connectorId));
+                setResponsePage(new ConnectorEditorPage(serviceId));
             }
 
             @Override
@@ -290,9 +287,8 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("delete button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
                 try {
-                    serviceManager.delete(connectorId);
+                    serviceManager.delete(serviceId);
                     info("service " + serviceId + " successfully deleted");
                     serviceList.setModelObject(createModel());
                     serviceList.getTreeState().expandAll();
@@ -443,7 +439,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Service or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Service or null if none was selected
      */
     private ServiceId fetchCurrentSelectService() {
@@ -452,7 +448,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Method or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Method or null if none was selected
      */
     private MethodId fetchCurrentSelectMethod() {
@@ -461,12 +457,12 @@ public class TestClient extends BasePage {
 
     /**
      * Returns a Standard MethodCall with of the selected Method
-     *
+     * 
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
     private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
-        Class<?>[] classes = methodId.getArgumentTypesAsClasses();
+        Class<?>[] classes = methodId.getArgumentTypes();
         List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
@@ -477,34 +473,36 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
      * Returns this MethodCallRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
      */
-    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
+    private MethodCallMessage createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
         org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
         realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
-        return new MethodCallRequest(realMethodCall, "randomCallId");
+        return new MethodCallMessage(realMethodCall, "randomCallId");
     }
 
     /**
      * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message
      * Returns this SecureRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
      */
-    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
-        MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
+    private MethodCallMessage createSecureRequest(ServiceId serviceId, MethodId methodId) {
+        MethodCallMessage methodCallRequest = createMethodCallRequest(serviceId, methodId);
         BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
-        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+        methodCallRequest.setPrincipal("yourusername");
+        methodCallRequest.setCredentials(beanDescription);
+        return methodCallRequest;
     }
 
     /**
      * create nessecary MetaData for the Json Message
-     *
+     * 
      * @param serviceId to fetch the context Data of the message
      * @return a Map with the nessecary MetaData for the Message
      */
@@ -521,11 +519,11 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
-     *
+     * 
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
-    private String parseRequestToJsonString(SecureRequest secureRequest) {
+    private String parseRequestToJsonString(MethodCallMessage secureRequest) {
         String jsonResult = "";
         try {
             jsonResult =
@@ -541,7 +539,7 @@ public class TestClient extends BasePage {
     /**
      * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
      * TODO [Openengsb 1411] replace this with stable filter mechanism
-     *
+     * 
      * @param jsonMessage Message to filter
      * @return the jsonMessage filtered from the unnessecary data
      */
@@ -654,7 +652,7 @@ public class TestClient extends BasePage {
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
-        domainProviderServiceId.setServiceClass(domainInterface.getName());
+        domainProviderServiceId.setServiceClass(domainInterface);
         domainProviderServiceId.setDomainName(provider.getId());
 
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
@@ -667,7 +665,7 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                serviceId.setServiceClass(domainInterface.getName());
+                serviceId.setServiceClass(domainInterface);
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
@@ -675,14 +673,12 @@ public class TestClient extends BasePage {
     }
 
     private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException {
-        Method method;
         if (methodId == null) {
             String string = new StringResourceModel("serviceError", this, null).getString();
             error(string);
             return null;
         }
-        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
-        return method;
+        return service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypes());
     }
 
     protected void performCall() {
@@ -799,12 +795,7 @@ public class TestClient extends BasePage {
         if (service == null) {
             return Collections.emptyList();
         }
-        Class<?> connectorInterface;
-        try {
-            connectorInterface = Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Class<?> connectorInterface = service.getServiceClass();
         if (wiringService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             List<Method> result = Arrays.asList(connectorInterface.getMethods());
@@ -819,19 +810,12 @@ public class TestClient extends BasePage {
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         String serviceId = service.getServiceId();
         if (serviceId != null) {
-            return utilsService.getServiceWithId(service.getServiceClass(),
-                serviceId);
+            return utilsService.getServiceWithId(service.getServiceClass(), serviceId);
         } else {
             String domainName = service.getDomainName();
             String location = "domain/" + domainName + "/default";
-            Class<?> serviceClazz;
-            try {
-                serviceClazz = this.getClass().getClassLoader().loadClass(service.getServiceClass());
-            } catch (ClassNotFoundException e) {
-                throw new OsgiServiceNotAvailableException(e);
-            }
-            return utilsService.getServiceForLocation(serviceClazz,
-                location);
+            Class<?> serviceClazz = service.getServiceClass();
+            return utilsService.getServiceForLocation(serviceClazz, location);
         }
 
     }
@@ -840,12 +824,7 @@ public class TestClient extends BasePage {
     private Object getServiceViaDomainEndpointFactory(ServiceId service) {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;
-        try {
-            aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+        aClass = (Class<? extends Domain>) service.getServiceClass();
         if (wiringService.isConnectorCurrentlyPresent(aClass)) {
             return wiringService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
@@ -855,7 +834,7 @@ public class TestClient extends BasePage {
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {
         try {
-            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypes());
         } catch (SecurityException e) {
             throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {

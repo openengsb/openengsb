@@ -42,7 +42,6 @@
     </property>
   </bean>
 
-
   <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
@@ -76,7 +75,6 @@
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
         </bean>
-        <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
