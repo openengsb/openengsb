@@ -160,13 +160,6 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     }
 
     protected String prepareRequest(String methodCall, String username, String password) {
-        String request = ""
-                + "{"
-                + "  \"callId\":\"12345\","
-                + "  \"answer\":true,"
-                + "  \"methodCall\":" + methodCall
-                + "}";
-
         String authInfo = ""
                 + "{"
                 + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
@@ -175,13 +168,15 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
                 + "    \"value\":\"" + password + "\""
                 + "  }"
                 + "}";
-
+        
         String secureRequest = ""
                 + "{"
+                + "  \"callId\":\"12345\","
+                + "  \"answer\":true,"
+                + "  \"methodCall\":" + methodCall + ","
                 + "  \"principal\": \"" + username + "\","
                 + "  \"credentials\":" + authInfo + ","
-                + "  \"timestamp\":" + System.currentTimeMillis() + ","
-                + "  \"message\":" + request
+                + "  \"timestamp\":" + System.currentTimeMillis()
                 + "}";
         return secureRequest;
     }
