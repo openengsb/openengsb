@@ -106,15 +106,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testIfTransformationsFromFileWork_shouldWork() throws Exception {
-        InputStream stream =
-            getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
-        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
-        for(TransformationDescription description : descriptions) {
-            description.getSourceModel().setModelVersion(exampleDomainVersion);
-            description.getTargetModel().setModelVersion(exampleDomainVersion);
-        }
-        transformationEngine.saveDescriptions(descriptions);
-        
+        loadDescriptionsFromFile();
         ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         modelA.setResult("test-42");
 
@@ -122,9 +114,10 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(modelB.getName(), is("test"));
     }
-    
+
     @Test
     public void testCallTransformerFromWorkflowRule_shouldWork() throws Exception {
+        loadDescriptionsFromFile();
         DummyLogDomain exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -145,22 +138,36 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
         ruleManager.addGlobal(ExampleDomain.class.getName(), "example2");
         ruleManager.addGlobal(TransformationEngine.class.getName(), "ekbTransformationService");
-        
+
         String sourceDescription = "ModelDescription source = new ModelDescription(\"%s\", \"%s\");";
         String targetDescription = "ModelDescription target = new ModelDescription(\"%s\", \"%s\");";
-        sourceDescription = String.format(sourceDescription, ExampleResponseModel.class.getName(), exampleDomainVersion.toString());
-        targetDescription = String.format(targetDescription, ExampleRequestModel.class.getName(), exampleDomainVersion.toString());
+        sourceDescription =
+            String.format(sourceDescription, ExampleResponseModel.class.getName(), exampleDomainVersion.toString());
+        targetDescription =
+            String.format(targetDescription, ExampleRequestModel.class.getName(), exampleDomainVersion.toString());
 
-        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example"), "" +
-                "when\n" +
-                "    event : LogEvent()\n" +
-                "then\n" +
-                sourceDescription + 
-                targetDescription +
-                "    ExampleResponseModel object = (ExampleResponseModel) ModelUtils.createEmptyModelObject(ExampleResponseModel.class, new OpenEngSBModelEntry[] {});" +
-                "    object.setResult(\"test-42\");" +     
-                "    ExampleRequestModel model = (ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);" +
-                "    example2.doSomethingWithModel(model);\n"
+        ruleManager
+            .add(
+                new RuleBaseElementId(RuleBaseElementType.Rule, "example"),
+                ""
+                        +
+                        "when\n"
+                        +
+                        "    event : LogEvent()\n"
+                        +
+                        "then\n"
+                        +
+                        sourceDescription
+                        +
+                        targetDescription
+                        +
+                        "    ExampleResponseModel object = (ExampleResponseModel) ModelUtils.createEmptyModelObject(ExampleResponseModel.class, new OpenEngSBModelEntry[] {});"
+                        +
+                        "    object.setResult(\"test-42\");"
+                        +
+                        "    ExampleRequestModel model = (ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);"
+                        +
+                        "    example2.doSomethingWithModel(model);\n"
             );
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -173,6 +180,17 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         assertThat(result.getName(), is("test"));
     }
     
+    private void loadDescriptionsFromFile() throws Exception {
+        InputStream stream =
+            getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
+        List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
+        for (TransformationDescription description : descriptions) {
+            description.getSourceModel().setModelVersion(exampleDomainVersion);
+            description.getTargetModel().setModelVersion(exampleDomainVersion);
+        }
+        transformationEngine.saveDescriptions(descriptions);
+    }
+
     public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
         private ExampleRequestModel model;
 
@@ -205,7 +223,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
             this.model = model;
             return null;
         }
-        
+
         public ExampleRequestModel getModel() {
             return model;
         }
