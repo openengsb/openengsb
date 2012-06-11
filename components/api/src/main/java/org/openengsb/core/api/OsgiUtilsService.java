@@ -141,7 +141,7 @@ public interface OsgiUtilsService {
      * returns a proxy that looks up an OSGi-service with the given Filter as soon as a method is called. Note that the
      * returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within the given
      * timeout (in milliseconds)
-     * 
+     *
      * @throws IllegalArgumentException if the given filter could not be compiled
      */
     <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout) throws IllegalArgumentException;
@@ -153,29 +153,6 @@ public interface OsgiUtilsService {
      */
     <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout);
 
-    /**
-     * creates a filter that matches all services exporting the class as interface
-     */
-    Filter makeFilterForClass(Class<?> clazz);
-
-    /**
-     * creates a filter that matches all services exporting the class as interface
-     */
-    Filter makeFilterForClass(String className);
-
-    /**
-     * creates a filter that matches all services exporting the class as interface and applies to the other Filter
-     * 
-     * @throws IllegalArgumentException if the given filter could not be compiled
-     */
-    Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException;
-
-    /**
-     * creates a filter that matches all services exporting the class as interface and applies to the other Filter
-     * 
-     * @throws IllegalArgumentException if the given filter could not be compiled
-     */
-    Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException;
 
     /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in

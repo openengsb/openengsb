@@ -27,6 +27,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceRegistration;
@@ -74,7 +75,7 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
     private ConfigPersistenceBackendService retrieveBackendService(Dictionary properties)
         throws ConfigurationException {
         try {
-            Filter serviceProxyFilter = serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
+            Filter serviceProxyFilter = FilterUtils.makeFilter(ConfigPersistenceBackendService.class,
                 String.format("(%s=%s)", Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID)));
             return serviceUtils.getOsgiServiceProxy(serviceProxyFilter, ConfigPersistenceBackendService.class);
         } catch (OsgiServiceNotAvailableException e) {
