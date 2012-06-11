@@ -134,9 +134,10 @@ public class ServiceEditorPanel extends Panel {
     private WebMarkupContainer propertiesContainer;
     private ListView<MapEntry<String, Object>> propertiesList;
     private final Form<?> parentForm;
-    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
-        org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
-        Constants.SERVICE_ID, Constants.OBJECTCLASS);
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(
+        org.openengsb.core.api.Constants.CONNECTOR_KEY,
+        org.openengsb.core.api.Constants.DOMAIN_KEY,
+        Constants.SERVICE_ID, Constants.OBJECTCLASS, Constants.SERVICE_PID);
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, Form<?> parentForm) {

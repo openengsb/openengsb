@@ -31,6 +31,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -184,8 +185,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter =
-            FilterUtils.makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.ID_KEY, id));
+        Filter filter = FilterUtils.makeFilter(className, String.format("(%s=%s)", Constants.SERVICE_PID, id));
         return getService(filter, timeout);
     }
 
