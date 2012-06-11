@@ -69,7 +69,7 @@ public class ServicesListPageTest extends AbstractUITest {
         domainService.setAliveState(AliveState.CONNECTING);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(Constants.ID_KEY, "test-service");
+        props.put(org.osgi.framework.Constants.SERVICE_PID, "test-service");
         props.put("testprop", "42");
         registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();

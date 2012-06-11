@@ -60,7 +60,6 @@ public class ConnectorRegistrationManager {
         org.osgi.framework.Constants.SERVICE_ID,
         org.osgi.framework.Constants.SERVICE_PID,
         org.osgi.framework.Constants.OBJECTCLASS,
-        Constants.ID_KEY,
         Constants.DOMAIN_KEY,
         Constants.CONNECTOR_KEY,
         "location.root");
@@ -193,7 +192,7 @@ public class ConnectorRegistrationManager {
         }
         result.put(Constants.DOMAIN_KEY, description.getDomainType());
         result.put(Constants.CONNECTOR_KEY, description.getConnectorType());
-        result.put(Constants.ID_KEY, id);
+        result.put(org.osgi.framework.Constants.SERVICE_PID, id);
         return result;
     }
 
