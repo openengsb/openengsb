@@ -39,7 +39,6 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.persistence.internal.ConfigPersistenceServiceFactory;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 
@@ -58,17 +57,10 @@ public class ConfigPersistenceServiceFactoryTest {
         properties.put(Constants.BACKEND_ID, "backendService");
         properties.put(Constants.CONFIGURATION_ID, "configurationId");
 
-        Filter filterMock = mock(Filter.class);
-
         ConfigPersistenceBackendService configPersistenceBackendServiceMock =
             mock(ConfigPersistenceBackendService.class);
 
         serviceUtils = mock(OsgiUtilsService.class);
-        when(
-            serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
-                String.format("(%s=%s)", Constants.BACKEND_ID, "backendService"))).thenReturn(filterMock);
-        when(serviceUtils.getOsgiServiceProxy(filterMock, ConfigPersistenceBackendService.class)).thenReturn(
-            configPersistenceBackendServiceMock);
 
         bundleContext = mock(BundleContext.class);
 
