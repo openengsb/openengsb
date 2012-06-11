@@ -155,26 +155,38 @@ public interface OsgiUtilsService {
 
     /**
      * creates a filter that matches all services exporting the class as interface
+     *
+     * @deprecated org.openengsb.core.common.util.FilterUtils.makeFilterForClass(Class<?>)
      */
+    @Deprecated
     Filter makeFilterForClass(Class<?> clazz);
 
     /**
      * creates a filter that matches all services exporting the class as interface
+     *
+     * @deprecated org.openengsb.core.common.util.FilterUtils.makeFilterForClass(String)
      */
+    @Deprecated
     Filter makeFilterForClass(String className);
 
     /**
      * creates a filter that matches all services exporting the class as interface and applies to the other Filter
      * 
      * @throws IllegalArgumentException if the given filter could not be compiled
+     *
+     * @deprecated use org.openengsb.core.common.util.FilterUtils.makeFilter(Class<?>, String)
      */
+    @Deprecated
     Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException;
 
     /**
      * creates a filter that matches all services exporting the class as interface and applies to the other Filter
-     * 
+     *
      * @throws IllegalArgumentException if the given filter could not be compiled
+     *
+     * @deprecated use org.openengsb.core.common.util.FilterUtils.makeFilter(String, String)
      */
+    @Deprecated
     Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException;
 
     /**

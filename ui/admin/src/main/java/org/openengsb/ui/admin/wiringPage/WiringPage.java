@@ -64,6 +64,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -286,7 +287,7 @@ public class WiringPage extends BasePage {
 
     private String getDomainTypeOfServiceName(String domainName) {
         Filter filter =
-            serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
+            FilterUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
         DomainProvider dp = (DomainProvider) serviceUtils.getService(filter);
         if (dp == null || dp.getDomainInterface() == null) {
             return null;
