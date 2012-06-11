@@ -24,12 +24,13 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-public final class ServiceList<ServiceType> implements List<ServiceType> {
+public final class ServiceReferenceList<ServiceType> implements List<ServiceReference<ServiceType>> {
     private ServiceTracker tracker;
 
-    public ServiceList(ServiceTracker tracker) {
+    public ServiceReferenceList(ServiceTracker tracker) {
         this.tracker = tracker;
         tracker.open();
     }
@@ -50,7 +51,7 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
     }
 
     @Override
-    public Iterator<ServiceType> iterator() {
+    public Iterator<ServiceReference<ServiceType>> iterator() {
         return asList().iterator();
     }
 
@@ -68,7 +69,7 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
     }
 
     @Override
-    public boolean add(ServiceType e) {
+    public boolean add(ServiceReference<ServiceType> e) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -83,12 +84,12 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends ServiceType> c) {
+    public boolean addAll(Collection<? extends ServiceReference<ServiceType>> c) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends ServiceType> c) {
+    public boolean addAll(int index, Collection<? extends ServiceReference<ServiceType>> c) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -109,22 +110,22 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public ServiceType get(int index) {
-        return (ServiceType) tracker.getServices()[index];
+    public ServiceReference<ServiceType> get(int index) {
+        return tracker.getServiceReferences()[index];
     }
 
     @Override
-    public ServiceType set(int index, ServiceType element) {
+    public ServiceReference<ServiceType> set(int index, ServiceReference<ServiceType> element) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public void add(int index, ServiceType element) {
+    public void add(int index, ServiceReference<ServiceType> element) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
     @Override
-    public ServiceType remove(int index) {
+    public ServiceReference<ServiceType> remove(int index) {
         throw new UnsupportedOperationException("modifying the service-list is not allowed");
     }
 
@@ -139,26 +140,26 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
     }
 
     @Override
-    public ListIterator<ServiceType> listIterator() {
+    public ListIterator<ServiceReference<ServiceType>> listIterator() {
         return asList().listIterator();
     }
 
     @Override
-    public ListIterator<ServiceType> listIterator(int index) {
+    public ListIterator<ServiceReference<ServiceType>> listIterator(int index) {
         return asList().listIterator(index);
     }
 
     @Override
-    public List<ServiceType> subList(int fromIndex, int toIndex) {
+    public List<ServiceReference<ServiceType>> subList(int fromIndex, int toIndex) {
         return asList().subList(fromIndex, toIndex);
     }
 
-    private List<ServiceType> asList() {
+    private List<ServiceReference<ServiceType>> asList() {
         @SuppressWarnings("unchecked")
-        ServiceType[] services = (ServiceType[]) tracker.getServices();
-        if (services == null) {
+        ServiceReference<ServiceType>[] serviceReferences = tracker.getServiceReferences();
+        if (serviceReferences == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList(services);
+        return Arrays.asList(serviceReferences);
     }
 }

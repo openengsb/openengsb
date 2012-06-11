@@ -65,7 +65,6 @@ import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -144,11 +143,6 @@ public class TestClientTest extends AbstractUITest {
     private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
-
-    @Before
-    public void setupTest() throws Exception {
-        context.putBean("blueprintBundleContext", bundleContext);
-    }
 
     @Test
     public void testLinkAppearsWithCaptionTestClient() throws Exception {

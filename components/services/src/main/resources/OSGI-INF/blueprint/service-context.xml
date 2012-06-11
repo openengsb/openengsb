@@ -119,7 +119,7 @@
       <entry key="composite.strategy.name" value="invoke-all-ignore-result" />
     </service-properties>
     <bean class="org.openengsb.core.common.virtual.InvokeAllIgnoreResultStrategy">
-      <property name="utilsService" ref="utilsService" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
 

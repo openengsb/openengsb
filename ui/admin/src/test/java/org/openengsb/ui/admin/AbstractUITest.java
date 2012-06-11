@@ -99,6 +99,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context = new ApplicationContextMock();
         defaultPaxWicketInjector = new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context);
         tester.getApplication().getComponentInstantiationListeners().add(defaultPaxWicketInjector);
+
+        context.putBean("blueprintBundleContext", bundleContext);
+        context.putBean("blueprintBundle", bundle);
         contextCurrentService = mock(ContextCurrentService.class);
         context.putBean("contextCurrentService", contextCurrentService);
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
@@ -160,6 +163,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
         context.putBean("domainProviders", makeServiceList(DomainProvider.class));
         context.putBean("permissionProviders", makeServiceList(ClassProvider.class));
+
+        context.putBean("connectorList", makeServiceReferenceList(Domain.class));
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {

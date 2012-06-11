@@ -27,84 +27,70 @@ public interface OsgiUtilsService {
 
     /**
      * retrieves the highest ranked service exporting the given interface.
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     <T> T getService(Class<T> clazz) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieves the highest ranked service exporting the given interface.
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     <T> T getService(Class<T> clazz, long timeout) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieve the highest ranked service that matches the given filter
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     Object getService(Filter filter) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieve the highest ranked service that matches the given filter
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     Object getService(Filter filter, long timeout) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieve the highest ranked service that matches the given filter
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     Object getService(String filterString) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieve the highest ranked service that matches the given filter
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     Object getService(String filterString, long timeout) throws OsgiServiceNotAvailableException;
 
     /**
-     * resolves the service-reference to the service-object
-     * 
-     * @throws OsgiServiceNotAvailableException if the service is represented by the reference is not available anymore
-     */
-    <T> T getService(Class<T> clazz, ServiceReference reference) throws OsgiServiceNotAvailableException;
-
-    /**
-     * resolves the service-reference to the service-object
-     * 
-     * @throws OsgiServiceNotAvailableException if the service is represented by the reference is not available anymore
-     */
-    Object getService(ServiceReference reference) throws OsgiServiceNotAvailableException;
-
-    /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     <T> T getServiceWithId(Class<? extends T> clazz, String id) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     <T> T getServiceWithId(Class<? extends T> clazz, String id, long timeout) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     Object getServiceWithId(String className, String id) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException;
@@ -153,11 +139,10 @@ public interface OsgiUtilsService {
      */
     <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout);
 
-
     /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in
      * this context), the service at the same location in the root-context is returned
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
@@ -168,7 +153,7 @@ public interface OsgiUtilsService {
     /**
      * returns a filter that matches services with the given class and location in both the given context and the
      * root-context
-     * 
+     *
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
      */
@@ -177,7 +162,7 @@ public interface OsgiUtilsService {
     /**
      * returns a filter that matches services with the given class and location in both the current context and the
      * root-context
-     * 
+     *
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
      */
@@ -185,7 +170,7 @@ public interface OsgiUtilsService {
 
     /**
      * returns a filter that matches services with the given location in both the given context and the root-context
-     * 
+     *
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
      */
@@ -193,7 +178,7 @@ public interface OsgiUtilsService {
 
     /**
      * returns a filter that matches services with the given location in both the current context and the root-context
-     * 
+     *
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
      */
@@ -202,7 +187,7 @@ public interface OsgiUtilsService {
     /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in
      * this context), the service at the same location in the root-context is returned
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
      *         compiling
@@ -213,7 +198,7 @@ public interface OsgiUtilsService {
     /**
      * retrieves a service that has the given location in the current context. If there is no service at this location
      * (in this context), the service at the same location in the root-context is returned
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException;
@@ -221,44 +206,44 @@ public interface OsgiUtilsService {
     /**
      * retrieves a service that has the given location in the current context. If there is no service at this location
      * (in this context), the service at the same location in the root-context is returned
-     * 
+     *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException;
 
     /**
      * list all service-references that are exported with the given interface.
-     * 
+     *
      * NOTE that the returned references may become invalid at any time.
      */
-    List<ServiceReference> listServiceReferences(Class<?> clazz);
+    <T> List<ServiceReference<T>> listServiceReferences(Class<T> clazz);
 
     /**
      * list all service-references that are exported with the given interface.
-     * 
+     *
      * NOTE that the returned references may become invalid at any time.
      */
-    List<ServiceReference> listServiceReferences(String filter);
+    List<ServiceReference<?>> listServiceReferences(String filter);
 
     /**
      * list all service-references that are exported with the given interface.
-     * 
+     *
      * NOTE that the returned references may become invalid at any time.
      */
-    List<ServiceReference> listServiceReferences(Class<?> clazz, String filter);
+    <T> List<ServiceReference<T>> listServiceReferences(Class<T> clazz, String filter);
 
     /**
      * returns a list of all serivce-objects of services exported with the given interface.
-     * 
+     *
      * NOTE that the returned references may become invalid at any time.
      */
     <T> List<T> listServices(Class<T> clazz);
 
     /**
      * returns a list of all serivce-objects of services exported with the given interface matching the given filter.
-     * 
+     *
      * NOTE that the returned references may become invalid at any time.
-     * 
+     *
      * @throws IllegalArgumentException if the given filter can not be compiled
      */
     <T> List<T> listServices(Class<T> clazz, String filter) throws IllegalArgumentException;
@@ -266,7 +251,7 @@ public interface OsgiUtilsService {
     /**
      * provides an {@link Iterator} where each service is resolved from the {@link ServiceReference} when needed
      */
-    Iterator<Object> getServiceIterator(Iterable<ServiceReference> references);
+    <T> Iterator<T> getServiceIterator(Iterable<ServiceReference<T>> references);
 
     /**
      * provides an {@link Iterator} where each service is resolved from the {@link ServiceReference} when needed

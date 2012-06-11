@@ -73,6 +73,7 @@ public class ServicesListPageTest extends AbstractUITest {
         props.put("testprop", "42");
         registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();
+        tester.debugComponentTrees();
         Label nameLabel =
             (Label) tester
                 .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.name");

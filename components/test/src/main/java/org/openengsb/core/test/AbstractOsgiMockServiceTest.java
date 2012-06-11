@@ -476,4 +476,9 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         return serviceList;
     }
 
+    protected <T> ServiceReferenceList<T> makeServiceReferenceList(Class<T> serviceClass) {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
+        return new ServiceReferenceList<T>(serviceTracker);
+    }
+
 }
