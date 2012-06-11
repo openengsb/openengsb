@@ -290,7 +290,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      */
     protected void registerService(Object service, String id, Class<?>... interfaces) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(org.openengsb.core.api.Constants.ID_KEY, id);
+        props.put(Constants.SERVICE_PID, id);
         registerService(service, props, interfaces);
     }
 

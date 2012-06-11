@@ -35,6 +35,7 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class ServiceListPanel extends Panel {
         private AliveState aliveState;
 
         private String getInstanceId() {
-            return (String) properties.get("id");
+            return (String) properties.get(Constants.SERVICE_PID);
         }
 
         @Override

@@ -51,7 +51,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      * indefinitely {@link ServiceTracker#waitForService(long)} A timeout < 0 means that the service tracker will not
      * wait for the service at all. If the service is not available immediately an
      * {@link OsgiServiceNotAvailableException} is thrown.
-     * 
+     *
      */
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
@@ -185,7 +185,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter = makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.ID_KEY, id));
+        Filter filter = makeFilter(className, String.format("(%s=%s)", Constants.SERVICE_PID, id));
         return getService(filter, timeout);
     }
 
@@ -326,7 +326,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     /**
      * tries to retrieve the service from the given service-tracker for the amount of milliseconds provided by the given
      * timeout.
-     * 
+     *
      * @throws OsgiServiceNotAvailableException if the service could not be found within the given timeout
      */
     private static Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)
