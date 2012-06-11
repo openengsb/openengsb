@@ -29,7 +29,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(context);
-        virtualConnectorManager = new VirtualConnectorManager(context, osgiServiceUtils);
+        virtualConnectorManager = new VirtualConnectorManager(context);
         virtualConnectorManager.start();
     }
 

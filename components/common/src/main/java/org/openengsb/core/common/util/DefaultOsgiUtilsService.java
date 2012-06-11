@@ -31,7 +31,6 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -51,7 +50,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      * indefinitely {@link ServiceTracker#waitForService(long)} A timeout < 0 means that the service tracker will not
      * wait for the service at all. If the service is not available immediately an
      * {@link OsgiServiceNotAvailableException} is thrown.
-     * 
+     *
      */
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
@@ -64,8 +63,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(Filter filter) {
-            this.tracker = new ServiceTracker(bundleContext, filter, null);
-            this.info = filter.toString();
+            tracker = new ServiceTracker(bundleContext, filter, null);
+            info = filter.toString();
         }
 
         protected ServiceTrackerInvocationHandler(String className, long timeout) {
@@ -74,8 +73,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(String className) {
-            this.tracker = new ServiceTracker(bundleContext, className, null);
-            this.info = "Class: " + className;
+            tracker = new ServiceTracker(bundleContext, className, null);
+            info = "Class: " + className;
         }
 
         protected ServiceTrackerInvocationHandler(Class<?> targetClass, long timeout) {
@@ -163,7 +162,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getService(String filterString, long timeout) throws OsgiServiceNotAvailableException {
-        return getService(createFilter(filterString), timeout);
+        return getService(FilterUtils.createFilter(filterString), timeout);
     }
 
     @Override
@@ -185,7 +184,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter = makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.ID_KEY, id));
+        Filter filter =
+            FilterUtils.makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.ID_KEY, id));
         return getService(filter, timeout);
     }
 
@@ -198,18 +198,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout) {
-        return getOsgiServiceProxy(createFilter(filter), targetClass, timeout);
-    }
-
-    /**
-     * creates a Filter, but wraps the {@link InvalidSyntaxException} into an {@link IllegalArgumentException}
-     */
-    public static Filter createFilter(String filterString) {
-        try {
-            return FrameworkUtil.createFilter(filterString);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return getOsgiServiceProxy(FilterUtils.createFilter(filter), targetClass, timeout);
     }
 
     @SuppressWarnings("unchecked")
@@ -235,37 +224,6 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     }
 
     @Override
-    public Filter makeFilterForClass(Class<?> clazz) {
-        return makeFilterForClass(clazz.getName());
-    }
-
-    @Override
-    public Filter makeFilterForClass(String className) {
-        try {
-            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    @Override
-    public Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException {
-        return makeFilter(clazz.getName(), otherFilter);
-    }
-
-    @Override
-    public Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException {
-        if (otherFilter == null) {
-            return makeFilterForClass(className);
-        }
-        try {
-            return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T getServiceForLocation(Class<T> clazz, String location, String context)
         throws OsgiServiceNotAvailableException, IllegalArgumentException {
@@ -277,7 +235,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     public Filter getFilterForLocation(Class<?> clazz, String location, String context)
         throws IllegalArgumentException {
         String filter = makeLocationFilterString(location, context);
-        return makeFilter(clazz, filter);
+        return FilterUtils.makeFilter(clazz, filter);
     }
 
     @Override
@@ -326,7 +284,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     /**
      * tries to retrieve the service from the given service-tracker for the amount of milliseconds provided by the given
      * timeout.
-     * 
+     *
      * @throws OsgiServiceNotAvailableException if the service could not be found within the given timeout
      */
     private static Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)
@@ -390,7 +348,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public <T> List<T> listServices(Class<T> clazz, String filterString) throws IllegalArgumentException {
-        Filter filter = makeFilter(clazz, filterString);
+        Filter filter = FilterUtils.makeFilter(clazz, filterString);
         ServiceTracker tracker = new ServiceTracker(bundleContext, filter, null);
         return getListFromTracker(tracker);
     }
@@ -432,6 +390,26 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      */
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException {
+        return FilterUtils.makeFilter(clazz, otherFilter);
+    }
+
+    @Override
+    public Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException {
+        return FilterUtils.makeFilter(className, otherFilter);
+    }
+
+    @Override
+    public Filter makeFilterForClass(Class<?> clazz) {
+        return FilterUtils.makeFilterForClass(clazz);
+    }
+
+    @Override
+    public Filter makeFilterForClass(String className) {
+        return FilterUtils.makeFilterForClass(className);
     }
 
 }

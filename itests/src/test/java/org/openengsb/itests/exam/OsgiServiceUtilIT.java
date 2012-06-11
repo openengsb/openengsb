@@ -32,6 +32,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -50,7 +51,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         DomainProvider provider = getServiceUtils().getService(DomainProvider.class);
         assertThat(provider, notNullValue());
         provider =
-            (DomainProvider) getServiceUtils().getService(getServiceUtils().makeFilter(DomainProvider.class,
+            (DomainProvider) getServiceUtils().getService(FilterUtils.makeFilter(DomainProvider.class,
                 String.format("(%s=example)", org.openengsb.core.api.Constants.DOMAIN_KEY)));
         assertThat(provider, notNullValue());
 
@@ -61,7 +62,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     public void testOsgiServiceProxy() throws Exception {
         ConnectorProvider proxy =
             getServiceUtils().getOsgiServiceProxy(
-                getServiceUtils().makeFilter(ConnectorProvider.class,
+                FilterUtils.makeFilter(ConnectorProvider.class,
                     String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
                 ConnectorProvider.class);
         assertThat(proxy.getId(), is("example"));
