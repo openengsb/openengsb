@@ -51,6 +51,11 @@ public final class Constants {
     public static final String DOMAIN_KEY = "domain";
 
     /**
+     * Connector-attribute that makes sure setDomainType and setConnectorType are not called during creating.
+     */
+    public static final String SKIP_SET_DOMAIN_TYPE = "skipSetDomainType";
+
+    /**
      * represents the property-key for a connector's instanceid in osgi-service-properties
      */
     public static final String ID_KEY = "id";

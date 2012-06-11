@@ -145,8 +145,10 @@ public class ConnectorRegistrationManager {
         }
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
-        serviceInstance.setDomainId(description.getDomainType());
-        serviceInstance.setConnectorId(description.getConnectorType());
+        if (!description.getAttributes().containsKey(Constants.SKIP_SET_DOMAIN_TYPE)) {
+            serviceInstance.setDomainId(description.getDomainType());
+            serviceInstance.setConnectorId(description.getConnectorType());
+        }
 
         Class<?>[] clazzes = new Class<?>[]{
             OpenEngSBService.class,
