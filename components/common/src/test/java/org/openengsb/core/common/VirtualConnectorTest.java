@@ -38,6 +38,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.common.internal.VirtualConnectorManager;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.Filter;
@@ -101,7 +102,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
                 }
             });
         when(virtualConnectorProvider.getId()).thenReturn("virtual-test-connector");
-        pseudoConnectorManager = new VirtualConnectorManager(bundleContext, utilsService);
+        pseudoConnectorManager = new VirtualConnectorManager(bundleContext);
     }
 
     @After
@@ -115,7 +116,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         createDomainProviderMock(NullDomain.class, "test");
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
@@ -126,7 +127,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
@@ -137,7 +138,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         pseudoConnectorManager.start();
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
