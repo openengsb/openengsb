@@ -64,6 +64,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.options.extra.VMOption;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -82,7 +83,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(),
-            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"),
+            new VMOption("-Dorg.openengsb.jms.noencrypt=false"),
+            new VMOption("-Dorg.openengsb.security.noverify=false"));
     }
 
     @Override
