@@ -73,4 +73,22 @@ public class ToolChooserLogic {
         return identifierKeyNames;
     }    
     
+    public boolean isConnectorRegistrated(String hostId, String connectorId){
+        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+            if (registration.getConnectorId().equals(connectorId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isViewExisting(String hostId, String connectorId, String viewId){
+        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+            if (registration.getConnectorId().equals(connectorId)) {
+                return registration.getxLinkTemplate().getViewToModels().containsKey(viewId);
+            }
+        }
+        return false;
+    }    
+    
 }

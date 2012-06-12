@@ -128,9 +128,9 @@ public class ToolChooserPage extends WebPage {
     private void checkIfXLinkIsValid(HttpServletRequest req) throws OpenXLinkException {
         fetchXLinkParameters(req);
         checkMandatoryXLinkParameters();
-        /*if (checkForLocalSwitchingParameters()) {
-            checkConnectorIdFormat();
-        }*/
+        if (checkForLocalSwitchingParameters()) {
+            checkConnectorAndViewExists();
+        }
         checkXLinkIsExpired();
         try {
             fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
@@ -171,7 +171,14 @@ public class ToolChooserPage extends WebPage {
             String expiredMsg = new StringResourceModel("error.xlinkHasExpired", this, null).getString();
             throw new OpenXLinkException(expiredMsg);
         }        
-    }    
+    }  
+    
+    private void checkConnectorAndViewExists() throws OpenXLinkException{
+        String errorConnectorNotRegistered = new StringResourceModel("error.connectorNotRegistrated", this, null).getString();
+        String errorViewNotExisting = new StringResourceModel("error.viewNotExisting", this, null).getString();
+        if(!chooserLogic.isConnectorRegistrated(hostId, connectorId))throw new OpenXLinkException(errorConnectorNotRegistered);
+        if(!chooserLogic.isViewExisting(hostId, connectorId, viewId))throw new OpenXLinkException(errorViewNotExisting);
+    }
     
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {
         String errorMsgFormat = new StringResourceModel("error.missingIdentifier", this, null).getString();

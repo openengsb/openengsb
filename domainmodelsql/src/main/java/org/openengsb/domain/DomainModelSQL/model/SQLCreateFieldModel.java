@@ -26,6 +26,10 @@ public interface SQLCreateFieldModel extends OpenEngSBModel{
     
     void setFieldName(String fieldName);
     
+    String getFieldType();
+    
+    void setFieldType(String fieldType);
+    
     List<String> getConstraints();
     
     void setConstraints(List<String> constraints);

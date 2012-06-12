@@ -31,8 +31,6 @@ import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class ToolChooserTest extends AbstractUITest {
     
-    private final String dateFormat = "yyyyMMddkkmmss";
-    
     @Before
     public void setup() throws Exception {
         setupTesterWithSpringMockContext();
@@ -68,7 +66,7 @@ public class ToolChooserTest extends AbstractUITest {
     private String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
-        Format formatter = new SimpleDateFormat(dateFormat);
+        Format formatter = new SimpleDateFormat(XLinkUtils.DATEFORMAT);
         return formatter.format(calendar.getTime());
     }    
     
@@ -196,6 +194,38 @@ public class ToolChooserTest extends AbstractUITest {
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
+    }    
+    
+    @Test
+    public void openLocalSwitchPage_WrongConnectorId() {
+        PageParameters params = new PageParameters();
+        setupCommonXLinkParams(params);
+        setupIdentfierParamsForExampleOOModel(params);
+        setupLocalSwitchXLinkParams(params);
+        setupNessecaryHeader();
+        
+        params.remove(XLinkUtils.XLINK_CONNECTORID_KEY);
+        params.add(XLinkUtils.XLINK_CONNECTORID_KEY, "test3+test3+test3");
+        
+        tester.startPage(ToolChooserPage.class, params);
+        tester.assertRenderedPage(MachineResponsePage.class);
+        tester.assertContains("ConnectorId");
+    }
+    
+    @Test
+    public void openLocalSwitchPage_WrongViewId() {
+        PageParameters params = new PageParameters();
+        setupCommonXLinkParams(params);
+        setupIdentfierParamsForExampleOOModel(params);
+        setupLocalSwitchXLinkParams(params);
+        setupNessecaryHeader();
+        
+        params.remove(XLinkUtils.XLINK_VIEW_KEY);
+        params.add(XLinkUtils.XLINK_VIEW_KEY, "exampleViewId_wrong");   
+        
+        tester.startPage(ToolChooserPage.class, params);
+        tester.assertRenderedPage(MachineResponsePage.class);
+        tester.assertContains("ViewId");
     }    
     
 }
