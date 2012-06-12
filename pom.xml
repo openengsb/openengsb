@@ -114,7 +114,8 @@
     <!-- OpenEngSB Manual -->
     <module>manual</module>
     <module>domainmodelsql</module>
-    <module>domainmodelsqlconnector</module>    
+    <module>domainmodelsqlconnector</module>
+    <module>domainmodeloosource</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
