@@ -45,7 +45,7 @@ public class DomainModelSQLConnectorServiceImpl extends AbstractOpenEngSBConnect
     @Override
     public AliveState getAliveState() {
         // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
+        return AliveState.ONLINE;
     }
     
     @Override
