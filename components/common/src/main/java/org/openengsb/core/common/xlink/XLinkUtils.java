@@ -73,7 +73,7 @@ public final class XLinkUtils {
     public static final String XLINK_HOST_HEADERNAME = "Host";
     
     /**Format of the ExpirationDate*/
-    private static final String DATEFORMAT = "yyyyMMddkkmmss";
+    public static final String DATEFORMAT = "yyyyMMddkkmmss";
 
     // @extract-end
 
