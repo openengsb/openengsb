@@ -39,7 +39,7 @@
       <value>org.openengsb.core.api.DomainEvents</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="domain.example.events" />
+      <entry key="service.pid" value="domain.example.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />

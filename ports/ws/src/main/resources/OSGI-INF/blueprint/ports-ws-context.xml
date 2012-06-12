@@ -23,7 +23,7 @@
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
-      <entry key="id" value="ws-json" />
+      <entry key="service.pid" value="ws-json" />
     </service-properties>
     <ref component-id="outgoingPortBean" />
   </service>

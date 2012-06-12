@@ -40,7 +40,7 @@
       <value>org.openengsb.core.api.ConnectorManager</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="connectorManager" />
+      <entry key="service.pid" value="connectorManager" />
     </service-properties>
     <ref component-id="connectorManager" />
   </service>

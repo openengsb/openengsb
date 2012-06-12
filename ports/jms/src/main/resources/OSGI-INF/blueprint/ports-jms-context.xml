@@ -34,7 +34,7 @@
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
-      <entry key="id" value="jms-json" />
+      <entry key="service.pid" value="jms-json" />
     </service-properties>
     <ref component-id="outgoingPortBean" />
   </service>
