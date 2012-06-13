@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.model.BeanDescription;
@@ -76,7 +74,8 @@ public final class SecureSampleConnector {
             + "      \"serviceId\" : \"connectorManager\"\n"
             + "    },\n"
             + "    \"classes\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
-            + "    \"realClassImplementation\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
+            + "    \"realClassImplementation\" : [ \"java.lang.String\", "
+            + "\"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
             + "  },\n"
             + "  \"callId\" : \"1d075f48-53ee-427a-ae8a-8e9d5b6db229\",\n"
             + "  \"answer\" : false,\n"
@@ -133,8 +132,7 @@ public final class SecureSampleConnector {
         return requestHandler.getInvocationHistory();
     }
 
-    public static void createRegisterMessage(String[] args) throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void createRegisterMessage(String[] args) throws IOException {
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -159,8 +157,7 @@ public final class SecureSampleConnector {
         System.out.println(writeValueAsString);
     }
 
-    public static void main(String[] args) throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void main(String[] args) throws IOException {
         String connectorId = "example-remote";
         MethodCall methodCall = new MethodCall("delete", new Object[]{ connectorId });
         Map<String, String> metaData = new HashMap<String, String>();

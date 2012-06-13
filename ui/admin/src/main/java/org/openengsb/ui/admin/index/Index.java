@@ -23,7 +23,7 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "index")
-@SecurityAttribute(key="org.openengsb.ui.component", value="INDEX")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "INDEX")
 public class Index extends BasePage {
 
     private static final long serialVersionUID = -445277092895685296L;

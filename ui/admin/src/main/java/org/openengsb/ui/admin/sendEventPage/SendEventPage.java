@@ -130,11 +130,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             }
         }, getAvailableContexts()) {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+             * 
+             */
+            private static final long serialVersionUID = 1L;
 
-			@Override
+            @Override
             protected boolean wantOnSelectionChangedNotifications() {
                 return true;
             }
