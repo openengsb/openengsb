@@ -60,6 +60,7 @@ public class UserDataInitializer implements Runnable {
 
             userManager.createPermissionSet("ROLE_ROOT", new RootPermission());
             userManager.addPermissionSetToUser("admin", "ROLE_ROOT");
+            userManager.addPermissionSetToUser("user", "INDEX");
         } catch (PermissionSetAlreadyExistsException e) {
             LOGGER.error("this should not happen... I just checked whether the userbase is empty", e);
         }

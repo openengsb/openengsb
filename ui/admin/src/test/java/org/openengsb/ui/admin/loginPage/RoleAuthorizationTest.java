@@ -52,7 +52,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         formTester.setValue("password", "password");
         formTester.submit();
         BookmarkablePageLabelLink<?> userServiceLink =
-            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:1:link");
         assertNotNull(userServiceLink);
         assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserListPage.class.getCanonicalName()));
     }
@@ -65,7 +65,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         formTester.setValue("password", "password");
         formTester.submit();
         BookmarkablePageLabelLink<?> userServiceLink =
-            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:1:link");
         assertNull(userServiceLink);
     }
 
@@ -76,7 +76,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         formTester.setValue("username", "admin");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("header:headerMenuItems:1:link");
+        tester.clickLink("menu:menuItems:2:link");
         tester.assertRenderedPage(TestClient.class);
         Component domains = tester.getComponentFromLastRenderedPage("serviceManagementContainer");
         assertNotNull(domains);
@@ -90,16 +90,16 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         formTester.setValue("password", "password");
         formTester.submit();
         tester.debugComponentTrees();
-        assertThat(tester.getComponentFromLastRenderedPage("header"), notNullValue());
-        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems"), notNullValue());
+        assertThat(tester.getComponentFromLastRenderedPage("menu"), notNullValue());
+        assertThat(tester.getComponentFromLastRenderedPage("menu:menuItems"), notNullValue());
         ListItem<?> componentFromLastRenderedPage =
-            (ListItem<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:1");
+            (ListItem<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:2");
         System.out.println(componentFromLastRenderedPage);
         Component component = componentFromLastRenderedPage.get(0);
         System.out.println(component);
 
-        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems:1:link"), notNullValue());
-        tester.clickLink("header:headerMenuItems:1:link");
+        assertThat(tester.getComponentFromLastRenderedPage("menu:menuItems:2:link"), notNullValue());
+        tester.clickLink("menu:menuItems:2:link");
         tester.assertRenderedPage(TestClient.class);
         Component domains = tester.getComponentFromLastRenderedPage("serviceManagementContainer");
         assertNull(domains);

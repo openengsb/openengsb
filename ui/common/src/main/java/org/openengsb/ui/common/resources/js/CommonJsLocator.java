@@ -22,11 +22,11 @@ import org.apache.wicket.request.resource.ResourceReference;
 public final class CommonJsLocator {
 
     public static ResourceReference getJqueryJs() {
-        return new PackageResourceReference(CommonJsLocator.class, "jquery-1.7.1.min.js");
+        return new PackageResourceReference(CommonJsLocator.class, "jquery-1.7.2.min.js");
     }
 
     public static ResourceReference getJqueryUi() {
-        return new PackageResourceReference(CommonJsLocator.class, "jquery-ui-1.8.17.custom.min.js");
+        return new PackageResourceReference(CommonJsLocator.class, "jquery-ui-1.8.21.custom.min.js");
     }
 
     public static ResourceReference getJqueryHelper() {
