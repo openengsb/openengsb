@@ -28,8 +28,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.junit.Before;
@@ -369,11 +372,58 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
+    
+    @Test
+    public void testSupportOfCustomModels_shouldWork() throws Exception {
+        RealModel model = new RealModel();
+        model.setId("testReal/1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+        
+        EDBObject mainObject = edbService.getObject("testdomain/testconnector/testReal/1");
+        
+        assertThat(mainObject, notNullValue());
+    }
 
     private EKBCommit getTestEKBCommit() {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
         commit.setInstanceId("testinstance");
         return commit;
+    }
+    
+    public class RealModel implements OpenEngSBModel {
+        private String id;
+        private Map<String, OpenEngSBModelEntry> tail;
+        
+        public RealModel() {
+            tail = new HashMap<String, OpenEngSBModelEntry>();
+        }
+        
+        public String getId() {
+            return id;
+        }
+        
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
+            List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
+            entries.add(new OpenEngSBModelEntry(EDBConstants.MODEL_OID, id, String.class));
+            entries.addAll(tail.values());
+            return entries;
+        }
+
+        @Override
+        public void addOpenEngSBModelEntry(OpenEngSBModelEntry entry) {
+            tail.put(entry.getKey(), entry);
+        }
+
+        @Override
+        public void removeOpenEngSBModelEntry(String key) {
+            tail.remove(key);            
+        }
     }
 
     public interface TestModel extends OpenEngSBModel {

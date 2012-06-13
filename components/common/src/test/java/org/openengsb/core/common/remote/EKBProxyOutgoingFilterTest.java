@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.ModelUtils;
 
@@ -48,7 +48,7 @@ public class EKBProxyOutgoingFilterTest {
         model.setId(10);
         model.setName("test");
 
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("outgoing1");
         MethodCall call = new MethodCall();
         call.setArgs(new Object[]{ model });
@@ -65,7 +65,7 @@ public class EKBProxyOutgoingFilterTest {
 
     @Test
     public void testConversionMethodCallWithOpenEngSBModelWrapperAnswer_shouldWork() {
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("outgoing2");
         request.setMethodCall(new MethodCall());
         MethodResultMessage message = filter.doFilter(request, null);
@@ -83,7 +83,7 @@ public class EKBProxyOutgoingFilterTest {
         model.setId(70);
         model.setName("test");
 
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("outgoing3");
         MethodCall call = new MethodCall();
         call.setArgs(new Object[]{ model });

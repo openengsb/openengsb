@@ -94,7 +94,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
             LOGGER.info("Successfully installed workflow file \"{}\"", artifact.getName());
         } catch (RuleBaseException e) {
             LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies", artifact.getName());
-            LOGGER.info(e.getMessage());
+            LOGGER.debug(e.getMessage());
             LOGGER.debug("Details: ", e);
             failedArtifacts.add(artifact);
             return;

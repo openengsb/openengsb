@@ -30,6 +30,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -408,6 +410,20 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         
         modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);
         return modelsToViews;
+    }
+
+    @Test
+    public void createConnectorWithSkipDomainType_shouldNotInvokeSetDomainType() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put(Constants.SKIP_SET_DOMAIN_TYPE, "true");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        NullDomainImpl mock2 = mock(NullDomainImpl.class);
+        when(factory.createNewInstance(anyString())).thenReturn(mock2);
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+        serviceManager.create(connectorDescription);
+        verify(mock2, never()).setDomainId(anyString());
+        verify(mock2, never()).setConnectorId(anyString());
     }
 
     private void registerMockedFactory() throws Exception {

@@ -42,7 +42,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -83,7 +83,7 @@ public class PipelineTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall("test", new Object[]{ "foo" });
-        MethodCallRequest request = new MethodCallRequest(methodCall, "bar");
+        MethodCallMessage request = new MethodCallMessage(methodCall, "bar");
         String input = objectMapper.writeValueAsString(request);
         String result = (String) filterChain.filter(input, new HashMap<String, Object>());
         MethodResultMessage returnValue = objectMapper.readValue(result, MethodResultMessage.class);
@@ -103,15 +103,15 @@ public class PipelineTest {
         FilterAction filterChain = filterChainFactory.create();
 
         MethodCall methodCall = new MethodCall("test", new Object[]{ "foo" }, Arrays.asList(String.class.getName()));
-        MethodCallRequest request = new MethodCallRequest(methodCall, "bar");
+        MethodCallMessage request = new MethodCallMessage(methodCall, "bar");
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(MethodCallMessage.class, MethodResultMessage.class);
         final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         final Marshaller marshaller = jaxbContext.createMarshaller();
 
         DOMResult domResult = new DOMResult();
-        marshaller.marshal(new JAXBElement<MethodCallRequest>(new QName(MethodCallRequest.class.getSimpleName()),
-            MethodCallRequest.class, request), domResult);
+        marshaller.marshal(new JAXBElement<MethodCallMessage>(new QName(MethodCallMessage.class.getSimpleName()),
+            MethodCallMessage.class, request), domResult);
         String input = XmlDecoderFilter.writeDocument(domResult.getNode());
         String result = (String) filterChain.filter(input, new HashMap<String, Object>());
 
@@ -135,7 +135,7 @@ public class PipelineTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall("test", new Object[]{ "foo" });
-        MethodCallRequest request = new MethodCallRequest(methodCall, "bar");
+        MethodCallMessage request = new MethodCallMessage(methodCall, "bar");
         String input = objectMapper.writeValueAsString(request);
         HashMap<String, Object> metaData = new HashMap<String, Object>();
         filterChain.filter(input, metaData);

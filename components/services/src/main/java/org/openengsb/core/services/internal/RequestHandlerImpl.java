@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
@@ -110,12 +109,12 @@ public class RequestHandlerImpl implements RequestHandler {
             if (serviceId == null) {
                 throw new IllegalArgumentException("must specify either filter or serviceId");
             }
-            return String.format("(%s=%s)", Constants.ID_KEY, serviceId);
+            return String.format("(%s=%s)", org.osgi.framework.Constants.SERVICE_PID, serviceId);
         } else {
             if (serviceId == null) {
                 return filter;
             }
-            return String.format("(&%s(%s=%s))", filter, Constants.ID_KEY, serviceId);
+            return String.format("(&%s(%s=%s))", filter, org.osgi.framework.Constants.SERVICE_PID, serviceId);
         }
     }
 
@@ -161,7 +160,7 @@ public class RequestHandlerImpl implements RequestHandler {
 
     /**
      * TODO: OPENENGSB-1976
-     * 
+     *
      * This is a workaround for the mess with Aries JPA proxies.
      */
     private Class<?> retrieveRealServiceClass(Object service) {

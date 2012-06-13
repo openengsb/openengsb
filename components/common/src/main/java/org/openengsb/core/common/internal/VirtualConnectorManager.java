@@ -28,8 +28,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
+import org.openengsb.core.common.util.FilterUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -72,16 +72,13 @@ public class VirtualConnectorManager {
 
     private final BundleContext bundleContext;
 
-    private final OsgiUtilsService utilsService;
-
-    public VirtualConnectorManager(BundleContext bundleContext, OsgiUtilsService utilsService) {
+    public VirtualConnectorManager(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-        this.utilsService = utilsService;
         init();
     }
 
     private void init() {
-        Filter virtualConnectorFilter = utilsService.makeFilterForClass(VirtualConnectorProvider.class);
+        Filter virtualConnectorFilter = FilterUtils.makeFilterForClass(VirtualConnectorProvider.class);
         virtualConnectorProviderTracker =
             new ServiceTracker(bundleContext, virtualConnectorFilter, new ServiceTrackerCustomizer() {
                 @Override
@@ -103,7 +100,7 @@ public class VirtualConnectorManager {
                 }
 
             });
-        Filter domainProviderFilter = utilsService.makeFilterForClass(DomainProvider.class);
+        Filter domainProviderFilter = FilterUtils.makeFilterForClass(DomainProvider.class);
         domainProviderTracker =
             new ServiceTracker(bundleContext, domainProviderFilter, new ServiceTrackerCustomizer() {
                 @Override

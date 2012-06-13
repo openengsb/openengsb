@@ -35,9 +35,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -160,13 +160,6 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     }
 
     protected String prepareRequest(String methodCall, String username, String password) {
-        String request = ""
-                + "{"
-                + "  \"callId\":\"12345\","
-                + "  \"answer\":true,"
-                + "  \"methodCall\":" + methodCall
-                + "}";
-
         String authInfo = ""
                 + "{"
                 + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
@@ -175,13 +168,15 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
                 + "    \"value\":\"" + password + "\""
                 + "  }"
                 + "}";
-
+        
         String secureRequest = ""
                 + "{"
+                + "  \"callId\":\"12345\","
+                + "  \"answer\":true,"
+                + "  \"methodCall\":" + methodCall + ","
                 + "  \"principal\": \"" + username + "\","
                 + "  \"credentials\":" + authInfo + ","
-                + "  \"timestamp\":" + System.currentTimeMillis() + ","
-                + "  \"message\":" + request
+                + "  \"timestamp\":" + System.currentTimeMillis()
                 + "}";
         return secureRequest;
     }
@@ -217,8 +212,8 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         }
 
         if (!result.contains("The answer to life the universe and everything")) {
-            SecureResponse readValue = new ObjectMapper().readValue(result, SecureResponse.class);
-            MethodResult result2 = readValue.getMessage().getResult();
+            MethodResultMessage readValue = new ObjectMapper().readValue(result, MethodResultMessage.class);
+            MethodResult result2 = readValue.getResult();
             if (result2.getType().equals(MethodResult.ReturnType.Exception)) {
                 LOGGER.error(result2.getArg().toString());
             }

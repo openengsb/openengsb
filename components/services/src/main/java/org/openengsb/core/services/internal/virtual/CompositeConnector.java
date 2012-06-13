@@ -17,7 +17,7 @@
 package org.openengsb.core.services.internal.virtual;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.CompositeConnectorStrategy;
@@ -42,11 +42,13 @@ public class CompositeConnector extends VirtualConnector {
         return compositeHandler.invoke(services, method, args);
     }
 
-    @SuppressWarnings("unchecked")
     private List<ServiceReference> getOsgiServices() {
-        List<ServiceReference> references = utilsService.listServiceReferences(queryString);
-        Collections.sort(references);
-        return references;
+        List<ServiceReference<?>> references = utilsService.listServiceReferences(queryString);
+        List<ServiceReference> result = new ArrayList<ServiceReference>();
+        for (ServiceReference<?> reference : references) {
+            result.add(reference);
+        }
+        return result;
     }
 
     public void setQueryString(String queryString) {

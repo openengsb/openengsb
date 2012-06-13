@@ -32,9 +32,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class ServiceListPanel extends Panel {
         private AliveState aliveState;
 
         private String getInstanceId() {
-            return (String) properties.get("id");
+            return (String) properties.get(Constants.SERVICE_PID);
         }
 
         @Override
@@ -66,8 +67,11 @@ public class ServiceListPanel extends Panel {
         }
     }
 
-    @PaxWicketBean(name = "osgiUtilsService")
-    private OsgiUtilsService serviceUtils;
+    @PaxWicketBean(name = "blueprintBundleContext")
+    private BundleContext bundleContext;
+
+    @PaxWicketBean(name = "connectorList")
+    private List<ServiceReference<Domain>> serviceReferences;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {
 
@@ -75,14 +79,13 @@ public class ServiceListPanel extends Panel {
 
         @Override
         protected List<ServiceEntry> load() {
-            List<ServiceReference> listServiceReferences = serviceUtils.listServiceReferences(Domain.class);
             List<ServiceEntry> result = new ArrayList<ServiceListPanel.ServiceEntry>();
-            for (ServiceReference ref : listServiceReferences) {
+            for (ServiceReference<Domain> ref : serviceReferences) {
                 ServiceEntry entry = new ServiceEntry();
                 for (String key : ref.getPropertyKeys()) {
                     entry.properties.put(key, ref.getProperty(key));
                 }
-                Domain service = serviceUtils.getService(Domain.class, ref);
+                Domain service = bundleContext.getService(ref);
                 try {
                     entry.aliveState = service.getAliveState();
                 } catch (Exception e) {

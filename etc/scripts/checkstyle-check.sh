@@ -20,4 +20,4 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
-mvn openengsb:checkstyle
+mvn verify -Pcheckstyle

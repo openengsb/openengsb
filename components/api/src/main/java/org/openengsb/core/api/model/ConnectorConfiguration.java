@@ -44,11 +44,11 @@ public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
     }
 
     public ConnectorConfiguration(String id, ConnectorDescription content) {
-        metaData = ImmutableMap.of(Constants.ID_KEY, id);
+        metaData = ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id);
         this.content = content;
     }
 
     public String getConnectorId() {
-        return metaData.get(Constants.ID_KEY);
+        return metaData.get(Constants.CONNECTOR_PERSISTENT_ID);
     }
 }

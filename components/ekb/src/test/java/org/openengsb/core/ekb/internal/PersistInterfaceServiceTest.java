@@ -20,7 +20,11 @@ package org.openengsb.core.ekb.internal;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.ekb.EKBCommit;
+import org.openengsb.core.ekb.internal.converter.EDBConverter;
+import org.openengsb.core.ekb.internal.models.TestModel2;
 
 public class PersistInterfaceServiceTest {
     private PersistInterfaceService service;
@@ -34,5 +38,13 @@ public class PersistInterfaceServiceTest {
         EDBConverter converter = new EDBConverter();
         converter.setEdbService(edbService);
         service.setEdbConverter(converter);
+    }
+    
+    @Test
+    public void testIfRealModelsCanBeCommited_shouldWork() throws Exception {
+        EKBCommit commit = new EKBCommit();
+        commit.setDomainId("testdomain").setConnectorId("testconnector").setInstanceId("testinstance");
+        commit.addInsert(new TestModel2());
+        service.commit(commit);
     }
 }

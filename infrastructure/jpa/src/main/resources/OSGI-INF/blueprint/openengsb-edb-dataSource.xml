@@ -30,6 +30,22 @@
       <cm:property name="url" value="jdbc:h2:openengsb" />
       <cm:property name="username" value="" />
       <cm:property name="password" value="" />
+      <cm:property name="validationQuery" value="SELECT 1" />
+      <cm:property name="defaultReadOnly" value="false" />
+      <cm:property name="defaultAutoCommit" value="true" />
+      <cm:property name="maxActive" value="8" />
+      <cm:property name="whenExhaustedAction" value="2" />
+      <cm:property name="maxWait" value="-1" />
+      <cm:property name="maxIdle" value="8" />
+      <cm:property name="minIdle" value="0" />
+      <cm:property name="testOnBorrow" value="true" />
+      <cm:property name="testOnReturn" value="true" />
+      <cm:property name="timeBetweenEvictionRunsMillis" value="-1" />
+      <cm:property name="numTestsPerEvictionRun" value="3" />
+      <cm:property name="minEvictableIdleTimeMillis" value="1800000" />
+      <cm:property name="testWhileIdle" value="false" />
+      <cm:property name="softMinEvictableIdleTimeMillis" value="-1" />
+      <cm:property name="lifo" value="true" />
     </cm:default-properties>
   </cm:property-placeholder>
 
@@ -47,15 +63,28 @@
 
   <bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool" >
     <argument><null/></argument>
+    <argument value="${maxActive}" />
+    <argument value="${whenExhaustedAction}" />
+    <argument value="${maxWait}" />
+    <argument value="${maxIdle}" />
+    <argument value="${minIdle}" />
+    <argument value="${testOnBorrow}" />
+    <argument value="${testOnReturn}" />
+    <argument value="${timeBetweenEvictionRunsMillis}" />
+    <argument value="${numTestsPerEvictionRun}" />
+    <argument value="${minEvictableIdleTimeMillis}" />
+    <argument value="${testWhileIdle}" />
+    <argument value="${softMinEvictableIdleTimeMillis}" />
+    <argument value="${lifo}" />
   </bean>
 
   <bean id="pooledConnectionFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory" >
     <argument ref="connectionFactory" />
     <argument ref="connectionPool" />
     <argument><null/></argument>
-    <argument value="SELECT 1" />
-    <argument value="false" />
-    <argument value="true" />
+    <argument value="${validationQuery}" />
+    <argument value="${defaultReadOnly}" />
+    <argument value="${defaultAutoCommit}" />
   </bean>
 
   <bean id="poolingDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="pooledConnectionFactory">
