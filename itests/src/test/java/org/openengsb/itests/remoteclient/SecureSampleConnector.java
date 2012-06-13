@@ -121,12 +121,10 @@ public final class SecureSampleConnector {
         jmsConfig.init();
         requestHandler = new RemoteRequestHandler();
         jmsConfig.createConsumerForQueue("example-remote", new ConnectorMessageListener(jmsConfig, requestHandler));
-        System.out.println(REGISTER_MESSAGE);
         jmsConfig.sendMessage("receive", REGISTER_MESSAGE);
     }
 
     public void stop() throws JMSException {
-        System.out.println(UNREGISTER_MESSAGE);
         jmsConfig.sendMessage("receive", UNREGISTER_MESSAGE);
         jmsConfig.stop();
     }
