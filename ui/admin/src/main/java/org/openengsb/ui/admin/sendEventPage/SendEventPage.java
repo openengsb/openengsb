@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -39,12 +40,14 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -110,6 +113,41 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         init(classes);
     }
 
+    private Component createProjectChoice() {
+        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            @Override
+            public String getObject() {
+                return getSessionContextId();
+            }
+
+            @Override
+            public void setObject(String object) {
+                ContextHolder.get().setCurrentContextId(object);
+            }
+
+            @Override
+            public void detach() {
+            }
+        }, getAvailableContexts()) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+            @Override
+            protected void onModelChanged() {
+                setResponsePage(SendEventPage.this.getClass());
+            }
+
+        };
+        return dropDownChoice;
+    }
+    
     public SendEventPage(List<Class<? extends Event>> classes) {
         init(classes);
     }
@@ -138,6 +176,10 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         container.setOutputMarkupId(true);
         form.add(new FeedbackPanel("feedback"));
 
+        Form<?> pc = new Form<Object>("projectChoiceForm");
+        pc.add(createProjectChoice());
+        add(pc);
+        
         final WebMarkupContainer auditsContainer = new WebMarkupContainer("auditsContainer");
         auditsContainer.setOutputMarkupId(true);
 

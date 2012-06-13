@@ -26,6 +26,13 @@
       <h2>
         <wicket:message key="serviceList" />
       </h2>
+      
+      <div>
+        <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+          <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
+        </form>
+      </div>
+      
       <div wicket:id="serviceManagementContainer">
       	
       	<div class="line dataTable" wicket:id="domains">
