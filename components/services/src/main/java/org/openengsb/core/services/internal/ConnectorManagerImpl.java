@@ -66,7 +66,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                     Collection<ConnectorConfiguration> configs;
                     try {
                         Map<String, String> emptyMap = Collections.emptyMap();
-                        configs = getConfigPersistence().load(emptyMap);
+                        configs = configPersistence.load(emptyMap);
                     } catch (InvalidConfigurationException e) {
                         throw new IllegalStateException(e);
                     } catch (PersistenceException e) {
@@ -109,7 +109,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.updateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
-            getConfigPersistence().persist(configuration);
+            configPersistence.persist(configuration);
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
@@ -131,7 +131,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
-            getConfigPersistence().persist(configuration);
+            configPersistence.persist(configuration);
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
@@ -140,7 +140,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private void checkForExistingServices(String id) {
         try {
-            List<ConnectorConfiguration> list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
+            List<ConnectorConfiguration> list =
+                configPersistence.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
             if (!list.isEmpty()) {
                 throw new IllegalArgumentException("connector already exists");
             }
@@ -156,7 +157,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.updateRegistration(id, connectorDescpription);
         applyConfigChanges(old, connectorDescpription);
         try {
-            getConfigPersistence().persist(new ConnectorConfiguration(id, connectorDescpription));
+            configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -168,7 +169,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         applyConfigChanges(old, connectorDescription);
         try {
-            getConfigPersistence().persist(new ConnectorConfiguration(id, connectorDescription));
+            configPersistence.persist(new ConnectorConfiguration(id, connectorDescription));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -193,7 +194,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private ConnectorDescription getOldConfig(String id) {
         List<ConnectorConfiguration> list;
         try {
-            list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
+            list = configPersistence.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -209,13 +210,14 @@ public class ConnectorManagerImpl implements ConnectorManager {
     @Override
     public void delete(String id) throws PersistenceException {
         registrationManager.remove(id);
-        getConfigPersistence().remove(ImmutableMap.of(Constants.ID_KEY, id));
+        configPersistence.remove(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
     }
 
     @Override
     public ConnectorDescription getAttributeValues(String id) {
         try {
-            List<ConnectorConfiguration> list = getConfigPersistence().load(ImmutableMap.of(Constants.ID_KEY, id));
+            List<ConnectorConfiguration> list =
+                configPersistence.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
             if (list.isEmpty()) {
                 throw new IllegalArgumentException("no connector with metadata: " + id + " found");
             }
@@ -227,10 +229,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public ConfigPersistenceService getConfigPersistence() {
-        return configPersistence;
     }
 
     public void setConfigPersistence(ConfigPersistenceService configPersistence) {

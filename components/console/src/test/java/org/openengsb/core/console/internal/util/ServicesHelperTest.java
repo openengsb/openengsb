@@ -42,6 +42,7 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 public class ServicesHelperTest {
@@ -81,7 +82,7 @@ public class ServicesHelperTest {
         final List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         ServiceReference serviceReferencesMock = mock(ServiceReference.class);
         serviceReferences.add(serviceReferencesMock);
-        when(serviceReferencesMock.getProperty("id")).thenReturn("dummyId");
+        when(serviceReferencesMock.getProperty(Constants.SERVICE_PID)).thenReturn("dummyId");
 
         when(osgiServiceMock.listServiceReferences(Domain.class)).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override

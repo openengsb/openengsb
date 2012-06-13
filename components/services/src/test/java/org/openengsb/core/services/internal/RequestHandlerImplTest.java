@@ -40,6 +40,7 @@ import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.osgi.framework.Constants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -124,7 +125,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testCallByFilterAndServiceId_shouldCallService() throws Exception {
         Map<String, Object> propData =
-            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", }, "id", "xxx");
+            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", }, Constants.SERVICE_PID, "xxx");
         TestInterface mockService = mockServiceWithProps(propData);
         when(mockService.test(anyInt())).thenReturn(21);
 
@@ -140,7 +141,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testCallByFilterAndServiceIdWithCustomMarshaller_shouldCallService() throws Exception {
         Map<String, Object> propData =
-            ImmutableMap.of("testprop", (Object) new String[]{ "blub", "bleh", }, "id", "xxx");
+            ImmutableMap.of("testprop", (Object) new String[]{ "blub", "bleh", }, Constants.SERVICE_PID, "xxx");
         TestInterface realObject = new TestInterface() {
             @Override
             public Integer test(@UseCustomJasonMarshaller(CustomMarshaller.class) Integer arg) {

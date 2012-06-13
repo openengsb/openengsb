@@ -17,11 +17,65 @@
 
 package org.openengsb.core.api.ekb;
 
+import java.util.List;
+
+import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+
 /**
- * The transformation engine does the actual conversation work. It uses the information of the
- * model registry to make the transformation steps. It also needs for every technology which is
- * needed to make a transformation a transformation provider.
+ * The transformation engine does the actual conversation work. It uses the transformation descriptions it got to
+ * transform one model into another if possible.
  */
 public interface TransformationEngine {
 
+    /**
+     * Saves a transformation description into the transformation engine memory. If a transformation description for the
+     * same class pair already exists, it gets updated.
+     */
+    void saveDescription(TransformationDescription description);
+
+    /**
+     * Saves a collection of transformation descriptions into the transformation engine memory. If a transformation
+     * description for the same class pair already exists, it gets updated.
+     */
+    void saveDescriptions(List<TransformationDescription> descriptions);
+
+    /**
+     * Deletes a transformation description from the transformation engine memory.
+     */
+    void deleteDescription(TransformationDescription description);
+
+    /**
+     * Deletes all transformation descriptions which are added through a file with the given file name.
+     */
+    void deleteDescriptionsByFile(String fileName);
+
+    /**
+     * Returns a list of transformation descriptions which were added through a file with the given file name.
+     */
+    List<TransformationDescription> getDescriptionsByFile(String fileName);
+
+    /**
+     * Transforms the source object of the source model type to the target model type. Throws an
+     * IllegalArgumentException if no transformation descriptions for this transformation are available.
+     */
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source);
+
+    /**
+     * Transforms the source object of the source model type to the target model type with a path where transformations
+     * with all given ids are used. Throws an IllegalArgumentException if no transformation descriptions for this
+     * transformation are available.
+     */
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            List<String> ids);
+
+    /**
+     * Returns true if there is a transformation possible from source to target model. Returns false if not.
+     */
+    Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel);
+
+    /**
+     * Returns true if there is a transformation possible from source to target model with a path where transformations
+     * with all given ids are used. Returns false if not.
+     */
+    Boolean isTransformationPossible(ModelDescription sourceModel, ModelDescription targetModel, List<String> ids);
 }

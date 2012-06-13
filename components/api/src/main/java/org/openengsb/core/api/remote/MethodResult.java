@@ -23,13 +23,21 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Object used to represent a result of a {@link MethodCall}.
+ *
+ * The different types which could be returned are stored in {@link #type}. The object itself is available via
+ * {@link #getArg()}. Since this is the result of an remote call it is possible that additional meta-data was added
+ * (describing e.g. context, username, ...) could have been added to this message. Those could be retrieved via
+ * {@link #getMetaData()}.
+ */
 @XmlRootElement
 public class MethodResult implements Serializable {
 
     private static final long serialVersionUID = 3311624967097440078L;
 
     public enum ReturnType {
-            Void, Object, Exception,
+        Void, Object, Exception,
     }
 
     private String className;

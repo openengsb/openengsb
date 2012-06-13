@@ -24,7 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public final class JsonUtils {
         result.setArg(convertArgument);
     }
 
-    public static void convertAllArgs(MethodCallRequest request) {
+    public static void convertAllArgs(MethodCallMessage request) {
         convertAllArgs(request.getMethodCall());
     }
 

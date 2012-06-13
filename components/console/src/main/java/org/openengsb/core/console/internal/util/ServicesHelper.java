@@ -78,12 +78,13 @@ public class ServicesHelper {
                     public List<String> call() throws Exception {
                         List<String> tmp = new ArrayList<String>();
 
-                        List<ServiceReference> listServiceReferences =
+                        List<ServiceReference<Domain>> listServiceReferences =
                             osgiUtilsService.listServiceReferences(Domain.class);
-                        for (ServiceReference ref : listServiceReferences) {
-                            Domain service = osgiUtilsService.getService(Domain.class, ref);
-                            tmp.add(OutputStreamFormater
-                                .formatValues(ref.getProperty("id").toString(), service.getAliveState().toString()));
+                        for (ServiceReference<Domain> ref : listServiceReferences) {
+                            Domain service = bundleContext.getService(ref);
+                            tmp.add(OutputStreamFormater.formatValues(
+                                ref.getProperty(org.osgi.framework.Constants.SERVICE_PID).toString(), service
+                                    .getAliveState().toString()));
                         }
                         return tmp;
                     }
@@ -149,7 +150,7 @@ public class ServicesHelper {
 
     /**
      * let the user chose one of the running services
-     * 
+     *
      * @return
      */
     private String selectRunningService() {
@@ -176,10 +177,10 @@ public class ServicesHelper {
      * returns a list of all service ids
      */
     public List<String> getRunningServiceIds() {
-        List<ServiceReference> serviceReferences = osgiUtilsService.listServiceReferences(Domain.class);
+        List<ServiceReference<Domain>> serviceReferences = osgiUtilsService.listServiceReferences(Domain.class);
         List<String> result = new ArrayList<String>();
-        for (ServiceReference ref : serviceReferences) {
-            result.add((String) ref.getProperty("id"));
+        for (ServiceReference<Domain> ref : serviceReferences) {
+            result.add((String) ref.getProperty(org.osgi.framework.Constants.SERVICE_PID));
         }
         return result;
     }
@@ -206,11 +207,11 @@ public class ServicesHelper {
             getConnectorToCreate(domainProviderId, attributes.get(ServiceCommands.CONNECTOR_TYPE));
 
         String id;
-        if (attributes.isEmpty() || !attributes.containsKey("id")) {
+        if (attributes.isEmpty() || !attributes.containsKey(org.osgi.framework.Constants.SERVICE_PID)) {
             OutputStreamFormater.printValue("Please enter an ID");
             id = readUserInput();
         } else {
-            id = attributes.get("id");
+            id = attributes.get(org.osgi.framework.Constants.SERVICE_PID);
         }
 
         ServiceDescriptor descriptor = connectorProvider.getDescriptor();
