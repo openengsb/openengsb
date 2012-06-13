@@ -189,7 +189,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     private void waitForDefaultConnectors() {
         getOsgiService(AuditingDomain.class);
-        getOsgiService(AuthenticationDomain.class, "(id=root-authenticator)", 30000);
-        getOsgiService(AuthorizationDomain.class, "(id=root-authorizer)", 30000);
+        getOsgiService(AuthenticationDomain.class, "(service.pid=root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(service.pid=root-authorizer)", 30000);
     }
 }

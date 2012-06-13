@@ -36,6 +36,7 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
@@ -126,7 +127,7 @@ public class ConnectorEditorPage extends BasePage {
 
     private void retrieveDescriptor(String connectorType) {
         Filter filter =
-            serviceUtils.makeFilter(ConnectorProvider.class,
+            FilterUtils.makeFilter(ConnectorProvider.class,
                 String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
 
         ConnectorProvider connectorProvider = serviceUtils.getOsgiServiceProxy(filter, ConnectorProvider.class);

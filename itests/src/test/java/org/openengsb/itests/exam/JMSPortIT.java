@@ -48,7 +48,6 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -172,10 +171,10 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(id=example-remote)", 31000);
+        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(service.pid=example-remote)", 31000);
 
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example-remote)"), not(nullValue()));
+            "(service.pid=example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
@@ -192,7 +191,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     public void testSendMethodWithModelAsParamter_shouldWork() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("id", "test");
+        properties.put(Constants.SERVICE_PID, "test");
         properties.put(Constants.SERVICE_RANKING, -1);
         properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
@@ -206,8 +205,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String decryptedResult = decryptResult(sessionKey, result);
 
         ObjectMapper mapper = new ObjectMapper();
-        SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
-        MethodResultMessage methodResult = response.getMessage();
+        MethodResultMessage response = mapper.readValue(decryptedResult, MethodResultMessage.class);
+        MethodResultMessage methodResult = response;
         JsonUtils.convertResult(methodResult);
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
         ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
@@ -228,7 +227,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
                 producer.send(message);
-                TextMessage response = (TextMessage) consumer.receive(30000);
+                TextMessage response = (TextMessage) consumer.receive(35000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
                     response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);

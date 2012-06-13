@@ -33,7 +33,7 @@
       <value>${package}.${domainInterface}Events</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="domain.${domainName}.events" />
+      <entry key="service.pid" value="domain.${domainName}.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />

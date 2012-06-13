@@ -30,4 +30,5 @@ Supported file types
 .function - Function definitions
 .import - list of imports for drools
 .globals - list of drools globals
+.transformation - Transformation description definitions
 

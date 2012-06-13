@@ -290,7 +290,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      */
     protected void registerService(Object service, String id, Class<?>... interfaces) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(org.openengsb.core.api.Constants.ID_KEY, id);
+        props.put(Constants.SERVICE_PID, id);
         registerService(service, props, interfaces);
     }
 
@@ -474,6 +474,11 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         ServiceTracker serviceTracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
         ServiceList<T> serviceList = new ServiceList<T>(serviceTracker);
         return serviceList;
+    }
+
+    protected <T> ServiceReferenceList<T> makeServiceReferenceList(Class<T> serviceClass) {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
+        return new ServiceReferenceList<T>(serviceTracker);
     }
 
 }

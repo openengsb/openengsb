@@ -41,7 +41,9 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.context.ContextHolder;
@@ -50,6 +52,7 @@ import org.openengsb.core.security.internal.OpenEngSBAuthenticationToken;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.springframework.aop.framework.ProxyFactory;
@@ -61,6 +64,9 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     private DummyService service;
     private DummyService service2;
     private AuthorizationDomain authorizer;
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     @Before
     public void setUp() throws Exception {
@@ -85,6 +91,13 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
         service = (DummyService) secure(new DummyServiceImpl("42"));
         service2 = (DummyService) secure(new DummyServiceImpl("21"));
+    }
+
+    @After
+    public void cleanupShiro() {
+        // although a new thread should be spawned because of the DedicatedThread @Rule, but we want to be really sure
+        ThreadContext.unbindSecurityManager();
+        ThreadContext.unbindSubject();
     }
 
     private Object secure(Object o) {

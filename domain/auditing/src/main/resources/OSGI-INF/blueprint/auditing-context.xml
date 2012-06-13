@@ -37,7 +37,7 @@
       <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="domain.auditing.events" />
+      <entry key="service.pid" value="domain.auditing.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />

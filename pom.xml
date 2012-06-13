@@ -89,13 +89,11 @@
     <module>domain/example</module>
     <module>domain/authentication</module>
     <module>domain/authorization</module>
-    <module>domain/binarytransformation</module>
     <!-- OpenEngSB Core Connector Modules -->
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
     <module>connector/usernamepassword</module>
     <module>connector/serviceacl</module>
-    <module>connector/smooksbinarytransformation</module>
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
@@ -168,6 +166,68 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <inherited>false</inherited>
+          <groupId>com.mycila.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <configuration>
+            <header>etc/license/header.txt</header>
+            <failIfMissing>true</failIfMissing>
+            <aggregate>true</aggregate>
+            <strictCheck>true</strictCheck>
+            <excludes>
+              <!-- openengs-maven-plugin test resources -->
+              <exclude>src/main/resources/license/header.txt</exclude>
+              <exclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</exclude>
+              <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
+              <!-- #################################### -->
+              <exclude>docs/examples/**/*.config</exclude>
+              <exclude>etc/eclipse/checkstyle.xml</exclude>
+              <exclude>license.txt</exclude>
+              <exclude>**/*.vm</exclude>
+              <exclude>**/license.txt</exclude>
+              <exclude>runner/**</exclude>
+              <exclude>assembly/runner/**</exclude>
+              <exclude>features/**</exclude>
+              <exclude>NOTICE</exclude>
+              <exclude>**/*.3pm</exclude>
+              <exclude>**/*.dll</exclude>
+              <exclude>**/*.pdb</exclude>
+              <exclude>**/*.pdf</exclude>
+              <exclude>**/LICENSE</exclude>
+              <exclude>**/*checkstyle.xml</exclude>
+              <exclude>**/*.log.*</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>**/*.packlist</exclude>
+              <exclude>**/*.pod</exclude>
+              <exclude>**/imports</exclude>
+              <exclude>**/globals</exclude>
+              <exclude>**/.keep</exclude>
+              <exclude>**/EngSB.sln</exclude>
+              <exclude>**/nb-configuration.xml</exclude>
+              <exclude>**/*.checkstyle</exclude>
+              <exclude>**/*.rf</exclude>
+            </excludes>
+            <mapping>
+              <bnd>SCRIPT_STYLE</bnd>
+              <drl>SCRIPT_STYLE</drl>
+              <index>SCRIPT_STYLE</index>
+              <gitignore>SCRIPT_STYLE</gitignore>
+              <cfg>SCRIPT_STYLE</cfg>
+              <wsdl>XML_STYLE</wsdl>
+              <csproj>XML_STYLE</csproj>
+              <rf>XML_STYLE</rf>
+              <composite>SCRIPT_STYLE</composite>
+              <config>XML_STYLE</config>
+              <script>DOUBLESLASH_STYLE</script>
+              <rule>SCRIPT_STYLE</rule>
+            </mapping>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
@@ -191,6 +251,75 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>licenseCheck</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>licenseFormat</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>checkstyle</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+              <configLocation>etc/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <enableRulesSummary>true</enableRulesSummary>
+              <failsOnError>true</failsOnError>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>checkstyle</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   
   <repositories>
@@ -203,6 +332,15 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>orientechnologies-repository</id>
+      <name>Orient Technologies Maven2 Repository</name>
+      <url>http://www.orientechnologies.com/listing/m2</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
   </repositories>

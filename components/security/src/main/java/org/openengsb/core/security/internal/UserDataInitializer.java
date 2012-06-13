@@ -21,6 +21,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.service.PermissionSetAlreadyExistsException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class UserDataInitializer implements Runnable {
 
     @Override
     public void run() {
-        Filter filter = utilsService.makeFilter(UserDataManager.class, "(internal=true)");
+        Filter filter = FilterUtils.makeFilter(UserDataManager.class, "(internal=true)");
         UserDataManager userManager = (UserDataManager) utilsService.getService(filter);
 
         if (!userManager.getUserList().isEmpty()) {

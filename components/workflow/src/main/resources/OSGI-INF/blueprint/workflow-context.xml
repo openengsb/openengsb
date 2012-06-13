@@ -37,7 +37,7 @@
     <value>org.openengsb.core.api.OpenEngSBService</value>
   </interfaces>
     <service-properties>
-      <entry key="id" value="workflowService"/>
+      <entry key="service.pid" value="workflowService"/>
     </service-properties>
     <ref component-id="workflowService" />
   </service>

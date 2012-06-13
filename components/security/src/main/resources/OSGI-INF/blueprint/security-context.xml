@@ -95,7 +95,7 @@
       <value>org.openengsb.domain.authorization.AuthorizationDomain</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="authorization+admin+admin" />
+      <entry key="service.pid" value="authorization+admin+admin" />
       <entry key="domain" value="authorization" />
       <entry key="connector" value="admin" />
       <entry key="location.root">

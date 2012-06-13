@@ -72,10 +72,9 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
-import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
@@ -482,10 +481,10 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
      */
-    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
+    private MethodCallMessage createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
         org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
         realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
-        return new MethodCallRequest(realMethodCall, "randomCallId");
+        return new MethodCallMessage(realMethodCall, "randomCallId");
     }
 
     /**
@@ -496,10 +495,12 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
      */
-    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
-        MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
+    private MethodCallMessage createSecureRequest(ServiceId serviceId, MethodId methodId) {
+        MethodCallMessage methodCallRequest = createMethodCallRequest(serviceId, methodId);
         BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
-        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+        methodCallRequest.setPrincipal("yourusername");
+        methodCallRequest.setCredentials(beanDescription);
+        return methodCallRequest;
     }
 
     /**
@@ -525,7 +526,7 @@ public class TestClient extends BasePage {
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
-    private String parseRequestToJsonString(SecureRequest secureRequest) {
+    private String parseRequestToJsonString(MethodCallMessage secureRequest) {
         String jsonResult = "";
         try {
             jsonResult =

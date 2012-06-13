@@ -37,6 +37,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.common.util.MapAsDictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -60,7 +61,6 @@ public class ConnectorRegistrationManager {
         org.osgi.framework.Constants.SERVICE_ID,
         org.osgi.framework.Constants.SERVICE_PID,
         org.osgi.framework.Constants.OBJECTCLASS,
-        Constants.ID_KEY,
         Constants.DOMAIN_KEY,
         Constants.CONNECTOR_KEY,
         "location.root");
@@ -145,8 +145,10 @@ public class ConnectorRegistrationManager {
         }
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
-        serviceInstance.setDomainId(description.getDomainType());
-        serviceInstance.setConnectorId(description.getConnectorType());
+        if (!description.getAttributes().containsKey(Constants.SKIP_SET_DOMAIN_TYPE)) {
+            serviceInstance.setDomainId(description.getDomainType());
+            serviceInstance.setConnectorId(description.getConnectorType());
+        }
 
         Class<?>[] clazzes = new Class<?>[]{
             OpenEngSBService.class,
@@ -193,7 +195,7 @@ public class ConnectorRegistrationManager {
         }
         result.put(Constants.DOMAIN_KEY, description.getDomainType());
         result.put(Constants.CONNECTOR_KEY, description.getConnectorType());
-        result.put(Constants.ID_KEY, id);
+        result.put(org.osgi.framework.Constants.SERVICE_PID, id);
         return result;
     }
 
@@ -229,11 +231,10 @@ public class ConnectorRegistrationManager {
     }
 
     protected ConnectorInstanceFactory getConnectorFactory(String domainType, String connectorType) {
-        Filter connectorFilter =
-            serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                String.format("(&(%s=%s)(%s=%s))",
-                    Constants.DOMAIN_KEY, domainType,
-                    Constants.CONNECTOR_KEY, connectorType));
+        Filter connectorFilter = FilterUtils.makeFilter(ConnectorInstanceFactory.class,
+            String.format("(&(%s=%s)(%s=%s))",
+                Constants.DOMAIN_KEY, domainType,
+                Constants.CONNECTOR_KEY, connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
@@ -241,7 +242,7 @@ public class ConnectorRegistrationManager {
 
     private DomainProvider getDomainProvider(String domain) {
         Filter domainFilter =
-            serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domain));
+            FilterUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domain));
         DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
         return domainProvider;
     }

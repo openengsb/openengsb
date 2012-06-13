@@ -23,6 +23,8 @@ import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
 import org.openengsb.core.api.ekb.SanityCheckReport;
+import org.openengsb.core.ekb.internal.converter.ConvertedCommit;
+import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

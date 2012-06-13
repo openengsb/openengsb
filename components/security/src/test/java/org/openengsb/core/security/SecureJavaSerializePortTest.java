@@ -30,9 +30,9 @@ import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.util.CipherUtils;
@@ -45,7 +45,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureJavaSerializePortTest.class);
 
     @Override
-    protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
+    protected byte[] encodeAndEncrypt(MethodCallMessage secureRequest, SecretKey sessionKey) throws Exception {
         byte[] serialized = SerializationUtils.serialize(secureRequest);
         byte[] content = CipherUtils.encrypt(serialized, sessionKey);
         EncryptedMessage message = new EncryptedMessage();
@@ -55,9 +55,9 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
     }
 
     @Override
-    protected SecureResponse decryptAndDecode(byte[] message, SecretKey sessionKey) throws Exception {
+    protected MethodResultMessage decryptAndDecode(byte[] message, SecretKey sessionKey) throws Exception {
         byte[] content = CipherUtils.decrypt(message, sessionKey);
-        return (SecureResponse) SerializationUtils.deserialize(content);
+        return (MethodResultMessage) SerializationUtils.deserialize(content);
     }
 
     @Override
@@ -99,14 +99,15 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
-                        LOGGER.info("running parser");
-                        SecureRequest deserialize;
+
+                        MethodCallMessage deserialize;
+
                         try {
-                            deserialize = (SecureRequest) SerializationUtils.deserialize(input);
+                            deserialize = (MethodCallMessage) SerializationUtils.deserialize(input);
                         } catch (SerializationException e) {
                             throw new FilterException(e);
                         }
-                        SecureResponse result = (SecureResponse) next.filter(deserialize, metaData);
+                        MethodResultMessage result = (MethodResultMessage) next.filter(deserialize, metaData);
                         return SerializationUtils.serialize(result);
                     }
 

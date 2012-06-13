@@ -24,9 +24,9 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.labs.delegation.service.ClassProvider;
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the
+ * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the
  * {@link org.apache.shiro.authc.AuthenticationInfo} and tries to authenticate. If authentication was successful, the
  * filter-chain will proceed. The result of the next filter is just passed through.
  *
@@ -44,14 +44,14 @@ import org.slf4j.LoggerFactory;
  *
  * <code>
  * <pre>
- *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
  *                                                        |
  *                                                        v
- *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ *      [MethodResultMessage] < Filter < [MethodResultMessage]   < ...
  * </pre>
  * </code>
  */
-public class MessageAuthenticatorFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+public class MessageAuthenticatorFilter extends AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
@@ -63,8 +63,9 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     }
 
     @Override
-    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
-        LOGGER.info("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
+
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
+        LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 
         String className = input.getCredentials().getClassName();
         Class<? extends Credentials> credentialType;
@@ -79,8 +80,10 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
             throw new FilterException(e);
         }
 
-        LOGGER.info("authenticated {}", input.getPrincipal());
-        return (SecureResponse) next.filter(input, metaData);
+
+        LOGGER.debug("authenticated");
+        return (MethodResultMessage) next.filter(input, metaData);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -93,7 +96,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 

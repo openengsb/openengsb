@@ -27,6 +27,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtilsExtended;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.security.internal.model.BeanData;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
@@ -43,7 +44,7 @@ import com.google.common.collect.Maps;
 
 /**
  * Provides util-functions for handling multi-valued attributes, used to save {@link BeanData}.
- * 
+ *
  * For more details on the conversion from a bean to {@link BeanData} and vice versa, see {@link BeanData}.
  */
 public final class EntryUtils {
@@ -169,8 +170,7 @@ public final class EntryUtils {
     private static Class<? extends Permission> findPermissionClass(String name)
         throws ClassNotFoundException {
         Filter filter =
-            utilsService
-                .makeFilter(ClassProvider.class, String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, name));
+            FilterUtils.makeFilter(ClassProvider.class, String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, name));
         ClassProvider provider = utilsService.getOsgiServiceProxy(filter, ClassProvider.class);
         return (Class<? extends Permission>) provider.loadClass(name);
     }

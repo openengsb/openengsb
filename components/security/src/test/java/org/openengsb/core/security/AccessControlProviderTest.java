@@ -28,6 +28,7 @@ import java.util.Hashtable;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
@@ -43,10 +44,14 @@ import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrateg
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 
 public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     private AuthorizationDomain accessControl;
     private AuthorizationDomain servicePermissionAccessConnector;

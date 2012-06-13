@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
@@ -124,7 +123,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         properties.put("domain", "example");
         properties.put("connector", "example");
         properties.put("location.foo", "example2");
-        properties.put(Constants.ID_KEY, "example2");
+        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
         getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
 
         RuleManager ruleManager = getOsgiService(RuleManager.class);

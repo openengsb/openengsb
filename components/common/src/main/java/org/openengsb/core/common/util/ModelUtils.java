@@ -132,6 +132,9 @@ public final class ModelUtils {
      * argument exception is thrown.
      */
     public static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {
+        if (!clazz.getName().contains("$Proxy")) {
+            return clazz;
+        }
         Class<?> result = null;
         for (Class<?> inter : clazz.getInterfaces()) {
             if (OpenEngSBModel.class.isAssignableFrom(inter) && !inter.equals(OpenEngSBModel.class)) {

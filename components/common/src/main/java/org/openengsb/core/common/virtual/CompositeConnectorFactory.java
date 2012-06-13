@@ -25,6 +25,7 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.VirtualConnectorFactory;
+import org.openengsb.core.common.util.FilterUtils;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -47,7 +48,7 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
     @Override
     protected void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
         String strategyFilter = createStrategyFilterString(attributes.get("compositeStrategy"));
-        Filter filter = utilsService.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
+        Filter filter = FilterUtils.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
         CompositeConnectorStrategy strategy =
             utilsService.getOsgiServiceProxy(filter, CompositeConnectorStrategy.class);
         handler.setQueryString(attributes.get("queryString"));
