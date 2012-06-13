@@ -51,19 +51,30 @@ public final class Constants {
     public static final String DOMAIN_KEY = "domain";
 
     /**
+     * Connector-attribute that makes sure setDomainType and setConnectorType are not called during creating.
+     */
+    public static final String SKIP_SET_DOMAIN_TYPE = "skipSetDomainType";
+
+    /**
      * represents the property-key for a connector's instanceid in osgi-service-properties
      */
-    public static final String ID_KEY = "id";
+    public static final String CONNECTOR_PERSISTENT_ID = "id";
 
     /**
      * connectors of this type require special handling. They represent proxies to connector-services running outside
      * the OpenEngSB and can represent any domain.
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
-    
+
+    /**
+     * delegation context under which all models should be provided by delegated classloading.
+     */
+    public static final String DELEGATION_CONTEXT_MODELS = "models";
+
     public static final String DELEGATION_CONTEXT_CREDENTIALS = "credentials";
-    
+
     public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
+
 
     private Constants() {
         // this class should not be instanciated.

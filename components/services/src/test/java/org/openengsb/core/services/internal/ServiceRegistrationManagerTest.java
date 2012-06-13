@@ -46,6 +46,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
@@ -155,7 +156,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registrationManager.updateRegistration(connectorId, updated);
 
         serviceUtils.getService("(foo=bar)", 100L);
-        Filter filter = serviceUtils.makeFilter(ConnectorInstanceFactory.class, "(connector=testc)");
+        Filter filter = FilterUtils.makeFilter(ConnectorInstanceFactory.class, "(connector=testc)");
         ConnectorInstanceFactory factory = (ConnectorInstanceFactory) serviceUtils.getService(filter);
         verify(factory).applyAttributes(any(Connector.class), eq(newAttrs));
     }

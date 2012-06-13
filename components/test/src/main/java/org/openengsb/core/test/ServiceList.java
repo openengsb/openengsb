@@ -18,6 +18,7 @@ package org.openengsb.core.test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -152,8 +153,12 @@ public final class ServiceList<ServiceType> implements List<ServiceType> {
         return asList().subList(fromIndex, toIndex);
     }
 
-    @SuppressWarnings("unchecked")
     private List<ServiceType> asList() {
-        return Arrays.asList((ServiceType[]) tracker.getServices());
+        @SuppressWarnings("unchecked")
+        ServiceType[] services = (ServiceType[]) tracker.getServices();
+        if (services == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(services);
     }
 }

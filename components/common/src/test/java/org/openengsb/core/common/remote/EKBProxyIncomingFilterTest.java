@@ -30,7 +30,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 
 public class EKBProxyIncomingFilterTest {
@@ -53,7 +53,7 @@ public class EKBProxyIncomingFilterTest {
         wrapper.setModelClass(TestModel.class.getName());
         wrapper.setEntries(entries);
 
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("incoming1");
         MethodCall call = new MethodCall();
         call.setArgs(new Object[]{ wrapper });
@@ -70,7 +70,7 @@ public class EKBProxyIncomingFilterTest {
 
     @Test
     public void testConversionMethodCallWithOpenEngSBModelAnswer_shouldWork() {
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("incoming2");
         request.setMethodCall(new MethodCall());
         MethodResultMessage message = filter.doFilter(request, null);
@@ -104,7 +104,7 @@ public class EKBProxyIncomingFilterTest {
         wrapper.setModelClass(TestModel.class.getName());
         wrapper.setEntries(entries);
 
-        MethodCallRequest request = new MethodCallRequest();
+        MethodCallMessage request = new MethodCallMessage();
         request.setCallId("incoming3");
         MethodCall call = new MethodCall();
         call.setArgs(new Object[]{ wrapper });

@@ -37,7 +37,7 @@
       <value>org.openengsb.domain.authorization.AuthorizationDomainEvents</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="domain.authorization.events" />
+      <entry key="service.pid" value="domain.authorization.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />

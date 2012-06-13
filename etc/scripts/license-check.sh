@@ -20,5 +20,5 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
-mvn openengsb:licenseCheck
+mvn validate -PlicenseCheck
 

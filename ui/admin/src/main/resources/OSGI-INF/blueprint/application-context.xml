@@ -42,6 +42,7 @@
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
+  <reference-list id="connectorList" interface="org.openengsb.core.api.Domain" member-type="service-reference"/>
 
   <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />

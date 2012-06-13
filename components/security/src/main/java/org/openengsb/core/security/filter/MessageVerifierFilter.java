@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,21 +36,21 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
- * verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
+ * This filter does no actual transformation. It takes a {@link MethodCallMessage} extracts the verification information
+ * and verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
  *
  * This filter is intended for incoming ports.
  *
  * <code>
  * <pre>
- *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *      [MethodCallMessage]  > Filter > [MethodCallMessage]    > ...
  *                                                        |
  *                                                        v
- *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ *      [MethodResultMessage] < Filter < [MethodResultMessage]   < ...
  * </pre>
  * </code>
  */
-public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+public class MessageVerifierFilter extends AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);
 
@@ -69,22 +69,22 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         });
 
     @Override
-    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         try {
             verify(input);
         } catch (MessageVerificationFailedException e) {
             throw new FilterException(e);
         }
-        return (SecureResponse) next.filter(input, metaData);
+        return (MethodResultMessage) next.filter(input, metaData);
     }
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 
-    private void verify(SecureRequest request) throws MessageVerificationFailedException {
+    private void verify(MethodCallMessage request) throws MessageVerificationFailedException {
         if (Boolean.getBoolean(DISABLE_VERIFICATION)) {
             return;
         }
@@ -94,7 +94,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         checkForReplayedMessage(request);
     }
 
-    private void checkForReplayedMessage(SecureRequest request) throws MessageVerificationFailedException {
+    private void checkForReplayedMessage(MethodCallMessage request) throws MessageVerificationFailedException {
         String authenticationInfo = request.getPrincipal();
         synchronized (lastMessageTimestamp) {
             try {
@@ -111,7 +111,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
         }
     }
 
-    private void checkOverallAgeOfRequest(SecureRequest request) throws MessageVerificationFailedException {
+    private void checkOverallAgeOfRequest(MethodCallMessage request) throws MessageVerificationFailedException {
         long ageInMillis = System.currentTimeMillis() - request.getTimestamp();
         LOGGER.debug("request-age in ms: {}", ageInMillis);
         if (ageInMillis < 0) {

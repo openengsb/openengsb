@@ -30,21 +30,20 @@ import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.security.model.SecureRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Setup to run this app:
- * 
+ *
  * + Start OpenEngSB
- * 
+ *
  * + install the jms-feature: features:install openengsb-ports-jms
- * 
+ *
  * + copy example+external-connector-proxy+example-remote.connector to the openengsb/config-directory
- * 
+ *
  * + copy openengsb/etc/keys/public.key.data to src/main/resources
  */
 public final class SecureSampleConnector {
@@ -60,49 +59,45 @@ public final class SecureSampleConnector {
             + "    \"binaryData\" : {\n"
             + "    }\n"
             + "  },\n"
-            + "  \"message\" : {\n"
-            + "    \"methodCall\" : {\n"
-            + "      \"methodName\" : \"createWithId\",\n"
-            + "      \"args\" : [ \"example-remote\", {\n"
-            + "        \"domainType\" : \"example\",\n"
-            + "        \"connectorType\" : \"external-connector-proxy\",\n"
-            + "        \"attributes\" : {\n"
-            + "          \"serviceId\" : \"example-remote\",\n"
-            + "          \"portId\" : \"jms-json\",\n"
-            + "          \"destination\" : \"tcp://127.0.0.1:6549?example-remote\"\n"
-            + "        },\n"
-            + "        \"properties\" : {\n"
-            + "        }\n"
-            + "      } ],\n"
-            + "      \"metaData\" : {\n"
-            + "        \"serviceId\" : \"connectorManager\"\n"
+            + "  \"methodCall\" : {\n"
+            + "    \"methodName\" : \"createWithId\",\n"
+            + "    \"args\" : [ \"example-remote\", {\n"
+            + "      \"domainType\" : \"example\",\n"
+            + "      \"connectorType\" : \"external-connector-proxy\",\n"
+            + "      \"attributes\" : {\n"
+            + "        \"serviceId\" : \"example-remote\",\n"
+            + "        \"portId\" : \"jms-json\",\n"
+            + "        \"destination\" : \"tcp://127.0.0.1:6549?example-remote\"\n"
             + "      },\n"
-            + "      \"classes\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
-            + "      \"realClassImplementation\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
+            + "      \"properties\" : {\n"
+            + "      }\n"
+            + "    } ],\n"
+            + "    \"metaData\" : {\n"
+            + "      \"serviceId\" : \"connectorManager\"\n"
             + "    },\n"
-            + "    \"callId\" : \"1d075f48-53ee-427a-ae8a-8e9d5b6db229\",\n"
-            + "    \"answer\" : false,\n"
-            + "    \"destination\" : null\n"
+            + "    \"classes\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
+            + "    \"realClassImplementation\" : [ \"java.lang.String\", \"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
             + "  },\n"
+            + "  \"callId\" : \"1d075f48-53ee-427a-ae8a-8e9d5b6db229\",\n"
+            + "  \"answer\" : false,\n"
+            + "  \"destination\" : null,\n"
             + "  \"timestamp\" : 1336060640851\n"
             + "}\n";
 
     private static final String UNREGISTER_MESSAGE = ""
             + "{"
-            + "  \"message\" : {"
-            + "    \"methodCall\" : {"
-            + "      \"methodName\" : \"delete\","
-            + "      \"args\" : [ \"example-remote\" ],"
-            + "      \"metaData\" : {"
-            + "        \"serviceId\" : \"connectorManager\""
-            + "      },"
-            + "      \"classes\" : [ \"java.lang.String\" ],"
-            + "      \"realClassImplementation\" : [ \"java.lang.String\" ]"
+            + "  \"methodCall\" : {"
+            + "    \"methodName\" : \"delete\","
+            + "    \"args\" : [ \"example-remote\" ],"
+            + "    \"metaData\" : {"
+            + "      \"serviceId\" : \"connectorManager\""
             + "    },"
-            + "    \"callId\" : \"62259d96-bcae-4450-bded-850a7f06f2ac\","
-            + "    \"answer\" : false,"
-            + "    \"destination\" : null"
+            + "    \"classes\" : [ \"java.lang.String\" ],"
+            + "    \"realClassImplementation\" : [ \"java.lang.String\" ]"
             + "  },"
+            + "  \"callId\" : \"62259d96-bcae-4450-bded-850a7f06f2ac\","
+            + "  \"answer\" : false,"
+            + "  \"destination\" : null,"
             + "  \"timestamp\" : 1336060561647,"
             + "  \"principal\" : \"admin\","
             + "  \"credentials\" : {"
@@ -154,11 +149,13 @@ public final class SecureSampleConnector {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
-        MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
-        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
+        methodCallRequest.setPrincipal("admin");
+        methodCallRequest.setCredentials(auth);
+
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(create);
+        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
         System.out.println(writeValueAsString);
     }
 
@@ -169,11 +166,12 @@ public final class SecureSampleConnector {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
-        MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(methodCall, false);
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
-        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
+        methodCallRequest.setPrincipal("admin");
+        methodCallRequest.setCredentials(auth);
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(create);
+        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
         System.out.println(writeValueAsString);
     }
 }

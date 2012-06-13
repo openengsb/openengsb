@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -38,10 +39,14 @@ import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
 public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     private UsernamePasswordServiceImpl passwordAuthenticator;
     private OnetimePasswordAuthenticator onetimeAuthenticator;

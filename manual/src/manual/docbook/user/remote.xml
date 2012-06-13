@@ -175,7 +175,7 @@
 <![CDATA[<!-- service representing the outgoing port -->
 <service interface="org.openengsb.core.api.remote.OutgoingPort">
   <service-properties>
-    <entry key="id" value="jms-json" />
+    <entry key="service.pid" value="jms-json" />
   </service-properties>
   <!-- the outgoing port uses a filter-chain to manage the entire calling-procedure -->
   <bean class="org.openengsb.core.common.OutgoingPortImpl">
