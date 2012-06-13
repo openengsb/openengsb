@@ -103,7 +103,7 @@ public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
         ConnectorDescription desc = config.getContent();
         Map<String, String> metaData = config.getMetaData();
 
-        entity.setInstanceId(metaData.get(Constants.ID_KEY));
+        entity.setInstanceId(metaData.get(Constants.CONNECTOR_PERSISTENT_ID));
         entity.setConnectorType(desc.getConnectorType());
         entity.setDomainType(desc.getDomainType());
         entity.setAttributes(desc.getAttributes());
@@ -115,7 +115,7 @@ public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
             ConnectorConfigurationJPAEntity entity) throws PersistenceException {
         Map<String, String> metaData = new HashMap<String, String>();
 
-        metaData.put(Constants.ID_KEY, entity.getInstanceId());
+        metaData.put(Constants.CONNECTOR_PERSISTENT_ID, entity.getInstanceId());
 
         ConnectorDescription desc = new ConnectorDescription();
         desc.setConnectorType(entity.getConnectorType());

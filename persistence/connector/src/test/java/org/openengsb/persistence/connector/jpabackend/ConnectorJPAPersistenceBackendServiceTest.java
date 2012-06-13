@@ -77,7 +77,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         persist(conf1);
 
         List<ConfigItem<ConnectorDescription>> loaded = service
-            .load(ImmutableMap.of(Constants.ID_KEY, id));
+            .load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
         assertThat(loaded.size(), is(1));
         ConnectorConfiguration conf = (ConnectorConfiguration) loaded.get(0);
         assertEquals(conf.getConnectorId(), id);
@@ -109,7 +109,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         persist(conf2);
 
         List<ConfigItem<ConnectorDescription>> loaded = service
-            .load(ImmutableMap.of(Constants.ID_KEY, id2));
+            .load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id2));
         assertThat(loaded.size(), is(1));
         ConnectorConfiguration conf = (ConnectorConfiguration) loaded.get(0);
         assertEquals(conf.getConnectorId(), id2);
@@ -145,7 +145,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         persist(conf3);
 
         List<ConfigItem<ConnectorDescription>> loaded = service
-            .load(ImmutableMap.of(Constants.ID_KEY, id3));
+            .load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id3));
         assertThat(loaded.size(), is(1));
         ConnectorConfiguration conf = (ConnectorConfiguration) loaded.get(0);
         assertEquals(conf.getConnectorId(), id3);
@@ -188,7 +188,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         persist(conf);
 
         List<ConfigItem<ConnectorDescription>> loaded = service
-            .load(ImmutableMap.of(Constants.ID_KEY, id4));
+            .load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id4));
         assertThat(loaded.size(), is(1));
         ConnectorConfiguration loadedConf = (ConnectorConfiguration) loaded
             .get(0);
@@ -220,11 +220,11 @@ public class ConnectorJPAPersistenceBackendServiceTest {
 
         persist(conf);
         List<ConfigItem<ConnectorDescription>> loaded = service
-            .load(ImmutableMap.of(Constants.ID_KEY, id5));
+            .load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id5));
         assertThat(loaded.size(), is(1));
 
         remove(id5);
-        loaded = service.load(ImmutableMap.of(Constants.ID_KEY, id5));
+        loaded = service.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id5));
         assertThat(loaded.size(), is(0));
     }
 
@@ -242,7 +242,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
 
     private void remove(String id) throws PersistenceException {
         em.getTransaction().begin();
-        service.remove(ImmutableMap.of(Constants.ID_KEY, id));
+        service.remove(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
         em.getTransaction().commit();
     }
 }

@@ -70,7 +70,7 @@ public class ConnectorJPAPersistenceBackendService implements
             supports((Class<? extends ConfigItem<?>>) config.getClass()),
             "Argument type not supported");
         Preconditions.checkNotNull(config, "Config must not be null");
-        Preconditions.checkNotNull(config.getMetaData().get(Constants.ID_KEY),
+        Preconditions.checkNotNull(config.getMetaData().get(Constants.CONNECTOR_PERSISTENT_ID),
             "No id set!");
         Preconditions.checkNotNull(config.getContent(), "Invalid content");
 
@@ -114,7 +114,7 @@ public class ConnectorJPAPersistenceBackendService implements
         LOGGER.debug("removing ConnectorConfiguration");
         Preconditions.checkNotNull(metadata, "Invalid metadata");
         Preconditions
-            .checkNotNull(metadata.get(Constants.ID_KEY), "No Id set!");
+            .checkNotNull(metadata.get(Constants.CONNECTOR_PERSISTENT_ID), "No Id set!");
 
         List<ConnectorConfigurationJPAEntity> ret = searchForMetadata(metadata);
         if (ret.size() == 0) {
@@ -150,9 +150,9 @@ public class ConnectorJPAPersistenceBackendService implements
             .from(ConnectorConfigurationJPAEntity.class);
 
         List<Predicate> predicates = new ArrayList<Predicate>();
-        if (metaData.get(Constants.ID_KEY) != null) {
+        if (metaData.get(Constants.CONNECTOR_PERSISTENT_ID) != null) {
             predicates.add(cb.equal(from.get("instanceId"),
-                metaData.get(Constants.ID_KEY)));
+                metaData.get(Constants.CONNECTOR_PERSISTENT_ID)));
         }
 
         query.select(from);
