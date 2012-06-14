@@ -334,7 +334,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <!--<repository>
       <id>orientechnologies-repository</id>
       <name>Orient Technologies Maven2 Repository</name>
       <url>http://www.orientechnologies.com/listing/m2</url>
@@ -342,7 +342,7 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-    </repository>
+    </repository>-->
   </repositories>
 </project>
 
