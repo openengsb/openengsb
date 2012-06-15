@@ -19,15 +19,10 @@ package org.openengsb.core.common.remote;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -81,7 +76,7 @@ public class JsonOutgoingMethodCallMarshalFilter extends
                 throw new FilterException(e);
             }
             if (resultType.isInterface() || Modifier.isAbstract(resultType.getModifiers())) {
-                result.setArg(convertToOpenEngSBModel(result.getArg(), resultType));
+                result.setArg(ModelUtils.convertToOpenEngSBModel(result.getArg(), resultType));
             } else {
                 Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
                 result.setArg(convertedValue);
@@ -90,26 +85,7 @@ public class JsonOutgoingMethodCallMarshalFilter extends
         return resultMessage;
     }
 
-    private static OpenEngSBModel convertToOpenEngSBModel(Object arg, Class<?> resultType) {
-        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> data = (Map<String, Object>) arg;
-        for (Map.Entry<String, Object> dataEntry : data.entrySet()) {
-            try {
-                Class<?> attributeType = getAttributeType(resultType, dataEntry.getKey());
-                Object value = dataEntry.getValue();
-                if (Number.class.isAssignableFrom(attributeType)) {
-                    value = NumberUtils.createNumber((String) value);
-                }
-                entries.add(new OpenEngSBModelEntry(dataEntry.getKey(), value, attributeType));
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return (OpenEngSBModel) ModelUtils.createModelObject(resultType, entries.toArray(new OpenEngSBModelEntry[0]));
-    }
-
-    private static Class<?> getAttributeType(Class<?> clazz, String attributeName) throws NoSuchMethodException {
+    public static Class<?> getAttributeType(Class<?> clazz, String attributeName) throws NoSuchMethodException {
         return clazz.getMethod("get" + StringUtils.capitalize(attributeName)).getReturnType();
     }
 

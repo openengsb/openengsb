@@ -29,11 +29,13 @@ import org.junit.Test;
 import org.mockito.internal.stubbing.answers.Returns;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
+import org.openengsb.core.common.util.ModelUtils;
 
 public class JsonFilterTest {
 
-    private static final String MESSAGE = ""
+    private static final String RESULT_MESSAGE = ""
             + "{"
             + "   \"result\":{"
             + "      \"type\":\"Object\","
@@ -50,12 +52,33 @@ public class JsonFilterTest {
             + "   \"callId\":\"22b3007f-c9b0-4f4a-b1b8-6538499983a3\""
             + "}";
 
+    private static final String CALL_MESSAGE = ""
+            + "{"
+            + "  \"callId\" : \"c9dc15e2-a219-437d-b55c-393f8225d5e1\","
+            + "  \"timestamp\" : 1339753772049,"
+            + "  \"methodCall\" : {"
+            + "    \"methodName\" : \"tehMethod\","
+            + "    \"args\" : [ {"
+            + "      \"name\" : \"foo\","
+            + "      \"id\" : 42"
+            + "    } ],"
+            + "    \"metaData\" : {"
+            + "    },"
+            + "    \"classes\" : [ \"org.openengsb.core.common.remote.TestModel\" ],"
+            + "    \"realClassImplementation\" : [ \"org.openengsb.core.common.remote.TestModel\" ]"
+            + "  },"
+            + "  \"answer\" : true,"
+            + "  \"destination\" : null,"
+            + "  \"principal\" : null,"
+            + "  \"credentials\" : null"
+            + "}";
+
     @Test
     public void methodCallMarashalFilter() throws Exception {
         JsonOutgoingMethodCallMarshalFilter jsonOutgoingMethodCallMarshalFilter =
             new JsonOutgoingMethodCallMarshalFilter();
         FilterAction mock = mock(FilterAction.class);
-        when(mock.filter(any(MethodCallMessage.class), any(Map.class))).thenReturn(MESSAGE);
+        when(mock.filter(any(MethodCallMessage.class), any(Map.class))).thenReturn(RESULT_MESSAGE);
         when(mock.getSupportedInputType()).thenAnswer(new Returns(String.class));
         when(mock.getSupportedOutputType()).thenAnswer(new Returns(String.class));
         jsonOutgoingMethodCallMarshalFilter.setNext(mock);
@@ -67,5 +90,21 @@ public class JsonFilterTest {
         TestModel resultModel = (TestModel) arg;
         assertThat(resultModel.getId(), is(42));
         assertThat(resultModel.getName(), is("foo"));
+    }
+
+    @Test
+    public void incomingMethodCallMarashalFilter() throws Exception {
+        JsonMethodCallMarshalFilter jsonMethodCallMarshalFilter = new JsonMethodCallMarshalFilter();
+        FilterAction mock = mock(FilterAction.class);
+        TestModel testResult = ModelUtils.createEmptyModelObject(TestModel.class);
+        testResult.setId(42);
+        testResult.setName("bar");
+        MethodResultMessage testResultMessage =
+            new MethodResultMessage(new MethodResult(ModelUtils.generateWrapperOutOfModel(testResult)), "foo");
+        when(mock.filter(any(MethodCallMessage.class), any(Map.class))).thenReturn(testResultMessage);
+        when(mock.getSupportedInputType()).thenAnswer(new Returns(MethodCallMessage.class));
+        when(mock.getSupportedOutputType()).thenAnswer(new Returns(MethodResultMessage.class));
+        jsonMethodCallMarshalFilter.setNext(mock);
+        jsonMethodCallMarshalFilter.filter(CALL_MESSAGE, new HashMap<String, Object>());
     }
 }
