@@ -35,29 +35,35 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.services.internal.virtual.ProxyConnector;
+import org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl;
+import org.openengsb.core.services.internal.virtual.ProxyRegistration;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 
 public class ProxyConnectorTest extends AbstractOpenEngSBTest {
 
     private OutgoingPortUtilService router;
     private ProxyConnector proxy;
+    private ProxyConnectorRegistryImpl registryImpl;
 
     @Before
     public void setUp() {
         router = mock(OutgoingPortUtilService.class);
-        proxy = new ProxyConnector("foo", null);
+        registryImpl = new ProxyConnectorRegistryImpl();
+        ProxyRegistration registration = registryImpl.create("foo");
+        proxy = new ProxyConnector("foo", null, registration);
         proxy.setOutgoingPortUtilService(router);
         proxy.setPortId("id");
         proxy.setDestination("test");
         proxy.addMetadata("key", "value");
+        registryImpl.registerConnector("foo", "jms-json", "tcp://localhost");
     }
 
     @Test
     public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
         MethodResult result2 = new MethodResult("id");
-        when(router.sendMethodCallWithResult(Mockito.eq("id"), Mockito.eq("test"), captor.capture())).thenReturn(
-            result2);
+        when(router.sendMethodCallWithResult(Mockito.eq("jms-json"), Mockito.eq("tcp://localhost"), captor.capture()))
+            .thenReturn(result2);
 
         Object[] args = new Object[]{ "id", "test" };
         Interface newProxyInstance =

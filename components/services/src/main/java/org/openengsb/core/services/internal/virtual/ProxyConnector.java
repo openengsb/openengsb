@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
@@ -38,12 +39,16 @@ public class ProxyConnector extends VirtualConnector {
     private String portId;
     private String destination;
     private final Map<String, String> metadata = new HashMap<String, String>();
+    private String domainId;
+    private String connectorId;
 
     private OutgoingPortUtilService portUtil;
+    private ProxyRegistration registration;
 
-    public ProxyConnector(String instanceId, OutgoingPortUtilService portUtil) {
+    public ProxyConnector(String instanceId, OutgoingPortUtilService portUtil, ProxyRegistration registration) {
         super(instanceId);
         this.portUtil = portUtil;
+        this.registration = registration;
     }
 
     @Override
@@ -55,7 +60,16 @@ public class ProxyConnector extends VirtualConnector {
         }
 
         MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
-        MethodResult callResult = portUtil.sendMethodCallWithResult(portId, destination, methodCall);
+        if (method.getDeclaringClass().equals(Connector.class)) {
+            return this.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(this, args);
+        }
+
+        if (!registration.isRegistered()) {
+            throw new IllegalArgumentException("not registered");
+        }
+
+        MethodResult callResult =
+            portUtil.sendMethodCallWithResult(registration.getPortId(), registration.getDestination(), methodCall);
         switch (callResult.getType()) {
             case Object:
                 return callResult.getArg();
@@ -95,4 +109,21 @@ public class ProxyConnector extends VirtualConnector {
     public final OutgoingPortUtilService getCallRouter() {
         return portUtil;
     }
+
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
 }
