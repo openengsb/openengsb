@@ -62,12 +62,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-            wasCalled = true;
-            return "something";
-        }
-
-        @Override
         public String doSomethingWithLogEvent(LogEvent event) {
             wasCalled = true;
             return "something";

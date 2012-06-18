@@ -75,11 +75,6 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
         public String doSomethingWithMessage(String message) {
             throw new UnsupportedOperationException("Not yet implemented");
         }

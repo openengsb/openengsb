@@ -255,11 +255,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         }
 
         @Override
-        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
         public String doSomethingWithMessage(String message) {
             return "success : " + message;
         }

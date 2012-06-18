@@ -87,12 +87,6 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-        LOGGER.info("{}", exampleEnum);
-        return "Called with: " + exampleEnum.toString();
-    }
-
-    @Override
     public String doSomethingWithLogEvent(LogEvent event) {
         return "Called: " + event.getMessage() + " " + event.getLevel();
     }
