@@ -88,6 +88,9 @@ public class RulebaseBuilder {
             String formattedRule = String.format(RULE_TEMPLATE, id.getName(), code);
             packageString.append(formattedRule);
         }
+        for (RuleBaseElementId id : manager.list(RuleBaseElementType.Process)) {
+            getPackageString(id.getPackageName());
+        }
         Collection<KnowledgePackage> compiledPackages = new HashSet<KnowledgePackage>();
         if (packageStrings.isEmpty()) {
             Set<String> emptySet = Collections.emptySet();
