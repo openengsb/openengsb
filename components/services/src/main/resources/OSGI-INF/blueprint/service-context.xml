@@ -97,7 +97,14 @@
       <property name="id" value="external-connector-proxy" />
       <property name="bundleContext" ref="blueprintBundleContext" />
       <property name="outgoingPortUtilService" ref="outgoingPortUtilService" />
+      <property name="connectorRegistry" ref="connectorRegistry" />
     </bean>
+  </service>
+
+  <bean id="connectorRegistry" class="org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl" />
+
+  <service interface="org.openengsb.core.api.remote.ProxyConnectorRegistry">
+    <ref component-id="connectorRegistry" />
   </service>
 
   <service id="compositeConnectorProvider">
