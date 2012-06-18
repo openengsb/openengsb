@@ -21,12 +21,8 @@ import org.openengsb.core.api.Event;
 
 public class LogEvent extends Event {
 
-    public static enum LogLevel {
-            INFO, WARN, ERROR, DEBUG
-    }
-
     private String message;
-    private LogLevel level;
+    private String level;
 
     public LogEvent() {
         super("LogEvent");
@@ -40,11 +36,11 @@ public class LogEvent extends Event {
         this.message = message;
     }
 
-    public LogLevel getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(LogLevel level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 }
