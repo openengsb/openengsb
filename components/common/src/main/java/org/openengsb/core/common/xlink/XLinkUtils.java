@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -39,6 +42,7 @@ import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
+import org.osgi.framework.Version;
 
 /**
  * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
@@ -146,13 +150,14 @@ public final class XLinkUtils {
     public static String generateValidXLinkUrl(XLinkTemplate template, 
             List<String> identifierValues, 
             XLinkModelInformation modelInformation, 
-            String contextId) throws ClassNotFoundException {
+            String contextId,
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException {
         String completeUrl = template.getBaseUrl();    
         completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getClassName());
         completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersion());
         completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);        
         OpenEngSBModel modelOfView = createInstanceOfModelClass(
-                modelInformation.getClassName(), modelInformation.getVersion());
+                modelInformation.getClassName(), modelInformation.getVersion(), serviceFinder);
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i).getKey() + "=" + urlEncodeParameter(identifierValues.get(i));
@@ -165,8 +170,14 @@ public final class XLinkUtils {
       
     public static OpenEngSBModel createInstanceOfModelClass(
             String clazz, 
-            String version) throws ClassNotFoundException {
-        return ModelUtils.createEmptyModelObject(ExampleObjectOrientedModel.class) ;
+            String version,
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException {
+        ModelRegistry registry = serviceFinder.getService(ModelRegistry.class);
+        Version versionObj = new Version(version);
+        String versionString = versionObj.toString();
+        ModelDescription modelDescription = new ModelDescription(clazz,versionObj);
+        Class clazzDef = registry.loadModel(modelDescription);      
+        return ModelUtils.createEmptyModelObject(clazzDef) ;
     }  
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
@@ -178,8 +189,9 @@ public final class XLinkUtils {
     public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
             XLinkModelInformation modelInformation, 
             String contextId, 
-            String viewIdValue) throws ClassNotFoundException {
-        String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId);
+            String viewIdValue,
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException {
+        String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId, serviceFinder);
         xLink += "&" 
                 + template.getConnectorId() + "&" 
                 + template.getViewIdKeyName() + "=" + urlEncodeParameter(viewIdValue);

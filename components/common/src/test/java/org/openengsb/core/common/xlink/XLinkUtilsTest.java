@@ -27,7 +27,13 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.isA;
 
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
@@ -55,6 +61,8 @@ public class XLinkUtilsTest {
     /**Id of the Testcontext at the OpenEngSB*/
     private String contextId = "ExampleContext";
     
+    private static OsgiUtilsService serviceFinder;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         descriptions.put("en", "This is a demo view.");
@@ -62,7 +70,16 @@ public class XLinkUtilsTest {
         views = new ArrayList();
         views.add(new XLinkToolView(viewId1, toolName, descriptions));
         views.add(new XLinkToolView(viewId2, toolName, descriptions));
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views);
+    
+        //mocking
+        serviceFinder = mock(OsgiUtilsService.class);
+        ModelRegistry registry = mock(ModelRegistry.class);
+        when(serviceFinder.getService(ModelRegistry.class)).thenReturn(registry);
+        
+        Class clazz = ExampleObjectOrientedModel.class;
+        when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz); 
+        
     }
     // @extract-end
     // @extract-start XLinkUtilsTestConfigsProvidedByOpenEngSB
@@ -99,12 +116,12 @@ public class XLinkUtilsTest {
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
         XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId);
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId, serviceFinder);
 
         //xLinkUrl = 
         //http://openengsb.org/registryServlet.html?
         //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
-        //&versionId=1.0&contextId=ExampleContext
+        //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
 
         assertTrue(xLinkUrl.contains("OOMethodName=testMethod"));
@@ -123,12 +140,12 @@ public class XLinkUtilsTest {
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
         XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
-                values, modelInformation, contextId, viewId1);
+                values, modelInformation, contextId, viewId1, serviceFinder);
 
         //xLinkUrl =
         //http://openengsb.org/registryServlet.html?
         //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
-        //&versionId=1.0&contextId=ExampleContext
+        //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
         //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
 
