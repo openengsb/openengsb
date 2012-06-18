@@ -110,7 +110,7 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
         
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views); 
+        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views); 
         
         String toolName1 = "Tool A";
         String toolName2 = "Tool B";

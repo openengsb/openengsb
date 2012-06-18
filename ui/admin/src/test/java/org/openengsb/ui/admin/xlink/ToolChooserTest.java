@@ -23,23 +23,52 @@ import java.util.Calendar;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.isA;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.openengsb.ui.admin.AbstractUITest;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class ToolChooserTest extends AbstractUITest {
     
+    private static OsgiUtilsService mockedServiceUtils;
+    private static ApplicationContextMock customContext;
+    
     @Before
     public void setup() throws Exception {
+        mockOsgiService();
         setupTesterWithSpringMockContext();
     }
+    
+    private void mockOsgiService() throws Exception{
+        mockedServiceUtils = mock(OsgiUtilsService.class);
+        ModelRegistry registry = mock(ModelRegistry.class);
+        when(mockedServiceUtils.getService(ModelRegistry.class)).thenReturn(registry);
+        Class clazz = ExampleObjectOrientedModel.class;
+        when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz);  
+    }
 
+    private void setupTesterWithSpringMockContext() {
+        customContext = new ApplicationContextMock();
+        customContext.putBean("osgiUtilsService", mockedServiceUtils);
+        customContext.putBean("serviceManager", serviceManager);
+        tester.getApplication().getComponentInstantiationListeners().remove(defaultPaxWicketInjector);
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), customContext));
+    }     
+    
     private void setupCommonXLinkParams(PageParameters params) {
         params.add(XLinkUtils.XLINK_EXPIRATIONDATE_KEY, getExpirationDate(3));
         params.add(XLinkUtils.XLINK_MODELCLASS_KEY, ExampleObjectOrientedModel.class.getName());
-        params.add(XLinkUtils.XLINK_VERSION_KEY, "1.0");
+        params.add(XLinkUtils.XLINK_VERSION_KEY, "3.0.0.SNAPSHOT");
         params.add(XLinkUtils.XLINK_CONTEXTID_KEY, "ExampleContext");         
     }
     
@@ -57,11 +86,6 @@ public class ToolChooserTest extends AbstractUITest {
     private void setupNessecaryHeader() {
         tester.addRequestHeader(XLinkUtils.XLINK_HOST_HEADERNAME, "localhost:8090");
     }
-    
-    private void setupTesterWithSpringMockContext() {
-        tester.getApplication().getComponentInstantiationListeners()
-            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
-    }    
     
     private String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();

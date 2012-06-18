@@ -42,7 +42,9 @@ import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -59,6 +61,10 @@ public class ToolChooserPage extends WebPage {
     
     @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
+    
+    @PaxWicketBean(name = "osgiUtilsService")
+    private OsgiUtilsService serviceUtils;
+    
     private ToolChooserLogic chooserLogic;
     
     private String contextId;
@@ -85,7 +91,7 @@ public class ToolChooserPage extends WebPage {
     
     private void processPage() {
         XLinkMock.dummyRegistrationOfTools(serviceManager);
-        chooserLogic = new ToolChooserLogic(serviceManager);
+        chooserLogic = new ToolChooserLogic(serviceManager, serviceUtils);
         requestParameters = getRequestParametersAsAMap();
         HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
         HttpServletResponse resp = (HttpServletResponse) getResponse().getContainerResponse();
@@ -146,6 +152,7 @@ public class ToolChooserPage extends WebPage {
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
         hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); 
+        //hostId = hostId.substring(0,hostId.indexOf(":"));
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
     }    
@@ -293,5 +300,9 @@ public class ToolChooserPage extends WebPage {
     private String getLocaleKey() {
         return getLocale().getLanguage();
     }
+
+    public void setServiceUtils(OsgiUtilsService serviceUtils) {
+        this.serviceUtils = serviceUtils;
+    } 
     
 }

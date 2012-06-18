@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
@@ -32,9 +33,11 @@ import org.openengsb.core.common.xlink.XLinkUtils;
 public class ToolChooserLogic {
     
     private ConnectorManager serviceManager;
+    private OsgiUtilsService osgiService;
 
-    public ToolChooserLogic(ConnectorManager serviceManager) {
+    public ToolChooserLogic(ConnectorManager serviceManager, OsgiUtilsService osgiService) {
         this.serviceManager = serviceManager;
+        this.osgiService = osgiService;
     }
     
     public List<XLinkLocalTool> getRegisteredToolsFromHost(String hostId) {
@@ -64,7 +67,7 @@ public class ToolChooserLogic {
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
-        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId);
+        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
         for (OpenEngSBModelEntry entry : entries) {
