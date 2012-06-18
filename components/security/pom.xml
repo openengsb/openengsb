@@ -120,7 +120,7 @@
             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
             <Delegation-Annotations>true</Delegation-Annotations>
             <!--  to make the secure-json-filter work -->
-            <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
+            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
