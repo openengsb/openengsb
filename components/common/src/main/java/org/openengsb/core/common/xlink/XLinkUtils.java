@@ -37,7 +37,6 @@ import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -94,13 +93,13 @@ public final class XLinkUtils {
      */
     public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews, 
+            Map<ModelDescription, List<XLinkToolView>> modelsToViews, 
             int expirationDays, 
             List<XLinkLocalTool> registeredTools) {
         baseUrl +=
             "?" + XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
         String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
-        Map<String, XLinkModelInformation> viewToModels = assigneModelsToViews(modelsToViews);
+        Map<String, ModelDescription> viewToModels = assigneModelsToViews(modelsToViews);
         return new XLinkTemplate(baseUrl, 
                 viewToModels, 
                 XLINK_MODELCLASS_KEY,
@@ -115,10 +114,10 @@ public final class XLinkUtils {
      * Naive model to view assignment. 
      * Current model is choosen for the first occurence of the view.
      */
-    private static Map<String, XLinkModelInformation> assigneModelsToViews(Map<XLinkModelInformation, 
+    private static Map<String, ModelDescription> assigneModelsToViews(Map<ModelDescription, 
             List<XLinkToolView>> modelsToViews) {
-        HashMap<String, XLinkModelInformation> viewsToModels = new HashMap<String, XLinkModelInformation>();
-        for (XLinkModelInformation modelInfo : modelsToViews.keySet()) {
+        HashMap<String, ModelDescription> viewsToModels = new HashMap<String, ModelDescription>();
+        for (ModelDescription modelInfo : modelsToViews.keySet()) {
             List<XLinkToolView> currentViewList = modelsToViews.get(modelInfo);
             for (XLinkToolView view : currentViewList) {
                 if (!viewsToModels.containsKey(view.getViewId())) {
@@ -149,15 +148,15 @@ public final class XLinkUtils {
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, 
             List<String> identifierValues, 
-            XLinkModelInformation modelInformation, 
+            ModelDescription modelInformation, 
             String contextId,
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
         String completeUrl = template.getBaseUrl();    
-        completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getClassName());
-        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersion());
+        completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
+        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getModelVersionString());
         completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);        
         OpenEngSBModel modelOfView = createInstanceOfModelClass(
-                modelInformation.getClassName(), modelInformation.getVersion(), serviceFinder);
+                modelInformation.getModelClassName(), modelInformation.getModelVersionString(), serviceFinder);
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
             completeUrl += "&" + keyNames.get(i).getKey() + "=" + urlEncodeParameter(identifierValues.get(i));
@@ -187,7 +186,7 @@ public final class XLinkUtils {
      * in the end, to mark the link for Local Switching
      */
     public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
-            XLinkModelInformation modelInformation, 
+            ModelDescription modelInformation, 
             String contextId, 
             String viewIdValue,
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
@@ -222,7 +221,7 @@ public final class XLinkUtils {
     
     public static List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
         List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
-        Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
+        Map<ModelDescription, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
         for (List<XLinkToolView> views : modelsToViews.values()) {
             for (XLinkToolView view : views) {
                 if (!viewsOfRegistration.contains(view)) {
