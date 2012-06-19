@@ -26,8 +26,8 @@ public interface SQLCreateModel extends OpenEngSBModel{
     
     void setTableName(String tableName);
     
-    List<SQLCreateFieldModel> getFields();
+    List<SQLCreateField> getFields();
     
-    void setFields(List<SQLCreateFieldModel> fields);
+    void setFields(List<SQLCreateField> fields);
     
 }

@@ -17,24 +17,50 @@
 
 package org.openengsb.domain.DomainModelOOSource.model;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+public class OOClassField {
+    
+    private String name;
+    private String type;
+    private boolean isStatic;
+    private boolean isFinal;
 
-public interface OOClassFieldModel extends OpenEngSBModel{
-    
-    String getName();
-    
-    void setName(String name);
-    
-    String getType();
-    
-    void setType(String type);
-    
-    boolean isFinal();
-    
-    void setFinal(boolean isFinal);
-    
-    boolean isStatic();
-    
-    void setStatic(boolean isStatic);
+    public OOClassField(String name, String type, boolean isStatic, boolean isFinal) {
+        this.name = name;
+        this.type = type;
+        this.isStatic = isStatic;
+        this.isFinal = isFinal;
+    }
+
+    public boolean isIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(boolean isFinal) {
+        this.isFinal = isFinal;
+    }
+
+    public boolean isIsStatic() {
+        return isStatic;
+    }
+
+    public void setIsStatic(boolean isStatic) {
+        this.isStatic = isStatic;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
     
 }

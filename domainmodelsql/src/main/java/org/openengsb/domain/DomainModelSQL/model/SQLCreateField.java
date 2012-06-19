@@ -18,20 +18,41 @@
 package org.openengsb.domain.DomainModelSQL.model;
 
 import java.util.List;
-import org.openengsb.core.api.model.OpenEngSBModel;
 
-public interface SQLCreateFieldModel extends OpenEngSBModel{
+public class SQLCreateField {
     
-    String getFieldName();
-    
-    void setFieldName(String fieldName);
-    
-    String getFieldType();
-    
-    void setFieldType(String fieldType);
-    
-    List<String> getConstraints();
-    
-    void setConstraints(List<String> constraints);
-    
+    private String fieldName;    
+    private String fieldType;    
+    private List<String> constraints;
+
+    public SQLCreateField(String fieldName, String fieldType, List<String> constraints) {
+        this.fieldName = fieldName;
+        this.fieldType = fieldType;
+        this.constraints = constraints;
+    }
+
+    public List<String> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<String> constraints) {
+        this.constraints = constraints;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
 }

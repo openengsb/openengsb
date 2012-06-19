@@ -30,9 +30,9 @@ public interface OOClassModel extends OpenEngSBModel{
     
     void setPackageName(String packageName);  
     
-    List<OOClassFieldModel> getAttributes();
+    List<OOClassField> getAttributes();
     
-    void setAttributes(List<OOClassFieldModel> attributes);
+    void setAttributes(List<OOClassField> attributes);
     
     boolean isFinal();
     
