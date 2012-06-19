@@ -112,7 +112,6 @@
     <!-- OpenEngSB Manual -->
     <module>manual</module>
     <module>domainmodelsql</module>
-    <module>domainmodelsqlconnector</module>
     <module>domainmodeloosource</module>
   </modules>
 

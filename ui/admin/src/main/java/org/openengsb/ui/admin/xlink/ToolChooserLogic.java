@@ -70,6 +70,21 @@ public class ToolChooserLogic {
         OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
+        
+        //########### MOCK !!!
+        
+        if(modelId.equals("org.openengsb.domain.DomainModelSQL.model.SQLCreateModel")){
+            identifierKeyNames.add("tableName");
+            return identifierKeyNames;
+        }
+        
+        if(modelId.equals("org.openengsb.domain.DomainModelOOSource.model.OOClassModel")){
+            identifierKeyNames.add("className");
+            return identifierKeyNames;
+        }        
+        
+        //########### MOCK !!!
+        
         for (OpenEngSBModelEntry entry : entries) {
             identifierKeyNames.add(entry.getKey());
         }

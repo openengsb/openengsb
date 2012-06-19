@@ -105,7 +105,7 @@ public class ToolChooserPage extends WebPage {
             ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, 
                     versionId, identifierValues, destinationModelClass.getModelClassName(), 
-                    destinationModelClass.getModelVersionString(), connectorId, viewId);
+                    destinationModelClass.getModelVersionString(), connectorId, viewId, serviceUtils);
             handleSuccessResponse(resp);
             return;
         }
@@ -140,8 +140,9 @@ public class ToolChooserPage extends WebPage {
         try {
             fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
         } catch (ClassNotFoundException ex) {
+            String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
             Logger.getLogger(ToolChooserPage.class.getName()).log(Level.SEVERE, null, ex);
-            throw new OpenXLinkException(ex.getMessage());
+            throw new OpenXLinkException(String.format(errorMsg, ex.getMessage()));
         }
     }
     
@@ -254,7 +255,7 @@ public class ToolChooserPage extends WebPage {
                                 XLinkMock.transformAndOpenMatch(sourceModelClass, 
                                         versionId, identifierValues, destModelInfo.getModelClassName(), 
                                         destModelInfo.getModelVersionString(), tool.getId(), 
-                                        view.getViewId());
+                                        view.getViewId(), serviceUtils);
                                 handleSuccessResponse(resp);
                             }
                         };

@@ -25,9 +25,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
+import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
+import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 
 /**
  */
@@ -37,6 +41,9 @@ public final class XLinkMock {
         
     }
     
+    private static final String sqlModel = "org.openengsb.domain.DomainModelSQL.model.SQLCreateModel";
+    private static final String ooModel = "org.openengsb.domain.DomainModelOOSource.model.OOClassModel";
+    
     public static void transformAndOpenMatch(
             String sourceModelClass, 
             String sourceModelVersion, 
@@ -44,7 +51,9 @@ public final class XLinkMock {
             String destinationModelClass, 
             String destinationModelVersion, 
             String connectorToCall, 
-            String viewToCall) {
+            String viewToCall,
+            OsgiUtilsService osgiService) {
+        
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "transformAndOpenMatch was called:");
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelClass - " + sourceModelClass);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelVersion - " + sourceModelVersion);
@@ -53,22 +62,35 @@ public final class XLinkMock {
                 Level.INFO, "destinationModelVersion - " +  destinationModelVersion);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
-        //todo check if transformation can be done
+
         if (isTransformationPossible(sourceModelClass, 
                 sourceModelVersion, destinationModelClass, destinationModelVersion)) {
-            Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap);
-            Object modelObjectsDestination = transformModelObject(sourceModelClass, 
-                    sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource);
-            String cId = connectorToCall;
-            openPotentialMatches(modelObjectsDestination, cId, viewToCall);
+            try{
+                Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap, osgiService);
+                Object modelObjectsDestination = transformModelObject(sourceModelClass, 
+                        sourceModelVersion, destinationModelClass, destinationModelVersion, modelObjectSource, osgiService);
+                String cId = connectorToCall;
+                openPotentialMatches(modelObjectsDestination, cId, viewToCall);
+            }catch(Exception e){
+                Logger.getLogger(XLinkMock.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }else{
+            //this should not happen since the preselection of the user was only done with transformable classes
         }
     }
     
     private static Object queryEngine(
             String sourceModelClass, 
             String sourceModelVersion, 
-            Map<String, String> sourceModelIdentifierMap) {
-        //todo
+            Map<String, String> sourceModelIdentifierMap,
+            OsgiUtilsService osgiService) throws ClassNotFoundException {
+        if(sourceModelClass.equals(sqlModel)){
+            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
+            sqlcreate.setTableName(sourceModelIdentifierMap.get("tableName"));
+        }else if(sourceModelClass.equals(ooModel)){
+            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
+            ooclass.setClassName(sourceModelIdentifierMap.get("className"));
+        }
         return null;
     }
     private static Object transformModelObject(
@@ -76,9 +98,22 @@ public final class XLinkMock {
             String sourceModelVersion, 
             String destinationModelClass, 
             String destinationModelVersion, 
-            Object modelObjectSource) {
-        //todo
-        return null;
+            Object modelObjectSource,
+            OsgiUtilsService osgiService) throws ClassNotFoundException {
+        if(modelObjectSource == null)return null;
+        Object resultObject = null;
+        if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
+            SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
+            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
+            ooclass.setClassName(sqlSource.getTableName());
+            resultObject = ooclass;
+        } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(sqlModel)){
+            OOClassModel ooSource = (OOClassModel) modelObjectSource;
+            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
+            sqlcreate.setTableName(ooSource.getClassName());
+            resultObject = sqlcreate;
+        }
+        return resultObject;
     }
     private static void openPotentialMatches(
             Object modelObjectsDestination, 
