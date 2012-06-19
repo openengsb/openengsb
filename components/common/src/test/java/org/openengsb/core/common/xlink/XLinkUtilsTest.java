@@ -35,7 +35,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 
@@ -44,8 +43,8 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
-        = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+    private static HashMap<ModelDescription, List<XLinkToolView>> modelsToViews 
+        = new HashMap<ModelDescription, List<XLinkToolView>>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
@@ -70,7 +69,7 @@ public class XLinkUtilsTest {
         views = new ArrayList();
         views.add(new XLinkToolView(viewId1, toolName, descriptions));
         views.add(new XLinkToolView(viewId2, toolName, descriptions));
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views);
+        modelsToViews.put(new ModelDescription(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views);
     
         //mocking
         serviceFinder = mock(OsgiUtilsService.class);
@@ -103,7 +102,7 @@ public class XLinkUtilsTest {
 
         assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId1));
         assertTrue(xLinkTemplate.getViewToModels().get(viewId1)
-                .getClassName().equals(ExampleObjectOrientedModel.class.getName()));
+                .getModelClassName().equals(ExampleObjectOrientedModel.class.getName()));
     }
 
     // @extract-end
@@ -115,7 +114,7 @@ public class XLinkUtilsTest {
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
-        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
+        ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId, serviceFinder);
 
         //xLinkUrl = 
@@ -138,7 +137,7 @@ public class XLinkUtilsTest {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
-        XLinkModelInformation modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
+        ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
                 values, modelInformation, contextId, viewId1, serviceFinder);
 

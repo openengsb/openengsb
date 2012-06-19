@@ -21,9 +21,9 @@ package org.openengsb.core.api;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -131,7 +131,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
-            Map<XLinkModelInformation, List<XLinkToolView>> modelsToViews);
+            Map<ModelDescription, List<XLinkToolView>> modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.
