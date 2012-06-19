@@ -18,6 +18,7 @@
 package org.openengsb.core.security.filter;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
@@ -32,7 +33,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
@@ -71,7 +72,18 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
         } else {
-            JsonUtils.convertResult(result);
+            Class<?> resultType;
+            try {
+                resultType = Class.forName(result.getClassName());
+            } catch (ClassNotFoundException e) {
+                throw new FilterException(e);
+            }
+            if (resultType.isInterface() || Modifier.isAbstract(resultType.getModifiers())) {
+                result.setArg(ModelUtils.convertToOpenEngSBModel(result.getArg(), resultType));
+            } else {
+                Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
+                result.setArg(convertedValue);
+            }
         }
         return resultMessage;
     }
