@@ -14,33 +14,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.services.internal.virtual;
 
-package org.openengsb.domain.example.event;
+public class ProxyRegistration {
 
-import org.openengsb.core.api.Event;
+    private String uuid;
+    private String portId;
+    private String destination;
 
-public class LogEvent extends Event {
-
-    private String message;
-    private String level;
-
-    public LogEvent() {
-        super("LogEvent");
+    public ProxyRegistration(String uuid, String portId, String destination) {
+        this(uuid);
+        this.portId = portId;
+        this.destination = destination;
     }
 
-    public String getMessage() {
-        return message;
+    public ProxyRegistration(String uuid) {
+        this.uuid = uuid;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getUuid() {
+        return uuid;
     }
 
-    public String getLevel() {
-        return level;
+    public String getPortId() {
+        return portId;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setPortId(String portId) {
+        this.portId = portId;
     }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public boolean isRegistered() {
+        return destination != null;
+    }
+
 }

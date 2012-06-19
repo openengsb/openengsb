@@ -28,10 +28,13 @@ import org.openengsb.core.common.VirtualConnectorFactory;
 public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector> {
 
     private OutgoingPortUtilService outgoingPortUtilService;
+    private ProxyConnectorRegistryImpl connectorRegistry;
 
-    protected ProxyServiceFactory(DomainProvider domainProvider, OutgoingPortUtilService outgoingPortUtilService) {
+    protected ProxyServiceFactory(DomainProvider domainProvider, OutgoingPortUtilService outgoingPortUtilService,
+            ProxyConnectorRegistryImpl connectorRegistry) {
         super(domainProvider);
         this.outgoingPortUtilService = outgoingPortUtilService;
+        this.connectorRegistry = connectorRegistry;
     }
 
     @Override
@@ -51,7 +54,8 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
 
     @Override
     protected ProxyConnector createNewHandler(String id) {
-        return new ProxyConnector(id, outgoingPortUtilService);
+        ProxyRegistration proxyRegistration = connectorRegistry.create(id);
+        return new ProxyConnector(id, outgoingPortUtilService, proxyRegistration);
     }
 
     @Override

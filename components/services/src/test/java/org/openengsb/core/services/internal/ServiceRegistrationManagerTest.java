@@ -24,7 +24,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +47,7 @@ import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
+import org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
@@ -58,6 +58,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     private ConnectorRegistrationManager registrationManager;
     private DefaultOsgiUtilsService serviceUtils;
     private OutgoingPortUtilService callrouter;
+    private ProxyConnectorRegistryImpl connectorRegistry;
 
     @Before
     public void setUp() throws Exception {
@@ -75,6 +76,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         proxyConnectorProvider.setId(Constants.EXTERNAL_CONNECTOR_PROXY);
         proxyConnectorProvider.setBundleContext(bundleContext);
         proxyConnectorProvider.setOutgoingPortUtilService(callrouter);
+        connectorRegistry = new ProxyConnectorRegistryImpl();
+        proxyConnectorProvider.setConnectorRegistry(connectorRegistry);
         registerService(proxyConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         new Activator().start(bundleContext);
     }
@@ -174,10 +177,11 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         String connectorId = UUID.randomUUID().toString();
 
         registrationManager.updateRegistration(connectorId, connectorDescription);
-
+        connectorRegistry.create("foo");
+        connectorRegistry.registerConnector(connectorId, "jms+json", "localhost");
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
-        verify(callrouter, times(3)).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
+        verify(callrouter).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 }

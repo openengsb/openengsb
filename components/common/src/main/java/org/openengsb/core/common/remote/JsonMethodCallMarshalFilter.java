@@ -21,12 +21,15 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * This filter takes a JSON-serialized {@link MethodCallMessage} and deserializes it. The {@link MethodCallMessage}
@@ -49,11 +52,26 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     @Override
     public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
-        MethodCallMessage call;
+        MethodCallMessage callMessage;
         try {
-            call = objectMapper.readValue(input, MethodCallMessage.class);
-            JsonUtils.convertAllArgs(call);
-            MethodResultMessage returnValue = (MethodResultMessage) next.filter(call, metadata);
+            callMessage = objectMapper.readValue(input, MethodCallMessage.class);
+            MethodCall call = callMessage.getMethodCall();
+            Object[] args = call.getArgs();
+            for (int i = 0; i < args.length; i++) {
+                String className = call.getClasses().get(i);
+                Class<?> parameterClass;
+                try {
+                    parameterClass = getClass().getClassLoader().loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    throw new FilterException(e);
+                }
+                if (parameterClass.isInterface() && OpenEngSBModel.class.isAssignableFrom(parameterClass)) {
+                    args[i] = ModelUtils.convertToOpenEngSBModel(args[i], parameterClass);
+                } else {
+                    args[i] = objectMapper.convertValue(args[i], parameterClass);
+                }
+            }
+            MethodResultMessage returnValue = (MethodResultMessage) next.filter(callMessage, metadata);
             return objectMapper.writeValueAsString(returnValue);
         } catch (IOException e) {
             throw new FilterException(e);

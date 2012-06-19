@@ -169,7 +169,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         waitForDefaultConnectors();
         System.out.println("starting  ");
         String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing "
-                + "id:testID attr:something");
+                + "service.pid:testID attr:something");
         cs.execute(executeCommand);
         cs.close();
 

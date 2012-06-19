@@ -19,7 +19,9 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
+>
 
   <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl">
     <property name="configPersistence" ref="contextConfigPersistence" />
@@ -45,7 +47,9 @@
     <ref component-id="connectorManager" />
   </service>
 
-  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
+  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl"
+    init-method="init"
+  >
     <property name="registrationManager">
       <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManager">
         <property name="bundleContext" ref="blueprintBundleContext" />
@@ -97,7 +101,17 @@
       <property name="id" value="external-connector-proxy" />
       <property name="bundleContext" ref="blueprintBundleContext" />
       <property name="outgoingPortUtilService" ref="outgoingPortUtilService" />
+      <property name="connectorRegistry" ref="connectorRegistry" />
     </bean>
+  </service>
+
+  <bean id="connectorRegistry" class="org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl" />
+
+  <service interface="org.openengsb.core.api.remote.ProxyConnectorRegistry">
+    <service-properties>
+      <entry key="service.pid" value="proxyConnectorRegistry" />
+    </service-properties>
+    <ref component-id="connectorRegistry" />
   </service>
 
   <service id="compositeConnectorProvider">

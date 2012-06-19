@@ -47,11 +47,12 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
 
     }
 
-    public void init() {
+    public synchronized void init() {
         if (persistence == null) {
             Bundle self = bundleContext.getBundle();
             persistence = persistenceManager.getPersistenceForBundle(self);
         }
+        builder.reloadRulebase();
     }
 
     @Override

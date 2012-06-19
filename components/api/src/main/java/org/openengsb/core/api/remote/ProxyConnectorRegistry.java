@@ -14,33 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.remote;
 
-package org.openengsb.domain.example.event;
+/**
+ * manages registrations of remote-connectors
+ */
+public interface ProxyConnectorRegistry {
 
-import org.openengsb.core.api.Event;
+    /**
+     * registers the given portId and destination for the given connector identified with the given uuid. The given
+     * portId and destination are used for future calls on the proxy-connector.
+     */
+    void registerConnector(String uuid, String portId, String destination);
 
-public class LogEvent extends Event {
+    /**
+     * unregisters a remote-connector. After that the ProxyConnector knows that the remote destination is no longer
+     * reachable.
+     */
+    void unregisterConnector(String uuid);
 
-    private String message;
-    private String level;
-
-    public LogEvent() {
-        super("LogEvent");
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
 }

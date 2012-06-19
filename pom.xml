@@ -38,7 +38,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>33</version>
+    <version>34-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.framework</groupId>
@@ -332,15 +332,6 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>orientechnologies-repository</id>
-      <name>Orient Technologies Maven2 Repository</name>
-      <url>http://www.orientechnologies.com/listing/m2</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
