@@ -30,8 +30,8 @@ import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.common.xlink.XLinkUtils;
-import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
-import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
+//import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
+//import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 
 /**
  */
@@ -63,6 +63,7 @@ public final class XLinkMock {
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
 
+        /*
         if (isTransformationPossible(sourceModelClass, 
                 sourceModelVersion, destinationModelClass, destinationModelVersion)) {
             try{
@@ -76,7 +77,7 @@ public final class XLinkMock {
             }
         }else{
             //this should not happen since the preselection of the user was only done with transformable classes
-        }
+        }*/
     }
     
     private static Object queryEngine(
@@ -84,6 +85,7 @@ public final class XLinkMock {
             String sourceModelVersion, 
             Map<String, String> sourceModelIdentifierMap,
             OsgiUtilsService osgiService) throws ClassNotFoundException {
+        /*
         if(sourceModelClass.equals(sqlModel)){
             SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
             sqlcreate.setTableName(sourceModelIdentifierMap.get("tableName"));
@@ -91,6 +93,7 @@ public final class XLinkMock {
             OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
             ooclass.setClassName(sourceModelIdentifierMap.get("className"));
         }
+         */
         return null;
     }
     private static Object transformModelObject(
@@ -102,6 +105,7 @@ public final class XLinkMock {
             OsgiUtilsService osgiService) throws ClassNotFoundException {
         if(modelObjectSource == null)return null;
         Object resultObject = null;
+        /*
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
             OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
@@ -112,7 +116,7 @@ public final class XLinkMock {
             SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
             sqlcreate.setTableName(ooSource.getClassName());
             resultObject = sqlcreate;
-        }
+        }*/
         return resultObject;
     }
     private static void openPotentialMatches(
