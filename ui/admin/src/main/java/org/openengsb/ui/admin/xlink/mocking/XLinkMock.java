@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 
@@ -97,8 +97,8 @@ public final class XLinkMock {
     }    
     
     public static void dummyRegistrationOfTools(ConnectorManager serviceManager) {
-        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
-            = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+        HashMap<ModelDescription, List<XLinkToolView>> modelsToViews 
+            = new HashMap<ModelDescription, List<XLinkToolView>>();  
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
         
@@ -110,7 +110,7 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
         
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views); 
+        modelsToViews.put(new ModelDescription(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views); 
         
         String toolName1 = "Tool A";
         String toolName2 = "Tool B";
@@ -155,8 +155,8 @@ public final class XLinkMock {
     }    
 
     private static XLinkTemplate createMockTemplate() {
-        HashMap<XLinkModelInformation, List<XLinkToolView>> modelsToViews 
-            = new HashMap<XLinkModelInformation, List<XLinkToolView>>();  
+        HashMap<ModelDescription, List<XLinkToolView>> modelsToViews 
+            = new HashMap<ModelDescription, List<XLinkToolView>>();  
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
         
@@ -168,7 +168,7 @@ public final class XLinkMock {
         views.add(new XLinkToolView(viewId1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
         
-        modelsToViews.put(new XLinkModelInformation(ExampleObjectOrientedModel.class.getName(), "1.0"), views);  
+        modelsToViews.put(new ModelDescription(ExampleObjectOrientedModel.class.getName(), "1.0"), views);  
         String connectorId = "exampleConnectorId";
         String servletUrl = "http://openengsb.org/registryServlet.html";
         int expiresInDays = 3;

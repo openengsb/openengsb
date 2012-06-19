@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.common.xlink.XLinkUtils;
@@ -45,7 +45,7 @@ public class ToolChooserLogic {
                 serviceManager.getXLinkRegistration(hostId));
     } 
     
-    public XLinkModelInformation getModelClassOfView(String hostId, String cId, String viewId) {
+    public ModelDescription getModelClassOfView(String hostId, String cId, String viewId) {
         String connectorId = cId;
         if (getRegistration(hostId, connectorId) != null) {
             XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();

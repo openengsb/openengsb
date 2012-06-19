@@ -44,9 +44,8 @@ import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.ekb.ModelRegistry;
+import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
-import org.openengsb.core.api.xlink.model.XLinkModelInformation;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
@@ -103,10 +102,10 @@ public class ToolChooserPage extends WebPage {
         //setContextFromId();
         if (checkForLocalSwitchingParameters()) {
             String sourceModelClass = modelId;           
-            XLinkModelInformation destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
+            ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                    versionId, identifierValues, destinationModelClass.getClassName(), 
-                    destinationModelClass.getVersion(), connectorId, viewId);
+                    versionId, identifierValues, destinationModelClass.getModelClassName(), 
+                    destinationModelClass.getModelVersionString(), connectorId, viewId);
             handleSuccessResponse(resp);
             return;
         }
@@ -247,20 +246,20 @@ public class ToolChooserPage extends WebPage {
                         li.add(new Label("viewName", view.getName()));
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              
-                        final XLinkModelInformation destModelInfo 
+                        final ModelDescription destModelInfo 
                             = chooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
                                 String sourceModelClass = modelId;   
                                 XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                                        versionId, identifierValues, destModelInfo.getClassName(), 
-                                        destModelInfo.getVersion(), tool.getId(), 
+                                        versionId, identifierValues, destModelInfo.getModelClassName(), 
+                                        destModelInfo.getModelVersionString(), tool.getId(), 
                                         view.getViewId());
                                 handleSuccessResponse(resp);
                             }
                         };
-                        if (XLinkMock.isTransformationPossible(modelId, versionId, destModelInfo.getClassName(), 
-                                destModelInfo.getVersion())) {
+                        if (XLinkMock.isTransformationPossible(modelId, versionId, destModelInfo.getModelClassName(), 
+                                destModelInfo.getModelVersionString())) {
                             String labelText = new StringResourceModel("toolchooser.match", this, null).getString();
                             viewLink.add(new Label("viewLinkLabel", labelText));                  
                         } else {
