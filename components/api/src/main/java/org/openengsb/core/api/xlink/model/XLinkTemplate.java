@@ -19,6 +19,7 @@ package org.openengsb.core.api.xlink.model;
 
 import java.util.List;
 import java.util.Map;
+import org.openengsb.core.api.ekb.ModelDescription;
 
 
 /**
@@ -44,7 +45,7 @@ public class XLinkTemplate {
      * view. When in use, the identifing fields of the model must be concatenated 
      * with their values to the baseUrl as GET-Parameters. 
      */
-    private Map<String, XLinkModelInformation> viewToModels;
+    private Map<String, ModelDescription> viewToModels;
     
     /**
      * Keyname of the modelClass, which must be concatenated to the baseUrl as 
@@ -89,7 +90,7 @@ public class XLinkTemplate {
     }
 
     public XLinkTemplate(String baseUrl, 
-            Map<String, XLinkModelInformation> viewToModels, 
+            Map<String, ModelDescription> viewToModels, 
             String modelClassKey, 
             String modelVersionKey, 
             List<XLinkLocalTool> registeredTools, 
@@ -162,11 +163,11 @@ public class XLinkTemplate {
      * view. When in use, the identifing fields of the model must be concatenated 
      * with their values to the baseUrl as GET-Parameters. 
      */    
-    public Map<String, XLinkModelInformation> getViewToModels() {
+    public Map<String, ModelDescription> getViewToModels() {
         return viewToModels;
     }
 
-    public void setViewToModels(Map<String, XLinkModelInformation> viewToModels) {
+    public void setViewToModels(Map<String, ModelDescription> viewToModels) {
         this.viewToModels = viewToModels;
     }
 
