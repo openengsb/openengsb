@@ -40,7 +40,6 @@ import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.LogLevel;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
@@ -63,12 +62,6 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         @Override
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
-        }
-
-        @Override
-        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-            wasCalled = true;
-            return "something";
         }
 
         @Override
@@ -106,7 +99,6 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
 
         LogEvent e = new LogEvent();
         e.setName("42");
-        e.setLevel(LogLevel.INFO);
 
         ExampleDomainEvents exampleEvents = getOsgiService(ExampleDomainEvents.class);
         // this should be routed through the domain, which forwards it to the workflow service

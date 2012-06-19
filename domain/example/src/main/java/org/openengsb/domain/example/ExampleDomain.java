@@ -40,8 +40,6 @@ public interface ExampleDomain extends Domain {
 
     ExampleResponseModel doSomethingWithModel(ExampleRequestModel model);
 
-    String doSomethingWithEnum(ExampleEnum exampleEnum);
-
     @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);
 

@@ -72,12 +72,6 @@ class ExampleConnector implements ExampleDomain, Connector {
     }
 
     @Override
-    public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-        LOGGER.info("ExampleEnum: {}", exampleEnum);
-        return exampleEnum.toString();
-    }
-
-    @Override
     public String doSomethingWithLogEvent(LogEvent event) {
         LOGGER.info("LogEvent: {}", event);
         return event.toString();

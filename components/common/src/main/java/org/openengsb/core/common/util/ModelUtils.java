@@ -25,12 +25,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.model.ModelProxyHandler;
+import org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,5 +213,25 @@ public final class ModelUtils {
         char firstChar = propertyName.charAt(0);
         char newFirstChar = Character.toLowerCase(firstChar);
         return propertyName.replaceFirst("" + firstChar, "" + newFirstChar);
+    }
+
+    public static OpenEngSBModel convertToOpenEngSBModel(Object arg, Class<?> resultType) {
+        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) arg;
+        for (Map.Entry<String, Object> dataEntry : data.entrySet()) {
+            try {
+                Class<?> attributeType =
+                    JsonOutgoingMethodCallMarshalFilter.getAttributeType(resultType, dataEntry.getKey());
+                Object value = dataEntry.getValue();
+                if (Number.class.isAssignableFrom(attributeType) && !(value instanceof Number)) {
+                    value = NumberUtils.createNumber((String) value);
+                }
+                entries.add(new OpenEngSBModelEntry(dataEntry.getKey(), value, attributeType));
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return (OpenEngSBModel) createModelObject(resultType, entries.toArray(new OpenEngSBModelEntry[0]));
     }
 }

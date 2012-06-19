@@ -18,8 +18,10 @@
 package org.openengsb.core.common.remote;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
@@ -29,6 +31,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
@@ -66,16 +69,24 @@ public class JsonOutgoingMethodCallMarshalFilter extends
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
         } else {
-            Class<?> className;
+            Class<?> resultType;
             try {
-                className = Class.forName(result.getClassName());
+                resultType = Class.forName(result.getClassName());
             } catch (ClassNotFoundException e) {
                 throw new FilterException(e);
             }
-            Object convertedValue = objectMapper.convertValue(result.getArg(), className);
-            result.setArg(convertedValue);
+            if (resultType.isInterface() || Modifier.isAbstract(resultType.getModifiers())) {
+                result.setArg(ModelUtils.convertToOpenEngSBModel(result.getArg(), resultType));
+            } else {
+                Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
+                result.setArg(convertedValue);
+            }
         }
         return resultMessage;
+    }
+
+    public static Class<?> getAttributeType(Class<?> clazz, String attributeName) throws NoSuchMethodException {
+        return clazz.getMethod("get" + StringUtils.capitalize(attributeName)).getReturnType();
     }
 
     @Override
