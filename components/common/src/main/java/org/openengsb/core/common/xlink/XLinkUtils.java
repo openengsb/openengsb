@@ -17,6 +17,7 @@
 
 package org.openengsb.core.common.xlink;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Format;
@@ -31,11 +32,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
@@ -65,6 +68,9 @@ public final class XLinkUtils {
 
     /** Keyname of the ExpirationDate, mandatory GET-Parameter in XLinks */
     public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
+    
+    /** Keyname of the IdentifierString, mandatory GET-Parameter in XLinks */
+    public static final String XLINK_IDENTIFIER_KEY = "identifier";    
 
     /** Keyname of the ConnectorId, GET-Parameter in XLinks, only mandatory in local switching */
     public static final String XLINK_CONNECTORID_KEY = "connectorId";
@@ -107,7 +113,8 @@ public final class XLinkUtils {
                 registeredTools,
                 XLINK_CONTEXTID_KEY, 
                 connectorIdParam, 
-                XLINK_VIEW_KEY);
+                XLINK_VIEW_KEY,
+                XLINK_IDENTIFIER_KEY);
     }
     
     /**
@@ -147,10 +154,10 @@ public final class XLinkUtils {
      * Depending on the contained Keys, the XLink is useable for local switching, or not.
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, 
-            List<String> identifierValues, 
+            List<Object> identifierValues, 
             ModelDescription modelInformation, 
             String contextId,
-            OsgiUtilsService serviceFinder) throws ClassNotFoundException {
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException, IOException {
         String completeUrl = template.getBaseUrl();    
         completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
         completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getModelVersionString());
@@ -159,8 +166,13 @@ public final class XLinkUtils {
                 modelInformation.getModelClassName(), modelInformation.getModelVersionString(), serviceFinder);
         List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
-            completeUrl += "&" + keyNames.get(i).getKey() + "=" + urlEncodeParameter(identifierValues.get(i));
+            modelOfView.getOpenEngSBModelEntries().get(i).setValue(identifierValues.get(i));
         } 
+        
+        OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(modelOfView);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonWrapper = mapper.writeValueAsString(wrapper);
+        completeUrl += "&" + template.getIdentifierKeyName() + "=" + urlEncodeParameter(jsonWrapper);
         return completeUrl;
     }
 
@@ -185,11 +197,11 @@ public final class XLinkUtils {
      * corresponding to the List of keyFields of the Modelclass. The connectorId and viewId parameters are added 
      * in the end, to mark the link for Local Switching
      */
-    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<Object> values,
             ModelDescription modelInformation, 
             String contextId, 
             String viewIdValue,
-            OsgiUtilsService serviceFinder) throws ClassNotFoundException {
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException, IOException {
         String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId, serviceFinder);
         xLink += "&" 
                 + template.getConnectorId() + "&" 

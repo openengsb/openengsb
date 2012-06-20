@@ -60,6 +60,12 @@ public class XLinkTemplate {
     private String modelVersionKey;
     
     /**
+     * Keyname of the identifierString of the model, which must be concatenated to the baseUrl as 
+     * GET Paramter
+     */        
+    private String identifierKeyName;
+     
+    /**
      * List of all other currently registered tools from the same host. This information is used to support 
      * local switching between tools.
      */
@@ -96,7 +102,8 @@ public class XLinkTemplate {
             List<XLinkLocalTool> registeredTools, 
             String contextIdKeyName, 
             String connectorId, 
-            String viewIdKeyName) {
+            String viewIdKeyName,
+            String identifierKeyName) {
         this.baseUrl = baseUrl;
         this.viewToModels = viewToModels;
         this.modelClassKey = modelClassKey;
@@ -105,6 +112,7 @@ public class XLinkTemplate {
         this.contextIdKeyName = contextIdKeyName;
         this.connectorId = connectorId;
         this.viewIdKeyName = viewIdKeyName;
+        this.identifierKeyName = identifierKeyName;
     }
 
     /**
@@ -204,6 +212,18 @@ public class XLinkTemplate {
 
     public void setContextIdKeyName(String contextIdKeyName) {
         this.contextIdKeyName = contextIdKeyName;
+    }
+
+    /**
+     * Keyname of the identifierString of the model, which must be concatenated to the baseUrl as 
+     * GET Paramter
+     */   
+    public String getIdentifierKeyName() {
+        return identifierKeyName;
+    }
+
+    public void setIdentifierKeyName(String identifierKeyName) {
+        this.identifierKeyName = identifierKeyName;
     }
     
 }
