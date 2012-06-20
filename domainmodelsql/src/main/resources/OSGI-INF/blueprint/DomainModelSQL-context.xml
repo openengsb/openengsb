@@ -49,12 +49,10 @@
     <property name="domainEventInterface">
         <value>org.openengsb.domain.DomainModelSQL.DomainModelSQLDomainEvents</value>
       </property>
-    <property name="edbService" ref="edbService" />
     <property name="workflowService" ref="workflowService" />
   </bean>
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
-  <reference id="edbService" interface="org.openengsb.core.api.edb.EnterpriseDatabaseService" />
 
 </blueprint>

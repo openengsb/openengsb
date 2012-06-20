@@ -18,7 +18,6 @@
 package org.openengsb.domain.DomainModelSQL;
 
 import org.openengsb.core.api.DomainEvents;
-import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 
 public interface DomainModelSQLDomainEvents extends DomainEvents {
 
