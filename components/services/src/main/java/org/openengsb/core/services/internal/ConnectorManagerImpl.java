@@ -46,7 +46,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -269,18 +269,12 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return registrationsOfHostId;
     }
     
-    private Map<ModelDescription, List<XLinkToolView>> convertMapToModelDescription(
-            Map<String, List<XLinkToolView>> modelsToViews) throws XLinkConnectException{
+    private Map<ModelDescription, List<XLinkToolView>> convertToMapWithModelDescriptionAsKey(
+            List<ModelToViewsTupel> modelsToViews){
         Map<ModelDescription, List<XLinkToolView>> convertedMap 
                 = new HashMap<ModelDescription, List<XLinkToolView>>();
-        for (String key : modelsToViews.keySet()) {
-            try{
-                String modelClass = key.substring(0,key.indexOf(":"));
-                String version = key.substring(key.indexOf(":")+1, key.length());
-                convertedMap.put(new ModelDescription(modelClass, version), modelsToViews.get(key));
-            }catch(Exception e){
-                throw new XLinkConnectException("Malformed modelToViews key.");
-            }
+        for (ModelToViewsTupel tupel : modelsToViews) {
+            convertedMap.put(tupel.getDescription(), tupel.getViews());
         }        
         return convertedMap;
     }
@@ -290,9 +284,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            Map<String, List<XLinkToolView>> modelsToViews)  throws XLinkConnectException{
+            List<ModelToViewsTupel> modelsToViews) {
         Map<ModelDescription, List<XLinkToolView>> convertedModelsToViews 
-                = convertMapToModelDescription(modelsToViews);
+                = convertToMapWithModelDescriptionAsKey(modelsToViews);
         List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
         XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
                 xLinkBaseUrl, 
