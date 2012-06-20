@@ -24,6 +24,7 @@ import java.util.Map;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
@@ -121,6 +122,8 @@ public interface ConnectorManager {
      * Together with the baseUrl, the tool can now construct valid XLink-URLs with the identifier 
      * of one of the defined model. 
      * 
+     * The exception is thrown if the supplied Map contains malformed keys.
+     * 
      * The classes 'XLinkUtils' and 'XLinkUtilsTest' in the commons package also provides examples of how to 
      * create XLink-URLs. 
      * 
@@ -131,7 +134,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
-            Map<String, List<XLinkToolView>> modelsToViews);
+            Map<String, List<XLinkToolView>> modelsToViews) throws XLinkConnectException;
     
     /**
      * Unregisters the given Connector from XLink.
