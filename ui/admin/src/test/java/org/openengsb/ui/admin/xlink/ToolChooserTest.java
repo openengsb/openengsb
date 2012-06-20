@@ -23,7 +23,6 @@ import java.util.Calendar;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -78,9 +77,11 @@ public class ToolChooserTest extends AbstractUITest {
     }    
     
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
-        params.add("OOMethodName", "testMethod");
+        String identifyingString = "{\"modelClass\":\"org.openengsb.core.common.xlink.ExampleObjectOrientedModel\",\"entries\":[{\"key\":\"OOMethodName\",\"value\":\"testMethod\",\"type\":\"java.lang.String\"},{\"key\":\"OOClassName\",\"value\":\"testClass\",\"type\":\"java.lang.String\"},{\"key\":\"OOPackageName\",\"value\":\"testPackage\",\"type\":\"java.lang.String\"}]}";
+        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY,identifyingString);
+        /*params.add("OOMethodName", "testMethod");
         params.add("OOClassName", "testClass");
-        params.add("OOPackageName", "testPackage");          
+        params.add("OOPackageName", "testPackage");   */       
     }    
     
     private void setupNessecaryHeader() {
@@ -164,49 +165,18 @@ public class ToolChooserTest extends AbstractUITest {
     }      
     
     @Test
-    public void openToolChooserPage_missingIdentifier_ExampleModel_Package() {
+    public void openToolChooserPage_missingIdentifier() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove("OOPackageName");
+        params.remove(XLinkUtils.XLINK_IDENTIFIER_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains("OOPackageName");
-        tester.assertContains("Identifier");
+        tester.assertContains(XLinkUtils.XLINK_IDENTIFIER_KEY);
     }   
-    
-    @Test
-    public void openToolChooserPage_missingIdentifier_ExampleModel_Method() {
-        PageParameters params = new PageParameters();
-        setupCommonXLinkParams(params);
-        setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
-        
-        params.remove("OOMethodName");
-        
-        tester.startPage(ToolChooserPage.class, params);
-        tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains("OOMethodName");
-        tester.assertContains("Identifier");
-    }  
-    
-    @Test
-    public void openToolChooserPage_missingIdentifier_ExampleModel_Class() {
-        PageParameters params = new PageParameters();
-        setupCommonXLinkParams(params);
-        setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
-        
-        params.remove("OOClassName");
-        
-        tester.startPage(ToolChooserPage.class, params);
-        tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains("OOClassName");
-        tester.assertContains("Identifier");
-    }      
     
     @Test
     public void openLocalSwitchPage_isRenderedWithSuccessfullLink() {

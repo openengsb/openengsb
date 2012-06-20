@@ -67,8 +67,8 @@ public class ToolChooserLogic {
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
-        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        /*OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();*/
         List<String> identifierKeyNames = new ArrayList<String>();
         
         //########### MOCK !!!
@@ -85,9 +85,9 @@ public class ToolChooserLogic {
         
         //########### MOCK !!!
         
-        for (OpenEngSBModelEntry entry : entries) {
+        /*for (OpenEngSBModelEntry entry : entries) {
             identifierKeyNames.add(entry.getKey());
-        }
+        }*/
         return identifierKeyNames;
     }    
     

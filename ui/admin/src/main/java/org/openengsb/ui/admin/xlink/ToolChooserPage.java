@@ -19,6 +19,7 @@ package org.openengsb.ui.admin.xlink;
 
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,12 +42,17 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
@@ -71,11 +77,13 @@ public class ToolChooserPage extends WebPage {
     private String versionId;
     private Calendar expirationDate;
     private String hostId;
+    private String identifier;
+    private OpenEngSBModel identifierObject;
     
     private String connectorId;
     private String viewId;
 
-    private Map<String, String> identifierValues;
+    //private Map<String, String> identifierValues;
     
     private Map<String, String[]> requestParameters;
     
@@ -104,7 +112,7 @@ public class ToolChooserPage extends WebPage {
             String sourceModelClass = modelId;           
             ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
             XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                    versionId, identifierValues, destinationModelClass.getModelClassName(), 
+                    versionId, identifierObject, destinationModelClass.getModelClassName(), 
                     destinationModelClass.getModelVersionString(), connectorId, viewId, serviceUtils);
             handleSuccessResponse(resp);
             return;
@@ -137,13 +145,15 @@ public class ToolChooserPage extends WebPage {
             checkConnectorAndViewExists();
         }
         checkXLinkIsExpired();
+        List<String> keyFields = null;
         try {
-            fetchAndCheckIdentifier(chooserLogic.getModelIdentifierToModelId(modelId, versionId));
+            keyFields = chooserLogic.getModelIdentifierToModelId(modelId, versionId);
         } catch (ClassNotFoundException ex) {
             String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
             Logger.getLogger(ToolChooserPage.class.getName()).log(Level.SEVERE, null, ex);
             throw new OpenXLinkException(String.format(errorMsg, ex.getMessage()));
         }
+        fetchAndCheckIdentifier(keyFields);
     }
     
     private void fetchXLinkParameters(HttpServletRequest req) {
@@ -155,6 +165,7 @@ public class ToolChooserPage extends WebPage {
         //hostId = hostId.substring(0,hostId.indexOf(":"));
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
+        identifier = getParameterFromMap(XLinkUtils.XLINK_IDENTIFIER_KEY);
     }    
 
     private void checkMandatoryXLinkParameters() throws OpenXLinkException {
@@ -164,11 +175,13 @@ public class ToolChooserPage extends WebPage {
         if (versionId == null) { errorMsg += ", " + XLinkUtils.XLINK_VERSION_KEY; }
         if (expirationDate == null) { errorMsg += ", " + XLinkUtils.XLINK_EXPIRATIONDATE_KEY; }
         if (hostId == null) { errorMsg += ", " + XLinkUtils.XLINK_HOST_HEADERNAME; }
+        if (identifier == null) { errorMsg += ", " + XLinkUtils.XLINK_IDENTIFIER_KEY; }
         if ((contextId == null) 
                 || (modelId == null) 
                 || (versionId == null) 
                 || (expirationDate == null) 
-                || (hostId == null)) {
+                || (hostId == null)
+                || (identifier == null)) {
             throw new OpenXLinkException(errorMsg);
         }
     }    
@@ -187,18 +200,31 @@ public class ToolChooserPage extends WebPage {
         if(!chooserLogic.isViewExisting(hostId, connectorId, viewId))throw new OpenXLinkException(errorViewNotExisting);
     }
     
-    private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {
-        String errorMsgFormat = new StringResourceModel("error.missingIdentifier", this, null).getString();
-        String errorMsg = "";
-        identifierValues = new HashMap();
-        for (String key : identifierKeyNames) {
-            String currentValue = getParameterFromMap(key);
-            if (currentValue == null) {
-                errorMsg += String.format(errorMsgFormat, key);
+    private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {      
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            OpenEngSBModelWrapper wrapper 
+                    = (OpenEngSBModelWrapper) mapper.readValue(identifier, OpenEngSBModelWrapper.class);
+            identifierObject = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+            boolean found;
+            for (String key : identifierKeyNames) {
+                found = false;
+                for(OpenEngSBModelEntry entry : identifierObject.getOpenEngSBModelEntries()) {
+                    if(entry.getKey().equals(key)){
+                        found = true;
+                        if(entry.getValue() == null){
+                            String errorMsg = new StringResourceModel("error.missingIdentifier", this, null).getString();
+                            throw new OpenXLinkException(String.format(errorMsg, entry.getKey()));
+                        }
+                    }
+                }
+                if(!found){
+                    String errorMsg = new StringResourceModel("error.missingIdentifyingField", this, null).getString();
+                    throw new OpenXLinkException(String.format(errorMsg, key));
+                }
             }
-            identifierValues.put(key, currentValue);
-        }
-        if (identifierValues.containsValue(null)) {
+        } catch (Exception ex) {
+            String errorMsg = new StringResourceModel("error.identifierIsNotValid", this, null).getString();
             throw new OpenXLinkException(errorMsg);
         }
     }
@@ -253,7 +279,7 @@ public class ToolChooserPage extends WebPage {
                             public void onClick() {
                                 String sourceModelClass = modelId;   
                                 XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                                        versionId, identifierValues, destModelInfo.getModelClassName(), 
+                                        versionId, identifierObject, destModelInfo.getModelClassName(), 
                                         destModelInfo.getModelVersionString(), tool.getId(), 
                                         view.getViewId(), serviceUtils);
                                 handleSuccessResponse(resp);

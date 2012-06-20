@@ -307,6 +307,20 @@
     </details>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.example/${project.version}</bundle>
   </feature>
+  
+  <feature name="openengsb-domain-domainmodeloosource" version="${project.version}" description="OpenEngSB DomainModelOOSource Domain">
+    <details>
+      TBW
+    </details>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.DomainModelOOSource/${project.version}</bundle>
+  </feature> 
+  
+  <feature name="openengsb-domain-domainmodelsql" version="${project.version}" description="OpenEngSB DomainModelSql Domain">
+    <details>
+      TBW
+    </details>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.DomainModelSQL/${project.version}</bundle>
+  </feature>  
 
   <feature name="openengsb-connector-example" version="${project.version}" description="OpenEngSB Example Connector">
     <details>

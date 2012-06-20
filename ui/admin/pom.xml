@@ -209,7 +209,7 @@
       <artifactId>org.openengsb.framework.security</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>
+    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.DomainModelOOSource</artifactId>
       <version>${project.version}</version>
@@ -220,7 +220,7 @@
       <artifactId>org.openengsb.domain.DomainModelSQL</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency>     -->
+    </dependency>
 
     <dependency>
       <groupId>org.apache.shiro</groupId>
