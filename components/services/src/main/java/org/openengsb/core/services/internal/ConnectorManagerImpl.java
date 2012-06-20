@@ -35,15 +35,13 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
-import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -248,8 +246,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            Map<String, List<XLinkToolView>> modelsToViews) 
-    throws XLinkConnectException{
+            List<ModelToViewsTupel> modelsToViews){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
