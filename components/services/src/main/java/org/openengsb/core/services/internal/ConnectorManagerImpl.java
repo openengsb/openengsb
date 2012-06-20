@@ -46,6 +46,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.services.internal.exceptions.XLinkConnectException;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -268,24 +269,42 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return registrationsOfHostId;
     }
     
+    private Map<ModelDescription, List<XLinkToolView>> convertMapToModelDescription(
+            Map<String, List<XLinkToolView>> modelsToViews) throws XLinkConnectException{
+        Map<ModelDescription, List<XLinkToolView>> convertedMap 
+                = new HashMap<ModelDescription, List<XLinkToolView>>();
+        for (String key : modelsToViews.keySet()) {
+            try{
+                String modelClass = key.substring(0,key.indexOf(":"));
+                String version = key.substring(key.indexOf(":"), key.length());
+                convertedMap.put(new ModelDescription(modelClass, version), modelsToViews.get(key));
+            }catch(Exception e){
+                throw new XLinkConnectException("Malformed modelToViews key.");
+            }
+        }        
+        return convertedMap;
+    }
+    
     @Override
     public XLinkTemplate connectToXLink(
             String id, 
             String hostId, 
             String toolName, 
-            Map<ModelDescription, List<XLinkToolView>> modelsToViews) {
+            Map<String, List<XLinkToolView>> modelsToViews)  throws XLinkConnectException{
+        Map<ModelDescription, List<XLinkToolView>> convertedModelsToViews 
+                = convertMapToModelDescription(modelsToViews);
         List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
         XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
                 xLinkBaseUrl, 
                 id, 
-                modelsToViews, 
+                convertedModelsToViews, 
                 xLinkExpiresIn, 
                 XLinkUtils.getLocalToolFromRegistrations(registrations));
         XLinkToolRegistration newRegistration;
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             newRegistration
-                = new XLinkToolRegistration(hostId, id, toolName, modelsToViews, template);
+                = new XLinkToolRegistration(hostId, id, toolName, convertedModelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
         notifyAboutRegistration(newRegistration);
