@@ -19,15 +19,12 @@ package org.openengsb.core.api;
 
 
 import java.util.List;
-import java.util.Map;
 
-import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
 
 /**
  * Manages connector instances.
@@ -113,16 +110,14 @@ public interface ConnectorManager {
     
     /**
      * Registers the given Connector for XLinking. 
-     * The Connector must provide the models it accepts for XLink, represented as a Map with a String of the 
-     * format [MODELCLASS]:[VERSION] as key and for each key a list of views which are available for the model. 
-     * A Toolname must be provided to display a human readable Name of the Tool in the XLink http-servlet.
+     * The Connector must provide the models it accepts for XLink, represented as a List of combinations 
+     * of a ModelDescription and a List of Views. A Toolname must be provided to display a human readable 
+     * Name of the Tool in the XLink http-servlet.
      * The parameter named hostId must containing the Host-IP. This Id is used to identify the Host when 
      * the user calls the XLink HTTP-Servlet. Therefore the Host must not reach the HTTP-Servlet via a proxy. 
      * A XLinkTemplate is returned, it contains information about which model is to be used for which view.
      * Together with the baseUrl, the tool can now construct valid XLink-URLs with the identifier 
      * of one of the defined model. 
-     * 
-     * The exception is thrown if the supplied Map contains malformed keys.
      * 
      * The classes 'XLinkUtils' and 'XLinkUtilsTest' in the commons package also provides examples of how to 
      * create XLink-URLs. 
@@ -134,7 +129,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
-            Map<String, List<XLinkToolView>> modelsToViews) throws XLinkConnectException;
+            List<ModelToViewsTupel> modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.
