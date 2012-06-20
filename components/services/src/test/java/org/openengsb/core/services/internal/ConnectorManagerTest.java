@@ -57,7 +57,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
@@ -283,11 +283,11 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_ReturnsTemplate() throws XLinkConnectException {
+    public void testConnectToXLink_ReturnsTemplate() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -295,11 +295,11 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_TemplateContainsCorrectIdentifier() throws XLinkConnectException {
+    public void testConnectToXLink_TemplateContainsCorrectIdentifier() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -315,13 +315,13 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }    
     
     @Test
-    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() throws XLinkConnectException {
+    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -336,22 +336,22 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     } 
    
     @Test
-    public void testGetXLinkRegistration_returnsConnectedRegistration() throws XLinkConnectException {
+    public void testGetXLinkRegistration_returnsConnectedRegistration() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertFalse(serviceManager.getXLinkRegistration(hostId).isEmpty());
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() throws XLinkConnectException {
+    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -361,13 +361,13 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() throws XLinkConnectException {
+    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -384,33 +384,22 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }         
     
     @Test
-    public void testDisconnectFromXLink_isEmptyAfterDisconnect() throws XLinkConnectException {
+    public void testDisconnectFromXLink_isEmptyAfterDisconnect() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
+        List<ModelToViewsTupel> modelsToViews 
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
         assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
-    }   
+    }       
     
-    @Test(expected=XLinkConnectException.class)
-    public void testConnect_WithMalformedKeysInModelsToViews() throws XLinkConnectException {
-        String connectorId = "test+test+test";
-        String hostId = "127.0.0.1";
-        String toolName = "myTool";
-        HashMap<String, List<XLinkToolView>> modelsToViews
-            = createModelViewsMap(toolName);
-        modelsToViews.put("malformed", new ArrayList<XLinkToolView>());
-        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-    }      
-    
-    private HashMap<String, List<XLinkToolView>> createModelViewsMap(String toolName) {
+    private List<ModelToViewsTupel> createModelViewsMap(String toolName) {
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        HashMap<String, List<XLinkToolView>> modelsToViews 
-            = new HashMap<String, List<XLinkToolView>>();  
+        List<ModelToViewsTupel> modelsToViews 
+            = new ArrayList<ModelToViewsTupel>();  
         HashMap<String, String> descriptions  = new HashMap<String, String>();
         List<XLinkToolView> views = new ArrayList<XLinkToolView>();
         
@@ -420,7 +409,12 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         views.add(new XLinkToolView(viewId1, toolName, descriptions));
         views.add(new XLinkToolView(viewId2, toolName, descriptions));        
         
-        modelsToViews.put(ExampleObjectOrientedModel.class.getName()+":"+"3.0.0.SNAPSHOT", views);
+        modelsToViews.add(
+                new ModelToViewsTupel(
+                        new ModelDescription(
+                                ExampleObjectOrientedModel.class.getName(),
+                                "3.0.0.SNAPSHOT")
+                        , views));
         return modelsToViews;
     }
 
