@@ -46,7 +46,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.services.internal.exceptions.XLinkConnectException;
+import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -276,7 +276,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         for (String key : modelsToViews.keySet()) {
             try{
                 String modelClass = key.substring(0,key.indexOf(":"));
-                String version = key.substring(key.indexOf(":"), key.length());
+                String version = key.substring(key.indexOf(":")+1, key.length());
                 convertedMap.put(new ModelDescription(modelClass, version), modelsToViews.get(key));
             }catch(Exception e){
                 throw new XLinkConnectException("Malformed modelToViews key.");
