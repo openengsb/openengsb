@@ -32,6 +32,9 @@
 
     <properties>
       <property name="openjpa.Log" value="slf4j"/>
+      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/>
+      <property name="openjpa.DataCache" value="true"/>
+      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>      
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction=add,ForeignKeys=true)"/>
     </properties>
   </persistence-unit>
