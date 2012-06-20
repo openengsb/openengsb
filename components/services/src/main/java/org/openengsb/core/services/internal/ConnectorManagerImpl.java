@@ -247,7 +247,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            Map<ModelDescription, List<XLinkToolView>> modelsToViews) {
+            Map<String, List<XLinkToolView>> modelsToViews) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
