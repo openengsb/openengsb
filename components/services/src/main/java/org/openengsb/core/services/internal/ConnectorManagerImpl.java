@@ -43,6 +43,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.xlink.exceptions.XLinkConnectException;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -247,7 +248,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            Map<String, List<XLinkToolView>> modelsToViews) {
+            Map<String, List<XLinkToolView>> modelsToViews) 
+    throws XLinkConnectException{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
