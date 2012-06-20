@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.DomainModelOOSource.model;
+package org.openengsb.domain.DomainModelOOSource;
 
 public class OOClassField {
     

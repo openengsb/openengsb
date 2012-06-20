@@ -18,7 +18,6 @@
 package org.openengsb.domain.DomainModelOOSource;
 
 import org.openengsb.core.api.LinkableDomain;
-import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 
 public interface DomainModelOOSourceDomain extends LinkableDomain {
 

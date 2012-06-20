@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.DomainModelOOSource.model;
+package org.openengsb.domain.DomainModelOOSource;
 
 import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModel;
