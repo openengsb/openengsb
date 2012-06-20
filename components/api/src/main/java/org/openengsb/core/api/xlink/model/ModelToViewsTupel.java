@@ -15,21 +15,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink.exceptions;
+package org.openengsb.core.api.xlink.model;
 
-public class XLinkConnectException extends Exception {
+import java.util.List;
+import org.openengsb.core.api.ekb.ModelDescription;
 
-    /**
-     * Creates a new instance of <code>XLinkConnectException</code> without detail message.
-     */
-    public XLinkConnectException() {
+public class ModelToViewsTupel {
+    
+    private ModelDescription description;
+    private List<XLinkToolView> views;
+
+    public ModelToViewsTupel(ModelDescription description, List<XLinkToolView> views) {
+        this.description = description;
+        this.views = views;
+    }
+    
+    public ModelDescription getDescription() {
+        return description;
     }
 
-    /**
-     * Constructs an instance of <code>XLinkConnectException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public XLinkConnectException(String msg) {
-        super(msg);
+    public void setDescription(ModelDescription description) {
+        this.description = description;
     }
+
+    public List<XLinkToolView> getViews() {
+        return views;
+    }
+
+    public void setViews(List<XLinkToolView> views) {
+        this.views = views;
+    }
+    
 }
