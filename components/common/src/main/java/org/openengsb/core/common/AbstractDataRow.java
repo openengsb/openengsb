@@ -35,6 +35,7 @@ import javax.persistence.Version;
 public abstract class AbstractDataRow implements Serializable {
 
     @Id
+    //FIXME Change back, once Liquibase Synch is implemented. 
     // @TableGenerator(name = "OPENENGSB_ID", table = "OPENENGSB_ID", allocationSize = 1)
     // @GeneratedValue(generator = "OPENENGSB_ID", strategy = GenerationType.TABLE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
