@@ -17,6 +17,7 @@
 
 package org.openengsb.core.common.xlink;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
@@ -109,23 +110,26 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrl
     @Test
-    public void testGenerateValidXLinkUrl() throws ClassNotFoundException {
+    public void testGenerateValidXLinkUrl() throws ClassNotFoundException, IOException {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
-        List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
+        List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
 
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId, serviceFinder);
-
-        //xLinkUrl = 
-        //http://openengsb.org/registryServlet.html?
-        //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        
+        //(unencoded) xLinkUrl = 
+        //http://openengsb.org/registryServlet.html?expirationDate=20120623132605&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
         //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
-        //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
+        //&identifier={"modelClass":"org.openengsb.core.common.xlink.ExampleObjectOrientedModel",
+            //"entries":[{"key":"OOMethodName","value":"testMethod","type":"java.lang.String"},
+            //{"key":"OOClassName","value":"testClass","type":"java.lang.String"},
+            //{"key":"OOPackageName","value":"testPackage","type":"java.lang.String"}]}
 
-        assertTrue(xLinkUrl.contains("OOMethodName=testMethod"));
-        assertTrue(xLinkUrl.contains("OOClassName=testClass"));
-        assertTrue(xLinkUrl.contains("OOPackageName=testPackage"));
+
+        assertTrue(xLinkUrl.contains("OOMethodName%22%2C%22value%22%3A%22testMethod"));
+        assertTrue(xLinkUrl.contains("OOClassName%22%2C%22value%22%3A%22testClass"));
+        assertTrue(xLinkUrl.contains("PackageName%22%2C%22value%22%3A%22testPackage"));
 
     }
 
@@ -133,20 +137,23 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching
     @Test
-    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException {
+    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, IOException {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
-        List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
+        List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
                 values, modelInformation, contextId, viewId1, serviceFinder);
 
-        //xLinkUrl =
-        //http://openengsb.org/registryServlet.html?
-        //expirationDate=20120519212036&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        //(unencoded) xLinkUrl =
+        //http://openengsb.org/registryServlet.html?expirationDate=20120623132605&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
         //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
-        //&OOMethodName=testMethod&OOClassName=testClass&OOPackageName=testPackage
+        //&identifier={"modelClass":"org.openengsb.core.common.xlink.ExampleObjectOrientedModel",
+            //"entries":[{"key":"OOMethodName","value":"testMethod","type":"java.lang.String"},
+            //{"key":"OOClassName","value":"testClass","type":"java.lang.String"},
+            //{"key":"OOPackageName","value":"testPackage","type":"java.lang.String"}]}
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
+
 
         assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_CONNECTORID_KEY + "=" + connectorId));
         assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId1));
