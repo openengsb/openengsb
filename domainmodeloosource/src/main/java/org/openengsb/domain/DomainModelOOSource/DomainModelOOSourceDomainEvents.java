@@ -17,6 +17,7 @@
 
 package org.openengsb.domain.DomainModelOOSource;
 
+import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 import org.openengsb.core.api.DomainEvents;
 
 public interface DomainModelOOSourceDomainEvents extends DomainEvents {

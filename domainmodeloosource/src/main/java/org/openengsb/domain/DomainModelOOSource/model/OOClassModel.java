@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.DomainModelOOSource;
+package org.openengsb.domain.DomainModelOOSource.model;
 
 import java.util.List;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public interface OOClassModel extends OpenEngSBModel{
     
     String getClassName();
