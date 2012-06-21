@@ -17,6 +17,7 @@
 
 package org.openengsb.domain.DomainModelSQL;
 
+import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 import org.openengsb.core.api.LinkableDomain;
 
 public interface DomainModelSQLDomain extends LinkableDomain {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.DomainModelSQL;
+package org.openengsb.domain.DomainModelSQL.model;
 
 import java.util.List;
 
