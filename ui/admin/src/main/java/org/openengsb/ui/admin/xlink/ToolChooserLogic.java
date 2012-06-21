@@ -29,6 +29,7 @@ import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
 public class ToolChooserLogic {
     
@@ -67,27 +68,27 @@ public class ToolChooserLogic {
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
-        /*OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();*/
+        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
         
         //########### MOCK !!!
         
-        if(modelId.equals("org.openengsb.domain.DomainModelSQL.model.SQLCreateModel")){
+        if(modelId.equals(XLinkMock.sqlModel)){
             identifierKeyNames.add("tableName");
             return identifierKeyNames;
         }
         
-        if(modelId.equals("org.openengsb.domain.DomainModelOOSource.model.OOClassModel")){
+        if(modelId.equals(XLinkMock.ooModel)){
             identifierKeyNames.add("className");
             return identifierKeyNames;
         }        
         
         //########### MOCK !!!
         
-        /*for (OpenEngSBModelEntry entry : entries) {
+        for (OpenEngSBModelEntry entry : entries) {
             identifierKeyNames.add(entry.getKey());
-        }*/
+        }
         return identifierKeyNames;
     }    
     

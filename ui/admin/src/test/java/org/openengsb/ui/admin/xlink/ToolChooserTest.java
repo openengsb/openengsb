@@ -73,7 +73,7 @@ public class ToolChooserTest extends AbstractUITest {
     
     private void setupLocalSwitchXLinkParams(PageParameters params) {
         params.add(XLinkUtils.XLINK_CONNECTORID_KEY, "test2+test2+test2");
-        params.add(XLinkUtils.XLINK_VIEW_KEY, "exampleViewId_1");        
+        params.add(XLinkUtils.XLINK_VIEW_KEY, "viewId_ExampleObjectOrientedModel_2");        
     }    
     
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
@@ -85,7 +85,7 @@ public class ToolChooserTest extends AbstractUITest {
     }    
     
     private void setupNessecaryHeader() {
-        tester.addRequestHeader(XLinkUtils.XLINK_HOST_HEADERNAME, "localhost:8090");
+        tester.addRequestHeader(XLinkUtils.XLINK_HOST_HEADERNAME, "localhost");
     }
     
     private String getExpirationDate(int futureDays) {

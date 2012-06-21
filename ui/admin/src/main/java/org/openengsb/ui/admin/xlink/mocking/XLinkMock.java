@@ -27,13 +27,12 @@ import java.util.logging.Logger;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.common.xlink.XLinkUtils;
-import org.openengsb.domain.DomainModelOOSource.OOClassModel;
-import org.openengsb.domain.DomainModelSQL.SQLCreateModel;
-//import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
-//import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
+import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
+import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 
 /**
  */
@@ -43,8 +42,8 @@ public final class XLinkMock {
         
     }
     
-    private static final String sqlModel = "org.openengsb.domain.DomainModelSQL.model.SQLCreateModel";
-    private static final String ooModel = "org.openengsb.domain.DomainModelOOSource.model.OOClassModel";
+    public static final String sqlModel = SQLCreateModel.class.getName();
+    public static final String ooModel = OOClassModel.class.getName();
     
     public static void transformAndOpenMatch(
             String sourceModelClass, 
@@ -59,6 +58,7 @@ public final class XLinkMock {
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "transformAndOpenMatch was called:");
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelClass - " + sourceModelClass);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelVersion - " + sourceModelVersion);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "soureObject - " + soureObject);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "destinationModelClass - " + destinationModelClass);
         Logger.getLogger(XLinkMock.class.getName()).log(
                 Level.INFO, "destinationModelVersion - " +  destinationModelVersion);
@@ -111,14 +111,20 @@ public final class XLinkMock {
         
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
-            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
+            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(destinationModelClass, destinationModelVersion, osgiService);
             ooclass.setClassName(sqlSource.getTableName());
             resultObject = ooclass;
         } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(sqlModel)){
             OOClassModel ooSource = (OOClassModel) modelObjectSource;
-            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(destinationModelVersion, destinationModelVersion, osgiService);
+            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(destinationModelClass, destinationModelVersion, osgiService);
             sqlcreate.setTableName(ooSource.getClassName());
             resultObject = sqlcreate;
+        } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(ooModel)){
+            OOClassModel ooSource = (OOClassModel) modelObjectSource;
+            resultObject = ooSource;
+        }else if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(sqlModel)){
+            SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
+            resultObject = sqlSource;
         }
         return resultObject;
     }
@@ -127,7 +133,11 @@ public final class XLinkMock {
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) {
-        //todo
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "openPotentialMatches was called:");
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "modelObjectsDestination - " + modelObjectsDestination);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
+
        //osgiService.get
     }
     
@@ -136,29 +146,38 @@ public final class XLinkMock {
             String srcModelVersion, 
             String destModelClass, 
             String destModelVersion) {
+        if(!srcModelClass.equals(ExampleObjectOrientedModel.class.getName()) 
+            && destModelClass.equals(ExampleObjectOrientedModel.class.getName())){
+            return false;
+        }
         //todo implement check here
         return true;
     }    
     
     public static void dummyRegistrationOfTools(ConnectorManager serviceManager) {
-        HashMap<ModelDescription, List<XLinkToolView>> modelsToViews 
-            = new HashMap<ModelDescription, List<XLinkToolView>>();  
-        String viewId1 = "exampleViewId_1";
-        String viewId2 = "exampleViewId_2";
+        List<ModelToViewsTupel> modelsToViews 
+            = new ArrayList<ModelToViewsTupel>();  
+        String viewId_ExampleObjectOrientedModel_1 = "viewId_ExampleObjectOrientedModel_1";
+        String viewId_ExampleObjectOrientedModel_2 = "viewId_ExampleObjectOrientedModel_2";
         
         HashMap<String, String> descriptions  = new HashMap<String, String>();
-        descriptions.put("en", "This is a demo view.");
-        descriptions.put("de", "Das ist eine demonstration view.");
+        descriptions.put("en", "This is an ExampleObjectOrientedModel view.");
+        descriptions.put("de", "Das ist eine ExampleObjectOrientedModel view.");
         
         List<XLinkToolView> views = new ArrayList<XLinkToolView>();
-        views.add(new XLinkToolView(viewId1, "View 1", descriptions));
-        views.add(new XLinkToolView(viewId2, "View 2", descriptions));          
+        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
+        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
         
-        modelsToViews.put(new ModelDescription(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views); 
+        modelsToViews.add(
+                new ModelToViewsTupel(
+                        new ModelDescription(
+                                ExampleObjectOrientedModel.class.getName(),
+                                "3.0.0.SNAPSHOT")
+                        , views));
         
         String toolName1 = "Tool A";
         String toolName2 = "Tool B";
-        String hostId = "localhost:8090";
+        String hostId = "localhost";
         String cId1 = "test1+test1+test1";
         String cId2 = "test2+test2+test2";
         
@@ -166,6 +185,54 @@ public final class XLinkMock {
         //test2%2Btest2%2Btest2
         serviceManager.connectToXLink(cId1, hostId, toolName1, modelsToViews);
         serviceManager.connectToXLink(cId2, hostId, toolName2, modelsToViews);
+        
+         List<ModelToViewsTupel> modelsToViews_SQLCreateModel 
+            = new ArrayList<ModelToViewsTupel>();  
+        String viewId_SQLCreateModel_1 = "viewId_SQLCreateModel_1";
+        String viewId_SQLCreateModel_2 = "viewId_SQLCreateModel_2";
+        
+        HashMap<String, String> descriptions_SQLCreateModel  = new HashMap<String, String>();
+        descriptions_SQLCreateModel.put("en", "This is an SQLCreateModel view.");
+        descriptions_SQLCreateModel.put("de", "Das ist eine SQLCreateModel view.");
+        
+        List<XLinkToolView> views_SQLCreateModel = new ArrayList<XLinkToolView>();
+        views_SQLCreateModel.add(new XLinkToolView(viewId_SQLCreateModel_1, "View 1", descriptions_SQLCreateModel));
+        views_SQLCreateModel.add(new XLinkToolView(viewId_SQLCreateModel_2, "View 2", descriptions_SQLCreateModel));          
+        
+        modelsToViews_SQLCreateModel.add(
+                new ModelToViewsTupel(
+                        new ModelDescription(
+                                SQLCreateModel.class.getName(),
+                                "3.0.0.SNAPSHOT")
+                        , views_SQLCreateModel));  
+        
+         List<ModelToViewsTupel> modelsToViews_OOClassModel 
+            = new ArrayList<ModelToViewsTupel>();  
+        String viewId_OOClassModel_1 = "viewId_OOClassModel_1";
+        String viewId_OOClassModel_2 = "viewId_OOClassModel_2";
+        
+        HashMap<String, String> descriptions_OOClassModel  = new HashMap<String, String>();
+        descriptions_OOClassModel.put("en", "This is an OOClassModel view.");
+        descriptions_OOClassModel.put("de", "Das ist eine OOClassModel view.");
+        
+        List<XLinkToolView> views_OOClassModel = new ArrayList<XLinkToolView>();
+        views_OOClassModel.add(new XLinkToolView(viewId_OOClassModel_1, "View 1", descriptions_OOClassModel));
+        views_OOClassModel.add(new XLinkToolView(viewId_OOClassModel_2, "View 2", descriptions_OOClassModel));  
+        
+        modelsToViews_OOClassModel.add(
+                new ModelToViewsTupel(
+                        new ModelDescription(
+                                OOClassModel.class.getName(),
+                                "3.0.0.SNAPSHOT")
+                        , views_OOClassModel));        
+        
+        String toolName3 = "Tool SQLCreateModel";
+        String toolName4 = "Tool OOClassModel";
+        String cId3 = "test3+test3+test3";
+        String cId4 = "test4+test4+test4";  
+        
+        serviceManager.connectToXLink(cId3, hostId, toolName3, modelsToViews_SQLCreateModel);
+        serviceManager.connectToXLink(cId4, hostId, toolName4, modelsToViews_OOClassModel);
     }
     
     /*private static List<XLinkLocalTool> createMockToolList() {

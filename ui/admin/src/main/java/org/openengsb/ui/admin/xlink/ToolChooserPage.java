@@ -162,7 +162,7 @@ public class ToolChooserPage extends WebPage {
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
         hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); 
-        //hostId = hostId.substring(0,hostId.indexOf(":"));
+        if(hostId.contains(":"))hostId = hostId.substring(0,hostId.indexOf(":"));
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
         identifier = getParameterFromMap(XLinkUtils.XLINK_IDENTIFIER_KEY);
@@ -206,26 +206,26 @@ public class ToolChooserPage extends WebPage {
             OpenEngSBModelWrapper wrapper 
                     = (OpenEngSBModelWrapper) mapper.readValue(identifier, OpenEngSBModelWrapper.class);
             identifierObject = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
-            boolean found;
-            for (String key : identifierKeyNames) {
-                found = false;
-                for(OpenEngSBModelEntry entry : identifierObject.getOpenEngSBModelEntries()) {
-                    if(entry.getKey().equals(key)){
-                        found = true;
-                        if(entry.getValue() == null){
-                            String errorMsg = new StringResourceModel("error.missingIdentifier", this, null).getString();
-                            throw new OpenXLinkException(String.format(errorMsg, entry.getKey()));
-                        }
-                    }
-                }
-                if(!found){
-                    String errorMsg = new StringResourceModel("error.missingIdentifyingField", this, null).getString();
-                    throw new OpenXLinkException(String.format(errorMsg, key));
-                }
-            }
         } catch (Exception ex) {
             String errorMsg = new StringResourceModel("error.identifierIsNotValid", this, null).getString();
             throw new OpenXLinkException(errorMsg);
+        }            
+        boolean found;
+        for (String key : identifierKeyNames) {
+            found = false;
+            for(OpenEngSBModelEntry entry : identifierObject.getOpenEngSBModelEntries()) {
+                if(entry.getKey().equals(key)){
+                    found = true;
+                    if(entry.getValue() == null){
+                        String errorMsg = new StringResourceModel("error.missingIdentifier", this, null).getString();
+                        throw new OpenXLinkException(String.format(errorMsg, entry.getKey()));
+                    }
+                }
+            }
+            if(!found){
+                String errorMsg = new StringResourceModel("error.missingIdentifyingField", this, null).getString();
+                throw new OpenXLinkException(String.format(errorMsg, key));
+            }
         }
     }
     
