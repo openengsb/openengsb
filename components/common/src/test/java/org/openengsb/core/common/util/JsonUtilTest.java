@@ -1,0 +1,64 @@
+package org.openengsb.core.common.util;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.openengsb.core.api.remote.MethodCall;
+
+import com.google.common.collect.ImmutableMap;
+
+public class JsonUtilTest {
+
+    private ObjectMapper objectMapper;
+
+    public static class TestBean {
+        private String x;
+
+        public TestBean() {
+        }
+
+        public TestBean(String x) {
+            this.x = x;
+        }
+
+        public String getX() {
+            return x;
+        }
+
+        public void setX(String x) {
+            this.x = x;
+        }
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        objectMapper = new ObjectMapper();
+    }
+
+    @Test
+    public void testConvertBeanArgument_shouldConvertToBean() throws Exception {
+        MethodCall methodCall = new MethodCall("test", new Object[]{ ImmutableMap.of("x", "foo") },
+            Arrays.asList(TestBean.class.getName()));
+        JsonUtils.convertAllArgs(methodCall);
+        Object object = methodCall.getArgs()[0];
+        assertThat(object, is(TestBean.class));
+        assertThat(((TestBean) object).x, is("foo"));
+    }
+
+    @Test
+    public void testConvertListArguments() throws Exception {
+        MethodCall methodCall = new MethodCall("test", new Object[]{ new TestBean[]{ new TestBean("foo") } });
+        String stringValue = objectMapper.writeValueAsString(methodCall);
+        methodCall = objectMapper.readValue(stringValue, MethodCall.class);
+        JsonUtils.convertAllArgs(methodCall);
+        Object object = methodCall.getArgs()[0];
+        assertThat(object, is(TestBean[].class));
+        TestBean[] arg = (TestBean[]) object;
+        assertThat(arg[0].x, is("foo"));
+    }
+}
