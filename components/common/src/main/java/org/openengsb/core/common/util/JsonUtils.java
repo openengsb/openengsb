@@ -17,6 +17,7 @@
 
 package org.openengsb.core.common.util;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
@@ -40,12 +41,20 @@ public final class JsonUtils {
 
     private static Object convertArgument(String className, Object arg) {
         try {
-            Class<?> type = JsonUtils.class.getClassLoader().loadClass(className);
+            Class<?> type = findType(className);
             return MAPPER.convertValue(arg, type);
         } catch (ClassNotFoundException e) {
             LOGGER.error("could not convert argument " + arg, e);
             return arg;
         }
+    }
+
+    private static Class<?> findType(String className) throws ClassNotFoundException {
+        if (className.startsWith("[L")) {
+            Class<?> componentType = findType(className.substring(2, className.length() - 1));
+            return Array.newInstance(componentType, 0).getClass();
+        }
+        return JsonUtils.class.getClassLoader().loadClass(className);
     }
 
     public static void convertAllArgs(MethodCall call) {
