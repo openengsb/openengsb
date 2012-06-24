@@ -18,7 +18,9 @@
 package org.openengsb.domain.example.model;
 
 import org.openengsb.core.api.ekb.annotations.Model;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide
 @Model
 public class ExampleRequestModel {
     private Integer id;
