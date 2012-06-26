@@ -20,6 +20,8 @@ package org.openengsb.core.weaver.internal;
 import java.io.IOException;
 
 import org.openengsb.core.weaver.internal.model.ManipulationUtils;
+import org.openengsb.labs.delegation.service.DelegationClassLoader;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
 import org.slf4j.Logger;
@@ -30,7 +32,8 @@ import javassist.CannotCompileException;
 public class ModelWeaver implements WeavingHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelWeaver.class);
 
-    public ModelWeaver() {
+    public ModelWeaver(BundleContext context) {
+        ManipulationUtils.appendClassLoader(new DelegationClassLoader(context));
         ManipulationUtils.appendClassLoader(ModelWeaver.class.getClassLoader());
     }
 
@@ -43,7 +46,7 @@ public class ModelWeaver implements WeavingHook {
         }
         try {
             LOGGER.debug("try to enhance {}", className);
-            wovenClass.setBytes(doActualWeaving(wovenClass.getBytes()));
+            wovenClass.setBytes(doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader()));
             LOGGER.debug("finished enhancing {}", className);
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,8 +55,9 @@ public class ModelWeaver implements WeavingHook {
         }
     }
 
-    private byte[] doActualWeaving(byte[] wovenClass) throws IOException, CannotCompileException {
-        return ManipulationUtils.enhanceModel(wovenClass);
+    private byte[] doActualWeaving(byte[] wovenClass, ClassLoader... loaders) throws IOException,
+        CannotCompileException {
+        return ManipulationUtils.enhanceModel(wovenClass, loaders);
     }
 
 }

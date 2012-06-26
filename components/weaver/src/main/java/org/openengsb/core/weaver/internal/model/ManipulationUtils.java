@@ -60,15 +60,16 @@ public final class ManipulationUtils {
         initiated = true;
     }
 
-    public static byte[] enhanceModel(byte[] byteCode) throws IOException, CannotCompileException {
-        CtClass cc = doModelModifications(byteCode);
+    public static byte[] enhanceModel(byte[] byteCode, ClassLoader... loaders) throws IOException,
+        CannotCompileException {
+        CtClass cc = doModelModifications(byteCode, loaders);
         byte[] newClass = cc.toBytecode();
         cc.defrost();
         cc.detach();
         return newClass;
     }
 
-    private static CtClass doModelModifications(byte[] byteCode) {
+    private static CtClass doModelModifications(byte[] byteCode, ClassLoader... loaders) {
         if (!initiated) {
             initiate();
         }
@@ -80,6 +81,13 @@ public final class ManipulationUtils {
                 return cc;
             }
             LOGGER.info("Model to enhance: {}", cc.getName());
+
+            LoaderClassPath[] classloaders = new LoaderClassPath[loaders.length];
+            for (int i = 0; i < loaders.length; i++) {
+                classloaders[i] = new LoaderClassPath(loaders[i]);
+                cp.appendClassPath(classloaders[i]);
+            }
+
             CtClass inter = cp.get(OpenEngSBModel.class.getName());
             cc.addInterface(inter);
 
@@ -90,6 +98,10 @@ public final class ManipulationUtils {
 
             cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
             LOGGER.info("Finished model enhancing for class {}", cc.getName());
+
+            for (int i = 0; i < loaders.length; i++) {
+                cp.removeClassPath(classloaders[i]);
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         } catch (RuntimeException e1) {
@@ -100,7 +112,7 @@ public final class ManipulationUtils {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } 
+        }
         return cc;
     }
 
