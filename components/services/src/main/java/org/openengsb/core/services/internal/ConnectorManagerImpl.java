@@ -246,7 +246,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            List<ModelToViewsTupel> modelsToViews){
+            ModelToViewsTupel[] modelsToViews){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
