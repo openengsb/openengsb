@@ -60,9 +60,14 @@ public final class Constants {
      * the OpenEngSB and can represent any domain.
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
-    
+
+    /**
+     * delegation context under which all models should be provided by delegated classloading.
+     */
+    public static final String DELEGATION_CONTEXT_MODELS = "models";
+
     public static final String DELEGATION_CONTEXT_CREDENTIALS = "credentials";
-    
+
     public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
 
     private Constants() {
