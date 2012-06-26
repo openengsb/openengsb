@@ -16,30 +16,46 @@
  */
 package org.openengsb.ui.admin.xlink;
 
-import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class MachineResponsePage extends WebPage {
     
+    boolean isSuccess;
+    
     public MachineResponsePage(String msg, boolean isSuccess) {
-        createPage(msg, isSuccess);
+        this.isSuccess = isSuccess;
+        createPage(msg);
     }
     
     public MachineResponsePage(PageParameters parameters, String msg, boolean isSuccess) {
-        createPage(msg, isSuccess);
+        this.isSuccess = isSuccess;
+        createPage(msg);
     }
     
-    private void createPage(String msg, boolean isSuccess) {
+    private void createPage(String msg) {
         add(new Label("message", msg));
-        HttpServletResponse httpServletResponse = (HttpServletResponse) getResponse().getContainerResponse();
-        if (isSuccess) {
-            httpServletResponse.setStatus(httpServletResponse.SC_OK);
-        } else {
-            httpServletResponse.setStatus(httpServletResponse.SC_BAD_REQUEST);
-        }
     }
+
+    @Override
+    protected void configureResponse(WebResponse response) {
+        super.configureResponse(response);
+        if(!isSuccess)response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    }
+    
+
+    @Override
+    public boolean isVersioned() {
+        return isSuccess;
+    }
+
+    @Override
+    public boolean isErrorPage() {
+        return !isSuccess;
+    }     
     
 }

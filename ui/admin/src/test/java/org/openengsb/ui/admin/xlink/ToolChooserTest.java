@@ -19,19 +19,31 @@ package org.openengsb.ui.admin.xlink;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
+import java.util.HashMap;
+import java.util.List;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.Is.is;
+import org.junit.Ignore;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.verify;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
+import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
+import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
@@ -40,11 +52,13 @@ public class ToolChooserTest extends AbstractUITest {
     
     private static OsgiUtilsService mockedServiceUtils;
     private static ApplicationContextMock customContext;
+    private static DomainModelSQLDomain connector;
     
     @Before
     public void setup() throws Exception {
         mockOsgiService();
         setupTesterWithSpringMockContext();
+        mockRegistrationOfTools();
     }
     
     private void mockOsgiService() throws Exception{
@@ -53,6 +67,8 @@ public class ToolChooserTest extends AbstractUITest {
         when(mockedServiceUtils.getService(ModelRegistry.class)).thenReturn(registry);
         Class clazz = ExampleObjectOrientedModel.class;
         when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz);  
+        connector = mock(DomainModelSQLDomain.class);
+        when(mockedServiceUtils.getService("service.pid=test2+test2+test2", 100L)).thenReturn(connector);
     }
 
     private void setupTesterWithSpringMockContext() {
@@ -62,7 +78,46 @@ public class ToolChooserTest extends AbstractUITest {
         tester.getApplication().getComponentInstantiationListeners().remove(defaultPaxWicketInjector);
         tester.getApplication().getComponentInstantiationListeners()
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), customContext));
-    }     
+    }   
+    
+   public void mockRegistrationOfTools(){
+        String hostId = "localhost";
+                
+        String toolName_A = "Tool A";        
+        String connectorId_A = "test1+test1+test1";
+        
+        String toolName_B = "Tool B";
+        String connectorId_B = "test2+test2+test2";       
+        //test2%2Btest2%2Btest2
+        
+        registerTool_ExampleObjectOrientedModel(hostId, toolName_A, connectorId_A);
+        registerTool_ExampleObjectOrientedModel(hostId, toolName_B, connectorId_B);        
+    }
+    
+    private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) {
+        
+        List<ModelToViewsTupel> modelsToViews 
+            = new ArrayList<ModelToViewsTupel>();  
+        String viewId_ExampleObjectOrientedModel_1 = "viewId_ExampleObjectOrientedModel_1";
+        String viewId_ExampleObjectOrientedModel_2 = "viewId_ExampleObjectOrientedModel_2";
+        
+        HashMap<String, String> descriptions  = new HashMap<String, String>();
+        descriptions.put("en", "This is an ExampleObjectOrientedModel view.");
+        descriptions.put("de", "Das ist eine ExampleObjectOrientedModel view.");
+        
+        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
+        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
+        
+        modelsToViews.add(
+                new ModelToViewsTupel(
+                        new ModelDescription(
+                                ExampleObjectOrientedModel.class.getName(),
+                                "3.0.0.SNAPSHOT")
+                        , views));
+
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);       
+    }      
     
     private void setupCommonXLinkParams(PageParameters params) {
         params.add(XLinkUtils.XLINK_EXPIRATIONDATE_KEY, getExpirationDate(3));
@@ -78,10 +133,7 @@ public class ToolChooserTest extends AbstractUITest {
     
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
         String identifyingString = "{\"modelClass\":\"org.openengsb.core.common.xlink.ExampleObjectOrientedModel\",\"entries\":[{\"key\":\"OOMethodName\",\"value\":\"testMethod\",\"type\":\"java.lang.String\"},{\"key\":\"OOClassName\",\"value\":\"testClass\",\"type\":\"java.lang.String\"},{\"key\":\"OOPackageName\",\"value\":\"testPackage\",\"type\":\"java.lang.String\"}]}";
-        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY,identifyingString);
-        /*params.add("OOMethodName", "testMethod");
-        params.add("OOClassName", "testClass");
-        params.add("OOPackageName", "testPackage");   */       
+        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY,identifyingString);    
     }    
     
     private void setupNessecaryHeader() {
@@ -108,7 +160,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.assertContains("View 2");
     }
     
-    @Test
+    @Test   
     public void openToolChooserPage_missingGetParam_Version() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
@@ -122,7 +174,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.assertContains(XLinkUtils.XLINK_VERSION_KEY);
     }
   
-    @Test
+    @Test    
     public void openToolChooserPage_missingGetParam_Date() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
@@ -150,7 +202,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.assertContains(XLinkUtils.XLINK_MODELCLASS_KEY);
     }
     
-    @Test
+    @Test   
     public void openToolChooserPage_missingGetParam_Context() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
@@ -164,7 +216,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.assertContains(XLinkUtils.XLINK_CONTEXTID_KEY);
     }      
     
-    @Test
+    @Test    
     public void openToolChooserPage_missingIdentifier() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
@@ -188,6 +240,8 @@ public class ToolChooserTest extends AbstractUITest {
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
+        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_OK));
+        verify(connector).openXLinks(anyList(), anyString());
     }    
     
     @Test
@@ -204,6 +258,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
         tester.assertContains("ConnectorId");
+        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_BAD_REQUEST));
     }
     
     @Test
@@ -220,6 +275,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
         tester.assertContains("ViewId");
-    }    
+        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_BAD_REQUEST));
+    }   
     
 }
