@@ -96,8 +96,8 @@ public class ToolChooserTest extends AbstractUITest {
     
     private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) {
         
-        List<ModelToViewsTupel> modelsToViews 
-            = new ArrayList<ModelToViewsTupel>();  
+        ModelToViewsTupel[] modelsToViews 
+            = new ModelToViewsTupel[1];  
         String viewId_ExampleObjectOrientedModel_1 = "viewId_ExampleObjectOrientedModel_1";
         String viewId_ExampleObjectOrientedModel_2 = "viewId_ExampleObjectOrientedModel_2";
         
@@ -109,12 +109,12 @@ public class ToolChooserTest extends AbstractUITest {
         views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
         views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
         
-        modelsToViews.add(
+        modelsToViews[0] = 
                 new ModelToViewsTupel(
                         new ModelDescription(
                                 ExampleObjectOrientedModel.class.getName(),
                                 "3.0.0.SNAPSHOT")
-                        , views));
+                        , views);
 
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);       
     }      
