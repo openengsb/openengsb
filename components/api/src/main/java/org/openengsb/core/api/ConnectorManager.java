@@ -129,7 +129,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
-            List<ModelToViewsTupel> modelsToViews);
+            ModelToViewsTupel[] modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.
