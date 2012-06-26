@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 
@@ -284,7 +285,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            List<ModelToViewsTupel> modelsToViews) {
+            ModelToViewsTupel[] modelsToViewsArray) {
+        List<ModelToViewsTupel> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, List<XLinkToolView>> convertedModelsToViews 
                 = convertToMapWithModelDescriptionAsKey(modelsToViews);
         List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
