@@ -74,13 +74,9 @@ public class ToolChooserLogic {
         
         //########### MOCK !!!
         
-        if(modelId.equals(XLinkMock.sqlModel)){
-            identifierKeyNames.add("tableName");
-            return identifierKeyNames;
-        }
-        
         if(modelId.equals(XLinkMock.ooModel)){
             identifierKeyNames.add("className");
+            identifierKeyNames.add("attributes");
             return identifierKeyNames;
         }        
         

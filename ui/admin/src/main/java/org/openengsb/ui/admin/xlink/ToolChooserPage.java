@@ -103,12 +103,12 @@ public class ToolChooserPage extends WebPage {
         requestParameters = getRequestParametersAsAMap();
         HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
         HttpServletResponse resp = (HttpServletResponse) getResponse().getContainerResponse();
+        setContextFromId();
         try {
             checkIfXLinkIsValid(req);
         } catch (OpenXLinkException ex) {
             handleErrorResponse(ex.getMessage());
         }
-        //setContextFromId();
         if (checkForLocalSwitchingParameters()) {
             String sourceModelClass = modelId;           
             ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
