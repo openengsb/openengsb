@@ -157,6 +157,7 @@
     <h2.version>1.3.163</h2.version>
     <labs.delegation.version>0.1.0</labs.delegation.version>
     <javassist.version>3.12.1.GA_3</javassist.version>
+    <tinybundles.version>1.0.0</tinybundles.version>
   </properties>
 
   <dependencyManagement>
@@ -599,6 +600,11 @@
         <groupId>org.ops4j.pax.web</groupId>
         <artifactId>pax-web-extender-whiteboard</artifactId>
         <version>${pax.web.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.tinybundles</groupId>
+        <artifactId>tinybundles</artifactId>
+        <version>${tinybundles.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlrpc</groupId>
