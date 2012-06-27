@@ -14,33 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.itests.htmlunit;
 
-package org.openengsb.domain.example.event;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import org.openengsb.core.api.Event;
+public interface ElementCondition {
 
-public class LogEvent extends Event {
+    boolean isPresent(HtmlPage page);
 
-    private String message;
-    private String level;
-
-    public LogEvent() {
-        super("LogEvent");
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
 }

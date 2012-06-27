@@ -211,11 +211,6 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-            return "something";
-        }
-
-        @Override
         public String doSomethingWithLogEvent(LogEvent event) {
             return "something";
         }

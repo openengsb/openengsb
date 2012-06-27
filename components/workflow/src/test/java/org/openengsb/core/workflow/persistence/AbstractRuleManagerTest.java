@@ -92,11 +92,6 @@ public abstract class AbstractRuleManagerTest {
             }
 
             @Override
-            public String doSomethingWithEnum(ExampleEnum exampleEnum) {
-                return null;
-            }
-
-            @Override
             public String doSomethingWithMessage(String message) {
                 return null;
             }
