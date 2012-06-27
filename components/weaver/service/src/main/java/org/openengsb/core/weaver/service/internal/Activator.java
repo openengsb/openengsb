@@ -15,31 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.weaver.model;
+package org.openengsb.core.weaver.service.internal;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.hooks.weaving.WeavingHook;
 
-@Model
-public class TestModel {
+public class Activator implements BundleActivator {
+    private ServiceRegistration<?> weavingHookService;
 
-    private String id;
-    private String name;
-
-    @OpenEngSBModelId
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public void start(BundleContext context) throws Exception {
+        ModelWeaver service = new ModelWeaver(context);
+        weavingHookService = context.registerService(WeavingHook.class.getName(), service, null);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        weavingHookService.unregister();
     }
 }

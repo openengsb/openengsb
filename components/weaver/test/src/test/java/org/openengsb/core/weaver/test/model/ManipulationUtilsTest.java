@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.weaver.model;
+package org.openengsb.core.weaver.test.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

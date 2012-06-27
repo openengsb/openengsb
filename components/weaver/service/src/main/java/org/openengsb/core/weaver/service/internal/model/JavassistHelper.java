@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.weaver.internal.model;
+package org.openengsb.core.weaver.service.internal.model;
 
 import javassist.CtClass;
 import javassist.CtMethod;

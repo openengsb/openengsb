@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.weaver.internal;
+package org.openengsb.core.weaver.service.internal;
 
 import java.io.IOException;
 
-import org.openengsb.core.weaver.internal.model.ManipulationUtils;
+import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.hooks.weaving.WeavingHook;

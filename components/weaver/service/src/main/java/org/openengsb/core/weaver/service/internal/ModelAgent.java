@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.weaver.internal;
+package org.openengsb.core.weaver.service.internal;
 
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
@@ -25,7 +25,7 @@ import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openengsb.core.weaver.internal.model.ManipulationUtils;
+import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 
 import javassist.CannotCompileException;
 

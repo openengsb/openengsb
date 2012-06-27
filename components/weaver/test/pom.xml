@@ -27,24 +27,24 @@
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../../parents/framework</relativePath>
+    <relativePath>../../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.framework.weaver</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.weaver</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.weaver.test</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.weaver.test</bundle.namespace>
   </properties>
 
   <groupId>org.openengsb.framework</groupId>
-  <artifactId>org.openengsb.framework.weaver</artifactId>
+  <artifactId>org.openengsb.framework.weaver.test</artifactId>
   <version>3.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Framework :: Weaver</name>
+  <name>OpenEngSB :: Framework :: Weaver Test</name>
 
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <description>
-    This project contains all Weaving Hooks which are used in the OpenEngSB environment.
+    This project contains test for the model weaving.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -81,52 +81,29 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-Activator>org.openengsb.core.weaver.internal.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>attached</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-              <archive>
-                <manifestEntries>
-                  <Premain-Class>org.openengsb.core.weaver.internal.ModelAgent</Premain-Class>
-                  <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                  <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-        </executions>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>
+            -javaagent:../service/target/org.openengsb.framework.weaver.service-${project.version}-jar-with-dependencies.jar
+          </argLine>
+          <useSystemClassloader>true</useSystemClassloader>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
-      <version>${javassist.version}</version>
-    </dependency>
     <!-- OpenEngSb dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.weaver.service</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
