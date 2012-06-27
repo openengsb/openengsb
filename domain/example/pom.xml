@@ -133,7 +133,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-          	<Import-Package>org.openengsb.core.api.model, *</Import-Package>
             <Delegation-Annotations>true</Delegation-Annotations>
           </instructions>
         </configuration>
