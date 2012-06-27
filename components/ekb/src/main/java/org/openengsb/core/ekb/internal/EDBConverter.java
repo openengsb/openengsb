@@ -36,7 +36,6 @@ import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.model.FileConverterStep;
 import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,13 +162,15 @@ public class EDBConverter {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
-        } else if (parameterType.equals(File.class)) {
+        } else if (parameterType.equals(FileWrapper.class)) {
             FileWrapper wrapper = new FileWrapper();
             String filename = (String) object.get(propertyName + ".filename");
             String content = (String) value;
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
-            value = FileConverterStep.getInstance().convertForGetter(wrapper);
+            value = wrapper;
+        } else if (parameterType.equals(File.class)) {
+            return null;
         } else if (object.containsKey(propertyName)) {
             if (parameterType.isEnum()) {
                 value = getEnumValue(parameterType, value);
