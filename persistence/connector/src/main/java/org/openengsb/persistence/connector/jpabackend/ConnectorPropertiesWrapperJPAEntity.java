@@ -62,7 +62,8 @@ public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
     }
 
     @SuppressWarnings("unchecked")
-    public static ConnectorPropertiesWrapperJPAEntity getFromObject(Object property) {
+    public static ConnectorPropertiesWrapperJPAEntity getFromObject(
+            Object property) {
         Class<?> clazz = property.getClass();
 
         ConnectorPropertiesWrapperJPAEntity wrapper = new ConnectorPropertiesWrapperJPAEntity();
@@ -103,13 +104,15 @@ public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
     @SuppressWarnings("unchecked")
     public Object toObject() throws PersistenceException {
         if (collectionType == null) {
-            ConnectorPropertyJPAEntity entity = properties.toArray(new ConnectorPropertyJPAEntity[1])[0];
+            ConnectorPropertyJPAEntity entity = properties
+                .toArray(new ConnectorPropertyJPAEntity[1])[0];
             return entity.toObject();
         }
         try {
             Class<?> collectionClass = Class.forName(collectionType);
             if (collectionClass.isArray()) {
-                Object arr = Array.newInstance(collectionClass.getComponentType(), properties.size());
+                Object arr = Array.newInstance(
+                    collectionClass.getComponentType(), properties.size());
                 int i = 0;
                 for (ConnectorPropertyJPAEntity entity : properties) {
                     Array.set(arr, i, entity.toObject());
@@ -117,23 +120,30 @@ public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
                 }
                 return arr;
             } else {
-                Collection<Object> collection = (Collection<Object>) collectionClass.newInstance();
+                Collection<Object> collection = (Collection<Object>) collectionClass
+                    .newInstance();
                 for (ConnectorPropertyJPAEntity entity : properties) {
                     collection.add(entity.toObject());
                 }
                 return collection;
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            throw new PersistenceException(e);
+        } catch (InstantiationException e) {
+            throw new PersistenceException(e);
+        } catch (IllegalAccessException e) {
             throw new PersistenceException(e);
         }
     }
 
-    private static void loopProperties(Iterable<Object> iter, List<ConnectorPropertyJPAEntity> propSet) {
+    private static void loopProperties(Iterable<Object> iter,
+            List<ConnectorPropertyJPAEntity> propSet) {
         Iterator<Object> iterator = iter.iterator();
 
         while (iterator.hasNext()) {
             Object obj = iterator.next();
-            ConnectorPropertyJPAEntity entity = ConnectorPropertyJPAEntity.getFromObject(obj);
+            ConnectorPropertyJPAEntity entity = ConnectorPropertyJPAEntity
+                .getFromObject(obj);
             propSet.add(entity);
         }
     }

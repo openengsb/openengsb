@@ -153,12 +153,12 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         ConnectorDescription loadedDesc = conf.getContent();
         assertEquals(desc3.getAttributes(), loadedDesc.getAttributes());
 
-        HashSet<String> loadedSet = (HashSet<String>) loadedDesc
-            .getProperties().get("prop1");
+        Set<String> loadedSet = (HashSet<String>) loadedDesc.getProperties()
+            .get("prop1");
         assertThat(loadedSet.size(), is(2));
         assertTrue(loadedSet.containsAll(stringSet));
 
-        LinkedList<Integer> loadedList = (LinkedList<Integer>) loadedDesc
+        List<Integer> loadedList = (LinkedList<Integer>) loadedDesc
             .getProperties().get("prop2");
         assertThat(loadedList.size(), is(2));
         assertTrue(loadedList.equals(intList));
@@ -197,7 +197,7 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         ConnectorDescription loadedDesc = loadedConf.getContent();
         assertEquals(desc.getAttributes(), loadedDesc.getAttributes());
         assertThat(loadedDesc.getProperties().size(), is(1));
-        ArrayList<Integer> loadedList = (ArrayList<Integer>) loadedDesc
+        List<Integer> loadedList = (ArrayList<Integer>) loadedDesc
             .getProperties().get("prop");
         assertThat(loadedList.size(), is(1));
         assertTrue(loadedList.equals(intList));
@@ -224,7 +224,8 @@ public class ConnectorJPAPersistenceBackendServiceTest {
         assertThat(loaded.size(), is(1));
 
         remove(id5);
-        loaded = service.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id5));
+        loaded = service.load(ImmutableMap.of(
+            Constants.CONNECTOR_PERSISTENT_ID, id5));
         assertThat(loaded.size(), is(0));
     }
 

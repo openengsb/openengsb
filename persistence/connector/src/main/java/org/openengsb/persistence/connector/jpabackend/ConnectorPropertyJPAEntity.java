@@ -17,6 +17,8 @@
 
 package org.openengsb.persistence.connector.jpabackend;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -32,7 +34,15 @@ public class ConnectorPropertyJPAEntity extends AbstractDataRow {
     @Column(name = "STRVALUE", nullable = false, length = 511)
     private String strValue;
     @Column(name = "CLASSNAME", nullable = false, length = 127)
-    private String clazz;
+    private String className;
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
     public String getStrValue() {
         return strValue;
@@ -42,27 +52,28 @@ public class ConnectorPropertyJPAEntity extends AbstractDataRow {
         this.strValue = strValue;
     }
 
-    public String getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(String clazz) {
-        this.clazz = clazz;
-    }
-
     public static ConnectorPropertyJPAEntity getFromObject(Object obj) {
         ConnectorPropertyJPAEntity entity = new ConnectorPropertyJPAEntity();
         entity.setStrValue(obj.toString());
-        entity.setClazz(ClassUtils.primitiveToWrapper(obj.getClass()).getName());
+        entity.setClassName(ClassUtils.primitiveToWrapper(obj.getClass()).getName());
         return entity;
     }
 
     public Object toObject() throws PersistenceException {
         try {
-            Class<?> clazz = Class.forName(this.clazz);
+            Class<?> clazz = this.getClass().getClassLoader()
+                .loadClass(this.className);
             return ConstructorUtils.invokeConstructor(clazz, this.strValue);
-        } catch (Exception ex) {
-            throw new PersistenceException(ex);
+        } catch (ClassNotFoundException e) {
+            throw new PersistenceException(e);
+        } catch (NoSuchMethodException e) {
+            throw new PersistenceException(e);
+        } catch (IllegalAccessException e) {
+            throw new PersistenceException(e);
+        } catch (InvocationTargetException e) {
+            throw new PersistenceException(e);
+        } catch (InstantiationException e) {
+            throw new PersistenceException(e);
         }
     }
 }
