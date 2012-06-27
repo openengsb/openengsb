@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
@@ -110,6 +111,13 @@ public class QueryInterfaceServiceTest {
         edbConverter.setEdbService(edbService);
 
         service.setEdbConverter(edbConverter);
+    }
+
+    @Test
+    public void checkIfModelAgentIsSet_shouldWork() {
+        TestModel model = new TestModel();
+        assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
+            model instanceof OpenEngSBModel, is(true));
     }
 
     @Test

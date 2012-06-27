@@ -31,9 +31,10 @@ import org.openengsb.core.common.util.ModelUtils;
 public class ManipulationUtilsTest {
 
     @Test
-    public void testIfModelsGetEnhanced_shouldWork() {
+    public void checkIfModelAgentIsSet_shouldWork() {
         TestModel model = new TestModel();
-        assertThat("The tests aren't started with the model agent", model instanceof OpenEngSBModel, is(true));
+        assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
+            model instanceof OpenEngSBModel, is(true));
     }
 
     @Test
