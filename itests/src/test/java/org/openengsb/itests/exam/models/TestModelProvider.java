@@ -17,28 +17,27 @@
 
 package org.openengsb.itests.exam.models;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import java.util.Hashtable;
 
-@Model
-public class SubModel {
-    private String name;
-    private String edbId;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-    public void setName(String name) {
-        this.name = name;
+public class TestModelProvider implements BundleActivator {
+    
+    @Override
+    public void start(BundleContext context) throws Exception {
+        context.registerService(this.getClass().getName(), new TestModelProvider(), new Hashtable<String, Object>());
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public void stop(BundleContext context) throws Exception {
     }
-
-    @OpenEngSBModelId
-    public void setEdbId(String edbId) {
-        this.edbId = edbId;
+    
+    public Class<?> loadTestModel() {
+        return TestModel.class;
     }
-
-    public String getEdbId() {
-        return edbId;
+    
+    public Class<?> loadSubModel() {
+        return SubModel.class;
     }
 }

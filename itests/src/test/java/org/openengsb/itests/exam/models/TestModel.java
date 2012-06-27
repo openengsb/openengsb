@@ -23,7 +23,7 @@ import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 
 @Model
-public class TestModel{
+public class TestModel {
     private String name;
     private String edbId;
     private SubModel subModel;
