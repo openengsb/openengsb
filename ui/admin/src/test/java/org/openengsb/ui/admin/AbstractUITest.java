@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -47,6 +49,7 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
@@ -62,6 +65,7 @@ import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
@@ -92,6 +96,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected UserDataManager userManager;
     protected UsernamePasswordServiceImpl authConnector;
     protected PaxWicketSpringBeanComponentInjector defaultPaxWicketInjector;
+    protected AuditingDomain auditingDomain;
+    protected RuleManager ruleManager;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -165,6 +171,10 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("permissionProviders", makeServiceList(ClassProvider.class));
 
         context.putBean("connectorList", makeServiceReferenceList(Domain.class));
+        auditingDomain = mock(AuditingDomain.class);
+        context.putBean("auditing", auditingDomain);
+        ruleManager = mock(RuleManager.class);
+        context.putBean("ruleManager", ruleManager);
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
@@ -204,5 +214,17 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         DefaultWebSecurityManager webSecurityManager = new DefaultWebSecurityManager();
         webSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
         context.putBean("webSecurityManager", webSecurityManager);
+    }
+
+    protected int getIndexForValue(DropDownChoice<?> component, String valueString) {
+        List<?> choices = component.getChoices();
+        Iterator<?> iterator = choices.iterator();
+        for (int i = 0; i < choices.size(); i++) {
+            Object next = iterator.next();
+            if (next.toString().contains(valueString)) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("provided Dropdown did not contain String " + valueString);
     }
 }
