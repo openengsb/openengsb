@@ -60,7 +60,7 @@ public final class JavassistHelper {
     }
 
     public static String generatePropertyName(String methodName) {
-        return methodName.substring(3).toLowerCase();
+        return String.format("%s%s", Character.toLowerCase(methodName.charAt(3)), methodName.substring(4));
     }
 
 }
