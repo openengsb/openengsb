@@ -46,7 +46,11 @@ public class ModelWeaver implements WeavingHook {
         }
         try {
             LOGGER.debug("try to enhance {}", className);
-            wovenClass.setBytes(doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader()));
+            byte[] result = doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader());
+            if (result != null) {
+                wovenClass.getDynamicImports().add("org.openengsb.core.api.model");
+                wovenClass.setBytes(result);
+            }
             LOGGER.debug("finished enhancing {}", className);
         } catch (IOException e) {
             e.printStackTrace();

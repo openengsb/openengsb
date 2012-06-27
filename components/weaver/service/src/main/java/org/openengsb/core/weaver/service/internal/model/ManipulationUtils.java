@@ -63,6 +63,9 @@ public final class ManipulationUtils {
     public static byte[] enhanceModel(byte[] byteCode, ClassLoader... loaders) throws IOException,
         CannotCompileException {
         CtClass cc = doModelModifications(byteCode, loaders);
+        if (cc == null) {
+            return null;
+        }
         byte[] newClass = cc.toBytecode();
         cc.defrost();
         cc.detach();
@@ -78,7 +81,7 @@ public final class ManipulationUtils {
             InputStream stream = new ByteArrayInputStream(byteCode);
             cc = cp.makeClass(stream);
             if (!JavassistHelper.hasAnnotation(cc, Model.class.getName())) {
-                return cc;
+                return null;
             }
             LOGGER.info("Model to enhance: {}", cc.getName());
 

@@ -42,7 +42,8 @@ public class ModelAgent implements ClassFileTransformer {
 
         if (tryEnhancement(className)) {
             try {
-                return ManipulationUtils.enhanceModel(bytecode);
+                byte[] result = ManipulationUtils.enhanceModel(bytecode);
+                return result != null ? result : bytecode;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (CannotCompileException e) {
