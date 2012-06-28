@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
@@ -49,8 +50,10 @@ import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -119,6 +122,12 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         assertEquals("The taskbox does not contain the new tasks", 2, taskboxService.getOpenTasks().size());
 
         taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
+        waitForTextOnPage(taskOverviewPage, new ElementCondition() {
+            @Override
+            public boolean isPresent(HtmlPage page) {
+                return page.getFirstByXPath("//table") != null;
+            }
+        });
         HtmlTable table = taskOverviewPage.getFirstByXPath("//table");
         assertNotNull("Table on Overviewpage not found", table);
         assertEquals("Not all tasks found on page", 4, table.getRowCount());
@@ -135,8 +144,14 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         String rowTwoText = taskTwoRow.asText();
 
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        waitForTextOnPage(taskOverviewPage, new ElementCondition() {
+            @Override
+            public boolean isPresent(HtmlPage page) {
+                return page.getForms().size() >= 3;
+            }
+        });
         HtmlForm detailForm = taskOverviewPage.getForms().get(2);
-        HtmlSubmitInput finishButton = detailForm.getInputByName("submitButton");
+        HtmlSubmitInput finishButton = (HtmlSubmitInput) detailForm.getByXPath("input[@type=\"submit\"]").get(0);
         detailForm.getInputByName("taskname").setValueAttribute("taskname");
         detailForm.getTextAreaByName("taskdescription").setText("taskdescription");
         taskOverviewPage = finishButton.click();
@@ -163,13 +178,20 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         assertEquals("The taskbox should contain 2 tasks", 2, taskboxService.getOpenTasks().size());
-        taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        waitForTextOnPage(taskOverviewPage, new ElementCondition() {
+            @Override
+            public boolean isPresent(HtmlPage page) {
+                return page.getForms().size() >= 3;
+            }
+        });
         detailForm = taskOverviewPage.getForms().get(2);
         assertEquals("The taskname column is missing", "taskname", detailForm.getInputByName("taskname")
             .getValueAttribute());
         assertEquals("The taskdescription column is missing", "taskdescription",
             detailForm.getTextAreaByName("taskdescription").getText());
-        finishButton = detailForm.getInputByName("submitButton");
+        finishButton = (HtmlSubmitInput) detailForm.getByXPath("input[@type=\"submit\"]").get(0);
         taskOverviewPage = finishButton.click();
 
         isRight = false;
@@ -208,6 +230,13 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
         HtmlTableRow taskOneRow = table.getRow(2);
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+
+        waitForTextOnPage(taskOverviewPage, new ElementCondition() {
+            @Override
+            public boolean isPresent(HtmlPage page) {
+                return page.asText().contains("I am a test message!");
+            }
+        });
         assertTrue("Testpanel was not found!", taskOverviewPage.asText().contains("I am a test message!"));
 
     }
@@ -230,6 +259,16 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         loginButton.click();
+    }
+
+    private void waitForTextOnPage(HtmlPage page, ElementCondition condition) throws InterruptedException {
+        for (int i = 0; i < MAX_RETRY; i++) {
+            if (condition.isPresent(page)) {
+                return;
+            }
+            Thread.sleep(3000);
+        }
+        fail("was waiting for element " + condition + " to appear on the page, but it did not.");
     }
 
 }

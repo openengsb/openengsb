@@ -50,6 +50,8 @@
   </bean>
 
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
+  <reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
+  <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain"
     filter="(location.root=authorization-root)" />

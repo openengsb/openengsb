@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
@@ -65,6 +66,9 @@ public class ProxyConnector extends VirtualConnector {
         }
 
         if (!registration.isRegistered()) {
+            if (method.getName().equals("getAliveState")) {
+                return AliveState.OFFLINE;
+            }
             throw new IllegalArgumentException("not registered");
         }
 
