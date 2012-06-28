@@ -17,7 +17,7 @@
 
 package org.openengsb.core.common.remote;
 
-import org.openengsb.core.api.ekb.annotations.Model;
+import org.openengsb.core.api.model.annotation.Model;
 
 @Model
 public class TestModel {

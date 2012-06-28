@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
@@ -30,6 +30,7 @@ import org.openengsb.core.ekb.internal.TestModel2.ENUM;
  */
 @Model
 public class TestModel {
+    @OpenEngSBModelId
     private String id;
     private Date date;
     private String name;
@@ -40,7 +41,6 @@ public class TestModel {
     private List<SubModel> subs;
     private Map<String, String> map;
     
-    @OpenEngSBModelId
     public void setId(String id) {
         this.id = id;
     }

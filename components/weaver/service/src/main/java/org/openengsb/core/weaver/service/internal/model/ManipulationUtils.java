@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.ekb.annotations.Model;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.openengsb.core.api.model.annotation.IgnoredModelField;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +97,7 @@ public final class ManipulationUtils {
             addTail(cc);
             addOpenEngSBModelEntryMethod(cc);
             addRemoveOpenEngSBModelEntryMethod(cc);
+            addRetrieveInternalModelId(cc);
             addGetOpenEngSBModelEntries(cc);
 
             cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
@@ -141,6 +142,25 @@ public final class ManipulationUtils {
         clazz.addMethod(method);
     }
 
+    private static void addRetrieveInternalModelId(CtClass clazz) throws NotFoundException,
+        CannotCompileException {
+        String modelIdField = null;
+        for (CtField field : clazz.getDeclaredFields()) {
+            if (JavassistHelper.hasAnnotation(field, OpenEngSBModelId.class.getName())) {
+                modelIdField = field.getName();
+                break;
+            }
+        }
+        CtMethod method =
+            new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", new CtClass[]{}, clazz);
+        if (modelIdField == null) {
+            method.setBody("{ return null; }");
+        } else {
+            method.setBody(String.format("{ return %s; }", modelIdField));
+        }
+        clazz.addMethod(method);
+    }
+
     private static void addGetOpenEngSBModelEntries(CtClass clazz) throws NotFoundException,
         CannotCompileException, ClassNotFoundException {
         CtMethod m = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelEntries", new CtClass[]{}, clazz);
@@ -148,35 +168,29 @@ public final class ManipulationUtils {
         StringBuilder builder = new StringBuilder();
         builder.append("{ \nList elements = new ArrayList();\n");
         builder.append("elements.addAll(openEngSBModelTail.values());\n");
-        for (CtMethod method : clazz.getDeclaredMethods()) {
-            String methodName = method.getName();
-            String property = JavassistHelper.generatePropertyName(methodName);
-            if (methodName.startsWith("get") && !methodName.equals("getOpenEngSBModelEntries")) {
-                if (method.getReturnType().equals(cp.get(File.class.getName()))) {
-                    String wrapperName = property + "wrapper";
-                    builder.append("if(").append(methodName).append("() == null) {");
-                    builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                    builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
-                    builder.append("else {");
-                    builder.append("FileWrapper ").append(wrapperName).append(" = new FileWrapper(");
-                    builder.append(methodName).append("());\n").append(wrapperName).append(".serialize();\n");
-                    builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                    builder.append(wrapperName).append("\", ").append(wrapperName);
-                    builder.append(", ").append(wrapperName).append(".getClass()));}\n");
-                    addFileFunction(clazz, property);
-                } else {
-                    builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                    builder.append(property).append("\", ").append(methodName).append("()");
-                    builder.append(", ").append(method.getReturnType().getName()).append(".class));\n");
-                }
+        for (CtField field : clazz.getDeclaredFields()) {
+            String property = field.getName();
+            if (property.equals("openEngSBModelTail")
+                    || JavassistHelper.hasAnnotation(field, IgnoredModelField.class.getName())) {
+                continue;
             }
-            if (methodName.startsWith("set") && JavassistHelper.hasAnnotation(method,
-                OpenEngSBModelId.class.getName())) {
-                StringBuilder idBuilder = new StringBuilder();
-                idBuilder.append("openEngSBModelTail.put(\"").append(EDBConstants.MODEL_OID).append("\",");
-                idBuilder.append(" new OpenEngSBModelEntry(\"").append(EDBConstants.MODEL_OID).append("\",");
-                idBuilder.append("$1, ").append(method.getParameterTypes()[0].getName()).append(".class));\n");
-                method.insertAfter(idBuilder.toString());
+            CtClass fieldType = field.getType();
+            if (fieldType.equals(cp.get(File.class.getName()))) {
+                String wrapperName = property + "wrapper";
+                builder.append("if(").append(property).append(" == null) {");
+                builder.append("elements.add(new OpenEngSBModelEntry(\"");
+                builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
+                builder.append("else {");
+                builder.append("FileWrapper ").append(wrapperName).append(" = new FileWrapper(");
+                builder.append(property).append(");\n").append(wrapperName).append(".serialize();\n");
+                builder.append("elements.add(new OpenEngSBModelEntry(\"");
+                builder.append(wrapperName).append("\", ").append(wrapperName);
+                builder.append(", ").append(wrapperName).append(".getClass()));}\n");
+                addFileFunction(clazz, property);
+            } else {
+                builder.append("elements.add(new OpenEngSBModelEntry(\"");
+                builder.append(property).append("\", ").append(property).append(", ");
+                builder.append(fieldType.getName()).append(".class));\n");
             }
         }
         builder.append("return elements; } ");

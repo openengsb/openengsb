@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
@@ -46,6 +47,13 @@ public class EDBConverterTest {
         converter = new EDBConverter();
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
         converter.setEdbService(edbService);
+    }
+    
+    @Test
+    public void checkIfModelAgentIsSet_shouldWork() {
+        TestModel model = new TestModel();
+        assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
+            model instanceof OpenEngSBModel, is(true));
     }
 
     @Test
@@ -64,7 +72,6 @@ public class EDBConverterTest {
 
         assertThat(object.get("connectorId").toString(), is("testconnector"));
         assertThat(object.get("id").toString(), is("test"));
-        assertThat(object.get(EDBConstants.MODEL_OID), is(object.get("id")));
         assertThat(object.get("oid").toString(), is(EDBConverterUtils.createOID(model, "testdomain", "testconnector")));
         assertThat(object.get("domainId").toString(), is("testdomain"));
         assertThat(object.get("name").toString(), is("testobject"));

@@ -205,9 +205,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         ObjectMapper mapper = new ObjectMapper();
         SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
-        MethodResultMessage methodResult = response.getMessage();
-        JsonUtils.convertResult(methodResult);
-        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
+        MethodResultMessage methodResultMessage = response.getMessage();
+        JsonUtils.convertResult(methodResultMessage);
+        ExampleResponseModel model = (ExampleResponseModel) methodResultMessage.getResult().getArg();
 
         assertThat(decryptedResult.contains("successful"), is(true));
         assertThat(model.getResult(), is("successful"));

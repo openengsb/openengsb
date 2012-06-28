@@ -17,12 +17,13 @@
 
 package org.openengsb.itests.exam.models;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
 public class SubModel {
     private String name;
+    @OpenEngSBModelId
     private String edbId;
 
     public void setName(String name) {
@@ -33,7 +34,6 @@ public class SubModel {
         return name;
     }
 
-    @OpenEngSBModelId
     public void setEdbId(String edbId) {
         this.edbId = edbId;
     }

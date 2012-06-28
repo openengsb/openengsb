@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.ekb.annotations;
+package org.openengsb.core.api.model.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,11 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to mark OpenEngSB models. Every class that is marked with this annotation, can be used with
- * all semantic tools of the OpenEngSB.
+ * This annotation is used to mark fields of domain models as ignored. If a domain model field is ignored, it isn't in
+ * the result of getOpenEngSBModelEntries and will not be saved in the EDB.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Model {
+@Target(ElementType.FIELD)
+public @interface IgnoredModelField {
 
 }

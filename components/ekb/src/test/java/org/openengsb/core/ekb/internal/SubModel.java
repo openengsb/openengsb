@@ -17,15 +17,15 @@
 
 package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
 public class SubModel {
+    @OpenEngSBModelId
     private String id;
     private String value;
     
-    @OpenEngSBModelId
     public void setId(String id) {
         this.id = id;
     }

@@ -32,6 +32,12 @@ public interface OpenEngSBModel {
     List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
 
     /**
+     * Returns the internal model id of the model. This id is defined through the OpenEngSBModelId annotation. Returns
+     * null if no model id is defined.
+     */
+    Object retrieveInternalModelId();
+
+    /**
      * Adds a OpenEngSBModelEntry to the model. Can be used to add information that is not in a domain model defined
      * ("tail").
      */

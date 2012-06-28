@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
+package org.openengsb.core.api.model.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,14 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation shall be used to define an id for a domain model. Only works on domain models which have been proxied
- * through the EKB. This annotation should mark the setter method of the field which shall be the id of the domain
- * model. If a domain model has a id, the saving name of a domain model in the EDB is well defined, if not the model
- * will be saved with a random name. If using a not EKB proxied, the id can be set with an OpenEngSBModelEntry with the
- * key "edbId".
+ * This annotation is used to mark OpenEngSB models. Every class that is marked with this annotation, can be used with
+ * all semantic tools of the OpenEngSB.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface OpenEngSBModelId {
+@Target(ElementType.TYPE)
+public @interface Model {
 
 }

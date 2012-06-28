@@ -47,7 +47,6 @@ import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.itests.exam.models.SubModel;
@@ -178,9 +177,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         OpenEngSBFileModel model = new OpenEngSBFileModel();
         model.setFile(f);
-        ((OpenEngSBModel) model).addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_OID, "testId",
-            String.class));
-
+        model.setId("testId");
+        
         EKBCommit commit = getTestEKBCommit().addInsert(model);
         persist.commit(commit);
 

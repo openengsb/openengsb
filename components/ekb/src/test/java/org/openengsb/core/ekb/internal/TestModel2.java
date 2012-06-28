@@ -137,4 +137,9 @@ public class TestModel2 implements OpenEngSBModel {
     public void removeOpenEngSBModelEntry(String key) {
         tail.remove(key);
     }
+
+    @Override
+    public Object retrieveInternalModelId() {
+        return edbId;
+    }
 }

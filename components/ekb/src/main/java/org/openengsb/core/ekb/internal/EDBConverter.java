@@ -176,7 +176,6 @@ public class EDBConverter {
                 value = getEnumValue(parameterType, value);
             }
         }
-
         return value;
     }
 
@@ -379,18 +378,6 @@ public class EDBConverter {
         objects.add(object);
         return oid;
     }
-
-    // /**
-    // * Create a sub model out of a wrapper object and returns the oid of the sub model.
-    // */
-    // private String createSubModelOutOfWrapper(Object subModel, OpenEngSBModel parent, List<EDBObject> objects,
-    // ConnectorInformation info) {
-    // OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) subModel;
-    // OpenEngSBModel temp =
-    // (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
-    // parent.getClass().getClassLoader());
-    // return convertSubModel(temp, objects, info);
-    // }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;

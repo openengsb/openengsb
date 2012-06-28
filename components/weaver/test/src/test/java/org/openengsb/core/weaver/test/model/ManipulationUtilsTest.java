@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.Test;
-import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
@@ -78,6 +77,8 @@ public class ManipulationUtilsTest {
         TestModel model = new TestModel();
         ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
         ModelUtils.removeOpenEngSBModelEntry(model, "test");
+        // the result has two elements even though the model has three properties, 
+        // since the third property is ignored
         assertThat(ModelUtils.getOpenEngSBModelEntries(model).size(), is(2));
     }
 
@@ -85,12 +86,7 @@ public class ManipulationUtilsTest {
     public void testIfModelIdInsertionWorks_shouldWork() {
         TestModel model = new TestModel();
         model.setId("id");
-        String id = null;
-        for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(model)) {
-            if (entry.getKey().equals(EDBConstants.MODEL_OID)) {
-                id = (String) entry.getValue();
-            }
-        }
+        String id = (String) ModelUtils.getInternalModelId(model);
         assertThat(id, is(model.getId()));
     }
 }

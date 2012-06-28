@@ -17,16 +17,18 @@
 
 package org.openengsb.core.weaver.test.model;
 
-import org.openengsb.core.api.ekb.annotations.Model;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import org.openengsb.core.api.model.annotation.IgnoredModelField;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
 public class TestModel {
-
+    @OpenEngSBModelId
     private String id;
     private String name;
+    @IgnoredModelField
+    private String ignore;
 
-    @OpenEngSBModelId
     public void setId(String id) {
         this.id = id;
     }
@@ -41,5 +43,13 @@ public class TestModel {
 
     public String getName() {
         return name;
+    }
+    
+    public void setIgnore(String ignore) {
+        this.ignore = ignore;
+    }
+    
+    public String getIgnore() {
+        return ignore;
     }
 }

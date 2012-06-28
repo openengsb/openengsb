@@ -19,14 +19,26 @@ package org.openengsb.core.api.model;
 
 import java.io.File;
 
-import org.openengsb.core.api.ekb.annotations.Model;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 /**
- * This model object purpose is a pre-defined possibility to send Files to domains/connectors.
+ * This model object purpose is a pre-defined possibility to send Files to domains/connectors. The id is optional and
+ * can be used if you want to save the file in the EDB.
  */
 @Model
 public class OpenEngSBFileModel {
+    @OpenEngSBModelId
+    private String id;
     private File file;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public File getFile() {
         return file;

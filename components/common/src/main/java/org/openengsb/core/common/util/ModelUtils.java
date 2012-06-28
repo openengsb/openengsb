@@ -68,6 +68,15 @@ public final class ModelUtils {
         ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
     }
 
+    /**
+     * Performs the getInternalModelId function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static Object getInternalModelId(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveInternalModelId();
+    }
+
     public static <T> T createModel(Class<T> model, List<OpenEngSBModelEntry> entries) {
         checkIfClassIsModel(model);
         try {
@@ -101,7 +110,7 @@ public final class ModelUtils {
             throw new IllegalArgumentException("The given object is no model");
         }
     }
-    
+
     public static void checkIfClassIsModel(Class<?> clazz) {
         if (!OpenEngSBModel.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException("The given class is no model");

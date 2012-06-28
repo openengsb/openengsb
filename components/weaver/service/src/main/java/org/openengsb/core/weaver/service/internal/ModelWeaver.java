@@ -40,7 +40,7 @@ public class ModelWeaver implements WeavingHook {
     @Override
     public void weave(WovenClass wovenClass) {
         String className = wovenClass.getClassName();
-        if (className.equals("org.openengsb.core.api.ekb.annotations.Model")
+        if (className.equals("org.openengsb.core.api.model.annotation.Model")
                 || className.contains("javassist") || className.contains("JavassistHelper")) {
             return;
         }

@@ -18,9 +18,11 @@
 package org.openengsb.core.weaver.service.internal.model;
 
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
 import javassist.bytecode.MethodInfo;
 
 public final class JavassistHelper {
@@ -34,6 +36,15 @@ public final class JavassistHelper {
             cf.getAttribute(AnnotationsAttribute.invisibleTag);
         AnnotationsAttribute ainfo2 = (AnnotationsAttribute)
             cf.getAttribute(AnnotationsAttribute.visibleTag);
+        return checkAnnotation(ainfo, ainfo2, annotationName);
+    }
+    
+    public static boolean hasAnnotation(CtField field, String annotationName) {
+        FieldInfo info = field.getFieldInfo();
+        AnnotationsAttribute ainfo = (AnnotationsAttribute)
+            info.getAttribute(AnnotationsAttribute.invisibleTag);
+        AnnotationsAttribute ainfo2 = (AnnotationsAttribute)
+            info.getAttribute(AnnotationsAttribute.visibleTag);
         return checkAnnotation(ainfo, ainfo2, annotationName);
     }
 
