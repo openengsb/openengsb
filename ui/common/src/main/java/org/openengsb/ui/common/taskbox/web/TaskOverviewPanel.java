@@ -20,6 +20,8 @@ package org.openengsb.ui.common.taskbox.web;
 import java.util.ArrayList;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -29,7 +31,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.Filte
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAndClearFilter;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.TextFilteredPropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -49,7 +50,7 @@ public class TaskOverviewPanel extends Panel {
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskOverviewPanel.class);
 
     private TaskDataProvider dataProvider = new TaskDataProvider();
-    private Panel panel = new EmptyPanel("taskPanel");
+    private Panel panel = (Panel) new EmptyPanel("taskPanel").setOutputMarkupId(true);
 
     @PaxWicketBean(name = "webtaskboxService")
     private WebTaskboxService webtaskboxService;
@@ -57,6 +58,7 @@ public class TaskOverviewPanel extends Panel {
     @SuppressWarnings("serial")
     public TaskOverviewPanel(String id) {
         super(id);
+        setOutputMarkupId(true);
         ArrayList<IColumn<Task>> columns = new ArrayList<IColumn<Task>>();
         IColumn<Task> actionsColumn = new FilteredAbstractColumn<Task>(Model.of("Actions")) {
             @Override
@@ -96,14 +98,15 @@ public class TaskOverviewPanel extends Panel {
         public UserActionsPanel(String id, Task t) {
             super(id);
             task = t;
-            Link<Task> link = new Link<Task>("taskLink") {
+            AjaxLink<Task> link = new AjaxLink<Task>("taskLink") {
                 @Override
-                public void onClick() {
+                public void onClick(AjaxRequestTarget target) {
                     try {
                         Panel newPanel = webtaskboxService.getTaskPanel(task, "taskPanel");
                         newPanel.setOutputMarkupId(true);
                         panel.replaceWith(newPanel);
                         panel = newPanel;
+                        target.add(panel);
                     } catch (TaskboxException e) {
                         LOGGER.error("Taskbox panel could not be started", e);
                     }
