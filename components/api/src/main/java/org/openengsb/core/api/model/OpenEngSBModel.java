@@ -21,8 +21,8 @@ import java.util.List;
 
 /**
  * Represents a generic model which should be used by any model data in the domains. With this model it is possible to
- * use one model for all kinds of domain model data. The function here defined should convert any specific domain tool
- * data into our most generic model type.
+ * use one model for all kinds of domain model data. Every domain model marked with the Model interface get this
+ * interface injected.
  */
 public interface OpenEngSBModel {
 

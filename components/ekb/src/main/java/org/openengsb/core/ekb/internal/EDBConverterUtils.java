@@ -52,7 +52,6 @@ public final class EDBConverterUtils {
         return (Integer) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_VERSION);
     }
 
-
     /**
      * Creates the OID for a model
      */
