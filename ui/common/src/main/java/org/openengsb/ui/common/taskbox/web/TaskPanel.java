@@ -20,7 +20,7 @@ package org.openengsb.ui.common.taskbox.web;
 import java.util.ArrayList;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -50,12 +50,6 @@ public class TaskPanel extends Panel {
         super(id);
         task = t;
 
-        add(new Label("taskid", task.getTaskId()));
-        add(new Label("taskname", task.getName()));
-        add(new Label("tasktype", task.getTaskType() != null ? task.getTaskType() : "N/A"));
-
-        add(new Label("taskdescription", task.getDescription() != null ? task.getDescription() : "N/A"));
-
         // CompoundPropertyModel<Task> taskModel = new CompoundPropertyModel<Task>(task);
         Form<Task> form = new Form<Task>("inputForm");
         form.setOutputMarkupId(true);
@@ -70,12 +64,12 @@ public class TaskPanel extends Panel {
         form.add(new TextArea<String>("taskdescription", new PropertyModel<String>(task, "description"))
             .setRequired(true));
 
-        form.add(new AjaxButton("submitButton", form) {
+        form.add(new AjaxSubmitLink("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
-                    setResponsePage(getPage().getClass());
+                    target.add(TaskPanel.this.getParent());
                 } catch (WorkflowException e) {
                     LOGGER.error("Cant finish task", e);
                 }
