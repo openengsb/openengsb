@@ -26,10 +26,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javassist.CannotCompileException;
 
+/**
+ * The model agent is a java agent implementation, which initiate the model weaving of models.
+ */
 public class ModelAgent implements ClassFileTransformer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelAgent.class);
 
     public static void premain(String agentArgs, Instrumentation inst) {
         inst.addTransformer(new ModelAgent());
@@ -40,20 +46,21 @@ public class ModelAgent implements ClassFileTransformer {
             byte[] bytecode)
         throws IllegalClassFormatException {
 
-        if (tryEnhancement(className)) {
-            try {
-                byte[] result = ManipulationUtils.enhanceModel(bytecode);
-                return result != null ? result : bytecode;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (CannotCompileException e) {
-                e.printStackTrace();
-            }
+        if (!shouldBeEnhanced(className)) {
+            return bytecode;
+        }
+        try {
+            byte[] result = ManipulationUtils.enhanceModel(bytecode);
+            return result != null ? result : bytecode;
+        } catch (IOException e) {
+            LOGGER.error("IOException while enhancing model", e);
+        } catch (CannotCompileException e) {
+            LOGGER.error("CannotCompileException while enhancing model", e);
         }
         return bytecode;
     }
 
-    private boolean tryEnhancement(String className) {
+    private boolean shouldBeEnhanced(String className) {
         List<String> filter = Arrays.asList("java", "$", "sun", "org/junit");
         for (String element : filter) {
             if (className.startsWith(element)) {

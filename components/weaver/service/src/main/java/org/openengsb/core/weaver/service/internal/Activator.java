@@ -22,6 +22,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 
+/**
+ * The activator of the weaver service bundle. Initiates the model weaver service and (un)register it.
+ */
 public class Activator implements BundleActivator {
     private ServiceRegistration<?> weavingHookService;
 

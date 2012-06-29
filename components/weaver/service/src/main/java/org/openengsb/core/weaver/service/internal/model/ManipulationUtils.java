@@ -41,6 +41,10 @@ import javassist.LoaderClassPath;
 import javassist.Modifier;
 import javassist.NotFoundException;
 
+/**
+ * This util class does the byte code manipulation to enhance domain models. It uses Javassist as code manipulation
+ * library.
+ */
 public final class ManipulationUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManipulationUtils.class);
     private static ClassPool cp = ClassPool.getDefault();
@@ -49,6 +53,9 @@ public final class ManipulationUtils {
     private ManipulationUtils() {
     }
 
+    /**
+     * Appends a class loader to the class pool.
+     */
     public static void appendClassLoader(ClassLoader loader) {
         cp.appendClassPath(new LoaderClassPath(loader));
     }
@@ -60,6 +67,10 @@ public final class ManipulationUtils {
         initiated = true;
     }
 
+    /**
+     * Try to enhance the object defined by the given byte code. Returns the enhanced class or the original class, if
+     * the given class is no model, as byte array. There may be class loaders appended, if needed.
+     */
     public static byte[] enhanceModel(byte[] byteCode, ClassLoader... loaders) throws IOException,
         CannotCompileException {
         CtClass cc = doModelModifications(byteCode, loaders);
@@ -80,7 +91,7 @@ public final class ManipulationUtils {
         try {
             InputStream stream = new ByteArrayInputStream(byteCode);
             cc = cp.makeClass(stream);
-            if (!JavassistHelper.hasAnnotation(cc, Model.class.getName())) {
+            if (!JavassistUtils.hasAnnotation(cc, Model.class.getName())) {
                 return null;
             }
             LOGGER.info("Model to enhance: {}", cc.getName());
@@ -90,32 +101,29 @@ public final class ManipulationUtils {
                 classloaders[i] = new LoaderClassPath(loaders[i]);
                 cp.appendClassPath(classloaders[i]);
             }
-
             CtClass inter = cp.get(OpenEngSBModel.class.getName());
             cc.addInterface(inter);
-
             addTail(cc);
             addOpenEngSBModelEntryMethod(cc);
             addRemoveOpenEngSBModelEntryMethod(cc);
             addRetrieveInternalModelId(cc);
             addGetOpenEngSBModelEntries(cc);
-
             cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
             LOGGER.info("Finished model enhancing for class {}", cc.getName());
-
             for (int i = 0; i < loaders.length; i++) {
                 cp.removeClassPath(classloaders[i]);
             }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (RuntimeException e1) {
-            e1.printStackTrace();
+            LOGGER.info("Finished model enhancing for class {}", cc.getName());
+        } catch (IOException e) {
+            LOGGER.error("IOException while trying to enhance model", e);
+        } catch (RuntimeException e) {
+            LOGGER.error("RuntimeException while trying to enhance model", e);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            LOGGER.error("CannotCompileException while trying to enhance model", e);
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("NotFoundException while trying to enhance model", e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("ClassNotFoundException while trying to enhance model", e);
         }
         return cc;
     }
@@ -146,7 +154,7 @@ public final class ManipulationUtils {
         CannotCompileException {
         String modelIdField = null;
         for (CtField field : clazz.getDeclaredFields()) {
-            if (JavassistHelper.hasAnnotation(field, OpenEngSBModelId.class.getName())) {
+            if (JavassistUtils.hasAnnotation(field, OpenEngSBModelId.class.getName())) {
                 modelIdField = field.getName();
                 break;
             }
@@ -171,7 +179,7 @@ public final class ManipulationUtils {
         for (CtField field : clazz.getDeclaredFields()) {
             String property = field.getName();
             if (property.equals("openEngSBModelTail")
-                    || JavassistHelper.hasAnnotation(field, IgnoredModelField.class.getName())) {
+                    || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
                 continue;
             }
             CtClass fieldType = field.getType();

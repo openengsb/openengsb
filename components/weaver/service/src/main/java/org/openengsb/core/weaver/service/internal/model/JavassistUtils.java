@@ -19,17 +19,21 @@ package org.openengsb.core.weaver.service.internal.model;
 
 import javassist.CtClass;
 import javassist.CtField;
-import javassist.CtMethod;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
 
-public final class JavassistHelper {
+/**
+ * Util class which help with javassist issues which aren't that correctly implemented in the javassist library.
+ */
+public final class JavassistUtils {
 
-    private JavassistHelper() {
+    private JavassistUtils() {
     }
 
+    /**
+     * Returns true if the given class has an annotation set with the given name, returns false otherwise.
+     */
     public static boolean hasAnnotation(CtClass clazz, String annotationName) {
         ClassFile cf = clazz.getClassFile2();
         AnnotationsAttribute ainfo = (AnnotationsAttribute)
@@ -38,7 +42,10 @@ public final class JavassistHelper {
             cf.getAttribute(AnnotationsAttribute.visibleTag);
         return checkAnnotation(ainfo, ainfo2, annotationName);
     }
-    
+
+    /**
+     * Returns true if the given field has an annotation set with the given name, returns false otherwise.
+     */
     public static boolean hasAnnotation(CtField field, String annotationName) {
         FieldInfo info = field.getFieldInfo();
         AnnotationsAttribute ainfo = (AnnotationsAttribute)
@@ -48,15 +55,9 @@ public final class JavassistHelper {
         return checkAnnotation(ainfo, ainfo2, annotationName);
     }
 
-    public static boolean hasAnnotation(CtMethod method, String annotationName) {
-        MethodInfo info = method.getMethodInfo();
-        AnnotationsAttribute ainfo = (AnnotationsAttribute)
-            info.getAttribute(AnnotationsAttribute.invisibleTag);
-        AnnotationsAttribute ainfo2 = (AnnotationsAttribute)
-            info.getAttribute(AnnotationsAttribute.visibleTag);
-        return checkAnnotation(ainfo, ainfo2, annotationName);
-    }
-
+    /**
+     * Checks if an annotation with the given name is either in the invisible or in the visible annotation attributes.
+     */
     private static boolean checkAnnotation(AnnotationsAttribute invisible, AnnotationsAttribute visible,
             String annotationName) {
         boolean exist1 = false;
@@ -69,9 +70,4 @@ public final class JavassistHelper {
         }
         return exist1 || exist2;
     }
-
-    public static String generatePropertyName(String methodName) {
-        return String.format("%s%s", Character.toLowerCase(methodName.charAt(3)), methodName.substring(4));
-    }
-
 }

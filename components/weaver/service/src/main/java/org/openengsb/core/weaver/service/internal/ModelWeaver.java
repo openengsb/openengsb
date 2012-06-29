@@ -29,6 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import javassist.CannotCompileException;
 
+/**
+ * The model weaver is a weaving hook implementation, which initiate the model weaving of models.
+ */
 public class ModelWeaver implements WeavingHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelWeaver.class);
 
@@ -41,7 +44,7 @@ public class ModelWeaver implements WeavingHook {
     public void weave(WovenClass wovenClass) {
         String className = wovenClass.getClassName();
         if (className.equals("org.openengsb.core.api.model.annotation.Model")
-                || className.contains("javassist") || className.contains("JavassistHelper")) {
+                || className.contains("javassist") || className.contains("JavassistUtils")) {
             return;
         }
         try {
