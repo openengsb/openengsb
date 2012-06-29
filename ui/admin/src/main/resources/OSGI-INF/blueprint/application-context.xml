@@ -19,7 +19,8 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" xmlns:wicket="http://www.ops4j.org/schema/wicket">
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" xmlns:wicket="http://www.ops4j.org/schema/wicket"
+>
 
   <cm:property-placeholder id="settings" persistent-id="org.openengsb.settings">
     <!-- list some properties for this test -->
@@ -43,7 +44,8 @@
   <reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <reference id="queryInterface" interface="org.openengsb.core.api.ekb.QueryInterface" />
-  <reference-list id="connectorList" interface="org.openengsb.core.api.Domain" member-type="service-reference"/>
+  <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
+  <reference-list id="connectorList" interface="org.openengsb.core.api.Domain" member-type="service-reference" />
   <reference-list id="domainProviders" interface="org.openengsb.core.api.DomainProvider" />
   <reference-list id="modelProviders" interface="org.openengsb.labs.delegation.service.ClassProvider"
     filter="(delegationContext=models)" availability="optional" />

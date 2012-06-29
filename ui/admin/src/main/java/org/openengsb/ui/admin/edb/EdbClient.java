@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -70,6 +71,8 @@ import com.google.common.collect.Lists;
 })
 @PaxWicketMountPoint(mountPoint = "edb")
 public class EdbClient extends BasePage {
+
+    private static final long serialVersionUID = 9004308842445884996L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EdbClient.class);
 
@@ -241,7 +244,15 @@ public class EdbClient extends BasePage {
                         break;
                     }
                 }
-                item.add(new Label("id", new PropertyModel<Object>(item.getModelObject(), idProperty)));
+                AjaxLink<String> historyLink =
+                    new AjaxLink<String>("id", new PropertyModel<String>(item.getModelObject(), idProperty)) {
+                        @Override
+                        public void onClick(AjaxRequestTarget target) {
+                            this.setResponsePage(new EdbHistoryPanel(getModel().getObject()));
+                        }
+                    };
+                historyLink.add(new Label("text", new PropertyModel<String>(item.getModelObject(), idProperty)));
+                item.add(historyLink);
                 MultiLineLabel multiLineLabel =
                     new MultiLineLabel("entries", item.getModelObject().getOpenEngSBModelEntries().toString());
                 item.add(multiLineLabel);

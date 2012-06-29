@@ -21,39 +21,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en"
 >
-  <head>
-    <wicket:head>
-      <style>
-        div.wicket-aa {
-        background-color: white;
-        border-width: 1px;
-        border-color: #cccccc;
-        border-style: solid;
-        padding: 2px;
-        margin: 1px 0 0 0;
-        text-align:left;
-        }
-        div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
-        div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0; }
-      </style>
-    </wicket:head>
-  </head>
   <body>
     <wicket:extend>
-      <form wicket:id="form">
-        <select wicket:id="modelSelector" />
-        <input type="text" wicket:id="query" />
-        <input type="submit" wicket:id="submit" />
-      </form>
-      <div wicket:id="result">
-        <ul wicket:id="list">
-          <li>
-            <a href="#" wicket:id="id"><span wicket:id="text">[model-id]</span></a>
-            <br />
-            <div wicket:id="entries" />
-          </li>
-        </ul>
-      </div>
+      <table wicket:id="history">
+        <tr>
+          <td wicket:id="time" />
+          <td wicket:id="committer" />
+        </tr>
+      </table>
     </wicket:extend>
   </body>
 </html>

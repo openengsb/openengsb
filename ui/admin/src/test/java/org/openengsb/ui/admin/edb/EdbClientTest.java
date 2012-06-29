@@ -57,9 +57,9 @@ public class EdbClientTest extends AbstractUITest {
         queryInterface = mock(QueryInterface.class);
         context.putBean("queryInterface", queryInterface);
         DummyModel dummyModel = new DummyModel();
-        dummyModel.setId("1");
+        dummyModel.setId("42");
         dummyModel.setValue("foo");
-        when(queryInterface.queryForModels(DummyModel.class, "id:1")).thenReturn(Arrays.asList(dummyModel));
+        when(queryInterface.queryForModels(DummyModel.class, "id:42")).thenReturn(Arrays.asList(dummyModel));
         ServiceList<ClassProvider> classProviders = super.makeServiceList(ClassProvider.class);
         context.putBean("modelProviders", classProviders);
         ClassProviderImpl classProvider = new ClassProviderImpl(bundle, DummyModel.class.getName());
@@ -112,12 +112,12 @@ public class EdbClientTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("form:modelSelector");
         formTester.select("modelSelector", getIndexForValue(modeldropdown, "DummyModel"));
         tester.executeAjaxEvent(modeldropdown, "onchange");
-        formTester.setValue("query", "id:1");
+        formTester.setValue("query", "id:42");
         tester.executeAjaxEvent("form:submit", "onclick");
         ListView<? extends OpenEngSBModel> resultElement =
             (ListView<? extends OpenEngSBModel>) tester.getComponentFromLastRenderedPage("result:list");
         tester.debugComponentTrees();
-        assertThat(resultElement.get("0:id").getDefaultModelObjectAsString(), is("1"));
+        assertThat(resultElement.get("0:id").getDefaultModelObjectAsString(), is("42"));
         assertThat(resultElement.get("0:entries").getDefaultModelObjectAsString(), containsString("foo"));
     }
 }
