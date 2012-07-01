@@ -29,8 +29,13 @@ import com.google.common.base.Objects;
 public class ModelDescription {
     private String modelClassName;
     private String versionString;
-    
+
     public ModelDescription() {
+    }
+    
+    public ModelDescription(String modelClassName, String versionString) {
+        this.modelClassName = modelClassName;
+        this.versionString = checkVersionString(versionString);
     }
 
     public ModelDescription(String modelClassName, Version version) {
@@ -38,10 +43,6 @@ public class ModelDescription {
         this.versionString = version.toString();
     }
 
-    public ModelDescription(String modelClassName, String versionString) {
-        this(modelClassName, Version.parseVersion(versionString));
-    }
-    
     public ModelDescription(String modelClassName) {
         this(modelClassName, new Version(1, 0, 0));
     }
@@ -51,9 +52,9 @@ public class ModelDescription {
     }
 
     public ModelDescription(Class<?> modelClass, String versionString) {
-        this(modelClass.getName(), Version.parseVersion(versionString));
+        this(modelClass.getName(), versionString);
     }
-    
+
     public ModelDescription(Class<?> modelClass) {
         this(modelClass.getName(), new Version(1, 0, 0));
     }
@@ -61,7 +62,7 @@ public class ModelDescription {
     public String getModelClassName() {
         return modelClassName;
     }
-    
+
     public void setModelClassName(String modelClassName) {
         this.modelClassName = modelClassName;
     }
@@ -69,15 +70,25 @@ public class ModelDescription {
     public String getVersionString() {
         return versionString;
     }
-    
+
     public void setVersion(Version version) {
         this.versionString = version.toString();
     }
-    
+
     public void setVersionString(String versionString) {
-        this.versionString = Version.parseVersion(versionString).toString();
+        this.versionString = checkVersionString(versionString);
     }
-    
+
+    private static String checkVersionString(String versionString) {
+        try {
+            return Version.parseVersion(versionString).toString();
+        } catch (IllegalArgumentException e) {
+            String errorMessage =
+                String.format("%s is not a valid version string for a model description", versionString);
+            throw new IllegalArgumentException(errorMessage, e);
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -87,7 +98,7 @@ public class ModelDescription {
 
     @Override
     public int hashCode() {
-        Object []obj = new Object[] { modelClassName, versionString};
+        Object[] obj = new Object[]{ modelClassName, versionString };
         return Objects.hashCode(obj);
     }
 
