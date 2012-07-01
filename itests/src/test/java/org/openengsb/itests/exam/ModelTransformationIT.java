@@ -185,8 +185,8 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
             getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
         for (TransformationDescription description : descriptions) {
-            description.getSourceModel().setModelVersion(exampleDomainVersion);
-            description.getTargetModel().setModelVersion(exampleDomainVersion);
+            description.getSourceModel().setVersion(exampleDomainVersion);
+            description.getTargetModel().setVersion(exampleDomainVersion);
         }
         transformationEngine.saveDescriptions(descriptions);
     }

@@ -24,6 +24,7 @@ import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -54,7 +55,7 @@ public class EKBClassLoaderService implements EKBClassLoader {
     @Override
     public Class<?> loadModel(ModelDescription model) throws ClassNotFoundException {
         Filter filter = DelegationUtil.createClassProviderFilter(Constants.DELEGATION_CONTEXT_MODELS,
-            model.getModelClassName(), model.getModelVersion());
+            model.getModelClassName(), Version.parseVersion(model.getVersionString()));
         ServiceTracker serviceTracker = new ServiceTracker(context, filter, null);
         serviceTracker.open();
         try {
