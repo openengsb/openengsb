@@ -58,9 +58,9 @@ public final class EDBConverterUtils {
     public static String createOID(OpenEngSBModel model, String domainId, String connectorId) {
         StringBuilder builder = new StringBuilder();
         builder.append(createOIDPrefix(domainId, connectorId));
-        String modelId = model.retrieveInternalModelId().toString();
+        Object modelId = model.retrieveInternalModelId();
         if (modelId != null) {
-            builder.append(modelId);
+            builder.append(modelId.toString());
         } else {
             builder.append(UUID.randomUUID().toString());
         }
