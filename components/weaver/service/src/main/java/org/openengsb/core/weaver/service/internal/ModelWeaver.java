@@ -18,6 +18,8 @@
 package org.openengsb.core.weaver.service.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
@@ -34,17 +36,44 @@ import javassist.CannotCompileException;
  */
 public class ModelWeaver implements WeavingHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelWeaver.class);
+    private List<String> filterlist;
 
     public ModelWeaver(BundleContext context) {
         ManipulationUtils.appendClassLoader(new DelegationClassLoader(context));
         ManipulationUtils.appendClassLoader(ModelWeaver.class.getClassLoader());
+        filterlist = new ArrayList<String>();
+        filterlist.add("org.openengsb.core.api.model.annotation.Model");
+        filterlist.add("javassist");
+        filterlist.add("JavassistUtils");
+        filterlist.add("drools");
+        filterlist.add("karaf");
+        filterlist.add("wicket");
+        filterlist.add("openjpa");
+        filterlist.add("javax.persistence");
+        filterlist.add("aries");
+        filterlist.add("shiro");
+        filterlist.add("com.google");
+        filterlist.add(".h2.");
+        filterlist.add("cglib");
+        filterlist.add("codehaus");
+        filterlist.add("jbpm");
+        filterlist.add("mvel2");
+        filterlist.add("antlr");
+    }
+
+    private boolean checkClass(String classname) {
+        for (String filter : filterlist) {
+            if (classname.contains(filter)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void weave(WovenClass wovenClass) {
         String className = wovenClass.getClassName();
-        if (className.equals("org.openengsb.core.api.model.annotation.Model")
-                || className.contains("javassist") || className.contains("JavassistUtils")) {
+        if (!checkClass(className)) {
             return;
         }
         try {
