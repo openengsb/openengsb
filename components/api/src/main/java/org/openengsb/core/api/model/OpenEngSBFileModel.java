@@ -24,7 +24,8 @@ import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 /**
  * This model object purpose is a pre-defined possibility to send Files to domains/connectors. The id is optional and
- * can be used if you want to save the file in the EDB.
+ * can be used if you want to save the file in the EDB. If the model aren't persisted the id can be ignored. If the
+ * model get persisted and no id is set, the EDB use a generated one. See details about that in the manual.
  */
 @Model
 public class OpenEngSBFileModel {
