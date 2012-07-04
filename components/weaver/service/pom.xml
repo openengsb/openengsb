@@ -110,8 +110,8 @@
                   <Can-Retransform-Classes>true</Can-Retransform-Classes>
                 </manifestEntries>
               </archive>
-              <finalName>model-agent</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
+              <!--<finalName>model-agent</finalName>
+              <appendAssemblyId>false</appendAssemblyId> -->
             </configuration>
           </execution>
         </executions>
