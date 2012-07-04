@@ -98,9 +98,11 @@ public class EDBConverter {
         try {
             instance = model.newInstance();
         } catch (InstantiationException e) {
-            throw new IllegalArgumentException("InstantiationException while creating instance of model " + model.getName(), e);
+            throw new IllegalArgumentException("InstantiationException while creating instance of model "
+                    + model.getName(), e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("IllegalAccessException while creating instance of model " + model.getName(), e);
+            throw new IllegalArgumentException("IllegalAccessException while creating instance of model "
+                    + model.getName(), e);
         }
 
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
