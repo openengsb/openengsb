@@ -48,17 +48,17 @@ public class ModelWeaver implements WeavingHook {
             return;
         }
         try {
-            LOGGER.debug("try to enhance {}", className);
+            LOGGER.trace("try to enhance {}", className);
             byte[] result = doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader());
             if (result != null) {
                 wovenClass.getDynamicImports().add("org.openengsb.core.api.model");
                 wovenClass.setBytes(result);
             }
-            LOGGER.debug("finished enhancing {}", className);
+            LOGGER.trace("finished enhancing {}", className);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("IOException while trying to enhance model {}", className, e);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            LOGGER.error("CannotCompileException while trying to enhance model {}", className, e);
         }
     }
 
