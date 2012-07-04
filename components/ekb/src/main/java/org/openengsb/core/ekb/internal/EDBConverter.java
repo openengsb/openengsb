@@ -71,21 +71,6 @@ public class EDBConverter {
     }
 
     /**
-     * Creates an instance of the given class object. If it is an OpenEngSBModel, a model is created, else this method
-     * tries to generate a new instance by calling the standard constructor.
-     */
-    private Object createNewInstance(Class<?> model) {
-        try {
-            return model.newInstance();
-        } catch (InstantiationException e) {
-            LOGGER.error("instantiation exception while trying to create instance of class {}", model.getName());
-        } catch (IllegalAccessException e) {
-            LOGGER.error("illegal access exception while trying to create instance of class {}", model.getName());
-        }
-        return null;
-    }
-
-    /**
      * Tests if an EDBObject has the correct model class in which it should be converted. Returns false if the model
      * type is not fitting, returns true if the model type is fitting or model type is unknown.
      */
@@ -109,7 +94,14 @@ public class EDBConverter {
         if (!checkEDBObjectModelType(object, model)) {
             return null;
         }
-        Object instance = createNewInstance(model);
+        Object instance = null;
+        try {
+            instance = model.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("InstantiationException while creating instance of model " + model.getName(), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("IllegalAccessException while creating instance of model " + model.getName(), e);
+        }
 
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null) {
@@ -152,6 +144,7 @@ public class EDBConverter {
         Object value = object.get(propertyName);
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
+        // TODO: OPENENGSB-2719 do that in a better way than just an if-else series
         if (object.containsKey(propertyName + "0.key")) {
             List<Class<?>> classes = getGenericMapParameterClasses(setterMethod);
             value = getMapValue(classes.get(0), classes.get(1), propertyName, object);
