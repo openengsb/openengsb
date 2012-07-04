@@ -95,7 +95,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         description.concatField("result", "-", "name", "id");
         transformationEngine.saveDescription(description);
 
-        ExampleRequestModel modelA = ModelUtils.createEmptyModelObject(ExampleRequestModel.class);
+        ExampleRequestModel modelA = new ExampleRequestModel();
         modelA.setName("test");
         modelA.setId(42);
 
@@ -107,7 +107,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testIfTransformationsFromFileWork_shouldWork() throws Exception {
         loadDescriptionsFromFile();
-        ExampleResponseModel modelA = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        ExampleResponseModel modelA = new ExampleResponseModel();
         modelA.setResult("test-42");
 
         ExampleRequestModel modelB = transformResponseToRequest(modelA);
