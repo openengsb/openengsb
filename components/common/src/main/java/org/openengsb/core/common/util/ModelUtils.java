@@ -93,38 +93,52 @@ public final class ModelUtils {
                 } catch (NoSuchMethodException e) {
                     ((OpenEngSBModel) instance).addOpenEngSBModelEntry(entry);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                    LOGGER.error("IllegalArgumentException while trying to set values for the new model.", e);
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
                 }
             }
             return instance;
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOGGER.error("InstantiationException while creating a new model instance.", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error("IllegalAccessException while creating a new model instance.", e);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            LOGGER.error("SecurityException while creating a new model instance.", e);
         }
         return null;
     }
 
     /**
-     * Returns true if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
+     * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
     public static void checkIfObjectIsModel(Object model) {
         if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             throw new IllegalArgumentException("The given object is no model");
         }
     }
+    
+    /**
+     * Returns true if the given object is an OpenEngSBModel, returns false if not.
+     */
+    public static boolean isObjectModel(Object model) {
+        return OpenEngSBModel.class.isAssignableFrom(model.getClass());
+    }
 
     /**
-     * Returns true if the given class is an OpenEngSBModel. Throws an IllegalArgumentException if not.
+     * Checks if the given class is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
     public static void checkIfClassIsModel(Class<?> clazz) {
         if (!OpenEngSBModel.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException("The given class is no model");
         }
+    }
+    
+    /**
+     * Returns true if the given class is an OpenEngSBModel, returns false if not.
+     */
+    public static boolean isClassModel(Class<?> clazz) {
+        return OpenEngSBModel.class.isAssignableFrom(clazz);
     }
     
     /**
