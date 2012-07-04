@@ -280,7 +280,7 @@ public class EDBConverter {
      * Convert a list of models to a list of EDBObjects (the version retrieving is not considered here. This is done in
      * the EDB directly).
      */
-    public List<EDBObject> convertModelsToEDBObjects(List<Object> models, ConnectorInformation info) {
+    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorInformation info) {
         List<EDBObject> result = new ArrayList<EDBObject>();
         if (models != null) {
             for (Object model : models) {

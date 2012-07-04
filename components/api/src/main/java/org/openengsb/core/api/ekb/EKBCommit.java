@@ -27,17 +27,17 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * The EKBCommit class contains all necessary information to do a commit to the EDB through the EKB PersistInterface.
  */
 public class EKBCommit {
-    private List<Object> inserts;
-    private List<Object> updates;
-    private List<Object> deletes;
+    private List<OpenEngSBModel> inserts;
+    private List<OpenEngSBModel> updates;
+    private List<OpenEngSBModel> deletes;
     private String domainId;
     private String connectorId;
     private String instanceId;
 
     public EKBCommit() {
-        inserts = new ArrayList<Object>();
-        updates = new ArrayList<Object>();
-        deletes = new ArrayList<Object>();
+        inserts = new ArrayList<OpenEngSBModel>();
+        updates = new ArrayList<OpenEngSBModel>();
+        deletes = new ArrayList<OpenEngSBModel>();
     }
 
     /**
@@ -46,7 +46,7 @@ public class EKBCommit {
     public EKBCommit addInsert(Object insert) {
         if (insert != null) {
             checkIfModel(insert);
-            inserts.add(insert);
+            inserts.add((OpenEngSBModel) insert);
         }
         return this;
     }
@@ -58,7 +58,7 @@ public class EKBCommit {
         if (inserts != null) {
             for (Object insert : inserts) {
                 checkIfModel(insert);
-                this.inserts.add(insert);
+                this.inserts.add((OpenEngSBModel) insert);
             }
         }
         return this;
@@ -70,7 +70,7 @@ public class EKBCommit {
     public EKBCommit addUpdate(Object update) {
         if (update != null) {
             checkIfModel(update);
-            updates.add(update);
+            updates.add((OpenEngSBModel) update);
         }
         return this;
     }
@@ -82,7 +82,7 @@ public class EKBCommit {
         if (updates != null) {
             for (Object update : updates) {
                 checkIfModel(update);
-                this.updates.add(update);
+                this.updates.add((OpenEngSBModel) update);
             }
         }
         return this;
@@ -94,7 +94,7 @@ public class EKBCommit {
     public EKBCommit addDelete(Object delete) {
         if (delete != null) {
             checkIfModel(delete);
-            deletes.add(delete);
+            deletes.add((OpenEngSBModel) delete);
         }
         return this;
     }
@@ -106,7 +106,7 @@ public class EKBCommit {
         if (deletes != null) {
             for (Object delete : deletes) {
                 checkIfModel(delete);
-                this.deletes.add(delete);
+                this.deletes.add((OpenEngSBModel) delete);
             }
         }
         return this;
@@ -139,21 +139,21 @@ public class EKBCommit {
     /**
      * Returns the list of OpenEngSBModels which shall be inserted into the EDB.
      */
-    public List<Object> getInserts() {
+    public List<OpenEngSBModel> getInserts() {
         return inserts;
     }
 
     /**
      * Returns the list of OpenEngSBModels which shall be updated in the EDB.
      */
-    public List<Object> getUpdates() {
+    public List<OpenEngSBModel> getUpdates() {
         return updates;
     }
 
     /**
      * Returns the list of OpenEngSBModels which shall be deleted from the EDB.
      */
-    public List<Object> getDeletes() {
+    public List<OpenEngSBModel> getDeletes() {
         return deletes;
     }
 
