@@ -92,6 +92,7 @@
                   <artifactId>org.openengsb.framework.weaver.service</artifactId>
                   <version>${project.version}</version>
                   <type>jar</type>
+                  <classifier>jar-with-dependencies</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
                   <destFileName>model-agent.jar</destFileName>
