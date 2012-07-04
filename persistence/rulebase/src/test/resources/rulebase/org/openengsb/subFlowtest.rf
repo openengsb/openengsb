@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Sub Flow Test" id="subflowTest" package-name="org.openengsb" routerLayout="2" >
+
+  <header>
+    <variables>
+      <variable name="lock" >
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="16" y="24" width="49" height="49" />
+    <end id="2" name="End" x="348" y="24" width="49" height="49" />
+    <subProcess id="7" name="SubProcess" x="97" y="16" width="219" height="65" processId="floweventtest" >
+    </subProcess>
+  </nodes>
+
+  <connections>
+    <connection from="7" to="2" />
+    <connection from="1" to="7" />
+  </connections>
+
+</process>

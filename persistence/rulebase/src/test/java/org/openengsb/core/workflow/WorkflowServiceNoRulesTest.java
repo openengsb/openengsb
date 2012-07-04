@@ -23,24 +23,30 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class WorkflowServiceNoRulesTest extends AbstractOsgiMockServiceTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+    
     private static final String FLOW_NAME = "simpleFlow";
     private WorkflowServiceImpl workflowService;
-    private PersistenceRuleManager manager;
+    private RuleManager manager;
 
     @Before
     public void setUp() throws Exception {
@@ -92,10 +98,8 @@ public class WorkflowServiceNoRulesTest extends AbstractOsgiMockServiceTest {
         RuleBaseElementId testFlowId = new RuleBaseElementId(RuleBaseElementType.Process, FLOW_NAME);
         String code = readFlow(FLOW_NAME);
         persistenceMock.create(new RuleBaseElement(testFlowId, code));
-        manager = new PersistenceRuleManager();
-        manager.setPersistence(persistenceMock);
-        manager.init();
-//        RuleUtil.addHello1Rule(manager);
+        manager = PersistenceTestUtil.getRuleManager(folder);
+        // RuleUtil.addHello1Rule(manager);
     }
 
     private static String readFlow(String string) throws IOException {

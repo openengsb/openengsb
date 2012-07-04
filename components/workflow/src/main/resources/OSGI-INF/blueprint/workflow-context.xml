@@ -21,10 +21,20 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
+  <reference id="rulePersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=RULEBASE)" />
+    
+  <reference id="globalPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=GLOBAL)" />  
+
+  <reference id="importPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=IMPORT)" />
+
   <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
     init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="rulePersistence" ref="rulePersistence" />
+    <property name="globalPersistence" ref="globalPersistence" />
+    <property name="importPersistence" ref="importPersistence" />
   </bean>
 
   <service interface="org.openengsb.core.api.workflow.RuleManager">
@@ -98,4 +108,9 @@
   </service>
   
 
+  <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.workflow.deployer.WorkflowDeployerService">
+      <property name="ruleManager" ref="ruleManager" />
+    </bean>
+  </service>
 </blueprint>
