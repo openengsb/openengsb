@@ -81,7 +81,7 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>
-            -javaagent:../service/target/org.openengsb.framework.weaver.service-${project.version}-jar-with-dependencies.jar
+            -javaagent:../service/target/model-agent.jar
           </argLine>
           <useSystemClassloader>true</useSystemClassloader>
         </configuration>

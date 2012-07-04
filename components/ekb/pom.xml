@@ -91,7 +91,7 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>
-            -javaagent:../weaver/service/target/org.openengsb.framework.weaver.service-${project.version}-jar-with-dependencies.jar
+            -javaagent:../weaver/service/target/model-agent.jar
           </argLine>
           <useSystemClassloader>true</useSystemClassloader>
         </configuration>
