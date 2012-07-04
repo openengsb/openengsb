@@ -19,6 +19,8 @@ package org.openengsb.core.api.ekb;
 
 import org.osgi.framework.Version;
 
+import com.google.common.base.Objects;
+
 /**
  * The model description class defines the unique description of a model by the model class name and the version of the
  * model class. The version is equals to the version of the bundle containing the model class. If no version is given,
@@ -26,17 +28,21 @@ import org.osgi.framework.Version;
  */
 public class ModelDescription {
     private String modelClassName;
-    private Version version;
+    private String versionString;
+
+    public ModelDescription() {
+    }
+    
+    public ModelDescription(String modelClassName, String versionString) {
+        this.modelClassName = modelClassName;
+        this.versionString = checkVersionString(versionString);
+    }
 
     public ModelDescription(String modelClassName, Version version) {
         this.modelClassName = modelClassName;
-        this.version = version;
+        this.versionString = version.toString();
     }
 
-    public ModelDescription(String modelClassName, String versionString) {
-        this(modelClassName, Version.parseVersion(versionString));
-    }
-    
     public ModelDescription(String modelClassName) {
         this(modelClassName, new Version(1, 0, 0));
     }
@@ -46,9 +52,9 @@ public class ModelDescription {
     }
 
     public ModelDescription(Class<?> modelClass, String versionString) {
-        this(modelClass.getName(), Version.parseVersion(versionString));
+        this(modelClass.getName(), versionString);
     }
-    
+
     public ModelDescription(Class<?> modelClass) {
         this(modelClass.getName(), new Version(1, 0, 0));
     }
@@ -56,41 +62,44 @@ public class ModelDescription {
     public String getModelClassName() {
         return modelClassName;
     }
-    
+
     public void setModelClassName(String modelClassName) {
         this.modelClassName = modelClassName;
     }
 
-    public String getModelVersionString() {
-        return version.toString();
+    public String getVersionString() {
+        return versionString;
     }
 
-    public Version getModelVersion() {
-        return version;
+    public void setVersion(Version version) {
+        this.versionString = version.toString();
     }
-    
-    public void setModelVersion(Version version) {
-        this.version = version;
+
+    public void setVersionString(String versionString) {
+        this.versionString = checkVersionString(versionString);
     }
-    
-    public void setModelVersion(String versionString) {
-        this.version = Version.parseVersion(versionString);
+
+    private static String checkVersionString(String versionString) {
+        try {
+            return Version.parseVersion(versionString).toString();
+        } catch (IllegalArgumentException e) {
+            String errorMessage =
+                String.format("%s is not a valid version string for a model description", versionString);
+            throw new IllegalArgumentException(errorMessage, e);
+        }
     }
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(modelClassName).append(";").append(version);
+        builder.append(modelClassName).append(";").append(versionString);
         return builder.toString();
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((modelClassName == null) ? 0 : modelClassName.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
+        Object[] obj = new Object[]{ modelClassName, versionString };
+        return Objects.hashCode(obj);
     }
 
     @Override
@@ -102,7 +111,7 @@ public class ModelDescription {
         if (!(other.getModelClassName().equals(this.getModelClassName()))) {
             return false;
         }
-        if (!(other.getModelVersion().equals(this.getModelVersion()))) {
+        if (!(other.getVersionString().equals(this.getVersionString()))) {
             return false;
         }
         return true;
