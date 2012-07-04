@@ -68,8 +68,8 @@ public final class ManipulationUtils {
     }
 
     /**
-     * Try to enhance the object defined by the given byte code. Returns the enhanced class or the original class, if
-     * the given class is no model, as byte array. There may be class loaders appended, if needed.
+     * Try to enhance the object defined by the given byte code. Returns the enhanced class or null, if the given class
+     * is no model, as byte array. There may be class loaders appended, if needed.
      */
     public static byte[] enhanceModel(byte[] byteCode, ClassLoader... loaders) throws IOException,
         CannotCompileException {
@@ -83,36 +83,27 @@ public final class ManipulationUtils {
         return newClass;
     }
 
+    /**
+     * Try to perform the actual model enhancing.
+     */
     private static CtClass doModelModifications(byte[] byteCode, ClassLoader... loaders) {
         if (!initiated) {
             initiate();
         }
         CtClass cc = null;
+        LoaderClassPath[] classloaders = new LoaderClassPath[loaders.length];
         try {
             InputStream stream = new ByteArrayInputStream(byteCode);
             cc = cp.makeClass(stream);
             if (!JavassistUtils.hasAnnotation(cc, Model.class.getName())) {
                 return null;
             }
-            LOGGER.info("Model to enhance: {}", cc.getName());
-
-            LoaderClassPath[] classloaders = new LoaderClassPath[loaders.length];
+            LOGGER.debug("Model to enhance: {}", cc.getName());
             for (int i = 0; i < loaders.length; i++) {
                 classloaders[i] = new LoaderClassPath(loaders[i]);
                 cp.appendClassPath(classloaders[i]);
             }
-            CtClass inter = cp.get(OpenEngSBModel.class.getName());
-            cc.addInterface(inter);
-            addTail(cc);
-            addOpenEngSBModelEntryMethod(cc);
-            addRemoveOpenEngSBModelEntryMethod(cc);
-            addRetrieveInternalModelId(cc);
-            addGetOpenEngSBModelEntries(cc);
-            cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
-            LOGGER.info("Finished model enhancing for class {}", cc.getName());
-            for (int i = 0; i < loaders.length; i++) {
-                cp.removeClassPath(classloaders[i]);
-            }
+            doEnhancement(cc);
             LOGGER.info("Finished model enhancing for class {}", cc.getName());
         } catch (IOException e) {
             LOGGER.error("IOException while trying to enhance model", e);
@@ -124,32 +115,63 @@ public final class ManipulationUtils {
             LOGGER.error("NotFoundException while trying to enhance model", e);
         } catch (ClassNotFoundException e) {
             LOGGER.error("ClassNotFoundException while trying to enhance model", e);
+        } finally {
+            for (int i = 0; i < loaders.length; i++) {
+                if (classloaders[i] != null) {
+                    cp.removeClassPath(classloaders[i]);
+                }
+            }
         }
         return cc;
     }
 
+    /**
+     * Does the steps for the model enhancement.
+     */
+    private static void doEnhancement(CtClass cc) throws CannotCompileException, NotFoundException,
+        ClassNotFoundException {
+        CtClass inter = cp.get(OpenEngSBModel.class.getName());
+        cc.addInterface(inter);
+        addTail(cc);
+        addOpenEngSBModelEntryMethod(cc);
+        addRemoveOpenEngSBModelEntryMethod(cc);
+        addRetrieveInternalModelId(cc);
+        addGetOpenEngSBModelEntries(cc);
+        cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
+    }
+
+    /**
+     * Adds the map for the model tail to the class.
+     */
     private static void addTail(CtClass clazz) throws CannotCompileException, NotFoundException {
         CtField field = CtField.make("private Map openEngSBModelTail = new HashMap();", clazz);
         clazz.addField(field);
     }
 
+    /**
+     * Adds the addOpenEngSBModelEntry method to the class.
+     */
     private static void addOpenEngSBModelEntryMethod(CtClass clazz) throws NotFoundException, CannotCompileException {
-        CtMethod method =
-            new CtMethod(CtClass.voidType, "addOpenEngSBModelEntry", new CtClass[]{ cp.get(OpenEngSBModelEntry.class
-                .getName()) }, clazz);
+        CtClass[] params = generateClassField(OpenEngSBModelEntry.class);
+        CtMethod method = new CtMethod(CtClass.voidType, "addOpenEngSBModelEntry", params, clazz);
         method.setBody("{ openEngSBModelTail.put($1.getKey(), $1); }");
         clazz.addMethod(method);
     }
 
+    /**
+     * Adds the removeOpenEngSBModelEntry method to the class.
+     */
     private static void addRemoveOpenEngSBModelEntryMethod(CtClass clazz) throws NotFoundException,
         CannotCompileException {
-        CtMethod method =
-            new CtMethod(CtClass.voidType, "removeOpenEngSBModelEntry", new CtClass[]{ cp.get(String.class
-                .getName()) }, clazz);
+        CtClass[] params = generateClassField(String.class);
+        CtMethod method = new CtMethod(CtClass.voidType, "removeOpenEngSBModelEntry", params, clazz);
         method.setBody("{ openEngSBModelTail.remove($1); }");
         clazz.addMethod(method);
     }
 
+    /**
+     * Adds the retrieveInternalModelId method to the class.
+     */
     private static void addRetrieveInternalModelId(CtClass clazz) throws NotFoundException,
         CannotCompileException {
         String modelIdField = null;
@@ -159,8 +181,8 @@ public final class ManipulationUtils {
                 break;
             }
         }
-        CtMethod method =
-            new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", new CtClass[]{}, clazz);
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
         if (modelIdField == null) {
             method.setBody("{ return null; }");
         } else {
@@ -169,10 +191,13 @@ public final class ManipulationUtils {
         clazz.addMethod(method);
     }
 
+    /**
+     * Adds the getOpenEngSBModelEntries method to the class.
+     */
     private static void addGetOpenEngSBModelEntries(CtClass clazz) throws NotFoundException,
         CannotCompileException, ClassNotFoundException {
-        CtMethod m = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelEntries", new CtClass[]{}, clazz);
-
+        CtClass[] params = generateClassField();
+        CtMethod m = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelEntries", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append("{ \nList elements = new ArrayList();\n");
         builder.append("elements.addAll(openEngSBModelTail.values());\n");
@@ -182,24 +207,7 @@ public final class ManipulationUtils {
                     || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
                 continue;
             }
-            CtClass fieldType = field.getType();
-            if (fieldType.equals(cp.get(File.class.getName()))) {
-                String wrapperName = property + "wrapper";
-                builder.append("if(").append(property).append(" == null) {");
-                builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
-                builder.append("else {");
-                builder.append("FileWrapper ").append(wrapperName).append(" = new FileWrapper(");
-                builder.append(property).append(");\n").append(wrapperName).append(".serialize();\n");
-                builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                builder.append(wrapperName).append("\", ").append(wrapperName);
-                builder.append(", ").append(wrapperName).append(".getClass()));}\n");
-                addFileFunction(clazz, property);
-            } else {
-                builder.append("elements.add(new OpenEngSBModelEntry(\"");
-                builder.append(property).append("\", ").append(property).append(", ");
-                builder.append(fieldType.getName()).append(".class));\n");
-            }
+            builder.append(handleField(field, clazz));
         }
         builder.append("return elements; } ");
         try {
@@ -211,6 +219,47 @@ public final class ManipulationUtils {
         clazz.addMethod(m);
     }
 
+    /**
+     * Does the actions needed for a field.
+     */
+    private static String handleField(CtField field, CtClass clazz) throws NotFoundException, CannotCompileException {
+        StringBuilder builder = new StringBuilder();
+        CtClass fieldType = field.getType();
+        String property = field.getName();
+        if (fieldType.equals(cp.get(File.class.getName()))) {
+            String wrapperName = property + "wrapper";
+            builder.append("if(").append(property).append(" == null) {");
+            builder.append("elements.add(new OpenEngSBModelEntry(\"");
+            builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
+            builder.append("else {");
+            builder.append("FileWrapper ").append(wrapperName).append(" = new FileWrapper(");
+            builder.append(property).append(");\n").append(wrapperName).append(".serialize();\n");
+            builder.append("elements.add(new OpenEngSBModelEntry(\"");
+            builder.append(wrapperName).append("\", ").append(wrapperName);
+            builder.append(", ").append(wrapperName).append(".getClass()));}\n");
+            addFileFunction(clazz, property);
+        } else {
+            builder.append("elements.add(new OpenEngSBModelEntry(\"");
+            builder.append(property).append("\", ").append(property).append(", ");
+            builder.append(fieldType.getName()).append(".class));\n");
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Generates a CtClass field out of a Class field.
+     */
+    private static CtClass[] generateClassField(Class<?>... classes) throws NotFoundException {
+        CtClass[] result = new CtClass[classes.length];
+        for (int i = 0; i < classes.length; i++) {
+            result[i] = cp.get(classes[i].getName());
+        }
+        return result;
+    }
+
+    /**
+     * Adds the functionality that the models can handle File objects themselves.
+     */
     private static void addFileFunction(CtClass clazz, String property)
         throws NotFoundException, CannotCompileException {
         String wrapperName = property + "wrapper";
@@ -220,7 +269,7 @@ public final class ManipulationUtils {
         String setterName = "set";
         setterName = setterName + Character.toUpperCase(property.charAt(0));
         setterName = setterName + property.substring(1);
-        CtClass[] params = new CtClass[]{ cp.get(FileWrapper.class.getName()) };
+        CtClass[] params = generateClassField(FileWrapper.class);
         CtMethod newFunc = new CtMethod(CtClass.voidType, funcName, params, clazz);
         newFunc.setBody("{ " + setterName + "($1.returnFile());\n }");
         clazz.addMethod(newFunc);
