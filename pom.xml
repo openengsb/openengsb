@@ -33,7 +33,7 @@
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
-  </properties>
+  </properties>  
 
   <parent>
     <groupId>org.openengsb</groupId>
@@ -76,6 +76,8 @@
     <module>components/api</module>
     <module>components/test</module>
     <module>components/common</module>
+    <module>components/weaver/service</module>
+    <module>components/weaver/test</module>
     <module>components/console</module>
     <module>components/edb</module>
     <module>components/ekb</module>

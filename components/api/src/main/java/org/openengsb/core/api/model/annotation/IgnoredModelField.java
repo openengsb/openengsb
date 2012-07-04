@@ -15,17 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api.model.annotation;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface SubModel extends OpenEngSBModel {
-    
-    void setId(String id);
-    
-    String getId();
-    
-    void setValue(String value);
-    
-    String getValue();
+/**
+ * This annotation is used to mark fields of domain models as ignored. If a domain model field is ignored, it isn't in
+ * the result of getOpenEngSBModelEntries and will not be saved in the EDB.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface IgnoredModelField {
+
 }

@@ -53,19 +53,12 @@ public final class EDBConverterUtils {
     }
 
     /**
-     * Loads the model id of a model if existing
-     */
-    private static String getOpenEngSBModelId(OpenEngSBModel model) {
-        return (String) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_OID);
-    }
-
-    /**
      * Creates the OID for a model
      */
     public static String createOID(OpenEngSBModel model, String domainId, String connectorId) {
         StringBuilder builder = new StringBuilder();
         builder.append(createOIDPrefix(domainId, connectorId));
-        String modelId = getOpenEngSBModelId(model);
+        String modelId = model.retrieveInternalModelId().toString();
         if (modelId != null) {
             builder.append(modelId);
         } else {
@@ -73,6 +66,13 @@ public final class EDBConverterUtils {
         }
 
         return builder.toString();
+    }
+
+    public static String createOID(Object model, String domainId, String connectorId) {
+        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
+            throw new IllegalArgumentException("This function need to get a model passed.");
+        }
+        return createOID((OpenEngSBModel) model, domainId, connectorId);
     }
 
     /**

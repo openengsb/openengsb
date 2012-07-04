@@ -95,6 +95,11 @@
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.tinybundles</groupId>
+      <artifactId>tinybundles</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.openengsb.framework</groupId>
@@ -213,7 +218,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
 </project>

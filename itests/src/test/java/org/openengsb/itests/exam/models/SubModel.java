@@ -15,16 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.remote;
+package org.openengsb.itests.exam.models;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-public interface TestModel extends OpenEngSBModel {
-    Integer getId();
+@Model
+public class SubModel {
+    private String name;
+    @OpenEngSBModelId
+    private String edbId;
 
-    void setId(Integer id);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    String getName();
+    public String getName() {
+        return name;
+    }
 
-    void setName(String name);
+    public void setEdbId(String edbId) {
+        this.edbId = edbId;
+    }
+
+    public String getEdbId() {
+        return edbId;
+    }
 }

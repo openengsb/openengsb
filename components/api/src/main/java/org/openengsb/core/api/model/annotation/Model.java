@@ -15,27 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
+package org.openengsb.core.api.model.annotation;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The OpenEngSBModelWrapper class is needed for the proper sending of OpenEngSBModels (with Jason). 
+ * This annotation is used to mark OpenEngSB models. Every class that is marked with this annotation, can be used with
+ * all semantic tools of the OpenEngSB.
  */
-public class OpenEngSBModelWrapper {
-    private String modelClass;
-    private List<OpenEngSBModelEntry> entries;
-    
-    public String getModelClass() {
-        return modelClass;
-    }
-    public void setModelClass(String modelClass) {
-        this.modelClass = modelClass;
-    }
-    public List<OpenEngSBModelEntry> getEntries() {
-        return entries;
-    }
-    public void setEntries(List<OpenEngSBModelEntry> entries) {
-        this.entries = entries;
-    }    
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Model {
+
 }

@@ -50,7 +50,11 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
+<<<<<<< HEAD
         <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
+=======
+        <value>org.openengsb.core.security.filter.OutgoingWrapperFilter</value>
+>>>>>>> OPENENGSB-3018/weaving
         <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
           <property name="factory">
@@ -95,7 +99,6 @@
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
         </bean>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
@@ -113,7 +116,6 @@
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
         </bean>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>

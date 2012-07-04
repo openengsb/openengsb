@@ -15,20 +15,41 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.ekb.annotations;
+package org.openengsb.core.weaver.test.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.openengsb.core.api.model.annotation.IgnoredModelField;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-/**
- * This annotation is used to define default values for string fields of models. Only works on domain models which have
- * been proxied through the EKB. This annotation should mark the getter method of the field which shall get the default
- * string value.
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface DefaultStringValue {
-    String value();
+@Model
+public class TestModel {
+    @OpenEngSBModelId
+    private String id;
+    private String name;
+    @IgnoredModelField
+    private String ignore;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+    public void setIgnore(String ignore) {
+        this.ignore = ignore;
+    }
+    
+    public String getIgnore() {
+        return ignore;
+    }
 }
