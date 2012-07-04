@@ -30,11 +30,6 @@
     <relativePath>../../../parents/framework</relativePath>
   </parent>
 
-  <properties>
-    <bundle.symbolicName>org.openengsb.framework.weaver.test</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.weaver.test</bundle.namespace>
-  </properties>
-
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.weaver.test</artifactId>
   <version>3.0.0-SNAPSHOT</version>
