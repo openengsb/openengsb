@@ -19,7 +19,6 @@ package org.openengsb.connector.example.internal;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -83,7 +82,7 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     @Override
     public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
         LOGGER.info("received model with the id \"{}\" and name \"{}\"", model.getId(), model.getName());
-        ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        ExampleResponseModel response = new ExampleResponseModel();
         return response;
     }
 

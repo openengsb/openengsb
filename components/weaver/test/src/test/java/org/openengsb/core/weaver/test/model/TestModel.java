@@ -15,17 +15,41 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.weaver.test.model;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.IgnoredModelField;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-public interface SubModel extends OpenEngSBModel {
+@Model
+public class TestModel {
+    @OpenEngSBModelId
+    private String id;
+    private String name;
+    @IgnoredModelField
+    private String ignore;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
     
-    void setId(String id);
+    public void setIgnore(String ignore) {
+        this.ignore = ignore;
+    }
     
-    String getId();
-    
-    void setValue(String value);
-    
-    String getValue();
+    public String getIgnore() {
+        return ignore;
+    }
 }

@@ -29,8 +29,6 @@ import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.ekb.transformation.TransformationConstants;
 import org.openengsb.core.api.ekb.transformation.TransformationDescription;
 import org.openengsb.core.api.ekb.transformation.TransformationStep;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,14 +73,8 @@ public class TransformationPerformer {
         checkNeededValues(description);
         sourceClass = modelRegistry.loadModel(description.getSourceModel());
         targetClass = modelRegistry.loadModel(description.getTargetModel());
-
         this.source = source;
-        if (OpenEngSBModel.class.isAssignableFrom(targetClass)) {
-            target = ModelUtils.createModelObject(targetClass);
-        } else {
-            target = targetClass.newInstance();
-        }
-
+        target = targetClass.newInstance();
         for (TransformationStep step : description.getTransformingSteps()) {
             performTransformationStep(step);
         }

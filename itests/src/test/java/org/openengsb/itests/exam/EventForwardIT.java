@@ -36,7 +36,6 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -77,7 +76,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         @Override
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;
-            return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            return new ExampleResponseModel();
         }
     }
 

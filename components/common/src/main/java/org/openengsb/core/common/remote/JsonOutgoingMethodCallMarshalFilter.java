@@ -18,7 +18,6 @@
 package org.openengsb.core.common.remote;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,12 +30,11 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.JsonUtils;
-import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
  * filter. The returned JSON-String representing a {@link MethodResultMessage} is then deserialized and returned.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallMessage]   > Filter > [MethodCallMessage as JSON-string]     > ...
@@ -75,12 +73,8 @@ public class JsonOutgoingMethodCallMarshalFilter extends
             } catch (ClassNotFoundException e) {
                 throw new FilterException(e);
             }
-            if (resultType.isInterface() || Modifier.isAbstract(resultType.getModifiers())) {
-                result.setArg(ModelUtils.convertToOpenEngSBModel(result.getArg(), resultType));
-            } else {
-                Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
-                result.setArg(convertedValue);
-            }
+            Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
+            result.setArg(convertedValue);
         }
         return resultMessage;
     }

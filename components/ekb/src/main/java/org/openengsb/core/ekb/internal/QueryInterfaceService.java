@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,55 +44,54 @@ public class QueryInterfaceService implements QueryInterface {
         .compile("(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?");
 
     @Override
-    public <T extends OpenEngSBModel> T getModel(Class<T> model, String oid) {
+    public <T> T getModel(Class<T> model, String oid) {
         LOGGER.debug("Invoked getModel with the model %s and the oid %s", model.getName(), oid);
         EDBObject object = edbService.getObject(oid);
-        return edbConverter.convertEDBObjectToModel(model, object);
+        return (T) edbConverter.convertEDBObjectToModel(model, object);
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> getModelHistory(Class<T> model, String oid) {
+    public <T> List<T> getModelHistory(Class<T> model, String oid) {
         LOGGER.debug("Invoked getModelHistory with the model %s and the oid %s", model.getName(), oid);
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> getModelHistoryForTimeRange(Class<T> model,
+    public <T> List<T> getModelHistoryForTimeRange(Class<T> model,
             String oid, Long from, Long to) {
         LOGGER.debug("Invoked getModelHistoryForTimeRange with the model %s and the oid %s for the "
                 + "time period of %s to %s", new Object[]{ model.getName(), oid, new Date(from).toString(),
             new Date(to).toString() });
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid, from, to));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid, from, to));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String key, Object value) {
+    public <T> List<T> queryForModels(Class<T> model, String key, Object value) {
         LOGGER.debug("Invoked queryForModels with the model %s, the key %s and the value %s", new Object[]{
             model.getName(), key, value });
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(key, value));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(key, value));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
+    public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForModels with the model %s and a map", model.getName());
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap,
-            Long timestamp) {
+    public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp) {
         LOGGER.debug("Invoked queryForModels with the model %s, a map for the time %s", model.getName(), new Date(
             timestamp).toString());
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query) {
+    public <T> List<T> queryForModels(Class<T> model, String query) {
         return queryForModels(model, query, new Date().getTime() + "");
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+    public <T> List<T> queryForModels(Class<T> model, String query, String timestamp) {
         if (timestamp == null || timestamp.isEmpty()) {
             LOGGER.debug("Got invalid timestamp string. Use the current timestamp instead");
             timestamp = new Date().getTime() + "";
@@ -102,22 +100,22 @@ public class QueryInterfaceService implements QueryInterface {
         LOGGER.debug("Invoked queryForModels with the model %s and the querystring %s for the time %s",
             new Object[]{ model.getName(), query, new Date(time).toString() });
         Map<String, Object> map = generateMapOutOfString(query);
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
+    public <T> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForActiveModels with the model %s and a query map", model.getName());
         Long now = System.currentTimeMillis();
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
     }
 
     @Override
-    public <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model) {
+    public <T> List<T> queryForActiveModels(Class<T> model) {
         LOGGER.debug("Invoked queryForActiveModels with the model %s", model.getName());
         Long now = System.currentTimeMillis();
         Map<String, Object> map = new HashMap<String, Object>();
-        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
     }
 
     /**
