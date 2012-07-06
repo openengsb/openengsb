@@ -41,7 +41,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds an OpenEngSBModel to the list of models which shall be inserted into the EDB.
+     * Adds a model to the list of models which shall be inserted into the EDB. If the given object is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addInsert(Object insert) {
         if (insert != null) {
@@ -52,7 +53,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds a collection of OpenEngSBModels to the list of models which shall be inserted into the EDB.
+     * Adds a collection of models which shall be inserted into the EDB. If one of the given objects is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addInserts(Collection<?> inserts) {
         if (inserts != null) {
@@ -65,7 +67,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds an OpenEngSBModel to the list of models which shall be updated in the EDB.
+     * Adds a model to the list of models which shall be updated in the EDB. If the given object is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addUpdate(Object update) {
         if (update != null) {
@@ -76,7 +79,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds a collection of OpenEngSBModels to the list of models which shall be updated in the EDB.
+     * Adds a collection of models which shall be updated in the EDB. If one of the given objects is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addUpdates(Collection<?> updates) {
         if (updates != null) {
@@ -89,7 +93,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds an OpenEngSBModel to the list of models which shall be deleted from the EDB.
+     * Adds an model to the list of models which shall be deleted from the EDB. If the given object is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addDelete(Object delete) {
         if (delete != null) {
@@ -100,7 +105,8 @@ public class EKBCommit {
     }
 
     /**
-     * Adds a collection of OpenEngSBModels to the list of models which shall be deleted from the EDB.
+     * Adds a collection of models which shall be deleted from the EDB. If one of the given objects is not a model, an
+     * IllegalArgumentException is thrown.
      */
     public EKBCommit addDeletes(Collection<?> deletes) {
         if (deletes != null) {
