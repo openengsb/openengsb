@@ -591,7 +591,7 @@ public class TestClient extends BasePage {
             jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
             info(String.format("%s %s", jsonPrefix, jsonResult));
         } catch (ArgumentConversionException e) {
-            info("One argument has a wrong format");
+            printArgumentConversionException(e);
         }
     }
 
@@ -733,8 +733,17 @@ public class TestClient extends BasePage {
         } catch (InvocationTargetException e) {
             handleExceptionWithFeedback(e.getCause());
         } catch (ArgumentConversionException e) {
-            handleExceptionWithFeedback(e);
+            printArgumentConversionException(e);
         }
+    }
+    
+    private void printArgumentConversionException(ArgumentConversionException e) {
+        Argument argument = e.getArgument();
+        String error = new StringResourceModel("conversion.error", this, null).getString();
+        error = String.format(error, argument.getIndex(), argument.getType().getName());
+        error(error);
+        error(ExceptionUtils.getFullStackTrace(e));
+        LOGGER.error(error, e);
     }
 
     protected void populateArgumentList() {

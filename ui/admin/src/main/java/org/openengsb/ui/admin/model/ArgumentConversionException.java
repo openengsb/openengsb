@@ -17,6 +17,10 @@
 
 package org.openengsb.ui.admin.model;
 
+/**
+ * The ArgumentConversionException is thrown if an argument could not be converted from the given string into the
+ * correct object type.
+ */
 @SuppressWarnings("serial")
 public class ArgumentConversionException extends Exception {
     private Argument argument;
@@ -25,17 +29,17 @@ public class ArgumentConversionException extends Exception {
         super(message);
         this.argument = argument;
     }
-    
+
     public ArgumentConversionException(Throwable throwable, Argument argument) {
         super(throwable);
         this.argument = argument;
     }
-    
+
     public ArgumentConversionException(String message, Throwable throwable, Argument argument) {
         super(message, throwable);
         this.argument = argument;
     }
-    
+
     public Argument getArgument() {
         return argument;
     }
