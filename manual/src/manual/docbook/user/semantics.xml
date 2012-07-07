@@ -45,18 +45,18 @@
             be explained in more detail in the contributor manual.
         </para>
         <para>
-            A domain model is a java bean, annotated with the Model annotation. During run-time, this bean is enhanced
-            to be an OpenEngSBModel object. To save/updated/delete models at the EDB, you should use the PersistInterface
-            service of the EKB bundle. This service deals with the conversion of models to an EDB format and perform the
+            A domain model is a Java bean, annotated with the @Model annotation. During runtime, this bean is enhanced
+            to be an OpenEngSBModel object. To save,update or delete models at the EDB you should use the PersistInterface
+            service of the EKB bundle. This service deals with the conversion of models to an EDB format and performs the
             wanted actions for you. The PersistInterface expects an EKBCommit object, which contains all changes which
-            need to be committed. In the "AbstractOpenEngSBConnectorService" class, a method is implemented which returns
-            you a fitting instance of an EKBCommit for your connector, which then just need to be filled.
+            need to be committed. In the AbstractOpenEngSBConnectorService class a method is implemented which returns
+            you a fitting instance of an EKBCommit for your connector, which then needs to be filled.
         </para>
         <para>
             Every OpenEngSBModel can define an id for itself. This id can be used for easier finding of domain models
             and to enable the versioning possibility when they are saved in the EDB. Such an id can easily be defined 
             by setting a special annotation over the field which defines the id for the object. This annotation is 
-            called "OpenEngSBModelId".
+            called @OpenEngSBModelId.
         </para>
     </section>
     <section>
@@ -70,9 +70,9 @@
     <section>
         <title>Model Transformation</title>
         <para>
-            Through model transformations it is possible to transform models to another model if a transformation is possible.
-            The interface for that is the TransformationEngine which has an implementation in the EKB. A complete instruction
-            in this topic can be found in the transformation chapter (<xref linkend="user.transformations" />)
+            Through model transformations it is possible to transform models to another model if a transformation can be performed.
+            The interface for that is the TransformationEngine which has an implementation in the EKB. A complete list of instructions
+            for this topic can be found in the transformation chapter (<xref linkend="user.transformations" />)
         </para>
     </section>
 </chapter>

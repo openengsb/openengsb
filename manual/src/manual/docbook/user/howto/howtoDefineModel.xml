@@ -112,8 +112,8 @@
         <title>Step 4 - Use the model</title>
         <para>
             The model gets enhanced during runtime to be an OpenEngSBModel. So you just have to instantiate the
-            object and you have a model. To easier access all OpenEngSBModel functionality, since this information
-            isn't there at coding time, you can use the static ModelUtils class for that.
+            object and you have a model. For easier access to all OpenEngSBModel functionality, since this 
+            information is not available at coding time, you may use the static ModelUtils class. 
         </para>
     </section>
 

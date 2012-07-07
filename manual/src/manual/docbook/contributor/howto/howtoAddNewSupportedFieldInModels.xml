@@ -30,14 +30,14 @@
         <title>Goal</title>
         <para>
             This tutorial explains how to create new supported field types for domain models. The support is only needed if you
-            want to save and load this type in/from the EDB. What a domain model is, can be read in the user manual in the semantics
-            section(<xref linkend="user.semantics" />). In that section is also explained which fields are supported until now.
+            want to save and load this type into/from the EDB. What a domain model is can be read in the user manual in the semantics
+            section(<xref linkend="user.semantics" />). In that section is also explained which fields are currently supported.
         </para>
     </section>
     <section>
         <title>Time to complete</title>
         <para>
-            If you are already familiar with the OpenEngSB the first subtask will take about 45 minutes. If you are not familiar 
+            If you are already familiar with the OpenEngSB the first subtask will take about 45 minutes. In the case you are not familiar 
             with the OpenEngSB please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage
             </link> for further information.
         </para>
@@ -53,7 +53,7 @@
     <section>
         <title>Subtask 1 - Enable saving of the type</title>
         <para>
-            The class which need to be eddited in both subtasks is the EDBConverter class in the EKB bundle. WARNING: This step 
+            The class which needs to be edited in both subtasks is the EDBConverter class in the EKB bundle. WARNING: This step 
             is currently under construction and very likely to be changed soon.
         </para>
         <para>
