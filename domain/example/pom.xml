@@ -156,6 +156,7 @@
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
+	  <version>${labs.delegation.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

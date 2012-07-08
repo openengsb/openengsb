@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -29,13 +28,12 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.JsonUtils;
-import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * This filter takes a JSON-serialized {@link MethodCallMessage} and deserializes it. The {@link MethodCallMessage}
  * object is then passed on to the next filter. The returned {@link MethodResultMessage} is than seralized to JSON
  * again.
- *
+ * 
  * <code>
  * <pre>
  *      [MethodCallRequest as JSON-string]   > Filter > [MethodCallRequest]     > ...
@@ -65,11 +63,7 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
                 } catch (ClassNotFoundException e) {
                     throw new FilterException(e);
                 }
-                if (parameterClass.isInterface() && OpenEngSBModel.class.isAssignableFrom(parameterClass)) {
-                    args[i] = ModelUtils.convertToOpenEngSBModel(args[i], parameterClass);
-                } else {
-                    args[i] = objectMapper.convertValue(args[i], parameterClass);
-                }
+                args[i] = objectMapper.convertValue(args[i], parameterClass);
             }
             MethodResultMessage returnValue = (MethodResultMessage) next.filter(callMessage, metadata);
             return objectMapper.writeValueAsString(returnValue);

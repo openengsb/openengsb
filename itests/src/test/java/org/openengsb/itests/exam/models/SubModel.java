@@ -15,22 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
+package org.openengsb.itests.exam.models;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-/**
- * This annotation shall be used to define an id for a domain model. Only works on domain models which have been proxied
- * through the EKB. This annotation should mark the setter method of the field which shall be the id of the domain
- * model. If a domain model has a id, the saving name of a domain model in the EDB is well defined, if not the model
- * will be saved with a random name. If using a not EKB proxied, the id can be set with an OpenEngSBModelEntry with the
- * key "edbId".
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface OpenEngSBModelId {
+@Model
+public class SubModel {
+    private String name;
+    @OpenEngSBModelId
+    private String edbId;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setEdbId(String edbId) {
+        this.edbId = edbId;
+    }
+
+    public String getEdbId() {
+        return edbId;
+    }
 }

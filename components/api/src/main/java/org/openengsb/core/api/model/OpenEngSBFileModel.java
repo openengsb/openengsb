@@ -19,12 +19,33 @@ package org.openengsb.core.api.model;
 
 import java.io.File;
 
-/**
- * This model object purpose is a pre-defined possibility to send Files to domains/connectors.
- */
-public interface OpenEngSBFileModel extends OpenEngSBModel {
-    
-    File getFile();
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-    void setFile(File file);
+/**
+ * This model object purpose is a pre-defined possibility to send Files to domains/connectors. The id is optional and
+ * can be used if you want to save the file in the EDB. If the model aren't persisted the id can be ignored. If the
+ * model get persisted and no id is set, the EDB use a generated one. See details about that in the manual.
+ */
+@Model
+public class OpenEngSBFileModel {
+    @OpenEngSBModelId
+    private String id;
+    private File file;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }
