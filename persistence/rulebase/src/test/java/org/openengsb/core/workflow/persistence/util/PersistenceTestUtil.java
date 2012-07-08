@@ -17,6 +17,8 @@
 
 package org.openengsb.core.workflow.persistence.util;
 
+import java.io.IOException;
+
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -36,27 +38,40 @@ public final class PersistenceTestUtil {
     public static RuleManager getRuleManager(TemporaryFolder tempFolder) throws Exception {
         PersistenceRuleManager manager = new PersistenceRuleManager();
 
-        GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
-        globalBackend.setStorageFilePath(tempFolder.newFile("globals").getPath());
-        ConfigPersistenceService globalService = new DefaultConfigPersistenceService(globalBackend);
+        ConfigPersistenceService globalService = getGlobalConfigPersistence(tempFolder);
         manager.setGlobalPersistence(globalService);
 
-        ImportDeclarationPersistenceBackendService importBackend = new ImportDeclarationPersistenceBackendService();
-        importBackend.setStorageFilePath(tempFolder.newFile("imports").getPath());
-        ConfigPersistenceService importService = new DefaultConfigPersistenceService(importBackend);
+        ConfigPersistenceService importService = getImportConfigPersistence(tempFolder);
         manager.setImportPersistence(importService);
 
+        ConfigPersistenceService ruleService = getRuleBaseConfigPersistence(tempFolder);
+        manager.setRulePersistence(ruleService);
+
+        return manager;
+    }
+
+    private static ConfigPersistenceService getGlobalConfigPersistence(TemporaryFolder tempFolder) throws IOException {
+        GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
+        globalBackend.setStorageFilePath(tempFolder.newFile("globals").getPath());
+        return new DefaultConfigPersistenceService(globalBackend);
+    }
+
+    private static ConfigPersistenceService getImportConfigPersistence(TemporaryFolder tempFolder) throws IOException {
+        ImportDeclarationPersistenceBackendService importBackend = new ImportDeclarationPersistenceBackendService();
+        importBackend.setStorageFilePath(tempFolder.newFile("imports").getPath());
+        return new DefaultConfigPersistenceService(importBackend);
+    }
+
+    private static ConfigPersistenceService getRuleBaseConfigPersistence(TemporaryFolder tempFolder) throws IOException {
         RuleBaseElementPersistenceBackendService ruleBackend = new RuleBaseElementPersistenceBackendService();
         ruleBackend.setStorageFolderPath(tempFolder.newFolder("flows").getPath());
         try {
             ruleBackend.init();
         } catch (PersistenceException e) {
             LOGGER.error(e.getMessage());
+            throw e;
         }
-        ConfigPersistenceService ruleService = new DefaultConfigPersistenceService(ruleBackend);
-        manager.setRulePersistence(ruleService);
-
-        return manager;
+        return new DefaultConfigPersistenceService(ruleBackend);
     }
 
     private PersistenceTestUtil() {

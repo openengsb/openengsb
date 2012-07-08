@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -65,6 +66,7 @@ public class WorkflowDeployerServiceTest {
 
     @Test
     public void testWorkflowDeployerService_isAnArtifactListener() {
+        // FIXME OPENENGSB-2200 refactor workflow tests
         // assertThat(workflowDeployer instanceof ArtifactInstaller, is(true));
     }
 

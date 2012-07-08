@@ -42,6 +42,10 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     private ConfigPersistenceService globalPersistence;
     private ConfigPersistenceService importPersistence;
 
+    public synchronized void init() {
+        builder.reloadRulebase();
+    }    
+    
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
         try {
