@@ -44,8 +44,8 @@ public class PersistenceRuleManager extends AbstractRuleManager {
 
     public synchronized void init() {
         builder.reloadRulebase();
-    }    
-    
+    }
+
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
         try {
@@ -215,7 +215,13 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            globalPersistence.remove(cnf.getMetaData());
+            throw e;
+        }
+
     }
 
     @Override

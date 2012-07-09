@@ -44,8 +44,10 @@ public final class PersistenceTestUtil {
         ConfigPersistenceService importService = getImportConfigPersistence(tempFolder);
         manager.setImportPersistence(importService);
 
-        ConfigPersistenceService ruleService = getRuleBaseConfigPersistence(tempFolder);
+        ConfigPersistenceService ruleService = getRuleConfigPersistence(tempFolder);
         manager.setRulePersistence(ruleService);
+
+        manager.init();
 
         return manager;
     }
@@ -62,7 +64,7 @@ public final class PersistenceTestUtil {
         return new DefaultConfigPersistenceService(importBackend);
     }
 
-    private static ConfigPersistenceService getRuleBaseConfigPersistence(TemporaryFolder tempFolder) throws IOException {
+    private static ConfigPersistenceService getRuleConfigPersistence(TemporaryFolder tempFolder) throws IOException {
         RuleBaseElementPersistenceBackendService ruleBackend = new RuleBaseElementPersistenceBackendService();
         ruleBackend.setStorageFolderPath(tempFolder.newFolder("flows").getPath());
         try {

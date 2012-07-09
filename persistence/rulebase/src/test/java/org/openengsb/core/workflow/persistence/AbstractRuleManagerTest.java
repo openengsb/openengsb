@@ -44,7 +44,7 @@ public abstract class AbstractRuleManagerTest {
 
     @Before
     public void setUp() throws Exception {
-                ruleManager = PersistenceTestUtil.getRuleManager(folder);
+        ruleManager = PersistenceTestUtil.getRuleManager(folder);
         RuleUtil.addImportsAndGlobals(ruleManager);
         rulebase = ruleManager.getRulebase();
     }

@@ -92,7 +92,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
             "Variable name has to be defined");
 
         Map<String, String> globals = readStorageFile();
-        String variableName = metadata.remove(metadata.get(GlobalDeclaration.META_GLOBAL_VARIABLE));
+        String variableName = metadata.get(GlobalDeclaration.META_GLOBAL_VARIABLE);
         if (!globals.containsKey(variableName)) {
             LOGGER.warn("Couldn't remove global \"{}\", because it does not exist in \"{}\"", variableName,
                 storageFile);
