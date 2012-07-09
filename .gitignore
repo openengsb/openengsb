@@ -39,6 +39,8 @@ eclipse-workspace
 *.ipr
 *.iws
 *classes
+atlassian-ide-plugin.xml
+.idea
 
 #=================
 #netbeans-project
