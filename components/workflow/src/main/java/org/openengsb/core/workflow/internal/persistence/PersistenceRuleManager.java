@@ -163,7 +163,12 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
-        builder.reloadRulebase();
+        try {
+            builder.reloadRulebase();
+        } catch (RuleBaseException e) {
+            importPersistence.remove(cnf.getMetaData());
+            throw e;
+        }
     }
 
     @Override
