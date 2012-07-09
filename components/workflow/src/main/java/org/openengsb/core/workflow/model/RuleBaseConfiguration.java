@@ -20,7 +20,14 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 
+/**
+ * The RuleBaseConfiguration is a wrapper class around the RuleBaseElement which gets used to save ImportDeclarations to
+ * ConfigPersistence.
+ * 
+ */
 public class RuleBaseConfiguration extends ConfigItem<RuleBaseElement> {
+
+    private static final long serialVersionUID = 7695268786422761110L;
 
     public RuleBaseConfiguration() {
         super();

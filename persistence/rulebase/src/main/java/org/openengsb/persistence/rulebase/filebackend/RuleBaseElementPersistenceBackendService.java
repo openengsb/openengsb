@@ -39,6 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * A backend implementation for ConfigPersistence that saves RuleBaseElement objects to files.
+ */
 public class RuleBaseElementPersistenceBackendService implements ConfigPersistenceBackendService<RuleBaseElement> {
 
     private File storageFolder;

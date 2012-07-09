@@ -31,6 +31,10 @@ import org.openengsb.persistence.rulebase.filebackend.RuleBaseElementPersistence
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A helper class to get a RuleManager using the filebased ConfigPersistence backends.
+ * 
+ */
 public final class PersistenceTestUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);

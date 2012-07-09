@@ -97,9 +97,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     @Override
     public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
         RuleBaseElement newBean = new RuleBaseElement(name, newCode);
-
-        Map<String, String> metaData = newBean.toMetadata();
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(metaData, newBean);
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(newBean);
 
         try {
             rulePersistence.persist(conf);

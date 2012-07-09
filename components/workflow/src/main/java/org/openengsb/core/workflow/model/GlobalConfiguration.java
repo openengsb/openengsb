@@ -20,7 +20,14 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 
+/**
+ * The GlobalConfiguration is a wrapper class around the GlobalDeclaration which gets used to save GlobalDeclarations to
+ * ConfigPersistence.
+ * 
+ */
 public class GlobalConfiguration extends ConfigItem<GlobalDeclaration> {
+
+    private static final long serialVersionUID = 8106935114630310593L;
 
     public GlobalConfiguration() {
         super();

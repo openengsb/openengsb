@@ -26,6 +26,11 @@ import org.openengsb.core.workflow.model.RuleBaseElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A filter which gets used by the {@link RuleBaseElementPersistenceBackendService} to get files fitting the metadata
+ * search criteria
+ * 
+ */
 public class RuleBaseFileNameFilter implements IOFileFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleBaseFileNameFilter.class);

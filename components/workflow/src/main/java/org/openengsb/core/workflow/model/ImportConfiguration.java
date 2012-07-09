@@ -20,7 +20,14 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 
+/**
+ * The ImportConfiguration is a wrapper class around the ImportDeclaration which gets used to save ImportDeclarations to
+ * ConfigPersistence.
+ * 
+ */
 public class ImportConfiguration extends ConfigItem<ImportDeclaration> {
+
+    private static final long serialVersionUID = 197866060287739408L;
 
     public ImportConfiguration() {
         super();
