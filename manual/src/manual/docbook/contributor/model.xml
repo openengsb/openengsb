@@ -44,7 +44,7 @@
     <section>
         <title>Structure of a model</title>
         <para>
-            A model is a Java bean object. This object need to be annotated with the @Model annotation of the core api bundle.
+            A model is a Java Bean object. This object needs to be annotated with the @Model annotation of the core api bundle.
             An object that is marked that way will be enhanced by a weaving hook in the OpenEngSB environment to fulfill
             all needed functionality of a model. During this enhancement the OpenEngSBModel interface is added to the object 
             and the interface methods get generated and injected.
@@ -60,7 +60,7 @@
             such an id is set, will be explained later.
         </para>
         <para>
-            To enable all funcationality of a model (inlcuding transformations) this model need to be provided through the labs delegation
+            To enable all functionality of a model (inlcuding transformations) this model needs to be provided through the labs delegation
             project. To do so, add the labs delegation project to your models bundle and annotate the model class with the annotation
             @Provide. For this annotation you have to set the context for the model providing to the constant DELEGATION_CONTEXT_MODELS 
             of the core api constants.

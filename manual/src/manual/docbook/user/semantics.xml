@@ -45,7 +45,7 @@
             be explained in more detail in the contributor manual.
         </para>
         <para>
-            A domain model is a Java bean, annotated with the @Model annotation. During runtime, this bean is enhanced
+            A domain model is a Java Bean annotated with the @Model annotation. During runtime, this bean is enhanced
             to be an OpenEngSBModel object. To save,update or delete models at the EDB you should use the PersistInterface
             service of the EKB bundle. This service deals with the conversion of models to an EDB format and performs the
             wanted actions for you. The PersistInterface expects an EKBCommit object, which contains all changes which
