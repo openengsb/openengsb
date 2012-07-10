@@ -207,6 +207,8 @@
               <exclude>**/nb-configuration.xml</exclude>
               <exclude>**/*.checkstyle</exclude>
               <exclude>**/*.rf</exclude>
+              <exclude>.idea/**</exclude>
+              <exclude>atlassian-ide-plugin.xml</exclude>
             </excludes>
             <mapping>
               <bnd>SCRIPT_STYLE</bnd>
