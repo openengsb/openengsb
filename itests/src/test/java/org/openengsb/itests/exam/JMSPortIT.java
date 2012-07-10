@@ -79,6 +79,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
     private DefaultOsgiUtilsService utilsService;
+    private String openwirePort;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -92,6 +93,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
         addWorkflow("simpleFlow");
         String string = null;
         while (string == null) {
@@ -172,7 +174,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         // make sure jms is up and running
         utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
-        SecureSampleConnector remoteConnector = new SecureSampleConnector();
+        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
         remoteConnector.start();
         ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(service.pid=example-remote)", 31000);
 
@@ -243,7 +245,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
         ActiveMQConnectionFactory cf =
-            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:" + openwirePort + ")?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
     }
