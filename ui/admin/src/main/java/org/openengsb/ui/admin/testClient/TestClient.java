@@ -81,6 +81,7 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
 import org.openengsb.ui.admin.model.Argument;
+import org.openengsb.ui.admin.model.ArgumentConversionException;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
@@ -407,14 +408,14 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
-    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
+    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId)
+        throws ArgumentConversionException {
         Class<?>[] classes = methodId.getArgumentTypesAsClasses();
         List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
         }
         return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray(), classList);
-
     }
 
     /**
@@ -425,7 +426,8 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
      */
-    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
+    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId)
+        throws ArgumentConversionException {
         org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
         realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
         return new MethodCallRequest(realMethodCall, "randomCallId");
@@ -439,7 +441,8 @@ public class TestClient extends BasePage {
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
      */
-    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
+    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId)
+        throws ArgumentConversionException {
         MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
         BeanDescription beanDescription =
             BeanDescription.fromObject(new UsernamePasswordAuthenticationInfo("admin", "password"));
@@ -527,10 +530,14 @@ public class TestClient extends BasePage {
             info(methodNotSet);
             return;
         }
-        String jsonResult = parseRequestToJsonString(createSecureRequest(serviceId, methodId));
-        String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
-        jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
-        info(String.format("%s %s", jsonPrefix, jsonResult));
+        try {
+            String jsonResult = parseRequestToJsonString(createSecureRequest(serviceId, methodId));
+            String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
+            jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
+            info(String.format("%s %s", jsonPrefix, jsonResult));
+        } catch (ArgumentConversionException e) {
+            printArgumentConversionException(e);
+        }
     }
 
     public TestClient(ServiceId jumpToService) {
@@ -672,7 +679,18 @@ public class TestClient extends BasePage {
             handleExceptionWithFeedback(e);
         } catch (InvocationTargetException e) {
             handleExceptionWithFeedback(e.getCause());
+        } catch (ArgumentConversionException e) {
+            printArgumentConversionException(e);
         }
+    }
+    
+    private void printArgumentConversionException(ArgumentConversionException e) {
+        Argument argument = e.getArgument();
+        String error = new StringResourceModel("conversion.error", this, null).getString();
+        error = String.format(error, argument.getIndex(), argument.getType().getName());
+        error(error);
+        error(ExceptionUtils.getFullStackTrace(e));
+        LOGGER.error(error, e);
     }
 
     protected void populateArgumentList() {

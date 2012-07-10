@@ -51,10 +51,15 @@ public class MethodCall implements Serializable {
         this.service = service;
     }
 
-    public Object[] getArgumentsAsArray() {
+    public Object[] getArgumentsAsArray() throws ArgumentConversionException {
         Object[] result = new Object[arguments.size()];
         for (int i = 0; i < arguments.size(); i++) {
-            result[i] = arguments.get(i).toValue();
+            try {
+                result[i] = arguments.get(i).toValue();
+            } catch (IllegalArgumentException e) {
+                Argument arg = arguments.get(i);
+                throw new ArgumentConversionException("Error during conversion of an argument", e, arg);
+            }
         }
         return result;
     }
