@@ -29,19 +29,17 @@
     <section>
         <title>Goal</title>
         <para>
-            This tutorial explains how to create new supported field types for domain models. What a domain model is, can be
-            read in the user manual in the semantics section(<xref linkend="user.semantics" />). In this section is also explained
-            which fields are supported until now. This task is divided in two subtasks, where the second one is optional. The first
-            subtask provides the functionality that the model is working correctly with the new field type. The second subtask is
-            the possibility that this fields are also saved in the EDB and can be loaded from the EDB.
+            This tutorial explains how to create new supported field types for domain models. The support is only needed if you
+            want to save and load this type into/from the EDB. What a domain model is can be read in the user manual in the semantics
+            section(<xref linkend="user.semantics" />). In that section is also explained which fields are currently supported.
         </para>
     </section>
     <section>
         <title>Time to complete</title>
         <para>
-            If you are already familiar with the OpenEngSB the first subtask will take about 45 minutes. The second subtask 
-            will take about another 45 minutes. If you are not familiar with the OpenEngSB please read this manual from the 
-            start or check the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.
+            If you are already familiar with the OpenEngSB the first subtask will take about 45 minutes. In the case you are not familiar 
+            with the OpenEngSB please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage
+            </link> for further information.
         </para>
     </section>
     <section>
@@ -53,85 +51,23 @@
         </para>
     </section>
     <section>
-        <title>Subtask 1 - Add model support</title>
+        <title>Subtask 1 - Enable saving of the type</title>
         <para>
-            All that have to be done is to add a new converter step to the ModelProxy class in the core common bundle. Step by
-            step:
+            The class which needs to be edited in both subtasks is the EDBConverter class in the EKB bundle. WARNING: This step 
+            is currently under construction and very likely to be changed soon.
         </para>
-        <section>
-            <title>Create new converter step</title>
-            <para>
-                A converter step is a class which extends the interface ModelEntryConverterStep. A ModelEntryConverterStep 
-                interface consists of 4 methods. This methods are 2 match functions, which define if the given object can
-                be converted by one of the converter methods, which are the other 2 functions. The interface looks like this:
-            </para>
-            <programlisting>
-                public interface ModelEntryConverterStep {
-                   /**
-                    * Checks if the given object is suitable for converting work when "getOpenEngSBModelObjects" of the proxy is
-                    * called. (e.g. an OpenEngSBModel)
-                   */
-                   boolean matchForGetModelEntries(Object object);
-                   /**
-                    * Does the converting work for the proxy when "getOpenEngSBModelObjects" is called. (e.g. OpenEngSBModel ->
-                    * OpenEngSBModelWrapper)
-                   */
-                   Object convertForGetModelEntries(Object object);
-                   /**
-                    * Checks if the given object is suitable for converting work when a getter of the proxy is called. (e.g. an
-                    * OpenEngSBModelWrapper)
-                   */
-                   boolean matchForGetter(Object object);
-                   /**
-                    * Does the converting work for the proxy when a getter is called. (e.g. OpenEngSBModelWrapper ->
-                    * OpenEngSBModel)
-                   */
-                   Object convertForGetter(Object object);
-                }
-            </programlisting>
-            <para>
-                The first two functions define the converting functionality if getOpenEngSBModelObjects is called. (e.g. we used
-                this to convert a File object to a FileWrapper object).
-                The other two functions define the converting functionality if a corresponding getter method is called. (e.g. convert
-                FileWrapper object to File object.
-            </para>
-        </section>
-        <section>
-            <title>Add converter step</title>
-            <para>
-                To add the new converter step, you have to add the converter step to the list of converter steps in the method
-                "initializeModelConverterSteps" in the ModelProxyHandler class. Important: The DefaultConverterStep have to be
-                the last step in the converter step list.
-            </para>
-        </section>
+        <para>
+            Here you need to add a new else if block to the method convertSubModel. Examples how to do that are already implemented.
+        </para>
     </section>
     <section>
-        <title>Subtask 2 - Add EDB support</title>
+        <title>Subtask 2 - Enable loading of the type</title>
         <para>
             To accomplish this task, you have to extend the EDBConverter class in the EKB bundle. WARNING: This step is currently 
-            under construction and very likely to be changed soon. As example for this subtask, you can check how it was done 
-            with the File object.
+            under construction and very likely to be changed soon.
         </para>
         <para>
-            In the EDBConverter, there are two functions which have to be extended. The first is needed for the conversion of
-            OpenEngSBModels to EDBObjects and the other one is needed for the conversion of EDBObjects to OpenEngSBModels.
+            Here you need to add a new else if block to the method getValueForProperty. Examples how to do that are already implemented.
         </para>
-        <section>
-            <title>OpenEngSBModels to EDBObjects</title>
-            <para>
-                For this direction the method "convertSubModel" has to be extended. In the part where every OpenEngSBModelEntry get
-                analyzed, a new if statement has to be added, which does a special handling if the new introduced wrapper class is 
-                the parameter. How this wrapper class is saved, is up to you. 
-            </para>
-        </section>
-        <section>
-            <title>EDBObjects to OpenEngSBModels</title>
-            <para>
-                For this direction you have to extend the method "getValueForProperty".
-                Again, here must also a new if statement been added, where the parameter type is checked for the new field object which
-                should be supported. If this statement fits, you have to undo the conversion which have you done in the 
-                "OpenEngSBModels to EDBObjects" part.
-            </para>
-        </section>
     </section>
 </chapter>
