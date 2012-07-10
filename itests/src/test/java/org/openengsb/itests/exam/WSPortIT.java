@@ -57,8 +57,8 @@ import org.w3c.dom.Document;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
-    private static final String WSDL_URL = "http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl";
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
+    private String wsdlUrl;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -67,7 +67,9 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Before
     public void checkIfTestsAreReady() throws Exception {
-        waitForSiteToBeAvailable(WSDL_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        wsdlUrl = String.format("http://localhost:%s/ws/receiver/?wsdl", httpPort);
+        waitForSiteToBeAvailable(wsdlUrl, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @Test
@@ -143,7 +145,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL(WSDL_URL), serviceName);
+        Service service = Service.create(new URL(wsdlUrl), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;

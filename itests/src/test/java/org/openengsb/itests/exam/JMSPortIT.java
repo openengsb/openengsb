@@ -73,6 +73,7 @@ import org.springframework.jms.support.JmsUtils;
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private DefaultOsgiUtilsService utilsService;
+    private String openwirePort;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -82,6 +83,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
         utilsService = new DefaultOsgiUtilsService(getBundleContext());
     }
 
@@ -163,7 +165,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         // make sure jms is up and running
         utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
-        SecureSampleConnector remoteConnector = new SecureSampleConnector();
+        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
         remoteConnector.start();
         ExampleDomain osgiService =
             getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
@@ -242,7 +244,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     private JmsTemplate prepareActiveMqConnection() throws IOException {
         addWorkflow("simpleFlow");
         ActiveMQConnectionFactory cf =
-            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:" + openwirePort + ")?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
     }

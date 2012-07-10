@@ -56,8 +56,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     private static final String CONTEXT = "it-taskbox";
     private static final String WORKFLOW = "HIDemoWorkflow";
-    private static final String PAGE_ENTRY_URL =
-        "http://localhost:" + WEBUI_PORT + "/openengsb/tasks/?context=" + CONTEXT;
+    private String pageEntryUrl;
     private static final int MAX_RETRY = 5;
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
@@ -68,6 +67,8 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        pageEntryUrl = "http://localhost:" + httpPort + "/openengsb/tasks/?context=" + CONTEXT;
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
@@ -77,7 +78,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class);
-        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        waitForSiteToBeAvailable(pageEntryUrl, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @After
@@ -89,8 +90,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     public void testIfTaskOverviewInteractionWorks() throws Exception {
         addWorkflow();
         loginAsAdmin();
-
-        HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+        HtmlPage taskOverviewPage = webClient.getPage(pageEntryUrl);
         assertTrue(taskOverviewPage.asText().contains("No Records Found"));
         assertTrue(taskboxService.getOpenTasks().size() == 0);
 
@@ -124,7 +124,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         boolean isRight = false;
         for (int i = 0; i < MAX_RETRY && !isRight; i++) {
             try {
-                taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+                taskOverviewPage = webClient.getPage(pageEntryUrl);
                 table = taskOverviewPage.getFirstByXPath("//table");
                 String full = table.asText();
                 taskOneRow = table.getRow(2);
@@ -154,7 +154,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         isRight = false;
         for (int i = 0; i < MAX_RETRY && !isRight; i++) {
             try {
-                taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+                taskOverviewPage = webClient.getPage(pageEntryUrl);
                 table = taskOverviewPage.getFirstByXPath("//table");
                 taskOneRow = table.getRow(2);
                 isRight =
@@ -186,7 +186,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private void loginAsAdmin() throws FailingHttpStatusCodeException, IOException {
-        HtmlPage page = webClient.getPage(PAGE_ENTRY_URL);
+        HtmlPage page = webClient.getPage(pageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");

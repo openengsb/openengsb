@@ -45,13 +45,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper {
 
     private WebClient webClient;
-    private static final String LOGIN_PAGE_URL = "http://localhost:" + WEBUI_PORT + "/openengsb/login/";
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
+    private String loginPageUrl;
 
     @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
-        waitForSiteToBeAvailable(LOGIN_PAGE_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        loginPageUrl = String.format("http://localhost:%s/openengsb/login", httpPort);
+        waitForSiteToBeAvailable(loginPageUrl, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @After
@@ -62,7 +64,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
     @Test
     public void testIfAllMainNavigationLinksWork() throws Exception {
-        final HtmlPage page = webClient.getPage(LOGIN_PAGE_URL);
+        final HtmlPage page = webClient.getPage(loginPageUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");
@@ -86,7 +88,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
     @Test
     public void testUserLoginWithLimitedAccess() throws Exception {
-        final HtmlPage page = webClient.getPage(LOGIN_PAGE_URL);
+        final HtmlPage page = webClient.getPage(loginPageUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("user");
@@ -98,7 +100,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
     @Test
     public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:" + WEBUI_PORT + "/openengsb/");
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        HtmlPage page = webClient.getPage("http://localhost:" + httpPort + "/openengsb/");
         page = page.getAnchorByText("Login").click();
 
         HtmlForm form = page.getForms().get(0);
