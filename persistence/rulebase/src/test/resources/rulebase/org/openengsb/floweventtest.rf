@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Austrian Association for Software Tool Integration (AASTI)
@@ -21,37 +21,31 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="Flow Test" id="flowtest" package-name="org.openengsb" routerLayout="2" >
+         type="RuleFlow" name="Flow Test" id="floweventtest" package-name="org.openengsb" routerLayout="2" >
 
   <header>
-    <variables>
-      <variable name="event1value" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="TestingObject" />
-      </variable>
-    </variables>
   </header>
 
   <nodes>
-    <join id="17" name="Gateway" x="88" y="177" width="49" height="49" type="1" />
+    <join id="17" name="FirstEventConverge" x="88" y="177" width="49" height="49" type="1" />
     <start id="1" name="Start" x="32" y="16" width="49" height="49" />
     <end id="2" name="End" x="136" y="419" width="49" height="49" />
-    <actionNode id="21" name="Script" x="72" y="258" width="80" height="48" >
-        <action type="expression" dialect="mvel" >log.debug("first event recieved, converged");
-log.debug("value was: " + event1value);</action>
+    <actionNode id="21" name="FirstEventScript" x="72" y="258" width="80" height="48" >
+        <action type="expression" dialect="mvel" >example.doSomething("first event received");</action>
     </actionNode>
-    <eventNode id="25" name="Message" x="128" y="97" width="80" height="48" variableName="event1value" >
+    <eventNode id="25" name="FirstEvent" x="128" y="97" width="80" height="48" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="TestObject" />
+        <eventFilter type="eventType" eventType="Event" />
       </eventFilters>
     </eventNode>
-    <eventNode id="27" name="Message" x="184" y="258" width="48" height="48" >
+    <eventNode id="27" name="SecondEvent" x="184" y="258" width="151" height="48" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="TestObject2" />
+        <eventFilter type="eventType" eventType="TestEvent" />
       </eventFilters>
     </eventNode>
-    <join id="26" name="Gateway" x="136" y="338" width="49" height="49" type="1" />
-    <actionNode id="11" name="Script" x="16" y="97" width="80" height="48" >
-        <action type="expression" dialect="java" >log.debug("start testflow");</action>
+    <join id="26" name="SecondEventConverge" x="136" y="338" width="49" height="49" type="1" />
+    <actionNode id="11" name="StartScript" x="16" y="97" width="80" height="48" >
+        <action type="expression" dialect="java" >example.doSomething("start testflow");</action>
     </actionNode>
   </nodes>
 

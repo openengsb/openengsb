@@ -26,7 +26,7 @@
   <header>
     <variables>
       <variable name="event1value" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="TestingObject" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="TestObject" />
       </variable>
     </variables>
   </header>

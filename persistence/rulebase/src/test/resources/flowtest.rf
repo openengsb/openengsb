@@ -31,14 +31,14 @@
     <end id="2" name="End" x="367" y="11" width="49" height="49" />
     <split id="3" name="Gateway" x="172" y="20" width="49" height="49" type="2" >
       <constraints>
-        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="constraint" priority="1" type="rule" dialect="mvel" >TestingObject( value == "42")</constraint>
+        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="constraint" priority="1" type="rule" dialect="mvel" >TestObject( value == "42")</constraint>
         <constraint toNodeId="4" toType="DROOLS_DEFAULT" name="constraint" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
       </constraints>
     </split>
     <join id="4" name="Gateway" x="363" y="112" width="49" height="49" type="2" />
     <actionNode id="6" name="Reiteration" x="33" y="110" width="107" height="48" >
         <action type="expression" dialect="java" >System.out.println("reiterate");
-insert(new TestingObject("42"));</action>
+insert(new TestObject("42"));</action>
     </actionNode>
   </nodes>
 
