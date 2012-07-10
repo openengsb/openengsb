@@ -18,8 +18,7 @@
 package org.openengsb
 
 #list any import classes here.
-import org.openengsb.core.workflow.model.TestingObject
-import org.slf4j.Logger
+import org.openengsb.core.test.NullDomain
 
 #declare any global variables here
-global Logger log
+global NullDomain location

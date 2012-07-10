@@ -18,6 +18,8 @@
 package org.openengsb.core.workflow.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -26,6 +28,10 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 public class RuleBaseElement implements Serializable {
 
     private static final long serialVersionUID = -4904033275614618650L;
+
+    public static final String META_RULE_TYPE = "type";
+    public static final String META_RULE_NAME = "name";
+    public static final String META_RULE_PACKAGE = "package";
 
     private String code;
     private RuleBaseElementType type;
@@ -85,6 +91,20 @@ public class RuleBaseElement implements Serializable {
     @Override
     public String toString() {
         return String.format("%s %s[%s]", type, packageName, name);
+    }
+
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        if (this.getName() != null) {
+            ret.put(META_RULE_NAME, this.getName());
+        }
+        if (this.getPackageName() != null) {
+            ret.put(META_RULE_PACKAGE, this.getPackageName());
+        }
+        if (this.getType() != null) {
+            ret.put(META_RULE_TYPE, this.getType().toString());
+        }
+        return ret;
     }
 
     @Override

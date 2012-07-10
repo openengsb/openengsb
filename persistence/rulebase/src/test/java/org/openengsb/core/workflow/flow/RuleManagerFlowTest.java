@@ -31,18 +31,23 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestObject;
-import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleManagerFlowTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleManagerFlowTest.class);
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     private RuleManager source;
     private KnowledgeBase rulebase;
@@ -71,7 +76,7 @@ public class RuleManagerFlowTest {
     }
 
     protected RuleManager getRuleBaseSource() throws Exception {
-        RuleManager source = PersistenceTestUtil.getRuleManager();
+        RuleManager source = PersistenceTestUtil.getRuleManager(folder);
         return source;
     }
 
