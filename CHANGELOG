@@ -1,3 +1,59 @@
+openengsb-framework-2.5.1 2012-07-11
+--------------------------------------------
+
+The first maintainance release of the 2.5.x branch fixes 10 important issues in all parts of the OpenEngSB. In addition
+a minor enhancement to our build cycle had been done.
+
+### Details
+** Bug
+    * [OPENENGSB-2406|http://issues.openengsb.org/jira/browse/OPENENGSB-2406] - ForwardHandler should also allow events not named raiseEvent
+    * [OPENENGSB-2429|http://issues.openengsb.org/jira/browse/OPENENGSB-2429] - JSON parser does not include fields/args which are null
+    * [OPENENGSB-2684|http://issues.openengsb.org/jira/browse/OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2994|http://issues.openengsb.org/jira/browse/OPENENGSB-2994] - The workflow service unit test does not terminate sometimes
+    * [OPENENGSB-3010|http://issues.openengsb.org/jira/browse/OPENENGSB-3010] - Database does not reconnect on failure
+    * [OPENENGSB-3012|http://issues.openengsb.org/jira/browse/OPENENGSB-3012] - EDB queryForModels timestamp parameter check need to be smarter
+    * [OPENENGSB-3016|http://issues.openengsb.org/jira/browse/OPENENGSB-3016] - openengsb-test is missing from dependency-management in shared-pom
+    * [OPENENGSB-3019|http://issues.openengsb.org/jira/browse/OPENENGSB-3019] - give all components a higher start level
+    * [OPENENGSB-3030|http://issues.openengsb.org/jira/browse/OPENENGSB-3030] - EKB commit throw error with custom OpenEngSBModels
+    * [OPENENGSB-3058|http://issues.openengsb.org/jira/browse/OPENENGSB-3058] - MethodCall-marshaller does not load Array-types correctly
+
+** Improvement
+    * [OPENENGSB-3015|http://issues.openengsb.org/jira/browse/OPENENGSB-3015] - add profiles to replace openengsb-plugin-tasks
+
+### Known Issues
+    * [OPENENGSB-1232|http://issues.openengsb.org/jira/browse/OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1568|http://issues.openengsb.org/jira/browse/OPENENGSB-1568] - License headers are missing in bundle.info
+    * [OPENENGSB-1657|http://issues.openengsb.org/jira/browse/OPENENGSB-1657] - OpenEngSB crashes when OSGI is loaded as feature dependency
+    * [OPENENGSB-1769|http://issues.openengsb.org/jira/browse/OPENENGSB-1769] - mvn eclipse:eclipse does not include html-files in build-path of ui-admin and ui-common
+    * [OPENENGSB-1797|http://issues.openengsb.org/jira/browse/OPENENGSB-1797] - WorkflowService seems to leave threads lying around
+    * [OPENENGSB-1858|http://issues.openengsb.org/jira/browse/OPENENGSB-1858] - Not all tests run green if another karaf instance is running
+    * [OPENENGSB-1899|http://issues.openengsb.org/jira/browse/OPENENGSB-1899] - Domain archetype contains reference to openengsb-core-events
+    * [OPENENGSB-1956|http://issues.openengsb.org/jira/browse/OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-2127|http://issues.openengsb.org/jira/browse/OPENENGSB-2127] - modifying rulebase disrupts running flows
+    * [OPENENGSB-2128|http://issues.openengsb.org/jira/browse/OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2187|http://issues.openengsb.org/jira/browse/OPENENGSB-2187] - ui-admin bundle fails to start when ui-common is redeployed
+    * [OPENENGSB-2463|http://issues.openengsb.org/jira/browse/OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-2706|http://issues.openengsb.org/jira/browse/OPENENGSB-2706] - Domains should only depend on framework.api (not framework.common)
+    * [OPENENGSB-2713|http://issues.openengsb.org/jira/browse/OPENENGSB-2713] - Notice file handling process is incorrect
+    * [OPENENGSB-2730|http://issues.openengsb.org/jira/browse/OPENENGSB-2730] - serviceUtils leads to startup Issues
+    * [OPENENGSB-2791|http://issues.openengsb.org/jira/browse/OPENENGSB-2791] - Prepush JPATestIT fails under Windows
+    * [OPENENGSB-2834|http://issues.openengsb.org/jira/browse/OPENENGSB-2834] - cannot deploy framework because internal connectors reference non-existing features.xml
+    * [OPENENGSB-2838|http://issues.openengsb.org/jira/browse/OPENENGSB-2838] - WorkflowTest testLoad_shouldLoadAllWorkflowsFromFolder fails under Windows 7 x64
+    * [OPENENGSB-2932|http://issues.openengsb.org/jira/browse/OPENENGSB-2932] - permissionProviders is not defined in ui's application-context
+    * [OPENENGSB-2964|http://issues.openengsb.org/jira/browse/OPENENGSB-2964] - use delegated classloading to load Domain-interfaces and models
+    * [OPENENGSB-2965|http://issues.openengsb.org/jira/browse/OPENENGSB-2965] - Use Delegated classloading for JsonMarshalling
+    * [OPENENGSB-2974|http://issues.openengsb.org/jira/browse/OPENENGSB-2974] - Internal domain/connector documentation is not deployed correctly
+    * [OPENENGSB-2986|http://issues.openengsb.org/jira/browse/OPENENGSB-2986] - WorkflowDeployerService NullPointerException
+    * [OPENENGSB-2993|http://issues.openengsb.org/jira/browse/OPENENGSB-2993] - WorkflowService::waitForFlowToFinish returns when the first subworkflow finishes
+    * [OPENENGSB-2997|http://issues.openengsb.org/jira/browse/OPENENGSB-2997] - Shiro ThreadContext is not propagated when threads are spawned
+    * [OPENENGSB-3007|http://issues.openengsb.org/jira/browse/OPENENGSB-3007] - Remove duplicate CompositeConnector-classes
+    * [OPENENGSB-3008|http://issues.openengsb.org/jira/browse/OPENENGSB-3008] - ConnectorDeployer tries to create connectors on every boot
+    * [OPENENGSB-3023|http://issues.openengsb.org/jira/browse/OPENENGSB-3023] - some workflow-unittests failing randomly in java7
+    * [OPENENGSB-3052|http://issues.openengsb.org/jira/browse/OPENENGSB-3052] - show unregistered connectors as OFFLINE
+    * [OPENENGSB-3057|http://issues.openengsb.org/jira/browse/OPENENGSB-3057] - MethodCall-marshalling cannot handle Lists with complex content
+    * [OPENENGSB-3068|http://issues.openengsb.org/jira/browse/OPENENGSB-3068] - "Opt-out" restriction for remote service-calls makes no sense
+
+
 openengsb-framework-2.5.0 2012-05-03
 --------------------------------------------
 
