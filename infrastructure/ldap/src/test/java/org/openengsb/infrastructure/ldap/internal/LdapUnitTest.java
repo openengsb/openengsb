@@ -1,15 +1,17 @@
 package org.openengsb.infrastructure.ldap.internal;
 
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.directory.ldap.client.api.LdapConnection;
@@ -18,8 +20,6 @@ import org.apache.directory.ldap.client.api.NetworkSchemaLoader;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.apache.openjpa.persistence.util.SourceCode.ACCESS;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,6 +30,7 @@ import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.NoSuchAttributeException;
 import org.openengsb.core.api.security.service.NoSuchCredentialsException;
+import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -51,51 +52,8 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     private static UserDataManager userManager;
     private static LdapConnection connection;
-    private static String userName1 = "testUser";
-    private static String userName2 = "testUser2";
-    private static String credentialsName = "password";
-    //private static String credentialsName2 = "password";
-    private static String attributeName = "testAttribute";
-    //private static String attributeName2 = "testAttribute2";
-    //    private Object[] attributeValue = new Object[] {new Boolean(true), new String("abc")};
-    //    private Object[] attributeValue2 = new Object[] {new String("xyz"), new Boolean(false)};
+    private static String testUser1 = "testUser";
     private static Dn dnTestUser1;
-    private static Dn dnTestUser2;
-    private static Dn dnTestCredentials;
-    //private static Dn dnTestCredentials2;
-    private static Dn dnTestAttribute;
-    //  private static Dn dnTestAttribute2;
-
-    public static class PermissionImpl implements Permission{
-
-        private String description;
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public PermissionImpl(String description){
-            this.description = description;
-        }
-
-        @Override
-        public String describe(){
-            return description;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj instanceof LdapUnitTest.PermissionImpl){
-                return ((LdapUnitTest.PermissionImpl)obj).description.equals(description);
-            }
-            return false;
-        }
-
-    };
 
     public static class TestPermission implements Permission {
         private String desiredResult;
@@ -141,56 +99,31 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
         }
 
     }
-    
-    
+
     private static UserDataManager setupUserManager(){
         UserDataManagerLdap m = new UserDataManagerLdap();        
         m.setLdapDao(new LdapDao(connection));
         return m;
     }
 
-    //    private static LdapConnection setupConnection() throws Exception{
-    //        LdapConnection c = new LdapNetworkConnection("localhost", 10389);
-    //
-    //        BindRequest bindRequest = new BindRequestImpl();
-    //        bindRequest.setName(new Dn("uid=admin,ou=system"));
-    //        bindRequest.setCredentials("secret");
-    //
-    //        c.setTimeOut(0);
-    //        c.connect();
-    //        c.bind(bindRequest);
-    //        return c;
-    //    }
-
     private static LdapNetworkConnection setupNetworkConnection() throws Exception{
         LdapNetworkConnection c = new LdapNetworkConnection("localhost", 10389);
-
+        c.setTimeOut(0);
+        c.connect();
+        LOGGER.info(c.toString());
         BindRequest bindRequest = new BindRequestImpl();
         bindRequest.setName(new Dn("uid=admin,ou=system"));
         bindRequest.setCredentials("secret");
-
-        c.setTimeOut(0);
-        c.connect();
         c.bind(bindRequest);
-
         NetworkSchemaLoader nsl = new NetworkSchemaLoader(c);
         c.loadSchema(nsl);
-
         return c;
     }
 
     private static void setupTests() throws Exception{
-
-        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", userName1));
-        dnTestUser2 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", userName2));
-        Dn ou = new Dn(new Rdn("ou=attributes"),dnTestUser1);
-        dnTestAttribute = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
-        ou = new Dn(new Rdn("ou=attributes"),dnTestUser2);
-        //dnTestAttribute2 = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
-        ou = new Dn(new Rdn("ou=credentials"),dnTestUser1);
-        dnTestCredentials = new Dn(new Rdn(String.format("cn=%s", credentialsName)),ou);
-        ou = new Dn(new Rdn("ou=credentials"),dnTestUser2);
-        //dnTestCredentials2 = new Dn(new Rdn(String.format("cn=%s", credentialsName)),ou);
+        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
+//        Dn ou = new Dn(new Rdn("ou=attributes"),dnTestUser1);
+//        dnTestAttribute = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
     }
 
     @BeforeClass
@@ -208,111 +141,125 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     @Before //TODO make some resetServer() method or even better applyLdifs
     public void doBefore() throws Exception{
-        userManager.deleteUser(userName1);
-        userManager.deleteUser(userName2);
+//        userManager.deleteUser(userName1);
+//        userManager.deleteUser(userName2);
+        clearDIT();
+//        userManager.createUser(userName1);
+    }
+    
+    private void clearDIT(){
+        ((UserDataManagerLdap)userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouUsers());
         ((UserDataManagerLdap)userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouGlobalPermissionSets());
-        userManager.createUser(userName1);
     }
 
     /*--------------- users -----------------*/
 
+    //private String testUser = "testUser";
+    
     @Test
     public void testDeleteNonExistingUser_shouldDoNothing() throws Exception{
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.deleteUser(userName2);
+        assertThat(connection.exists(dnTestUser1), is(false));
+        userManager.deleteUser(testUser1);
     }
 
     @Test(expected = UserExistsException.class)
     public void testCreateExistingUser_shouldThrowUserExistsException() throws Exception{
+        userManager.createUser(testUser1);
         assertThat(connection.exists(dnTestUser1), is(true));
-        userManager.createUser(userName1);
+        userManager.createUser(testUser1);
     }
 
-    @Test(expected = UserExistsException.class)
-    public void testCaseSensitivity_shouldThrowUserExistsException() throws Exception{
-        String newUserName = "abc";
-        Dn dn = new Dn("cn="+newUserName+"ou=users,ou=userdata,dc=openengsb,dc=org");
-        assertThat(connection.exists(dn), is(false));
-        userManager.createUser(newUserName);
-        assertThat(connection.exists(dn), is(true));
-        userManager.createUser(newUserName.toUpperCase());
+    @Test
+    public void testGetAllUsers() throws Exception {
+        String testUser2 = "testUser2";
+        String testUser3 = "testUser3";
+        userManager.createUser(testUser1);
+        userManager.createUser(testUser2);
+        userManager.createUser(testUser3);
+        Collection<String> userList = userManager.getUserList();
+        assertThat(userList, not(nullValue()));
+        assertThat(userList.size(), is(3));
+        assertThat(userList, hasItems(testUser1,testUser2,testUser3));
     }
 
     /*--------------- credentials -----------------*/
 
     @Test
     public void testSetUserCredentialsNullValue_shouldPersistNullValue() throws Exception{
-        assertThat(connection.exists(dnTestUser1), is(true));
-        assertThat(connection.exists(dnTestCredentials), is(false));
-        userManager.setUserCredentials(userName1, credentialsName, null);
-        assertThat(connection.exists(dnTestCredentials), is(true));
-        String returnedCredentials = userManager.getUserCredentials(userName1, credentialsName);
+        String credentialsName = "testCredentials";
+        userManager.createUser(testUser1);
+        userManager.setUserCredentials(testUser1, credentialsName, null);
+        String returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
         assertThat(returnedCredentials, nullValue());
     }
 
     @Test
     public void testSetUserCredentialsEmptyString_shouldPersistEmptyString() throws Exception{
-        String expectedValue = "";
-        assertThat(connection.exists(dnTestUser1), is(true));
-        assertThat(connection.exists(dnTestCredentials), is(false));
-        userManager.setUserCredentials(userName1, credentialsName, expectedValue);
-        assertThat(connection.exists(dnTestCredentials), is(true));
-        String returnedCredentials = userManager.getUserCredentials(userName1, credentialsName);
-        assertThat(returnedCredentials, is(expectedValue));
+        String credentialsName = "testCredentials";
+        String credentialsValue = "";
+        userManager.createUser(testUser1);
+        userManager.setUserCredentials(testUser1, credentialsName, credentialsValue);
+        String returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
+        assertThat(returnedCredentials, is(credentialsValue));
     }
 
     @Test
     public void testSetUserCredentials_shouldPersistCredentials() throws Exception{
-        String expectedValue = "abc";
-        assertThat(connection.exists(dnTestUser1), is(true));
-        assertThat(connection.exists(dnTestCredentials), is(false));
-        userManager.setUserCredentials(userName1, credentialsName, expectedValue);
-        assertThat(connection.exists(dnTestCredentials), is(true));
-        String returnedCredentials = userManager.getUserCredentials(userName1, credentialsName);
-        assertThat(returnedCredentials, is(expectedValue));
+        String credentialsName = "testCredentials";
+        String credentialsValue = "testValue";
+        userManager.createUser(testUser1);
+        userManager.setUserCredentials(testUser1, credentialsName, credentialsValue);
+        String returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
+        assertThat(returnedCredentials, is(credentialsValue));
     }
 
     @Test
     public void testSetExistingUserCredentials_shouldOverwrite() throws Exception{
+        String credentialsName = "testCredentials";
         String originalValue = "abc";
         String newValue = "xyz";
-        userManager.setUserCredentials(userName1, credentialsName, originalValue);
-        String returnedCredentials = userManager.getUserCredentials(userName1, credentialsName);
+        userManager.createUser(testUser1);
+        userManager.setUserCredentials(testUser1, credentialsName, originalValue);
+        String returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
         assertThat(returnedCredentials, is(originalValue));
-        userManager.setUserCredentials(userName1, credentialsName, newValue); //overwrite original value
-        returnedCredentials = userManager.getUserCredentials(userName1, credentialsName);
+        userManager.setUserCredentials(testUser1, credentialsName, newValue); //overwrite original value
+        returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
         assertThat(returnedCredentials, is(newValue));
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testSetCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception{
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.setUserCredentials(userName2, "randomName", "randomValue");
+        assertThat(connection.exists(dnTestUser1), is(false));
+        userManager.setUserCredentials(testUser1, "randomName", "randomValue");
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testGetCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception{
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.getUserCredentials(userName2, "randomName");
+        assertThat(connection.exists(dnTestUser1), is(false));
+        userManager.getUserCredentials(testUser1, "randomName");
     }
 
     @Test(expected = NoSuchCredentialsException.class)
     public void testGetNonexistingCredentialsForExistingUser_shouldThrowNoSuchCredentialsException() throws Exception{
+        userManager.createUser(testUser1);
         assertThat(connection.exists(dnTestUser1), is(true));
-        userManager.getUserCredentials(userName1, "nonexistingname");
+        userManager.getUserCredentials(testUser1, "nonexistingname");
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testRemoveCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception{
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.removeUserCredentials(userName2, "nonexistingname");
+        assertThat(connection.exists(dnTestUser1), is(false));
+        userManager.removeUserCredentials(testUser1, "nonexistingname");
     }
 
     @Test
     public void testRemoveCredentials_shouldRemoveCredentials() throws Exception{
-        userManager.setUserCredentials(userName1, credentialsName, "randomValue");
+        userManager.createUser(testUser1);
+        String testCredentials = "testCredentials";
+        Dn dnTestCredentials = SchemaConstants.userCredentials(testUser1, testCredentials);
+        userManager.setUserCredentials(testUser1, testCredentials, "randomValue");
         assertThat(connection.exists(dnTestCredentials), is(true));
-        userManager.removeUserCredentials(userName1, credentialsName);
+        userManager.removeUserCredentials(testUser1, testCredentials);
         assertThat(connection.exists(dnTestCredentials), is(false));
     }
 
@@ -320,30 +267,31 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     @Test
     public void testSetEmptyUserAttribute_shouldPersist() throws Exception {
-        Object[] testAtt = new Object[0];
-        userManager.setUserAttribute(userName1, attributeName, testAtt);
-        assertThat(connection.exists(dnTestAttribute), is(true));
-        List<Object> result = userManager.getUserAttribute(userName1, attributeName);
+        String attributeName = "testAttribute";
+        Object[] attributeValue = new Object[0];
+        userManager.createUser(testUser1);
+        userManager.setUserAttribute(testUser1, attributeName, attributeValue);
+        List<Object> result = userManager.getUserAttribute(testUser1, attributeName);
         assertThat(result, not(nullValue()));
         assertThat(result.size(), is(0));
     }    
 
     @Test
     public void testOverwriteUserAttribute_shouldOverwrite() throws Exception {
+        String attributeName = "testAttribute";
         Object[] originalValue = new Object[]{true,"",307708};
+        Object[] newValue = new Object[]{"hello",false,5};        
 
-        userManager.setUserAttribute(userName1, attributeName, originalValue);
-        List<Object> result = userManager.getUserAttribute(userName1, attributeName);
+        userManager.createUser(testUser1);
 
+        userManager.setUserAttribute(testUser1, attributeName, originalValue);
+        List<Object> result = userManager.getUserAttribute(testUser1, attributeName);
         assertThat((Boolean)result.get(0), is(originalValue[0]));
         assertThat((String)result.get(1), is(originalValue[1]));
         assertThat((Integer)result.get(2), is(originalValue[2]));
 
-        Object[] newValue = new Object[]{"hello",false,5};
-
-        userManager.setUserAttribute(userName1, attributeName, newValue);
-        result = userManager.getUserAttribute(userName1, attributeName);
-
+        userManager.setUserAttribute(testUser1, attributeName, newValue);
+        result = userManager.getUserAttribute(testUser1, attributeName);
         assertThat((String)result.get(0), is(newValue[0]));
         assertThat((Boolean)result.get(1), is(newValue[1]));
         assertThat((Integer)result.get(2), is(newValue[2]));
@@ -351,9 +299,8 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     @Test(expected = NoSuchAttributeException.class)
     public void testgetNonexistingUserAttribute_shouldThrowNoSuchAttributeExpcetion() throws Exception {
-        assertThat(connection.exists(dnTestUser1), is(true));
-        assertThat(connection.exists(dnTestAttribute), is(false));
-        userManager.getUserAttribute(userName1, attributeName);
+        userManager.createUser(testUser1);
+        userManager.getUserAttribute(testUser1, "non existing attribute");
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -363,7 +310,8 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     @Test
     public void testRemoveNonexistingUserAttribute_shouldFailSilent() throws Exception {
-        userManager.removeUserAttribute(userName1, "random attribute");
+        userManager.createUser(testUser1);
+        userManager.removeUserAttribute(testUser1, "random attribute");
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -383,234 +331,143 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
      * */
 
 
-
-
     @Test
-    public void testAddPermissionSetToPermissionSet_shouldPersistChildrenSets() throws Exception{
+    public void testAddCyclicPermissionSetHierarchy_shouldPersistCycleAndShouldTerminate() throws Exception{
         String parent = "SetA";
-        String childB = "setB";
-        String childC = "setC";
-        Dn hierarchyB = new Dn("cn="+childB+",ou=childrenSets,cn="+parent+",ou=permissionSets,ou=userdata,dc=openengsb,dc=org");
-        Dn hierarchyC = new Dn("cn="+childC+",ou=childrenSets,cn="+parent+",ou=permissionSets,ou=userdata,dc=openengsb,dc=org");
-
+        String child = "SetB";
+        String grandchild = "SetC";
         userManager.createPermissionSet(parent);
-        userManager.createPermissionSet(childB);
-        userManager.createPermissionSet(childC);
-        userManager.addPermissionSetToPermissionSet(parent, childB, childC);
-        assertThat(connection.exists(hierarchyB), is(true));
-        assertThat(connection.exists(hierarchyC), is(true));
+        userManager.createPermissionSet(child);
+        userManager.createPermissionSet(grandchild);
+        userManager.addPermissionSetToPermissionSet(parent, child);
+        userManager.addPermissionSetToPermissionSet(child, grandchild);
+        userManager.addPermissionSetToPermissionSet(grandchild, parent);
+
+        List<String> childOfParent = new LinkedList<String>(userManager.getPermissionSetsFromPermissionSet(parent));
+        List<String> childOfChild = new LinkedList<String>(userManager.getPermissionSetsFromPermissionSet(child));
+        List<String> childOfGrandchild = new LinkedList<String>(userManager.getPermissionSetsFromPermissionSet(grandchild));
+
+        assertThat(childOfParent.size(), is(1));
+        assertThat(childOfChild.size(), is(1));
+        assertThat(childOfGrandchild.size(), is(1));
+
+        assertThat(childOfParent, hasItem(child));
+        assertThat(childOfChild, hasItem(grandchild));
+        assertThat(childOfGrandchild, hasItem(parent));
     }
 
-    //TODO test addpermissions for non existing user should throw exception
+    @Test
+    public void testAddPermissionSetToPermissionSet_shouldPersistChildrenSetsAndPreserverOrder() throws Exception{
+        String parent = "SetA";
+        String[] childrenSets = new String[]{"setB", "setC", "111", "777","aaa", "222"};
+        userManager.createPermissionSet(parent);
+        for(String s : childrenSets){
+            userManager.createPermissionSet(s);
+        }
+        userManager.addPermissionSetToPermissionSet(parent, childrenSets);
+        String[] result = userManager.getPermissionSetsFromPermissionSet(parent).toArray(new String[0]);
+        assertThat(Arrays.equals(childrenSets, result), is(true));
+    }
+
+    @Test
+    public void testAddPermissionSetToUser_shouldPersistSetsAndPreserverOrder() throws Exception{
+        String[] sets = new String[]{"setB", "setC", "111", "777","aaa", "222"};
+        for(String s : sets){
+            userManager.createPermissionSet(s);
+        }
+        userManager.createUser(testUser1);
+        userManager.addPermissionSetToUser(testUser1, sets);
+        String[] result = userManager.getPermissionSetsFromUser(testUser1).toArray(new String[0]);
+        assertThat(Arrays.equals(sets, result), is(true));
+    }
+
     @Test
     public void testGetPermissionsForUser_shouldReturnPermissions() throws Exception{
         Permission permission = new TestPermission(Access.GRANTED);
-        userManager.addPermissionToUser(userName1, permission);
-        Collection<Permission> permissions = userManager.getPermissionsForUser(userName1);
+        userManager.createUser(testUser1);
+        userManager.addPermissionToUser(testUser1, permission);
+        Collection<Permission> permissions = userManager.getPermissionsForUser(testUser1);
         assertThat(permissions, hasItem(permission));
         assertThat(permissions.size(), is(1));
     }
-    
+
     @Test
-    public void testCreatePermissionSet_shouldPersistSet() throws Exception{
+    public void testCreatePermissionSet_shouldPersistSetAndPreserveOrder() throws Exception{
         String set = "SetA";
         Permission p1 = new TestPermission(Access.GRANTED);
         Permission p2 = new TestPermission(Access.DENIED);
-        Permission[] permissions = new Permission[]{p1,p2};
+        Permission p3 = new TestPermission(Access.ABSTAINED);
+        Permission p4 = new TestPermission(Access.GRANTED);
+        Permission[] permissions = new Permission[]{p1,p2,p3,p4};
         userManager.createPermissionSet(set, permissions);
-        Collection<Permission> result = userManager.getPermissionsFromPermissionSet(set);
-        assertThat(result, hasItem(p1));
-        assertThat(result, hasItem(p2));
-        assertThat(result.size(), is(2));
+        List<Permission> result = new LinkedList<Permission>(userManager.getPermissionsFromPermissionSet(set));
+        assertThat(result.get(0), is(p1));
+        assertThat(result.get(1), is(p2));
+        assertThat(result.get(2), is(p3));
+        assertThat(result.get(3), is(p4));
+        assertThat(result.size(), is(4));
     }
 
+    @Test (expected = UserNotFoundException.class)
+    public void testAddPermissionsToNonexistingUser_expectedUserNotFoundException() throws Exception {
+        Permission p = new TestPermission(Access.GRANTED);
+        userManager.addPermissionToUser("nonExistingUser", p);
+    }
+
+    @Test (expected = UserNotFoundException.class)
+    public void testAddPermissionSetToNonexistingUser_expectedUserNotFoundException() throws Exception {
+        String set = "setA";
+        userManager.createPermissionSet(set);
+        userManager.addPermissionSetToUser("nonExistingUser", set);
+    }
+
+    @Test (expected = PermissionSetNotFoundException.class)
+    public void testAddNonExistingPermissionSet_expectedPermissionSetNotFoundException() throws Exception {
+        String set = "setA";
+        userManager.addPermissionSetToUser("nonExistingUser", set);
+    }
+
+    @Test (expected = PermissionSetNotFoundException.class)
+    public void testAddPermissionsToNonexistingSet_expectedPermissionSetNotFoundException() throws Exception {
+        Permission p = new TestPermission(Access.GRANTED);
+        userManager.addPermissionToSet("nonExistingSet", p);
+    }
+
+    /*--------------- permission set attributes -----------------*/
+    
+    @Test
+    public void testSetPermissionSetAttribute_shouldPersistAttribute() throws Exception{
+        String permissionSet = "setA";
+        String attributeName = "testAttribute";
+        String attributeValue = "testValue";
+        userManager.createPermissionSet(permissionSet);
+        userManager.setPermissionSetAttribute(permissionSet, attributeName, attributeValue);
+        String result = userManager.getPermissionSetAttribute(permissionSet, attributeName);
+        assertThat(result, is(attributeValue));
+    }
+    
+    @Test(expected=PermissionSetNotFoundException.class)
+    public void testSetPermissionSetAttributeToNenexistingSet_expectedPermissionSetNotFoundException() throws Exception{
+        userManager.setPermissionSetAttribute("non existing set", "random name", "random value");
+    }
+    
+    @Test(expected=NoSuchAttributeException.class)
+    public void testGetNonExistingPermissionSetAttribute_expectedNoSuchAttributeException() throws Exception{
+        String permissionSet = "setA";
+        userManager.createPermissionSet(permissionSet);
+        userManager.getPermissionSetAttribute(permissionSet, "random name");
+    }
+    
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("permissionClass", TestPermission.class.getName());
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("permissionClass", TestPermission.class.getName());
         PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class){};
-        registerService(permissionProvider, props, PermissionProvider.class);
+        registerService(permissionProvider, properties, PermissionProvider.class);
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(bundleContext);
         registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
-    
-    //    @Test
-    //    public void testCreateAndDeleteNewUser_shouldSucceed() throws Exception {
-    //        assertThat(connection.exists(dnTestUser2), is(false));
-    //        userManager.createUser(userName2);
-    //        assertThat(connection.exists(dnTestUser2), is(true));
-    //        userManager.deleteUser(userName2);
-    //        assertThat(connection.exists(dnTestUser2), is(false));
-    //    }
-    //
-    //    @Test
-    //    public void testDeleteNonExistingUser_shouldDoNothing() throws Exception {
-    //        assertThat(connection.exists(dnTestUser2), is(false));
-    //        userManager.deleteUser(userName2);
-    //    }
-    //
-    //    @Test(expected = UserExistsException.class)
-    //    public void testCreateExistingUser_expectedUserExistsException() throws Exception {
-    //        assertThat(connection.exists(dnTestUser), is(true));
-    //        userManager.createUser(userName);
-    //    }
-
-    //  @Test
-    //  public void testSetAttribute_shouldPersistAttribute() throws Exception{
-    //      assertThat(connection.exists(dnTestUser), is(true));
-    //      
-    //      assertThat(dnTestAttribute.getName().equals("cn=testAttribute,ou=attributes,cn=testUser,ou=users,ou=userdata,dc=openengsb,dc=org"), is(true));
-    //      LOGGER.warn(dnTestAttribute.getName());
-    //      LOGGER.warn("12345678");
-    //      userManager.setUserAttribute(userName, attributeName, attributeValue);
-    //      assertThat(connection.exists(dnTestAttribute), is(true));
-    //      assertThat(connection.exists(dnTestAttribute), is(true));
-    //  }
-
-    //
-    //    @Test
-    //    public void testGetAllUsers() throws Exception {
-    //        userManager.createUser(testUserName);
-    //        userManager.createUser(testUserName2);
-    //        Collection<String> userList = userManager.getUserList();
-    //        assertThat(userList, not(nullValue()));
-    //        assertThat(userList.size(), is(2));
-    //        assertThat(userList, hasItems(testUserName, testUserName2));
-    //    }
-    //    
-    //    @Test
-    //    public void testDeleteAllUsers_shouldLeaveEmptyDirectory() throws Exception {
-    //        Collection<String> userList = userManager.getUserList();
-    //        assertThat(userList.size(), is(0));
-    //        userManager.createUser(testUserName);
-    //        userManager.createUser(testUserName2);
-    //        userList = userManager.getUserList();
-    //        assertThat(userList.size(), is(2));
-    //        userManager.deleteUser(testUserName);
-    //        userManager.deleteUser(testUserName2);
-    //        userList = userManager.getUserList();
-    //        assertThat(userList.size(), is(0));
-    //    }
-    //    
-    //  
-
-
-
-    //        //@Test
-    //        public void testSetAttribute_shouldUpdateExistingAttribute() throws Exception{
-    //            userManager.createUser(userName);
-    //            userManager.setUserAttribute(userName, attributeName, attributeValue);
-    //            assertThat(connection.exists(dnTestAttribute), is(true));
-    //            userManager.setUserAttribute(userName, attributeName, new Object[0]);
-    //            assertThat(connection.exists(dnTestAttribute), is(true));
-    //            List<Object> attribute = userManager.getUserAttribute(userName, attributeName);
-    //            assertThat(attribute, not(nullValue()));
-    //            assertThat(attribute, is(Collections.EMPTY_LIST));
-    //        }
-    //        
-    //        //@Test
-    //        public void testGetAttribute_shouldHaveCorrectType() throws Exception{
-    //            userManager.createUser(userName);
-    //            userManager.setUserAttribute(userName, attributeName, attributeValue);
-    //            List<Object> attribute = userManager.getUserAttribute(userName, attributeName);
-    //            assertThat(attribute, not(nullValue()));
-    //            assertThat(attribute.size(), is(2));
-    //            Object attribute0 = attribute.get(0);
-    //            assertThat(attribute0, is(attributeValue[0].getClass()));
-    //            assertThat((Boolean)attribute0, is(attributeValue[0]));
-    //            Object attribute1 = attribute.get(1);        
-    //            assertThat(attribute1, is(attributeValue[1].getClass()));
-    //            assertThat((String)attribute1, is(attributeValue[1]));
-    //        }
-    //        
-    //        @Test(expected = UserNotFoundException.class)
-    //        public void testSetAttribute_expectedUserNotFoundException() throws Exception{
-    //            assertThat(connection.exists(dnTestUser2), is(false));
-    //            userManager.setUserAttribute(userName2, attributeName, attributeValue);        
-    //        }
-    //        
-    //        @Test(expected = UserNotFoundException.class)
-    //        public void testRemoveAttribute_expectedUserNotFoundException() throws Exception{
-    //            LOGGER.warn("expect usernotfoundexception");
-    //            assertThat(connection.exists(dnTestUser.getName()), is(true));
-    //            userManager.deleteUser(userName);
-    //            assertThat(connection.exists(dnTestUser.getName()), is(false));
-    //            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
-    //            userManager.removeUserAttribute(userName, attributeName);
-    //            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
-    //            LOGGER.warn("test end");
-    //        }
-    //        
-    //        @Test
-    //        public void testRemoveAttribute_shouldDoNothingBecauseAttributeDoesNotExist() throws Exception{
-    //            LOGGER.warn("expect NOTHING");
-    //            userManager.createUser(userName2);
-    //            assertThat(connection.exists(dnTestUser2.getName()), is(true));
-    //            assertThat(connection.exists(dnTestAttribute2.getName()), is(false));
-    //            userManager.removeUserAttribute(userName2, attributeName2);
-    //            LOGGER.warn("test end");
-    //        }
-    //        
-    //        //@Test(expected = UserNotFoundException.class)
-    //        public void testGetAttribute_expectedUserNotFoundException() throws Exception{
-    //            assertThat(connection.exists(dnTestUser), is(false));
-    //            userManager.getUserAttribute(userName, attributeName);
-    //        }
-    //        
-    //        //@Test(expected = NoSuchAttributeException.class)
-    //        public void testGetAttribute_expectedNoSuchAttributeException() throws Exception{
-    //            userManager.createUser(userName);
-    //            assertThat(connection.exists(dnTestUser), is(true));
-    //            userManager.getUserAttribute(userName, attributeName);
-    //        }
-
-    //    //TODO add test that checks sort order of retrieved attributes list
-    //    //duplicates, null value, empty strings, insertion order
-    //    
-    //    private interface SubtypePermission extends Permission{
-    //        
-    //    }
-    //    
-    //    private class SubtypePermissionImpl implements SubtypePermission{
-    //
-    //        @Override
-    //        public String describe() {
-    //            
-    //            return null;
-    //        }
-    //        
-    //    }
-    //
-    //    private class PermissionImpl implements Permission{
-    //
-    //        @Override
-    //        public String describe() {
-    //            
-    //            return null;
-    //        }
-    //        
-    //    }
-    //    
-    //    public void bla() throws Exception{
-    //        userManager.getAllPermissionsForUser(testUserName, SubtypePermissionImpl.class);
-    //        userManager.getAllPermissionsForUser(testUserName, PermissionImpl.class);
-    //    }
-
-    //  @Test
-    //  public void testSetUserAttribute_shouldAlsoPersistOrder() throws Exception {
-    //      Boolean value0 = true;
-    //      String value1 = "";
-    //      Integer value2 = 307708;
-    //
-    //      userManager.setUserAttribute(userName, attributeName, value0, value1, value2);
-    //      assertThat(connection.exists(dnTestAttribute), is(true));
-    //
-    //      List<Object> result = userManager.getUserAttribute(userName, attributeName);
-    //      assertThat((Boolean)result.get(0), is(value0));
-    //      assertThat((String)result.get(1), is(value1));
-    //      assertThat((Integer)result.get(2), is(value2));
-    //  }
 
 }

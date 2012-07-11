@@ -59,6 +59,14 @@ public class LdapUtils {
         }
         return empty ? new String() : null;
     }
+    
+    public static List<String> extractFirstValueOfAttribute(List<Entry> entries, String attributeType){
+        List<String> result = new LinkedList<String>();
+        for(Entry e : entries){
+            result.add(extractFirstValueOfAttribute(e, attributeType));
+        }
+        return result;
+    }
 
     public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType){
         List<String> result = new LinkedList<String>();

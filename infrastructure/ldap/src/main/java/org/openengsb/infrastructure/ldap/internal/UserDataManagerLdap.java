@@ -1,18 +1,12 @@
 package org.openengsb.infrastructure.ldap.internal;
 
-import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
-
-import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
-import org.apache.directory.shared.ldap.model.entry.Attribute;
-import org.apache.directory.shared.ldap.model.entry.DefaultAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.api.security.model.Permission;
@@ -34,14 +28,11 @@ import org.openengsb.infrastructure.ldap.util.LdapUtils;
 import org.openengsb.separateProject.EntryFactory;
 import org.openengsb.separateProject.OrderFilter;
 import org.openengsb.separateProject.SchemaConstants;
-import org.openengsb.separateProject.TreeStructure;
+import org.openengsb.separateProject.EntryBeanConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ReflectionUtils;
 
-import com.google.common.collect.ComputationException;
 import com.google.common.collect.Maps;
-
 
 public class UserDataManagerLdap implements UserDataManager {
 
@@ -85,40 +76,41 @@ public class UserDataManagerLdap implements UserDataManager {
     @Override
     public Collection<String> getPermissionSetList() {
         Dn parent = SchemaConstants.ouGlobalPermissionSets();
-        SearchCursor cursor = dao.searchOneLevel(parent);
-        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+        List<Entry> entries = dao.getDirectChildren(parent);
+        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
     public Collection<String> getPermissionSetsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
         Dn parent = SchemaConstants.ouGlobalPermissionSetChildren(permissionSet);
-        SearchCursor cursor;
+        List<Entry> entries;
         try {
-            cursor = dao.searchOneLevel(parent);
+            entries = dao.getDirectChildren(parent);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
-        //TODO here we can also restore order!
-        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+        OrderFilter.sortById(entries);
+        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
     public Collection<String> getPermissionSetsFromUser(String username) throws UserNotFoundException {
         Dn parent = SchemaConstants.ouUserPermissionSets(username);
-        SearchCursor cursor;
+        List<Entry> entries;
         try {
-            cursor = dao.searchOneLevel(parent);
+            entries = dao.getDirectChildren(parent);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
         }
-        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+        OrderFilter.sortById(entries);
+        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
     public void addPermissionSetToUser(String username, String... permissionSet) throws UserNotFoundException, PermissionSetNotFoundException {
         Dn parent = SchemaConstants.ouUserPermissionSets(username);
         try {
-            addPermissionSets(parent, permissionSet);
+            storePermissionSets(parent, permissionSet);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
         }
@@ -128,28 +120,24 @@ public class UserDataManagerLdap implements UserDataManager {
     public void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet) throws PermissionSetNotFoundException {
         Dn parent = SchemaConstants.ouGlobalPermissionSetChildren(permissionSetParent);
         try {
-            addPermissionSets(parent, permissionSet);
+            storePermissionSets(parent, permissionSet);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSetParent);
         }
     }
 
-    private void addPermissionSets(Dn parent, String... permissionSet) throws MissingParentException {
-
+    private void storePermissionSets(Dn parent, String... permissionSet) throws MissingParentException {
         for(String s : permissionSet){
             if(!dao.exists(SchemaConstants.globalPermissionSet(s))){
                 throw new PermissionSetNotFoundException(s);
             }
         }
-
         List<Entry> entries = new LinkedList<Entry>();
         for(String s : permissionSet){ //done in separate loop to provide some atomicity
             Entry entry = EntryFactory.namedObject(s, parent);
+            OrderFilter.addId(entry, false);
             entries.add(entry);
         }
-
-        String oldMaxId = updateMaxId(parent, permissionSet.length);
-        OrderFilter.addIds(entries, oldMaxId, false);
         dao.storeSkipExisting(entries);
     }
 
@@ -173,20 +161,9 @@ public class UserDataManagerLdap implements UserDataManager {
         }
     }
 
-//    private void addPermissions(Dn parent, Permission... permission) throws MissingParentException {
-//        List<Entry> entries = new LinkedList<Entry>();
-//        for(Permission p : permission){
-//            Entry entry = EntryFactory.javaObject(p.getClass().getName(), p.describe(), parent);
-//            entries.add(entry);
-//        }
-//        String maxId = updateMaxId(parent, permission.length);
-//        OrderFilter.addIds(entries, maxId, true);
-//        dao.storeSkipExisting(entries);
-//    }
-
     @Override
     public void createPermissionSet(String permissionSet, Permission... permission) throws PermissionSetAlreadyExistsException {
-        List<Entry> permissionSetStructure = TreeStructure.globalPermissionSetStructure(permissionSet);
+        List<Entry> permissionSetStructure = EntryBeanConverter.globalPermissionSetStructure(permissionSet);
         try {
             dao.store(permissionSetStructure);
         } catch (EntryAlreadyExistsException e) {
@@ -204,47 +181,15 @@ public class UserDataManagerLdap implements UserDataManager {
             PermissionData data = PermissionUtils.convertPermissionToPermissionData(p);
             pd.add(data);
         }
-        String maxId = updateMaxId(parent, permission.length);
-        List<Entry> permissionStructure = TreeStructure.permissionStructure(pd, maxId, parent);
+        List<Entry> permissionStructure = EntryBeanConverter.permissionStructureFromPermissionData(pd, parent);
         dao.store(permissionStructure);
     }
 
-
-
-
-    //    private List<Entry> globalPermissionSetStructure(String permissionSet, Permission... permissions){
-    //
-    //        List<Entry> entries = new LinkedList<Entry>();
-    //        List<Entry> permissionEntries = new LinkedList<Entry>();
-    //        Dn parent = SchemaConstants.ouGlobalPermissionSets();
-    //
-    //        Entry permissionSetEntry = EntryFactory.namedObject(permissionSet, parent);
-    //        Entry ouDirect = EntryFactory.organizationalUnit("direct", permissionSetEntry.getDn());
-    //        Entry ouChildrenSets = EntryFactory.organizationalUnit("childrenSets", permissionSetEntry.getDn());
-    //        Entry ouAttributes = EntryFactory.organizationalUnit("attributes", permissionSetEntry.getDn());
-    //
-    //        for(Permission p : permissions){
-    //            permissionEntries.add(EntryFactory.javaObject(p.getClass().getName(), p.describe(), ouDirect.getDn()));
-    //        }
-    //
-    //        OrderFilter.addIds(permissionEntries, true);
-    //        OrderFilter.makeContainerAware(ouDirect, String.valueOf(permissions.length));
-    //        OrderFilter.makeContainerAware(ouChildrenSets);
-    //
-    //        entries.add(permissionSetEntry);
-    //        entries.add(ouAttributes);
-    //        entries.add(ouDirect);
-    //        entries.add(ouChildrenSets);
-    //        entries.addAll(permissionEntries);
-    //
-    //        return entries;
-    //    }
-
     @Override
     public void removePermissionFromSet(String permissionSet, Permission... permission) throws PermissionSetNotFoundException {
-        Dn baseDn = SchemaConstants.ouGlobalPermissionsDirect(permissionSet);
+        Dn parent = SchemaConstants.ouGlobalPermissionsDirect(permissionSet);
         try {
-            deletePermission(baseDn, permission);
+            deletePermission(parent, permission);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
@@ -252,27 +197,30 @@ public class UserDataManagerLdap implements UserDataManager {
 
     @Override
     public void removePermissionFromUser(String username, Permission... permission) throws UserNotFoundException {
-        Dn baseDn = SchemaConstants.ouUserPermissionsDirect(username);
+        Dn parent = SchemaConstants.ouUserPermissionsDirect(username);
         try {
-            deletePermission(baseDn, permission);
+            deletePermission(parent, permission);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
         }
     }
 
-    private void deletePermission(Dn baseDn, Permission... permission) {
-        for(Permission p : permission){
-            //a permission is deleted if it's class and description matches
-            dao.deleteMatchingChildren(baseDn, String.format("(javaClassName=%s)(openengsb-string=%s)", p.getClass().getName(), p.describe()));
-        }
+    private void deletePermission(Dn parent, Permission... permission) {
+        List<Node> nodes = dao.searchSubtreeNode(parent);
+        Collection<Permission> permissions = extractPermissionsFromNodes(nodes);
+        boolean b = permissions.removeAll(Arrays.asList(permission));
+        if(b){
+            dao.deleteSubtreeExcludingRoot(parent);
+            storePermissions(parent, permissions.toArray(new Permission[0]));
+        }        
     }
 
     @Override
     public void removePermissionSetFromPermissionSet(String permissionSetParent, String... permissionSet) throws PermissionSetNotFoundException {
         for (String child : permissionSet) {
-            Dn baseDn = SchemaConstants.globalPermissionChild(permissionSetParent, child);
+            Dn parent = SchemaConstants.globalPermissionChild(permissionSetParent, child);
             try {
-                dao.deleteSubtreeIncludingRoot(baseDn);
+                dao.deleteSubtreeIncludingRoot(parent);
             } catch (MissingParentException e) {
                 throw new PermissionSetNotFoundException(permissionSetParent);
             } catch (NoSuchNodeException e) {
@@ -294,20 +242,6 @@ public class UserDataManagerLdap implements UserDataManager {
             }
         }
     }
-
-    //TODO make missing node exception superclass of missing parent exception. makes sense!
-
-//    @Override
-//    public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
-//        SearchCursor cursor;
-//        try {
-//            cursor = dao.searchOneLevel(SchemaConstants.ouUserPermissionsDirect(username));
-//        } catch (MissingParentException e) {
-//            throw new UserNotFoundException();
-//        }
-//        List<Entry> entries = OrderFilter.sortById(cursor);
-//        return extractPermissions(entries);
-//    }
     
     @Override
     public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
@@ -347,28 +281,6 @@ public class UserDataManagerLdap implements UserDataManager {
         }
         return EntryUtils.convertAllBeanDataToObjects(permissionData);
     }
-
-//    private Collection<Permission> extractPermissions(List<Entry> entries){
-//        Collection<Permission> permissions = new LinkedList<Permission>();
-//        for(Entry entry : entries){
-//            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
-//            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
-//            Class<?> elementType;
-//            try {
-//                elementType = Class.forName(type);
-//            } catch (ClassNotFoundException e) {
-//                throw new ComputationException(e);
-//            }
-//            try {
-//                Constructor<?> constructor = elementType.getConstructor(String.class);
-//                permissions.add((Permission)constructor.newInstance(value));
-//            } catch (Exception e) {
-//                ReflectionUtils.handleReflectionException(e);
-//                throw new ComputationException(e);
-//            }
-//        }
-//        return permissions;
-//    }
 
     @Override
     public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
@@ -425,11 +337,10 @@ public class UserDataManagerLdap implements UserDataManager {
         return result;
     }
 
-
     @Override
     public Collection<String> getUserList() {
-        SearchCursor cursor = dao.searchOneLevel(SchemaConstants.ouUsers());
-        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+        List<Entry> entries = dao.getDirectChildren(SchemaConstants.ouUsers());
+        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
@@ -453,15 +364,15 @@ public class UserDataManagerLdap implements UserDataManager {
 
     @Override
     public List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException, NoSuchAttributeException {
-        SearchCursor cursor;
+        List<Entry> entries;
         try {
-            cursor = dao.searchOneLevel(SchemaConstants.userAttribute(username, attributename));
+            entries = dao.getDirectChildren(SchemaConstants.userAttribute(username, attributename));
         }  catch (MissingParentException e) {
             throw new UserNotFoundException();
         }catch (NoSuchNodeException e) {
             throw new NoSuchAttributeException();
         }
-        List<Entry> entries = OrderFilter.sortById(cursor);
+        OrderFilter.sortById(entries);
         return extractUserAttributeValues(entries);
     }
 
@@ -543,45 +454,13 @@ public class UserDataManagerLdap implements UserDataManager {
     }
 
     private List<Entry> userStructure(String username) {
-
-        List<Entry> entries = new LinkedList<Entry>();
-
         Entry entry = EntryFactory.namedObject(username, SchemaConstants.ouUsers());
         Entry ouPermissions = EntryFactory.organizationalUnit("permissions", entry.getDn());
         Entry ouDirectPermissions = EntryFactory.organizationalUnit("direct", ouPermissions.getDn());
         Entry ouPermissionSets = EntryFactory.organizationalUnit("permissionSets", ouPermissions.getDn());
-
-        OrderFilter.makeContainerAware(ouDirectPermissions);
-        OrderFilter.makeContainerAware(ouPermissionSets);
-
-        entries.add(entry);
-        entries.add(ouPermissions);
-        entries.add(ouDirectPermissions);
-        entries.add(ouPermissionSets);
-        entries.add(EntryFactory.organizationalUnit("credentials", entry.getDn()));
-        entries.add(EntryFactory.organizationalUnit("attributes", entry.getDn()));
-
-        return entries;
-    }
-
-    /**
-     * @return the maxId before the update
-     */
-    private String updateMaxId(Dn containerDn, int additionalItems) {
-        String oldMaxId = lookupMaxId(containerDn);
-        String newMaxId = OrderFilter.calculateNewMaxId(oldMaxId, additionalItems);
-        setMaxId(containerDn, newMaxId);
-        return oldMaxId;
-    }
-
-    private void setMaxId(Dn containerDn, String maxId) {
-        Attribute attribute = new DefaultAttribute(OrderFilter.maxIdAttribute, maxId);
-        dao.modify(containerDn, attribute);
-    }
-
-    private String lookupMaxId(Dn containerDn) {
-        Entry entry = dao.lookup(containerDn);
-        return OrderFilter.getMaxId(entry);
+        Entry ouCredentials = EntryFactory.organizationalUnit("credentials", entry.getDn());
+        Entry ouAttributes = EntryFactory.organizationalUnit("attributes", entry.getDn());
+        return Arrays.asList(entry, ouPermissions, ouDirectPermissions, ouPermissionSets, ouCredentials, ouAttributes);
     }
 
 }

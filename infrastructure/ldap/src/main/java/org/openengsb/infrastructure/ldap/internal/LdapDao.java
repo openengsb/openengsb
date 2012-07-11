@@ -184,13 +184,13 @@ public class LdapDao {
             }
         }
     }
-//TODO make this method return a List<Entry> instead of a cursor
+
     /**
      * Retrieves a SearchCursor over the direct children of Dn parent.
      * @throws NoSuchNodeException 
      * @throws MissingParentException 
      * */
-    public SearchCursor searchOneLevel(Dn parent) throws NoSuchNodeException, MissingParentException{
+    private SearchCursor searchOneLevel(Dn parent) throws NoSuchNodeException, MissingParentException{
 
         try {
             if(!connection.exists(parent.getParent())){
@@ -213,56 +213,72 @@ public class LdapDao {
             throw new RuntimeException(e);
         }
     }
-    
-    public List<Entry> searchSubtreeBreadthFirst(Dn parent) throws NoSuchNodeException, MissingParentException{
 
-        LinkedList<Entry> result = new LinkedList<Entry>();
-        SearchCursor cursor = searchOneLevel(parent);
-        
+    public List<Entry> getDirectChildren(Dn parent){
+        return extractEntriesFromCursor(searchOneLevel(parent));
+    }
+
+    private List<Entry> extractEntriesFromCursor(SearchCursor cursor){
+        List<Entry> result = new LinkedList<Entry>();
         try {
             while(cursor.next()){
-                Entry entry = cursor.getEntry();
-                result.addFirst(entry);
-                result.addAll(searchSubtreeBreadthFirst(entry.getDn()));
+                result.add(cursor.getEntry());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return result;
     }
-    
-    public List<Node> searchSubtreeNode(Dn parent) throws NoSuchNodeException, MissingParentException{
 
-        LinkedList<Node> result = new LinkedList<Node>();
-        SearchCursor cursor = searchOneLevel(parent);
-        
-        try {
-            while(cursor.next()){
-                Node node = new Node(cursor.getEntry());
-                result.addFirst(node);
-                node.setChildren(searchSubtreeNode(node.getEntry().getDn()));
-                for(Node n : node.getChildren()){
-                    n.setParent(node);
+    //    public List<Entry> searchSubtreeBreadthFirst(Dn parent) throws NoSuchNodeException, MissingParentException{
+    //
+    //        LinkedList<Entry> result = new LinkedList<Entry>();
+    //        SearchCursor cursor = searchOneLevel(parent);
+    //        
+    //        try {
+    //            while(cursor.next()){
+    //                Entry entry = cursor.getEntry();
+    //                result.addFirst(entry);
+    //                result.addAll(searchSubtreeBreadthFirst(entry.getDn()));
+    //            }
+    //        } catch (Exception e) {
+    //            throw new RuntimeException(e);
+    //        }
+    //        return result;
+    //    }
+
+        public List<Node> searchSubtreeNode(Dn parent) throws NoSuchNodeException, MissingParentException{
+    
+            LinkedList<Node> result = new LinkedList<Node>();
+            SearchCursor cursor = searchOneLevel(parent);
+            
+            try {
+                while(cursor.next()){
+                    Node node = new Node(cursor.getEntry());
+                    result.addFirst(node);
+                    node.setChildren(searchSubtreeNode(node.getEntry().getDn()));
+                    for(Node n : node.getChildren()){
+                        n.setParent(node);
+                    }
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return result;
         }
-        return result;
-    }
 
     /**
-     * Deletes all direct children (and their subtrees) of baseDn matching searchFilter.
-     * @throws NoSuchNodeException if baseDn does not exist
-     * @throws MissingParentException if some node above baseDn does not exist
+     * Deletes all direct children which match the searchFilter, including their subtrees. Does not delete parent.
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
-    public void deleteMatchingChildren(Dn baseDn, String searchFilter) throws MissingParentException, NoSuchNodeException{
+    public void deleteMatchingChildren(Dn parent, String searchFilter) throws MissingParentException, NoSuchNodeException{
 
         try {
-            if(!connection.exists(baseDn.getParent())){
-                throw new MissingParentException(lastMatch(baseDn));
-            } else if(!connection.exists(baseDn)){
-                throw new NoSuchNodeException(baseDn);
+            if(!connection.exists(parent.getParent())){
+                throw new MissingParentException(lastMatch(parent));
+            } else if(!connection.exists(parent)){
+                throw new NoSuchNodeException(parent);
             }
         } catch (LdapException e) {
             throw new RuntimeException(e);
@@ -270,7 +286,7 @@ public class LdapDao {
 
         try {
             //(&(exp1)(exp2)(exp3))
-            EntryCursor entryCursor = connection.search(baseDn, String.format("(&(objectclass=*)%s)", searchFilter), SearchScope.ONELEVEL);
+            EntryCursor entryCursor = connection.search(parent, String.format("(&(objectclass=*)%s)", searchFilter), SearchScope.ONELEVEL);
             while(entryCursor.next()){
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
@@ -280,24 +296,24 @@ public class LdapDao {
     }
 
     /**
-     * Deletes the baseDn and its entire subtree.<br>
-     * @throws NoSuchNodeException if baseDn does not exist
-     * @throws MissingParentException if some node above baseDn does not exist
+     * Deletes the parent and its entire subtree.<br>
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
-    public void deleteSubtreeIncludingRoot(Dn baseDn) throws MissingParentException, NoSuchNodeException {
+    public void deleteSubtreeIncludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
 
         try {
-            if(!connection.exists(baseDn.getParent())){
-                throw new MissingParentException(lastMatch(baseDn));
-            } else if(!connection.exists(baseDn)){
-                throw new NoSuchNodeException(baseDn);
+            if(!connection.exists(parent.getParent())){
+                throw new MissingParentException(lastMatch(parent));
+            } else if(!connection.exists(parent)){
+                throw new NoSuchNodeException(parent);
             }
         } catch (LdapException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            EntryCursor entryCursor = connection.search(baseDn, "(objectclass=*)", SearchScope.ONELEVEL);
+            EntryCursor entryCursor = connection.search(parent, "(objectclass=*)", SearchScope.ONELEVEL);
             while(entryCursor.next()){
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
@@ -306,7 +322,7 @@ public class LdapDao {
         }
 
         DeleteRequest deleteRequest = new DeleteRequestImpl();
-        deleteRequest.setName(baseDn);
+        deleteRequest.setName(parent);
         LdapResult result;
 
         try {
@@ -321,24 +337,24 @@ public class LdapDao {
 
 
     /**
-     * Deletes the entire subtree of baseDn but not baseDn itself.<br>
-     * @throws NoSuchNodeException if baseDn does not exist
-     * @throws MissingParentException if some node above baseDn does not exist
+     * Deletes the entire subtree of parent but not parent itself.<br>
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
-    public void deleteSubtreeExcludingRoot(Dn baseDn) throws MissingParentException, NoSuchNodeException {
+    public void deleteSubtreeExcludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
 
         try {
-            if(!connection.exists(baseDn.getParent())){
-                throw new MissingParentException(lastMatch(baseDn));
-            } else if(!connection.exists(baseDn)){
-                throw new NoSuchNodeException(baseDn);
+            if(!connection.exists(parent.getParent())){
+                throw new MissingParentException(lastMatch(parent));
+            } else if(!connection.exists(parent)){
+                throw new NoSuchNodeException(parent);
             }
         } catch (LdapException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            EntryCursor entryCursor = connection.search(baseDn, "(objectclass=*)", SearchScope.ONELEVEL);
+            EntryCursor entryCursor = connection.search(parent, "(objectclass=*)", SearchScope.ONELEVEL);
             while(entryCursor.next()){
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }

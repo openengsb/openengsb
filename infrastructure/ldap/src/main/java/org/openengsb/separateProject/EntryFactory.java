@@ -46,13 +46,13 @@ public class EntryFactory {
         return entry;
     }
 
-    public static Entry javaObject(String classname, String constructorParameter, Dn parent) {
+    public static Entry javaObject(String classname, String constructorArgument, Dn parent) {
         Dn dn = LdapUtils.concatDn(SchemaConstants.javaClassNameAttribute, classname, parent);
         Entry entry = new DefaultEntry(dn);
         try {
             entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.javaClassInstanceOc);
             entry.add(SchemaConstants.javaClassNameAttribute, classname);
-            addDescription(entry, constructorParameter);
+            addDescription(entry, constructorArgument);
         } catch (LdapException e) {
             throw new RuntimeException(e);
         }

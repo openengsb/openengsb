@@ -8,20 +8,20 @@ public class SchemaConstants {
 
     /*can we make these final?*/
 
-    public static String uidObjectOc = "uidObject";
+    //public static String uidObjectOc = "uidObject";
     public static String organizationalUnitOc = "organizationalUnit";
 
-    public static String javaClassInstanceOc = "openengsb-javaClassInstance";
-    public static String descriptiveObjectOc = "openengsb-descriptiveObject";
-    public static String namedObjectOc = "openengsb-namedObject";
+    public static String javaClassInstanceOc = "org-openengsb-javaClassInstance";
+    public static String descriptiveObjectOc = "org-openengsb-descriptiveObject";
+    public static String namedObjectOc = "org-openengsb-namedObject";
 
     public static String cnAttribute = "cn";
     public static String javaClassNameAttribute = "javaClassName";
     public static String objectClassAttribute = "objectClass";
     public static String ouAttribute = "ou";
 
-    public static String stringAttribute = "openengsb-string";
-    public static String emptyFlagAttribute = "openengsb-emptyFlag";
+    public static String stringAttribute = "org-openengsb-string";
+    public static String emptyFlagAttribute = "org-openengsb-emptyFlag";
 
     public static Dn openengsbBaseDn() {
         try {
