@@ -59,20 +59,6 @@ public class EntryFactory {
         return entry;
     }
     
-//    private static Entry defaultEntry(String... objectClass){
-//        Entry entry = new DefaultEntry();
-//        try {
-//            entry.add(SchemaConstants.objectClassAttribute, objectClass);
-//        } catch (LdapException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return entry;
-//    }
-//    
-//    private static void addDn(Entry entry){
-//        
-//    }
-
     /**
      * 3 possibilities:<br>
      * 1) description is null -> emptyFlag = false, no description attribute <br>

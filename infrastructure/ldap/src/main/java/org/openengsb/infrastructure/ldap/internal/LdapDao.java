@@ -230,23 +230,6 @@ public class LdapDao {
         return result;
     }
 
-    //    public List<Entry> searchSubtreeBreadthFirst(Dn parent) throws NoSuchNodeException, MissingParentException{
-    //
-    //        LinkedList<Entry> result = new LinkedList<Entry>();
-    //        SearchCursor cursor = searchOneLevel(parent);
-    //        
-    //        try {
-    //            while(cursor.next()){
-    //                Entry entry = cursor.getEntry();
-    //                result.addFirst(entry);
-    //                result.addAll(searchSubtreeBreadthFirst(entry.getDn()));
-    //            }
-    //        } catch (Exception e) {
-    //            throw new RuntimeException(e);
-    //        }
-    //        return result;
-    //    }
-
         public List<Node> searchSubtreeNode(Dn parent) throws NoSuchNodeException, MissingParentException{
     
             LinkedList<Node> result = new LinkedList<Node>();
@@ -285,7 +268,7 @@ public class LdapDao {
         }
 
         try {
-            //(&(exp1)(exp2)(exp3))
+            //ldap search syntax: (&(exp1)(exp2)(exp3))
             EntryCursor entryCursor = connection.search(parent, String.format("(&(objectclass=*)%s)", searchFilter), SearchScope.ONELEVEL);
             while(entryCursor.next()){
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());

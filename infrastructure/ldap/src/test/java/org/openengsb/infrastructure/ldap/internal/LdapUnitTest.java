@@ -122,8 +122,6 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     private static void setupTests() throws Exception{
         dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
-//        Dn ou = new Dn(new Rdn("ou=attributes"),dnTestUser1);
-//        dnTestAttribute = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
     }
 
     @BeforeClass
@@ -141,10 +139,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     @Before //TODO make some resetServer() method or even better applyLdifs
     public void doBefore() throws Exception{
-//        userManager.deleteUser(userName1);
-//        userManager.deleteUser(userName2);
         clearDIT();
-//        userManager.createUser(userName1);
     }
     
     private void clearDIT(){
@@ -154,8 +149,6 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     /*--------------- users -----------------*/
 
-    //private String testUser = "testUser";
-    
     @Test
     public void testDeleteNonExistingUser_shouldDoNothing() throws Exception{
         assertThat(connection.exists(dnTestUser1), is(false));
@@ -170,7 +163,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
     }
 
     @Test
-    public void testGetAllUsers() throws Exception {
+    public void testGetAllUsers_shouldReturnAllUsers() throws Exception {
         String testUser2 = "testUser2";
         String testUser3 = "testUser3";
         userManager.createUser(testUser1);
@@ -265,6 +258,8 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     /*--------------- attributes -----------------*/
 
+    /*attribute values may be empty (ie array with size 0) but not null.*/
+    
     @Test
     public void testSetEmptyUserAttribute_shouldPersist() throws Exception {
         String attributeName = "testAttribute";
@@ -274,7 +269,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest{
         List<Object> result = userManager.getUserAttribute(testUser1, attributeName);
         assertThat(result, not(nullValue()));
         assertThat(result.size(), is(0));
-    }    
+    }
 
     @Test
     public void testOverwriteUserAttribute_shouldOverwrite() throws Exception {
