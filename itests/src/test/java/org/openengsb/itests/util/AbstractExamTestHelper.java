@@ -305,7 +305,7 @@ public abstract class AbstractExamTestHelper {
         Properties portNames = new Properties();
         InputStream portsPropertiesFile = ClassLoader.getSystemResourceAsStream("ports.properties");
         if (portsPropertiesFile == null) {
-			throw new IllegalStateException("ports-configuration not found");
+            throw new IllegalStateException("ports-configuration not found");
         }
         portNames.load(portsPropertiesFile);
         LOGGER.warn("running itests with the following port-config");
