@@ -25,4 +25,30 @@
   <!-- Allows us to use system properties as variables in this configuration file -->
   <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
 
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="global-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.persistence.rulebase.filebackend.GlobalDeclarationPersistenceBackendService">
+    	<property name="storageFilePath" value="$[karaf.data]/openengsb/config/rulebase/globals" />	
+    </bean>
+  </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="import-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.persistence.rulebase.filebackend.ImportDeclarationPersistenceBackendService">
+		<property name="storageFilePath" value="$[karaf.data]/openengsb/config/rulebase/imports" />	
+    </bean>
+  </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="rule-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.persistence.rulebase.filebackend.RuleBaseElementPersistenceBackendService" init-method="init">
+		<property name="storageFolderPath" value="$[karaf.data]/openengsb/config/rulebase/flows" />	
+	</bean>
+  </service>
 </blueprint>

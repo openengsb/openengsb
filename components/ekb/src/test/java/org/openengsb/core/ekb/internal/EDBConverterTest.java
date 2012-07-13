@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.internal.converter.ConnectorInformation;
 import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.openengsb.core.ekb.internal.converter.EDBConverterUtils;
@@ -55,8 +55,15 @@ public class EDBConverterTest {
     }
 
     @Test
+    public void checkIfModelAgentIsSet_shouldWork() {
+        TestModel model = new TestModel();
+        assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
+            model instanceof OpenEngSBModel, is(true));
+    }
+
+    @Test
     public void testSimpleModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
         Date date = new Date();
         model.setDate(date);
@@ -70,7 +77,6 @@ public class EDBConverterTest {
 
         assertThat(object.get("connectorId").toString(), is("testconnector"));
         assertThat(object.get("id").toString(), is("test"));
-        assertThat(object.get(EDBConstants.MODEL_OID), is(object.get("id")));
         assertThat(object.get("oid").toString(), is(EDBConverterUtils.createOID(model, "testdomain", "testconnector")));
         assertThat(object.get("domainId").toString(), is("testdomain"));
         assertThat(object.get("name").toString(), is("testobject"));
@@ -82,10 +88,10 @@ public class EDBConverterTest {
 
     @Test
     public void testComplexModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
 
-        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub = new SubModel();
         sub.setId("sub");
         sub.setValue("teststring");
         model.setSub(sub);
@@ -102,13 +108,13 @@ public class EDBConverterTest {
 
     @Test
     public void testComplexListModelToEDBObjectConversion_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
 
-        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub1 = new SubModel();
         sub1.setId("sub1");
         sub1.setValue("teststring1");
-        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        SubModel sub2 = new SubModel();
         sub2.setId("sub2");
         sub2.setValue("teststring2");
         List<SubModel> subs = new ArrayList<SubModel>();
@@ -140,20 +146,20 @@ public class EDBConverterTest {
         Map<String, String> map = new HashMap<String, String>();
         map.put("keyA", "valueA");
         map.put("keyB", "valueB");
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model = new TestModel();
         model.setId("test");
         model.setMap(map);
-        
+
         ConnectorInformation id = getTestConnectorInformation();
-        
+
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
-        
+
         assertThat(object.get("map0.key").toString(), is("keyA"));
         assertThat(object.get("map0.value").toString(), is("valueA"));
         assertThat(object.get("map1.key").toString(), is("keyB"));
         assertThat(object.get("map1.value").toString(), is("valueB"));
     }
-    
+
     private ConnectorInformation getTestConnectorInformation() {
         return new ConnectorInformation("testdomain", "testconnector", "testinstance");
     }

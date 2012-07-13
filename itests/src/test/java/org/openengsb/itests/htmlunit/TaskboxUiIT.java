@@ -24,7 +24,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
@@ -50,10 +49,8 @@ import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -66,8 +63,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     private static final String CONTEXT = "it-taskbox";
     private static final String WORKFLOW = "HIDemoWorkflow";
-    private static final String PAGE_ENTRY_URL =
-        "http://localhost:" + WEBUI_PORT + "/openengsb/tasks/?context=" + CONTEXT;
+    private String pageEntryUrl;
     private static final int MAX_RETRY = 5;
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
@@ -89,6 +85,8 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        pageEntryUrl = "http://localhost:" + httpPort + "/openengsb/tasks/?context=" + CONTEXT;
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
@@ -99,7 +97,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(WebTaskboxService.class);
 
-        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        waitForSiteToBeAvailable(pageEntryUrl, MAX_SLEEP_TIME_IN_SECONDS);
         authenticateAsAdmin();
         addWorkflow();
         loginAsAdmin();
@@ -113,7 +111,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testIfTaskOverviewInteractionWorks() throws Exception {
 
-        HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+        HtmlPage taskOverviewPage = webClient.getPage(pageEntryUrl);
         assertTrue("Page does not contain: No Records Found", taskOverviewPage.asText().contains("No Records Found"));
         assertEquals("The taskbox is not empty", 0, taskboxService.getOpenTasks().size());
 
@@ -159,7 +157,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         boolean isRight = false;
         for (int i = 0; i < MAX_RETRY && !isRight; i++) {
             try {
-                taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+                taskOverviewPage = webClient.getPage(pageEntryUrl);
                 table = taskOverviewPage.getFirstByXPath("//table");
                 taskOneRow = table.getRow(2);
                 taskTwoRow = table.getRow(3);
@@ -197,7 +195,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         isRight = false;
         for (int i = 0; i < MAX_RETRY && !isRight; i++) {
             try {
-                taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+                taskOverviewPage = webClient.getPage(pageEntryUrl);
                 table = taskOverviewPage.getFirstByXPath("//table");
                 taskOneRow = table.getRow(2);
                 isRight =
@@ -223,7 +221,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         taskboxService.registerTaskPanel("step1", TestTaskPanel.class);
         workflowService.startFlow(WORKFLOW);
 
-        HtmlPage taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
+        HtmlPage taskOverviewPage = webClient.getPage(pageEntryUrl);
         taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
         HtmlTable table = taskOverviewPage.getFirstByXPath("//table");
         assertNotNull("Table on Overviewpage not found", table);
@@ -253,7 +251,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private void loginAsAdmin() throws FailingHttpStatusCodeException, IOException {
-        HtmlPage page = webClient.getPage(PAGE_ENTRY_URL);
+        HtmlPage page = webClient.getPage(pageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");

@@ -66,6 +66,28 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>reserve-network-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <configuration>
+              <portNames>
+                <portName>jetty.http.port</portName>
+                <portName>jms.openwire.port</portName>
+                <portName>jms.stomp.port</portName>
+                <portName>rmi.registry.port</portName>
+                <portName>rmi.server.port</portName>
+              </portNames>
+              <outputFile>${project.basedir}/target/test-classes/ports.properties</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -94,6 +116,11 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.tinybundles</groupId>
+      <artifactId>tinybundles</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -213,7 +240,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
 </project>
