@@ -66,20 +66,31 @@
     <section>
         <title>Step 2 - Write the model</title>
         <para>
-            Writing a model is quite simple. A domain model is an interface, which contains only pairs of getter and
-            setter methods. The method names define the internal names of the fields of the model. Example model:
+            Writing a model is quite simple. A domain model is a Java bean, which contains fields and the fitting pairs of getter 
+            and setter methods. It need to be annotated as model and also need to provide itself through the labs delegation project.
+            Example model:
         </para>
         <programlisting>
-            interface Appointment extends OpenEngSBModel {
-                 @OpenEngSBModelId
-                 void setId(Integer id);
-                 Integer getId();
-                 
-                 void setStartTime(Date startTime);
-                 Date getStartTime();
-                 
-                 void setEndTime(Date endTime);
-                 Date getEndTime();
+            @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
+            @Model
+            public class Appointment {
+              @OpenEngSBModelId
+              private String id;
+              private String name;
+              private String description;
+              // add further fields here
+
+              public String getId() {
+                return id;
+              }
+
+              public void setId(String id) {
+                this.id = id;
+              }
+
+              public String getName() {
+                return name;
+              }
                  
                  ...
             }
@@ -100,14 +111,9 @@
     <section>
         <title>Step 4 - Use the model</title>
         <para>
-            The last step is to use the model. For that you have to use a util class which is placed in the core/common
-            bundle called ModelUtils. An instantiation of a model looks like this:
-        </para>
-        <programlisting>
-            Appointment appointment = ModelUtils.createEmptyModelObject(Appointment.class);
-        </programlisting>
-        <para>
-            After that you can use the appointment object like a normal instantiated object.
+            The model gets enhanced during runtime to be an OpenEngSBModel. So you just have to instantiate the
+            object and you have a model. For easier access to all OpenEngSBModel functionality, since this 
+            information is not available at coding time, you may use the static ModelUtils class. 
         </para>
     </section>
 

@@ -18,7 +18,7 @@
 package org.openengsb
 
 #list any import classes here.
-import org.openengsb.core.workflow.model.TestObject
+import org.openengsb.core.workflow.model.TestingObject
 import org.slf4j.Logger
 
 #declare any global variables here

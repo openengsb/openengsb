@@ -18,12 +18,17 @@
 package org.openengsb.core.workflow.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class ImportDeclaration implements Serializable {
 
     private static final long serialVersionUID = 4988417812120411259L;
+
+
+    public static final String META_IMPORT_CLASS = "class";
 
     private String className;
 
@@ -58,4 +63,11 @@ public class ImportDeclaration implements Serializable {
         return new HashCodeBuilder().append(className).toHashCode();
     }
 
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        if (this.getClassName() != null) {
+            ret.put(META_IMPORT_CLASS, this.getClassName());
+        }
+        return ret;
+    }
 }

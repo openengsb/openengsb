@@ -20,8 +20,6 @@ package org.openengsb.core.api.ekb;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-
 /**
  * The query interface provides the functions to access the data stored in the EDB.
  */
@@ -30,54 +28,54 @@ public interface QueryInterface {
     /**
      * Loads the most actual tool data from the given oid
      */
-    <T extends OpenEngSBModel> T getModel(Class<T> model, String oid);
+    <T> T getModel(Class<T> model, String oid);
 
     /**
      * Loads the history (all saved versions) of the tool data from the given oid
      */
-    <T extends OpenEngSBModel> List<T> getModelHistory(Class<T> model, String oid);
+    <T> List<T> getModelHistory(Class<T> model, String oid);
 
     /**
      * Loads the history (all saved versions) of the tool data from the given oid for the given time range
      */
-    <T extends OpenEngSBModel> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to);
+    <T> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to);
 
     /**
      * Queries for models which have a OpenEngSBModelEntry with the given key and the given value saved
      */
-    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String key, Object value);
+    <T> List<T> queryForModels(Class<T> model, String key, Object value);
 
     /**
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
      */
-    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap);
+    <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap);
 
     /**
      * Queries for models which have all key/value pairs given by the query saved in the OpenEngSBModelEntries for a
      * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
-    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp);
+    <T> List<T> queryForModels(Class<T> model, String query, String timestamp);
 
     /**
      * Queries for the most actual models which have all key/value pairs given by the query saved in the
      * OpenEngSBModelEntries
      */
-    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query);
+    <T> List<T> queryForModels(Class<T> model, String query);
 
     /**
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a given
      * timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
-    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+    <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
 
     /**
      * Queries for active models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries.
      * Active models mean models which are in the newest version.
      */
-    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap);
+    <T> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap);
 
     /**
      * Queries for active models of the given model type. Active models mean models which are in the newest version.
      */
-    <T extends OpenEngSBModel> List<T> queryForActiveModels(Class<T> model);
+    <T> List<T> queryForActiveModels(Class<T> model);
 }
