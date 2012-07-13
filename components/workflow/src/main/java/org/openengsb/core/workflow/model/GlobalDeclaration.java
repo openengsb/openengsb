@@ -18,12 +18,17 @@
 package org.openengsb.core.workflow.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class GlobalDeclaration implements Serializable {
 
     private static final long serialVersionUID = -389353004152522492L;
+
+
+    public static final String META_GLOBAL_VARIABLE = "variable";
 
     private String className;
     private String variableName;
@@ -69,5 +74,13 @@ public class GlobalDeclaration implements Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(className).append(variableName).toHashCode();
+    }    
+
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        if (this.getVariableName() != null) {
+            ret.put(META_GLOBAL_VARIABLE, this.getVariableName());
+        }
+        return ret;
     }
 }

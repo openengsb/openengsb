@@ -31,7 +31,6 @@ import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.ModelUtils;
 
 public class JsonFilterTest {
 
@@ -96,11 +95,11 @@ public class JsonFilterTest {
     public void incomingMethodCallMarashalFilter() throws Exception {
         JsonMethodCallMarshalFilter jsonMethodCallMarshalFilter = new JsonMethodCallMarshalFilter();
         FilterAction mock = mock(FilterAction.class);
-        TestModel testResult = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel testResult = new TestModel();
         testResult.setId(42);
         testResult.setName("bar");
         MethodResultMessage testResultMessage =
-            new MethodResultMessage(new MethodResult(ModelUtils.generateWrapperOutOfModel(testResult)), "foo");
+            new MethodResultMessage(new MethodResult(testResult), "foo");
         when(mock.filter(any(MethodCallMessage.class), any(Map.class))).thenReturn(testResultMessage);
         when(mock.getSupportedInputType()).thenAnswer(new Returns(MethodCallMessage.class));
         when(mock.getSupportedOutputType()).thenAnswer(new Returns(MethodResultMessage.class));

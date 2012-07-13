@@ -100,9 +100,6 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
     }
 
     private boolean isEventMethod(Method m) {
-        if (!m.getName().equals("raiseEvent")) {
-            return false;
-        }
         if (m.getParameterTypes().length == 0) {
             return false;
         }

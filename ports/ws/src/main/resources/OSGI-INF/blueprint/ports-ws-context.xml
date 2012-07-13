@@ -47,7 +47,6 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
         <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.ws.WSOutgoingPort">
           <property name="bundleContext" ref="blueprintBundleContext" />
@@ -74,8 +73,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
-        </bean>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        </bean>	
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>

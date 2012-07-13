@@ -37,9 +37,17 @@
       backend.id=persistenceService
       configuration.id=RULE
     </config>
-    <config name="org.openengsb.persistence.config-flow">
-      backend.id=persistenceService
-      configuration.id=FLOW
+	<config name="org.openengsb.persistence.config-rulebase">
+      backend.id=rule-persistence
+      configuration.id=RULEBASE
+    </config>
+	<config name="org.openengsb.persistence.config-global">
+      backend.id=global-persistence
+      configuration.id=GLOBAL
+    </config>
+	<config name="org.openengsb.persistence.config-import">
+      backend.id=import-persistence
+      configuration.id=IMPORT
     </config>
     <config name="org.openengsb.persistence.config-connector">
       backend.id=persistenceService
@@ -129,6 +137,7 @@
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/${javassist.version}</bundle>
     <bundle start-level='20'>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <!-- Graph DB -->
     <bundle start-level='20'>mvn:com.orientechnologies/orient-commons/${orientdb.version}</bundle>
@@ -147,6 +156,7 @@
     <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.weaver.service/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>

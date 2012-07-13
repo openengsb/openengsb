@@ -18,16 +18,28 @@
 package org.openengsb.domain.example.model;
 
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.labs.delegation.service.Provide;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface ExampleRequestModel extends OpenEngSBModel {
-    Integer getId();
+@Model
+public class ExampleRequestModel {
+    private Integer id;
+    private String name;
 
-    void setId(Integer id);
+    public Integer getId() {
+        return id;
+    }
 
-    String getName();
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    void setName(String name);
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

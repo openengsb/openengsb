@@ -68,7 +68,7 @@ public final class SecureSampleConnector {
                 + "      \"attributes\" : {\n"
                 + "        \"serviceId\" : \"example-remote\",\n"
                 + "        \"portId\" : \"jms-json\",\n"
-                + "        \"destination\" : \"tcp://127.0.0.1:6549?example-remote\"\n"
+                + "        \"destination\" : \"tcp://127.0.0.1:%s?example-remote\"\n"
                 + "      },\n"
                 + "      \"properties\" : {\n"
                 + "      }\n"
@@ -118,7 +118,7 @@ public final class SecureSampleConnector {
                 + "  \"timestamp\" : 1340090182282,\n"
                 + "  \"methodCall\" : {\n"
                 + "    \"methodName\" : \"registerConnector\",\n"
-                + "    \"args\" : [ \"example-remote\", \"jms-json\", \"tcp://127.0.0.1:6549?example-remote\" ],\n"
+                + "    \"args\" : [ \"example-remote\", \"jms-json\", \"tcp://127.0.0.1:%s?example-remote\" ],\n"
                 + "    \"metaData\" : {\n"
                 + "      \"serviceId\" : \"proxyConnectorRegistry\"\n"
                 + "    },\n"
@@ -139,20 +139,24 @@ public final class SecureSampleConnector {
                 + "}\n"
                 + "\n";
 
+    public SecureSampleConnector(String openwirePort) {
+        this.openwirePort = openwirePort;
+    }
+
     static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
-    private static final String URL = "failover:(tcp://localhost:6549)?timeout=60000";
     private JmsConfig jmsConfig;
+    private final String openwirePort;
 
     private RemoteRequestHandler requestHandler;
 
     public void start() throws Exception {
-        jmsConfig = new JmsConfig(URL);
+        jmsConfig = new JmsConfig(String.format("failover:(tcp://localhost:%s)?timeout=60000", openwirePort));
         jmsConfig.init();
         requestHandler = new RemoteRequestHandler();
         jmsConfig.createConsumerForQueue("example-remote", new ConnectorMessageListener(jmsConfig, requestHandler));
-        jmsConfig.sendMessage("receive", CREATE_MESSAGE);
+        jmsConfig.sendMessage("receive", String.format(CREATE_MESSAGE, openwirePort));
         Thread.sleep(5000);
-        jmsConfig.sendMessage("receive", REGISTER_MESSAGE);
+        jmsConfig.sendMessage("receive", String.format(REGISTER_MESSAGE, openwirePort));
     }
 
     public void stop() throws JMSException {
@@ -170,7 +174,7 @@ public final class SecureSampleConnector {
         Map<String, Object> properties = new HashMap<String, Object>();
 
         attributes.put("portId", "jms-json");
-        attributes.put("destination", "tcp://127.0.0.1:6549?example-remote");
+        attributes.put("destination", "tcp://127.0.0.1:%s?example-remote");
         attributes.put("serviceId", "example-remote");
         ConnectorDescription connectorDescription = new ConnectorDescription("example", "external-connector-proxy",
             attributes, properties);
@@ -209,7 +213,7 @@ public final class SecureSampleConnector {
     public static void createRegisterMessage() throws JsonGenerationException,
         JsonMappingException, IOException {
         MethodCall methodCall = new MethodCall("registerConnector", new String[]{ "example-remote", "jms-json",
-            "tcp://127.0.0.1:6549?example-remote" });
+            "tcp://127.0.0.1:%s?example-remote" });
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
