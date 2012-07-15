@@ -91,16 +91,21 @@ public class ConnectorJPAPersistenceBackendService implements
             old.setAttributes(entity.getAttributes());
             old.setProperties(entity.getProperties());
             try {
-                entityManager.merge(old);
+                synchronized (entityManager) {
+                    entityManager.merge(old);
+                }
             } catch (Exception ex) {
                 throw new PersistenceException(ex);
             }
+
             LOGGER.info("updated ConnectorConfiguration");
         }
 
         if (oldEntities.size() == 0) {
             try {
-                entityManager.persist(entity);
+                synchronized (entityManager) {
+                    entityManager.persist(entity);
+                }
             } catch (Exception ex) {
                 throw new PersistenceException(ex);
             }
@@ -121,11 +126,13 @@ public class ConnectorJPAPersistenceBackendService implements
             throw new PersistenceException(
                 "Configuration to delete could not be found!");
         }
-        for (ConnectorConfigurationJPAEntity entity : ret) {
-            try {
-                entityManager.remove(entity);
-            } catch (Exception ex) {
-                throw new PersistenceException(ex);
+        synchronized (entityManager) {
+            for (ConnectorConfigurationJPAEntity entity : ret) {
+                try {
+                    entityManager.remove(entity);
+                } catch (Exception ex) {
+                    throw new PersistenceException(ex);
+                }
             }
         }
         LOGGER.info("removed ConnectorConfiguration");
@@ -142,25 +149,26 @@ public class ConnectorJPAPersistenceBackendService implements
 
     private List<ConnectorConfigurationJPAEntity> searchForMetadata(
             Map<String, String> metaData) throws PersistenceException {
+        synchronized (entityManager) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<ConnectorConfigurationJPAEntity> query = cb
+                .createQuery(ConnectorConfigurationJPAEntity.class);
+            Root<ConnectorConfigurationJPAEntity> from = query
+                .from(ConnectorConfigurationJPAEntity.class);
 
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ConnectorConfigurationJPAEntity> query = cb
-            .createQuery(ConnectorConfigurationJPAEntity.class);
-        Root<ConnectorConfigurationJPAEntity> from = query
-            .from(ConnectorConfigurationJPAEntity.class);
+            List<Predicate> predicates = new ArrayList<Predicate>();
+            if (metaData.get(Constants.CONNECTOR_PERSISTENT_ID) != null) {
+                predicates.add(cb.equal(from.get("instanceId"),
+                    metaData.get(Constants.CONNECTOR_PERSISTENT_ID)));
+            }
 
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        if (metaData.get(Constants.CONNECTOR_PERSISTENT_ID) != null) {
-            predicates.add(cb.equal(from.get("instanceId"),
-                metaData.get(Constants.CONNECTOR_PERSISTENT_ID)));
-        }
-
-        query.select(from);
-        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-        try {
-            return entityManager.createQuery(query).getResultList();
-        } catch (Exception ex) {
-            throw new PersistenceException(ex);
+            query.select(from);
+            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+            try {
+                return entityManager.createQuery(query).getResultList();
+            } catch (Exception ex) {
+                throw new PersistenceException(ex);
+            }
         }
     }
 
