@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
-backend.id=persistenceService
-configuration.id=FLOW
-
+when
+	Event()
+then
+	example.doSomething("Hello World");
+	notification.notify("Hello");
+	myservice.call();

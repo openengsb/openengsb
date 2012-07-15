@@ -34,7 +34,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.model.TestObject;
+import org.openengsb.core.workflow.model.TestingObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,9 +98,9 @@ public class RuleFlowUT extends AbstractOpenEngSBTest {
         t.start();
 
         // submit them in wrong order -> does not matter
-        ksession.signalEvent("TestObject2", new TestObject("foo"), startProcess.getId());
+        ksession.signalEvent("TestObject2", new TestingObject("foo"), startProcess.getId());
         Thread.sleep(200);
-        ksession.signalEvent("TestObject", new TestObject("foo"), startProcess.getId());
+        ksession.signalEvent("TestObject", new TestingObject("foo"), startProcess.getId());
 
         t.join(2000);
         assertThat("Process could not finish", t.getState(), is(Thread.State.TERMINATED));

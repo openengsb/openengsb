@@ -96,11 +96,36 @@
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.services</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.workflow</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.example</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>com.springsource.org.codehaus.janino</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>test</scope>
+    </dependency>    
+    
   </dependencies>
 </project>

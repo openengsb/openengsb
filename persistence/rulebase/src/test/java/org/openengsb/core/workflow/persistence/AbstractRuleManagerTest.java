@@ -20,19 +20,23 @@ package org.openengsb.core.workflow.persistence;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.workflow.RuleUtil;
+import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 
 public abstract class AbstractRuleManagerTest {
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     protected RuleManager ruleManager;
     protected KnowledgeBase rulebase;
     protected StatefulKnowledgeSession session;
@@ -40,27 +44,16 @@ public abstract class AbstractRuleManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        ruleManager = PersistenceTestUtil.getRuleManagerWithPersistenceService();
+        ruleManager = PersistenceTestUtil.getRuleManager(folder);
         RuleUtil.addImportsAndGlobals(ruleManager);
         rulebase = ruleManager.getRulebase();
     }
 
     @After
     public void tearDown() throws Exception {
-        PersistenceTestUtil.cleanup();
         if (session != null) {
             session.dispose();
         }
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        PersistenceTestUtil.createReferencePersistence();
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        PersistenceTestUtil.cleanupReferenceData();
     }
 
     /**

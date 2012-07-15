@@ -14,30 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openengsb.core.api.model;
+package org.openengsb.core.workflow.model;
 
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.core.api.model.ConfigItem;
 
 /**
- * General model describing the configuration required for flow.
+ * The GlobalConfiguration is a wrapper class around the GlobalDeclaration which gets used to save GlobalDeclarations to
+ * ConfigPersistence.
+ * 
  */
-// TODO: [OPENENGSB-1253] Design Flow Configuration object
-@XmlRootElement
-public class FlowConfiguration extends ConfigItem<String> {
+public class GlobalConfiguration extends ConfigItem<GlobalDeclaration> {
 
-    private static final long serialVersionUID = 5387662470457118571L;
+    private static final long serialVersionUID = 8106935114630310593L;
 
-    public static final String TYPE_ID = "FLOW";
-
-    public FlowConfiguration() {
+    public GlobalConfiguration() {
         super();
     }
 
-    public FlowConfiguration(Map<String, String> metaData, String ruleContent) {
-        super(metaData, ruleContent);
+    public GlobalConfiguration(Map<String, String> metaData, GlobalDeclaration content) {
+        super(metaData, content);
+    }
+
+    public GlobalConfiguration(GlobalDeclaration global) {
+        super(global.toMetadata(), global);
     }
 
 }
