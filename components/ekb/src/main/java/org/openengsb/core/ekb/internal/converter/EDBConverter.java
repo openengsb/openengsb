@@ -170,8 +170,7 @@ public class EDBConverter {
         } else if (object.containsKey(propertyName)) {
             if (parameterType.isEnum()) {
                 value = getEnumValue(parameterType, value);
-            }
-            else if (Number.class.isAssignableFrom(parameterType)) {
+            } else if (Number.class.isAssignableFrom(parameterType)) {
                 value = NumberUtils.createNumber((String) value);
             }
         }

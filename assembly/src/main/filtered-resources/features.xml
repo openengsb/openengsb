@@ -50,7 +50,7 @@
       configuration.id=IMPORT
     </config>
     <config name="org.openengsb.persistence.config-connector">
-      backend.id=persistenceService
+      backend.id=connector-jpa-persistence
       configuration.id=CONNECTOR
     </config>
     <config name="org.openengsb.persistence.config-workflow">
