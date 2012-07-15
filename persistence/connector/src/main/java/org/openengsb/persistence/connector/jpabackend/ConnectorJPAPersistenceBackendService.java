@@ -39,6 +39,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * The ConnectorJPAPersistenceBackendService is a ConfigPersistence implementation
+ * used to store ConnectorDescription objects to database via JPA. 
+ *
+ */
 public class ConnectorJPAPersistenceBackendService implements
         ConfigPersistenceBackendService<ConnectorDescription> {
 
@@ -99,9 +104,7 @@ public class ConnectorJPAPersistenceBackendService implements
             }
 
             LOGGER.info("updated ConnectorConfiguration");
-        }
-
-        if (oldEntities.size() == 0) {
+        } else {
             try {
                 synchronized (entityManager) {
                     entityManager.persist(entity);

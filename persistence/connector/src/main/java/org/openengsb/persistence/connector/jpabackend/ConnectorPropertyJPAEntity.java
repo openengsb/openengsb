@@ -27,6 +27,10 @@ import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractDataRow;
 
+/**
+ * A simple JPA wrapper for a single Connector property. The wrapper saves the class and the value of toString() and
+ * uses the constructor with one String argument to reconstruct the object.
+ */
 @SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTY")
 public class ConnectorPropertyJPAEntity extends AbstractDataRow {

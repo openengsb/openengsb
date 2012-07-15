@@ -35,6 +35,12 @@ import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractDataRow;
 
+/**
+ * This is a wrapper class around Connector properties to make them available for JPA persistence. Connector properties
+ * can be: primitive types, all types where the object is reconstructable via String constructor and Arrays or
+ * Collections of those types.
+ * 
+ */
 @SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTIES_WRAPPER")
 public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
@@ -71,8 +77,9 @@ public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
         List<ConnectorPropertyJPAEntity> propList = new ArrayList<ConnectorPropertyJPAEntity>();
         wrapper.setProperties(propList);
         wrapper.setCollectionType(clazz.getName());
-        Object[] arr;
+
         if (clazz.isArray()) {
+            Object[] arr;
             Class<?> compClass = clazz.getComponentType();
             if (compClass.isPrimitive()) {
                 compClass = ClassUtils.primitiveToWrapper(compClass);
@@ -84,21 +91,20 @@ public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
                 arr = (Object[]) wrapperArray;
             } else {
                 arr = (Object[]) property;
-
             }
             loopProperties(Arrays.asList(arr), propList);
             return wrapper;
+        } else {
+            if (Collection.class.isAssignableFrom(clazz)) {
+                Collection<Object> coll = (Collection<Object>) property;
+                loopProperties(coll, propList);
+                return wrapper;
+            } else {
+                wrapper.setCollectionType(null);
+                propList.add(ConnectorPropertyJPAEntity.getFromObject(property));
+                return wrapper;
+            }
         }
-
-        if (Collection.class.isAssignableFrom(clazz)) {
-            Collection<Object> coll = (Collection<Object>) property;
-            loopProperties(coll, propList);
-            return wrapper;
-        }
-
-        wrapper.setCollectionType(null);
-        propList.add(ConnectorPropertyJPAEntity.getFromObject(property));
-        return wrapper;
     }
 
     @SuppressWarnings("unchecked")

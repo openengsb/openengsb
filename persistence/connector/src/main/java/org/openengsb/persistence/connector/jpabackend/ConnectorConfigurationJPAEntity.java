@@ -37,6 +37,9 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractDataRow;
 
+/**
+ * This is the JPA mapping class for the ConnectorConfiguration.
+ */
 @SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_CONFIGURATION")
 public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
