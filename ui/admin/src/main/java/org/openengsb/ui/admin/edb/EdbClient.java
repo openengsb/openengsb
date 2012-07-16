@@ -242,7 +242,7 @@ public class EdbClient extends BasePage {
             @Override
             protected void populateItem(ListItem<OpenEngSBModel> item) {
                 String idProperty = "id";
-                Class<? extends OpenEngSBModel> modelClass = queryModel.getObject().model;
+                Class<? extends OpenEngSBModel> modelClass = queryModel.getObject().getModel();
                 for (Field m : modelClass.getDeclaredFields()) {
                     if (m.getAnnotation(OpenEngSBModelId.class) != null) {
                         idProperty = m.getName();
