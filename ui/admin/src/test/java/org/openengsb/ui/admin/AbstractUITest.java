@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.util.tester.WicketTester;
@@ -49,9 +48,7 @@ import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
@@ -61,6 +58,7 @@ import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.labs.delegation.service.ClassProvider;
@@ -76,7 +74,7 @@ import com.google.common.collect.Sets;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- *
+ * 
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -117,12 +115,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
-        CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
-        DefaultPersistenceManager defaultPersistenceManager = new DefaultPersistenceManager();
-        defaultPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
-        backend.setPersistenceManager(defaultPersistenceManager);
-        backend.setBundleContext(bundleContext);
-        backend.init();
+        DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);
 
         serviceManager.setConfigPersistence(persistenceService);

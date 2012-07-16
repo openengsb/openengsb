@@ -63,7 +63,6 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.RootSubjectHolder;
@@ -71,6 +70,7 @@ import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.Constants;
@@ -132,10 +132,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private void setupPersistence() {
         DefaultPersistenceManager dummyPersistenceManager = new DefaultPersistenceManager();
         dummyPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
-        CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
-        backend.setBundleContext(bundleContext);
-        backend.setPersistenceManager(dummyPersistenceManager);
-        backend.init();
+        DummyConfigPersistenceService<ConnectorDescription> backend =
+            new DummyConfigPersistenceService<ConnectorDescription>();
         configPersistence = new DefaultConfigPersistenceService(backend);
         Dictionary<String, Object> props2 = new Hashtable<String, Object>();
         props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);

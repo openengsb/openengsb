@@ -33,11 +33,7 @@
     <config name="org.openengsb.settings">
       openengsb.version.number=${openengsb.version.number}
     </config>
-    <config name="org.openengsb.persistence.config-rule">
-      backend.id=persistenceService
-      configuration.id=RULE
-    </config>
-	<config name="org.openengsb.persistence.config-rulebase">
+    <config name="org.openengsb.persistence.config-rulebase">
       backend.id=rule-persistence
       configuration.id=RULEBASE
     </config>
