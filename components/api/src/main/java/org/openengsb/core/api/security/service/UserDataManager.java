@@ -101,7 +101,7 @@ public interface UserDataManager {
      *         associated with the user
      */
     List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException,
-            NoSuchAttributeException;
+        NoSuchAttributeException;
 
     /**
      * Sets the value of the given attribute. Previous values are overwritten.
@@ -159,7 +159,7 @@ public interface UserDataManager {
      * @throws UserNotFoundException if the user does not exist
      */
     <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type)
-            throws UserNotFoundException;
+        throws UserNotFoundException;
 
     /**
      * Retrieves all permissions of the given type the user is granted. This
@@ -170,7 +170,7 @@ public interface UserDataManager {
      * @throws UserNotFoundException if the user does not exist
      */
     <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type)
-            throws UserNotFoundException;
+        throws UserNotFoundException;
 
     /**
      * Adds the given permissions to the given user.
@@ -236,7 +236,7 @@ public interface UserDataManager {
      *         not exist
      */
     void addPermissionSetToUser(String username, String... permissionSet) throws UserNotFoundException,
-            PermissionSetNotFoundException;
+        PermissionSetNotFoundException;
 
     /**
      * Removes the permissionSet from the user
@@ -255,7 +255,7 @@ public interface UserDataManager {
      *         not exist
      */
     void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet)
-            throws PermissionSetNotFoundException;
+        throws PermissionSetNotFoundException;
 
     /**
      * Removes a child permissionSet from a parent permissionSet
@@ -264,7 +264,7 @@ public interface UserDataManager {
      *         not exist
      */
     void removePermissionSetFromPermissionSet(String permissionSetParent, String... permissionSet)
-            throws PermissionSetNotFoundException;
+        throws PermissionSetNotFoundException;
 
     /**
      * Returns a list the names of all permissionSets directly associated with
@@ -295,7 +295,7 @@ public interface UserDataManager {
      *         not exist
      */
     Collection<Permission> getAllPermissionsFromPermissionSet(String permissionSet)
-            throws PermissionSetNotFoundException;
+        throws PermissionSetNotFoundException;
 
     /**
      * Sets the value of the given attribute.
@@ -304,7 +304,7 @@ public interface UserDataManager {
      * 
      */
     void setPermissionSetAttribute(String permissionSet, String attributename, String value)
-            throws PermissionSetNotFoundException;
+        throws PermissionSetNotFoundException;
 
     /**
      * returns the value of the given attribute.
@@ -315,6 +315,6 @@ public interface UserDataManager {
      *         associated with the user
      */
     String getPermissionSetAttribute(String permissionSet, String attributename) throws PermissionSetNotFoundException,
-            NoSuchAttributeException;
+        NoSuchAttributeException;
 
 }
