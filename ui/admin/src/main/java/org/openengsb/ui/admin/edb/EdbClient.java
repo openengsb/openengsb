@@ -43,11 +43,11 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
@@ -102,9 +102,6 @@ public class EdbClient extends BasePage {
 
     private IModel<EkbQuery> queryModel = new Model<EdbClient.EkbQuery>(new EkbQuery());
 
-    @PaxWicketBean(name = "domainProviders")
-    private List<DomainProvider> providers;
-
     @PaxWicketBean(name = "queryInterface")
     private QueryInterface ekbQueryInterface;
 
@@ -116,6 +113,8 @@ public class EdbClient extends BasePage {
     private IModel<List<? extends OpenEngSBModel>> resultModel;
 
     private WebMarkupContainer resultContainer;
+
+    private FeedbackPanel feedback;
 
     private class DomainModelListModel extends LoadableDetachableModel<List<Class<? extends OpenEngSBModel>>> {
         private static final long serialVersionUID = 608313722757619758L;
@@ -214,15 +213,21 @@ public class EdbClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 EkbQuery query = queryModel.getObject();
-                List<? extends OpenEngSBModel> models =
-                    ekbQueryInterface.queryForModels(query.getModel(), query.getQuery());
-                resultModel.setObject(models);
+                List<? extends OpenEngSBModel> models;
+                try {
+                    models = ekbQueryInterface.queryForModels(query.getModel(), query.getQuery());
+                    resultModel.setObject(models);
+                    info(String.format("Found %s results", models.size()));
+                } catch (Exception e) {
+                    error(String.format("Error when querying for models %s (%s)",
+                        e.getMessage(), e.getClass().getName()));
+                }
+                target.add(feedback);
                 target.add(resultContainer);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                // TODO Auto-generated method stub
             }
         });
         add(form);
@@ -246,6 +251,8 @@ public class EdbClient extends BasePage {
                 }
                 AjaxLink<String> historyLink =
                     new AjaxLink<String>("id", new PropertyModel<String>(item.getModelObject(), idProperty)) {
+                        private static final long serialVersionUID = -6539033599615376277L;
+
                         @Override
                         public void onClick(AjaxRequestTarget target) {
                             this.setResponsePage(new EdbHistoryPanel(getModel().getObject()));
@@ -258,5 +265,8 @@ public class EdbClient extends BasePage {
                 item.add(multiLineLabel);
             }
         });
+        feedback = new FeedbackPanel("feedback");
+        feedback.setOutputMarkupId(true);
+        form.add(feedback);
     }
 }

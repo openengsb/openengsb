@@ -60,6 +60,8 @@ public class EdbClientTest extends AbstractUITest {
         dummyModel.setId("42");
         dummyModel.setValue("foo");
         when(queryInterface.queryForModels(DummyModel.class, "id:42")).thenReturn(Arrays.asList(dummyModel));
+        when(queryInterface.queryForModels(DummyModel.class, "crap")).thenThrow(
+            new IllegalArgumentException("illegal query"));
         ServiceList<ClassProvider> classProviders = super.makeServiceList(ClassProvider.class);
         context.putBean("modelProviders", classProviders);
         ClassProviderImpl classProvider = new ClassProviderImpl(bundle, DummyModel.class.getName());
@@ -116,8 +118,24 @@ public class EdbClientTest extends AbstractUITest {
         tester.executeAjaxEvent("form:submit", "onclick");
         ListView<? extends OpenEngSBModel> resultElement =
             (ListView<? extends OpenEngSBModel>) tester.getComponentFromLastRenderedPage("result:list");
-        tester.debugComponentTrees();
+        tester.assertFeedback("form:feedback", "Found 1 results");
         assertThat(resultElement.get("0:id").getDefaultModelObjectAsString(), is("42"));
         assertThat(resultElement.get("0:entries").getDefaultModelObjectAsString(), containsString("foo"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void invalidQuery_shouldShowError() throws Exception {
+        tester.startPage(EdbClient.class);
+        FormTester formTester = tester.newFormTester("form");
+        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =
+            (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
+                .getComponentFromLastRenderedPage("form:modelSelector");
+        formTester.select("modelSelector", getIndexForValue(modeldropdown, "DummyModel"));
+        tester.executeAjaxEvent(modeldropdown, "onchange");
+        formTester.setValue("query", "crap");
+        tester.executeAjaxEvent("form:submit", "onclick");
+        tester.assertFeedback("form:feedback", String.format("Error when querying for models %s (%s)",
+            "illegal query", IllegalArgumentException.class.getName()));
     }
 }
