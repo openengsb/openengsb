@@ -1,3 +1,20 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.infrastructure.ldap.util;
 
 import java.util.LinkedList;
@@ -13,9 +30,12 @@ import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
 import org.openengsb.separateProject.SchemaConstants;
 
-public class LdapUtils {
+public final class LdapUtils {
 
-    public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn){
+    private LdapUtils() {
+    }
+
+    public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn) {
         try {
             Rdn rdn = new Rdn(rdnAttribute, rdnValue);
             return basedn.add(rdn);
@@ -24,9 +44,9 @@ public class LdapUtils {
         }
     }
 
-    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye){
+    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye) {
         Attribute attribute = entry.get(attributeTye);
-        if(attribute == null){
+        if (attribute == null) {
             return null;
         }
         try {
@@ -36,22 +56,23 @@ public class LdapUtils {
         }
     }
 
-    //TODO make more general method where it is optional if empty flag should be checked or not.
-    //so far this method always checks it although it may also be used for attributes where empty flag is not allowed.
-    public static String extractFirstValueOfAttribute(Entry entry, String attributeTye){
+    // TODO make more general method where it is optional if empty flag should be checked or not.
+    // so far this method always checks it although it may also be used for attributes where empty
+    // flag is not allowed.
+    public static String extractFirstValueOfAttribute(Entry entry, String attributeTye) {
 
-        if(entry == null){
+        if (entry == null) {
             return null;
         }
-        
+
         Attribute attribute = entry.get(attributeTye);
         Attribute emptyFlagAttribute = entry.get(SchemaConstants.emptyFlagAttribute);
 
         boolean empty = false;
         try {
-            if(attribute != null){
+            if (attribute != null) {
                 return attribute.getString();
-            } else if(emptyFlagAttribute != null){
+            } else if (emptyFlagAttribute != null) {
                 empty = Boolean.valueOf(emptyFlagAttribute.getString());
             }
         } catch (LdapInvalidAttributeValueException e) {
@@ -59,19 +80,19 @@ public class LdapUtils {
         }
         return empty ? new String() : null;
     }
-    
-    public static List<String> extractFirstValueOfAttribute(List<Entry> entries, String attributeType){
+
+    public static List<String> extractFirstValueOfAttribute(List<Entry> entries, String attributeType) {
         List<String> result = new LinkedList<String>();
-        for(Entry e : entries){
+        for (Entry e : entries) {
             result.add(extractFirstValueOfAttribute(e, attributeType));
         }
         return result;
     }
 
-    public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType){
+    public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType) {
         List<String> result = new LinkedList<String>();
         try {
-            while(cursor.next()){
+            while (cursor.next()) {
                 Entry entry = cursor.getEntry();
                 result.add(extractFirstValueOfAttribute(entry, attributeType));
             }

@@ -1,3 +1,20 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.separateProject;
 
 import java.util.Collections;
@@ -16,10 +33,13 @@ import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.UUIDComparator;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 
-public class OrderFilter {
+public final class OrderFilter {
 
-    public static final String idAttribute = "org-openengsb-uuid";
-    public static final String uniqueObjectOc = "org-openengsb-uniqueObject";
+    public static final String ID_ATTRIBUTE = "org-openengsb-uuid";
+    public static final String UNIQUE_OBJECT_OC = "org-openengsb-uniqueObject";
+
+    private OrderFilter() {
+    }
 
     /**
      * Adds a timebased uuid to entry.
@@ -31,13 +51,13 @@ public class OrderFilter {
     public static void addId(Entry entry, boolean updateRdn) {
         String uuid = newUUID().toString();
         try {
-            entry.add(SchemaConstants.objectClassAttribute, uniqueObjectOc);
-            entry.add(idAttribute, uuid);
+            entry.add(SchemaConstants.objectClassAttribute, UNIQUE_OBJECT_OC);
+            entry.add(ID_ATTRIBUTE, uuid);
         } catch (LdapException e) {
             throw new RuntimeException(e);
         }
         if (updateRdn) {
-            Dn newDn = LdapUtils.concatDn(idAttribute, uuid, entry.getDn().getParent());
+            Dn newDn = LdapUtils.concatDn(ID_ATTRIBUTE, uuid, entry.getDn().getParent());
             entry.setDn(newDn);
         }
     }
@@ -69,7 +89,7 @@ public class OrderFilter {
     }
 
     public static String extractIdAttribute(Entry entry) {
-        return LdapUtils.extractAttributeNoEmptyCheck(entry, idAttribute);
+        return LdapUtils.extractAttributeNoEmptyCheck(entry, ID_ATTRIBUTE);
     }
 
     private static class IdComparator implements Comparator<Entry> {
