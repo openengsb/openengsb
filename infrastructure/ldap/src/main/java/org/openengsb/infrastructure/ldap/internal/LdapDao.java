@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
-import org.apache.directory.shared.ldap.model.entry.Attribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -31,8 +30,6 @@ import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
@@ -61,49 +58,6 @@ public class LdapDao {
 
     public LdapConnection getConnection() {
         return connection;
-    }
-
-    /**
-     * Modifies the entry found under dn. The attributes are replaced.
-     * 
-     * @param dn
-     * @param attributes
-     * @throws NoSuchNodeException
-     * @throws ObjectClassViolationException
-     * @throws MissingParentException
-     */
-    public void modify(Dn dn, Attribute... attributes) throws NoSuchNodeException, ObjectClassViolationException,
-            MissingParentException {
-        ModifyRequest modifyRequest = new ModifyRequestImpl();
-        modifyRequest.setName(dn);
-        LdapResult result;
-
-        for (Attribute a : attributes) {
-            modifyRequest.replace(a);
-        }
-
-        try {
-            result = connection.modify(modifyRequest).getLdapResult();
-        } catch (LdapException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (result.getResultCode() == ResultCodeEnum.NO_SUCH_OBJECT) {
-            try {
-                if (connection.exists(dn.getParent())) {
-                    throw new NoSuchNodeException(dn);
-                } else {
-                    throw new MissingParentException(lastMatch(dn));
-                }
-            } catch (LdapException e) {
-                throw new RuntimeException(e);
-            }
-        } else if (result.getResultCode() == ResultCodeEnum.OBJECT_CLASS_VIOLATION) {
-            throw new ObjectClassViolationException();
-        } else if (result.getResultCode() != ResultCodeEnum.SUCCESS) {
-            LOGGER.debug(result.getDiagnosticMessage());
-            throw new RuntimeException(result.getDiagnosticMessage());
-        }
     }
 
     /**
@@ -214,7 +168,7 @@ public class LdapDao {
     }
 
     /**
-     * Retrieves a SearchCursor over the direct children of Dn parent.
+     * Returns a SearchCursor over the direct children of Dn parent.
      * 
      * @throws NoSuchNodeException
      * @throws MissingParentException
@@ -287,7 +241,7 @@ public class LdapDao {
      * @throws MissingParentException if some node above parent does not exist
      * */
     public void deleteMatchingChildren(Dn parent, String searchFilter) throws MissingParentException,
-            NoSuchNodeException {
+        NoSuchNodeException {
 
         try {
             if (!connection.exists(parent.getParent())) {
@@ -302,7 +256,7 @@ public class LdapDao {
         try {
             // ldap search syntax: (&(exp1)(exp2)(exp3))
             EntryCursor entryCursor = connection.search(parent, String.format("(&(objectclass=*)%s)", searchFilter),
-                    SearchScope.ONELEVEL);
+                SearchScope.ONELEVEL);
             while (entryCursor.next()) {
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
