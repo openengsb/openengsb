@@ -19,7 +19,7 @@ package org.openengsb.infrastructure.ldap.internal;
 
 import org.apache.directory.shared.ldap.model.name.Dn;
 
-public class MissingParentException extends NoSuchNodeException {
+public class MissingParentException extends RuntimeException {
 
     private static final long serialVersionUID = 8263832471990241311L;
 
