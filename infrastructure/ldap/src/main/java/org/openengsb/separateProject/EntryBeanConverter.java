@@ -34,8 +34,8 @@ public final class EntryBeanConverter {
     }
 
     /**
-     * Returns a list of entries representing given {@link PermissionSetData}. The entries can be
-     * inserted right away.
+     * Returns a list of entries representing given {@link PermissionSetData}.
+     * The entries can be inserted right away.
      * 
      * @param data
      * @return
@@ -51,22 +51,21 @@ public final class EntryBeanConverter {
     }
 
     /**
-     * Returns a list of entries representing given {@link PermissionData}. The list can
-     * be inserted into the DIT as is.
+     * Returns a list of entries representing given {@link PermissionData}. The
+     * list can be inserted into the DIT as is.
      * 
-     * @param permissionData
+     * @param data
      * @param parent
      * @return
      */
-    public static List<Entry>
-    permissionStructureFromPermissionData(Collection<PermissionData> permissionData, Dn parent) {
+    public static List<Entry> permissionStructureFromPermissionData(Collection<PermissionData> data, Dn parent) {
 
         List<Entry> permissions = new LinkedList<Entry>();
         List<Entry> properties = new LinkedList<Entry>();
         List<Entry> propertyValues = new LinkedList<Entry>();
         List<Entry> result = new LinkedList<Entry>();
 
-        for (PermissionData p : permissionData) {
+        for (PermissionData p : data) {
             String permissionType = p.getType();
             Entry permissionEntry = EntryFactory.javaObject(permissionType, null, parent);
             OrderFilter.addId(permissionEntry, true);

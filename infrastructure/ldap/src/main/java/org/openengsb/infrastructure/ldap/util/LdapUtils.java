@@ -56,9 +56,9 @@ public final class LdapUtils {
         }
     }
 
-    // TODO make more general method where it is optional if empty flag should be checked or not.
-    // so far this method always checks it although it may also be used for attributes where empty
-    // flag is not allowed.
+    // TODO make more general method where it is optional if empty flag should
+    // be checked or not. so far this method always checks it although it may
+    // also be used for attributes where empty flag is not allowed.
     public static String extractFirstValueOfAttribute(Entry entry, String attributeTye) {
 
         if (entry == null) {

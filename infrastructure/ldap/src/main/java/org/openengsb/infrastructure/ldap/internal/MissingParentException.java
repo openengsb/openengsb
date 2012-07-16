@@ -30,8 +30,7 @@ public class MissingParentException extends NoSuchNodeException {
     }
 
     /**
-     * @param lowestMatchedDn
-     *            the last existing Dn in the hierarchy.
+     * @param lowestMatchedDn the last existing Dn in the hierarchy.
      */
     public MissingParentException(Dn lowestMatchedDn) {
         this.lowestMatchedDn = lowestMatchedDn;
@@ -57,8 +56,7 @@ public class MissingParentException extends NoSuchNodeException {
     }
 
     /**
-     * @param lowestMatchedDn
-     *            the last existing Dn in the hierarchy.
+     * @param lowestMatchedDn the last existing Dn in the hierarchy.
      */
     public void setLowestMatchedDn(Dn dn) {
         this.lowestMatchedDn = dn;

@@ -155,7 +155,8 @@ public class UserDataManagerLdap implements UserDataManager {
             }
         }
         List<Entry> entries = new LinkedList<Entry>();
-        for (String s : permissionSet) { // done in separate loop to provide some atomicity
+        for (String s : permissionSet) { // done in separate loop to provide
+                                         // some atomicity
             Entry entry = EntryFactory.namedObject(s, parent);
             OrderFilter.addId(entry, false);
             entries.add(entry);

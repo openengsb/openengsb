@@ -68,7 +68,7 @@ public class Node {
         }
         final Node other = (Node) obj;
         return Objects.equal(other.parent, this.parent) && Objects.equal(other.entry, this.entry)
-            && Objects.equal(other.children, this.children);
+                && Objects.equal(other.children, this.children);
     }
 
     @Override

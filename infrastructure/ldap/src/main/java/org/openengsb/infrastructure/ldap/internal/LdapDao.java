@@ -73,7 +73,7 @@ public class LdapDao {
      * @throws MissingParentException
      */
     public void modify(Dn dn, Attribute... attributes) throws NoSuchNodeException, ObjectClassViolationException,
-        MissingParentException {
+            MissingParentException {
         ModifyRequest modifyRequest = new ModifyRequestImpl();
         modifyRequest.setName(dn);
         LdapResult result;
@@ -111,8 +111,7 @@ public class LdapDao {
      * 
      * @param entry
      * @throws EntryAlreadyExistsException
-     * @throws MissingParentException
-     *             if an ancestor of the entry is missing.
+     * @throws MissingParentException if an ancestor of the entry is missing.
      */
     public void store(Entry entry) throws EntryAlreadyExistsException, MissingParentException {
         AddRequest addRequest = new AddRequestImpl().setEntry(entry);
@@ -136,8 +135,7 @@ public class LdapDao {
      * Inserts an entry into the DIT. If an entry exists, nothing is done.
      * 
      * @param entry
-     * @throws MissingParentException
-     *             if an ancestor of the entry is missing.
+     * @throws MissingParentException if an ancestor of the entry is missing.
      */
     public void storeSkipExisting(Entry entry) throws MissingParentException {
         try {
@@ -149,12 +147,11 @@ public class LdapDao {
 
     /**
      * Overwrites an entry in the DIT, deleting its whole subtree. <br>
-     * ATTENTION when overwriting inner nodes (non-leaves)! If its subtree should remain, use modify
-     * instead.
+     * ATTENTION when overwriting inner nodes (non-leaves)! If its subtree
+     * should remain, use modify instead.
      * 
      * @param entry
-     * @throws MissingParentException
-     *             if an ancestor of the entry is missing.
+     * @throws MissingParentException if an ancestor of the entry is missing.
      */
     public void storeOverwriteExisting(Entry entry) throws MissingParentException {
         try {
@@ -165,8 +162,9 @@ public class LdapDao {
     }
 
     /**
-     * Inserts a list of entries into the DIT. The order of the entries is important.
-     * If it does not follow the hierarchy in the DIT, NoSuchObjectException will be thrown.
+     * Inserts a list of entries into the DIT. The order of the entries is
+     * important. If it does not follow the hierarchy in the DIT,
+     * NoSuchObjectException will be thrown.
      * 
      * @param entries
      * @throws MissingParentException
@@ -179,11 +177,12 @@ public class LdapDao {
     }
 
     /**
-     * Inserts a hierarchy of entries. If an entry already exists, nothing is done and the method
-     * proceeds with the next entry.
+     * Inserts a hierarchy of entries. If an entry already exists, nothing is
+     * done and the method proceeds with the next entry.
      * 
      * @param entries
-     * @return A list of the skipped entries or an empty list if none were skipped.
+     * @return A list of the skipped entries or an empty list if none were
+     *         skipped.
      * @throws MissingParentException
      */
     public List<Entry> storeSkipExisting(List<Entry> entries) throws MissingParentException {
@@ -199,8 +198,9 @@ public class LdapDao {
     }
 
     /**
-     * Inserts a hierarchy of entries. If an entry already exists, the existing entry and
-     * its entire subtree is deleted and the new entry including possible subtree is inserted.
+     * Inserts a hierarchy of entries. If an entry already exists, the existing
+     * entry and its entire subtree is deleted and the new entry including
+     * possible subtree is inserted.
      * */
     public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException {
         for (Entry entry : entries) {
@@ -280,16 +280,14 @@ public class LdapDao {
     }
 
     /**
-     * Deletes all direct children which match the searchFilter, including their subtrees. Does not
-     * delete parent.
+     * Deletes all direct children which match the searchFilter, including their
+     * subtrees. Does not delete parent.
      * 
-     * @throws NoSuchNodeException
-     *             if parent does not exist
-     * @throws MissingParentException
-     *             if some node above parent does not exist
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
     public void deleteMatchingChildren(Dn parent, String searchFilter) throws MissingParentException,
-        NoSuchNodeException {
+            NoSuchNodeException {
 
         try {
             if (!connection.exists(parent.getParent())) {
@@ -304,7 +302,7 @@ public class LdapDao {
         try {
             // ldap search syntax: (&(exp1)(exp2)(exp3))
             EntryCursor entryCursor = connection.search(parent, String.format("(&(objectclass=*)%s)", searchFilter),
-                SearchScope.ONELEVEL);
+                    SearchScope.ONELEVEL);
             while (entryCursor.next()) {
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
@@ -316,10 +314,8 @@ public class LdapDao {
     /**
      * Deletes the parent and its entire subtree.<br>
      * 
-     * @throws NoSuchNodeException
-     *             if parent does not exist
-     * @throws MissingParentException
-     *             if some node above parent does not exist
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
     public void deleteSubtreeIncludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
 
@@ -359,10 +355,8 @@ public class LdapDao {
     /**
      * Deletes the entire subtree of parent but not parent itself.<br>
      * 
-     * @throws NoSuchNodeException
-     *             if parent does not exist
-     * @throws MissingParentException
-     *             if some node above parent does not exist
+     * @throws NoSuchNodeException if parent does not exist
+     * @throws MissingParentException if some node above parent does not exist
      * */
     public void deleteSubtreeExcludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
 
@@ -397,10 +391,8 @@ public class LdapDao {
     /**
      * @param dn
      * @return entry
-     * @throws NoSuchNodeException
-     *             if dn does not exist but its parent does
-     * @throws MissingParentException
-     *             if the dn's parent does not exist
+     * @throws NoSuchNodeException if dn does not exist but its parent does
+     * @throws MissingParentException if the dn's parent does not exist
      */
     public Entry lookup(Dn dn) throws NoSuchNodeException, MissingParentException {
         Entry entry;
@@ -426,7 +418,8 @@ public class LdapDao {
     }
 
     /**
-     * Iterates over the Dn from leaf to root and returns the first Dn that exists.
+     * Iterates over the Dn from leaf to root and returns the first Dn that
+     * exists.
      * */
     private Dn lastMatch(final Dn dn) {
         if (dn == null) {

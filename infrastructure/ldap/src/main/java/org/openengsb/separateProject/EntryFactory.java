@@ -24,8 +24,8 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 /**
- * Builds entries for various nodes in the DIT. The returned entries have
- * a valid Dn and all provided attributes.
+ * Builds entries for various nodes in the DIT. The returned entries have a
+ * valid Dn and all provided attributes.
  * */
 public final class EntryFactory {
 
@@ -83,14 +83,17 @@ public final class EntryFactory {
      * 3 possibilities:<br>
      * 1) description is null -> emptyFlag = false, no description attribute <br>
      * 2) description is empty -> emptyFlag = true, no description attribute <br>
-     * 3) description exists -> no emptyFlag, description attribute exists and has a value
+     * 3) description exists -> no emptyFlag, description attribute exists and
+     * has a value
      * */
     private static void addDescription(Entry entry, String description) throws LdapException {
         entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.descriptiveObjectOc);
         if (description == null) {
-            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(false)); // case 1
+            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(false)); // case
+                                                                                  // 1
         } else if (description.isEmpty()) {
-            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(true)); // case 2
+            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(true)); // case
+                                                                                 // 2
         } else {
             entry.add(SchemaConstants.stringAttribute, description); // case 3
         }

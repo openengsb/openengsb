@@ -45,8 +45,8 @@ public final class OrderFilter {
      * Adds a timebased uuid to entry.
      * 
      * @param entry
-     * @param updateRdn
-     *            If true, the uuid becomes the rdn. Use to handle duplicates.
+     * @param updateRdn If true, the uuid becomes the rdn. Use to handle
+     *        duplicates.
      */
     public static void addId(Entry entry, boolean updateRdn) {
         String uuid = newUUID().toString();
@@ -66,8 +66,8 @@ public final class OrderFilter {
      * Iterates over entries and adds a timebased uuid to each entry.
      * 
      * @param entries
-     * @param updateRdn
-     *            If true, the uuid becomes the rdn. Use to handle duplicates.
+     * @param updateRdn If true, the uuid becomes the rdn. Use to handle
+     *        duplicates.
      */
     public static void addIds(List<Entry> entries, boolean updateRdn) {
         for (Entry entry : entries) {

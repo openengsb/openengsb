@@ -26,17 +26,18 @@ import org.openengsb.core.security.internal.model.PermissionData;
 import com.google.common.collect.Maps;
 
 public final class PermissionUtils {
-    
+
     private PermissionUtils() {
     }
-    
+
     public static PermissionData convertPermissionToPermissionData(Permission permission) {
         PermissionData permissionData = new PermissionData();
         String type = permission.getClass().getName();
         permissionData.setType(type);
         Map<String, EntryValue> entryMap = EntryUtils.convertBeanToEntryMap(permission);
 
-        // copy the map, because JPA does not like the transformed map for some reason
+        // copy the map, because JPA does not like the transformed map for some
+        // reason
         entryMap = Maps.newHashMap(entryMap);
         permissionData.setAttributes(entryMap);
         return permissionData;
