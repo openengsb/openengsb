@@ -33,6 +33,7 @@ import org.osgi.framework.BundleContext;
  * Simple {@link ConfigPersistenceBackendService} implementation directly using the core {@link PersistenceService}.
  * Only disadvantage at the current implementation is that objects have to be stored in simple form.
  */
+@Deprecated
 public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBackendService<E> {
 
     private PersistenceManager persistenceManager;
