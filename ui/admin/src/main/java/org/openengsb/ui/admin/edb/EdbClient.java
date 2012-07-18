@@ -213,12 +213,17 @@ public class EdbClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 EkbQuery query = queryModel.getObject();
+
                 List<? extends OpenEngSBModel> models;
                 try {
-                    models = ekbQueryInterface.queryForModels(query.getModel(), query.getQuery());
+                    if (query.getQuery() == null) {
+                        models = ekbQueryInterface.queryForActiveModels(query.getModel());
+                    } else {
+                        models = ekbQueryInterface.queryForModels(query.getModel(), query.getQuery());
+                    }
                     resultModel.setObject(models);
                     info(String.format("Found %s results", models.size()));
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     error(String.format("Error when querying for models %s (%s)",
                         e.getMessage(), e.getClass().getName()));
                 }
