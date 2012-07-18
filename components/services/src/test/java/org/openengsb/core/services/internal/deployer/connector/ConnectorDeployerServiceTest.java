@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -64,7 +63,6 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
@@ -130,8 +128,6 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     private void setupPersistence() {
-        DefaultPersistenceManager dummyPersistenceManager = new DefaultPersistenceManager();
-        dummyPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         DummyConfigPersistenceService<ConnectorDescription> backend =
             new DummyConfigPersistenceService<ConnectorDescription>();
         configPersistence = new DefaultConfigPersistenceService(backend);
