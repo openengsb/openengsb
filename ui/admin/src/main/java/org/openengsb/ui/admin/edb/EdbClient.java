@@ -179,7 +179,7 @@ public class EdbClient extends BasePage {
                 try {
                     beanInfo = Introspector.getBeanInfo(model);
                 } catch (IntrospectionException e) {
-                    LOGGER.warn("error introspecting {}. Auto-completing won't work." + model);
+                    LOGGER.warn("error introspecting {}. Auto-completing won't work.", model);
                     List<String> emptyList = Collections.emptyList();
                     return emptyList.iterator();
                 }
