@@ -18,21 +18,14 @@
 package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.RuleConfiguration;
-import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
@@ -73,40 +66,6 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
         List<PersistenceTestObject> result = persistence.query(new PersistenceTestObject("test", null));
         assertThat(result.size(), is(1));
         assertThat(result.get(0), is(test));
-    }
-
-    @Test
-    public void testConfigPersistenceSetup() throws Exception {
-        ConfigPersistenceService configPersistenceService = retrieveAndConfigureRuleCorePersistenceService();
-
-        assertThat(configPersistenceService, notNullValue());
-        assertTrue(configPersistenceService.supports(RuleConfiguration.class));
-    }
-
-    @Test
-    public void testConfigSimplePersistence() throws Exception {
-        ConfigPersistenceService configPersistenceService = retrieveAndConfigureRuleCorePersistenceService();
-
-        HashMap<String, String> meta = new HashMap<String, String>();
-        meta.put("test1", "test1");
-        meta.put("test2", "test2");
-        String rule = "rule";
-        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, rule);
-        configPersistenceService.persist(ruleConfiguration);
-        HashMap<String, String> found = new HashMap<String, String>();
-        found.put("test1", "test1");
-        found.put("test2", "test2");
-        List<RuleConfiguration> result = configPersistenceService.load(meta);
-
-        assertThat(result, notNullValue());
-        assertThat(result.size(), is(1));
-        assertThat(result.get(0).getContent(), is("rule"));
-    }
-
-    private ConfigPersistenceService retrieveAndConfigureRuleCorePersistenceService() throws IOException {
-        return getOsgiService(ConfigPersistenceService.class,
-            String.format("(%s=%s)", Constants.CONFIGURATION_ID, RuleConfiguration.TYPE_ID), 30000L);
-
     }
 
     @Test
