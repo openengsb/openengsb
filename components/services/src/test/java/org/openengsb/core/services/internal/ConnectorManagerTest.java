@@ -32,7 +32,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,10 +48,9 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
@@ -76,16 +74,11 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend<String> persistenceBackend = new CorePersistenceServiceBackend<String>();
-        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
-        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
-        persistenceBackend.setPersistenceManager(persistenceManager);
-        persistenceBackend.setBundleContext(bundleContext);
-        persistenceBackend.init();
+        DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, Constants.CONFIG_CONNECTOR);
         props.put(Constants.BACKEND_ID, "dummy");
-        configPersistence = new DefaultConfigPersistenceService(persistenceBackend);
+        configPersistence = new DefaultConfigPersistenceService(backend);
         registerService(configPersistence, props, ConfigPersistenceService.class);
     }
 
