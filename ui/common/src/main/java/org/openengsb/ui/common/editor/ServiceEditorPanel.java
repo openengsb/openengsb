@@ -28,10 +28,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -46,6 +49,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
@@ -59,7 +63,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
@@ -83,6 +87,22 @@ public class ServiceEditorPanel extends Panel {
                 }
             } else if (index > 0) {
                 entry.setValue(new Object[index + 1]);
+            }
+        }
+
+        public void deleteSubElement(int index) {
+            if (isArray()) {
+                Object[] oldArray = getArray();
+                Object[] newArray = new Object[oldArray.length - 1];
+                int j = 0;
+                for (int i = 0; i < oldArray.length; i++) {
+                    if (i == index) {
+                        continue;
+                    }
+                    newArray[j] = oldArray[i];
+                    j++;
+                }
+                entry.setValue(newArray.length == 1 ? newArray[0] : newArray);
             }
         }
 
@@ -132,12 +152,20 @@ public class ServiceEditorPanel extends Panel {
         org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
         Constants.SERVICE_ID, Constants.OBJECTCLASS);
 
+    @SuppressWarnings({ "serial" })
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, Form<?> parentForm) {
         super(id);
         this.attributes = attributes;
         this.parentForm = parentForm;
         initPanel(attributes, attributeMap, properties);
+        add(new AbstractBehavior() {
+            @Override
+            public void renderHead(Component component, IHeaderResponse response) {
+                response.renderCSSReference(new PackageResourceReference(ServiceEditorPanel.class,
+                    "ServiceEditorPanel.css"));
+            }
+        });
     }
 
     public void reloadList(Map<String, Object> properties) {
@@ -199,16 +227,25 @@ public class ServiceEditorPanel extends Panel {
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
 
-                RepeatingView repeater = new RepeatingView("values");
+                final RepeatingView repeater = new RepeatingView("values");
                 item.add(repeater);
                 Object value = modelObject.getValue();
                 if (value.getClass().isArray()) {
                     Object[] values = (Object[]) value;
                     for (int i = 0; i < values.length; i++) {
                         WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                        final EntryModel model = new EntryModel(modelObject, i);
+                        final int index = i;
                         AjaxEditableLabel<String> l =
-                            new AjaxEditableLabel<String>("value", new EntryModel(modelObject, i));
+                            new AjaxEditableLabel<String>("value", model);
                         container.add(l);
+                        container.add(new WebMarkupContainer("button").add(new AjaxEventBehavior("onclick") {
+                            protected void onEvent(AjaxRequestTarget target) {
+                                model.deleteSubElement(index);
+                                target.add(propertiesContainer);
+                                System.out.println("ajax here!");
+                            }
+                        }));
                         repeater.add(container);
                     }
                 } else {
@@ -216,6 +253,7 @@ public class ServiceEditorPanel extends Panel {
                     IModel<String> valueModel = new EntryModel(modelObject, 0);
                     AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
                     container.add(l);
+                    container.add(new WebMarkupContainer("button"));
                     repeater.add(container);
                 }
 

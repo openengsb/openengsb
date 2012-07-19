@@ -33,7 +33,7 @@
           </td>
         </tr>
       </table>
-      <table border="1" width="70%">
+      <table border="1" width="100%">
         <tr>
           <td colspan="2">
             <wicket:message key="click.to.edit">Click the list items to edit an entries value.</wicket:message>
@@ -44,9 +44,11 @@
             <div wicket:id="key" />
           </td>
           <td>
-            <ul>
-              <li wicket:id="values">
-                <div wicket:id="value" />
+            <ul style="list-style-type:none;">
+              <li wicket:id="values" style="width:100%;">
+                <div wicket:id="value" style="width:80%; float:left;"/>
+                <div wicket:id="button" class="ServiceEditorRemoveButton"/>
+                <div style="clear:both"/>
               </li>
             </ul>
             <a href="#" wicket:id="newArrayEntry">[New item]</a>
