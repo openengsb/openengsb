@@ -242,8 +242,7 @@ public class ServiceEditorPanel extends Panel {
                         container.add(new WebMarkupContainer("button").add(new AjaxEventBehavior("onclick") {
                             protected void onEvent(AjaxRequestTarget target) {
                                 model.deleteSubElement(index);
-                                target.add(propertiesContainer);
-                                System.out.println("ajax here!");
+                                target.add(ServiceEditorPanel.this);
                             }
                         }));
                         repeater.add(container);
@@ -253,7 +252,7 @@ public class ServiceEditorPanel extends Panel {
                     IModel<String> valueModel = new EntryModel(modelObject, 0);
                     AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
                     container.add(l);
-                    container.add(new WebMarkupContainer("button"));
+                    container.add(new WebMarkupContainer("button").setVisible(false));
                     repeater.add(container);
                 }
 
