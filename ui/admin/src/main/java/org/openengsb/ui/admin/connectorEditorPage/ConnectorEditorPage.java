@@ -110,13 +110,18 @@ public class ConnectorEditorPage extends BasePage {
                 error("The service already exists in the system. Please choose a different servcie id.");
             }
         }
+        
+        @Override
+        public void onCancel() {
+            returnToTestClient();
+        }
 
         private void returnToTestClient() {
             // String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
             // ServiceId reference = new ServiceId(serviceClass, idModel.getObject());
             // setResponsePage(new TestClient(reference));
             setResponsePage(TestClient.class);
-        }
+        }        
     }
 
     public ConnectorEditorPage(String domain, String connectorType) {
