@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
@@ -49,7 +50,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidationError;
-import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
@@ -148,21 +148,24 @@ public class ServiceEditorPanel extends Panel {
     private WebMarkupContainer propertiesContainer;
     private ListView<MapEntry<String, Object>> propertiesList;
     private final Form<?> parentForm;
-    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
-        org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
-        Constants.SERVICE_ID, Constants.OBJECTCLASS);
+    private Map<String, Object> properties;
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(
+        org.openengsb.core.api.Constants.CONNECTOR_KEY,
+        org.openengsb.core.api.Constants.DOMAIN_KEY,
+        Constants.SERVICE_ID, Constants.OBJECTCLASS, Constants.SERVICE_PID);
 
-    @SuppressWarnings({ "serial" })
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, Form<?> parentForm) {
         super(id);
         this.attributes = attributes;
         this.parentForm = parentForm;
+        this.properties = properties;
         initPanel(attributes, attributeMap, properties);
         add(new AbstractBehavior() {
+            
             @Override
-            public void renderHead(Component component, IHeaderResponse response) {
-                response.renderCSSReference(new PackageResourceReference(ServiceEditorPanel.class,
+            public void renderHead(IHeaderResponse response) {
+                response.renderCSSReference(new ResourceReference(ServiceEditorPanel.class,
                     "ServiceEditorPanel.css"));
             }
         });
@@ -177,7 +180,7 @@ public class ServiceEditorPanel extends Panel {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
-
+        this.properties = properties;
         propertiesList.setList(entryList);
     }
 
@@ -210,6 +213,14 @@ public class ServiceEditorPanel extends Panel {
         }
     }
 
+    /**
+     * Removes the property with the given key and reloads the property list afterwards
+     */
+    public void removeProperty(String key) {
+        properties.remove(key);
+        reloadList(properties);
+    }
+
     private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
             Map<String, Object> properties) {
         RepeatingView fields =
@@ -227,6 +238,13 @@ public class ServiceEditorPanel extends Panel {
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
 
+                item.add(new WebMarkupContainer("buttonKey").add(new AjaxEventBehavior("onclick") {
+                    protected void onEvent(AjaxRequestTarget target) {
+                        ServiceEditorPanel.this.removeProperty(modelObject.getKey());
+                        target.addComponent(ServiceEditorPanel.this);
+                    }
+                }));
+
                 final RepeatingView repeater = new RepeatingView("values");
                 item.add(repeater);
                 Object value = modelObject.getValue();
@@ -239,10 +257,10 @@ public class ServiceEditorPanel extends Panel {
                         AjaxEditableLabel<String> l =
                             new AjaxEditableLabel<String>("value", model);
                         container.add(l);
-                        container.add(new WebMarkupContainer("button").add(new AjaxEventBehavior("onclick") {
+                        container.add(new WebMarkupContainer("buttonValue").add(new AjaxEventBehavior("onclick") {
                             protected void onEvent(AjaxRequestTarget target) {
                                 model.deleteSubElement(index);
-                                target.add(ServiceEditorPanel.this);
+                                target.addComponent(ServiceEditorPanel.this);
                             }
                         }));
                         repeater.add(container);
@@ -252,7 +270,7 @@ public class ServiceEditorPanel extends Panel {
                     IModel<String> valueModel = new EntryModel(modelObject, 0);
                     AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
                     container.add(l);
-                    container.add(new WebMarkupContainer("button").setVisible(false));
+                    container.add(new WebMarkupContainer("buttonValue").setVisible(false));
                     repeater.add(container);
                 }
 
