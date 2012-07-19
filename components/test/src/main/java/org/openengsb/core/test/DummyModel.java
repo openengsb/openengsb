@@ -14,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.test;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Raises;
-import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-@SecurityAttribute("NULL")
-public interface NullDomain extends Domain {
+@Model
+public class DummyModel {
+    @OpenEngSBModelId
+    private String id;
 
-    @Raises(NullEvent.class)
-    void nullMethod();
+    private String value;
 
-    @SecurityAttribute("READ_NULL")
-    Object nullMethod(Object o);
+    public String getId() {
+        return id;
+    }
 
-    @SecurityAttribute("READ_NULL")
-    Object nullMethod(Object o, String b);
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    void commitModel(DummyModel model);
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
 }

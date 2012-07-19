@@ -60,7 +60,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
@@ -73,8 +72,6 @@ public class WiringPageTest extends AbstractUITest {
     public interface AnotherTestDomainInterface extends Connector {
     }
 
-    private RuleManager ruleManager;
-
     private String testdomainConnectorId;
     private final String globTest = "globTest";
     private final String anotherGlob = "anotherGlob";
@@ -83,14 +80,12 @@ public class WiringPageTest extends AbstractUITest {
 
     @Before
     public void setUp() throws Exception {
-        ruleManager = mock(RuleManager.class);
         Map<String, String> globals = new TreeMap<String, String>();
         globals.put(globTest, TestDomainInterface.class.getCanonicalName());
         globals.put(anotherGlob, AnotherTestDomainInterface.class.getCanonicalName());
         when(ruleManager.listGlobals()).thenReturn(globals);
         when(ruleManager.getGlobalType(globTest)).thenReturn(globals.get(globTest));
         when(ruleManager.getGlobalType(anotherGlob)).thenReturn(globals.get(anotherGlob));
-        context.putBean("ruleManager", ruleManager);
         List<String> contextList = new ArrayList<String>();
         contextList.add("bar");
         contextList.add("one");

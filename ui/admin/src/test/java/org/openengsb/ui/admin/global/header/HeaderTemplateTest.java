@@ -28,10 +28,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
@@ -43,7 +41,6 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
-        context.putBean("ruleManager", mock(RuleManager.class));
     }
 
     @Test
@@ -100,8 +97,6 @@ public class HeaderTemplateTest extends AbstractUITest {
     private void setUpSendEventPage() {
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("ruleManagerBean", mock(RuleManager.class));
-        context.putBean("auditing", mock(AuditingDomain.class));
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
