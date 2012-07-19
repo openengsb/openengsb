@@ -139,11 +139,29 @@ public abstract class ServiceEditor extends Panel {
                 target.add(form);
             }
         };
+        
+        AjaxButton cancelButton = new IndicatingAjaxButton("cancelButton", form) {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                ServiceEditor.this.onCancel();                
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                ServiceEditor.this.onCancel();
+            }
+            
+        };
+        
         form.setOutputMarkupId(true);
         form.add(submitButton);
+        form.add(cancelButton);
     }
 
     public abstract void onSubmit();
+    
+    public abstract void onCancel();
 
     public ServiceEditorPanel getServiceEditorPanel() {
         return serviceEditorPanel;
