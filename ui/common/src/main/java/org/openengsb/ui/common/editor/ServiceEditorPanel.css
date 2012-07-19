@@ -1,0 +1,7 @@
+.ServiceEditorRemoveButton {
+	background-image: url('delete_image.png');
+	float: right;
+	width: 22px;
+	height: 22px;
+	margin-right: 5px;
+}
