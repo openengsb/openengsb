@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openengsb.core.api.persistence.IgnoreInQueries;
-import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
 import org.openengsb.core.api.workflow.ProcessBagException;
 
 /**
@@ -40,12 +39,10 @@ import org.openengsb.core.api.workflow.ProcessBagException;
  */
 @SuppressWarnings("serial")
 @XmlRootElement
-public class ProcessBag implements Serializable, SpecialActionsAfterSerialisation {
+public class ProcessBag implements Serializable {
     private String processId;
     private String context;
     private String user;
-    private transient Object processIdLock = new Object();
-    private boolean empty = false;
 
     private Map<String, Object> properties;
 
@@ -83,7 +80,7 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
     @Override
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        hashCodeBuilder.append(processId).append(context).append(user).append(empty);
+        hashCodeBuilder.append(processId).append(context).append(user);
         Set<Entry<String, Object>> entrySet = properties.entrySet();
         for (Entry<String, Object> pair : entrySet) {
             hashCodeBuilder.append(pair.getKey()).append(pair.getValue());
@@ -107,26 +104,11 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
     }
 
     public void setProcessId(String processId) {
-        synchronized (processIdLock) {
-            this.processId = processId;
-            processIdLock.notifyAll();
-        }
+        this.processId = processId;
     }
 
     public String getProcessId() {
-        if (empty) {
-            return processId;
-        }
-        synchronized (processIdLock) {
-            while (processId == null) {
-                try {
-                    processIdLock.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return processId;
-        }
+        return processId;
     }
 
     public void setContext(String context) {
@@ -196,10 +178,6 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
         properties.clear();
     }
 
-    protected void setEmpty() {
-        empty = true;
-    }
-
     /*
      * need these for jackson
      */
@@ -210,11 +188,6 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
-    }
-
-    @Override
-    public void doSpecialActions() {
-        processIdLock = new Object();
     }
 
 }
