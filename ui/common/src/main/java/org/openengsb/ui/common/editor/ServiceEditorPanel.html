@@ -41,13 +41,15 @@
         </tr>
         <tr wicket:id="properties">
           <td>
-            <div wicket:id="key" />
+            <div wicket:id="key" style="width:80%; float:left;"/>
+            <div wicket:id="buttonKey" class="ServiceEditorRemoveButton"/>
+            <div style="clear:both"/>
           </td>
           <td>
             <ul style="list-style-type:none;">
               <li wicket:id="values" style="width:100%;">
                 <div wicket:id="value" style="width:80%; float:left;"/>
-                <div wicket:id="button" class="ServiceEditorRemoveButton"/>
+                <div wicket:id="buttonValue" class="ServiceEditorRemoveButton"/>
                 <div style="clear:both"/>
               </li>
             </ul>
