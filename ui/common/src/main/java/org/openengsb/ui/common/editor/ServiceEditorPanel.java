@@ -32,7 +32,7 @@ import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -66,7 +66,6 @@ import com.google.common.collect.Lists;
  * Creates a panel containing a service-editor, for usage in forms.
  * 
  */
-@SuppressWarnings("deprecation")
 public class ServiceEditorPanel extends Panel {
 
     private static final long serialVersionUID = 5593901084329552949L;
@@ -169,7 +168,7 @@ public class ServiceEditorPanel extends Panel {
         this.parentForm = parentForm;
         this.properties = properties;
         initPanel(attributes, attributeMap, properties);
-        add(new AbstractBehavior() {
+        add(new Behavior() {
             @Override
             public void renderHead(Component component, IHeaderResponse response) {
                 response.renderCSSReference(new PackageResourceReference(ServiceEditorPanel.class,
