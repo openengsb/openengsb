@@ -94,7 +94,8 @@ public abstract class ServiceEditor extends Panel {
         serviceEditorPanel.setOutputMarkupId(true);
 
         final IModel<String> newKeyModel = new Model<String>();
-        TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        final TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        textField.setOutputMarkupId(true);
         form.add(textField);
 
         form.add(new AjaxButton("addProperty", form) {
@@ -113,6 +114,7 @@ public abstract class ServiceEditor extends Panel {
                 newKeyModel.setObject("");
                 serviceEditorPanel.reloadList(ServiceEditor.this.properties);
                 target.add(serviceEditorPanel);
+                target.add(textField);
             }
 
             @Override
