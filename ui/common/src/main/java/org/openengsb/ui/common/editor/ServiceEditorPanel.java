@@ -162,7 +162,6 @@ public class ServiceEditorPanel extends Panel {
         this.properties = properties;
         initPanel(attributes, attributeMap, properties);
         add(new AbstractBehavior() {
-            
             @Override
             public void renderHead(IHeaderResponse response) {
                 response.renderCSSReference(new ResourceReference(ServiceEditorPanel.class,
