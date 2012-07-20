@@ -124,7 +124,7 @@ public class ConnectorEditorPage extends BasePage {
 
         private void returnToTestClient() {
             setResponsePage(TestClient.class);
-        }        
+        }
     }
 
     private void retrieveDescriptor(String connectorType) {
