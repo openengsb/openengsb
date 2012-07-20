@@ -225,6 +225,7 @@ public class ServiceEditorPanel extends Panel {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeMap);
         add(fields);
+        setOutputMarkupId(true);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
