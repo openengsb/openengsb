@@ -89,6 +89,9 @@ public final class Constants {
 
     public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
 
+    public static final String DOMAIN_EVENTS_INTERFACE_HEADER = "DomainEvents-Interface";
+
+    public static final String DOMAIN_NAME_HEADER = "Domain-Name";
 
     private Constants() {
         // this class should not be instanciated.
