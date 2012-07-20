@@ -121,7 +121,7 @@ public class ConnectorEditorPage extends BasePage {
             // ServiceId reference = new ServiceId(serviceClass, idModel.getObject());
             // setResponsePage(new TestClient(reference));
             setResponsePage(TestClient.class);
-        }        
+        }
     }
 
     public ConnectorEditorPage(String domain, String connectorType) {
