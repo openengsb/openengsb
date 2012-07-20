@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +49,8 @@ import org.osgi.framework.Constants;
 // @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper {
 
+    @Inject
     private WiringService wiringService;
-
-    @Before
-    public void setUp() throws Exception {
-        wiringService = getOsgiService(WiringService.class);
-    }
 
     private static class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
 
