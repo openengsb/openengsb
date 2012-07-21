@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.workflow.drools.deployer;
+package org.openengsb.core.workflow.deployer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -38,16 +38,22 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.openengsb.core.workflow.api.RuleManager;
-import org.openengsb.core.workflow.api.model.RuleBaseElementId;
-import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.workflow.drools.internal.WorkflowDeployerService;
-import org.openengsb.core.workflow.drools.persistence.util.PersistenceTestUtil;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
+import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.model.GlobalDeclaration;
+import org.openengsb.core.workflow.model.ImportDeclaration;
+import org.openengsb.core.workflow.model.RuleBaseElement;
+
 import org.slf4j.Logger;
 
 import antlr.debug.Event;
 
-public class WorkflowDeployerServiceTest {
+public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
 
     private static final String PROCESS_EXAMPLE = "flowtest.rf";
     private static final String RULE_EXAMPLE = "rulebase/org/openengsb/hello1.rule";
@@ -161,7 +167,6 @@ public class WorkflowDeployerServiceTest {
             ""));
 
         workflowDeployer.install(importFile);
-
         verify(ruleManager).addImport("java.util.List");
     }
 
@@ -173,7 +178,6 @@ public class WorkflowDeployerServiceTest {
             ""));
 
         workflowDeployer.install(globalfile);
-
         verify(ruleManager).addGlobal(Logger.class.getName(), "logger");
     }
 
@@ -269,7 +273,14 @@ public class WorkflowDeployerServiceTest {
     }
 
     private void setupWithRealCompiler() throws Exception {
-        ruleManager = PersistenceTestUtil.getRuleManager(temporaryFolder);
+        PersistenceRuleManager ruleManagerImpl = new PersistenceRuleManager();
+        ruleManagerImpl.setGlobalPersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<GlobalDeclaration>()));
+        ruleManagerImpl.setImportPersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<ImportDeclaration>()));
+        ruleManagerImpl.setRulePersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<RuleBaseElement>()));
+        ruleManager = ruleManagerImpl;
         workflowDeployer.setRuleManager(ruleManager);
     }
 

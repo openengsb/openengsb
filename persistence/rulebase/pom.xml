@@ -125,12 +125,6 @@
       <groupId>org.codehaus.janino</groupId>
       <artifactId>com.springsource.org.codehaus.janino</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.fileinstall</artifactId>
-      <scope>test</scope>
     </dependency>    
-    
   </dependencies>
 </project>
