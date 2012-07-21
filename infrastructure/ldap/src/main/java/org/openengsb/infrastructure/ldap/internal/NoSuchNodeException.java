@@ -19,6 +19,12 @@ package org.openengsb.infrastructure.ldap.internal;
 
 import org.apache.directory.shared.ldap.model.name.Dn;
 
+/**
+ * Thrown upon trying to access a non-existing {@link Dn}. This exception
+ * indicates that the Dn can be resolved until the immediate ancestor of its
+ * leaf. If resolving a Dn already fails at a level above its leaf, a
+ * {@link MissingParentException} should be thrown.
+ * */
 public class NoSuchNodeException extends RuntimeException {
 
     private static final long serialVersionUID = 4929321966265341536L;
@@ -29,6 +35,9 @@ public class NoSuchNodeException extends RuntimeException {
         super();
     }
 
+    /**
+     * @param dn the Dn whose leaf is missing in the DIT.
+     */
     public NoSuchNodeException(Dn dn) {
         super();
         this.dn = dn;
@@ -46,10 +55,16 @@ public class NoSuchNodeException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * @return the Dn whose leaf is missing in the DIT.
+     */
     public Dn getDn() {
         return dn;
     }
 
+    /**
+     * @param dn the Dn whose leaf is missing in the DIT.
+     */
     public void setDn(Dn dn) {
         this.dn = dn;
     }

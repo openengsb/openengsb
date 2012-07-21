@@ -23,15 +23,14 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
 
 import com.google.common.base.Objects;
 
+/**
+ * This class is used to represent the tree structure of the DIT or any subtree.
+ * */
 public class Node {
 
     private Node parent;
     private List<Node> children;
     private Entry entry;
-
-    public Node() {
-
-    }
 
     public Node(Entry entry) {
         this.entry = entry;

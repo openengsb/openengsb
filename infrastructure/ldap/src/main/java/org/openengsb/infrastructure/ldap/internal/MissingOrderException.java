@@ -21,20 +21,20 @@ public class MissingOrderException extends RuntimeException {
 
     private static final long serialVersionUID = 5956010048635023889L;
 
-    public MissingOrderException() {
-        super();
-    }
-
-    public MissingOrderException(String message) {
-        super(message);
-    }
-
-    public MissingOrderException(Throwable cause) {
-        super(cause);
-    }
-
-    public MissingOrderException(String message, Throwable cause) {
-        super(message, cause);
-    }
+//    public MissingOrderException() {
+//        super();
+//    }
+//
+//    public MissingOrderException(String message) {
+//        super(message);
+//    }
+//
+//    public MissingOrderException(Throwable cause) {
+//        super(cause);
+//    }
+//
+//    public MissingOrderException(String message, Throwable cause) {
+//        super(message, cause);
+//    }
 
 }

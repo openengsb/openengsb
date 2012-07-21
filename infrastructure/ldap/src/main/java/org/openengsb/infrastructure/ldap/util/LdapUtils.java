@@ -30,11 +30,19 @@ import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
 import org.openengsb.separateProject.SchemaConstants;
 
+/**
+ * Utility class offering common operations on {@link Entry} and {@link Dn}
+ * objects.
+ * */
 public final class LdapUtils {
 
     private LdapUtils() {
     }
 
+    /**
+     * Returns a {@link Dn} consisting of baseDn extended by an Rdn of type
+     * rdnAttribute and value rdnValue.
+     * */
     public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn) {
         try {
             Rdn rdn = new Rdn(rdnAttribute, rdnValue);
@@ -44,6 +52,9 @@ public final class LdapUtils {
         }
     }
 
+    /**
+     * Returns the value of attributeType from entry. 
+     * */
     public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye) {
         Attribute attribute = entry.get(attributeTye);
         if (attribute == null) {

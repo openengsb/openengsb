@@ -33,6 +33,15 @@ import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.UUIDComparator;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 
+/**
+ * Assists in maintaining order over entries. Many Java collections allow
+ * duplicates or return their elements in a predefined order. Ldap supports no
+ * duplicates and does not specify how implementations return their entries. This
+ * class solves the following:<br>
+ * 1) Order objects. <br>
+ * 2) Make non-distinct objects distinct.
+ * 
+ * */
 public final class OrderFilter {
 
     public static final String ID_ATTRIBUTE = "org-openengsb-uuid";
@@ -75,21 +84,22 @@ public final class OrderFilter {
         }
     }
 
-    private static UUID newUUID() {
-        TimeBasedGenerator uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
-        return uuidGenerator.generate();
-    }
-
     public static void sortById(List<Entry> entries) {
         Collections.sort(entries, new IdComparator());
     }
 
+    
     public static void sortByIdNode(List<Node> nodes) {
         Collections.sort(nodes, new IdComparatorNode());
     }
 
     public static String extractIdAttribute(Entry entry) {
         return LdapUtils.extractAttributeNoEmptyCheck(entry, ID_ATTRIBUTE);
+    }
+
+    private static UUID newUUID() {
+        TimeBasedGenerator uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
+        return uuidGenerator.generate();
     }
 
     private static class IdComparator implements Comparator<Entry> {

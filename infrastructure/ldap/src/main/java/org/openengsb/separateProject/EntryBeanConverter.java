@@ -56,7 +56,6 @@ public final class EntryBeanConverter {
      * 
      * @param data
      * @param parent
-     * @return
      */
     public static List<Entry> permissionStructureFromPermissionData(Collection<PermissionData> data, Dn parent) {
 

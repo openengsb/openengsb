@@ -45,17 +45,26 @@ public class LdapDao {
 
     private LdapConnection connection;
 
+    /**
+     * Constructs a new LdapDao communicating with an Ldap server over given
+     * connection.
+     * */
     public LdapDao(LdapConnection connection) {
         this.connection = connection;
     }
 
-    public LdapDao() {
-    }
-
+    /**
+     * Sets the {@link LdapConnection} used by this dao to communicate with an
+     * Ldap server.
+     * */
     public void setConnection(LdapConnection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Returns the {@link LdapConnection} used by this dao to communicate with
+     * an Ldap server.
+     * */
     public LdapConnection getConnection() {
         return connection;
     }
@@ -63,9 +72,9 @@ public class LdapDao {
     /**
      * Inserts an entry into the DIT.
      * 
-     * @param entry
-     * @throws EntryAlreadyExistsException
-     * @throws MissingParentException if an ancestor of the entry is missing.
+     * @throws EntryAlreadyExistsException if an entry with given Dn already
+     *         exists
+     * @throws MissingParentException if an ancestor of the entry is missing
      */
     public void store(Entry entry) throws EntryAlreadyExistsException, MissingParentException {
         AddRequest addRequest = new AddRequestImpl().setEntry(entry);
@@ -86,10 +95,10 @@ public class LdapDao {
     }
 
     /**
-     * Inserts an entry into the DIT. If an entry exists, nothing is done.
+     * Inserts an entry into the DIT. If the entry exists, nothing is done.
      * 
      * @param entry
-     * @throws MissingParentException if an ancestor of the entry is missing.
+     * @throws MissingParentException if an ancestor of the entry is missing
      */
     public void storeSkipExisting(Entry entry) throws MissingParentException {
         try {
@@ -100,12 +109,11 @@ public class LdapDao {
     }
 
     /**
-     * Overwrites an entry in the DIT, deleting its whole subtree. <br>
+     * Overwrites an entry in the DIT, deleting its entire subtree. <br>
      * ATTENTION when overwriting inner nodes (non-leaves)! If its subtree
-     * should remain, use modify instead.
+     * should remain, do not use this method.
      * 
-     * @param entry
-     * @throws MissingParentException if an ancestor of the entry is missing.
+     * @throws MissingParentException if an ancestor of the entry is missing
      */
     public void storeOverwriteExisting(Entry entry) throws MissingParentException {
         try {
@@ -116,13 +124,16 @@ public class LdapDao {
     }
 
     /**
-     * Inserts a list of entries into the DIT. The order of the entries is
-     * important. If it does not follow the hierarchy in the DIT,
-     * NoSuchObjectException will be thrown.
+     * Inserts a hierarchy (subtree) of entries into the DIT. The hierarchy is
+     * passed as a list. The order of the entries in the list is important. If
+     * it does not follow the hierarchy in the DIT, a
+     * {@link MissingParentException} is thrown.
      * 
      * @param entries
-     * @throws MissingParentException
-     * @throws EntryAlreadyExistsException
+     * @throws MissingParentException if one of the entries does not have an
+     *         ancestor
+     * @throws EntryAlreadyExistsException if one of the entries already exists
+     *         in the DIT
      */
     public void store(List<Entry> entries) throws EntryAlreadyExistsException, MissingParentException {
         for (Entry e : entries) {
@@ -131,13 +142,18 @@ public class LdapDao {
     }
 
     /**
-     * Inserts a hierarchy of entries. If an entry already exists, nothing is
-     * done and the method proceeds with the next entry.
+     * Inserts a hierarchy (subtree) of entries into the DIT. The hierarchy is
+     * passed as a list. The order of the entries in the list is important. If
+     * it does not follow the hierarchy in the DIT, a
+     * {@link MissingParentException} is thrown. Unlike the basic store(List)
+     * method, this does not throw {@link EntryAlreadyExistsException} if
+     * duplicates are to be inserted. Instead these entries are returned as a
+     * list.
+     * 
      * 
      * @param entries
-     * @return A list of the skipped entries or an empty list if none were
-     *         skipped.
-     * @throws MissingParentException
+     * @throws MissingParentException if one of the entries does not have an
+     *         ancestor
      */
     public List<Entry> storeSkipExisting(List<Entry> entries) throws MissingParentException {
         List<Entry> skippedEntries = new LinkedList<Entry>();

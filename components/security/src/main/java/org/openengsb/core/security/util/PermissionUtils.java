@@ -25,11 +25,18 @@ import org.openengsb.core.security.internal.model.PermissionData;
 
 import com.google.common.collect.Maps;
 
+/**
+ * Converts between various intermediate representations of {@link Permission}s.
+ * */
 public final class PermissionUtils {
 
     private PermissionUtils() {
     }
 
+    /**
+     * Converts a {@link Permission} into {@link PermissionData} to allow easier
+     * storing of the permission.
+     */
     public static PermissionData convertPermissionToPermissionData(Permission permission) {
         PermissionData permissionData = new PermissionData();
         String type = permission.getClass().getName();
