@@ -27,6 +27,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
 import org.openengsb.core.security.internal.model.PermissionData;
+import org.openengsb.infrastructure.ldap.util.OrderFilter;
 
 public final class EntryBeanConverter {
 

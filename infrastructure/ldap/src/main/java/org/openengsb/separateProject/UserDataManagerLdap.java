@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.internal;
+package org.openengsb.separateProject;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,12 +40,13 @@ import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
 import org.openengsb.core.security.internal.model.PermissionData;
 import org.openengsb.core.security.util.PermissionUtils;
+import org.openengsb.infrastructure.ldap.internal.EntryAlreadyExistsException;
+import org.openengsb.infrastructure.ldap.internal.LdapDao;
+import org.openengsb.infrastructure.ldap.internal.MissingParentException;
+import org.openengsb.infrastructure.ldap.internal.NoSuchNodeException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
 import org.openengsb.infrastructure.ldap.util.LdapUtils;
-import org.openengsb.separateProject.EntryBeanConverter;
-import org.openengsb.separateProject.EntryFactory;
-import org.openengsb.separateProject.OrderFilter;
-import org.openengsb.separateProject.SchemaConstants;
+import org.openengsb.infrastructure.ldap.util.OrderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

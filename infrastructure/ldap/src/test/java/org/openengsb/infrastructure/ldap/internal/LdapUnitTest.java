@@ -56,6 +56,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.separateProject.SchemaConstants;
+import org.openengsb.separateProject.UserDataManagerLdap;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
