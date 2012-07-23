@@ -41,14 +41,8 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.test.DummyConfigPersistenceService;
-import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
-import org.openengsb.core.workflow.model.GlobalDeclaration;
-import org.openengsb.core.workflow.model.ImportDeclaration;
-import org.openengsb.core.workflow.model.RuleBaseElement;
-
+import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
 import org.slf4j.Logger;
 
 import antlr.debug.Event;
@@ -273,14 +267,7 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     private void setupWithRealCompiler() throws Exception {
-        PersistenceRuleManager ruleManagerImpl = new PersistenceRuleManager();
-        ruleManagerImpl.setGlobalPersistence(new DefaultConfigPersistenceService(
-            new DummyConfigPersistenceService<GlobalDeclaration>()));
-        ruleManagerImpl.setImportPersistence(new DefaultConfigPersistenceService(
-            new DummyConfigPersistenceService<ImportDeclaration>()));
-        ruleManagerImpl.setRulePersistence(new DefaultConfigPersistenceService(
-            new DummyConfigPersistenceService<RuleBaseElement>()));
-        ruleManager = ruleManagerImpl;
+        ruleManager = PersistenceTestUtil.getRuleManager();
         workflowDeployer.setRuleManager(ruleManager);
     }
 
