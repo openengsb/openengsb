@@ -25,8 +25,10 @@ import static org.junit.Assert.assertTrue;
 import javax.inject.Inject;
 
 import org.apache.karaf.features.FeaturesService;
+import org.eclipse.osgi.framework.internal.core.Constants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.Option;
@@ -34,6 +36,7 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -70,4 +73,20 @@ public class DomainInstallIT extends AbstractExamTestHelper {
         assertThat(service, not(nullValue()));
     }
 
+    @Test
+    public void testInstallDomain_shouldRegisterDomainProvider() throws Exception {
+        ServiceReference[] serviceReferences =
+            getBundleContext().getServiceReferences(DomainProvider.class.getName(), "(domain=example)");
+        assertThat(serviceReferences, is(nullValue()));
+        featuresService.installFeature("openengsb-domain-example");
+        String filter = String.format("(&(%s=%s)(domain=example))",
+            Constants.OBJECTCLASS, DomainProvider.class.getName());
+        ServiceTracker tracker = new ServiceTracker(getBundleContext(), FrameworkUtil.createFilter(filter), null);
+        tracker.open();
+        DomainProvider service = (DomainProvider) tracker.waitForService(10000);
+        assertThat(service, not(nullValue()));
+        assertThat(service.getId(), is("example"));
+        assertThat(service.getDomainInterface().getName(), is("org.openengsb.domain.example.ExampleDomain"));
+        assertThat(service.getDomainEventInterface().getName(), is("org.openengsb.domain.example.ExampleDomainEvents"));
+    }
 }
