@@ -89,11 +89,26 @@ public final class Constants {
 
     public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
 
+    /**
+     * Used in bundle MANIFEST.MF to specify the short name of a domain.
+     *
+     * Domain-Name: example
+     */
+    public static final String DOMAIN_NAME_HEADER = "Domain-Name";
+
+    /**
+     * Used in bundle MANIFEST.MF to specify the fully qualified classname of the domain-interface
+     *
+     * Domain-Interface: org.openengsb.domain.example.ExampleDomain
+     */
     public static final String DOMAIN_INTERFACE_HEADER = "Domain-Interface";
 
+    /**
+     * Used in bundle MANIFEST.MF to specify the fully qualified classname of the domain-events-interface
+     *
+     * DomainEvents-Interface: org.openengsb.domain.example.ExampleDomainEvents
+     */
     public static final String DOMAIN_EVENTS_INTERFACE_HEADER = "DomainEvents-Interface";
-
-    public static final String DOMAIN_NAME_HEADER = "Domain-Name";
 
     private Constants() {
         // this class should not be instanciated.
