@@ -46,7 +46,7 @@ import com.google.common.collect.Sets;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "PERMISSIONSETDATA")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class PermissionSetData extends AbstractDataRow {
 
     @Column(name = "name", unique = true)

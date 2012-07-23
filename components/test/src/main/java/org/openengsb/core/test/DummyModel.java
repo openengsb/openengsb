@@ -14,30 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.test;
 
-package org.openengsb.core.api.model;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-import java.util.Map;
+@Model
+public class DummyModel {
+    @OpenEngSBModelId
+    private String id;
 
-import javax.xml.bind.annotation.XmlRootElement;
+    private String value;
 
-/**
- * General model describing the configuration required for rules.
- */
-// TODO: [OPENENGSB-1253] Design Rule Configuration object
-@XmlRootElement
-public class RuleConfiguration extends ConfigItem<String> {
-
-    private static final long serialVersionUID = 5451541282607978079L;
-
-    public static final String TYPE_ID = "RULE";
-
-    public RuleConfiguration() {
-        super();
+    public String getId() {
+        return id;
     }
 
-    public RuleConfiguration(Map<String, String> metaData, String ruleContent) {
-        super(metaData, ruleContent);
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

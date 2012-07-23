@@ -36,10 +36,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.osgi.framework.Version;
+import org.osgi.service.blueprint.container.BlueprintContainer;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
+
+    private static final Version VERSION = new Version(3, 0, 0, "SNAPSHOT");
 
     private static final int STOMP_PORT = 16550;
     private static final int OPENWIRE_PORT = 16549;
@@ -47,10 +51,12 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
     public TemporaryFolder tempfolder = new TemporaryFolder();
     private Activator activator;
 
+
     @Before
     public void setUp() throws Exception {
         System.setProperty("karaf.data", tempfolder.getRoot().getAbsolutePath());
-
+        when(bundle.getVersion()).thenReturn(VERSION);
+        when(bundle.getSymbolicName()).thenReturn("test.bundle");
         ConfigurationAdmin configAdmin = mock(ConfigurationAdmin.class);
         Configuration configuration = mock(Configuration.class);
         when(configAdmin.getConfiguration("org.openengsb.infrastructure.jms")).thenReturn(configuration);
@@ -59,6 +65,13 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
         configProperties.put("stomp", STOMP_PORT);
         when(configuration.getProperties()).thenReturn(configProperties);
         registerService(configAdmin, new Hashtable<String, Object>(), ConfigurationAdmin.class);
+
+        BlueprintContainer mock2 = mock(BlueprintContainer.class);
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("osgi.blueprint.container.symbolicname", bundle.getSymbolicName());
+        props.put("osgi.blueprint.container.version", VERSION);
+        registerService(mock2, props, BlueprintContainer.class);
+
 
         activator = new Activator();
         activator.start(bundleContext);

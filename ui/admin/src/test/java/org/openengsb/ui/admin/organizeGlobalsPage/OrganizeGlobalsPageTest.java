@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,18 +37,13 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
 
 public class OrganizeGlobalsPageTest extends AbstractUITest {
-    private RuleManager ruleManager;
     private Map<String, String> globals;
 
     @Before
     public void init() throws RuleBaseException {
-        ruleManager = mock(RuleManager.class);
-        context.putBean("ruleManager", ruleManager);
-
         globals = new TreeMap<String, String>();
         globals.put("glob1", "aaaa.bbbb.ccc");
         globals.put("glob2", "aaaa.bbbb.ddd");
@@ -162,7 +156,5 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-
-
 
 }

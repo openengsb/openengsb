@@ -105,4 +105,9 @@ public class OpenEngSBModelEntry {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s: %s (%s)", key, value, type);
+    }
+
 }
