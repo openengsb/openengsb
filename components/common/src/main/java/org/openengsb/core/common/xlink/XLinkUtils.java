@@ -19,6 +19,8 @@ package org.openengsb.core.common.xlink;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -32,13 +34,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
@@ -154,42 +155,58 @@ public final class XLinkUtils {
      * Depending on the contained Keys, the XLink is useable for local switching, or not.
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, 
-            List<Object> identifierValues, 
             ModelDescription modelInformation, 
             String contextId,
-            OsgiUtilsService serviceFinder) throws ClassNotFoundException, IOException {
+            String objectAsJsonString) {
         String completeUrl = template.getBaseUrl();    
         completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
-        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getModelVersionString());
-        completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);        
-        OpenEngSBModel modelOfView = createInstanceOfModelClass(
-                modelInformation.getModelClassName(), modelInformation.getModelVersionString(), serviceFinder);
-        List<OpenEngSBModelEntry> keyNames = modelOfView.getOpenEngSBModelEntries();
-        for (int i = 0; i < keyNames.size(); i++) {
-            modelOfView.getOpenEngSBModelEntries().get(i).setValue(identifierValues.get(i));
-        } 
-        
-        OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(modelOfView);
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonWrapper = mapper.writeValueAsString(wrapper);
-        completeUrl += "&" + template.getIdentifierKeyName() + "=" + urlEncodeParameter(jsonWrapper);
+        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersionString());
+        completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);   
+        completeUrl += "&" + template.getIdentifierKeyName() + "=" + urlEncodeParameter(objectAsJsonString);
         return completeUrl;
     }
 
     // @extract-end
     
+    public static String serializeModelObjectToJSON(
+            List<Object> identifierValues,
+            ModelDescription modelInformation,
+            OsgiUtilsService serviceFinder) throws ClassNotFoundException, 
+            IOException, 
+            NoSuchFieldException, 
+            IllegalArgumentException, 
+            IllegalAccessException {
+        Class clazz = getClassOfOpenEngSBModel(modelInformation.getModelClassName(), modelInformation.getVersionString(), serviceFinder);
+        Object modelOfView = createEmptyInstanceOfModelClass(clazz);
+        List<OpenEngSBModelEntry> keyNames = ModelUtils.getOpenEngSBModelEntries(modelOfView);
+        for (int i = 0; i < keyNames.size(); i++) {
+            Field field = clazz.getDeclaredField(keyNames.get(i).getKey());
+            field.setAccessible(true);
+            field.set(modelOfView, identifierValues.get(i));
+        } 
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(modelOfView);        
+    }
       
-    public static OpenEngSBModel createInstanceOfModelClass(
-            String clazz, 
+    public static Object createEmptyInstanceOfModelClass(Class clazzObject) {
+        return createInstanceOfModelClass(clazzObject,
+                new ArrayList<OpenEngSBModelEntry>());
+    }  
+    
+    public static Object createInstanceOfModelClass(Class clazzObject,
+            List<OpenEngSBModelEntry> entries) {
+        return ModelUtils.createModel(clazzObject, entries);
+    }      
+    
+    public static Class getClassOfOpenEngSBModel(String clazz, 
             String version,
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
         ModelRegistry registry = serviceFinder.getService(ModelRegistry.class);
         Version versionObj = new Version(version);
-        String versionString = versionObj.toString();
         ModelDescription modelDescription = new ModelDescription(clazz,versionObj);
-        Class clazzDef = registry.loadModel(modelDescription);      
-        return ModelUtils.createEmptyModelObject(clazzDef) ;
-    }  
+        Class clazzObject = registry.loadModel(modelDescription);   
+        return clazzObject;
+    }
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
     /**
@@ -197,12 +214,12 @@ public final class XLinkUtils {
      * corresponding to the List of keyFields of the Modelclass. The connectorId and viewId parameters are added 
      * in the end, to mark the link for Local Switching
      */
-    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<Object> values,
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template,
             ModelDescription modelInformation, 
             String contextId, 
             String viewIdValue,
-            OsgiUtilsService serviceFinder) throws ClassNotFoundException, IOException {
-        String xLink = generateValidXLinkUrl(template, values, modelInformation, contextId, serviceFinder);
+            String objectAsJsonString) {
+        String xLink = generateValidXLinkUrl(template, modelInformation, contextId, objectAsJsonString);
         xLink += "&" 
                 + template.getConnectorId() + "&" 
                 + template.getViewIdKeyName() + "=" + urlEncodeParameter(viewIdValue);
