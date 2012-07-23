@@ -33,25 +33,6 @@
     </bean>
   </service>
 
-<!--   <service> -->
-<!--     <interfaces> -->
-<!--       <value>org.openengsb.domain.example.ExampleDomainEvents</value> -->
-<!--       <value>org.openengsb.core.api.DomainEvents</value> -->
-<!--     </interfaces> -->
-<!--     <service-properties> -->
-<!--       <entry key="service.pid" value="domain.example.events" /> -->
-<!--       <entry key="openengsb.service.type" value="domain-events" /> -->
-<!--     </service-properties> -->
-<!--     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" /> -->
-<!--   </service> -->
-
-<!--   <bean id="domainEventsProxyFactory" class="org.openengsb.core.common.events.DomainEventsProxyFactoryBean"> -->
-<!--     <property name="domainEventInterface"> -->
-<!--       <value>org.openengsb.domain.example.ExampleDomainEvents</value> -->
-<!--     </property> -->
-<!--     <property name="workflowService" ref="workflowService" /> -->
-<!--   </bean> -->
-
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
 </blueprint>
