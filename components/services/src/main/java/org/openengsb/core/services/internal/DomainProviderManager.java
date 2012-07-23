@@ -52,61 +52,16 @@ public class DomainProviderManager {
 
             @Override
             public Object addingBundle(Bundle bundle, BundleEvent event) {
+                LOGGER.trace("checking whether Bundle {} is a domain", bundle);
                 Dictionary<String, String> headers = bundle.getHeaders();
                 String name = headers.get(Constants.DOMAIN_NAME_HEADER);
                 if (name == null) {
+                    LOGGER.trace("Bundle {} is not a domain, ignoring", bundle);
                     return null;
                 }
-                Class<? extends Domain> domainInterface = loadDomainInterfaceFromBundle(bundle);
-                Class<? extends DomainEvents> domainEventsInterface = loadDomainEventsInterfaceFromBundle(bundle);
-                DomainProvider provider =
-                    new DefaultDomainProvider(name, bundle, domainInterface, domainEventsInterface);
-                Dictionary<String, Object> props = new Hashtable<String, Object>();
-                props.put("domain", name);
-                return bundle.getBundleContext().registerService(DomainProvider.class, provider, props);
+                return registerDomainProvider(bundle, name);
             }
 
-            @SuppressWarnings("unchecked")
-            private Class<? extends DomainEvents> loadDomainEventsInterfaceFromBundle(Bundle bundle) {
-                String domainEventsInterfaceName = bundle.getHeaders().get(Constants.DOMAIN_EVENTS_INTERFACE_HEADER);
-                if (domainEventsInterfaceName == null) {
-                    return null;
-                }
-                Class<?> domainEventsInterface;
-                try {
-                    domainEventsInterface = bundle.loadClass(domainEventsInterfaceName);
-                } catch (ClassNotFoundException e) {
-                    LOGGER.error("Could not load DomainEvents interface for bundle {}", bundle, e);
-                    return null;
-                }
-                if (!DomainEvents.class.isAssignableFrom(domainEventsInterface)) {
-                    LOGGER.error("Bundle {} has an invalid Domain interface. It must be derived from {}",
-                        bundle, DomainEvents.class.getName());
-                    return null;
-                }
-                return (Class<? extends DomainEvents>) domainEventsInterface;
-            }
-
-            @SuppressWarnings("unchecked")
-            private Class<? extends Domain> loadDomainInterfaceFromBundle(Bundle bundle) {
-                String domainInterfaceName = bundle.getHeaders().get(Constants.DOMAIN_INTERFACE_HEADER);
-                if (domainInterfaceName == null) {
-                    return null;
-                }
-                Class<?> domainInterface;
-                try {
-                    domainInterface = bundle.loadClass(domainInterfaceName);
-                } catch (ClassNotFoundException e) {
-                    LOGGER.error("Could not load domain interface for bundle {}", bundle, e);
-                    return null;
-                }
-                if (!Domain.class.isAssignableFrom(domainInterface)) {
-                    LOGGER.error("Bundle {} has an invalid Domain interface. It must be derived from {}",
-                        bundle, Domain.class.getName());
-                    return null;
-                }
-                return (Class<? extends Domain>) domainInterface;
-            }
         });
         bundleTracker.open();
     }
@@ -115,8 +70,63 @@ public class DomainProviderManager {
         bundleTracker.close();
     }
 
+    @SuppressWarnings("unchecked")
+    private Class<? extends DomainEvents> loadDomainEventsInterfaceFromBundle(Bundle bundle) {
+        String domainEventsInterfaceName = bundle.getHeaders().get(Constants.DOMAIN_EVENTS_INTERFACE_HEADER);
+        if (domainEventsInterfaceName == null) {
+            LOGGER.info("Domain-bundle {} has no DomainEvents-interface. There are no Events in this domain.", bundle);
+            return null;
+        }
+        Class<?> domainEventsInterface;
+        try {
+            domainEventsInterface = bundle.loadClass(domainEventsInterfaceName);
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Could not load DomainEvents interface for bundle {}", bundle, e);
+            return null;
+        }
+        if (!DomainEvents.class.isAssignableFrom(domainEventsInterface)) {
+            LOGGER.error("Bundle {} has an invalid Domain interface. It must be derived from {}",
+                bundle, DomainEvents.class.getName());
+            return null;
+        }
+        return (Class<? extends DomainEvents>) domainEventsInterface;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Domain> loadDomainInterfaceFromBundle(Bundle bundle) {
+        String domainInterfaceName = bundle.getHeaders().get(Constants.DOMAIN_INTERFACE_HEADER);
+        if (domainInterfaceName == null) {
+            LOGGER.info("Domain-bundle {} has no domain-interface. There are no operations in this domain.", bundle);
+            return null;
+        }
+        Class<?> domainInterface;
+        try {
+            domainInterface = bundle.loadClass(domainInterfaceName);
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Could not load domain interface for bundle {}", bundle, e);
+            return null;
+        }
+        if (!Domain.class.isAssignableFrom(domainInterface)) {
+            LOGGER.error("Bundle {} has an invalid Domain interface. It must be derived from {}",
+                bundle, Domain.class.getName());
+            return null;
+        }
+        return (Class<? extends Domain>) domainInterface;
+    }
+
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    private Object registerDomainProvider(Bundle bundle, String name) {
+        Class<? extends Domain> domainInterface = loadDomainInterfaceFromBundle(bundle);
+        Class<? extends DomainEvents> domainEventsInterface = loadDomainEventsInterfaceFromBundle(bundle);
+        DomainProvider provider =
+            new DefaultDomainProvider(name, bundle, domainInterface, domainEventsInterface);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("domain", name);
+        LOGGER.debug("registering DomainProvider for Bundle {} with properties {}", bundle, props);
+        return bundle.getBundleContext().registerService(DomainProvider.class, provider, props);
     }
 
 }

@@ -19,7 +19,6 @@ package org.openengsb.core.workflow.internal;
 import java.lang.reflect.Proxy;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.DomainEvents;
@@ -34,13 +33,10 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Maps;
-
 public class DomainEventsServicesManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainEventsServicesManager.class);
 
-    private Map<Bundle, ServiceRegistration> handledDomains = Maps.newHashMap();
     private BundleContext bundleContext;
     private WorkflowService workflowService;
 
@@ -58,8 +54,7 @@ public class DomainEventsServicesManager {
 
             @Override
             public Object addingBundle(Bundle bundle, BundleEvent event) {
-                startDomainServices(bundle);
-                return bundle;
+                return startDomainServices(bundle);
             }
         });
         bundleTracker.open();
@@ -69,32 +64,39 @@ public class DomainEventsServicesManager {
         bundleTracker.close();
     }
 
-    private synchronized void startDomainServices(Bundle bundle) {
+    private synchronized ServiceRegistration<?> startDomainServices(Bundle bundle) {
+        LOGGER.trace("checking whether Bundle {} is a Domain", bundle);
         Dictionary<String, String> headers = bundle.getHeaders();
-        String interfacename = headers.get(Constants.DOMAIN_EVENTS_INTERFACE_HEADER);
-        if (interfacename == null) {
-            return;
-        }
         String domainname = headers.get(Constants.DOMAIN_NAME_HEADER);
         if (domainname == null) {
-            return;
+            LOGGER.trace("Bundle {} is not a domain, ignoring", bundle);
+            return null;
         }
+        String interfacename = headers.get(Constants.DOMAIN_EVENTS_INTERFACE_HEADER);
+
+        if (interfacename == null) {
+            LOGGER.info(
+                "Domain-bundle {} has not DomainEvents-interface. There are no Events to be thrown in this domain",
+                bundle);
+            return null;
+        }
+        LOGGER.debug("Registering DomainEvents-service {} for Domain-bundle {}.", interfacename, bundle);
         try {
-            doRegisterService(bundle, interfacename, domainname);
+            return doRegisterService(bundle, interfacename, domainname);
         } catch (ClassNotFoundException e) {
             LOGGER.error("unable to register DomainEventsService for bundle {}", bundle, e);
         }
+        return null;
     }
 
-    private void doRegisterService(Bundle bundle, String interfacename, String domainname)
+    private ServiceRegistration<?> doRegisterService(Bundle bundle, String interfacename, String domainname)
         throws ClassNotFoundException {
         Object proxy = createProxy(bundle, interfacename);
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put(org.osgi.framework.Constants.SERVICE_PID, String.format("domain.%s.events", domainname));
         props.put("openengsb.service.type", "domain-events");
-        ServiceRegistration<?> registerService =
-            bundle.getBundleContext().registerService(interfacename, proxy, props);
-        handledDomains.put(bundle, registerService);
+        LOGGER.debug("Registering DomainEvents-service for Bundle {} with properties {}", bundle, props);
+        return bundle.getBundleContext().registerService(interfacename, proxy, props);
     }
 
     private Object createProxy(Bundle bundle, String interfacename) throws ClassNotFoundException {
