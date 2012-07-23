@@ -133,9 +133,13 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
         Collection<File> files = FileUtils.listFiles(storageFolder, filter, null);
 
         for (File file : files) {
-            if (!file.delete()) {
+            try {
+                FileUtils.forceDelete(file);
+            } catch (IOException e) {
                 LOGGER.warn("\"{}\" couldn't be deleted!", file);
+                throw new PersistenceException(e);
             }
+
         }
     }
 
