@@ -37,7 +37,7 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
+import org.openengsb.core.workflow.util.RuleUtil;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
@@ -87,7 +87,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
+        manager = RuleUtil.getRuleManager();
         RuleUtil.addImportsAndGlobals(manager);
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.taskbox;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
@@ -75,7 +74,7 @@ public class TaskboxServiceTest {
     @Test
     public void testCreateNewTask_shouldReturnNewTask() throws PersistenceException {
         internalService.createNewTask(new ProcessBag());
-        verify(persistenceService).create(Mockito.any(Task.class));
+        verify(persistenceService).create(any(Task.class));
     }
 
     @Test
@@ -151,8 +150,6 @@ public class TaskboxServiceTest {
         service.finishTask(task);
 
         result = new ArrayList<Task>();
-        // mocking Persistence-Behaviour again, since the task
-        // would have been deleted by the TaskBoxService
         when(persistenceService.query(any(Task.class))).thenReturn(result);
         service.finishTask(task);
 

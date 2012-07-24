@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,15 +41,15 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
+import org.openengsb.core.workflow.util.RuleUtil;
 import org.slf4j.Logger;
 
 import antlr.debug.Event;
 
 public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
 
-    private static final String PROCESS_EXAMPLE = "rulebase/org/openengsb/backgroundFlow.rf";
-    private static final String RULE_EXAMPLE = "rulebase/org/openengsb/hello1.rule";
+    private static final String PROCESS_EXAMPLE = "backgroundFlow";
+    private static final String RULE_EXAMPLE = "hello1";
 
     private WorkflowDeployerService workflowDeployer;
     private RuleManager ruleManager;
@@ -233,7 +232,6 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
         workflowDeployer.install(testRuleFile);
         workflowDeployer.install(globalFile);
         workflowDeployer.install(importFile);
-
         assertThat(ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Rule, "test1")), not(nullValue()));
     }
 
@@ -267,24 +265,21 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     private void setupWithRealCompiler() throws Exception {
-        ruleManager = PersistenceTestUtil.getRuleManager();
+        ruleManager = RuleUtil.getRuleManager();
         workflowDeployer.setRuleManager(ruleManager);
     }
 
     private File readExampleProcessFile() throws IOException {
-        URL processURL = ClassLoader.getSystemResource(PROCESS_EXAMPLE);
-        File processFile = FileUtils.toFile(processURL);
         File target = temporaryFolder.newFile("process.rf");
-        FileUtils.copyFile(processFile, target);
+        String process = RuleUtil.readFlow(PROCESS_EXAMPLE);
+        FileUtils.writeStringToFile(target, process);
         return target;
     }
 
     private File readExampleRuleFile() throws IOException {
-        URL processURL = ClassLoader.getSystemResource(RULE_EXAMPLE);
-        File processFile = FileUtils.toFile(processURL);
         File target = temporaryFolder.newFile("rule.rule");
-        FileUtils.copyFile(processFile, target);
+        String rule = RuleUtil.readRule(RULE_EXAMPLE);
+        FileUtils.writeStringToFile(target, rule);
         return target;
     }
-
 }

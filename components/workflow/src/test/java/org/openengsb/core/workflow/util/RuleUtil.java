@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +26,12 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.test.DummyConfigPersistenceService;
+import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.model.GlobalDeclaration;
+import org.openengsb.core.workflow.model.ImportDeclaration;
+import org.openengsb.core.workflow.model.RuleBaseElement;
 
 public final class RuleUtil {
 
@@ -33,20 +39,22 @@ public final class RuleUtil {
 
     }
 
-    public static void addHello1Rule(RuleManager manager) throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
-        String rule = readRule();
-        manager.add(id, rule);
+    public static RuleManager getRuleManager() throws Exception {
+        PersistenceRuleManager ruleManager = new PersistenceRuleManager();
+        ruleManager.setGlobalPersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<GlobalDeclaration>()));
+        ruleManager.setImportPersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<ImportDeclaration>()));
+        ruleManager.setRulePersistence(new DefaultConfigPersistenceService(
+            new DummyConfigPersistenceService<RuleBaseElement>()));
+        ruleManager.init();
+        return ruleManager;
     }
 
-    private static String readRule() throws IOException {
-        InputStream helloWorldRule = null;
-        try {
-            helloWorldRule = RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
-            return IOUtils.toString(helloWorldRule);
-        } finally {
-            IOUtils.closeQuietly(helloWorldRule);
-        }
+    public static void addHello1Rule(RuleManager manager) throws Exception {
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
+        String rule = readRule("hello1");
+        manager.add(id, rule);
     }
 
     public static void addTestFlows(RuleManager manager) throws Exception {
@@ -65,10 +73,23 @@ public final class RuleUtil {
         manager.add(testFlowId, code);
     }
 
-    private static String readFlow(String string) throws IOException {
-        InputStream flowStream =
-            RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + string + ".rf");
-        return IOUtils.toString(flowStream);
+    public static String readFlow(String string) throws IOException {
+        return readFile(string + ".rf");
+    }
+
+    public static String readRule(String string) throws IOException {
+        return readFile(string + ".rule");
+    }
+
+    private static String readFile(String filename) throws IOException {
+        InputStream stream = null;
+        try {
+            stream =
+                RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + filename);
+            return IOUtils.toString(stream);
+        } finally {
+            IOUtils.closeQuietly(stream);
+        }
     }
 
     public static void addImportsAndGlobals(RuleManager manager) throws IOException {
@@ -95,7 +116,5 @@ public final class RuleUtil {
             }
             manager.addGlobalIfNotPresent(parts[0], parts[1]);
         }
-
     }
-
 }

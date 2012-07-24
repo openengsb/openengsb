@@ -32,7 +32,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
@@ -72,8 +70,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testProcessEvent() throws Exception {
-        Event event = new Event();
-        service.processEvent(event);
+        service.processEvent(new Event());
     }
 
     @Test
@@ -112,7 +109,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testUseLogContent() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
-        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+        verify(logService, times(2)).doSomething(anyString());
     }
 
     @Test
@@ -125,11 +122,11 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
         Event event = new Event("test-context");
         service.processEvent(event);
-        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+        verify(logService, times(2)).doSomething(anyString());
     }
 
     @Test
-    public void invalidMofidyRule_shouldNotModifyRulebase() throws Exception {
+    public void invalidModifyRule_shouldNotModifyRulebase() throws Exception {
         try {
             manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
             fail("expected Exception");
@@ -138,7 +135,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
         Event event = new Event("test-context");
         service.processEvent(event);
-        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+        verify(logService, times(2)).doSomething(anyString());
     }
 
     @Test
@@ -188,12 +185,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(service.getRunningFlows(), not(hasItem(id1)));
     }
 
-    static class BuildSuccess extends Event {
-    }
-
-    static class TestSuccess extends Event {
-    }
-
     @Test
     public void testCiWorkflow() throws Exception {
         long id = service.startFlow("ci");
@@ -207,7 +198,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testStartInBackgroundWithoutStartedEvent() throws Exception {
-        Long id = service.startFlow("backgroundFlow");
+        long id = service.startFlow("backgroundFlow");
         service.waitForFlowToFinish(id, 5000);
         verify(logService).doSomething(eq("" + id));
     }
@@ -287,10 +278,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         ProcessBag processBag = new ProcessBag();
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
-
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
-
         assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 
@@ -329,8 +318,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testExecuteWorkflow() throws Exception {
-        Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Process);
-        System.out.println(list);
         ProcessBag result = service.executeWorkflow("simpleFlow", new ProcessBag());
         assertThat((Integer) result.getProperty("test"), is(42));
         assertThat((String) result.getProperty("alternativeName"),
@@ -355,6 +342,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat("Tasks were not cancelled properly", taskbox.getOpenTasks().isEmpty(), is(true));
     }
 
+    @Test
     public void testWaitForFlow_shouldReturnTrue() throws Exception {
         Long pid = service.startFlow("flowtest");
         boolean finished = service.waitForFlowToFinish(pid, 400);
@@ -368,12 +356,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.startFlow("flowtest");
         boolean finished = service.waitForFlowToFinish(pid, 400);
         assertThat(finished, is(false));
-    }
-
-    @Test
-    public void testAddElementToDifferentPackage_shouldNotAddOpenEngSBFlows() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "org.test", "testrule"), "when\nthen\n");
-        // Drools throws Exceptions when a flow does not belong to the package
     }
 
     @Test
@@ -466,4 +448,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.waitForFlowToFinish(id);
     }
 
+    private static class BuildSuccess extends Event {
+    }
+
+    private static class TestSuccess extends Event {
+    }
 }

@@ -29,25 +29,48 @@ import static org.junit.matchers.JUnitMatchers.hasItems;
 import java.util.Collection;
 import java.util.Random;
 
+import org.drools.KnowledgeBase;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.workflow.util.RuleUtil;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 
-public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
+public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
+
+    private RuleManager ruleManager;
+    private KnowledgeBase rulebase;
+    private StatefulKnowledgeSession session;
+    private RuleListener listener;
+
+    @Before
+    public void setUp() throws Exception {
+        ruleManager = RuleUtil.getRuleManager();
+        RuleUtil.addImportsAndGlobals(ruleManager);
+        rulebase = ruleManager.getRulebase();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        if (session != null) {
+            session.dispose();
+        }
+    }
 
     @Test
     public void testGetRuleBase() throws Exception {
         assertThat(rulebase, notNullValue());
-    }
-
-    @Test
-    public void testGetRules() throws Exception {
-        createSession();
-        Event testEvent = new Event();
-        session.insert(testEvent);
-        session.fireAllRules();
     }
 
     @Test
@@ -62,8 +85,6 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         ruleManager.add(id, "when\n" + "  e : Event()\n" + "then\n"
                 + "  example2.doSomethingWithMessage(\"this rule was added by the addrule-function\");\n");
-
-        createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("test3"));
     }
@@ -90,10 +111,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
         ruleManager.addImport("java.util.Random");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         ruleManager.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
-        createSession();
-
-        session.insert(new Event());
-        session.fireAllRules();
+        executeTestSession();
         assertTrue(listener.haveRulesFired("org.openengsb.test"));
     }
 
@@ -104,8 +122,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
             "when\n then example2.doSomethingWithMessage(\"\" + bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
-        session.insert(new Event());
-        session.fireAllRules();
+        sendEventToSession();
         assertTrue(listener.haveRulesFired("bla"));
     }
 
@@ -166,7 +183,6 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     public void testAddOtherPackages() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
         ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
-        createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("at.ac.tuwien.hello42"));
     }
@@ -177,9 +193,58 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
         ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello42");
         ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
-        createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42"));
+    }
+
+    /**
+     * create new stateful session from the rulebase and attach a listener to validate testresults
+     */
+    private void createSession() {
+        session = rulebase.newStatefulKnowledgeSession();
+        listener = new RuleListener();
+        session.addEventListener(listener);
+        ExampleDomain exampleService = new ExampleDomain() {
+
+            @Override
+            public String getInstanceId() {
+                return null;
+            }
+
+            @Override
+            public AliveState getAliveState() {
+                return null;
+            }
+
+            @Override
+            public String doSomethingWithLogEvent(LogEvent event) {
+                return null;
+            }
+
+            @Override
+            public String doSomethingWithMessage(String message) {
+                return null;
+            }
+
+            @Override
+            public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
+                return null;
+            }
+        };
+        session.setGlobal("example2", exampleService);
+    }
+
+    /**
+     * inserts an Event into the existing session and fires All rules
+     */
+    private void sendEventToSession() {
+        session.insert(new Event());
+        session.fireAllRules();
+    }
+
+    private void executeTestSession() {
+        createSession();
+        sendEventToSession();
     }
 
 }

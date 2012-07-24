@@ -28,34 +28,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.workflow.util.RuleUtil;
 
 @RunWith(Parameterized.class)
-public class PersistenceRuleManagerCrudTest extends
-        AbstractRuleManagerTest {
+public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
 
-    public static final class TestElement {
-        private final RuleBaseElementId id;
-        private final String code;
+    private RuleManager ruleManager;
+    private String[] code = new String[4];
+    private RuleBaseElementId[] id = new RuleBaseElementId[4];
 
-        public TestElement(RuleBaseElementId id, String code) {
-            this.id = id;
-            this.code = code;
-        }
-
-        public RuleBaseElementId getId() {
-            return id;
-        }
-
-        public String getCode() {
-            return code;
-        }
+    @Before
+    public void setUp() throws Exception {
+        ruleManager = RuleUtil.getRuleManager();
     }
 
     @Parameters
@@ -109,12 +103,8 @@ public class PersistenceRuleManagerCrudTest extends
         testData.add(new TestElement(flowId2, sampleFlow));
 
         data.add(new Object[]{ testData });
-
         return data;
     }
-
-    protected String[] code = new String[4];
-    protected RuleBaseElementId[] id = new RuleBaseElementId[4];
 
     public PersistenceRuleManagerCrudTest(List<TestElement> testelements) {
         for (int i = 0; i < 3; i++) {
@@ -172,6 +162,16 @@ public class PersistenceRuleManagerCrudTest extends
         ruleManager.add(id[0], code[0]);
         ruleManager.addOrUpdate(id[1], code[1]);
         assertThat(ruleManager.get(id[0]), is(code[1]));
+    }
+
+    public static final class TestElement {
+        private final RuleBaseElementId id;
+        private final String code;
+
+        public TestElement(RuleBaseElementId id, String code) {
+            this.id = id;
+            this.code = code;
+        }
     }
 
 }
