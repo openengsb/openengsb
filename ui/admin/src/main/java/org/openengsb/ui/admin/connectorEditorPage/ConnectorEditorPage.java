@@ -116,6 +116,11 @@ public class ConnectorEditorPage extends BasePage {
                 error("The service already exists in the system. Please choose a different servcie id.");
             }
         }
+        
+        @Override
+        public void onCancel() {
+            returnToTestClient();
+        }
 
         private void returnToTestClient() {
             setResponsePage(TestClient.class);
