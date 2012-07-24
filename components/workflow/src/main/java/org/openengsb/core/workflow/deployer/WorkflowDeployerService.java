@@ -40,7 +40,6 @@ import org.openengsb.core.common.ReferenceCounter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
-import org.osgi.service.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -79,11 +78,11 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     private Collection<File> failedArtifacts = Lists.newLinkedList();
 
-    public void init(){
+    public void init() {
         bundleContext.addBundleListener(new BundleListener() {
             @Override
             public void bundleChanged(BundleEvent event) {
-                if(event.getType() == BundleEvent.STARTED){
+                if (event.getType() == BundleEvent.STARTED) {
                     try {
                         tryInstallingFailedArtifacts();
                     } catch (Exception e) {
