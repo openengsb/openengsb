@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.drools.taskbox;
+package org.openengsb.core.workflow;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -35,14 +35,14 @@ import org.mockito.Mockito;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.workflow.api.TaskboxException;
-import org.openengsb.core.workflow.api.WorkflowException;
-import org.openengsb.core.workflow.api.WorkflowService;
-import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
-import org.openengsb.core.workflow.api.model.ProcessBag;
-import org.openengsb.core.workflow.api.model.Task;
-import org.openengsb.core.workflow.drools.internal.TaskboxServiceImpl;
-import org.openengsb.core.workflow.drools.internal.TaskboxServiceInternalImpl;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
+import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

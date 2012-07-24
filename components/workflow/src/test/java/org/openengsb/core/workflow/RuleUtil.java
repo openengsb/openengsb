@@ -55,8 +55,6 @@ public final class RuleUtil {
         addFlow(manager, "flowStartedEvent");
         addFlow(manager, "floweventtest");
         addFlow(manager, "propertybagtest");
-        addFlow(manager, "blockingFlowtest");
-        addFlow(manager, "subFlowtest");
         addFlow(manager, "simpleFlow");
         addFlow(manager, "backgroundFlow");
     }

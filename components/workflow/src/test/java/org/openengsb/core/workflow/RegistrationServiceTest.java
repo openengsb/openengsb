@@ -48,7 +48,6 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
-import org.openengsb.core.workflow.model.TestEvent;
 
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 

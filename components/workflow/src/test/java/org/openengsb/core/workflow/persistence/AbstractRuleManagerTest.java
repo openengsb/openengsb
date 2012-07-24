@@ -60,10 +60,6 @@ public abstract class AbstractRuleManagerTest {
      * create new stateful session from the rulebase and attach a listener to validate testresults
      */
     protected void createSession() {
-        if (session != null) {
-            session.dispose();
-            session = null;
-        }
         session = rulebase.newStatefulKnowledgeSession();
         listener = new RuleListener();
         session.addEventListener(listener);

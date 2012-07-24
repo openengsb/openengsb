@@ -57,7 +57,6 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent3;
-import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 

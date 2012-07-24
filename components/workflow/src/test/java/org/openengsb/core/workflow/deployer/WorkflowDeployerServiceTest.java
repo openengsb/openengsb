@@ -49,7 +49,7 @@ import antlr.debug.Event;
 
 public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
 
-    private static final String PROCESS_EXAMPLE = "flowtest.rf";
+    private static final String PROCESS_EXAMPLE = "rulebase/org/openengsb/backgroundFlow.rf";
     private static final String RULE_EXAMPLE = "rulebase/org/openengsb/hello1.rule";
 
     private WorkflowDeployerService workflowDeployer;
