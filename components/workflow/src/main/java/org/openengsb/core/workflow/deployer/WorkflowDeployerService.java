@@ -37,6 +37,10 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.ReferenceCounter;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.osgi.service.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -71,8 +75,24 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     private ReferenceCounter<String> globalReferences = new ReferenceCounter<String>();
 
     private RuleManager ruleManager;
+    private BundleContext bundleContext;
 
     private Collection<File> failedArtifacts = Lists.newLinkedList();
+
+    public void init(){
+        bundleContext.addBundleListener(new BundleListener() {
+            @Override
+            public void bundleChanged(BundleEvent event) {
+                if(event.getType() == BundleEvent.STARTED){
+                    try {
+                        tryInstallingFailedArtifacts();
+                    } catch (Exception e) {
+                        LOGGER.error("error when trying to instal artifacts", e);
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public boolean canHandle(File artifact) {
@@ -288,6 +308,10 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
 
     public void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
 }
