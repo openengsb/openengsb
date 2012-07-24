@@ -33,6 +33,13 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Registers a {@link BundleTracker} to automatically inject an appropriate {@link DomainEvents}-service into
+ * domain-bundles. A {@link ForwardHandler} is used to provide an implementation for the service. It forwards all
+ * invocation to the {@link WorkflowService}. It uses the {@link Constants#DOMAIN_NAME_HEADER} field in bundle-headers
+ * to determine the classname for the events-interface. Services are registered to the domain-bundle's bundleContext, so
+ * they are stopped automatically when the bundle is stopped.
+ */
 public class DomainEventsServicesManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainEventsServicesManager.class);

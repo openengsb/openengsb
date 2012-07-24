@@ -31,6 +31,17 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Registers a {@link BundleTracker} to automatically inject an appropriate {@link DomainProvider}-service into
+ * domain-bundles. A {@link DefaultDomainProvider} is used to provide an implementation for the service. To retrieve the
+ * information the {@link DomainProvider} provides this class extracts it from the corresponding
+ * Bundle-Manifest-Headers. ({@link Constants#DOMAIN_NAME_HEADER}, {@link Constants#DOMAIN_INTERFACE_HEADER},
+ * {@link Constants#DOMAIN_EVENTS_INTERFACE_HEADER}). The {@link Constants#DOMAIN_NAME_HEADER} is mandatory. Other
+ * missing information will cause the {@link DomainProvider} to return null.
+ *
+ * Services are registered to the domain-bundle's bundleContext, so they are stopped automatically when the bundle is
+ * stopped.
+ */
 public class DomainProviderManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainProviderManager.class);
