@@ -121,6 +121,11 @@ public class MethodUtilTest {
             return null;
         }
 
+        @Override
+        public void commitModel(DummyModel model) {
+
+        }
+
     }
 
     public static enum TestEnum {
