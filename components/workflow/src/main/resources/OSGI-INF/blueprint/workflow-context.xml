@@ -23,9 +23,9 @@
 
   <reference id="rulePersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=RULEBASE)" />
-    
+
   <reference id="globalPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
-    filter="(configuration.id=GLOBAL)" />  
+    filter="(configuration.id=GLOBAL)" />
 
   <reference id="importPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=IMPORT)" />
@@ -42,12 +42,12 @@
   </service>
 
   <service>
-  <interfaces>
-    <value>org.openengsb.core.api.workflow.WorkflowService</value>
-    <value>org.openengsb.core.api.OpenEngSBService</value>
-  </interfaces>
+    <interfaces>
+      <value>org.openengsb.core.api.workflow.WorkflowService</value>
+      <value>org.openengsb.core.api.OpenEngSBService</value>
+    </interfaces>
     <service-properties>
-      <entry key="service.pid" value="workflowService"/>
+      <entry key="service.pid" value="workflowService" />
     </service-properties>
     <ref component-id="workflowService" />
   </service>
@@ -59,7 +59,8 @@
     <property name="auditingConnectors" ref="auditingConnectors" />
   </bean>
 
-  <reference-list id="auditingConnectors" availability="optional" interface="org.openengsb.domain.auditing.AuditingDomain" />
+  <reference-list id="auditingConnectors" availability="optional"
+    interface="org.openengsb.domain.auditing.AuditingDomain" />
 
   <bean id="taskbox" class="org.openengsb.core.workflow.internal.TaskboxServiceImpl" init-method="init">
     <property name="workflowService" ref="workflowService" />
@@ -72,7 +73,7 @@
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="taskbox" />
     </service-properties>
-	 <ref component-id="taskbox" />
+    <ref component-id="taskbox" />
   </service>
 
   <service interface="org.openengsb.core.api.workflow.TaskboxServiceInternal">
@@ -100,12 +101,18 @@
       <property name="instanceId" value="registrationService" />
     </bean>
   </service>
-  
+
   <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.workflow.deployer.WorkflowDeployerService" init-method="init">
       <property name="ruleManager" ref="ruleManager" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-  
+
+  <bean class="org.openengsb.core.workflow.internal.DomainEventsServicesManager" init-method="start"
+    destroy-method="stop">
+    <property name="workflowService" ref="workflowService" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
 </blueprint>
