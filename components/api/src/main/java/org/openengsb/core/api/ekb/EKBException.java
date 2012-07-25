@@ -18,24 +18,24 @@
 package org.openengsb.core.api.ekb;
 
 /**
- * The persist interface provides the functions to maintain the models of the EDB. This includes the conversion of
- * models and sanity checks of models.
+ * This exception is thrown if an error happened while processing actions in the EKB.
  */
-public interface PersistInterface {
+@SuppressWarnings("serial")
+public class EKBException extends RuntimeException {
 
-    /**
-     * Does a sanity check of the EKBCommit and the status of the EDB when this models are changed. After passed sanity
-     * check, the models are persisted.
-     */
-    void commit(EKBCommit commit) throws SanityCheckException, EKBException;
+    public EKBException() {
+        super();
+    }
 
-    /**
-     * Persist the changes of the EKBCommit without performing sanity checks of them.
-     */
-    void forceCommit(EKBCommit commit) throws EKBException;
+    public EKBException(String message) {
+        super(message);
+    }
 
-    /**
-     * Only perform the sanity checks of the EKBCommit.
-     */
-    SanityCheckReport check(EKBCommit commit) throws EKBException;
+    public EKBException(Throwable cause) {
+        super(cause);
+    }
+
+    public EKBException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
