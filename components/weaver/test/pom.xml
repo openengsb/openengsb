@@ -36,7 +36,7 @@
 
   <name>OpenEngSB :: Framework :: Weaver Test</name>
 
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <description>
     This project contains test for the model weaving.
