@@ -131,10 +131,7 @@ public class MethodUtilTest {
         public void commitModel(DummyModel model) {
 
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> master
     }
 
     public static enum TestEnum {

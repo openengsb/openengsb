@@ -17,23 +17,42 @@
 
 package org.openengsb.core.common.xlink;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
 
 /**
  * Example modelObject for an ObjectOriented-Sourcecode Domain
  */
-public interface ExampleObjectOrientedModel extends OpenEngSBModel {
+@Model
+public class ExampleObjectOrientedModel {
 
-    String getOOMethodName();
+    private String OOMethodName;
+    
+    private String OOClassName;
+    
+    private String OOPackageName;
 
-    void setOOMethodName(String ooMethod);
+    public String getOOClassName() {
+        return OOClassName;
+    }
 
-    String getOOClassName();
+    public void setOOClassName(String OOClassName) {
+        this.OOClassName = OOClassName;
+    }
 
-    void setOOClassName(String ooClass);
+    public String getOOMethodName() {
+        return OOMethodName;
+    }
 
-    String getOOPackageName();
+    public void setOOMethodName(String OOMethodName) {
+        this.OOMethodName = OOMethodName;
+    }
 
-    void setOOPackageName(String ooPackage);
+    public String getOOPackageName() {
+        return OOPackageName;
+    }
 
+    public void setOOPackageName(String OOPackageName) {
+        this.OOPackageName = OOPackageName;
+    }
+   
 }

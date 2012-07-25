@@ -110,13 +110,14 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrl
     @Test
-    public void testGenerateValidXLinkUrl() throws ClassNotFoundException, IOException {
+    public void testGenerateValidXLinkUrl() throws ClassNotFoundException, IOException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
 
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values, modelInformation, contextId, serviceFinder);
+        String modelAsJsonString = XLinkUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
         
         //(encoded) xLinkUrl = 
         //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
@@ -133,7 +134,7 @@ public class XLinkUtilsTest {
 
         assertTrue(xLinkUrl.contains("OOMethodName%22%2C%22value%22%3A%22testMethod"));
         assertTrue(xLinkUrl.contains("OOClassName%22%2C%22value%22%3A%22testClass"));
-        assertTrue(xLinkUrl.contains("PackageName%22%2C%22value%22%3A%22testPackage"));
+        assertTrue(xLinkUrl.contains("OOPackageName%22%2C%22value%22%3A%22testPackage"));
 
     }
 
@@ -141,13 +142,14 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching
     @Test
-    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, IOException {
+    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, IOException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
+        String modelAsJsonString = XLinkUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);     
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
-                values, modelInformation, contextId, viewId1, serviceFinder);
+                modelInformation, contextId, viewId1, modelAsJsonString);
 
         //(encoded) xLinkUrl =
         //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
