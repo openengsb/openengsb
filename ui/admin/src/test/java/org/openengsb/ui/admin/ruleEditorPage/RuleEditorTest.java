@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,22 +43,16 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 
 public class RuleEditorTest extends AbstractUITest {
-    private RuleManager ruleManager;
     private RuleBaseElementId ruleBaseElementId;
 
     @Before
     public void init() throws RuleBaseException {
-        ruleManager = mock(RuleManager.class);
-        context.putBean("ruleManager", ruleManager);
-        // tester.getApplication().addComponentInstantiationListener(
-        // new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
         Collection<RuleBaseElementId> rules = Arrays
             .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));
@@ -80,8 +73,6 @@ public class RuleEditorTest extends AbstractUITest {
         assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").isVisible());
         tester.assertComponent("ruleEditor:form:save", AjaxButton.class);
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
-        // tester.assertComponent("ruleEditor:form:ruleName", TextField.class);
-        // assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleName").isVisible());
         tester.assertComponent("ruleEditor:form:cancel", AjaxButton.class);
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         tester.assertComponent("ruleEditor:form:new", AjaxButton.class);

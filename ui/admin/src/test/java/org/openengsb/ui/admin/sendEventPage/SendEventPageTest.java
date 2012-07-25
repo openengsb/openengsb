@@ -39,12 +39,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
-import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -55,17 +53,13 @@ public class SendEventPageTest extends AbstractUITest {
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
     private RepeatingView fieldList;
-    private AuditingDomain domain;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         tester.getApplication().getComponentInstantiationListeners()
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
-        RuleManager ruleManager = mock(RuleManager.class);
-        domain = mock(AuditingDomain.class);
-
+        
         List<Event> allAudits = new ArrayList<Event>();
         Event event1 = new Event();
         event1.setName("123");
@@ -76,10 +70,8 @@ public class SendEventPageTest extends AbstractUITest {
         allAudits.add(event1);
         allAudits.add(event2);
 
-        Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
-        context.putBean("ruleManager", ruleManager);
+        Mockito.when(auditingDomain.getAllAudits()).thenReturn(allAudits);
         context.putBean("eventService", eventService);
-        context.putBean("auditing", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
@@ -175,7 +167,7 @@ public class SendEventPageTest extends AbstractUITest {
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");
         int i = 0;
-        for (Event event : domain.getAllAudits()) {
+        for (Event event : auditingDomain.getAllAudits()) {
             tester.assertLabel("auditsContainer:audits:" + i + ":audit", event.getName());
             i++;
         }

@@ -149,6 +149,45 @@ public class ServiceEditorPanelTest {
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:2:value");
         assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
+    
+    @Test
+    public void testDeleteProperty_shouldWork() throws Exception {
+        Map<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        props.put("testpropy", new String[]{ "ping", "pong"});
+        startEditorPanel(props, attribOption);
+        String path = "panel:properties:0:key";
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage(path);
+        String before = label1.getDefaultModelObjectAsString();
+        tester.executeAjaxEvent("panel:properties:0:buttonKey", "onclick");
+        label1 = (Label) tester.getComponentFromLastRenderedPage(path);
+        String after = label1.getDefaultModelObjectAsString();
+        
+        assertThat(before, is("testpropx"));
+        assertThat(after, is("testpropy"));
+    }
+
+    @Test
+    public void testDeletePropertyValue_shouldWork() throws Exception {
+        Map<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        startEditorPanel(props, attribOption);
+        
+        String path = "panel:properties:0:values:1:value";
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
+        String before = (String) value1.getDefaultModelObject();
+        tester.executeAjaxEvent("panel:properties:0:values:1:buttonValue", "onclick");
+        
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
+        String after = (String) value2.getDefaultModelObject();
+
+        assertThat(before, is("42"));
+        assertThat(after, is("foo"));
+    }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
