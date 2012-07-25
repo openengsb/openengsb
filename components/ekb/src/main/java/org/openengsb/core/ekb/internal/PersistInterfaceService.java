@@ -17,9 +17,9 @@
 
 package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EKBCommit;
+import org.openengsb.core.api.ekb.EKBException;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
 import org.openengsb.core.api.ekb.SanityCheckReport;
@@ -39,21 +39,21 @@ public class PersistInterfaceService implements PersistInterface {
     private EDBConverter edbConverter;
 
     @Override
-    public void commit(EKBCommit commit) throws SanityCheckException, EDBException {
+    public void commit(EKBCommit commit) throws SanityCheckException, EKBException {
         LOGGER.debug("Commit of models was called");
         runPersistingLogic(commit, true, true);
         LOGGER.debug("Commit of models was successful");
     }
 
     @Override
-    public void forceCommit(EKBCommit commit) throws EDBException {
+    public void forceCommit(EKBCommit commit) throws EKBException {
         LOGGER.debug("Force commit of models was called");
         runPersistingLogic(commit, false, true);
         LOGGER.debug("Force commit of models was successful");
     }
 
     @Override
-    public SanityCheckReport check(EKBCommit commit) throws SanityCheckException, EDBException {
+    public SanityCheckReport check(EKBCommit commit) throws SanityCheckException, EKBException {
         LOGGER.debug("Sanity checks of models was called");
         SanityCheckReport report = performSanityChecks(commit);
         LOGGER.debug("Sanity checks of models passed successful");
@@ -65,7 +65,7 @@ public class PersistInterfaceService implements PersistInterface {
      * models if persist is set to true.
      */
     private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
-        throws SanityCheckException, EDBException {
+        throws SanityCheckException, EKBException {
         if (check) {
             performSanityChecks(commit);
         }
@@ -86,7 +86,7 @@ public class PersistInterfaceService implements PersistInterface {
     /**
      * Performs the persisting of the models into the EDB.
      */
-    private void performPersisting(ConvertedCommit commit) throws EDBException {
+    private void performPersisting(ConvertedCommit commit) throws EKBException {
         edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
     }
 
