@@ -127,13 +127,11 @@ public class MethodUtilTest {
             return null;
         }
 
-<<<<<<< HEAD
-=======
         @Override
         public void commitModel(DummyModel model) {
 
         }
->>>>>>> master
+
     }
 
     public static enum TestEnum {

@@ -119,14 +119,17 @@ public class XLinkUtilsTest {
         String modelAsJsonString = XLinkUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
         
-        System.out.println(xLinkUrl);
-        //(unencoded) xLinkUrl = 
-        //http://openengsb.org/registryServlet.html?expirationDate=20120623132605&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        //(encoded) xLinkUrl = 
+        //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
+        //&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
         //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
-        //&identifier={"modelClass":"org.openengsb.core.common.xlink.ExampleObjectOrientedModel",
-            //"entries":[{"key":"OOMethodName","value":"testMethod","type":"java.lang.String"},
-            //{"key":"OOClassName","value":"testClass","type":"java.lang.String"},
-            //{"key":"OOPackageName","value":"testPackage","type":"java.lang.String"}]}
+        //&identifier=%7B%22openEngSBModelEntries%22%3A%5B%7B%22key%22%3A%22
+        //OOMethodName%22%2C%22value%22%3A%22testMethod%22%2C%22type%22%3A%22
+        //java.lang.String%22%7D%2C%7B%22key%22%3A%22OOClassName%22%2C%22value%22%3A%22
+        //testClass%22%2C%22type%22%3A%22java.lang.String%22%7D%2C%7B%22key%22%3A%22
+        //OOPackageName%22%2C%22value%22%3A%22testPackage%22%2C%22type%22%3A%22
+        //java.lang.String%22%7D%5D%2C%22oomethodName%22%3A%22testMethod%22%2C%22ooclassName
+        //%22%3A%22testClass%22%2C%22oopackageName%22%3A%22testPackage%22%7D
 
 
         assertTrue(xLinkUrl.contains("OOMethodName%22%2C%22value%22%3A%22testMethod"));
@@ -148,13 +151,17 @@ public class XLinkUtilsTest {
         String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
                 modelInformation, contextId, viewId1, modelAsJsonString);
 
-        //(unencoded) xLinkUrl =
-        //http://openengsb.org/registryServlet.html?expirationDate=20120623132605&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
+        //(encoded) xLinkUrl =
+        //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
+        //&modelClass=org.openengsb.core.common.xlink.ExampleObjectOrientedModel
         //&versionId=3.0.0.SNAPSHOT&contextId=ExampleContext
-        //&identifier={"modelClass":"org.openengsb.core.common.xlink.ExampleObjectOrientedModel",
-            //"entries":[{"key":"OOMethodName","value":"testMethod","type":"java.lang.String"},
-            //{"key":"OOClassName","value":"testClass","type":"java.lang.String"},
-            //{"key":"OOPackageName","value":"testPackage","type":"java.lang.String"}]}
+        //&identifier=%7B%22openEngSBModelEntries%22%3A%5B%7B%22key%22%3A%22
+        //OOMethodName%22%2C%22value%22%3A%22testMethod%22%2C%22type%22%3A%22
+        //java.lang.String%22%7D%2C%7B%22key%22%3A%22OOClassName%22%2C%22value%22%3A%22
+        //testClass%22%2C%22type%22%3A%22java.lang.String%22%7D%2C%7B%22key%22%3A%22
+        //OOPackageName%22%2C%22value%22%3A%22testPackage%22%2C%22type%22%3A%22
+        //java.lang.String%22%7D%5D%2C%22oomethodName%22%3A%22testMethod%22%2C%22ooclassName
+        //%22%3A%22testClass%22%2C%22oopackageName%22%3A%22testPackage%22%7D
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
 
 
