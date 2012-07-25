@@ -108,7 +108,6 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         registerDummyConnector(DummyBuild.class, "build");
         registerDummyConnector(DummyDeploy.class, "deploy");
         registerDummyConnector(DummyReport.class, "report");
-        registerDummyConnector(DummyIssue.class, "issue");
         registerDummyConnector(DummyTest.class, "test");
     }
 
