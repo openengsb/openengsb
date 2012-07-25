@@ -32,4 +32,6 @@ public interface NullDomain extends Domain {
 
     @SecurityAttribute("READ_NULL")
     Object nullMethod(Object o, String b);
+
+    void commitModel(DummyModel model);
 }

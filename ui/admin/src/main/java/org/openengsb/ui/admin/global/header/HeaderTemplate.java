@@ -34,6 +34,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.ui.admin.edb.EdbClient;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -100,6 +101,7 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("Index", Index.class, "index.title");
 
         addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+        addHeaderMenuItem("EdbClient", EdbClient.class, "edbclient.title");
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");

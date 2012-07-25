@@ -84,4 +84,8 @@ public class NullDomainImpl implements NullDomain, Connector {
         return null;
     }
 
+    @Override
+    public void commitModel(DummyModel model) {
+    }
+
 }
