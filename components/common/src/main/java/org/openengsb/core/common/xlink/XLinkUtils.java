@@ -180,12 +180,20 @@ public final class XLinkUtils {
         Object modelOfView = createEmptyInstanceOfModelClass(clazz);
         List<OpenEngSBModelEntry> keyNames = ModelUtils.getOpenEngSBModelEntries(modelOfView);
         for (int i = 0; i < keyNames.size(); i++) {
-            Field field = clazz.getDeclaredField(keyNames.get(i).getKey());
-            field.setAccessible(true);
-            field.set(modelOfView, identifierValues.get(i));
+            setValueOfModel(modelOfView, keyNames.get(i), identifierValues.get(i));
         } 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(modelOfView);        
+    }
+    
+    public static void setValueOfModel(Object model, OpenEngSBModelEntry entry, Object value) throws 
+            NoSuchFieldException, 
+            IllegalArgumentException, 
+            IllegalAccessException {
+        Class clazz = model.getClass();
+        Field field = clazz.getDeclaredField(entry.getKey());
+        field.setAccessible(true);
+        field.set(model, value);    
     }
       
     public static Object createEmptyInstanceOfModelClass(Class clazzObject) {
