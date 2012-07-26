@@ -309,7 +309,7 @@ public class EDBConverter {
     private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorInformation info) {
         String oid = EDBConverterUtils.createOID(model, info.getDomainId(), info.getConnectorId());
         EDBObject object = new EDBObject(oid);
-        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+        for (OpenEngSBModelEntry entry : model.toOpenEngSBModelEntries()) {
             if (entry.getValue() == null) {
                 continue;
             } else if (entry.getType().equals(FileWrapper.class)) {

@@ -48,7 +48,7 @@ public final class ModelUtils {
      */
     public static List<OpenEngSBModelEntry> getOpenEngSBModelEntries(Object model) {
         checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).getOpenEngSBModelEntries();
+        return ((OpenEngSBModel) model).toOpenEngSBModelEntries();
     }
 
     /**

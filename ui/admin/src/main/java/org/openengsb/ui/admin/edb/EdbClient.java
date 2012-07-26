@@ -261,7 +261,7 @@ public class EdbClient extends BasePage {
                 historyLink.add(new Label("text", new PropertyModel<String>(item.getModelObject(), idProperty)));
                 item.add(historyLink);
                 MultiLineLabel multiLineLabel =
-                    new MultiLineLabel("entries", item.getModelObject().getOpenEngSBModelEntries().toString());
+                    new MultiLineLabel("entries", item.getModelObject().toOpenEngSBModelEntries().toString());
                 item.add(multiLineLabel);
             }
         });

@@ -37,7 +37,7 @@ public final class EDBConverterUtils {
      * Loads the entry with the given key of a given model.
      */
     private static Object getOpenEngSBModelEntryValue(OpenEngSBModel model, String key) {
-        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+        for (OpenEngSBModelEntry entry : model.toOpenEngSBModelEntries()) {
             if (entry.getKey().equals(key)) {
                 return entry.getValue();
             }

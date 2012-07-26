@@ -49,7 +49,7 @@ public class TestModel2 implements OpenEngSBModel {
     }
 
     @Override
-    public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
+    public List<OpenEngSBModelEntry> toOpenEngSBModelEntries() {
         List<OpenEngSBModelEntry> entries = Arrays.asList(new OpenEngSBModelEntry("id", id, String.class),
             new OpenEngSBModelEntry("name", name, String.class),
             new OpenEngSBModelEntry("date", date, Date.class),
