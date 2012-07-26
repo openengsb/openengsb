@@ -31,12 +31,12 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.framework.ekb</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.ekb</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.ekb.impl</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.ekb.impl</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.framework</groupId>
-  <artifactId>org.openengsb.framework.ekb</artifactId>
+  <groupId>org.openengsb.framework.ekb</groupId>
+  <artifactId>org.openengsb.framework.ekb.impl</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <name>OpenEngSB :: Framework :: Engineering Knowledge Base</name>
 
@@ -87,7 +87,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-Activator>org.openengsb.core.ekb.internal.Activator</Bundle-Activator>
+            <Bundle-Activator>org.openengsb.core.ekb.impl.internal.Activator</Bundle-Activator>
             <Embed-Dependency>orient-commons, orientdb-core</Embed-Dependency>
           </instructions>
         </configuration>
@@ -151,6 +151,11 @@
     <dependency>
       <groupId>org.openengsb.framework.edb</groupId>
       <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
