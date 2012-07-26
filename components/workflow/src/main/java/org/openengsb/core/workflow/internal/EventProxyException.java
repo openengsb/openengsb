@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.events;
+package org.openengsb.core.workflow.internal;
 
 @SuppressWarnings("serial")
 public class EventProxyException extends RuntimeException {
