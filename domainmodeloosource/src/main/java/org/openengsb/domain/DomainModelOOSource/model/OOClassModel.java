@@ -19,34 +19,71 @@ package org.openengsb.domain.DomainModelOOSource.model;
 
 import java.util.List;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.labs.delegation.service.Provide;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface OOClassModel extends OpenEngSBModel{
+@Model
+public class OOClassModel {
     
-    String getClassName();
+    private String className;
     
-    void setClassName(String className);
+    private String packageName;
     
-    String getPackageName();
+    private List<OOClassField> attributes; 
     
-    void setPackageName(String packageName);  
+    private boolean isFinal;
     
-    List<OOClassField> getAttributes();
+    private boolean isAbstract;
     
-    void setAttributes(List<OOClassField> attributes);
-    
-    boolean isFinal();
-    
-    void setFinal(boolean isFinal);
-    
-    boolean isAbstract();
-    
-    void setAbstract(boolean isAbstract);
-    
-    StringBuffer getMethods();
-    
-    void setMethods(StringBuffer methods);
-    
+    private StringBuffer methods;
+
+    public List<OOClassField> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<OOClassField> attributes) {
+        this.attributes = attributes;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public boolean isIsAbstract() {
+        return isAbstract;
+    }
+
+    public void setIsAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
+    }
+
+    public boolean isIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(boolean isFinal) {
+        this.isFinal = isFinal;
+    }
+
+    public StringBuffer getMethods() {
+        return methods;
+    }
+
+    public void setMethods(StringBuffer methods) {
+        this.methods = methods;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
 }

@@ -19,18 +19,31 @@ package org.openengsb.domain.DomainModelSQL.model;
 
 import java.util.List;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.labs.delegation.service.Provide;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
-public interface SQLCreateModel extends OpenEngSBModel{
+@Model
+public class SQLCreateModel {
     
-    String getTableName();
+    private String tableName;
     
-    void setTableName(String tableName);
-    
-    List<SQLCreateField> getFields();
-    
-    void setFields(List<SQLCreateField> fields);
+    private List<SQLCreateField> fields;
+
+    public List<SQLCreateField> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<SQLCreateField> fields) {
+        this.fields = fields;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
     
 }
