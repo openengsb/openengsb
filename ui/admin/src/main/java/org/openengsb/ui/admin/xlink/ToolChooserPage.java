@@ -51,7 +51,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.ekb.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
@@ -115,7 +114,7 @@ public class ToolChooserPage extends WebPage {
             try {
                 XLinkMock.transformAndOpenMatch(sourceModelClass, 
                         versionId, identifierObject, destinationModelClass.getModelClassName(), 
-                        destinationModelClass.getModelVersionString(), connectorId, viewId, serviceUtils);
+                        destinationModelClass.getVersionString(), connectorId, viewId, serviceUtils);
             } catch (ClassNotFoundException ex) {
                 String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
                 handleErrorResponse(String.format(errorMsg, ex.getMessage()));
@@ -225,7 +224,7 @@ public class ToolChooserPage extends WebPage {
             ObjectMapper mapper = new ObjectMapper();
             OpenEngSBModelWrapper wrapper 
                     = (OpenEngSBModelWrapper) mapper.readValue(identifier, OpenEngSBModelWrapper.class);
-            identifierObject = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+            identifierObject = (OpenEngSBModel) ModelUtils.
         } catch (Exception ex) {
             String errorMsg = new StringResourceModel("error.identifierIsNotValid", this, null).getString();
             throw new OpenXLinkException(errorMsg);
@@ -301,7 +300,7 @@ public class ToolChooserPage extends WebPage {
                                 try {
                                     XLinkMock.transformAndOpenMatch(sourceModelClass, 
                                             versionId, identifierObject, destModelInfo.getModelClassName(), 
-                                            destModelInfo.getModelVersionString(), tool.getId(), 
+                                            destModelInfo.getVersionString(), tool.getId(), 
                                             view.getViewId(), serviceUtils);
                                 } catch (ClassNotFoundException ex) {
                                     String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
@@ -320,7 +319,7 @@ public class ToolChooserPage extends WebPage {
                             }
                         };
                         if (XLinkMock.isTransformationPossible(modelId, versionId, destModelInfo.getModelClassName(), 
-                                destModelInfo.getModelVersionString())) {
+                                destModelInfo.getVersionString())) {
                             String labelText = new StringResourceModel("toolchooser.match", this, null).getString();
                             viewLink.add(new Label("viewLinkLabel", labelText));                  
                         } else {

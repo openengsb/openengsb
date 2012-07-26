@@ -28,6 +28,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.common.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
@@ -68,8 +69,9 @@ public class ToolChooserLogic {
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
-        OpenEngSBModel model = XLinkUtils.createInstanceOfModelClass(modelId, versionId, osgiService);
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, osgiService);
+        Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         List<String> identifierKeyNames = new ArrayList<String>();
         
         //########### MOCK !!!

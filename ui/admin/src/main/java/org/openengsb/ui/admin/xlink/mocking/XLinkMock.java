@@ -56,7 +56,7 @@ public final class XLinkMock {
     public static void transformAndOpenMatch(
             String sourceModelClass, 
             String sourceModelVersion, 
-            OpenEngSBModel soureObject, 
+            Object soureObject, 
             String destinationModelClass, 
             String destinationModelVersion, 
             String connectorToCall, 
@@ -78,7 +78,7 @@ public final class XLinkMock {
         if (isTransformationPossible(sourceModelClass, 
             sourceModelVersion, destinationModelClass, destinationModelVersion)) {
             //Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap, osgiService);
-            OpenEngSBModel modelObjectsDestination = transformModelObject(sourceModelClass, 
+            Object modelObjectsDestination = transformModelObject(sourceModelClass, 
                     sourceModelVersion, destinationModelClass, destinationModelVersion, soureObject, osgiService);
             String cId = connectorToCall;
             openPotentialMatches(modelObjectsDestination, cId, viewToCall, osgiService);
@@ -104,24 +104,26 @@ public final class XLinkMock {
         }
         return toReturn;
     }*/
-    private static OpenEngSBModel transformModelObject(
+    private static Object transformModelObject(
             String sourceModelClass, 
             String sourceModelVersion, 
             String destinationModelClass, 
             String destinationModelVersion, 
-            OpenEngSBModel modelObjectSource,
+            Object modelObjectSource,
             OsgiUtilsService osgiService) throws ClassNotFoundException {
         if(modelObjectSource == null)return null;
-        OpenEngSBModel resultObject = null;
+        Object resultObject = null;
+        
+        Class destinationClass = XLinkUtils.getClassOfOpenEngSBModel(destinationModelClass, destinationModelVersion, osgiService);
         
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
-            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(destinationModelClass, destinationModelVersion, osgiService);
+            OOClassModel ooclass = (OOClassModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             ooclass.setClassName(sqlSource.getTableName());
             resultObject = ooclass;
         } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(sqlModel)){
             OOClassModel ooSource = (OOClassModel) modelObjectSource;
-            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(destinationModelClass, destinationModelVersion, osgiService);
+            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             sqlcreate.setTableName(ooSource.getClassName());
             resultObject = sqlcreate;
         } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(ooModel)){
@@ -134,7 +136,7 @@ public final class XLinkMock {
         return resultObject;
     }
     private static void openPotentialMatches(
-            OpenEngSBModel modelObjectsDestination, 
+            Object modelObjectsDestination, 
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
@@ -143,7 +145,7 @@ public final class XLinkMock {
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "modelObjectsDestination - " + modelObjectsDestination);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
         Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
-        List<OpenEngSBModel> matches = new ArrayList<OpenEngSBModel>();
+        List<Object> matches = new ArrayList<Object>();
         matches.add(modelObjectsDestination);
         
         Object serviceObject = osgiService.getService("service.pid="+connectorToCall, 100L);
