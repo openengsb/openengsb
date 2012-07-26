@@ -29,10 +29,10 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.internal.converter.ConnectorInformation;
 import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.openengsb.core.ekb.internal.converter.EDBConverterUtils;

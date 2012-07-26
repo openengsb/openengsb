@@ -31,12 +31,12 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.openengsb.core.ekb.internal.models.SubModel;
 import org.openengsb.core.ekb.internal.models.TestModel;

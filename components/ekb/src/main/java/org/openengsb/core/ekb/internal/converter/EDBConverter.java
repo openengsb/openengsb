@@ -30,14 +30,14 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.math.NumberUtils;
-import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

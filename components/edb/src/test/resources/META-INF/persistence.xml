@@ -23,9 +23,9 @@
   <persistence-unit name="edb-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>org.openengsb.core.common.AbstractDataRow</class>
-    <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAObject</class>
-    <class>org.openengsb.core.edb.internal.JPAEntry</class>
+    <class>org.openengsb.core.edb.jpa.internal.JPACommit</class>
+    <class>org.openengsb.core.edb.jpa.internal.JPAObject</class>
+    <class>org.openengsb.core.edb.jpa.internal.JPAEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>

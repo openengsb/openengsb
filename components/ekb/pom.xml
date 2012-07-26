@@ -149,8 +149,8 @@
     </dependency>
     <!-- OpenEngSb dependencies -->
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.api</artifactId>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

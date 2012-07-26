@@ -89,6 +89,6 @@
   </service>
   
   <!-- References to other bundles -->
-  <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
+  <reference id="edbService" interface="org.openengsb.core.edb.api.EngineeringDatabaseService" />
   
 </blueprint>

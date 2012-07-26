@@ -67,6 +67,11 @@
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.framework.edb</groupId>
+        <artifactId>org.openengsb.framework.edb.api</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.common</artifactId>
         <version>3.0.0-SNAPSHOT</version>

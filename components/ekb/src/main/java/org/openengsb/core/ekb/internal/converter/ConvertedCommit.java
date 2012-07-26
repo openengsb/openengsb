@@ -19,7 +19,7 @@ package org.openengsb.core.ekb.internal.converter;
 
 import java.util.List;
 
-import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.edb.api.EDBObject;
 
 /**
  * A ConvertedCommit class is a helper class. It contains to EDBObjects converted models of an EKBCommit.

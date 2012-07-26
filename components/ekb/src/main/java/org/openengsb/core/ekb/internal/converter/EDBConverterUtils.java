@@ -19,10 +19,10 @@ package org.openengsb.core.ekb.internal.converter;
 
 import java.util.UUID;
 
-import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.edb.api.EDBConstants;
 
 /**
  * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: EDBObjects

@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.QueryInterface;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.internal.converter.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

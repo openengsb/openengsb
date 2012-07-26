@@ -129,6 +129,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>test</scope>
