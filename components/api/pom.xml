@@ -128,28 +128,6 @@
               <goal>java2wsdl</goal>
             </goals>
           </execution>
-          <execution>
-            <id>EventRegistrationService</id>
-            <phase>process-classes</phase>
-            <configuration>
-              <className>org.openengsb.core.api.workflow.EventRegistrationService</className>
-              <outputFileName>${project.basedir}/target/generated/wsdl/EventRegistrationService.wsdl</outputFileName>
-            </configuration>
-            <goals>
-              <goal>java2wsdl</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>RuleManager</id>
-            <phase>process-classes</phase>
-            <configuration>
-              <className>org.openengsb.core.api.workflow.RuleManager</className>
-              <outputFileName>${project.basedir}/target/generated/wsdl/RuleManager.wsdl</outputFileName>
-            </configuration>
-            <goals>
-              <goal>java2wsdl</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -173,16 +151,6 @@
                   <file>target/generated/wsdl/ProxyConnectorRegistry.wsdl</file>
                   <type>wsdl</type>
                   <classifier>ProxyConnectorRegistry</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/generated/wsdl/EventRegistrationService.wsdl</file>
-                  <type>wsdl</type>
-                  <classifier>EventRegistrationService</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/generated/wsdl/RuleManager.wsdl</file>
-                  <type>wsdl</type>
-                  <classifier>RuleManager</classifier>
                 </artifact>
               </artifacts>
             </configuration>

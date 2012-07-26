@@ -36,11 +36,11 @@
   <reference-list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService"
     availability="optional" />
   <reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
-  <reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
+  <reference id="eventService" interface="org.openengsb.core.workflow.api.WorkflowService" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
-  <reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
+  <reference id="ruleManager" interface="org.openengsb.core.workflow.api.RuleManager" />
   <reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
-  <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
+  <reference id="taskboxService" interface="org.openengsb.core.workflow.api.TaskboxService" />
   <reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <reference id="queryInterface" interface="org.openengsb.core.ekb.api.QueryInterface" />

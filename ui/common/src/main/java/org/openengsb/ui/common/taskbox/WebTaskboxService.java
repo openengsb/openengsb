@@ -18,9 +18,9 @@
 package org.openengsb.ui.common.taskbox;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.api.workflow.TaskboxException;
-import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.TaskboxException;
+import org.openengsb.core.workflow.api.TaskboxService;
+import org.openengsb.core.workflow.api.model.Task;
 
 /**
  * The WebTaskboxService extends the normal {@link org.openengsb.core.common.taskbox.TaskboxService TaskboxService} by

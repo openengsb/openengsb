@@ -28,7 +28,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;

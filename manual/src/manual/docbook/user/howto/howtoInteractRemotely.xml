@@ -88,11 +88,11 @@
     "methodCall": {
       "classes": [
         "java.lang.String",
-        "org.openengsb.core.api.workflow.model.ProcessBag"
+        "org.openengsb.core.workflow.api.model.ProcessBag"
       ],
       "methodName": "executeWorkflow",
       "metaData": {
-        "serviceFilter": "(objectClass=org.openengsb.core.api.workflow.WorkflowService)",
+        "serviceFilter": "(objectClass=org.openengsb.core.workflow.api.WorkflowService)",
         "contextId": "foo"
       },
       "args": [
@@ -150,7 +150,7 @@
 
       <para>Example: if you want to execute a workflow via the WorkflowService send</para>
       <code>{"callId":"12345","answer":true,"classes":["java.lang.String",
-        "org.openengsb.core.api.workflow.model.ProcessBag"],
+        "org.openengsb.core.workflow.api.model.ProcessBag"],
         "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService",
         "contextId":"foo"},"args":["simpleFlow", {}]}</code>
       <para>Please be aware that the flow the above method tries to call (simpleFlow) is not available by default on the
@@ -165,7 +165,7 @@
   <variables>
    <variable name="processBag">
     <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" 
-     className="org.openengsb.core.api.workflow.model.ProcessBag"/>
+     className="org.openengsb.core.workflow.api.model.ProcessBag"/>
    </variable>
   </variables>
  </header>

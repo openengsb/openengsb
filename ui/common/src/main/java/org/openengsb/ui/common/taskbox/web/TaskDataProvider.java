@@ -26,8 +26,8 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.TaskboxService;
+import org.openengsb.core.workflow.api.model.Task;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 

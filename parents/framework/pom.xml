@@ -338,6 +338,11 @@
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.api</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.common</artifactId>
         <version>3.0.0-SNAPSHOT</version>
@@ -354,8 +359,8 @@
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.workflow</artifactId>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.drools</artifactId>
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>

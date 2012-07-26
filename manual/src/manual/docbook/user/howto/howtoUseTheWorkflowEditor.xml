@@ -66,10 +66,10 @@
   </section>
   <section>
     <title>Validating a Workflow</title>
-    <para>To validate a Workflow before exporting simply implement the org.openengsb.core.api.workflow.WorkflowValidator
+    <para>To validate a Workflow before exporting simply implement the org.openengsb.core.workflow.api.WorkflowValidator
     interface and export it to OSGi with the same interface. An example would be
     <code>
-      <service interface="org.openengsb.core.api.workflow.WorkflowValidator">
+      <service interface="org.openengsb.core.workflow.api.WorkflowValidator">
         <bean class="org.openengsb.core.workflow.editor.validator.WorkflowValidatorImplementation"/>
       </service>
     </code>Upon Export of a Workflow every Validator is called and if errors exist the export is stopped.</para>

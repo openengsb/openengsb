@@ -26,10 +26,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.WorkflowService;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import com.google.common.collect.Lists;

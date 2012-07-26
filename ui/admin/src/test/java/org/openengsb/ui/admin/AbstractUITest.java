@@ -48,7 +48,7 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;

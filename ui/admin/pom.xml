@@ -206,6 +206,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
