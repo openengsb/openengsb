@@ -23,7 +23,6 @@ import java.util.Hashtable;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.common.events.ForwardHandler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
