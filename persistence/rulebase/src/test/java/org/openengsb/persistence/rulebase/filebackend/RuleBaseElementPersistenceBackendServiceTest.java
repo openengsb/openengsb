@@ -77,8 +77,8 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
         service.persist(conf);
 
         String expectedFilename =
-            element.getType().toString() + separator + element.getName() + separator
-                    + encoder.encode(element.getPackageName());
+            String.format("%s%s%s%s%s", element.getType(), separator, element.getName(), separator
+                , encoder.encode(element.getPackageName()));
         File expectedTarget = new File(storageFolder, expectedFilename);
         assertTrue(expectedTarget.exists());
         String code = FileUtils.readFileToString(expectedTarget);
@@ -176,8 +176,8 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
         service.persist(conf);
 
         String expectedFilename =
-            element.getType().toString() + separator + element.getName() + separator
-                    + encoder.encode(element.getPackageName());
+            String.format("%s%s%s%s%s", element.getType(), separator, element.getName(), separator
+                , encoder.encode(element.getPackageName()));
         File expectedTarget = new File(storageFolder, expectedFilename);
         assertTrue(expectedTarget.exists());
         service.remove(conf.getMetaData());
