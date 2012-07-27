@@ -40,7 +40,6 @@ import org.openengsb.core.workflow.api.TaskboxServiceInternal;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.workflow.drools.OsgiHelper;
 import org.openengsb.core.workflow.drools.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.drools.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.drools.internal.WorkflowServiceImpl;

@@ -29,7 +29,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.ekb.api.ModelDescription;
-import org.openengsb.core.ekb.impl.internal.ModelRegistryService;
 import org.openengsb.core.ekb.impl.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.impl.internal.models.ModelA;
 import org.openengsb.core.ekb.impl.internal.models.TestAnnotation;

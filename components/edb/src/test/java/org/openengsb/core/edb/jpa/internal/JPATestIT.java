@@ -43,10 +43,6 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
-import org.openengsb.core.edb.jpa.internal.CheckPreCommitHook;
-import org.openengsb.core.edb.jpa.internal.Diff;
-import org.openengsb.core.edb.jpa.internal.JPACommit;
-import org.openengsb.core.edb.jpa.internal.JPADatabase;
 
 public class JPATestIT {
     private static JPADatabase db;

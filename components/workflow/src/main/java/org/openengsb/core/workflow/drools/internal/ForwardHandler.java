@@ -21,9 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
 import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.WorkflowService;
-import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

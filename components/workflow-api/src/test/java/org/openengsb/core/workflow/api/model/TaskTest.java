@@ -24,7 +24,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.workflow.api.model.Task;
 
 public class TaskTest {
     private Task task;

@@ -24,13 +24,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.EventRegistrationService;
 import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RemoteEvent;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

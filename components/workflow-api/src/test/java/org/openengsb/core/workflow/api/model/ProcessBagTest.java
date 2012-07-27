@@ -30,7 +30,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.workflow.api.ProcessBagException;
-import org.openengsb.core.workflow.api.model.ProcessBag;
 
 import com.google.common.collect.Maps;
 
