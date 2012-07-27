@@ -128,7 +128,7 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>
-            -javaagent:${project.build.directory}/model-agent.jar
+            -javaagent:"${project.build.directory}/model-agent.jar"
           </argLine>
           <useSystemClassloader>true</useSystemClassloader>
         </configuration>
