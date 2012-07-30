@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.workflow.deployer;
+package org.openengsb.core.workflow.drools.deployer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -37,11 +37,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.util.RuleUtil;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.WorkflowDeployerService;
+import org.openengsb.core.workflow.drools.util.RuleUtil;
 import org.slf4j.Logger;
 
 import antlr.debug.Event;

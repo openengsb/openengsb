@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -48,13 +48,13 @@ import org.mockito.InOrder;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.api.workflow.model.ProcessBag;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent3;
+import org.openengsb.core.workflow.api.RuleBaseException;
+import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
+import org.openengsb.core.workflow.api.model.ProcessBag;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 

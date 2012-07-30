@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.persistence;
+package org.openengsb.core.workflow.drools.persistence;
 
 import java.util.Arrays;
 import java.util.HashSet;

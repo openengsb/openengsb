@@ -34,11 +34,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.model.ConfigItem;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.model.GlobalConfiguration;
-import org.openengsb.core.workflow.model.RuleBaseConfiguration;
-import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.model.GlobalConfiguration;
+import org.openengsb.core.workflow.drools.model.RuleBaseConfiguration;
+import org.openengsb.core.workflow.drools.model.RuleBaseElement;
 
 public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEngSBTest {
 

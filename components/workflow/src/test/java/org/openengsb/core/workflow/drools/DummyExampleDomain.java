@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
 import org.openengsb.core.api.Domain;
 

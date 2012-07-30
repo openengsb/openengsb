@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
 import static org.mockito.Mockito.mock;
 
@@ -25,19 +25,19 @@ import java.util.UUID;
 import org.junit.Before;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.TaskboxServiceInternal;
-import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
-import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
-import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.util.RuleUtil;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.TaskboxService;
+import org.openengsb.core.workflow.api.TaskboxServiceInternal;
+import org.openengsb.core.workflow.api.WorkflowService;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.TaskboxServiceImpl;
+import org.openengsb.core.workflow.drools.internal.TaskboxServiceInternalImpl;
+import org.openengsb.core.workflow.drools.internal.WorkflowServiceImpl;
+import org.openengsb.core.workflow.drools.util.RuleUtil;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {

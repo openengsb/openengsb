@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.persistence;
+package org.openengsb.core.workflow.drools.persistence;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,12 +33,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.util.RuleUtil;
+import org.openengsb.core.workflow.api.RuleBaseException;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.util.RuleUtil;
 
 @RunWith(Parameterized.class)
 public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {

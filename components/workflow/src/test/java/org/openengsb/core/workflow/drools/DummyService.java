@@ -15,29 +15,8 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow.model;
+package org.openengsb.core.workflow.drools;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-public class RuleBaseElementIdTest {
-
-    @Test
-    public void testToStringWithDefaultConstructor() throws Exception {
-        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE, new RuleBaseElementId().toString());
-    }
-
-    @Test
-    public void testToStringWithNameOnly() throws Exception {
-        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE + ".name", new RuleBaseElementId(RuleBaseElementType.Rule,
-                "name").toString());
-    }
-
-    @Test
-    public void testToStringWithNameAndPackage() throws Exception {
-        assertEquals("my.package.name",
-                new RuleBaseElementId(RuleBaseElementType.Rule, "my.package", "name").toString());
-    }
-
+public interface DummyService {
+    void call();
 }

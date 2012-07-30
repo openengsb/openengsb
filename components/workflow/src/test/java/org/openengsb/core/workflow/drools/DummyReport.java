@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
-public interface DummyService {
-    void call();
+import org.openengsb.core.api.Domain;
+
+public interface DummyReport extends Domain {
+    String collectData();
 }

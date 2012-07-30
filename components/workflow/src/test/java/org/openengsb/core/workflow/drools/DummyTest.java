@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
 import org.openengsb.core.api.Domain;
 
-public interface DummyBuild extends Domain {
-    String buildProject();
+public interface DummyTest extends Domain {
+    String runTests();
 }

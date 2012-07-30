@@ -32,9 +32,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.model.GlobalConfiguration;
-import org.openengsb.core.workflow.model.GlobalDeclaration;
-import org.openengsb.core.workflow.model.ImportConfiguration;
+import org.openengsb.core.workflow.drools.model.GlobalConfiguration;
+import org.openengsb.core.workflow.drools.model.GlobalDeclaration;
+import org.openengsb.core.workflow.drools.model.ImportConfiguration;
 
 public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpenEngSBTest {
 

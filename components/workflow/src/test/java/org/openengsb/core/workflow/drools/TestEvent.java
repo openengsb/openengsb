@@ -15,12 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Event;
 
-public interface DummyNotificationDomain extends Domain {
+public class TestEvent extends Event {
 
-    void notify(String notification);
+    private String value;
+
+    public TestEvent() {
+    }
+
+    public TestEvent(long processId) {
+        setProcessId(processId);
+    }
+
+    public TestEvent(String value) {
+        this.value = value;
+    }
+
+    public TestEvent(long processId, String value) {
+        super(processId);
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
 }

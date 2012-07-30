@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.util;
+package org.openengsb.core.workflow.drools.util;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyConfigPersistenceService;
-import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
-import org.openengsb.core.workflow.model.GlobalDeclaration;
-import org.openengsb.core.workflow.model.ImportDeclaration;
-import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.api.RuleBaseException;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.drools.model.GlobalDeclaration;
+import org.openengsb.core.workflow.drools.model.ImportDeclaration;
+import org.openengsb.core.workflow.drools.model.RuleBaseElement;
 
 public final class RuleUtil {
 

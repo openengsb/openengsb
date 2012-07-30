@@ -15,36 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.api.model;
 
-import org.openengsb.core.api.Event;
+import static org.junit.Assert.assertEquals;
 
-public class TestEvent extends Event {
+import org.junit.Test;
 
-    private String value;
+public class RuleBaseElementIdTest {
 
-    public TestEvent() {
+    @Test
+    public void testToStringWithDefaultConstructor() throws Exception {
+        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE, new RuleBaseElementId().toString());
     }
 
-    public TestEvent(long processId) {
-        setProcessId(processId);
+    @Test
+    public void testToStringWithNameOnly() throws Exception {
+        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE + ".name", new RuleBaseElementId(RuleBaseElementType.Rule,
+                "name").toString());
     }
 
-    public TestEvent(String value) {
-        this.value = value;
-    }
-
-    public TestEvent(long processId, String value) {
-        super(processId);
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    @Test
+    public void testToStringWithNameAndPackage() throws Exception {
+        assertEquals("my.package.name",
+                new RuleBaseElementId(RuleBaseElementType.Rule, "my.package", "name").toString());
     }
 
 }

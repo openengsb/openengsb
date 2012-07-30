@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.drools;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -40,14 +40,14 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.workflow.EventRegistrationService;
-import org.openengsb.core.api.workflow.model.RemoteEvent;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
-import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
+import org.openengsb.core.workflow.api.EventRegistrationService;
+import org.openengsb.core.workflow.api.model.RemoteEvent;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.RegistrationServiceImpl;
 
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
