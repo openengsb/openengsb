@@ -17,7 +17,7 @@
 
 package org.openengsb.ui.common.taskbox.web;
 
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.model.Task;
 
 @SuppressWarnings("serial")
 public class TaskFilter extends Task {

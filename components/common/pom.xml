@@ -136,6 +136,10 @@
       <artifactId>org.openengsb.framework.api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
       <exclusions>

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.drools.model.RuleBaseElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

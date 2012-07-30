@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.workflow.api.WorkflowService;
 
 public class MethodFinderTest {
 

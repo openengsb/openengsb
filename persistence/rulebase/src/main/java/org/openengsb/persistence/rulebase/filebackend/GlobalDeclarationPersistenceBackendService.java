@@ -32,8 +32,8 @@ import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.workflow.model.GlobalConfiguration;
-import org.openengsb.core.workflow.model.GlobalDeclaration;
+import org.openengsb.core.workflow.drools.model.GlobalConfiguration;
+import org.openengsb.core.workflow.drools.model.GlobalDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     private static final String SEPARATOR = " ";
 
     public void setStorageFilePath(String storageFilePath) {
-        this.storageFile = new File(storageFilePath);
+        storageFile = new File(storageFilePath);
     }
 
     @Override

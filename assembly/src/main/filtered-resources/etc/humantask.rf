@@ -26,10 +26,10 @@
   <header>
     <variables>
       <variable name="processBag" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.api.workflow.model.ProcessBag" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.workflow.api.model.ProcessBag" />
       </variable>
       <variable name="event" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.api.workflow.model.InternalWorkflowEvent" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.workflow.api.model.InternalWorkflowEvent" />
       </variable>
     </variables>
   </header>

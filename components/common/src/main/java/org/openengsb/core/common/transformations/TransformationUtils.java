@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.api.ekb.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;

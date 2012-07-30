@@ -27,8 +27,8 @@ import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.workflow.model.ImportConfiguration;
-import org.openengsb.core.workflow.model.ImportDeclaration;
+import org.openengsb.core.workflow.drools.model.ImportConfiguration;
+import org.openengsb.core.workflow.drools.model.ImportDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,6 +143,6 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     public void setStorageFilePath(String storageFilePath) {
-        this.storageFile = new File(storageFilePath);
+        storageFile = new File(storageFilePath);
     }
 }
