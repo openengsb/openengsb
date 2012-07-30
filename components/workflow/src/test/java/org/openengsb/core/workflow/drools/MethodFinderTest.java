@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services;
+package org.openengsb.core.workflow.drools;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
