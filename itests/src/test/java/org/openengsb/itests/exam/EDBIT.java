@@ -47,6 +47,7 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.itests.exam.models.SubModel;
@@ -195,7 +196,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(line, is("this is a test"));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testDoubleModelCommit_shouldThrowException() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setEdbId", "createevent/1");
@@ -262,7 +263,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version3, is(1));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testEKBDeleteCommitWithNonExistingOid_shouldThrowError() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setEdbId", "deleteevent/1");
@@ -322,7 +323,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version2, is(2));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testEKBConflictCommitEvent_shouldResolveInConflict() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setName", "test1");

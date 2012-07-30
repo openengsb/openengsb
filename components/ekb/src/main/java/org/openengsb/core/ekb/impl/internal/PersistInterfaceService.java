@@ -17,6 +17,7 @@
 
 package org.openengsb.core.ekb.impl.internal;
 
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
@@ -87,7 +88,11 @@ public class PersistInterfaceService implements PersistInterface {
      * Performs the persisting of the models into the EDB.
      */
     private void performPersisting(ConvertedCommit commit) throws EKBException {
-        edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+        try {
+            edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+        } catch (EDBException e) {
+            throw new EKBException("Error while commiting EKBCommit", e); 
+        }
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
