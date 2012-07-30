@@ -28,7 +28,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 /**
- * little class to test if the querying of models also works with self implemented classes and not only with proxied
+ * Little class to test if the querying of models also works with self implemented classes and not only with proxied
  * interfaces
  */
 public class TestModel2 implements OpenEngSBModel {
@@ -142,5 +142,17 @@ public class TestModel2 implements OpenEngSBModel {
     @Override
     public Object retrieveInternalModelId() {
         return edbId;
+    }
+
+    @Override
+    public List<OpenEngSBModelEntry> getOpenEngSBModelTail() {
+        return new ArrayList<OpenEngSBModelEntry>(tail.values());
+    }
+
+    @Override
+    public void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries) {
+        for (OpenEngSBModelEntry entry : entries) {
+            tail.put(entry.getKey(), entry);
+        }        
     }
 }

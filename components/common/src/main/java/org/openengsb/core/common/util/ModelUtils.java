@@ -77,7 +77,25 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveInternalModelId();
     }
-
+    
+    /**
+     * Performs the getOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static List<OpenEngSBModelEntry> getOpenEngSBModelTail(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).getOpenEngSBModelTail();
+    }
+    
+    /**
+     * Performs the setOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static void setOpenEngSBModelTail(Object model, List<OpenEngSBModelEntry> entries) {
+        checkIfObjectIsModel(model);
+        ((OpenEngSBModel) model).setOpenEngSBModelTail(entries);
+    }
+    
     /**
      * Creates a model of the given type and uses the list of OpenEngSBModelEntries as initialization data.
      */
