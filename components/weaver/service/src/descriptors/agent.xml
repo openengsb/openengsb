@@ -33,7 +33,6 @@
       <excludes>
         <exclude>org.slf4j:slf4j-log4j12</exclude>
         <exclude>log4j:log4j</exclude>
-        <exclude>org.slf4j:slf4j-api</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
