@@ -88,6 +88,7 @@ import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
 import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
+import org.openengsb.core.security.internal.model.ShiroContext;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -345,7 +346,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             MessageVerifierFilter.class,
-            new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)),
+            new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext), new ShiroContext()),
             new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();
         return secureChain;

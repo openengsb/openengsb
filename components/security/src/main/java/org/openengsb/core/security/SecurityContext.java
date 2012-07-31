@@ -16,69 +16,20 @@
  */
 package org.openengsb.core.security;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.concurrent.SubjectAwareExecutorService;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
-import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.util.ContextAwareCallable;
 import org.openengsb.core.common.util.ContextAwareRunnable;
 import org.openengsb.core.common.util.ThreadLocalUtil;
-import org.openengsb.core.security.internal.OpenEngSBAuthenticationToken;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 
 /**
  * provides util-methods for security purposes
  */
 public final class SecurityContext {
-
-    /**
-     * Wraps the given argument to a shiro- {@link org.apache.shiro.authc.AuthenticationToken} to authenticate.
-     */
-    public static void login(String username, Credentials credentials) throws AuthenticationException {
-        OpenEngSBAuthenticationToken token = new OpenEngSBAuthenticationToken(username, credentials);
-        SecurityUtils.getSubject().login(token);
-    }
-
-    /**
-     * Logout the current subject. The ThreadContext is emptied.
-     */
-    public static void logout() {
-        Subject subject = ThreadContext.getSubject();
-        if (subject == null) {
-            return;
-        }
-        subject.logout();
-    }
-
-    /**
-     * returns the authenticated user or null if no authentication was found.
-     */
-    public static Object getAuthenticatedPrincipal() {
-        Subject subject = ThreadContext.getSubject();
-        if (subject == null) {
-            return null;
-        }
-        return subject.getPrincipal();
-    }
-
-    /**
-     * returns a list of principals of the currently authenticated subject.
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Object> getAllAuthenticatedPrincipals() {
-        Subject subject = ThreadContext.getSubject();
-        if (subject == null) {
-            return null;
-        }
-        return subject.getPrincipals().asList();
-    }
 
     /**
      * Executes the given task with root-permissions. Use with care.
