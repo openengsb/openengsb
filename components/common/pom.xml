@@ -81,24 +81,7 @@
         </includes>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generateDocSrc</id>
-            <goals>
-              <goal>extractSource</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <sourcePath>${project.basedir}/src/</sourcePath>                
-              <targetPath>${project.basedir}/../../target/docbook/snippets</targetPath>
-            </configuration>
-          </execution> 
-        </executions>          
-      </plugin>        
+    <plugins>       
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>openjpa-maven-plugin</artifactId>
