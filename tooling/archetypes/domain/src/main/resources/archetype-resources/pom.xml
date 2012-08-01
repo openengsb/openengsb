@@ -105,14 +105,14 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.common</artifactId>
+      <artifactId>org.openengsb.framework.test</artifactId>
       <version>${openengsbVersion}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.test</artifactId>
-      <version>${openengsbVersion}</version>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>0.1.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -52,6 +52,7 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
+import org.openengsb.ui.admin.testClient.TestClient;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class EditorPageTest extends AbstractUITest {
@@ -133,6 +134,16 @@ public class EditorPageTest extends AbstractUITest {
         ref.put("a", "a_default");
         verify(factoryMock).applyAttributes(any(Connector.class), eq(ref));
         serviceUtils.getService(NullDomain.class, 100L);
+    }
+    
+    @Test
+    public void testCancelButton_shouldWork() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        tester.debugComponentTrees();
+        newFormTester.submit("cancelButton");
+        tester.executeAjaxEvent("editor:form:cancelButton", "onclick");
+        tester.assertRenderedPage(TestClient.class);
     }
 
     @Test

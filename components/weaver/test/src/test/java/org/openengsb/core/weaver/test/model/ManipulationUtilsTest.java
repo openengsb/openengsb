@@ -62,7 +62,7 @@ public class ManipulationUtilsTest {
 
         ModelUtils.addOpenEngSBModelEntry(bla, new OpenEngSBModelEntry("test", "test", String.class));
 
-        List<OpenEngSBModelEntry> entries = bla.getOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = bla.toOpenEngSBModelEntries();
         String test = null;
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("test")) {

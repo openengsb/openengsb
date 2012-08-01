@@ -8,5 +8,5 @@ org.openengsb.core.api.Event
 org.openengsb.core.api.workflow.model.Value
 org.openengsb.core.api.workflow.model.RemoteEvent
 
-org.openengsb.core.workflow.WorkflowHelper
-org.openengsb.core.workflow.OsgiHelper
+org.openengsb.core.workflow.drools.WorkflowHelper
+org.openengsb.core.workflow.drools.OsgiHelper

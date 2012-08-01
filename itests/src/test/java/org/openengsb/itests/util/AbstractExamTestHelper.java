@@ -18,7 +18,6 @@
 package org.openengsb.itests.util;
 
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.debugConfiguration;
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.logLevel;
@@ -43,7 +42,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.karaf.tooling.exam.options.ConfigurationPointer;
 import org.apache.karaf.tooling.exam.options.LogLevelOption.LogLevel;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.apache.karaf.tooling.exam.options.configs.ManagementCfg;
 import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
@@ -52,11 +50,11 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.security.SecurityContext;
-import org.openengsb.core.workflow.OsgiHelper;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.OsgiHelper;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.exam.Option;
@@ -326,7 +324,6 @@ public abstract class AbstractExamTestHelper {
                     "openwire"), (String) portNames.get("jms.openwire.port")),
                 editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
                     "stomp"), (String) portNames.get("jms.stomp.port")),
-                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                     .versionAsInProject()) };
         if (debug) {

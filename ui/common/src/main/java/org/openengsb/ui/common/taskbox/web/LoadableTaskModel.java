@@ -18,9 +18,9 @@
 package org.openengsb.ui.common.taskbox.web;
 
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.openengsb.core.api.workflow.TaskboxException;
-import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.TaskboxException;
+import org.openengsb.core.workflow.api.TaskboxService;
+import org.openengsb.core.workflow.api.model.Task;
 
 @SuppressWarnings("serial")
 public class LoadableTaskModel extends LoadableDetachableModel<Task> {
