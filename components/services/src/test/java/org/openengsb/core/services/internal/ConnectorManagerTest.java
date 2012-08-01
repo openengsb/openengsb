@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import com.google.common.collect.Lists;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -54,7 +53,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
