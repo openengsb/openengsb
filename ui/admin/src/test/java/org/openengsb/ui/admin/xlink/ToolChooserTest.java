@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.xlink;
 
+import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,12 +25,14 @@ import java.util.Calendar;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
-import org.junit.Ignore;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -132,7 +135,18 @@ public class ToolChooserTest extends AbstractUITest {
     }    
     
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
-        String identifyingString = "{\"modelClass\":\"org.openengsb.core.common.xlink.ExampleObjectOrientedModel\",\"entries\":[{\"key\":\"OOMethodName\",\"value\":\"testMethod\",\"type\":\"java.lang.String\"},{\"key\":\"OOClassName\",\"value\":\"testClass\",\"type\":\"java.lang.String\"},{\"key\":\"OOPackageName\",\"value\":\"testPackage\",\"type\":\"java.lang.String\"}]}";
+        ObjectMapper mapper = new ObjectMapper();
+        ExampleObjectOrientedModel model = new ExampleObjectOrientedModel();
+        model.setOOClassName("testClass");
+        model.setOOMethodName("testMethod");
+        model.setOOPackageName("testPackage");
+        String identifyingString = null;
+        try {
+            identifyingString = mapper.writeValueAsString(model);
+        } catch (IOException ex) {
+            Logger.getLogger(ToolChooserTest.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
         params.add(XLinkUtils.XLINK_IDENTIFIER_KEY,identifyingString);    
     }    
     

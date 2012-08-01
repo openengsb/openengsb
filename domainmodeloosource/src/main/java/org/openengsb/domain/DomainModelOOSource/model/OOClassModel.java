@@ -32,10 +32,6 @@ public class OOClassModel {
     
     private List<OOClassField> attributes; 
     
-    private boolean isFinal;
-    
-    private boolean isAbstract;
-    
     private StringBuffer methods;
 
     public List<OOClassField> getAttributes() {
@@ -52,22 +48,6 @@ public class OOClassModel {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public boolean isIsAbstract() {
-        return isAbstract;
-    }
-
-    public void setIsAbstract(boolean isAbstract) {
-        this.isAbstract = isAbstract;
-    }
-
-    public boolean isIsFinal() {
-        return isFinal;
-    }
-
-    public void setIsFinal(boolean isFinal) {
-        this.isFinal = isFinal;
     }
 
     public StringBuffer getMethods() {

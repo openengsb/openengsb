@@ -79,7 +79,7 @@ public class ToolChooserPage extends WebPage {
     private Calendar expirationDate;
     private String hostId;
     private String identifier;
-    private OpenEngSBModel identifierObject;
+    private Object identifierObject;
     
     private String connectorId;
     private String viewId;
@@ -220,11 +220,16 @@ public class ToolChooserPage extends WebPage {
     }
     
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {      
+        Class clazz;
+        try {
+            clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, serviceUtils);
+        } catch (ClassNotFoundException ex) {
+            String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
+            throw new OpenXLinkException(errorMsg);
+        }
         try {
             ObjectMapper mapper = new ObjectMapper();
-            OpenEngSBModelWrapper wrapper 
-                    = (OpenEngSBModelWrapper) mapper.readValue(identifier, OpenEngSBModelWrapper.class);
-            identifierObject = (OpenEngSBModel) ModelUtils.
+            identifierObject = mapper.readValue(identifier, clazz);
         } catch (Exception ex) {
             String errorMsg = new StringResourceModel("error.identifierIsNotValid", this, null).getString();
             throw new OpenXLinkException(errorMsg);
@@ -232,7 +237,7 @@ public class ToolChooserPage extends WebPage {
         boolean found;
         for (String key : identifierKeyNames) {
             found = false;
-            for(OpenEngSBModelEntry entry : identifierObject.getOpenEngSBModelEntries()) {
+            for(OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(identifierObject)) {
                 if(entry.getKey().equals(key)){
                     found = true;
                     if(entry.getValue() == null){
