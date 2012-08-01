@@ -25,13 +25,10 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
@@ -42,10 +39,6 @@ import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.springframework.aop.framework.ProxyFactory;
 
 public class MenuTemplateTest extends AbstractUITest {
-
-    @Before
-    public void setup() {
-    }
 
     @Test
     public void testNavigationFieldForIndex() {
@@ -103,8 +96,6 @@ public class MenuTemplateTest extends AbstractUITest {
     private void setUpSendEventPage() {
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("ruleManager", mock(RuleManager.class));
-        context.putBean("auditing", mock(AuditingDomain.class));
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

@@ -17,19 +17,14 @@
 package org.openengsb.core.ekb.internal.deployer;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ekb.TransformationEngine;
-import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 /**
  * {@code ArtifactInstaller} that deploys transformation description files
@@ -63,8 +58,7 @@ public class TransformationDeployerService extends AbstractOpenEngSBService impl
         }
     }
 
-    private void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,
-        ParserConfigurationException {
+    private void doInstall(File artifact) {
         try {
             LOGGER.info("Read the transformation description file " + artifact.getName());
             engine.saveDescriptions(TransformationUtils.getDescriptionsFromXMLFile(artifact));

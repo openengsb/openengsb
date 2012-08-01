@@ -18,7 +18,6 @@
 package org.openengsb.itests.util;
 
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.debugConfiguration;
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.logLevel;
@@ -41,8 +40,8 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.karaf.tooling.exam.options.ConfigurationPointer;
 import org.apache.karaf.tooling.exam.options.LogLevelOption.LogLevel;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.apache.karaf.tooling.exam.options.configs.ManagementCfg;
 import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
@@ -67,6 +66,8 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +85,6 @@ public abstract class AbstractExamTestHelper {
 
     private static final int DEBUG_PORT = 5005;
     private static final String LOG_LEVEL = "WARN";
-    protected static final String WEBUI_PORT = "8091";
-    protected static final String RMI_REGISTRY_PORT = "1100";
-    protected static final String RMI_SERVER_PORT = "44445";
     public static final long DEFAULT_TIMEOUT = 30000;
 
     @Inject
@@ -302,6 +300,14 @@ public abstract class AbstractExamTestHelper {
             debug = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
             hold = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
         }
+        Properties portNames = new Properties();
+        InputStream portsPropertiesFile = ClassLoader.getSystemResourceAsStream("ports.properties");
+        if (portsPropertiesFile == null) {
+            throw new IllegalStateException("ports-configuration not found");
+        }
+        portNames.load(portsPropertiesFile);
+        LOGGER.warn("running itests with the following port-config");
+        LOGGER.warn(portNames.toString());
         LogLevel realLogLevel = transformLogLevel(loglevel);
         Option[] mainOptions =
             new Option[]{
@@ -311,16 +317,25 @@ public abstract class AbstractExamTestHelper {
                     maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
                         .versionAsInProject()),
                 logLevel(realLogLevel),
-                editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
-                editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
-                editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
-                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"),
+                editConfigurationFilePut(WebCfg.HTTP_PORT, (String) portNames.get("jetty.http.port")),
+                editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, (String) portNames.get("rmi.server.port")),
+                editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, (String) portNames.get("rmi.registry.port")),
+                editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
+                    "openwire"), (String) portNames.get("jms.openwire.port")),
+                editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
+                    "stomp"), (String) portNames.get("jms.stomp.port")),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                     .versionAsInProject()) };
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
         }
         return mainOptions;
+    }
+
+    public String getConfigProperty(String config, String name) throws IOException {
+        ConfigurationAdmin cm = getOsgiService(ConfigurationAdmin.class);
+        Configuration configuration = cm.getConfiguration(config);
+        return (String) configuration.getProperties().get(name);
     }
 
     private static LogLevel transformLogLevel(String logLevel) {

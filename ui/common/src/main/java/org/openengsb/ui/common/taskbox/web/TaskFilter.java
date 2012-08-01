@@ -25,7 +25,6 @@ public class TaskFilter extends Task {
     public static TaskFilter createTaskFilter() {
         TaskFilter filter = new TaskFilter();
         filter.removeAllProperties();
-        filter.setEmpty();
         return filter;
     }
 

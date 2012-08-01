@@ -94,7 +94,8 @@ public abstract class ServiceEditor extends Panel {
         serviceEditorPanel.setOutputMarkupId(true);
 
         final IModel<String> newKeyModel = new Model<String>();
-        TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        final TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        textField.setOutputMarkupId(true);
         form.add(textField);
 
         form.add(new AjaxButton("addProperty", form) {
@@ -113,6 +114,7 @@ public abstract class ServiceEditor extends Panel {
                 newKeyModel.setObject("");
                 serviceEditorPanel.reloadList(ServiceEditor.this.properties);
                 target.add(serviceEditorPanel);
+                target.add(textField);
             }
 
             @Override
@@ -139,11 +141,29 @@ public abstract class ServiceEditor extends Panel {
                 target.add(form);
             }
         };
+        
+        AjaxButton cancelButton = new IndicatingAjaxButton("cancelButton", form) {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                ServiceEditor.this.onCancel();                
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                ServiceEditor.this.onCancel();
+            }
+            
+        };
+        
         form.setOutputMarkupId(true);
         form.add(submitButton);
+        form.add(cancelButton);
     }
 
     public abstract void onSubmit();
+    
+    public abstract void onCancel();
 
     public ServiceEditorPanel getServiceEditorPanel() {
         return serviceEditorPanel;

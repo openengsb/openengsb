@@ -36,6 +36,11 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
         super(true);
     }
 
+    public ForwardHandler(WorkflowService workflowService) {
+        super(true);
+        this.workflowService = workflowService;
+    }
+
     @Override
     public Object handleInvoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
         InvocationTargetException {

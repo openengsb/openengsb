@@ -68,7 +68,7 @@ public class Argument implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public Object toValue() {
+    public Object toValue() throws ArgumentConversionException {
         if (value == null) {
             return null;
         }

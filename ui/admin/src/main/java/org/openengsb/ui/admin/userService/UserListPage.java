@@ -32,7 +32,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserListPage extends BasePage {
 
-    Panel userDialogue;
+    private Panel userDialogue;
 
     private static final long serialVersionUID = -6841313899998597640L;
 
@@ -70,18 +70,11 @@ public class UserListPage extends BasePage {
         }
     }
 
-    // TODO CHECK IF NEEDED? //
     private final class EditPanel extends UserEditPanel {
         private static final long serialVersionUID = -4646745795328499771L;
 
         private EditPanel(String id) {
             super(id);
-        }
-
-        protected void openEditorPage(String user) {
-            PageParameters parameters = new PageParameters();
-            parameters.set("user", user);
-            setResponsePage(UserEditPage.class, parameters);
         }
 
         public EditPanel(String id, String username) throws UserNotFoundException {

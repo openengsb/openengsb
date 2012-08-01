@@ -64,7 +64,8 @@ public class UserServiceTest extends AbstractUITest {
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
-    @Test public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
+    @Test 
+    public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
         tester.startPage(UserListPage.class); 
         tester.assertRenderedPage(UserListPage.class);
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.update");

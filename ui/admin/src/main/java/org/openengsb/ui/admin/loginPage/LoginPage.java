@@ -47,11 +47,11 @@ public class LoginPage extends OpenEngSBPage {
 
     private UsernamePassword user = new UsernamePassword();
 
-    public final class MyImprintPanel extends ImprintPanel {
+    public final class DefaultImprintPanel extends ImprintPanel {
 
         private static final long serialVersionUID = 1L;
 
-        public MyImprintPanel(String id) {
+        public DefaultImprintPanel(String id) {
             super(id);
         }
     }
@@ -72,9 +72,7 @@ public class LoginPage extends OpenEngSBPage {
         response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
-        /*
-         * add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator .getFavIcon()));
-         */
+
         // Javascript code to set the focus on the unsername input field. Only necessary for loginpage,
         // therefore injected directly
         response.renderJavaScript(""
@@ -114,7 +112,7 @@ public class LoginPage extends OpenEngSBPage {
 
         add(new Image("topImage", CommonPictureLocator.getGreyscaleLogoBig()));
 
-        MyImprintPanel imprintDialogue = new MyImprintPanel("imprintDialogue");
+        DefaultImprintPanel imprintDialogue = new DefaultImprintPanel("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);
         add(imprintDialogue);
 

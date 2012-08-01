@@ -30,6 +30,7 @@ import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.ui.admin.edb.EdbClient;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
@@ -71,6 +72,7 @@ public class MenuTemplate extends Panel {
         addMenuItem("TaskOverview", TaskOverview.class, TaskOverview.PAGE_NAME_KEY, TaskOverview.PAGE_DESCRIPTION_KEY);
         addMenuItem("WiringPage", WiringPage.class, WiringPage.PAGE_NAME_KEY, WiringPage.PAGE_DESCRIPTION_KEY,
             "ROLE_ADMIN");
+        addMenuItem("EdbClient", EdbClient.class, EdbClient.PAGE_NAME_KEY, EdbClient.PAGE_DESCRIPTION_KEY);
     }
 
     private void initMainMenu() {

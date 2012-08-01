@@ -138,7 +138,6 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
      * Searches the bundle for classes and return a set of all class names.
      */
     private Set<String> discoverClasses(Bundle bundle) {
-        @SuppressWarnings("unchecked")
         Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
         Set<String> discoveredClasses = new HashSet<String>();
         if (classEntries == null) {

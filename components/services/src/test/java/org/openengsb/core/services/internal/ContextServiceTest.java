@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,10 +39,9 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 
 public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -59,16 +57,11 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend<?> persistenceBackend = new CorePersistenceServiceBackend<Object>();
-        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
-        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
-        persistenceBackend.setPersistenceManager(persistenceManager);
-        persistenceBackend.setBundleContext(bundleContext);
-        persistenceBackend.init();
+        DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, ContextConfiguration.TYPE_ID);
         props.put(Constants.BACKEND_ID, "dummy");
-        configPersistence = new DefaultConfigPersistenceService(persistenceBackend);
+        configPersistence = new DefaultConfigPersistenceService(backend);
         registerService(configPersistence, props, ConfigPersistenceService.class);
     }
 

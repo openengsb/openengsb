@@ -45,7 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -53,7 +52,6 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.JsonUtils;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -79,6 +77,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
     private DefaultOsgiUtilsService utilsService;
+    private String openwirePort;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -92,6 +91,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
         addWorkflow("simpleFlow");
         String string = null;
         while (string == null) {
@@ -172,7 +172,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         // make sure jms is up and running
         utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
-        SecureSampleConnector remoteConnector = new SecureSampleConnector();
+        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
         remoteConnector.start();
         ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(service.pid=example-remote)", 31000);
 
@@ -208,14 +208,11 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String decryptedResult = decryptResult(sessionKey, result);
 
         ObjectMapper mapper = new ObjectMapper();
-        MethodResultMessage response = mapper.readValue(decryptedResult, MethodResultMessage.class);
-        MethodResultMessage methodResult = response;
+        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
         JsonUtils.convertResult(methodResult);
-        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
-        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
 
         assertThat(decryptedResult.contains("successful"), is(true));
-        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
         assertThat(model.getResult(), is("successful"));
     }
 
@@ -243,7 +240,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
         ActiveMQConnectionFactory cf =
-            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:" + openwirePort + ")?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
     }
@@ -271,11 +268,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         @Override
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
-            ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            ExampleResponseModel response = new ExampleResponseModel();
             response.setResult("successful");
             return response;
         }
-
     }
-
 }
