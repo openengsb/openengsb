@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
 
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ekb.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.ekb.ModelRegistry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
