@@ -55,8 +55,8 @@
                 xml:id="implementation.xlinkemplate.prepareUseCase"/> The used Constants or
             Configurations can be found <link xlink:href="#implementation.configs"
             >here</link>.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsPrepareTemplate.xml"/>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestPrepareTemplate.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsPrepareTemplate.xml"/>-->
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestPrepareTemplate.xml"/>-->
     </section>
     <section xml:id="implementation.xlinkcreate">
         <title>Generation of a XLink</title>   
@@ -66,8 +66,8 @@
                 >here</link>. Note that this is no XLink for local switching but for simple
             extraction by actor. XLinks for local switching are explainded <link
                 xlink:href="#implementation.localswitch.information">below</link>.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrl.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>-->
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrl.xml"/>-->
     </section>
     <section xml:id="implementation.openxlink">
         <ns:title>Open Potential Matches in Tools</ns:title>
@@ -92,19 +92,19 @@
             amendment that they contain two additional Parameters containing the ConnectorId and the
             ViewId. See the following JUnitTests for demonstration. The used Constants or
             Configurations can be found <link xlink:href="#implementation.configs">here</link>. </para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrlForLocalSwitching.xml"/>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrlForLocalSwitching.xml"/>-->
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>-->
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching.xml"/>-->
     </section>
     <section xml:id="implementation.configs">
         <title>Testconfigurations and Constants</title>
         <ns:para>This are the Configurations that are used in the JUnitTests above.</ns:para>
         <ns:para>This configurations must be provided by a OpenEngSB client.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByClient.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByClient.xml"/>-->
         <ns:para>This configurations must be provided by the OpenEngSB</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>-->
         <ns:para>This are the Constants that are used in the Functions above.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>-->
     </section>   
     <section xml:id="implementation.httpservlet">
         <title>Http-Servlet</title>
