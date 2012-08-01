@@ -19,7 +19,7 @@ package org.openengsb.core.ekb.impl.internal.graph;
 
 import java.util.List;
 
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 
 /**

@@ -31,8 +31,8 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.common.transformations.TransformationUtils;
-import org.openengsb.core.ekb.api.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.impl.internal.graph.EKBModelGraph;
 import org.openengsb.core.ekb.impl.internal.models.ModelA;
