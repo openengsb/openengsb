@@ -34,8 +34,6 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.model.ContextId;
-import org.openengsb.core.api.persistence.InvalidConfigurationException;
-import org.openengsb.core.api.persistence.PersistenceException;
 
 public class ContextFilePersistenceServiceTest {
 
@@ -56,7 +54,7 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void load_ShouldGetAllFiles() throws InvalidConfigurationException, PersistenceException {
+    public void testLoad_shouldGetAllFiles() {
         Map<String, String> metaData = Collections.emptyMap();
 
         List<ConfigItem<Map<String, String>>> items = persistenceService.load(metaData);
@@ -65,8 +63,7 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void filteredLoad_shouldReturnConfigurationWithCorrespindingMetaData() throws InvalidConfigurationException,
-        PersistenceException {
+    public void testFilteredLoad_shouldReturnConfigurationWithCorrespindingMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put(ContextId.META_KEY_ID, "context2");
 
@@ -78,26 +75,22 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void contextFilePersistenceService_shouldSupportContext() throws InvalidConfigurationException,
-        PersistenceException, IOException {
+    public void testContextFilePersistenceService_shouldSupportContext() {
         assertThat(persistenceService.supports(ContextConfiguration.class), is(true));
     }
 
     @Test
-    public void contextFilePersistenceService_shouldNotSupportUnknownConfigItemType()
-        throws InvalidConfigurationException,
-        PersistenceException, IOException {
+    public void testContextFilePersistenceService_shouldNotSupportUnknownConfigItemType() {
         assertThat(persistenceService.supports(UnknownConfigItem.class), is(false));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void persistingUnknownItemType_shouldThrowException() throws InvalidConfigurationException,
-        PersistenceException {
+    public void testPersistingUnknownItemType_shouldThrowException() {
         persistenceService.persist(new UnknownConfigItem());
     }
 
     @Test
-    public void persistingContext_shouldCreateNewFile() throws InvalidConfigurationException, PersistenceException {
+    public void testPersistingContext_shouldCreateNewFile() {
         File configFileThatShouldBeCreated = new File(temporaryFolder.getRoot(), "contextFoo.context");
         Integer filesBefore = countFilesInTempFolder();
 
@@ -109,11 +102,10 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void removingConfiguration_ShouldDeleteFile() throws PersistenceException {
+    public void testRemovingConfiguration_shouldDeleteFile() {
         File configFileThatShouldBeDeleted = new File(temporaryFolder.getRoot(), "context3.context");
 
         persistenceService.remove(getMetaDataWithContextId("context3"));
-
         assertThat(configFileThatShouldBeDeleted.exists(), is(false));
     }
 

@@ -58,7 +58,7 @@ public class CheckedPanelTest {
     }
     
     @Test
-    public void testRendered() {
+    public void testRendered_shouldHaveAllComponents() {
         tester.assertComponent(checkedPanel.getId() + ":check", CheckBox.class);
         tester.assertComponent(checkedPanel.getId() + ":label", SimpleFormComponentLabel.class);
     }
@@ -88,5 +88,4 @@ public class CheckedPanelTest {
         
         assertThat(checkModel.getObject(), is(Boolean.TRUE));
     }
-    
 }

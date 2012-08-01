@@ -47,27 +47,27 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     @Test
-    public void testNavigationFieldForIndex() {
+    public void testNavigationFieldForIndex_shouldNavigate() {
         setupIndexPage();
         Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationFieldForTestClient() {
+    public void testNavigationFieldForTestClient_shouldForwardToTestClient() {
         setupTestClientPage();
         Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
         Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationForNonExistingNavigationButton() {
+    public void testNavigationForNonExistingNavigationButton_shouldForwardToImprintPage() {
         Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
         Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testToNavigate() {
+    public void testToNavigate_shouldForwardToTestClient() {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
         tester.clickLink("header:headerMenuItems:0:link");

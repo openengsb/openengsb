@@ -164,20 +164,20 @@ public class MethodInterceptorTest {
     }
 
     @Test(expected = AccessDeniedException.class)
-    public void testInvokeMethodOnWrongServiceInstance() throws Exception {
+    public void testInvokeMethodOnWrongServiceInstance_shouldThrowException() {
         authenticate(DEFAULT_USER, "password");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test
-    public void testAdminAccess() throws Exception {
+    public void testAdminAccess_shouldThrowNoException() {
         authenticate("admin", "adminpw");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test
-    public void testAccessAnnotatedMethod() throws Exception {
+    public void testAccessAnnotatedMethod_shouldWork() throws Exception {
         authenticate(DEFAULT_USER, "password");
         service2.publicTest();
     }

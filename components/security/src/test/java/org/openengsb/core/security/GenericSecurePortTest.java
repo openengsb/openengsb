@@ -119,9 +119,8 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     protected abstract SecureResponse decryptAndDecode(EncodingType message, SecretKey sessionKey) throws Exception;
 
     @Test
-    public void processMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
+    public void testProcessMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
-
         SecureResponse response = processRequest(secureRequest);
 
         MethodResultMessage mr = response.getMessage();

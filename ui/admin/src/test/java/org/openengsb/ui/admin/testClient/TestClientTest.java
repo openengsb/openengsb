@@ -148,29 +148,26 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionTestClient() throws Exception {
+    public void testLinkAppearsWithCaptionTestClient_shouldShowTestClient() {
         setupIndexPage();
-
         tester.startPage(Index.class);
-
         tester.assertContains("Test Client");
     }
 
     @Test
-    public void testParameterFormIsCreated() throws Exception {
+    public void testParameterFormIsCreated_shouldShowMethodCallForm() throws Exception {
         setupAndStartTestClientPage();
-
         tester.assertComponent("methodCallForm", Form.class);
     }
 
     @Test
-    public void testServiceTreeIsCreated() throws Exception {
+    public void testServiceTreeIsCreated_shouldShowServiceList() throws Exception {
         setupAndStartTestClientPage();
         tester.assertComponent("methodCallForm:serviceList", LinkTree.class);
     }
 
     @Test
-    public void testShowServiceInstancesInDropdown() throws Exception {
+    public void testShowServiceInstancesInDropdown_shouldShowServices() throws Exception {
         setupAndStartTestClientPage();
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -183,14 +180,13 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateMethodListDropDown() throws Exception {
+    public void testCreateMethodListDropDown_shouldShowMethodList() throws Exception {
         setupAndStartTestClientPage();
-
         tester.assertComponent("methodCallForm:methodList", DropDownChoice.class);
     }
 
     @Test
-    public void testServiceManagerList() throws Exception {
+    public void testServiceManagerList_shouldWork() throws Exception {
         setupAndStartTestClientPage();
         tester.assertComponent("serviceManagementContainer:domains:1:services:0:create.new", Link.class);
         ListView<?> component = (ListView<?>)
@@ -199,7 +195,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testServiceListSelect() throws Exception {
+    public void testServiceListSelect_shouldSelectService() throws Exception {
         setupAndStartTestClientPage();
         setServiceInDropDown("testdomain+testconnector+test-service");
 
@@ -214,7 +210,7 @@ public class TestClientTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testJumpToService() throws Exception {
+    public void testJumpToService_shouldJumpToService() throws Exception {
         setupTestClientPage();
         ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
         ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
@@ -233,7 +229,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testShowMethodListInDropDown() throws Exception {
+    public void testShowMethodListInDropDown_shouldShowMethodList() throws Exception {
         setupAndStartTestClientPage();
         @SuppressWarnings("unchecked")
         DropDownChoice<MethodId> methodList =
@@ -250,7 +246,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateArgumentList() throws Exception {
+    public void testCreateArgumentList_shouldCreateArgumentList() throws Exception {
         setupAndStartTestClientPage();
 
         Component argList =
@@ -260,7 +256,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateTextFieldsFor2StringArguments() throws Exception {
+    public void testCreateTextFieldsFor2StringArguments_shouldShowTextFields() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -277,7 +273,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateDropdownForOptionArguments() throws Exception {
+    public void testCreateDropdownForOptionArguments_shouldShowArgumentDropdownField() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -292,7 +288,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateTextFieldsForBean() throws Exception {
+    public void testCreateTextFieldsForBean_shouldShowBeanForm() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -309,7 +305,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testPerformMethodCall() throws Exception {
+    public void testPerformMethodCall_shouldCallMethod() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -326,7 +322,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testPerformMethodCallOnDomain() throws Exception {
+    public void testPerformMethodCallOnDomain_shouldCallMethod() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -343,7 +339,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testPerformMethodCallWithBeanArgument() throws Exception {
+    public void testPerformMethodCallWithBeanArgument_shouldCallMethod() throws Exception {
         setupAndStartTestClientPage();
 
         setServiceInDropDown("testdomain+testconnector+test-service");
@@ -362,7 +358,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
+    public void testPerformMethodCallWithIntegerObjectArgument_shouldCallMethod() throws Exception {
         setupAndStartTestClientPage();
 
         setServiceInDropDown("testdomain+testconnector+test-service");
@@ -376,7 +372,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectMethodTwice() throws Exception {
+    public void testSelectMethod_shouldHaveTwoArguments() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
             (RepeatingView) tester
@@ -389,7 +385,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testFormResetAfterCall() throws Exception {
+    public void testFormResetAfterCall_shouldResetForm() throws Exception {
         setupAndStartTestClientPage();
 
         setServiceInDropDown("testdomain+testconnector+test-service");
@@ -406,13 +402,13 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testFeedbackPanelIsPresent() throws Exception {
+    public void testFeedbackPanelIsPresent_shouldShowFeedbackPanel() throws Exception {
         setupAndStartTestClientPage();
         tester.assertComponent("feedback", FeedbackPanel.class);
     }
 
     @Test
-    public void testFeedbackPanelContainsText() throws Exception {
+    public void testFeedbackPanelContainsText_shouldShowFeedbackPanel() throws Exception {
         setupAndStartTestClientPage();
 
         setServiceInDropDown("testdomain+testconnector+test-service");
@@ -428,7 +424,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testExceptionInFeedback() throws Exception {
+    public void testExceptionInFeedback_shouldShowFeedbackPanel() throws Exception {
         setupAndStartTestClientPage();
 
         setServiceInDropDown("testdomain+testconnector+test-service");
@@ -458,7 +454,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testListToCreateNewServices() throws Exception {
+    public void testListToCreateNewServices_shouldShowNewServiceForm() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
@@ -483,7 +479,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void showEditLink() throws Exception {
+    public void testShowEditLink_shouldShowEditLink() throws Exception {
         List<ServiceReference> expected = setupAndStartTestClientPage();
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -499,7 +495,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void showDeleteLink() throws Exception {
+    public void testShowDeleteLink_shouldShowDeleteLink() throws Exception {
         List<ServiceReference> expected = setupAndStartTestClientPage();
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -515,7 +511,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testTargetLocationOfEditButton() throws Exception {
+    public void testTargetLocationOfEditButton_shouldRedirectToEditorPage() throws Exception {
         setupAndStartTestClientPage();
         ServiceReference ref = Mockito.mock(ServiceReference.class);
         Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
@@ -543,7 +539,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testFunctionDeleteButton() throws Exception {
+    public void testFunctionDeleteButton_shouldDeleteService() throws Exception {
         setupAndStartTestClientPage();
         ServiceReference ref = Mockito.mock(ServiceReference.class);
         Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
@@ -579,7 +575,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testStartWithContextAsParam() throws Exception {
+    public void testStartWithContextAsParam_shouldHaveCorrectContext() throws Exception {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
@@ -589,7 +585,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws Exception {
+    public void testForEachDomainVisibleInCreatePartIsAnEntryInTree_shouldWork() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
         List<String> domains = new ArrayList<String>();
@@ -628,7 +624,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testToSelectDefaultEndPoint_ShouldDisplayDomainMethodWithArguments() throws Exception {
+    public void testToSelectDefaultEndPoint_shouldDisplayDomainMethodWithArguments() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 

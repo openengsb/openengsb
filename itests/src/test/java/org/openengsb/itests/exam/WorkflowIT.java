@@ -89,13 +89,13 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCorrectContextHolderStrategy() throws Exception {
+    public void testCorrectContextHolderStrategy_shouldHaveCorrectSecurityContextStrategy() throws Exception {
         assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
             is("InheritableThreadLocalSecurityContextHolderStrategy"));
     }
 
     @Test
-    public void testCreateRuleAndTriggerDomain() throws Exception {
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         DummyLogDomain exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -167,5 +167,4 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
     }
-
 }

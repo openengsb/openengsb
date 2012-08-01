@@ -109,7 +109,7 @@ public class OrganizeGlobalsPageTest {
     }
 
     @Test
-    public void renderOrganizeGlobalsPage() throws Exception {
+    public void testRenderOrganizeGlobalsPage_shouldOrganizeGlobalsPage() {
         tester.assertRenderedPage(OrganizeGlobalsPage.class);
         tester.assertComponent("tree", LinkTree.class);
         tester.assertComponent("editForm", Form.class);
@@ -124,7 +124,7 @@ public class OrganizeGlobalsPageTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSelectGlobal() throws Exception {
+    public void testSelectGlobal_shouldSelectGlobal() {
         tester.clickLink("tree:i:2:nodeComponent:contentLink", true);
         TextField<String> globalName =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editForm:globalName");
@@ -137,7 +137,7 @@ public class OrganizeGlobalsPageTest {
     }
 
     @Test
-    public void testAddDoubleGlobal() throws Exception {
+    public void testAddDoubleGlobal_shouldWork() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "test");
         formTester.setValue("className", "test");
@@ -148,7 +148,7 @@ public class OrganizeGlobalsPageTest {
     }
 
     @Test
-    public void testAddNewGlobal() throws Exception {
+    public void testAddNewGlobal_shouldAddGlobal() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "glob4");
         formTester.setValue("className", "aaaa.bbbb.fff");
@@ -159,7 +159,7 @@ public class OrganizeGlobalsPageTest {
     }
 
     @Test
-    public void testDeleteGlobal() throws Exception {
+    public void testDeleteGlobal_shouldDeleteGlobal() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "glob4");
         formTester.setValue("className", "aaaa.bbbb.fff");
@@ -170,7 +170,7 @@ public class OrganizeGlobalsPageTest {
     }
 
     @Test
-    public void testDeleteNotExistingGlobal() throws Exception {
+    public void testDeleteNotExistingGlobal_shouldWork() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "test");
         formTester.setValue("className", "test");

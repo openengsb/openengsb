@@ -73,14 +73,14 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
+    public void testWsPort_shouldBeExportedWithCorrectId() {
         DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(getBundleContext());
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "ws-json", 60000);
         assertNotNull(serviceWithId);
     }
 
     @Test
-    public void startSimpleWorkflow_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflow_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
@@ -95,7 +95,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void startSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
@@ -126,7 +126,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+    public void testRecordAuditInCoreService_shouldReturnVoid() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
@@ -183,5 +183,4 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         String result = (String) expression.evaluate(document, XPathConstants.STRING);
         return result;
     }
-
 }

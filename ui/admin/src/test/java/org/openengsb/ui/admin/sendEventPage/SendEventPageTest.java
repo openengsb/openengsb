@@ -94,14 +94,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testStandardPageComponents() throws Exception {
+    public void testStandardPageComponents_shouldBeNotNull() {
         tester.assertVisible("form:dropdown");
         tester.assertVisible("form:fieldContainer:fields");
         assertThat(dropdown, notNullValue());
     }
 
     @Test
-    public void givenClassesInCtor_shouldAddThemToTheDropDown() {
+    public void testGivenClassesInCtor_shouldAddThemToTheDropDown() {
         assertEquals(eventClasses.size(), dropdown.getChoices().size());
         assertEquals(NullEvent2.class, dropdown.getChoices().get(0));
         assertEquals("NullEvent2", dropdown.getValue());
@@ -109,14 +109,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
+    public void testFirstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
         assertThat(fieldList.size(), is(4));
         Component attributeName = fieldList.get("testProperty:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
     @Test
-    public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
+    public void testSelectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
         assertThat(fieldList.size(), is(3));
@@ -125,7 +125,7 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
+    public void testSubmittingForm_shouldCallDroolsServiceWithInstantiatedEvent() {
         formTester.setValue("fieldContainer:fields:testProperty:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
@@ -140,14 +140,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void sendingEvent_shouldShowSuccessFeedback() throws Exception {
+    public void testSendingEvent_shouldShowSuccessFeedback() {
         submitForm();
         tester.assertNoErrorMessage();
         assertThat(tester.getMessages(FeedbackMessage.INFO).size(), is(1));
     }
 
     @Test
-    public void buildingEventFails_shouldShowErrorFeedback() throws Exception {
+    public void testBuildingEventFails_shouldShowErrorFeedback() {
         selectEventType(2);
         submitForm();
         tester.assertNoInfoMessage();
@@ -155,7 +155,7 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void processingEventthrowsException_shouldShowErrorFeedback() throws Exception {
+    public void testProcessingEventthrowsException_shouldShowErrorFeedback() {
         doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event> any());
         submitForm();
         tester.assertNoInfoMessage();
@@ -170,7 +170,7 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void openSite_shouldShowAuditLog() {
+    public void testOpenSite_shouldShowAuditLog() {
         tester.assertVisible("auditsContainer:audits");
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");
@@ -179,6 +179,5 @@ public class SendEventPageTest extends AbstractUITest {
             tester.assertLabel("auditsContainer:audits:" + i + ":audit", event.getName());
             i++;
         }
-
     }
 }

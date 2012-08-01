@@ -89,7 +89,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testSendEvent() throws Exception {
+    public void testSendEvent_shouldCallService() throws Exception {
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         contextService.createContext("42");

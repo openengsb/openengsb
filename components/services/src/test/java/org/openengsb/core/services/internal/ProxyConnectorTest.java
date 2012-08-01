@@ -53,7 +53,7 @@ public class ProxyConnectorTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
+    public void testCallInvoke_shouldCreateMethodCallAndReturnResult() {
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
         MethodResult result2 = new MethodResult("id");
         when(router.sendMethodCallWithResult(Mockito.eq("id"), Mockito.eq("test"), captor.capture())).thenReturn(

@@ -60,7 +60,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
@@ -347,7 +346,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringWithDeletedConnector_shouldShowError() throws PersistenceException {
+    public void testWiringWithDeletedConnector_shouldShowError() {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);

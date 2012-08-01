@@ -31,7 +31,6 @@ public class ContextIdTest {
     @Test
     public void testContextIdConstructor_shouldInitializeId() {
         ContextId contextId = new ContextId("someId");
-
         assertThat(contextId.getId(), is("someId"));
     }
 
@@ -39,9 +38,7 @@ public class ContextIdTest {
     public void testFromMetaData_shouldProvideTheRightId() {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("id", "metaId");
-
         ContextId convertedContextId = ContextId.fromMetaData(metaData);
-
         assertThat(convertedContextId.getId(), is("metaId"));
     }
 

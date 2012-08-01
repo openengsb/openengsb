@@ -123,7 +123,7 @@ public class ProjectTest {
     }
 
     @Test
-    public void testIfLabelIsPresent() {
+    public void testIfLabelIsPresent_shouldContainLabelString() {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
                 basePage.get("header"));

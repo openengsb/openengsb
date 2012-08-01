@@ -39,7 +39,6 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
@@ -78,7 +77,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testGetContext() throws Exception {
+    public void testGetContext_shoulWork() throws Exception {
         cs.createContext("a");
         cs.createContext("b");
         ContextHolder.get().setCurrentContextId("a");
@@ -94,19 +93,19 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void getEmptyAvailableContexts() {
+    public void testGetEmptyAvailableContexts_shouldReturnEmptyContextList() {
         assertThat(cs.getAvailableContexts().size(), is(0));
     }
 
     @Test
-    public void getSingleAvailableContexts() {
+    public void testGetSingleAvailableContexts_shouldReturnOneContext() {
         createTestContextA();
         assertThat(cs.getAvailableContexts().size(), is(1));
         assertThat(cs.getAvailableContexts().get(0), is("a"));
     }
 
     @Test
-    public void getAvailableContextsWithCreate() throws PersistenceException {
+    public void testGetAvailableContextsWithCreate_shouldReturnTwoContextInstances() {
         createTestContextA();
         cs.createContext("temp");
         assertThat(cs.getAvailableContexts().contains("a"), is(true));
@@ -115,7 +114,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void getCurrentThreadContext() {
+    public void testGetCurrentThreadContext_shouldReturnCurrentContext() {
         createTestContextA();
         assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
@@ -124,7 +123,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 5000)
-    public void contextIsLocalToCurrentThread() throws Exception {
+    public void testContextIsLocalToCurrentThread_shouldNotGetLocalContext() throws Exception {
         createTestContextA();
         cs.createContext("threadLocal");
         assertThat(cs.getContext(), notNullValue());
@@ -149,7 +148,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testChangeCurrentContext() throws Exception {
+    public void testChangeCurrentContext_shouldChangeContext() {
         createTestContextA();
         cs.createContext("x");
         ContextHolder.get().setCurrentContextId("x");
@@ -157,7 +156,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void createAndDeleteContext_shouldBeAbleToRecreate() throws Exception {
+    public void testCreateAndDeleteContext_shouldBeAbleToRecreate() {
         cs.createContext("foobar");
         cs.deleteContext("foobar");
         assertThat(cs.getAvailableContexts(), not(hasItem("foobar")));

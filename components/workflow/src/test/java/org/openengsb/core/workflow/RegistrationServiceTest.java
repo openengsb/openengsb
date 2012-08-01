@@ -105,7 +105,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testWrapRemoteEvent() throws Exception {
+    public void testWrapRemoteEvent_shouldWrapEvent() {
         TestEvent event = new TestEvent(3L, "bla");
         RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
         Map<String, String> properties = wrapEvent.getNestedEventProperties();
@@ -114,7 +114,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterEvent() throws Exception {
+    public void testRegisterEvent_shouldRegisterEvent() {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
@@ -123,7 +123,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterEvent_shouldCreateRule() throws Exception {
+    public void testRegisterEvent_shouldCreateRule() {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         int oldCount = manager.list(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", "test://localhost");

@@ -98,7 +98,7 @@ public class OrganizeImportsPageTest {
     }
 
     @Test
-    public void renderOrganizeImportsPage() throws Exception {
+    public void testRenderOrganizeImportsPage_shouldShowPage() {
         tester.assertRenderedPage(OrganizeImportsPage.class);
         tester.assertComponent("tree", LinkTree.class);
         tester.assertComponent("editForm", Form.class);
@@ -112,7 +112,7 @@ public class OrganizeImportsPageTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSelectImport() throws Exception {
+    public void testSelectImport_shouldSelectImport() {
         tester.clickLink("tree:i:1:nodeComponent:contentLink", true);
         TextField<String> importName =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editForm:importName");
@@ -121,7 +121,7 @@ public class OrganizeImportsPageTest {
     }
 
     @Test
-    public void testAddNewImport() throws Exception {
+    public void testAddNewImport_shouldAddImport() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("submitButton");
@@ -131,7 +131,7 @@ public class OrganizeImportsPageTest {
     }
 
     @Test
-    public void testDeleteImport() throws Exception {
+    public void testDeleteImport_shouldDeleteImport() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("deleteButton");
@@ -141,7 +141,7 @@ public class OrganizeImportsPageTest {
     }
 
     @Test
-    public void testDeleteNotExistingImport() throws Exception {
+    public void testDeleteNotExistingImport_shouldWork() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "test");
         formTester.submit("deleteButton");

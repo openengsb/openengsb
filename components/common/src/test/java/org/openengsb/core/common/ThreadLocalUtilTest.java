@@ -124,7 +124,7 @@ public class ThreadLocalUtilTest {
     }
 
     @Test
-    public void testCallableException() throws Exception {
+    public void testCallableException_shouldGetExceptionFromThread() throws Exception {
         Callable<Boolean> command = new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {

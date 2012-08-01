@@ -58,13 +58,13 @@ public class ServicesListPageTest extends AbstractUITest {
     }
 
     @Test
-    public void verifyRenderedPage_ShouldBeServiceListPage() {
+    public void testVerifyRenderedPage_shouldBeServiceListPage() {
         startPage();
         tester.assertRenderedPage(ServiceListPage.class);
     }
 
     @Test
-    public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
+    public void testVerifyListViews_shouldShowServiceStatus() {
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
 

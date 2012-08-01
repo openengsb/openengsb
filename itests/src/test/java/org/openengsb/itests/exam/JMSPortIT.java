@@ -88,13 +88,13 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
+    public void testJmsPortPresence_shouldBeExportedWithCorrectId() {
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
     }
 
     @Test
-    public void startSimpleWorkflow_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflow_houldReturn42() throws Exception {
         JmsTemplate template = prepareActiveMqConnection();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
         SecretKey sessionKey = generateSessionKey();
@@ -106,7 +106,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void startSimpleWorkflowWithReplyQeueu_ShouldReturn42() throws Exception {
+    public void startSimpleWorkflowWithReplyQeueu_shouldReturn42() throws Exception {
         JmsTemplate template = prepareActiveMqConnection();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
         SecretKey sessionKey = generateSessionKey();
@@ -118,7 +118,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflowWithFilterMethodCall_shouldReturn42() throws Exception {
         JmsTemplate template = prepareActiveMqConnection();
         String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
         SecretKey sessionKey = generateSessionKey();
@@ -143,7 +143,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+    public void testRecordAuditInCoreService_shouldReturnVoid() throws Exception {
         JmsTemplate template = prepareActiveMqConnection();
         String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
         SecretKey sessionKey = generateSessionKey();

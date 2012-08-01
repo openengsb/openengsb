@@ -74,7 +74,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionUserManagement() throws Exception {
+    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() {
         tester.startPage(Index.class);
         tester.assertContains("User Management");
     }
@@ -85,7 +85,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testUserCreation_ShouldWork() {
+    public void testUserCreation_shouldWork() {
         tester.startPage(UserService.class);
 
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
@@ -100,7 +100,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testUserCreationWithoutRoles_ShouldWork() {
+    public void testUserCreationWithoutRoles_shouldWork() {
         tester.startPage(UserService.class);
 
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
@@ -110,7 +110,6 @@ public class UserServiceTest extends LocalisedTest {
         formTester.submit();
         tester.assertNoErrorMessage();
         verify(userManager, times(1)).createUser(new User("user1", "password"));
-
     }
 
     @Test
@@ -129,7 +128,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testShowCreatedUser_ShouldShowAdmin() {
+    public void testShowCreatedUser_shouldShowAdmin() {
         when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
             @Override
             public List<User> answer(InvocationOnMock invocationOnMock) {
@@ -145,7 +144,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
+    public void testErrorMessage_shouldReturnWrongSecondPassword() throws Exception {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");

@@ -233,7 +233,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 100000)
-    public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
+    public void testStart_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             JsonMethodCallMarshalFilter.class,
@@ -310,7 +310,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 5000)
-    public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() throws InterruptedException, IOException {
+    public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             XmlDecoderFilter.class,
@@ -328,7 +328,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void stop_ShouldNotReactToIncomingCalls() {
+    public void testStop_shouldNotReactToIncomingCalls() {
         SimpleMessageListenerContainer orig = simpleMessageListenerConainer;
         SimpleMessageListenerContainer containerSpy = spy(orig);
         simpleMessageListenerConainer = containerSpy;
@@ -341,12 +341,12 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void requestMapping_shouldDeserialiseRequest() throws IOException {
+    public void testRequestMapping_shouldDeserialiseRequest() throws IOException {
         OBJECT_MAPPER.readValue(METHOD_CALL_REQUEST, MethodCallRequest.class);
     }
 
     @Test
-    public void methodReturn_DeserialiseResponse() throws IOException {
+    public void testMethodReturn_shouldDeserialiseResponse() throws IOException {
         StringWriter writer = new StringWriter();
         OBJECT_MAPPER.writeValue(writer, methodReturn);
         JsonNode resultMessage = OBJECT_MAPPER.readTree(writer.toString());
@@ -357,5 +357,4 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
 
     }
-
 }

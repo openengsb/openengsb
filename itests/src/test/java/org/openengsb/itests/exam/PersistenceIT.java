@@ -67,7 +67,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCreateAndQuery() throws Exception {
+    public void testCreateAndQuery_shouldFindPersistedObject() {
         PersistenceTestObject test = new PersistenceTestObject("test", 1);
         persistence.create(test);
         List<PersistenceTestObject> result = persistence.query(new PersistenceTestObject("test", null));
@@ -84,7 +84,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testConfigSimplePersistence() throws Exception {
+    public void testConfigSimplePersistence_shouldWork() throws Exception {
         ConfigPersistenceService configPersistenceService = retrieveAndConfigureRuleCorePersistenceService();
 
         HashMap<String, String> meta = new HashMap<String, String>();
@@ -110,7 +110,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testUpdateAndQuery() throws Exception {
+    public void testUpdateAndQuery_shouldFindUpdatedObject() {
         element.setString("foo");
 
         persistence.update(persistence.query(wildcard).get(0), element);
@@ -121,7 +121,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void testDelete_shouldNotFindObject() {
         persistence.delete(element);
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.isEmpty(), is(true));

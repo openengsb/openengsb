@@ -87,7 +87,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testIfTaskOverviewInteractionWorks() throws Exception {
+    public void testIfTaskOverviewInteractionWorks_shouldWork() throws Exception {
         addWorkflow();
         loginAsAdmin();
         HtmlPage taskOverviewPage = webClient.getPage(pageEntryUrl);
@@ -126,7 +126,6 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
             try {
                 taskOverviewPage = webClient.getPage(pageEntryUrl);
                 table = taskOverviewPage.getFirstByXPath("//table");
-                String full = table.asText();
                 taskOneRow = table.getRow(2);
                 taskTwoRow = table.getRow(3);
                 isRight =
