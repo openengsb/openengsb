@@ -103,6 +103,23 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>                
+              <targetPath>${project.basedir}/../../target/docbook/snippets</targetPath>
+            </configuration>
+          </execution> 
+        </executions>          
+      </plugin>         
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
