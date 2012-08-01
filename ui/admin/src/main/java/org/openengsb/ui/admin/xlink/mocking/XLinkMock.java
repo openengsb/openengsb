@@ -18,24 +18,14 @@
 package org.openengsb.ui.admin.xlink.mocking;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
-import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
-import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.core.services.internal.xlink.XLinkUtils;
 import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;

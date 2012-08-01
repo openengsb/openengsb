@@ -22,14 +22,14 @@ import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.core.services.internal.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
 public class ToolChooserLogic {

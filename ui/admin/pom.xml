@@ -231,6 +231,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.services</artifactId> 
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.example</artifactId>
       <scope>provided</scope>

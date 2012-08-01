@@ -40,14 +40,14 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.verify;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.ekb.ModelRegistry;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
-import org.openengsb.core.common.xlink.ExampleObjectOrientedModel;
-import org.openengsb.core.common.xlink.XLinkUtils;
+import org.openengsb.core.ekb.api.ModelRegistry;
+import org.openengsb.core.services.internal.xlink.XLinkUtils;
 import org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain;
 import org.openengsb.ui.admin.AbstractUITest;
+import org.openengsb.ui.admin.xlink.mocking.ExampleObjectOrientedModel;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
