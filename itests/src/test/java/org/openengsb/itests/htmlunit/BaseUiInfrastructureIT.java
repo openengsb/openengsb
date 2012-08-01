@@ -65,7 +65,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
     }
 
     @Test
-    public void testIfAllMainNavigationLinksWork() throws Exception {
+    public void testIfAllMainNavigationLinksWork_shouldWork() throws Exception {
         final HtmlPage page = webClient.getPage(loginPageUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -89,7 +89,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
     }
 
     @Test
-    public void testUserLoginWithLimitedAccess() throws Exception {
+    public void testUserLoginWithLimitedAccess_shouldHaveLimitedAccess() throws Exception {
         final HtmlPage page = webClient.getPage(loginPageUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -102,7 +102,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
     @Test
     @Ignore("cannot click button without form")
-    public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
+    public void testCreateAndLoginNewUser_shouldNotShowUserManagementTab() throws Exception {
         String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
         HtmlPage page = webClient.getPage("http://localhost:" + httpPort + "/openengsb/");
         page = page.getAnchorByText("Login").click();

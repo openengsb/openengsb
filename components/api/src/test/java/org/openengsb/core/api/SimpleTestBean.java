@@ -18,8 +18,8 @@
 package org.openengsb.core.api;
 
 public class SimpleTestBean {
-    String stringValue;
-    Long longValue;
+    private String stringValue;
+    private Long longValue;
 
     public SimpleTestBean() {
     }

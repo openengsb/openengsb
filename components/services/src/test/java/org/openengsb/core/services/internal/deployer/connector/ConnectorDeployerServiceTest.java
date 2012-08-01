@@ -438,7 +438,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void updateFailure_shouldCreateBackupFile() throws Exception {
+    public void testUpdateFailure_shouldCreateBackupFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -463,7 +463,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void installFailure_shouldLeaveFileAsIs() throws Exception {
+    public void testInstallFailure_shouldLeaveFileAsIs() throws Exception {
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription("mydomain", "aconnector",
@@ -483,7 +483,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void updateFailure_shouldReplaceWithOldConfigFile() throws Exception {
+    public void testUpdateFailure_shouldReplaceWithOldConfigFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -508,7 +508,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void updateTwice_shouldUpdateCachedVersion() throws Exception {
+    public void testUpdateTwice_shouldUpdateCachedVersion() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -585,5 +585,4 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             throw thrown.get();
         }
     }
-
 }

@@ -66,7 +66,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testPersistRuleBaseElement_ShouldCreateFileAndLoad() throws EncoderException, IOException {
+    public void testPersistRuleBaseElement_shouldCreateFileAndLoad() throws EncoderException, IOException {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -95,7 +95,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testPersistRuleBaseElement_ShouldUpdateElement() throws EncoderException, IOException {
+    public void testPersistRuleBaseElement_shouldUpdateElement() throws IOException {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -114,7 +114,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testLoadRuleConfiguration_ShouldFilterForType() {
+    public void testLoadRuleConfiguration_shouldFilterForType() {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -143,7 +143,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testLoadRuleConfiguration_ShouldLoadAll() {
+    public void testLoadRuleConfiguration_shouldLoadAll() {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -165,7 +165,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testRemoveRuleConfiguration_ShouldRemoveFile() throws EncoderException {
+    public void testRemoveRuleConfiguration_shouldRemoveFile() throws EncoderException {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -187,7 +187,7 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
     }
 
     @Test
-    public void testRemoveRuleConfiguration_ShouldRemoveForMetadata() {
+    public void testRemoveRuleConfiguration_shouldRemoveForMetadata() {
         RuleBaseElement element = new RuleBaseElement();
         element.setCode("code");
         element.setName("name");
@@ -213,7 +213,5 @@ public class RuleBaseElementPersistenceBackendServiceTest extends AbstractOpenEn
         assertEquals(1, remainingList.size());
         RuleBaseConfiguration remainingElement = (RuleBaseConfiguration) remainingList.get(0);
         assertEquals(RuleBaseElementType.Process, remainingElement.getContent().getType());
-
     }
-
 }

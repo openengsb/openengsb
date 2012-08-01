@@ -76,7 +76,7 @@ public class WorkflowPanelTest extends AbstractOpenEngSBTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void startPanel_shouldShowWorkflowList() throws Exception {
+    public void testStartPanel_shouldShowWorkflowList() {
         tester.startComponentInPage(WorkflowStartPanel.class);
         DropDownChoice<RuleBaseElementId> selectBox =
             (DropDownChoice<RuleBaseElementId>) tester.getComponentFromLastRenderedPage("startFlowForm:startFlowBox");
@@ -85,7 +85,7 @@ public class WorkflowPanelTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void selectWorkflow_shouldStartWorkflow() throws Exception {
+    public void testSelectWorkflow_shouldStartWorkflow() {
         tester.startComponentInPage(WorkflowStartPanel.class);
         FormTester formTester = tester.newFormTester("startFlowForm");
         formTester.select("startFlowBox", 0);

@@ -127,7 +127,7 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void authenticateOnetimePasswordAtManager() throws Exception {
+    public void authenticateOnetimePasswordAtManager_shouldWork() throws Exception {
         Authentication authenticate = authManager.authenticate("testuser", new OneTimeValue(90489 * 2));
         assertThat(authenticate.getUsername(), is("testuser"));
     }

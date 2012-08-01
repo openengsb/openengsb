@@ -38,7 +38,7 @@ public class ThreadLocalUT {
      * shows the impact of the proxying and argument-manipulation on performance.
      */
     @Test
-    public void threadPoolPerformance() throws Exception {
+    public void testThreadPoolPerformance_printsPerformanceValues() throws Exception {
         Runnable command = new Runnable() {
             @Override
             public void run() {

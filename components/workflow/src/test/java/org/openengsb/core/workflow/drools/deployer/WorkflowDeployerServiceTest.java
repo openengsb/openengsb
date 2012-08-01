@@ -71,7 +71,7 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testWorkflowDeployerService_canHandleWorkflowFiles() throws IOException {
+    public void testWorkflowDeployerService_shouldCanHandleWorkflowFiles() throws IOException {
         File processFile = temporaryFolder.newFile("process.rf");
         File ruleFile = temporaryFolder.newFile("rule.rule");
         File functionFile = temporaryFolder.newFile("function.function");
@@ -237,7 +237,7 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void uninstallGlobal_RemoveGlobal() throws Exception {
+    public void testUninstallGlobal_shouldRemoveGlobal() throws Exception {
         final File globalFile = temporaryFolder.newFile("test1.global");
         FileUtils.writeLines(globalFile, Arrays.asList(
             Logger.class.getName() + " logger",
@@ -251,7 +251,7 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void uninstallImport_shouldRemoveImport() throws Exception {
+    public void testUninstallImport_shouldRemoveImport() throws Exception {
         File importFile = temporaryFolder.newFile("test1.import");
         FileUtils.writeLines(importFile, Arrays.asList(
             Event.class.getName(),

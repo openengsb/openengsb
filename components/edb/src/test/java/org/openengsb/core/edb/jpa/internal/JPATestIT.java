@@ -122,13 +122,13 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testGetInexistantObject_shouldThrowException() throws Exception {
+    public void testGetInexistantObject_shouldThrowException() {
         db.getObject("/this/object/does/not/exist");
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetHistoryAndCheckForElements_shouldWork() throws Exception {
+    public void testGetHistoryAndCheckForElements_shouldWork() {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -193,7 +193,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testHistoryOfDeletion_shouldWork() throws Exception {
+    public void testHistoryOfDeletion_shouldWork() {
         JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
         ci.insert(utils.createRandomTestObject("/deletion/1"));
         long time1 = db.commit(ci);
@@ -211,9 +211,8 @@ public class JPATestIT {
         checkTimeStamps(Arrays.asList(time1, time2));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetLog_shouldWork() throws Exception {
+    public void testGetLog_shouldWork() {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -231,7 +230,7 @@ public class JPATestIT {
 
             time1 = db.commit(ci);
 
-            HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
+            HashMap<String, Object> data2 = new HashMap<String, Object>(data1);
             data2.put("Burger", "Meat");
             EDBObject v2 = new EDBObject("/history/test/object", data2);
             ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
@@ -240,7 +239,7 @@ public class JPATestIT {
             ci.update(v2);
             time2 = db.commit(ci);
 
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
+            HashMap<String, Object> data3 = new HashMap<String, Object>(data2);
             ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
             ci.insert(utils.createRandomTestObject("/useless/test/3"));
             ci.insert(utils.createRandomTestObject("/useless/test/4"));
@@ -328,9 +327,8 @@ public class JPATestIT {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testDiff_shouldWork() throws Exception {
+    public void testDiff_shouldWork() {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -344,7 +342,7 @@ public class JPATestIT {
             ci.insert(v1);
             time1 = db.commit(ci);
 
-            HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
+            HashMap<String, Object> data2 = new HashMap<String, Object>(data1);
 
             data2.put("KeyD", "Value D 1");
             data2.put("KeyA", "Value A 2");
@@ -353,7 +351,7 @@ public class JPATestIT {
             ci.update(v2);
             time2 = db.commit(ci);
 
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
+            HashMap<String, Object> data3 = new HashMap<String, Object>(data2);
 
             data3.remove("KeyB");
             data3.put("KeyC", "Value C 3");
@@ -377,7 +375,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testGetResurrectedOIDs_shouldWork() throws Exception {
+    public void testGetResurrectedOIDs_shouldWork() {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
         EDBObject v1 = new EDBObject("/ress/object", data1);
@@ -406,7 +404,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
+    public void testCommitTwiceSameCommit_shouldThrowError() {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
         EDBObject v1 = new EDBObject("/fail/object", data1);
@@ -417,7 +415,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryOfOldVersionShouldWork() {
+    public void testQueryOfOldVersion_shouldWork() {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
         data1v1.put("pre:KeyA", "pre:Value A 1");
         data1v1.put("pre:KeyB", "pre:Value A 1");
@@ -580,7 +578,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryOfLastKnownVersionShouldWork() {
+    public void testQueryOfLastKnownVersion_shouldWork() {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
         data1v1.put("KeyA", "Value A 1");
         data1v1.put("KeyB", "Value A 1");

@@ -109,8 +109,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testIfTaskOverviewInteractionWorks() throws Exception {
-
+    public void testIfTaskOverviewInteractionWorks_shouldWork() throws Exception {
         HtmlPage taskOverviewPage = webClient.getPage(pageEntryUrl);
         assertTrue("Page does not contain: No Records Found", taskOverviewPage.asText().contains("No Records Found"));
         assertEquals("The taskbox is not empty", 0, taskboxService.getOpenTasks().size());
@@ -216,8 +215,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testIfTaskPanelGetsReplaced() throws Exception {
-
+    public void testIfTaskPanelGetsReplaced_shouldWork() throws Exception {
         taskboxService.registerTaskPanel("step1", TestTaskPanel.class);
         workflowService.startFlow(WORKFLOW);
 
