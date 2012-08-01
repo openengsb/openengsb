@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.api;
+package org.openengsb.core.api.model;
 
 import org.osgi.framework.Version;
 

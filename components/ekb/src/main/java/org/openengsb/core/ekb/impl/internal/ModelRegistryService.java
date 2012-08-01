@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.ekb.api.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.impl.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.impl.internal.loader.EKBClassLoader;

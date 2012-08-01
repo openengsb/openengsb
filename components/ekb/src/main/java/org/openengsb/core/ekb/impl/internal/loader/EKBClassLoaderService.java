@@ -18,7 +18,7 @@
 package org.openengsb.core.ekb.impl.internal.loader;
 
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.openengsb.labs.delegation.service.DelegationUtil;
