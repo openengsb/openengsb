@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -112,7 +113,7 @@ public class LoginPage extends OpenEngSBPage {
 
         add(new Image("topImage", CommonPictureLocator.getGreyscaleLogoBig()));
 
-        DefaultImprintPanel imprintDialogue = new DefaultImprintPanel("imprintDialogue");
+        Panel imprintDialogue = new DefaultImprintPanel("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);
         add(imprintDialogue);
 
