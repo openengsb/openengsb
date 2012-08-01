@@ -129,13 +129,28 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.workflow</artifactId>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.drools</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

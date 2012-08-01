@@ -161,7 +161,7 @@
                   <artifactId>org.openengsb.framework.weaver.service</artifactId>
                   <version>${project.version}</version>
                   <type>jar</type>
-                  <classifier>jar-with-dependencies</classifier>
+                  <classifier>agent</classifier>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
                   <destFileName>model-agent.jar</destFileName>
@@ -180,7 +180,7 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>
-            -javaagent:${project.build.directory}/model-agent.jar
+            -javaagent:"${project.build.directory}/model-agent.jar"
           </argLine>
           <useSystemClassloader>true</useSystemClassloader>
         </configuration>
@@ -193,6 +193,21 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

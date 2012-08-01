@@ -153,15 +153,18 @@
     <!-- OpenEngSB Core Features -->
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.weaver.service/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.jpa/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.impl/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.drools/${project.version}</bundle>
     <!-- OpenEngSB Console -->
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
     <!-- security domains and connectors -->

@@ -31,9 +31,9 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.list.ListView;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBLogEntry;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBLogEntry;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.ui.admin.AbstractUITest;
 
 public class EdbHistoryPanelTest extends AbstractUITest {

@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.ekb.ModelDescription;
-import org.openengsb.core.api.ekb.transformation.TransformationDescription;
-import org.openengsb.core.api.ekb.transformation.TransformationOperation;
+import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;

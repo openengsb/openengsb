@@ -48,11 +48,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
+import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -264,7 +264,7 @@ public class EdbClient extends BasePage {
                 historyLink.add(new Label("text", new PropertyModel<String>(item.getModelObject(), idProperty)));
                 item.add(historyLink);
                 MultiLineLabel multiLineLabel =
-                    new MultiLineLabel("entries", item.getModelObject().getOpenEngSBModelEntries().toString());
+                    new MultiLineLabel("entries", item.getModelObject().toOpenEngSBModelEntries().toString());
                 item.add(multiLineLabel);
             }
         });
