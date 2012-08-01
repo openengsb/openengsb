@@ -17,7 +17,7 @@
 
 package org.openengsb.core.ekb.impl.internal;
 
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.impl.internal.loader.EKBClassLoader;
 
 /**

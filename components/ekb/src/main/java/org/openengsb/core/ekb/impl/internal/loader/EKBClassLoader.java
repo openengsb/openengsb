@@ -17,7 +17,7 @@
 
 package org.openengsb.core.ekb.impl.internal.loader;
 
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 
 /**
  * The class loader needed for EKB internal use. 

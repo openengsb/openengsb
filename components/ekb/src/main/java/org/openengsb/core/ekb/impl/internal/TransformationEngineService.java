@@ -20,7 +20,7 @@ package org.openengsb.core.ekb.impl.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
