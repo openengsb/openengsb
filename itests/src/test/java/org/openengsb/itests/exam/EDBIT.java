@@ -38,17 +38,18 @@ import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFileP
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.ekb.EKBCommit;
-import org.openengsb.core.api.ekb.PersistInterface;
-import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBException;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.PersistInterface;
+import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelProvider;
@@ -195,7 +196,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(line, is("this is a test"));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testDoubleModelCommit_shouldThrowException() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setEdbId", "createevent/1");
@@ -262,7 +263,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version3, is(1));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testEKBDeleteCommitWithNonExistingOid_shouldThrowError() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setEdbId", "deleteevent/1");
@@ -322,7 +323,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version2, is(2));
     }
 
-    @Test(expected = EDBException.class)
+    @Test(expected = EKBException.class)
     public void testEKBConflictCommitEvent_shouldResolveInConflict() throws Exception {
         Object model = getTestModel().newInstance();
         setProperty(model, "setName", "test1");

@@ -15,6 +15,6 @@
 # limitations under the License.
 #
 
-org.openengsb.core.api.workflow.TaskboxService taskbox
-org.openengsb.core.api.workflow.TaskboxServiceInternal taskboxinternal
+org.openengsb.core.workflow.api.TaskboxService taskbox
+org.openengsb.core.workflow.api.TaskboxServiceInternal taskboxinternal
 org.openengsb.domain.auditing.AuditingDomain auditing

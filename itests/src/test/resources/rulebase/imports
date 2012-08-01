@@ -3,4 +3,4 @@ java.util.ArrayList
 java.util.Map
 java.util.HashMap
 org.openengsb.core.api.Event
-org.openengsb.core.api.workflow.model.Value
+org.openengsb.core.workflow.api.model.Value

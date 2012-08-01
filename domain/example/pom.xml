@@ -134,6 +134,9 @@
         <configuration>
           <instructions>
             <Delegation-Annotations>true</Delegation-Annotations>
+            <Domain-Name>example</Domain-Name>
+            <Domain-Interface>org.openengsb.domain.example.ExampleDomain</Domain-Interface>
+            <DomainEvents-Interface>org.openengsb.domain.example.ExampleDomainEvents</DomainEvents-Interface>
           </instructions>
         </configuration>
       </plugin>

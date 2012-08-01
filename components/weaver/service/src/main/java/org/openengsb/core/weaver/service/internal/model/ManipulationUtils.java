@@ -197,7 +197,7 @@ public final class ManipulationUtils {
     private static void addGetOpenEngSBModelEntries(CtClass clazz) throws NotFoundException,
         CannotCompileException, ClassNotFoundException {
         CtClass[] params = generateClassField();
-        CtMethod m = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelEntries", params, clazz);
+        CtMethod m = new CtMethod(cp.get(List.class.getName()), "toOpenEngSBModelEntries", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append("{ \nList elements = new ArrayList();\n");
         builder.append("elements.addAll(openEngSBModelTail.values());\n");

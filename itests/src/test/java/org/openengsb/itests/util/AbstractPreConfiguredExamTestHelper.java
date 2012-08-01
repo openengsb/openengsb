@@ -17,6 +17,10 @@
 
 package org.openengsb.itests.util;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 
@@ -29,7 +33,8 @@ public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTe
 
     @Configuration
     public static Option[] configuration() throws Exception {
-        return baseConfiguration();
+        return combine(baseConfiguration(),
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"));
     }
 
 }

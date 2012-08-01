@@ -29,7 +29,7 @@ public interface OpenEngSBModel {
     /**
      * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.
      */
-    List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
+    List<OpenEngSBModelEntry> toOpenEngSBModelEntries();
 
     /**
      * Returns the internal model id of the model. This id is defined through the OpenEngSBModelId annotation. Returns

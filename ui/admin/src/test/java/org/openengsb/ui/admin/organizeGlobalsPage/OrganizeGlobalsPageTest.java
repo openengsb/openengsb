@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.ui.admin.AbstractUITest;
 
 public class OrganizeGlobalsPageTest extends AbstractUITest {

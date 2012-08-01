@@ -39,10 +39,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.WorkflowException;
-import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
+import org.openengsb.core.workflow.api.WorkflowException;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
