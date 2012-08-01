@@ -36,15 +36,16 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
-import org.openengsb.core.common.xlink.XLinkUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
-import org.openengsb.core.api.ekb.ModelDescription;
+
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
+import org.openengsb.core.services.internal.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
