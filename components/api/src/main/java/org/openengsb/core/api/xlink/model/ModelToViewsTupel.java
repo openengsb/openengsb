@@ -18,7 +18,8 @@
 package org.openengsb.core.api.xlink.model;
 
 import java.util.List;
-import org.openengsb.core.api.ekb.ModelDescription;
+
+import org.openengsb.core.api.model.ModelDescription;
 
 public class ModelToViewsTupel {
     

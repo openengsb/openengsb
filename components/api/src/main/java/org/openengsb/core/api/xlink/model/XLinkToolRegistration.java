@@ -19,7 +19,8 @@ package org.openengsb.core.api.xlink.model;
 
 import java.util.List;
 import java.util.Map;
-import org.openengsb.core.api.ekb.ModelDescription;
+
+import org.openengsb.core.api.model.ModelDescription;
 
 
 /**
