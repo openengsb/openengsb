@@ -20,6 +20,8 @@ package org.openengsb.core.ekb.api;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.openengsb.core.api.model.ModelDescription;
+
 /**
  * The model registry service provides the possibility to register models, which than can be used by the EKB for
  * transformations.
