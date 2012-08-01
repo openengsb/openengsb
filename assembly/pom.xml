@@ -27,6 +27,8 @@
     <java.max.mem>1024M</java.max.mem>
     <java.min.perm>128M</java.min.perm>
     <java.max.perm>256M</java.max.perm>
+    <felix.framework.version>4.0.3</felix.framework.version>
+    <equinox.version>3.8.0.v20120529-1548</equinox.version>
   </properties>
 
   <parent>

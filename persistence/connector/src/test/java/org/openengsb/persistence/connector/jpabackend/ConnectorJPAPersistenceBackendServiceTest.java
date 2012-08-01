@@ -41,10 +41,11 @@ import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 
 import com.google.common.collect.ImmutableMap;
 
-public class ConnectorJPAPersistenceBackendServiceTest {
+public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSBTest {
 
     private ConnectorJPAPersistenceBackendService service;
     private EntityManager em;

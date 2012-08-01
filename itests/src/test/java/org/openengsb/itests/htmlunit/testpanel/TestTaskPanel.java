@@ -19,7 +19,7 @@ package org.openengsb.itests.htmlunit.testpanel;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.model.Task;
 
 public class TestTaskPanel extends Panel {
     private static final long serialVersionUID = -1163492145404543013L;

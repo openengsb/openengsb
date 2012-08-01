@@ -38,10 +38,10 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.api.RuleBaseException;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.common.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "{"
             + "    \"classes\": ["
             + "        \"java.lang.String\","
-            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
+            + "        \"org.openengsb.core.workflow.api.model.ProcessBag\""
             + "    ],"
             + "    \"methodName\": \"executeWorkflow\","
             + "    \"metaData\": {"
@@ -90,11 +90,11 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "{"
             + "    \"classes\": ["
             + "        \"java.lang.String\","
-            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
+            + "        \"org.openengsb.core.workflow.api.model.ProcessBag\""
             + "    ],"
             + "    \"methodName\": \"executeWorkflow\","
             + "    \"metaData\": {"
-            + "        \"serviceFilter\": \"(objectClass=org.openengsb.core.api.workflow.WorkflowService)\","
+            + "        \"serviceFilter\": \"(objectClass=org.openengsb.core.workflow.api.WorkflowService)\","
             + "        \"contextId\": \"foo\""
             + "    },"
             + "    \"args\": ["

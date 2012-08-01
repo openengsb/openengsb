@@ -22,13 +22,13 @@ java.util.HashMap
 java.net.URI
 
 org.openengsb.core.api.Event
-org.openengsb.core.api.workflow.model.Value
-org.openengsb.core.api.workflow.model.RemoteEvent
+org.openengsb.core.workflow.api.model.Value
+org.openengsb.core.workflow.api.model.RemoteEvent
 
-org.openengsb.core.api.workflow.model.ProcessBag
-org.openengsb.core.api.workflow.model.InternalWorkflowEvent
+org.openengsb.core.workflow.api.model.ProcessBag
+org.openengsb.core.workflow.api.model.InternalWorkflowEvent
 
-org.openengsb.core.workflow.WorkflowHelper
-org.openengsb.core.workflow.OsgiHelper
+org.openengsb.core.workflow.drools.WorkflowHelper
+org.openengsb.core.workflow.drools.OsgiHelper
 
 org.openengsb.domain.auditing.AuditingDomain

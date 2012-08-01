@@ -31,9 +31,9 @@ import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.model.RuleBaseConfiguration;
-import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.model.RuleBaseConfiguration;
+import org.openengsb.core.workflow.drools.model.RuleBaseElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,9 +133,13 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
         Collection<File> files = FileUtils.listFiles(storageFolder, filter, null);
 
         for (File file : files) {
-            if (!file.delete()) {
+            try {
+                FileUtils.forceDelete(file);
+            } catch (IOException e) {
                 LOGGER.warn("\"{}\" couldn't be deleted!", file);
+                throw new PersistenceException(e);
             }
+
         }
     }
 
@@ -145,7 +149,7 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
     }
 
     public void setStorageFolderPath(String storageFolderPath) {
-        this.storageFolder = new File(storageFolderPath);
+        storageFolder = new File(storageFolderPath);
     }
 
     public void init() throws PersistenceException {
