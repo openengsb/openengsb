@@ -48,4 +48,16 @@ public interface OpenEngSBModel {
      * types or lists. Should only be used to maintain the "tail".
      */
     void removeOpenEngSBModelEntry(String key);
+
+    /**
+     * Returns the tail of the model, which are all elements added by addOpenEngSBModelEntry. Elements which are added
+     * there are mainly elements added by the OpenEngSB internally or by the user directly.
+     */
+    List<OpenEngSBModelEntry> getOpenEngSBModelTail();
+
+    /**
+     * Sets the tail of the model. Caution: values added here have nothing to do with the normal properties of the
+     * model.
+     */
+    void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries);
 }
