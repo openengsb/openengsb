@@ -53,7 +53,7 @@ public class DomainInstallIT extends AbstractExamTestHelper {
     private FeaturesService featuresService;
 
     @Test
-    public void testInstallDomainShouldWeaveModel() throws Exception {
+    public void testIfModelIsWeaved_shouldWeaveModel() throws Exception {
         featuresService.installFeature("openengsb-domain-example");
         Class<?> loadClass =
             this.getClass().getClassLoader().loadClass("org.openengsb.domain.example.model.ExampleRequestModel");

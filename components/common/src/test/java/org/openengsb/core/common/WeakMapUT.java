@@ -27,10 +27,10 @@ import org.apache.commons.collections.map.ReferenceMap;
 import org.junit.Test;
 
 public class WeakMapUT {
+
     @Test
-    public void testReferenceMap() throws Exception {
-        ReferenceMap map = new ReferenceMap(AbstractReferenceMap.HARD,
-            AbstractReferenceMap.WEAK);
+    public void testReferenceMap_shouldWork() throws Exception {
+        ReferenceMap map = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.WEAK);
         Object referent = new Object();
         map.put("42", referent);
         assertThat(map.containsKey("42"), is(true));

@@ -34,7 +34,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
-import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
@@ -115,20 +114,20 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testCreate() throws RuleBaseException {
+    public void testAddRuleBaseElement_shouldWork() {
         ruleManager.add(id[0], code[0]);
         assertEquals(code[0], ruleManager.get(id[0]));
     }
 
     @Test
-    public void testUpdate() throws RuleBaseException {
+    public void testUpdateRuleBaseElement_shouldWork() {
         ruleManager.add(id[0], code[0]);
         ruleManager.update(id[1], code[1]);
         assertThat(ruleManager.get(id[0]), equalTo(code[1]));
     }
 
     @Test
-    public void testList() throws RuleBaseException {
+    public void testListRuleBaseElementsByTypeAndPackage_shouldWork() {
         ruleManager.add(id[0], code[0]);
         ruleManager.add(id[2], code[2]);
         Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType(), id[0].getPackageName());
@@ -137,7 +136,7 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testListAll() throws RuleBaseException {
+    public void testListRuleBaseElementsByType_shouldWork() {
         ruleManager.add(id[0], code[0]);
         ruleManager.add(id[2], code[2]);
         Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType());
@@ -146,19 +145,19 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testDelete() throws RuleBaseException {
+    public void testDeleteRuleBaseElement_shouldWork() {
         ruleManager.add(id[0], code[0]);
         ruleManager.delete(id[0]);
     }
 
     @Test
-    public void testAddOrUpdateOnNewRule() throws Exception {
+    public void testAddOrUpdateOnNewRule_shouldWork() {
         ruleManager.addOrUpdate(id[0], code[0]);
         assertThat(ruleManager.get(id[0]), is(code[0]));
     }
 
     @Test
-    public void testAddOrUpdateOnExistingRule() throws Exception {
+    public void testAddOrUpdateOnExistingRule_shouldWork() {
         ruleManager.add(id[0], code[0]);
         ruleManager.addOrUpdate(id[1], code[1]);
         assertThat(ruleManager.get(id[0]), is(code[1]));

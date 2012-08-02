@@ -91,7 +91,7 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void encryptSymmetricKeyWithPublicKey_shouldBeTheSameWhenDecryptedWithPrivateKey() throws Exception {
+    public void testEncryptSymmetricKeyWithPublicKey_shouldBeTheSameWhenDecryptedWithPrivateKey() throws Exception {
         SecretKey secretKey = CipherUtils.generateKey("AES", 128);
 
         byte[] encoded = secretKey.getEncoded();
@@ -104,7 +104,8 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void encryptMessageWithGeneratedPublicKey_shouldBeTheSameAfterDecryptionWithPrivateKey() throws Exception {
+    public void testEncryptMessageWithGeneratedPublicKey_shouldBeTheSameAfterDecryptionWithPrivateKey()
+        throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] encrypted = CipherUtils.encrypt(data, generatedPublickey);
         byte[] decrypted = CipherUtils.decrypt(encrypted, generatedPrivatekey);
@@ -113,21 +114,21 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void readPublicKeyFromByteArray_shouldBeSamePublicKey() throws Exception {
+    public void testReadPublicKeyFromByteArray_shouldBeSamePublicKey() throws Exception {
         byte[] data = generatedPublickey.getEncoded();
         PublicKey parsedKey = CipherUtils.deserializePublicKey(data, "RSA");
         assertEquals(generatedPublickey, parsedKey);
     }
 
     @Test
-    public void readPrivateKeyFromByteArray_shouldBeSamePrivateKey() throws Exception {
+    public void testReadPrivateKeyFromByteArray_shouldBeSamePrivateKey() throws Exception {
         byte[] data = generatedPrivatekey.getEncoded();
         PrivateKey parsedKey = CipherUtils.deserializePrivateKey(data, "RSA");
         assertEquals(generatedPrivatekey, parsedKey);
     }
 
     @Test
-    public void decryptUsingPrivateKey_shouldResultInDecryptedText() throws Exception {
+    public void testDecryptUsingPrivateKey_shouldResultInDecryptedText() throws Exception {
         PrivateKey key = CipherUtils.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64), "RSA");
         byte[] data = CipherUtils.decrypt(Base64.decodeBase64(TEST_STRING_CIPHERED), key);
         String testString = new String(data);
@@ -135,14 +136,14 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void signAndVerifyMessage_shouldVerifyOK() throws Exception {
+    public void testSignAndVerifyMessage_shouldVerifyOK() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
         assertTrue(CipherUtils.verify(data, signature, generatedPublickey, CipherUtils.DEFAULT_SIGN_ALGORITHM));
     }
 
     @Test
-    public void signAndVerifyAndManipulate_shouldCauseVerificationFailure() throws Exception {
+    public void testSignAndVerifyAndManipulate_shouldCauseVerificationFailure() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
         data[0]++;
@@ -150,7 +151,7 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void encryptSymmetric() throws Exception {
+    public void testEncryptSymmetric_shouldEncryptAndDecryptSymmetric() throws Exception {
         SecretKey generateKey = CipherUtils.generateKey("AES", 128);
 
         byte[] encrypt = CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey);
@@ -160,7 +161,7 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void encryptBlowfish() throws Exception {
+    public void testEncryptBlowfish_shouldEncryptAndDecryptWithBlowfish() throws Exception {
         SecretKey generateKey = CipherUtils.generateKey("Blowfish", 128);
 
         byte[] encrypt = CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey);

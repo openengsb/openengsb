@@ -51,11 +51,6 @@ public class AbstractOpenEngSBInvocationHandlerTest extends AbstractOpenEngSBTes
         assertEquals(proxyRetVal, "teststring");
     }
 
-    @Test
-    public void testHandleObjectMethodsItselfActivated_shouldStillForwardOtherMethods() throws Throwable {
-
-    }
-
     private AbstractOpenEngSBInvocationHandler createDefaultAbstractOpenEngSBInvocationHandler(final Object test) {
         AbstractOpenEngSBInvocationHandler abstractOpenEngSBInvocationHandler =
             new AbstractOpenEngSBInvocationHandler() {

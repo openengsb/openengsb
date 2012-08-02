@@ -111,7 +111,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRegisterDomainProvider_shouldRegisterFactory() throws Exception {
+    public void testRegisterDomainProvider_shouldRegisterFactory() {
         pseudoConnectorManager.start();
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         createDomainProviderMock(NullDomain.class, "test");
@@ -122,7 +122,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRegisterVirtualProvider_shouldRegisterFactory() throws Exception {
+    public void testRegisterVirtualProvider_shouldRegisterFactory() {
         pseudoConnectorManager.start();
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
@@ -133,7 +133,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() throws Exception {
+    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() {
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         pseudoConnectorManager.start();

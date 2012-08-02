@@ -33,19 +33,19 @@ import org.openengsb.ui.admin.testClient.TestClient;
 public class LoginPageTest extends AbstractLoginTest {
 
     @Test
-    public void testLoginPageIsDisplayed() throws Exception {
+    public void testLoginPageIsDisplayed_shouldShowLoginPage() {
         tester.startPage(LoginPage.class);
         tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
-    public void testRedirectToLogin() throws Exception {
+    public void testRedirectToLogin_shouldRedirectToLoginPage() {
         tester.startPage(TestClient.class);
         tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
-    public void testEnterLogin() throws Exception {
+    public void testEnterLogin_shouldEnterCredentials() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -56,7 +56,7 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testLogout() throws Exception {
+    public void testLogout_shouldLogOutUser() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -67,7 +67,7 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testInvalidLogin() throws Exception {
+    public void testInvalidLogin_shouldNotLogInUser() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -79,7 +79,7 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testIfHeaderAndFooterIsVisible() {
+    public void testIfHeaderAndFooterIsVisible_shouldShowElements() {
         tester.startPage(LoginPage.class);
         tester.assertComponent("header", HeaderTemplate.class);
     }

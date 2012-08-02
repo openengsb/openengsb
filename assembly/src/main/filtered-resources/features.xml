@@ -128,13 +128,11 @@
     <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
     <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
     <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
-    <bundle start-level='20'>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/${javassist.version}</bundle>
-    <bundle start-level='20'>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <!-- Graph DB -->
     <bundle start-level='20'>mvn:com.orientechnologies/orient-commons/${orientdb.version}</bundle>
     <bundle start-level='20'>mvn:com.orientechnologies/orientdb-core/${orientdb.version}</bundle>
@@ -203,6 +201,7 @@
       This feature provides activemq support including the queue configurations for the OpenEngSB.
     </details>
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
+    <feature>spring-jms</feature>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jms/${project.version}</bundle>
   </feature>
 

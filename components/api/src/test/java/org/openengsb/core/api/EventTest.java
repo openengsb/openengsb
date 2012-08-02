@@ -20,14 +20,12 @@ package org.openengsb.core.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
-import java.beans.IntrospectionException;
-
 import org.junit.Test;
 
 public class EventTest {
 
     @Test
-    public void testToString() throws IntrospectionException {
+    public void testToString_shouldReturnCorrectString() {
         Event event = new TestEvent("test");
         String eventString = event.toString();
         assertThat(eventString, containsString("class:" + event.getClass()));

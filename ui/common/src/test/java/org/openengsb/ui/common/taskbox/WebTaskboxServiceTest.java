@@ -18,7 +18,6 @@
 package org.openengsb.ui.common.taskbox;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,10 +29,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.workflow.api.TaskboxException;
 import org.openengsb.core.workflow.api.model.Task;
 import org.openengsb.core.workflow.drools.internal.TaskboxServiceImpl;
 import org.openengsb.ui.common.taskbox.web.CustomTaskPanel;
@@ -71,22 +68,15 @@ public class WebTaskboxServiceTest {
     }
 
     @Test
-    public void testGetTaskPanel_shouldReturnDefaultPanel() throws PersistenceException {
+    public void testGetTaskPanel_shouldReturnDefaultPanel() {
         Task t = new Task();
         t.setTaskType("Type1");
-        Panel p = null;
-
-        try {
-            p = service.getTaskPanel(t, "panel");
-        } catch (TaskboxException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+        Panel p = service.getTaskPanel(t, "panel");
         assertEquals(p.getClass(), TaskPanel.class);
     }
 
     @Test
-    public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() throws PersistenceException {
+    public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() {
         List<PanelRegistryEntry> list = new ArrayList<PanelRegistryEntry>();
         list.add(new PanelRegistryEntry("Type1", CustomTaskPanel.class));
 
@@ -94,14 +84,7 @@ public class WebTaskboxServiceTest {
 
         Task t = new Task();
         t.setTaskType("Type1");
-        Panel p = null;
-
-        try {
-            p = service.getTaskPanel(t, "panel");
-        } catch (TaskboxException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+        Panel p = service.getTaskPanel(t, "panel");
         assertEquals(p.getClass(), CustomTaskPanel.class);
     }
 }

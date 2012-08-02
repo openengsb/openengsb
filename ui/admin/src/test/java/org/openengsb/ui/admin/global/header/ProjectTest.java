@@ -52,7 +52,7 @@ public class ProjectTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testIfLabelIsPresent() {
+    public void testIfLabelIsPresent_shouldContainLabelString() {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
                 basePage.get("header"));
@@ -77,5 +77,4 @@ public class ProjectTest extends AbstractLoginTest {
         tester.startPage(new DummyPage());
         assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
-
 }
