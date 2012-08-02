@@ -20,6 +20,7 @@ package org.openengsb.core.weaver.test.model;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -88,5 +89,25 @@ public class ManipulationUtilsTest {
         model.setId("id");
         String id = (String) ModelUtils.getInternalModelId(model);
         assertThat(id, is(model.getId()));
+    }
+    
+    @Test
+    public void testIfModelTailRetrievingWorks_shouldWork() {
+        TestModel model = new TestModel();
+        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
+        List<OpenEngSBModelEntry> tail = ModelUtils.getOpenEngSBModelTail(model);
+        assertThat(tail.size(), is(1));
+        assertThat(tail.get(0).getKey(), is("test"));
+    }
+    
+    @Test
+    public void testIfModelTailSettingWorks_shouldWork() {
+        TestModel model = new TestModel();
+        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
+        entries.add(new OpenEngSBModelEntry("test", "test", String.class));
+        entries.add(new OpenEngSBModelEntry("test2", "test2", String.class));
+        entries.add(new OpenEngSBModelEntry("test3", "test3", String.class));
+        ModelUtils.setOpenEngSBModelTail(model, entries);
+        assertThat(ModelUtils.getOpenEngSBModelTail(model).size(), is(3));
     }
 }
