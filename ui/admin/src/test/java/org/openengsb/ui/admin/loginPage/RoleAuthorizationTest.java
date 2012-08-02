@@ -45,7 +45,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {
+    public void testHeaderComponentsForAdmin_shouldShowUserService() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "admin");
@@ -58,7 +58,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testHeaderComponentsForNormalUser_UserServiceShouldNotBeVisible() {
+    public void testHeaderComponentsForNormalUser_shouldHideUserService() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "user");
@@ -70,7 +70,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testTestClientVisibleComponentsForAdmin_EveryThingShouldBeVisible() {
+    public void testTestClientVisibleComponentsForAdmin_shouldShowAllComponents() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "admin");
@@ -83,7 +83,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testTestClientVisibleComponentsForNormalUser_serviceManagementContainerShouldNotBeVisible() {
+    public void testTestClientVisibleComponentsForNormalUser_shouldHideServiceManagementContainer() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");

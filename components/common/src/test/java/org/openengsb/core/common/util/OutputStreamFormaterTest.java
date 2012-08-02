@@ -32,18 +32,18 @@ import org.junit.Test;
 public class OutputStreamFormaterTest {
 
     @Test
-    public void testSpaces() {
+    public void testSpaces_shouldInsertSpaces() {
         assertThat(OutputStreamFormater.spaces(20).length(), is(20));
     }
 
     @Test
-    public void testFormatValues() {
+    public void testFormatValues_shouldFormatString() {
         String string = "  \u001B[1mOpenEngSB Version        \u001B[m   3.0.0-SNAPSHOT";
         assertThat(OutputStreamFormater.formatValues("OpenEngSB Version", "3.0.0-SNAPSHOT"), equalTo(string));
     }
 
     @Test
-    public void testPrintValues() {
+    public void testPrintValue_shouldPrintValue() {
         PrintStream streamMock = mock(PrintStream.class);
         OutputStreamFormater.setOutputStream(streamMock);
         OutputStreamFormater.printValue("OpenEngSB");
@@ -51,7 +51,7 @@ public class OutputStreamFormaterTest {
     }
 
     @Test
-    public void testPrintValues2() {
+    public void testPrintValues_shouldPrintValues() {
         String string = "  \u001B[1mOpenEngSB Version        \u001B[m   3.0.0-SNAPSHOT";
         PrintStream streamMock = mock(PrintStream.class);
         OutputStreamFormater.setOutputStream(streamMock);
@@ -60,7 +60,7 @@ public class OutputStreamFormaterTest {
     }
 
     @Test
-    public void testPrintWithPrefix() {
+    public void testPrintWithPrefix_shouldPrintStringWithPrefix() {
         String s = OutputStreamFormater.formatValues(9, "id", "status");
         assertThat(s, equalTo("         \u001B[1mid                       \u001B[m   status"));
     }

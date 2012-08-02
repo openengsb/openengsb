@@ -38,7 +38,6 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.LocalizableString;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
@@ -114,19 +113,19 @@ public class ServicesHelperTest {
     }
 
     @Test
-    public void testGetRunningServiceIds() throws Exception {
+    public void testGetRunningServiceIds_shouldReturnTheRunningServiceIds() {
         List<String> runningServiceIds = serviceHelper.getRunningServiceIds();
         assertTrue(runningServiceIds.contains("dummyId"));
     }
 
     @Test
-    public void testGetDomainProviderNames() {
+    public void testGetDomainProviderNames_shouldReturnProviderNames() {
         List<String> domainProviderNames = serviceHelper.getDomainProviderNames();
         assertTrue(domainProviderNames.contains("Dummy Name"));
     }
 
     @Test
-    public void testGetConnectorAttributes() throws PersistenceException {
+    public void testGetConnectorAttributes_shouldReturnConnectorAttributes() {
         //get attributes from user but without reading from the input
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("attr1", "val1");

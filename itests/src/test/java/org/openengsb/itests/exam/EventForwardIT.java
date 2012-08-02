@@ -81,7 +81,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testSendEvent() throws Exception {
+    public void testSendEvent_shouldCallService() throws Exception {
         authenticateAsAdmin();
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);

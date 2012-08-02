@@ -47,7 +47,7 @@ public class CheckedPanelTest {
     }
 
     @Test
-    public void testRendered() {
+    public void testRendered_shouldHaveAllComponents() {
         tester.debugComponentTrees();
         tester.assertComponent("panel:check", CheckBox.class);
         tester.assertComponent("panel:label", SimpleFormComponentLabel.class);
@@ -68,5 +68,4 @@ public class CheckedPanelTest {
         assertThat(tagTester.hasAttribute("for"), is(true));
         assertThat(tagTester.getAttribute("for"), is(checkBox.getMarkupId()));
     }
-
 }

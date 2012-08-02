@@ -34,7 +34,7 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 public class CleanOpenEngSBAssertsIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
-    public void testServiceDoesNotExist() throws Exception {
+    public void testServiceDoesNotExist_shouldNotFindExampleDomain() throws Exception {
         WiringService wiringService = getOsgiService(WiringService.class);
         assertThat(wiringService.isConnectorCurrentlyPresent(ExampleDomain.class),
             is(false));

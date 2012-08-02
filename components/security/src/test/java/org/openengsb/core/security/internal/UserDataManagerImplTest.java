@@ -211,7 +211,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addPermissionSetToSet_shouldBeListedAsMember() throws Exception {
+    public void testAddPermissionSetToSet_shouldBeListedAsMember() throws Exception {
         userManager.createPermissionSet("ROLE_ADMIN");
         userManager.createPermissionSet("ROLE_ROOT");
         userManager.addPermissionSetToPermissionSet("ROLE_ROOT", "ROLE_ADMIN");
@@ -220,7 +220,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addPermissionSetToSet_shouldGrantAllPermissions() throws Exception {
+    public void testAddPermissionSetToSet_shouldGrantAllPermissions() throws Exception {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.createPermissionSet("ROLE_PROJECTMEMBER", permission);
@@ -232,7 +232,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addSingleUserAttribute_shouldContainAttribute() throws Exception {
+    public void testAddSingleUserAttribute_shouldContainAttribute() throws Exception {
         userManager.createUser("admin1");
         userManager.createUser("admin2");
         userManager.setUserAttribute("admin1", "test", 42);
@@ -246,7 +246,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addAndRemoveUserAttribute_shouldNotBeSetAnymore() throws Exception {
+    public void testAddAndRemoveUserAttribute_shouldNotBeSetAnymore() throws Exception {
         userManager.createUser("admin1");
         userManager.setUserAttribute("admin1", "test", 42);
         userManager.removeUserAttribute("admin1", "test");

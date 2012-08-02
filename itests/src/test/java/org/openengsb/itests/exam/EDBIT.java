@@ -101,12 +101,12 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testIfServiceIsFound_shouldWork() throws Exception {
+    public void testIfServiceIsFound_shouldWork() {
         assertThat(edbService, notNullValue());
     }
 
     @Test
-    public void testInsert_shouldWork() throws Exception {
+    public void testInsert_shouldWork() {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("testobject");
         testObject.put("testkey", "testvalue");
@@ -116,14 +116,14 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    public void testDoubleCommit_shouldThrowException() throws Exception {
+    public void testDoubleCommit_shouldThrowException() {
         EDBCommit commit = edbService.createCommit("test", "test");
         edbService.commit(commit);
         edbService.commit(commit);
     }
 
     @Test
-    public void testRetrieveObject_shouldWork() throws Exception {
+    public void testRetrieveObject_shouldWork() {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject");
         testObject.put("newtestkey", "newtestvalue");
@@ -136,7 +136,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testQueryForObject_shouldWork() throws Exception {
+    public void testQueryForObject_shouldWork() {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject1");
         testObject.put("newtestkey1", "newtestvalue1");
@@ -150,7 +150,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    public void testConflictDetection_shouldThrowException() throws Exception {
+    public void testConflictDetection_shouldThrowException() {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject2");
         testObject.put("newtestkey2", "newtestvalue2");

@@ -61,7 +61,7 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void createUserAndLogin_shouldAuthenticateSuccessful() throws Exception {
+    public void testCreateUserAndLogin_shouldAuthenticateSuccessful() throws Exception {
         SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {

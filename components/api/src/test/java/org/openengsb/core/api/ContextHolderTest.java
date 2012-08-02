@@ -30,13 +30,13 @@ import org.openengsb.core.api.context.ContextHolder;
 public class ContextHolderTest {
 
     @Test
-    public void testContextHolderHasInitialContext() throws Exception {
+    public void testContextHolderHasInitialContext_contextShouldBeNotNull() {
         ContextHolder context = ContextHolder.get();
         assertThat(context, notNullValue());
     }
 
     @Test
-    public void testGetContext_shouldReturnCurrentContext() throws Exception {
+    public void testGetContext_shouldReturnCurrentContext() {
         ContextHolder context = ContextHolder.get();
         context.setCurrentContextId("foo");
         String contextId = context.getCurrentContextId();
@@ -44,7 +44,7 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void testContextIsNotModifiedByChildThread() throws Exception {
+    public void testContextIsNotModifiedByChildThread_contextShouldBeUnchanged() throws Exception {
         ContextHolder context = ContextHolder.get();
         context.setCurrentContextId("foo");
         Callable<String> task = new Callable<String>() {
@@ -60,7 +60,7 @@ public class ContextHolderTest {
     }
 
     @Test
-    public void testContextIsAccessibleFromChildThread() throws Exception {
+    public void testContextIsAccessibleFromChildThread_shouldGetUnchangedContext() throws Exception {
         ContextHolder context = ContextHolder.get();
         context.setCurrentContextId("foo");
         Callable<String> task = new Callable<String>() {
