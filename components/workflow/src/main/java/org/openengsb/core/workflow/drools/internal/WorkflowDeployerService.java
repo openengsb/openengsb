@@ -216,25 +216,37 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
     public void update(File artifact) throws Exception {
         LOGGER.debug("WorkflowDeployer.update(\"{}\")", artifact.getAbsolutePath());
         try {
-            RuleBaseElementId id = getIdforFile(artifact);
-            String code = FileUtils.readFileToString(artifact);
-            boolean changed = false;
-            if (id.getType().equals(RuleBaseElementType.Process)) {
-                RuleBaseElementId cachedId = cache.get(artifact.getName());
-                if (!id.equals(cachedId)) {
-                    ruleManager.delete(cachedId);
-                    changed = true;
-                }
-            }
-            ruleManager.addOrUpdate(id, code);
-            if (changed) {
-                cache.put(artifact.getName(), id);
+            RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
+            String ending = FilenameUtils.getExtension(artifact.getName());
+            if(typeFromFile != null){
+                doUpdateArtifact(artifact);
+            } else if (IMPORT_ENDING.equals(ending)) {
+                installImportFile(artifact);
+            } else if (GLOBAL_ENDING.equals(ending)) {
+                installGlobalFile(artifact);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
         }
         LOGGER.info("Successfully updated workflow file \"{}\"", artifact.getName());
+    }
+
+    private void doUpdateArtifact(File artifact) throws SAXException, IOException, ParserConfigurationException {
+        RuleBaseElementId id = getIdforFile(artifact);
+        String code = FileUtils.readFileToString(artifact);
+        boolean changed = false;
+        if (id.getType().equals(RuleBaseElementType.Process)) {
+            RuleBaseElementId cachedId = cache.get(artifact.getName());
+            if (!id.equals(cachedId)) {
+                ruleManager.delete(cachedId);
+                changed = true;
+            }
+        }
+        ruleManager.addOrUpdate(id, code);
+        if (changed) {
+            cache.put(artifact.getName(), id);
+        }
     }
 
     @Override
