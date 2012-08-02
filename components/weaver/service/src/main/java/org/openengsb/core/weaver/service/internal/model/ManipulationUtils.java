@@ -133,6 +133,8 @@ public final class ManipulationUtils {
         CtClass inter = cp.get(OpenEngSBModel.class.getName());
         cc.addInterface(inter);
         addTail(cc);
+        addGetOpenEngSBModelTail(cc);
+        addSetOpenEngSBModelTail(cc);
         addOpenEngSBModelEntryMethod(cc);
         addRemoveOpenEngSBModelEntryMethod(cc);
         addRetrieveInternalModelId(cc);
@@ -146,6 +148,30 @@ public final class ManipulationUtils {
     private static void addTail(CtClass clazz) throws CannotCompileException, NotFoundException {
         CtField field = CtField.make("private Map openEngSBModelTail = new HashMap();", clazz);
         clazz.addField(field);
+    }
+
+    /**
+     * Adds the getOpenEngSBModelTail method to the class.
+     */
+    private static void addGetOpenEngSBModelTail(CtClass clazz) throws CannotCompileException, NotFoundException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelTail", params, clazz);
+        method.setBody("{ return new ArrayList(openEngSBModelTail.values()); }");
+        clazz.addMethod(method);
+    }
+    
+    /**
+     * Adds the setOpenEngSBModelTail method to the class.
+     */
+    private static void addSetOpenEngSBModelTail(CtClass clazz) throws CannotCompileException, NotFoundException {
+        CtClass[] params = generateClassField(List.class);
+        CtMethod method = new CtMethod(CtClass.voidType, "setOpenEngSBModelTail", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append("{ for(int i = 0; i < $1.size(); i++) {");
+        builder.append("OpenEngSBModelEntry entry = (OpenEngSBModelEntry) $1.get(i);");
+        builder.append("openEngSBModelTail.put(entry.getKey(), entry); } }");
+        method.setBody(builder.toString());
+        clazz.addMethod(method);
     }
 
     /**

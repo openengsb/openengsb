@@ -79,7 +79,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCreateRuleAndTriggerDomain() throws Exception {
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         DummyLogDomain exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -144,14 +144,4 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(exampleMock.wasCalled, is(true));
     }
-
-    /**
-     * Ignored because security manager is commented in the moment.
-     */
-    @Test
-    /* (expected = Exception.class) */
-    public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
-        authenticate("user", "password");
-    }
-
 }

@@ -180,7 +180,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         throws Exception;
 
     @Test
-    public void processMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
+    public void testProcessMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
         MethodCallMessage secureRequest = prepareSecureRequest();
 
         MethodResultMessage response = processRequest(secureRequest);

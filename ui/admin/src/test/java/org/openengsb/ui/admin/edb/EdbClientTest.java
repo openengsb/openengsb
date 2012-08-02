@@ -71,7 +71,7 @@ public class EdbClientTest extends AbstractUITest {
     }
 
     @Test
-    public void showIndex_shouldContainEDBClientPage() throws Exception {
+    public void testShowIndex_shouldContainEDBClientPage() {
         tester.startPage(Index.class);
         tester.clickLink("header:headerMenuItems:2:link");
         tester.assertRenderedPage(EdbClient.class);
@@ -79,7 +79,7 @@ public class EdbClientTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modelDropDown_shouldContainDummyModel() throws Exception {
+    public void testModelDropDown_shouldContainDummyModel() {
         tester.startPage(EdbClient.class);
         DropDownChoice<Class<? extends OpenEngSBModel>> dropdown =
             (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
@@ -91,7 +91,7 @@ public class EdbClientTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void selectModel_shouldEnableQueryField() throws Exception {
+    public void testSelectModel_shouldEnableQueryField() {
         tester.startPage(EdbClient.class);
         Component query = tester.getComponentFromLastRenderedPage("form:query");
         assertFalse("queryfield not disabled at the beginning", query.isEnabled());
@@ -106,7 +106,7 @@ public class EdbClientTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void enterQuery_shouldReturnQueryResults() throws Exception {
+    public void testEnterQuery_shouldReturnQueryResults() {
         tester.startPage(EdbClient.class);
         FormTester formTester = tester.newFormTester("form");
         DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =
@@ -125,7 +125,7 @@ public class EdbClientTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void invalidQuery_shouldShowError() throws Exception {
+    public void testInvalidQuery_shouldShowError() {
         tester.startPage(EdbClient.class);
         FormTester formTester = tester.newFormTester("form");
         DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =

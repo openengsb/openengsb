@@ -55,7 +55,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void checkIfModelAgentIsSet_shouldWork() {
+    public void testIfModelAgentIsSet_shouldWork() {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
             model instanceof OpenEngSBModel, is(true));

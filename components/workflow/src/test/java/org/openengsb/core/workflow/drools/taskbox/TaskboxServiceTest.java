@@ -31,11 +31,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.workflow.api.TaskboxException;
-import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
 import org.openengsb.core.workflow.api.model.ProcessBag;
@@ -72,7 +70,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testCreateNewTask_shouldReturnNewTask() throws PersistenceException {
+    public void testCreateNewTask_shouldReturnNewTask() {
         internalService.createNewTask(new ProcessBag());
         verify(persistenceService).create(any(Task.class));
     }
@@ -100,7 +98,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testGetTaskForProcessId_shouldRunQuery() throws TaskboxException {
+    public void testGetTaskForProcessId_shouldRunQuery() {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setProcessId("1");
 
@@ -109,7 +107,7 @@ public class TaskboxServiceTest {
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetTaskForId_shouldThrowExceptionWhenNothingFound() throws TaskboxException {
+    public void testGetTaskForId_shouldThrowExceptionWhenNothingFound() {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setTaskId("1");
         when(persistenceService.query(any(Task.class))).thenReturn(new ArrayList<Task>());
@@ -117,7 +115,7 @@ public class TaskboxServiceTest {
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetTaskForId_shouldThrowExceptionWhenMoreThanOneFound() throws TaskboxException {
+    public void testGetTaskForId_shouldThrowExceptionWhenMoreThanOneFound() {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setTaskId("1");
 
@@ -129,7 +127,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTask_shouldProcessEvent() throws PersistenceException, WorkflowException {
+    public void testFinishTask_shouldProcessEvent() {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -141,7 +139,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTaskTwice_shouldProcessEventOnlyOnce() throws PersistenceException, WorkflowException {
+    public void testFinishTaskTwice_shouldProcessEventOnlyOnce() {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -157,7 +155,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
+    public void testFinishTask_shouldDeleteAndProcessEvent() {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -175,7 +173,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testUpdateTask_shouldReturnUpdatedTask() throws PersistenceException {
+    public void testUpdateTask_shouldReturnUpdatedTask() {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();

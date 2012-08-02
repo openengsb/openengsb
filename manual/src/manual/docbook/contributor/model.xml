@@ -34,7 +34,7 @@
     <section>
         <title>Motivation</title>
         <para>
-            The idea behind the concept of the OpenEngSBModels or domain models is corelated to the domain/connector structure
+            The idea behind the concept of the OpenEngSBModels or domain models is correlated to the domain/connector structure
             of the OpenEngSB. Models should represent the objects used by a domain in an abstract manner (e.g. the model "Issue"
             in the issue domain). Since such models are defined on the domain level. All connectors, which belong to a specific
             domain, use the models defined by this domain. In that way every connector of a specific domain "speaks the same
@@ -50,14 +50,20 @@
             and the interface methods get generated and injected.
         </para>
         <para>
-            Every OpenEngSBModel object has four defined functions: getOpenEngSBModelEntries, addOpenEngSBModelEntry,
-            deletOpenEngSBModelEntry and retrieveInternalModelId.
+            Every OpenEngSBModel object has six defined functions: getOpenEngSBModelEntries, addOpenEngSBModelEntry,
+            deletOpenEngSBModelEntry, getOpenEngSBModelTail, setOpenEngSBModelTail and retrieveInternalModelId,.
             Whenever getOpenEngSBModelEntries is called, the model transform itself into a list of key/value pairs, where every entry have 
-            in addition the type of the value saved. This mechanism is used for easier saving of models to the EDB and also to transfer
-            a model to a different machine. With the addOpenEngSBModelEntry you can add additional entries which are not part of the model
-            definition itself to the model. With the removeOpenEngSBModelEntry you can manually remove an entry which has been inserted 
-            manually through addOpenEngSBModelEntry. Finally the retrieveInternamModelId method returns the internal id of the model. How
+            in addition the type of the value saved. This mechanism is used for easier saving of models to the EDB. With the
+            addOpenEngSBModelEntry you can add additional entries which are not part of the model definition itself to the model, the so
+            called model tail. With the removeOpenEngSBModelEntry you can manually remove an entry which has been inserted 
+            manually through addOpenEngSBModelEntry. With getOpenEngSBModelTail you can retrieve only the elements of the model tail,
+            while the getOpenEngSBModelEntries returns in addition the elements of the model itself. With the setOpenEngSBModelTail you
+            are able to set the model tail by yourself. Finally the retrieveInternamModelId method returns the internal id of the model. How
             such an id is set, will be explained later.
+        </para>
+        <para>
+            All of this functions can either be called by casting your model object to an OpenEngSBModel object and call the methods through
+            this object, or using the static ModelUtils class which encapsulate the casting and the method call for you.
         </para>
         <para>
             To enable all functionality of a model (inlcuding transformations) this model needs to be provided through the labs delegation

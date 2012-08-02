@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +113,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void callSend_shouldSendMessageViaJMS() throws URISyntaxException, IOException {
+    public void testCallSend_shouldSendMessageViaJMS() throws IOException {
         outgoingPort.send(call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
@@ -130,7 +129,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
+    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws IOException {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);

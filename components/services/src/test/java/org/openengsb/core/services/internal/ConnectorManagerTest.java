@@ -412,7 +412,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void createConnectorWithSkipDomainType_shouldNotInvokeSetDomainType() throws Exception {
+    public void testCreateConnectorWithSkipDomainType_shouldNotInvokeSetDomainType() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(Constants.SKIP_SET_DOMAIN_TYPE, "true");
         Map<String, Object> properties = new Hashtable<String, Object>();

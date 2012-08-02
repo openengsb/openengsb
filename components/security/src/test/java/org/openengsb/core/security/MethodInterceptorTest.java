@@ -17,7 +17,6 @@
 
 package org.openengsb.core.security;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -107,20 +106,20 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     }
 
     @Test(expected = AccessDeniedException.class)
-    public void testInvokeMethodOnWrongServiceInstance() throws Exception {
+    public void testInvokeMethodOnWrongServiceInstance_shouldThrowException() {
         authenticate(DEFAULT_USER, "password");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test
-    public void testAdminAccess() throws Exception {
+    public void testAdminAccess_shouldThrowNoException() {
         authenticate("admin", "adminpw");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test
-    public void testInvokeMethodAsRoot() throws Exception {
+    public void testInvokeMethodAsRoot_shouldInvokeMethod() throws Exception {
         authenticate(DEFAULT_USER, "password");
         ContextHolder.get().setCurrentContextId("foo");
         org.openengsb.core.security.SecurityContext.executeWithSystemPermissions(new Callable<Void>() {
@@ -135,8 +134,8 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         });
     }
 
-    @Test
-    public void testInvokeInThreadPool() throws Exception {
+    @Test(expected = ExecutionException.class)
+    public void testInvokeInThreadPool_shouldInvokeMethod() throws Exception {
         Callable<Void> task = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -155,12 +154,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         // executing as normal user must fail
         // the previously authenticated amdin-user must not be in the pooled thread anymore
         Future<Void> result = executor.submit(task);
-        try {
-            result.get();
-            fail("expected ExecutionException");
-        } catch (ExecutionException e) {
-            // expected
-        }
+        result.get();
     }
 
     private void authenticate(String user, String password) {

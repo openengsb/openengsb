@@ -139,7 +139,7 @@ public class MethodUtilTest {
     }
 
     @Test
-    public void addEnumValues() {
+    public void testAddEnumValues_shouldWork() {
         StringLocalizer mock = Mockito.mock(StringLocalizer.class);
         LocalizableString mock2 = Mockito.mock(LocalizableString.class);
         LocalizableString mock3 = Mockito.mock(LocalizableString.class);

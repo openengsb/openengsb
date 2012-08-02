@@ -42,19 +42,19 @@ public class ProcessBagTest {
     }
 
     @Test(expected = ProcessBagException.class)
-    public void addProperty_shouldReturnException() throws ProcessBagException {
+    public void testAddProperty_shouldReturnException() {
         pb.addProperty("test", "42");
         pb.addProperty("test", "42");
     }
 
     @Test
-    public void getPropertyClass_shouldReturnStringClass() throws Exception {
+    public void testGetPropertyClass_shouldReturnStringClass() {
         pb.addProperty("test", "42");
         assertTrue(pb.getPropertyClass("test") == String.class);
     }
 
     @Test
-    public void getPropertyKeyList_shouldReturnTwo() throws Exception {
+    public void testGetPropertyKeyList_shouldReturnTwo() {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
@@ -63,7 +63,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void removeProperty_shouldContainStringOnly() throws Exception {
+    public void testRemoveProperty_shouldContainStringOnly() {
         pb.addProperty("number", 42);
         pb.addProperty("string", "42");
         pb.removeProperty("number");
@@ -74,7 +74,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void getPropertyCount_shouldReturnTwo() throws Exception {
+    public void testGetPropertyCount_shouldReturnTwo() {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
@@ -82,14 +82,14 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void addOrReplaceProperty_shouldOverwriteValue() throws Exception {
+    public void testAddOrReplaceProperty_shouldOverwriteValue() {
         pb.addProperty("test", "42");
         pb.addOrReplaceProperty("test", "43");
         assertEquals(pb.getProperty("test"), "43");
     }
 
     @Test
-    public void removeAllProperties_shouldDeleteEverything() throws Exception {
+    public void testRemoveAllProperties_shouldDeleteEverything() {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
@@ -98,7 +98,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void testWildeCatComperator_shouldSucceed() throws Exception {
+    public void testWildeCatComperator_shouldSucceed() {
         ProcessBag processBag = new ProcessBag();
         processBag.setContext("blub");
         processBag.setProcessId("lala");
@@ -107,7 +107,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void testSame_shouldSucceed() throws Exception {
+    public void testSameProcessBagsAreEquals_shouldSucceed() {
         ProcessBag processBag = new ProcessBag();
         processBag.setContext("blub");
         processBag.setProcessId("lala");
@@ -116,12 +116,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void testRhsNull_shouldFail() throws Exception {
-        assertFalse(new ProcessBag().equals(null));
-    }
-
-    @Test
-    public void testRhsInequalToLhs_shouldFail() throws Exception {
+    public void testInequalsProcessBagsareEquals_shouldFail() {
         ProcessBag processBag = new ProcessBag();
         processBag.setContext("blub");
         processBag.setProcessId("lala");
@@ -134,7 +129,7 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void testLhsEmptyProperties_shouldSucceed() throws Exception {
+    public void testIfNewProcessBagIsEqualsToFilledProcessBag_shouldSucceed() {
         ProcessBag processBag = new ProcessBag();
         HashMap<String, Object> props = Maps.newHashMap();
         props.put("a", "b");
@@ -143,12 +138,11 @@ public class ProcessBagTest {
     }
 
     @Test
-    public void testRhsEmptyProperties_shouldFail() throws Exception {
+    public void testIfFilledProcessBagIsEqualsToNewProcessBag_shouldFail() {
         ProcessBag processBag = new ProcessBag();
         Map<String, Object> props = Maps.newHashMap();
         props.put("a", "b");
         processBag.setProperties(props);
         assertFalse(processBag.equals(new ProcessBag()));
     }
-
 }
