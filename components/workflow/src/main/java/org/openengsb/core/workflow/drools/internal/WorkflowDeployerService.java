@@ -218,7 +218,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         try {
             RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
             String ending = FilenameUtils.getExtension(artifact.getName());
-            if(typeFromFile != null){
+            if (typeFromFile != null) {
                 doUpdateArtifact(artifact);
             } else if (IMPORT_ENDING.equals(ending)) {
                 installImportFile(artifact);
