@@ -265,7 +265,24 @@ public class WorkflowDeployerServiceTest {
         importFile.delete();
         workflowDeployer.uninstall(importFile);
 
-        assertThat(ruleManager.listImports(), not(hasItem(BigInteger.class.getName())));
+        verify(ruleManager).removeImport(BigInteger.class.getName());
+    }
+
+    @Test
+    public void updateImport_shouldAddImports() throws Exception {
+        File importFile = temporaryFolder.newFile("test1.import");
+        FileUtils.writeLines(importFile, Arrays.asList(
+                Event.class.getName(),
+                BigInteger.class.getName(),
+                ""));
+        workflowDeployer.install(importFile);
+        FileUtils.writeLines(importFile, Arrays.asList(
+                Event.class.getName(),
+                BigInteger.class.getName(),
+                Number.class.getName(),
+                ""));
+        workflowDeployer.update(importFile);
+        verify(ruleManager).addImport(Number.class.getName());
     }
 
     private void setupWithRealCompiler() {
