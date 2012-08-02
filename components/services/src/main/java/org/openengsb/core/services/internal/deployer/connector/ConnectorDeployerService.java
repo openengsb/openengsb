@@ -19,24 +19,35 @@ package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +55,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.MapDifference;
+import com.google.common.collect.Sets;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService
         implements ArtifactInstaller {
@@ -70,6 +82,19 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             }
         });
 
+    private Set<File> failedInstalls = Sets.newHashSet();
+
+    private BundleContext bundleContext;
+
+    public void init() {
+        bundleContext.addBundleListener(new BundleListener() {
+            @Override
+            public void bundleChanged(BundleEvent event) {
+                tryInstallFailed();
+            }
+        });
+    }
+
     @Override
     public boolean canHandle(File artifact) {
         LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")",
@@ -86,10 +111,24 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")",
             artifact.getAbsolutePath());
-        final ConnectorFile configFile = oldConfigs.get(artifact);
+        synchronized (failedInstalls) {
+            if (!doInstall(artifact)) {
+                failedInstalls.add(artifact);
+            }
+        }
+    }
+
+    private boolean doInstall(File artifact) {
+        final ConnectorFile configFile;
+        try {
+            configFile = oldConfigs.get(artifact);
+        } catch (ExecutionException e) {
+            LOGGER.error("severe error when installing artifact", e);
+            return false;
+        }
         configFile.update(artifact);
         final Map<String, Object> properties = new Hashtable<String, Object>(
-            configFile.getProperties());
+                configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null
                 && ConnectorFile.isRootService(artifact)) {
@@ -101,17 +140,43 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
         final Map<String, String> attributes = configFile.getAttributes();
 
-        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                ConnectorDescription connectorDescription =
-                    new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
-                        attributes, properties);
-                serviceManager.createWithId(name, connectorDescription);
-                return null;
-            }
-        });
+        if (!haveDomainProvider(configFile.getDomainType())) {
+            LOGGER.info("installing {} delayed. Waiting for DomainProvider", artifact);
+            return false;
+        }
+        if (!haveConnectorFactory(configFile.getDomainType(), configFile.getConnectorType())) {
+            LOGGER.info("installing {} delayed. Waiting for ConnectorFactory", artifact);
+            return false;
+        }
+        try {
+            SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    ConnectorDescription connectorDescription =
+                            new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
+                                    attributes, properties);
+                    serviceManager.createWithId(name, connectorDescription);
+                    return null;
+                }
+            });
+        } catch (ExecutionException e) {
+            LOGGER.info("installing {} delayed", artifact);
+            LOGGER.debug("installing {} failed because of Exception", artifact, e);
+            return false;
+        }
+        return true;
+    }
 
+    public void tryInstallFailed() {
+        synchronized (failedInstalls) {
+            Iterator<File> iterator = failedInstalls.iterator();
+            while (iterator.hasNext()) {
+                File f = iterator.next();
+                if (doInstall(f)) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 
     @Override
@@ -201,8 +266,36 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         });
     }
 
+    protected boolean haveConnectorFactory(String domainType, String connectorType) {
+        //Filter connectorFilter = FilterUtils.makeFilter(ConnectorInstanceFactory.class,
+        String connectorFilter = String.format("(&(%s=%s)(%s=%s))",
+                org.openengsb.core.api.Constants.DOMAIN_KEY, domainType,
+                org.openengsb.core.api.Constants.CONNECTOR_KEY, connectorType);
+        try {
+            Collection<ServiceReference<ConnectorInstanceFactory>> serviceReferences =
+                    bundleContext.getServiceReferences(ConnectorInstanceFactory.class, connectorFilter);
+            return !serviceReferences.isEmpty();
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean haveDomainProvider(String domain) {
+        String domainFilter = String.format("(%s=%s)", org.openengsb.core.api.Constants.DOMAIN_KEY, domain);
+        try {
+            Collection<ServiceReference<DomainProvider>> serviceReferences =
+                    bundleContext.getServiceReferences(DomainProvider.class, domainFilter);
+            return !serviceReferences.isEmpty();
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void setServiceManager(ConnectorManager serviceManager) {
         this.serviceManager = serviceManager;
     }
 
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 }
