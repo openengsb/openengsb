@@ -175,37 +175,6 @@ public class LdapDao {
     }
 
     /**
-     * Deletes all direct children which match the searchFilter, including their subtrees. Does not delete parent.
-     * 
-     * @throws NoSuchNodeException if parent does not exist
-     * @throws MissingParentException if some node above parent does not exist
-     * */
-    public void deleteMatchingChildren(Dn parent, String searchFilter) throws MissingParentException,
-        NoSuchNodeException {
-
-        try {
-            if (!connection.exists(parent.getParent())) {
-                throw new MissingParentException(lastMatch(parent));
-            } else if (!connection.exists(parent)) {
-                throw new NoSuchNodeException(parent);
-            }
-        } catch (LdapException e) {
-            throw new LdapGeneralException(e);
-        }
-
-        try {
-            // ldap search syntax: (&(exp1)(exp2)(exp3))
-            EntryCursor entryCursor = connection.search(parent, String.format("(&(objectclass=*)%s)", searchFilter),
-                SearchScope.ONELEVEL);
-            while (entryCursor.next()) {
-                deleteSubtreeIncludingRoot(entryCursor.get().getDn());
-            }
-        } catch (Exception e) {
-            throw new LdapGeneralException(e);
-        }
-    }
-
-    /**
      * Deletes the parent and its entire subtree.<br>
      * 
      * @throws NoSuchNodeException if parent does not exist
