@@ -32,34 +32,58 @@ public class Node {
     private List<Node> children;
     private Entry entry;
 
+    /**
+     * Constructs a new node with given {@link Entry}.
+     * */
     public Node(Entry entry) {
         this.entry = entry;
     }
 
+    /**
+     * Returns the immediate ancestor of this node.
+     * */
     public Node getParent() {
         return parent;
     }
 
+    /**
+     * Sets the immediate ancestor of this node.
+     * */
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
+    /**
+     * Returns a list of this node's children.
+     * */
     public List<Node> getChildren() {
         return children;
     }
 
+    /**
+     * Sets this node's children.
+     * */
     public void setChildren(List<Node> children) {
         this.children = children;
     }
 
+    /**
+     * Returns this node's underlying {@link Entry}.
+     * */
     public Entry getEntry() {
         return entry;
     }
 
+    /**
+     * Sets this node's underlying {@link Entry}.
+     * */
     public void setEntry(Entry entry) {
         this.entry = entry;
     }
 
+    /**
+     * Two Nodes are equal if they have the same {@link Entry}, parent and children.
+     * */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Node)) {
@@ -67,7 +91,7 @@ public class Node {
         }
         final Node other = (Node) obj;
         return Objects.equal(other.parent, this.parent) && Objects.equal(other.entry, this.entry)
-                && Objects.equal(other.children, this.children);
+            && Objects.equal(other.children, this.children);
     }
 
     @Override

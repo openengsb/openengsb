@@ -20,9 +20,8 @@ package org.openengsb.infrastructure.ldap.internal;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 
 /**
- * Since Ldap does not allow duplicate Dns, create or update methods can throw
- * this exception to communicate a negative server response related to the
- * prevention of such inconsistencies.
+ * Since Ldap does not allow duplicate Dns, create or update methods can throw this exception to communicate a negative
+ * server response related to the prevention of such inconsistencies.
  * */
 public class EntryAlreadyExistsException extends RuntimeException {
 
@@ -31,7 +30,7 @@ public class EntryAlreadyExistsException extends RuntimeException {
     private final Entry entry;
 
     /**
-     * @param entry the {@link Entry} which was rejected by the server
+     * Pass the {@link Entry} which was rejected by the server.
      * */
     public EntryAlreadyExistsException(Entry entry) {
         super();
@@ -39,7 +38,7 @@ public class EntryAlreadyExistsException extends RuntimeException {
     }
 
     /**
-     * @param entry the {@link Entry} which was rejected by the server
+     * Pass the {@link Entry} which was rejected by the server.
      * */
     public EntryAlreadyExistsException(String message, Throwable cause, Entry entry) {
         super(message, cause);
@@ -47,7 +46,7 @@ public class EntryAlreadyExistsException extends RuntimeException {
     }
 
     /**
-     * @param entry the {@link Entry} which was rejected by the server
+     * Pass the {@link Entry} which was rejected by the server.
      * */
     public EntryAlreadyExistsException(String message, Entry entry) {
         super(message);
@@ -55,7 +54,7 @@ public class EntryAlreadyExistsException extends RuntimeException {
     }
 
     /**
-     * @param entry the {@link Entry} which was rejected by the server
+     * Pass the {@link Entry} which was rejected by the server.
      * */
     public EntryAlreadyExistsException(Throwable cause, Entry entry) {
         super(cause);

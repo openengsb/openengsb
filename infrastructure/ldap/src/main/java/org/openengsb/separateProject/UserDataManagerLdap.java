@@ -46,7 +46,7 @@ import org.openengsb.infrastructure.ldap.internal.MissingParentException;
 import org.openengsb.infrastructure.ldap.internal.NoSuchNodeException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
 import org.openengsb.infrastructure.ldap.util.LdapUtils;
-import org.openengsb.infrastructure.ldap.util.OrderFilter;
+import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +110,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
-        OrderFilter.sortById(entries);
+        TimebasedOrderFilter.sortById(entries);
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
@@ -123,7 +123,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
         }
-        OrderFilter.sortById(entries);
+        TimebasedOrderFilter.sortById(entries);
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
@@ -159,7 +159,7 @@ public class UserDataManagerLdap implements UserDataManager {
         for (String s : permissionSet) { // done in separate loop to provide
                                          // some atomicity
             Entry entry = EntryFactory.namedObject(s, parent);
-            OrderFilter.addId(entry, false);
+            TimebasedOrderFilter.addId(entry, false);
             entries.add(entry);
         }
         dao.storeSkipExisting(entries);
@@ -189,7 +189,7 @@ public class UserDataManagerLdap implements UserDataManager {
     @Override
     public void createPermissionSet(String permissionSet, Permission... permission)
         throws PermissionSetAlreadyExistsException {
-        List<Entry> permissionSetStructure = EntryBeanConverter.globalPermissionSetStructure(permissionSet);
+        List<Entry> permissionSetStructure = PermissionsUtils.globalPermissionSetStructure(permissionSet);
         try {
             dao.store(permissionSetStructure);
         } catch (EntryAlreadyExistsException e) {
@@ -207,7 +207,7 @@ public class UserDataManagerLdap implements UserDataManager {
             PermissionData data = PermissionUtils.convertPermissionToPermissionData(p);
             pd.add(data);
         }
-        List<Entry> permissionStructure = EntryBeanConverter.permissionStructureFromPermissionData(pd, parent);
+        List<Entry> permissionStructure = PermissionsUtils.permissionStructureFromPermissionData(pd, parent);
         dao.store(permissionStructure);
     }
 
@@ -233,7 +233,7 @@ public class UserDataManagerLdap implements UserDataManager {
     }
 
     private void deletePermission(Dn parent, Permission... permission) {
-        List<Node> nodes = dao.searchSubtreeNode(parent);
+        List<Node> nodes = dao.searchSubtree(parent);
         Collection<Permission> permissions = extractPermissionsFromNodes(nodes);
         boolean b = permissions.removeAll(Arrays.asList(permission));
         if (b) {
@@ -275,7 +275,7 @@ public class UserDataManagerLdap implements UserDataManager {
     public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
         List<Node> nodes;
         try {
-            nodes = dao.searchSubtreeNode(SchemaConstants.ouUserPermissionsDirect(username));
+            nodes = dao.searchSubtree(SchemaConstants.ouUserPermissionsDirect(username));
         } catch (MissingParentException e) {
             throw new UserNotFoundException();
         }
@@ -284,13 +284,13 @@ public class UserDataManagerLdap implements UserDataManager {
 
     private Collection<Permission> extractPermissionsFromNodes(List<Node> nodes) {
         Collection<PermissionData> permissionData = new LinkedList<PermissionData>();
-        OrderFilter.sortByIdNode(nodes);
+        TimebasedOrderFilter.sortByIdNode(nodes);
         for (Node permission : nodes) {
             Map<String, EntryValue> attributes = Maps.newHashMap();
             for (Node property : permission.getChildren()) {
 
                 List<EntryElement> entryElements = new LinkedList<EntryElement>();
-                OrderFilter.sortByIdNode(property.getChildren());
+                TimebasedOrderFilter.sortByIdNode(property.getChildren());
                 for (Node propertyValue : property.getChildren()) {
                     EntryElement entryElement = new EntryElement();
                     entryElement.setType(LdapUtils.extractFirstValueOfAttribute(propertyValue.getEntry(),
@@ -325,7 +325,7 @@ public class UserDataManagerLdap implements UserDataManager {
         throws PermissionSetNotFoundException {
         List<Node> nodes;
         try {
-            nodes = dao.searchSubtreeNode(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
+            nodes = dao.searchSubtree(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
@@ -408,7 +408,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (NoSuchNodeException e) {
             throw new NoSuchAttributeException();
         }
-        OrderFilter.sortById(entries);
+        TimebasedOrderFilter.sortById(entries);
         return extractUserAttributeValues(entries);
     }
 
@@ -432,7 +432,7 @@ public class UserDataManagerLdap implements UserDataManager {
             Entry entry = EntryFactory.javaObject(e.getType(), e.getValue(), attribute.getDn());
             attributeValues.add(entry);
         }
-        OrderFilter.addIds(attributeValues, true);
+        TimebasedOrderFilter.addIds(attributeValues, true);
 
         try {
             dao.storeOverwriteExisting(attribute);

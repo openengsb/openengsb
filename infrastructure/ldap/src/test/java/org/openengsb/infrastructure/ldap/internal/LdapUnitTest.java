@@ -163,7 +163,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
     private void clearDIT() {
         ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouUsers());
         ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(
-                SchemaConstants.ouGlobalPermissionSets());
+            SchemaConstants.ouGlobalPermissionSets());
     }
 
     /*--------------- users -----------------*/
@@ -234,9 +234,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
         userManager.setUserCredentials(testUser1, credentialsName, originalValue);
         String returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
         assertThat(returnedCredentials, is(originalValue));
-        userManager.setUserCredentials(testUser1, credentialsName, newValue); // overwrite
-                                                                              // original
-                                                                              // value
+        userManager.setUserCredentials(testUser1, credentialsName, newValue); // overwrite original value
         returnedCredentials = userManager.getUserCredentials(testUser1, credentialsName);
         assertThat(returnedCredentials, is(newValue));
     }
@@ -338,8 +336,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
     /*--------------- permissions -----------------*/
 
     /*
-     * What to test: null description insertion order duplicates nonexisting
-     * permission set cycles
+     * What to test: null description insertion order duplicates nonexisting permission set cycles
      */
 
     @Test
@@ -357,7 +354,7 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
         List<String> childOfParent = new LinkedList<String>(userManager.getPermissionSetsFromPermissionSet(parent));
         List<String> childOfChild = new LinkedList<String>(userManager.getPermissionSetsFromPermissionSet(child));
         List<String> childOfGrandchild = new LinkedList<String>(
-                userManager.getPermissionSetsFromPermissionSet(grandchild));
+            userManager.getPermissionSetsFromPermissionSet(grandchild));
 
         assertThat(childOfParent.size(), is(1));
         assertThat(childOfChild.size(), is(1));

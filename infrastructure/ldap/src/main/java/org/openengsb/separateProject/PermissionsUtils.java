@@ -27,38 +27,33 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
 import org.openengsb.core.security.internal.model.PermissionData;
-import org.openengsb.infrastructure.ldap.util.OrderFilter;
+import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 
-public final class EntryBeanConverter {
+/**
+ * Creates subtrees representing permissions and permission sets.
+ * */
+public final class PermissionsUtils {
 
-    private EntryBeanConverter() {
+    private PermissionsUtils() {
     }
 
     /**
-     * Returns a list of entries representing given {@link PermissionSetData}.
-     * The entries can be inserted right away.
-     * 
-     * @param data
-     * @return
+     * Returns a list of entries representing a permissionSet. The list should not be reordered since its order follows
+     * the tree structure of the DIT. It can be inserted into the DIT right away.
      */
     public static List<Entry> globalPermissionSetStructure(String permissionSet) {
-
         Entry permissionSetEntry = EntryFactory.namedObject(permissionSet, SchemaConstants.ouGlobalPermissionSets());
         Entry ouDirect = EntryFactory.organizationalUnit("direct", permissionSetEntry.getDn());
         Entry ouChildrenSets = EntryFactory.organizationalUnit("childrenSets", permissionSetEntry.getDn());
         Entry ouAttributes = EntryFactory.organizationalUnit("attributes", permissionSetEntry.getDn());
-
         return Arrays.asList(permissionSetEntry, ouAttributes, ouDirect, ouChildrenSets);
     }
 
     /**
-     * Returns a list of entries representing given {@link PermissionData}. The
-     * list can be inserted into the DIT as is.
-     * 
-     * @param data
-     * @param parent
+     * Returns a list of entries representing a list of {@link PermissionData}. The list should not be reordered since
+     * its order follows the tree structure of the DIT. It can be inserted into the DIT right away.
      */
-    public static List<Entry> permissionStructureFromPermissionData(Collection<PermissionData> data, Dn parent) {
+    public static List<Entry> permissionStructureFromPermissionData(Collection<PermissionData> data, Dn baseDn) {
 
         List<Entry> permissions = new LinkedList<Entry>();
         List<Entry> properties = new LinkedList<Entry>();
@@ -67,8 +62,8 @@ public final class EntryBeanConverter {
 
         for (PermissionData p : data) {
             String permissionType = p.getType();
-            Entry permissionEntry = EntryFactory.javaObject(permissionType, null, parent);
-            OrderFilter.addId(permissionEntry, true);
+            Entry permissionEntry = EntryFactory.javaObject(permissionType, null, baseDn);
+            TimebasedOrderFilter.addId(permissionEntry, true);
             permissions.add(permissionEntry);
 
             for (EntryValue entryValue : p.getAttributes().values()) {
@@ -80,12 +75,11 @@ public final class EntryBeanConverter {
                     String type = entryElement.getType();
                     String value = entryElement.getValue();
                     Entry propertyValueEntry = EntryFactory.javaObject(type, value, propertyEntry.getDn());
-                    OrderFilter.addId(propertyValueEntry, true);
+                    TimebasedOrderFilter.addId(propertyValueEntry, true);
                     propertyValues.add(propertyValueEntry);
                 }
             }
         }
-
         result.addAll(permissions);
         result.addAll(properties);
         result.addAll(propertyValues);

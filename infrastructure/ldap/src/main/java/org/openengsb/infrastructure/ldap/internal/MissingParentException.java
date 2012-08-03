@@ -20,51 +20,52 @@ package org.openengsb.infrastructure.ldap.internal;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 /**
- * Thrown upon trying to access a non-existing {@link Dn}. Unlike
- * {@link NoSuchNodeException}, this exception indicates that resolving the Dn
- * failed at a level above its leaf.
+ * Thrown upon trying to access a non-existing {@link Dn}. Unlike {@link NoSuchNodeException}, this exception indicates
+ * that resolving the Dn failed at a level above its leaf.
  * */
 public class MissingParentException extends RuntimeException {
 
     private static final long serialVersionUID = 8263832471990241311L;
 
-    private Dn lowestMatchedDn;
-
-    public MissingParentException() {
-        super();
-    }
+    private final Dn lowestMatchedDn;
 
     /**
-     * @param lowestMatchedDn the last existing Dn in the hierarchy.
+     * Pass the last existing Dn in the hierarchy so that catch blocks can find out where the failure occured.
      */
     public MissingParentException(Dn lowestMatchedDn) {
+        super();
         this.lowestMatchedDn = lowestMatchedDn;
     }
 
-    public MissingParentException(String message) {
+    /**
+     * Pass the last existing Dn in the hierarchy so that catch blocks can find out where the failure occured.
+     */
+    public MissingParentException(String message, Dn lowestMatchedDn) {
         super(message);
-    }
-
-    public MissingParentException(Throwable cause) {
-        super(cause);
-    }
-
-    public MissingParentException(String message, Throwable cause) {
-        super(message, cause);
+        this.lowestMatchedDn = lowestMatchedDn;
     }
 
     /**
-     * @return the last existing Dn in the hierarchy.
+     * Pass the last existing Dn in the hierarchy so that catch blocks can find out where the failure occured.
+     */
+    public MissingParentException(Throwable cause, Dn lowestMatchedDn) {
+        super(cause);
+        this.lowestMatchedDn = lowestMatchedDn;
+    }
+
+    /**
+     * Pass the last existing Dn in the hierarchy so that catch blocks can find out where the failure occured.
+     */
+    public MissingParentException(String message, Throwable cause, Dn lowestMatchedDn) {
+        super(message, cause);
+        this.lowestMatchedDn = lowestMatchedDn;
+    }
+
+    /**
+     * Returns the last existing Dn in the hierarchy.
      */
     public Dn getLowestMatchedDn() {
         return lowestMatchedDn;
-    }
-
-    /**
-     * @param lowestMatchedDn the last existing Dn in the hierarchy.
-     */
-    public void setLowestMatchedDn(Dn dn) {
-        this.lowestMatchedDn = dn;
     }
 
 }

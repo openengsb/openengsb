@@ -19,6 +19,7 @@ package org.openengsb.separateProject;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
 import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 /**
@@ -49,7 +50,7 @@ public final class SchemaConstants {
         try {
             return new Dn("dc=openengsb,dc=org");
         } catch (LdapInvalidDnException e) {
-            throw new RuntimeException(e);
+            throw new LdapGeneralException(e);
         }
     }
 
