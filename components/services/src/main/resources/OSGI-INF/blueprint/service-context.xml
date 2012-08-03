@@ -160,8 +160,6 @@
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.InfoProvider" />
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-  <reference id="securityInterceptor" availability="optional" interface="org.aopalliance.intercept.MethodInterceptor"
-    filter="(org.openengsb.interceptor=security)" />
 
   <bean class="org.openengsb.core.services.internal.DomainProviderManager" init-method="start"
     destroy-method="stop">

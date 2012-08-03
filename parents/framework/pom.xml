@@ -383,6 +383,11 @@
         <artifactId>org.openengsb.domain.auditing</artifactId>
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authentication</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
