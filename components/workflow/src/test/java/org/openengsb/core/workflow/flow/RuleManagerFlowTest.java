@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.model.TestObject;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class RuleManagerFlowTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleManagerFlowTest.class);
 
-    private RuleManager source;
+    private DroolsRuleManager source;
     private KnowledgeBase rulebase;
     private StatefulKnowledgeSession session;
 
@@ -70,8 +71,8 @@ public class RuleManagerFlowTest {
         }
     }
 
-    protected RuleManager getRuleBaseSource() throws Exception {
-        RuleManager source = PersistenceTestUtil.getRuleManager();
+    protected DroolsRuleManager getRuleBaseSource() throws Exception {
+        DroolsRuleManager source = PersistenceTestUtil.getRuleManager();
         return source;
     }
 

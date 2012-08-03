@@ -33,9 +33,9 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.workflow.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 import org.openengsb.domain.auditing.AuditingDomain;
@@ -58,7 +58,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     private WorkflowServiceImpl workflowService;
-    private RuleManager manager;
+    private DroolsRuleManager manager;
     private DummyExampleDomain example;
     private DummyNotificationDomain notification;
     private DummyService myservice;

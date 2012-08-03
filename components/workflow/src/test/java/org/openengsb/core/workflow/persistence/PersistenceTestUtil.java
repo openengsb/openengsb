@@ -27,11 +27,11 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.DefaultObjectPersistenceBackend;
 import org.openengsb.core.persistence.internal.DefaultPersistenceIndex;
 import org.openengsb.core.persistence.internal.DefaultPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
+import org.openengsb.core.workflow.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
@@ -42,18 +42,18 @@ public final class PersistenceTestUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);
 
-    public static RuleManager getRuleManagerWithMockedPersistence() throws Exception {
+    public static DroolsRuleManager getRuleManagerWithMockedPersistence() throws Exception {
         PersistenceRuleManager manager = new PersistenceRuleManager();
         DummyPersistence persistenceMock = new DummyPersistence();
         manager.setPersistence(persistenceMock);
         return manager;
     }
 
-    public static RuleManager getRuleManager() throws Exception {
+    public static DroolsRuleManager getRuleManager() throws Exception {
         return getRuleManagerWithMockedPersistence();
     }
 
-    public static RuleManager getRuleManagerWithPersistenceService() throws PersistenceException, IOException,
+    public static DroolsRuleManager getRuleManagerWithPersistenceService() throws PersistenceException, IOException,
         RuleBaseException {
         PersistenceRuleManager manager = new PersistenceRuleManager();
         DefaultPersistenceService persistence = createPersistence();

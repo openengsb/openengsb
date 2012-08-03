@@ -42,8 +42,10 @@ public interface RuleManager extends OpenEngSBService {
      * provides a reference to the rulebase. This reference remains valid as long as the bundle is active. the rulebase
      * is modified "on-the-fly".
      *
-     * @return reference to the rulebase
+     * @return reference to the rulebas
+     * @deprecated use workflow-manager's internal DroolsRuleManager instead
      */
+    @Deprecated
     KnowledgeBase getRulebase();
 
     /**

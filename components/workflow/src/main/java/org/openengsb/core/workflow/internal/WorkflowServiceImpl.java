@@ -55,10 +55,12 @@ import org.drools.runtime.rule.FactHandle;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.api.workflow.RemoteEventProcessor;
 import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
@@ -67,9 +69,6 @@ import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.api.workflow.model.Task;
-import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -88,7 +87,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private static final String FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD = ", %s == \"%s\"";
 
-    private RuleManager rulemanager;
+    private DroolsRuleManager rulemanager;
     private BundleContext bundleContext;
     private TaskboxService taskbox;
 
@@ -438,7 +437,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
-    public void setRulemanager(RuleManager rulemanager) {
+    public void setRulemanager(DroolsRuleManager rulemanager) {
         this.rulemanager = rulemanager;
     }
 

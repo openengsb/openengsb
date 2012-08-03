@@ -25,15 +25,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.workflow.RuleUtil;
+import org.openengsb.core.workflow.internal.DroolsRuleManager;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 
 public abstract class AbstractRuleManagerTest {
-    protected RuleManager ruleManager;
+    protected DroolsRuleManager ruleManager;
     protected KnowledgeBase rulebase;
     protected StatefulKnowledgeSession session;
     protected RuleListener listener;
