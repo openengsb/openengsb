@@ -169,11 +169,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     public void tryInstallFailed() {
         synchronized (failedInstalls) {
-            Iterator<File> iterator = failedInstalls.iterator();
-            while (iterator.hasNext()) {
-                File f = iterator.next();
-                if (doInstall(f)) {
-                    iterator.remove();
+            Iterator<File> failedInstallsIterator = failedInstalls.iterator();
+            while (failedInstallsIterator.hasNext()) {
+                File fileToInstall = failedInstallsIterator.next();
+                if (doInstall(fileToInstall)) {
+                    failedInstallsIterator.remove();
                 }
             }
         }
