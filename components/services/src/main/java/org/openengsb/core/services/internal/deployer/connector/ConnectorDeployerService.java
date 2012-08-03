@@ -62,6 +62,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private static final String CONNECTOR_EXTENSION = ".connector";
 
+    private static final String DOMAIN_PATTERN = "(" + org.openengsb.core.api.Constants.DOMAIN_KEY + "=%s)";
+
+    private static final String DOMAIN_CONNECTOR_PATTERN = "("
+            + "&(" + org.openengsb.core.api.Constants.DOMAIN_KEY + "=%s)"
+            + "(" + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=%s)"
+            + ")";
+
     private static final Logger LOGGER = LoggerFactory
         .getLogger(ConnectorDeployerService.class);
 
@@ -267,10 +274,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     }
 
     protected boolean haveConnectorFactory(String domainType, String connectorType) {
-        //Filter connectorFilter = FilterUtils.makeFilter(ConnectorInstanceFactory.class,
-        String connectorFilter = String.format("(&(%s=%s)(%s=%s))",
-                org.openengsb.core.api.Constants.DOMAIN_KEY, domainType,
-                org.openengsb.core.api.Constants.CONNECTOR_KEY, connectorType);
+        String connectorFilter = String.format(DOMAIN_CONNECTOR_PATTERN, domainType, connectorType);
         try {
             Collection<ServiceReference<ConnectorInstanceFactory>> serviceReferences =
                     bundleContext.getServiceReferences(ConnectorInstanceFactory.class, connectorFilter);
@@ -281,7 +285,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     }
 
     private boolean haveDomainProvider(String domain) {
-        String domainFilter = String.format("(%s=%s)", org.openengsb.core.api.Constants.DOMAIN_KEY, domain);
+        String domainFilter = String.format(DOMAIN_PATTERN, domain);
         try {
             Collection<ServiceReference<DomainProvider>> serviceReferences =
                     bundleContext.getServiceReferences(DomainProvider.class, domainFilter);
