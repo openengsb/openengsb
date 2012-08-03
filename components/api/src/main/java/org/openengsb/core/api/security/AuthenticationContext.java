@@ -18,18 +18,34 @@ package org.openengsb.core.api.security;
 
 import java.util.List;
 
-
+/**
+ * Provides methods for authentication and determining who is currently authenticated
+ */
 public interface AuthenticationContext {
 
+    /**
+     * Authenticates the user and binds that authentication to the current Thread. Subsequent calls to
+     * getAllAuthenticatedPrincipals or getAuthenticatedPrincipal must return the principals of the user authenticated
+     * here until logout is called.
+     * New Threads spawned from the current thread must inherit the authentication
+     */
     void login(String username, Credentials credentials);
 
+    /**
+     * Invalidates the authentication bound to the current Thread and all threads spawned from that thread.
+     */
     void logout();
 
     /**
-     * returns the authenticated user or null if no authentication was found.
+     * returns the principal of the currently authenticated user or null if no authentication was bound to the current
+     * Thread
      */
     Object getAuthenticatedPrincipal();
 
+    /**
+     * returns all principals of the currently authenticated user. If no authentication was bound to the current
+     * Thread the list is empty.
+     */
     List<Object> getAllAuthenticatedPrincipals();
 
 }
