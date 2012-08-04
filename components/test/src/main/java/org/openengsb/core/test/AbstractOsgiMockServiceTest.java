@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -126,6 +127,17 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 return serviceReferences[0];
             }
         });
+
+        when(bundleContext.getServiceReferences(any(Class.class), anyString())).thenAnswer(new Answer<Collection<?>>() {
+            @Override
+            public Collection<?> answer(InvocationOnMock invocation) throws Throwable {
+                Class<?> clazz = (Class<?>) invocation.getArguments()[0];
+                String filter = (String) invocation.getArguments()[1];
+                ServiceReference<?>[] references = bundleContext.getAllServiceReferences(clazz.getName(), filter);
+                return Arrays.asList(references);
+            }
+        });
+
         /*
          * retrieve a service-instance from the serviceReferencesMap
          */
