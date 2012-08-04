@@ -124,7 +124,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         tryInstallingFailedArtifacts();
     }
 
-    private void tryInstallingFailedArtifacts() throws Exception {
+    private synchronized void tryInstallingFailedArtifacts() throws Exception {
         Exception occured = null;
         synchronized (failedArtifacts) {
             Iterator<File> iterator = failedArtifacts.iterator();
@@ -154,7 +154,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,
+    private synchronized void doInstall(File artifact) throws RuleBaseException, IOException, SAXException,
         ParserConfigurationException {
         String ending = FilenameUtils.getExtension(artifact.getName());
         RuleBaseElementType typeFromFile = getTypeFromFile(artifact);
@@ -170,7 +170,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void installGlobalFile(File artifact) throws IOException {
+    private synchronized void installGlobalFile(File artifact) throws IOException {
         try {
             for (String importLine : FileUtils.readLines(artifact)) {
                 if (importLine.isEmpty() || importLine.startsWith("#")) {
@@ -192,7 +192,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void installImportFile(File artifact) throws IOException {
+    private synchronized void installImportFile(File artifact) throws IOException {
         for (String importLine : FileUtils.readLines(artifact)) {
             if (!importLine.isEmpty() && !importLine.startsWith("#")) {
                 ruleManager.addImport(importLine);
@@ -201,7 +201,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void installRuleBaseElement(File artifact) throws RuleBaseException, IOException, SAXException,
+    private synchronized void installRuleBaseElement(File artifact) throws RuleBaseException, IOException, SAXException,
         ParserConfigurationException {
         RuleBaseElementId id = getIdforFile(artifact);
         String code = FileUtils.readFileToString(artifact);
@@ -232,7 +232,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.info("Successfully updated workflow file \"{}\"", artifact.getName());
     }
 
-    private void doUpdateArtifact(File artifact) throws SAXException, IOException, ParserConfigurationException {
+    private synchronized void doUpdateArtifact(File artifact) throws SAXException, IOException, ParserConfigurationException {
         RuleBaseElementId id = getIdforFile(artifact);
         String code = FileUtils.readFileToString(artifact);
         boolean changed = false;
@@ -261,7 +261,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.info("Successfully deleted workflow file \"{}\"", artifact.getName());
     }
 
-    private void doUninstall(File artifact) throws Exception {
+    private synchronized void doUninstall(File artifact) throws Exception {
         RuleBaseElementType type = getTypeFromFile(artifact);
         if (type != null) {
             RuleBaseElementId id = getIdforFile(artifact);
@@ -279,14 +279,14 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         }
     }
 
-    private void unInstallGlobalFile(File artifact) {
+    private synchronized void unInstallGlobalFile(File artifact) {
         Set<String> globalsGarbage = globalReferences.removeFile(artifact);
         for (String i : globalsGarbage) {
             ruleManager.removeGlobal(i);
         }
     }
 
-    private void unInstallImportFile(File artifact) {
+    private synchronized void unInstallImportFile(File artifact) {
         Set<String> garbageImports = importReferences.removeFile(artifact);
         for (String i : garbageImports) {
             ruleManager.removeImport(i);
