@@ -99,44 +99,46 @@ public class JPADatabase implements EngineeringDatabaseService {
      * EDBException if an error occurs.
      */
     private Long performCommit(EDBCommit commit) throws EDBException {
-        long timestamp = System.currentTimeMillis();
-        commit.setTimestamp(timestamp);
-        for (EDBObject update : commit.getObjects()) {
-            update.updateTimestamp(timestamp);
-            entityManager.persist(new JPAObject(update));
-        }
-
-        try {
-            if (utx != null) {
-                utx.begin();
-            }
-            commit.setCommitted(true);
-            LOGGER.debug("persisting JPACommit");
-            entityManager.persist(commit);
-
-            LOGGER.debug("setting the deleted elements as deleted");
-            for (String id : commit.getDeletions()) {
-                EDBObject o = new EDBObject(id);
-                o.updateTimestamp(timestamp);
-                o.put("isDeleted", new Boolean(true));
-                JPAObject j = new JPAObject(o);
-                entityManager.persist(j);
+        synchronized (entityManager) {
+            long timestamp = System.currentTimeMillis();
+            commit.setTimestamp(timestamp);
+            for (EDBObject update : commit.getObjects()) {
+                update.updateTimestamp(timestamp);
+                entityManager.persist(new JPAObject(update));
             }
 
-            if (utx != null) {
-                utx.commit();
-            }
-        } catch (Exception ex) {
             try {
                 if (utx != null) {
-                    utx.rollback();
+                    utx.begin();
                 }
-            } catch (Exception e) {
-                throw new EDBException("Failed to rollback transaction to DB", e);
+                commit.setCommitted(true);
+                LOGGER.debug("persisting JPACommit");
+                entityManager.persist(commit);
+
+                LOGGER.debug("setting the deleted elements as deleted");
+                for (String id : commit.getDeletions()) {
+                    EDBObject o = new EDBObject(id);
+                    o.updateTimestamp(timestamp);
+                    o.put("isDeleted", new Boolean(true));
+                    JPAObject j = new JPAObject(o);
+                    entityManager.persist(j);
+                }
+
+                if (utx != null) {
+                    utx.commit();
+                }
+            } catch (Exception ex) {
+                try {
+                    if (utx != null) {
+                        utx.rollback();
+                    }
+                } catch (Exception e) {
+                    throw new EDBException("Failed to rollback transaction to DB", e);
+                }
+                throw new EDBException("Failed to commit transaction to DB", ex);
             }
-            throw new EDBException("Failed to commit transaction to DB", ex);
+            return timestamp;
         }
-        return timestamp;
     }
 
     /**
