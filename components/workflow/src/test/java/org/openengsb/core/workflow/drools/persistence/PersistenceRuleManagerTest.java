@@ -41,6 +41,7 @@ import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.drools.util.RuleUtil;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
@@ -49,7 +50,7 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
 
 public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
 
-    private RuleManager ruleManager;
+    private DroolsRuleManager ruleManager;
     private KnowledgeBase rulebase;
     private StatefulKnowledgeSession session;
     private RuleListener listener;
