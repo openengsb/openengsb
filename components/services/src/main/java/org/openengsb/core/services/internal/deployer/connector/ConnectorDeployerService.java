@@ -103,7 +103,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         bundleContext.addServiceListener(new ServiceListener() {
             @Override
             public void serviceChanged(ServiceEvent event) {
+                try{
                 tryInstallFailed();
+                } catch(Exception e){
+                    LOGGER.debug("exception while trying to install connectors after new found domain or connector", e);
+                }
             }
         }, "(|" + DOMAIN_PROVIDER_PATTERN + CONNECTOR_FACTORY_PATTERN + ")");
     }
@@ -168,7 +172,14 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
                     ConnectorDescription connectorDescription =
                             new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
                                     attributes, properties);
+                    try{
                     serviceManager.createWithId(name, connectorDescription);
+                    }catch (IllegalArgumentException e){
+                        if(e.getMessage().contains("connector already exists")){
+                            return null;
+                        }
+                        throw e;
+                    }
                     return null;
                 }
             });
