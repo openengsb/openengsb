@@ -86,7 +86,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
                     try {
                         tryInstallingFailedArtifacts();
                     } catch (Exception e) {
-                        LOGGER.error("error when trying to instal artifacts", e);
+                        LOGGER.debug("error when trying to instal artifacts", e);
                     }
                 }
             }
