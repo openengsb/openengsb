@@ -55,6 +55,7 @@ import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
+import org.openengsb.core.security.internal.model.ShiroContext;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
@@ -171,7 +172,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
-
+        context.putBean("authenticationContext", new ShiroContext());
         authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticator", authConnector);

@@ -26,9 +26,9 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.security.SecurityContext;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.DelegationUtil;
 import org.osgi.framework.Filter;
@@ -55,11 +55,13 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
+    private AuthenticationContext authenticationContext;
     private OsgiUtilsService utilsService;
     private FilterAction next;
 
-    public MessageAuthenticatorFilter(OsgiUtilsService utilsService) {
+    public MessageAuthenticatorFilter(OsgiUtilsService utilsService, AuthenticationContext authenticationContext) {
         this.utilsService = utilsService;
+        this.authenticationContext = authenticationContext;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
             throw new FilterException(e);
         }
         try {
-            SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
+            authenticationContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
         } catch (AuthenticationException e) {
             throw new FilterException(e);
         }
@@ -88,7 +90,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
         throws ClassNotFoundException {
         Filter filter = DelegationUtil.createClassProviderFilter(className);
         return (Class<? extends Credentials>) utilsService.getOsgiServiceProxy(filter, ClassProvider.class)
-            .loadClass(className);
+                .loadClass(className);
     }
 
     @Override

@@ -49,8 +49,8 @@ import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
@@ -89,6 +89,9 @@ public abstract class AbstractExamTestHelper {
 
     @Inject
     private BundleContext bundleContext;
+
+    @Inject
+    private AuthenticationContext applicationContext;
 
     @Before
     public void waitForRequiredTasks() throws Exception {
@@ -257,7 +260,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
-        SecurityContext.login(user, new Password(password));
+        applicationContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {

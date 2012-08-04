@@ -93,6 +93,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
+          <property name="authenticationContext" ref="authenticationContext" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -110,6 +111,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
+          <property name="authenticationContext" ref="authenticationContext" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -121,6 +123,7 @@
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
 
 </blueprint>
 

@@ -136,4 +136,8 @@
     </interfaces>
   </service>
 
+  <bean id="authenticationContext" class="org.openengsb.core.security.internal.model.ShiroContext" />
+
+  <service interface="org.openengsb.core.api.security.AuthenticationContext" ref="authenticationContext" />
+
 </blueprint>

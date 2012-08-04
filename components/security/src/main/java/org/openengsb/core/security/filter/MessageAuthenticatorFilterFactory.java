@@ -21,24 +21,32 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.security.AuthenticationContext;
 
 public class MessageAuthenticatorFilterFactory implements FilterChainElementFactory {
 
     private OsgiUtilsService utilsService;
+    private AuthenticationContext authenticationContext;
 
     public MessageAuthenticatorFilterFactory() {
     }
 
-    public MessageAuthenticatorFilterFactory(OsgiUtilsService utilsService) {
+    public MessageAuthenticatorFilterFactory(OsgiUtilsService utilsService,
+                                             AuthenticationContext authenticationContext) {
         this.utilsService = utilsService;
+        this.authenticationContext = authenticationContext;
     }
 
     @Override
     public FilterChainElement newInstance() throws FilterConfigurationException {
-        return new MessageAuthenticatorFilter(utilsService);
+        return new MessageAuthenticatorFilter(utilsService, authenticationContext);
     }
 
     public void setUtilsService(OsgiUtilsService utilsService) {
         this.utilsService = utilsService;
+    }
+
+    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
     }
 }
