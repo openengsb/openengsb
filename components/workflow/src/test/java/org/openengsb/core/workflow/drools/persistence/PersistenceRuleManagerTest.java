@@ -38,7 +38,6 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.core.workflow.api.RuleBaseException;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.drools.internal.DroolsRuleManager;

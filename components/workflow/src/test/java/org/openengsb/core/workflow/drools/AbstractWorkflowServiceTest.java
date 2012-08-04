@@ -28,7 +28,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.TaskboxServiceInternal;
 import org.openengsb.core.workflow.api.WorkflowService;

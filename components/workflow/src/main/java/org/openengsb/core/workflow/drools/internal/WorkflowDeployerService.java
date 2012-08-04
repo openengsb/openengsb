@@ -232,7 +232,8 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         LOGGER.info("Successfully updated workflow file \"{}\"", artifact.getName());
     }
 
-    private synchronized void doUpdateArtifact(File artifact) throws SAXException, IOException, ParserConfigurationException {
+    private synchronized void doUpdateArtifact(File artifact) throws SAXException, IOException,
+        ParserConfigurationException {
         RuleBaseElementId id = getIdforFile(artifact);
         String code = FileUtils.readFileToString(artifact);
         boolean changed = false;
