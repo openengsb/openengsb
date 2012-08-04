@@ -95,37 +95,37 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
-        for (EDBObject update : commit.getObjects()) {
-            update.updateTimestamp(timestamp);
-            entityManager.persist(new JPAObject(update));
-        }
-
-        try {
-            performUtxAction(UTXACTION.BEGIN);
-            commit.setCommitted(true);
-            LOGGER.debug("persisting JPACommit");
-            entityManager.persist(commit);
-
-            LOGGER.debug("setting the deleted elements as deleted");
-            for (String id : commit.getDeletions()) {
-                EDBObject o = new EDBObject(id);
-                o.updateTimestamp(timestamp);
-                o.put("isDeleted", new Boolean(true));
-                JPAObject j = new JPAObject(o);
-                entityManager.persist(j);
+        synchronized (entityManager) {
+            for (EDBObject update : commit.getObjects()) {
+                update.updateTimestamp(timestamp);
+                entityManager.persist(new JPAObject(update));
             }
 
-            performUtxAction(UTXACTION.COMMIT);
-        } catch (Exception ex) {
             try {
-                performUtxAction(UTXACTION.ROLLBACK);
-            } catch (Exception e) {
-                throw new EDBException("Failed to rollback transaction to DB", e);
-            }
-            throw new EDBException("Failed to commit transaction to DB", ex);
-        }
+                performUtxAction(UTXACTION.BEGIN);
+                commit.setCommitted(true);
+                LOGGER.debug("persisting JPACommit");
+                entityManager.persist(commit);
 
-        return timestamp;
+                LOGGER.debug("setting the deleted elements as deleted");
+                for (String id : commit.getDeletions()) {
+                    EDBObject o = new EDBObject(id);
+                    o.updateTimestamp(timestamp);
+                    o.put("isDeleted", new Boolean(true));
+                    JPAObject j = new JPAObject(o);
+                    entityManager.persist(j);
+                }
+
+                performUtxAction(UTXACTION.COMMIT);
+            } catch (Exception ex) {
+                try {
+                    performUtxAction(UTXACTION.ROLLBACK);
+                } catch (Exception e) {
+                    throw new EDBException("Failed to rollback transaction to DB", e);
+                }
+            }
+            return timestamp;
+        }
     }
 
     /**
@@ -155,7 +155,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      * enumeration for categorizing the transaction actions.
      */
     private enum UTXACTION {
-            BEGIN, COMMIT, ROLLBACK
+        BEGIN, COMMIT, ROLLBACK
     };
 
     @Override
@@ -336,7 +336,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(models, null, null, 
+        persistInterface.commit(models, null, null,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
@@ -345,7 +345,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, null, models, 
+        persistInterface.commit(null, null, models,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
@@ -354,7 +354,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, models, null, 
+        persistInterface.commit(null, models, null,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
