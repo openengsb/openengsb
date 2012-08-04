@@ -103,6 +103,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
+        connectorDeployerService.setBundleContext(bundleContext);
 
         setupPersistence();
         createServiceManagerMock();
