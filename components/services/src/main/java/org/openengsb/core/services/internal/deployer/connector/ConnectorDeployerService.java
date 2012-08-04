@@ -43,10 +43,10 @@ import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +68,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             + "&(" + org.openengsb.core.api.Constants.DOMAIN_KEY + "=%s)"
             + "(" + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=%s)"
             + ")";
+
+    private static final String DOMAIN_PROVIDER_PATTERN =
+            "(" + Constants.OBJECTCLASS + "=" + DomainProvider.class.getName() + ")";
+
+    private static final String CONNECTOR_FACTORY_PATTERN =
+            "(" + Constants.OBJECTCLASS + "=" + ConnectorInstanceFactory.class.getName() + ")";
 
     private static final Logger LOGGER = LoggerFactory
         .getLogger(ConnectorDeployerService.class);
@@ -93,13 +99,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private BundleContext bundleContext;
 
-    public void init() {
-        bundleContext.addBundleListener(new BundleListener() {
+    public void init() throws InvalidSyntaxException {
+        bundleContext.addServiceListener(new ServiceListener() {
             @Override
-            public void bundleChanged(BundleEvent event) {
+            public void serviceChanged(ServiceEvent event) {
                 tryInstallFailed();
             }
-        });
+        }, "(|" + DOMAIN_PROVIDER_PATTERN + CONNECTOR_FACTORY_PATTERN + ")");
     }
 
     @Override
