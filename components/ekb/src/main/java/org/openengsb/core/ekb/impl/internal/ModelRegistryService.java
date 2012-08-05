@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.impl.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.impl.internal.loader.EKBClassLoader;
@@ -62,24 +62,24 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
         super(context, Bundle.ACTIVE, null);
         cache = new HashMap<Bundle, Set<ModelDescription>>();
     }
-    
+
     @Override
     public Object addingBundle(Bundle bundle, BundleEvent event) {
         Set<ModelDescription> models = getModels(bundle);
         cache.put(bundle, models);
         for (ModelDescription model : models) {
-            System.out.println("register model " + model);
             registerModel(model);
+            LOGGER.info("Registered model: {}", model);
         }
         return bundle;
     }
-    
+
     @Override
     public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
         Set<ModelDescription> models = cache.get(bundle);
         for (ModelDescription model : models) {
-            LOGGER.warn("unregister model " + model);
             unregisterModel(model);
+            LOGGER.info("Unregistered model: {}", model);
         }
     }
 
@@ -103,21 +103,23 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
      * the class couldn't be loaded.
      */
     private boolean isModelClass(String classname, Bundle bundle) {
-        LOGGER.warn("check for model class: " + classname);
+        LOGGER.debug("Check if model class: {}", classname);
         Class<?> clazz;
         try {
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
-            LOGGER.warn(String.format("Bundle could not find own class: %s", classname), e);
+            LOGGER.warn(String.format("Bundle could not load its own class: %s", classname), e);
             return false;
         } catch (NoClassDefFoundError e) {
             // ignore since this happens if bundle have optional imports
             return false;
-        } catch (Exception e) {
-            System.out.println("error while loading class " + classname);
+        } catch (VerifyError e) {
+            // this can happen if some libraries are double defined
+            LOGGER.warn("Error while loading class: {}", classname);
+            LOGGER.debug("Exact error which happened: ", e);
             return false;
         }
-        return OpenEngSBModel.class.isAssignableFrom(clazz);
+        return clazz.isAnnotationPresent(Model.class);
     }
 
     /**

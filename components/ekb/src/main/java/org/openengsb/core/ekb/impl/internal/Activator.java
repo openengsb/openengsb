@@ -30,7 +30,9 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        tracker = ModelRegistryService.getInstance(context);
+        ModelRegistryService service = ModelRegistryService.getInstance(context);
+        service.setGraphDb(EKBModelGraph.getInstance());
+        tracker = service;
         tracker.open();
     }
 
