@@ -302,12 +302,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            // The service-manager will refuse to create the connector
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
         assertThat("old service is not there anymore", references, not(nullValue()));
@@ -472,14 +467,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            assertThat(connectorFile.exists(), is(true));
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat(connectorFile.exists(), is(true));
         assertThat("old service is not there anymore", references, not(nullValue()));
     }
 

@@ -70,10 +70,10 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             + ")";
 
     private static final String DOMAIN_PROVIDER_PATTERN =
-            "(" + Constants.OBJECTCLASS + "=" + DomainProvider.class.getName() + ")";
+        "(" + Constants.OBJECTCLASS + "=" + DomainProvider.class.getName() + ")";
 
     private static final String CONNECTOR_FACTORY_PATTERN =
-            "(" + Constants.OBJECTCLASS + "=" + ConnectorInstanceFactory.class.getName() + ")";
+        "(" + Constants.OBJECTCLASS + "=" + ConnectorInstanceFactory.class.getName() + ")";
 
     private static final Logger LOGGER = LoggerFactory
         .getLogger(ConnectorDeployerService.class);
@@ -103,9 +103,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         bundleContext.addServiceListener(new ServiceListener() {
             @Override
             public void serviceChanged(ServiceEvent event) {
-                try{
-                tryInstallFailed();
-                } catch(Exception e){
+                try {
+                    tryInstallFailed();
+                } catch (Exception e) {
                     LOGGER.debug("exception while trying to install connectors after new found domain or connector", e);
                 }
             }
@@ -145,7 +145,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         }
         configFile.update(artifact);
         final Map<String, Object> properties = new Hashtable<String, Object>(
-                configFile.getProperties());
+            configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null
                 && ConnectorFile.isRootService(artifact)) {
@@ -170,12 +170,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
                 @Override
                 public Object call() throws Exception {
                     ConnectorDescription connectorDescription =
-                            new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
-                                    attributes, properties);
-                    try{
-                    serviceManager.createWithId(name, connectorDescription);
-                    }catch (IllegalArgumentException e){
-                        if(e.getMessage().contains("connector already exists")){
+                        new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
+                            attributes, properties);
+                    try {
+                        serviceManager.createWithId(name, connectorDescription);
+                    } catch (IllegalArgumentException e) {
+                        if (e.getMessage().contains("connector already exists")) {
                             return null;
                         }
                         throw e;
@@ -294,7 +294,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         String connectorFilter = String.format(DOMAIN_CONNECTOR_PATTERN, domainType, connectorType);
         try {
             Collection<ServiceReference<ConnectorInstanceFactory>> serviceReferences =
-                    bundleContext.getServiceReferences(ConnectorInstanceFactory.class, connectorFilter);
+                bundleContext.getServiceReferences(ConnectorInstanceFactory.class, connectorFilter);
             return !serviceReferences.isEmpty();
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException(e);
@@ -305,7 +305,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         String domainFilter = String.format(DOMAIN_PATTERN, domain);
         try {
             Collection<ServiceReference<DomainProvider>> serviceReferences =
-                    bundleContext.getServiceReferences(DomainProvider.class, domainFilter);
+                bundleContext.getServiceReferences(DomainProvider.class, domainFilter);
             return !serviceReferences.isEmpty();
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException(e);
