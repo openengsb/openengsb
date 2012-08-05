@@ -34,8 +34,9 @@ import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.impl.internal.graph.ModelGraph;
 import org.openengsb.core.ekb.impl.internal.loader.EKBClassLoader;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
+import org.osgi.util.tracker.BundleTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,61 +44,42 @@ import org.slf4j.LoggerFactory;
  * Implementation of the model registry. It also implements a bundle listener which checks bundles for models and
  * register/unregister them.
  */
-public final class ModelRegistryService implements ModelRegistry, BundleListener {
+public final class ModelRegistryService extends BundleTracker implements ModelRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
     private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
     private ModelGraph graphDb;
 
-    public static ModelRegistryService getInstance() {
+    public static ModelRegistryService getInstance(BundleContext context) {
         if (instance == null) {
-            instance = new ModelRegistryService();
+            instance = new ModelRegistryService(context);
         }
         return instance;
     }
 
-    private ModelRegistryService() {
+    private ModelRegistryService(BundleContext context) {
+        super(context, Bundle.ACTIVE, null);
         cache = new HashMap<Bundle, Set<ModelDescription>>();
     }
-
+    
     @Override
-    public void bundleChanged(BundleEvent event) {
-        if (!shouldHandleEvent(event)) {
-            return;
+    public Object addingBundle(Bundle bundle, BundleEvent event) {
+        Set<ModelDescription> models = getModels(bundle);
+        cache.put(bundle, models);
+        for (ModelDescription model : models) {
+            System.out.println("register model " + model);
+            registerModel(model);
         }
-        Set<ModelDescription> models = null;
-        if (cache.containsKey(event.getBundle())) {
-            models = cache.get(event.getBundle());
-        } else {
-            models = getModels(event.getBundle());
-            cache.put(event.getBundle(), models);
-        }
-        performModelActions(event, models);
+        return bundle;
     }
-
-    /**
-     * Returns true if a bundle event should be handled by the model registry and false if not.
-     */
-    private Boolean shouldHandleEvent(BundleEvent event) {
-        if (event.getType() != BundleEvent.STARTED && event.getType() != BundleEvent.STOPPED) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Performs the action with the received models, based on the bundle event type.
-     */
-    private void performModelActions(BundleEvent event, Set<ModelDescription> models) {
-        if (event.getType() == BundleEvent.STARTED) {
-            for (ModelDescription model : models) {
-                registerModel(model);
-            }
-        } else if (event.getType() == BundleEvent.STOPPED) {
-            for (ModelDescription model : models) {
-                unregisterModel(model);
-            }
+    
+    @Override
+    public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
+        Set<ModelDescription> models = cache.get(bundle);
+        for (ModelDescription model : models) {
+            LOGGER.warn("unregister model " + model);
+            unregisterModel(model);
         }
     }
 
@@ -121,6 +103,7 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
      * the class couldn't be loaded.
      */
     private boolean isModelClass(String classname, Bundle bundle) {
+        LOGGER.warn("check for model class: " + classname);
         Class<?> clazz;
         try {
             clazz = bundle.loadClass(classname);
@@ -129,6 +112,9 @@ public final class ModelRegistryService implements ModelRegistry, BundleListener
             return false;
         } catch (NoClassDefFoundError e) {
             // ignore since this happens if bundle have optional imports
+            return false;
+        } catch (Exception e) {
+            System.out.println("error while loading class " + classname);
             return false;
         }
         return OpenEngSBModel.class.isAssignableFrom(clazz);

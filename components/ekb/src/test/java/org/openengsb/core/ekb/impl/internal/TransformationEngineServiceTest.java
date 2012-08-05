@@ -47,7 +47,7 @@ public class TransformationEngineServiceTest {
     public void init() {
         service = new TransformationEngineService();
         EKBModelGraph graph = EKBModelGraph.getInstance();
-        ModelRegistryService registry = ModelRegistryService.getInstance();
+        ModelRegistryService registry = ModelRegistryService.getInstance(null);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
         service.setModelRegistry(registry);
@@ -518,7 +518,7 @@ public class TransformationEngineServiceTest {
     @Test
     public void testIfTransformationPathChecksInactiveModels_shouldWork() {
         setupPathSearchEnvironment();
-        ModelRegistryService.getInstance().unregisterModel(getModelBDescription());
+        ModelRegistryService.getInstance(null).unregisterModel(getModelBDescription());
 
         ModelA model = new ModelA();
         model.setIdA("testid");
@@ -531,7 +531,7 @@ public class TransformationEngineServiceTest {
         } catch (Exception e) {
             notFound = true;
         }
-        ModelRegistryService.getInstance().registerModel(getModelBDescription());
+        ModelRegistryService.getInstance(null).registerModel(getModelBDescription());
         assertThat(result.getIdC(), is(model.getIdA()));
         assertThat(result.getTestC(), is(model.getTestA()));
         assertThat(notFound, is(true));

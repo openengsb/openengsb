@@ -43,7 +43,7 @@ public class ModelRegistryServiceTest {
 
     @Before
     public void init() {
-        registry = ModelRegistryService.getInstance();
+        registry = ModelRegistryService.getInstance(null);
         graph = mock(ModelGraph.class);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
@@ -68,43 +68,25 @@ public class ModelRegistryServiceTest {
     public void testIfModelRegistryOnlyAddsModels_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(true);
         when(event.getType()).thenReturn(BundleEvent.STARTED);
-        registry.bundleChanged(event);
+        registry.addingBundle(event.getBundle(), event);
         verify(graph).addModel(getCorrectModel());
         verify(graph, never()).addModel(getIncorrectModel());
-    }
-    
-    @Test
-    public void testIfModelRegistryRemovesModels_shouldWork() throws Exception {
-        BundleEvent event = getMockedBundleEvent(true);
-        when(event.getType()).thenReturn(BundleEvent.STOPPED);
-        registry.bundleChanged(event);
-        verify(graph).removeModel(getCorrectModel());
-        verify(graph, never()).removeModel(getIncorrectModel());
-    }
-    
-    @Test
-    public void testIfModelRegistryIgnoresOtherEventTypes_shouldWork() throws Exception {
-        BundleEvent event = getMockedBundleEvent(true);
-        when(event.getType()).thenReturn(BundleEvent.INSTALLED);
-        registry.bundleChanged(event);
-        verify(graph, never()).removeModel(getCorrectModel());
-        verify(graph, never()).removeModel(getIncorrectModel());
     }
     
     @Test
     public void testIfModelRegistryCanWorkWithEmptyBundles_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(false);
         when(event.getType()).thenReturn(BundleEvent.STARTED);
-        registry.bundleChanged(event);
+        registry.addingBundle(event.getBundle(), event);
     }
     
     @Test
     public void testIfModelRegistryRegistersAndUnregisteresModels_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(true);
         when(event.getType()).thenReturn(BundleEvent.STARTED);
-        registry.bundleChanged(event);
+        registry.addingBundle(event.getBundle(), event);
         when(event.getType()).thenReturn(BundleEvent.STOPPED);
-        registry.bundleChanged(event);
+        registry.removedBundle(event.getBundle(), event, null);
         verify(graph).addModel(getCorrectModel());
         verify(graph).removeModel(getCorrectModel());
     }
