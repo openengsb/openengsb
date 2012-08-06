@@ -108,14 +108,17 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
         try {
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
-            LOGGER.warn(String.format("Bundle could not load its own class: %s", classname), e);
+            LOGGER.warn("Bundle could not load its own class: {}", classname);
+            LOGGER.debug("Exact error which happened: ", e);
             return false;
         } catch (NoClassDefFoundError e) {
             // ignore since this happens if bundle have optional imports
             return false;
-        } catch (VerifyError e) {
-            // this can happen if some libraries are double defined
-            LOGGER.warn("Error while loading class: {}", classname);
+        } catch (Error e) {
+            // there are a few situations where this catch clause is needed. It seems that there
+            // are some irregularities with our setup, since VerifyErrors and IncompatibleClassChangeErrors
+            // appear sometimes
+            LOGGER.warn("Error while loading class: {} due to {}", classname, e.getMessage());
             LOGGER.debug("Exact error which happened: ", e);
             return false;
         }
