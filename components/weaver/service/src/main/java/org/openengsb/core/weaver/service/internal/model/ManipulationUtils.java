@@ -167,9 +167,9 @@ public final class ManipulationUtils {
         CtClass[] params = generateClassField(List.class);
         CtMethod method = new CtMethod(CtClass.voidType, "setOpenEngSBModelTail", params, clazz);
         StringBuilder builder = new StringBuilder();
-        builder.append("{ for(int i = 0; i < $1.size(); i++) {");
+        builder.append("{ if($1 != null) {for(int i = 0; i < $1.size(); i++) {");
         builder.append("OpenEngSBModelEntry entry = (OpenEngSBModelEntry) $1.get(i);");
-        builder.append("openEngSBModelTail.put(entry.getKey(), entry); } }");
+        builder.append("openEngSBModelTail.put(entry.getKey(), entry); } } }");
         method.setBody(builder.toString());
         clazz.addMethod(method);
     }

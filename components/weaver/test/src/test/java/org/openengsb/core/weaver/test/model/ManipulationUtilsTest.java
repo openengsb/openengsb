@@ -110,4 +110,11 @@ public class ManipulationUtilsTest {
         ModelUtils.setOpenEngSBModelTail(model, entries);
         assertThat(ModelUtils.getOpenEngSBModelTail(model).size(), is(3));
     }
+    
+    @Test
+    public void testIfNullModelTailSettingWorks_shouldThrowNoException() {
+        TestModel model = new TestModel();
+        ModelUtils.setOpenEngSBModelTail(model, null);
+        assertThat(ModelUtils.getOpenEngSBModelTail(model).size(), is(0));
+    }
 }
