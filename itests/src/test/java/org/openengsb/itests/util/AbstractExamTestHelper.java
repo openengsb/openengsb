@@ -17,11 +17,10 @@
 
 package org.openengsb.itests.util;
 
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.debugConfiguration;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.logLevel;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -41,20 +40,23 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.karaf.tooling.exam.options.ConfigurationPointer;
+import org.apache.karaf.tooling.exam.options.LogLevelOption.LogLevel;
+import org.apache.karaf.tooling.exam.options.configs.ManagementCfg;
+import org.apache.karaf.tooling.exam.options.configs.WebCfg;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
+import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.OsgiHelper;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
-import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
-import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
-import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
@@ -64,10 +66,11 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
 
@@ -82,9 +85,6 @@ public abstract class AbstractExamTestHelper {
 
     private static final int DEBUG_PORT = 5005;
     private static final String LOG_LEVEL = "WARN";
-    protected static final String WEBUI_PORT = "8091";
-    protected static final String RMI_REGISTRY_PORT = "1100";
-    protected static final String RMI_SERVER_PORT = "44445";
     public static final long DEFAULT_TIMEOUT = 30000;
 
     @Inject
@@ -92,14 +92,31 @@ public abstract class AbstractExamTestHelper {
 
     @Before
     public void waitForRequiredTasks() throws Exception {
+        waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
-        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+        int count = 0;
+        while (rm.getGlobalType("auditing") == null) {
             LOGGER.warn("waiting for auditing to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
         }
+        count = 0;
+        while (!rm.listImports().contains(OsgiHelper.class.getName())) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("auditing-config did not finish in time");
+            }
+        }
+        count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
             LOGGER.warn("waiting for taskboxConfig to finish init");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("taskbox-config did not finish in time");
+            }
         }
     }
 
@@ -240,17 +257,31 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
-        waitForUserDataInitializer();
-        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
-        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
-        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+        SecurityContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {
+        SecurityManager sm = null;
+        int count = 0;
+        while (sm == null) {
+            try {
+                sm = SecurityUtils.getSecurityManager();
+            } catch (UnavailableSecurityManagerException e) {
+                LOGGER.warn("waiting for security-manager to be set");
+                Thread.sleep(1000);
+            }
+            if (count++ > 100) {
+                throw new IllegalStateException("security-manager was not set in time");
+            }
+        }
         UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
+        count = 0;
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
             Thread.sleep(1000);
+            if (count++ > 100) {
+                throw new IllegalStateException("user-data-initializer did not finish in time");
+            }
         }
         getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
@@ -269,6 +300,14 @@ public abstract class AbstractExamTestHelper {
             debug = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
             hold = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
         }
+        Properties portNames = new Properties();
+        InputStream portsPropertiesFile = ClassLoader.getSystemResourceAsStream("ports.properties");
+        if (portsPropertiesFile == null) {
+            throw new IllegalStateException("ports-configuration not found");
+        }
+        portNames.load(portsPropertiesFile);
+        LOGGER.warn("running itests with the following port-config");
+        LOGGER.warn(portNames.toString());
         LogLevel realLogLevel = transformLogLevel(loglevel);
         Option[] mainOptions =
             new Option[]{
@@ -278,16 +317,25 @@ public abstract class AbstractExamTestHelper {
                     maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
                         .versionAsInProject()),
                 logLevel(realLogLevel),
-                editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
-                editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
-                editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
-                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"),
+                editConfigurationFilePut(WebCfg.HTTP_PORT, (String) portNames.get("jetty.http.port")),
+                editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, (String) portNames.get("rmi.server.port")),
+                editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, (String) portNames.get("rmi.registry.port")),
+                editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
+                    "openwire"), (String) portNames.get("jms.openwire.port")),
+                editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
+                    "stomp"), (String) portNames.get("jms.stomp.port")),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                     .versionAsInProject()) };
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
         }
         return mainOptions;
+    }
+
+    public String getConfigProperty(String config, String name) throws IOException {
+        ConfigurationAdmin cm = getOsgiService(ConfigurationAdmin.class);
+        Configuration configuration = cm.getConfiguration(config);
+        return (String) configuration.getProperties().get(name);
     }
 
     private static LogLevel transformLogLevel(String logLevel) {

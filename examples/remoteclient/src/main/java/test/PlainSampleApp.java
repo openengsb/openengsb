@@ -34,7 +34,7 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public final class PlainSampleApp {
 
     private static MethodResult call(MethodCall call) throws IOException, JMSException, InterruptedException,
         ClassNotFoundException {
-        MethodCallRequest methodCallRequest = new MethodCallRequest(call);
+        MethodCallMessage methodCallRequest = new MethodCallMessage(call);
         String requestString = MAPPER.writeValueAsString(methodCallRequest);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());

@@ -38,9 +38,9 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.common.internal.VirtualConnectorManager;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 
 public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
@@ -91,7 +91,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        utilsService = OpenEngSBCoreServices.getServiceUtilsService();
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
         virtualConnectorProvider = mock(VirtualConnectorProvider.class);
         when(virtualConnectorProvider.createFactory(any(DomainProvider.class))).thenAnswer(
             new Answer<ConnectorInstanceFactory>() {
@@ -102,7 +102,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
                 }
             });
         when(virtualConnectorProvider.getId()).thenReturn("virtual-test-connector");
-        pseudoConnectorManager = new VirtualConnectorManager(bundleContext, utilsService);
+        pseudoConnectorManager = new VirtualConnectorManager(bundleContext);
     }
 
     @After
@@ -111,44 +111,36 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRegisterDomainProvider_shouldRegisterFactory() throws Exception {
+    public void testRegisterDomainProvider_shouldRegisterFactory() {
         pseudoConnectorManager.start();
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         createDomainProviderMock(NullDomain.class, "test");
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
 
     @Test
-    public void testRegisterVirtualProvider_shouldRegisterFactory() throws Exception {
+    public void testRegisterVirtualProvider_shouldRegisterFactory() {
         pseudoConnectorManager.start();
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
 
     @Test
-    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() throws Exception {
+    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() {
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         pseudoConnectorManager.start();
         Filter filter =
-            utilsService.makeFilter(ConnectorInstanceFactory.class,
+            FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
 }

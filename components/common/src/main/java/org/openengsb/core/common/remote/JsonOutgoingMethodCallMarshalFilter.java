@@ -20,25 +20,24 @@ package org.openengsb.core.common.remote;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
+import org.openengsb.core.common.util.JsonUtils;
 
 /**
- * This filter takes a {@link MethodCallRequest} and serializes it to JSON. The String s then passed on to the next
+ * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
  * filter. The returned JSON-String representing a {@link MethodResultMessage} is then deserialized and returned.
- *
+ * 
  * <code>
  * <pre>
- *      [MethodCallRequest]   > Filter > [MethodCallRequest as JSON-string]     > ...
+ *      [MethodCallMessage]   > Filter > [MethodCallMessage as JSON-string]     > ...
  *                                                                                 |
  *                                                                                 v
  *      [MethodResultMessage] < Filter < [MethodResultMessage as JSON-string]   < ...
@@ -46,17 +45,13 @@ import org.openengsb.core.api.remote.MethodResultMessage;
  * </code>
  */
 public class JsonOutgoingMethodCallMarshalFilter extends
-        AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
+        AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private FilterAction next;
 
-    public JsonOutgoingMethodCallMarshalFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
-    }
-
     @Override
-    public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = createObjectMapper();
+    public MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) throws FilterException {
+        ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
         MethodResultMessage resultMessage;
         try {
             String jsonString = objectMapper.writeValueAsString(input);
@@ -72,33 +67,26 @@ public class JsonOutgoingMethodCallMarshalFilter extends
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
         } else {
-            Class<?> className;
+            Class<?> resultType;
             try {
-                className = Class.forName(result.getClassName());
+                resultType = Class.forName(result.getClassName());
             } catch (ClassNotFoundException e) {
                 throw new FilterException(e);
             }
-            Object convertedValue = objectMapper.convertValue(result.getArg(), className);
+            Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
             result.setArg(convertedValue);
         }
         return resultMessage;
+    }
+
+    public static Class<?> getAttributeType(Class<?> clazz, String attributeName) throws NoSuchMethodException {
+        return clazz.getMethod("get" + StringUtils.capitalize(attributeName)).getReturnType();
     }
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, String.class, String.class);
         this.next = next;
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector introspector =
-            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
-        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
-        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
-        return mapper;
     }
 
 }

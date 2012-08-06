@@ -19,18 +19,18 @@ package org.openengsb.core.common.remote;
 
 import java.util.Map;
 
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 
 /**
- * This filter takes a {@link MethodCallRequest} and handles it using a {@link RequestHandler}. The result is then
+ * This filter takes a {@link MethodCallMessage} and handles it using a {@link RequestHandler}. The result is then
  * wrapped to a {@link MethodResultMessage} and returned.
  *
  * <code>
  * <pre>
- *      [MethodCallRequest]   > Filter > [MethodCall]
+ *      [MethodCallMessage]   > Filter > [MethodCall]
  *                                             |
  *                                             v
  *                                       RequestHandler
@@ -40,21 +40,19 @@ import org.openengsb.core.api.remote.RequestHandler;
  * </pre>
  * </code>
  */
-public class RequestMapperFilter extends AbstractFilterAction<MethodCallRequest, MethodResultMessage> {
+public class RequestMapperFilter extends AbstractFilterAction<MethodCallMessage, MethodResultMessage> {
 
     private RequestHandler requestHandler;
 
     public RequestMapperFilter() {
-        super(MethodCallRequest.class, MethodResultMessage.class);
     }
 
     public RequestMapperFilter(RequestHandler requestHandler) {
-        this();
         this.requestHandler = requestHandler;
     }
 
     @Override
-    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) {
+    protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) {
         metadata.put("callId", input.getCallId());
         metadata.put("answer", input.isAnswer());
         MethodResult result = requestHandler.handleCall(input.getMethodCall());

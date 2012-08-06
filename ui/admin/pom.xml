@@ -118,21 +118,71 @@
         <configuration>
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
-              org.drools.event;
-              bundle-symbolic-name="org.drools.core",
+              org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.security.web.authentication,
-              org.springframework.security.authentication,
-              org.springframework.security.core.userdetails,
-              org.springframework.dao,
               org.ops4j.pax.wicket.util.proxy,
+              javax.servlet.*;version="[2.5,4)",
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
-              net.sf.cglib.reflect;version="[2,3)", *
+              net.sf.cglib.reflect;version="[2,3)",
+              org.apache.shiro.web.servlet,
+              javax.servlet,
+              javax.servlet.http,
+              org.apache.wicket.settings,
+              org.apache.wicket.session,
+              org.apache.wicket.util.file,
+              org.apache.wicket.request,
+              org.apache.wicket.event,
+              org.apache.wicket.request.http,
+              org.apache.wicket.request.mapper,
+              org.apache.wicket.request.resource,
+              org.apache.wicket.util,
+              org.apache.wicket.request.cycle,
+              org.apache.wicket.page,
+              *
             </Import-Package>
-            <!-- for testclient to invoke domains -->
-            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.framework</groupId>
+                  <artifactId>org.openengsb.framework.weaver.service</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <classifier>agent</classifier>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>model-agent.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>
+            -javaagent:"${project.build.directory}/model-agent.jar"
+          </argLine>
+          <useSystemClassloader>true</useSystemClassloader>
         </configuration>
       </plugin>
     </plugins>
@@ -143,6 +193,21 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -201,15 +266,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+    </dependency>
+
     <!--  Pax Wicket Dependencies -->
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-service</artifactId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-test</artifactId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
       <scope>test</scope>
     </dependency>
 

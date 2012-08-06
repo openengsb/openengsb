@@ -17,10 +17,20 @@
 
 package org.openengsb.domain.example.model;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
 
-public interface ExampleResponseModel extends OpenEngSBModel {
-    String getResult();
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
+@Model
+public class ExampleResponseModel {
+    private String result;
 
-    void setResult(String result);
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 }

@@ -38,8 +38,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +45,6 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.ui.common.editor.fields.AbstractField;
 
-@SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
 
     private WicketTester tester;
@@ -68,7 +65,7 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
+    public void testEditingStringAttribute_shouldRenderTextFieldWithPresetValues() {
         startEditorPanel(attrib);
         tester.debugComponentTrees();
         TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
@@ -76,26 +73,26 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void attributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
+    public void testAttributeWithDescription_shouldRenderTooltipImageWithTitle() {
         startEditorPanel(attrib);
         assertThat(((Image) getEditorField(attrib.getId()).get("tooltip")).isVisible(), is(true));
     }
 
     @Test
-    public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
+    public void testAttributeWithoutDescription_shouldShowNoTooltipImage() {
         startEditorPanel(attribNoDesc);
         assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
     }
 
     @Test
-    public void optionAttribute_shouldBeDisplayedAsDropDown() {
+    public void testOptionAttribute_shouldBeDisplayedAsDropDown() {
         startEditorPanel(attribOption);
         DropDownChoice<?> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class);
         assertThat(choice.getChoices().size(), is(attribOption.getOptions().size()));
     }
 
     @Test
-    public void choicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
+    public void testChoicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
         startEditorPanel(attribOption);
         @SuppressWarnings("unchecked")
         List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
@@ -105,14 +102,14 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void boolAttribute_shouldBeDisplayedAsCheckBox() {
+    public void testBoolAttribute_shouldBeDisplayedAsCheckBox() {
         startEditorPanel(attribBoolean);
         CheckBox cb = getEditorFieldFormComponent(attribBoolean.getId(), CheckBox.class);
         assertThat(cb, notNullValue());
     }
 
     @Test
-    public void containsInitialPropertiesFields() throws Exception {
+    public void testContainsInitialPropertiesFields_shouldContainProperties() {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", "42");
         props.put("foo", "bar");
@@ -134,7 +131,7 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void containsInitialPropertiesFieldsWithArray() throws Exception {
+    public void testContainsInitialPropertiesFieldsWithArray_shouldContainProperties() {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);
@@ -152,6 +149,45 @@ public class ServiceEditorPanelTest {
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:2:value");
         assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
+    
+    @Test
+    public void testDeleteProperty_shouldWork() {
+        Map<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        props.put("testpropy", new String[]{ "ping", "pong"});
+        startEditorPanel(props, attribOption);
+        String path = "panel:properties:0:key";
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage(path);
+        String before = label1.getDefaultModelObjectAsString();
+        tester.executeAjaxEvent("panel:properties:0:buttonKey", "onclick");
+        label1 = (Label) tester.getComponentFromLastRenderedPage(path);
+        String after = label1.getDefaultModelObjectAsString();
+        
+        assertThat(before, is("testpropx"));
+        assertThat(after, is("testpropy"));
+    }
+
+    @Test
+    public void testDeletePropertyValue_shouldWork() {
+        Map<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        startEditorPanel(props, attribOption);
+        
+        String path = "panel:properties:0:values:1:value";
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
+        String before = (String) value1.getDefaultModelObject();
+        tester.executeAjaxEvent("panel:properties:0:values:1:buttonValue", "onclick");
+        
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
+        String after = (String) value2.getDefaultModelObject();
+
+        assertThat(before, is("42"));
+        assertThat(after, is("foo"));
+    }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
@@ -165,13 +201,10 @@ public class ServiceEditorPanelTest {
             editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        editor = (ServiceEditorPanel) tester.startPanel(new ITestPanelSource() {
-            @Override
-            public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties,
-                    mock(Form.class));
-            }
-        });
+        editor =
+            tester.startComponentInPage(new ServiceEditorPanel("panel", Arrays.asList(attributes),
+                editorValues, properties,
+                mock(Form.class)));
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {

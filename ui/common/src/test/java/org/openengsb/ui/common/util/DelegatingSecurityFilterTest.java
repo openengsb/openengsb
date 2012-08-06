@@ -63,7 +63,7 @@ public class DelegatingSecurityFilterTest {
     }
     
     @Test(expected = IllegalStateException.class)
-    public void testDoFilter_withoutSettedDelegatee_shouldThrowException() throws Exception {
+    public void testDoFilterWithoutSettedDelegatee_shouldThrowException() throws Exception {
         ServletRequest req = mock(ServletRequest.class);
         ServletResponse resp = mock(ServletResponse.class);
         FilterChain chain = mock(FilterChain.class);

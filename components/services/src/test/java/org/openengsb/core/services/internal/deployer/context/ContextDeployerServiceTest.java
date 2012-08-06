@@ -92,5 +92,4 @@ public class ContextDeployerServiceTest {
 
         verify(contextCurrentService, times(1)).createContext("newContextId");
     }
-
 }

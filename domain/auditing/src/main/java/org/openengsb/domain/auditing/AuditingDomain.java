@@ -23,13 +23,23 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.security.annotation.Anonymous;
 
+// @extract-start AuditingDomain
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.
  */
 public interface AuditingDomain extends Domain {
 
     @Anonymous
-    void audit(Event event);
+    void onEvent(Event event);
 
     List<Event> getAllAudits();
+
+    @Anonymous
+    void onNodeStart(String process, long instance, String name);
+
+    @Anonymous
+    void onNodeFinish(String process, long instance, String name);
+
 }
+// @extract-end
+

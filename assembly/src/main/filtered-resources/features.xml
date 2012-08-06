@@ -22,6 +22,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
 
+  <repository>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</repository>
+
   <feature name="openengsb-framework" version="${project.version}" description="OpenEngSB Core Feature">
     <details>
       This feature starts all other features required such as spring and http. In addition the services for the
@@ -31,16 +33,20 @@
     <config name="org.openengsb.settings">
       openengsb.version.number=${openengsb.version.number}
     </config>
-    <config name="org.openengsb.persistence.config-rule">
-      backend.id=persistenceService
-      configuration.id=RULE
+    <config name="org.openengsb.persistence.config-rulebase">
+      backend.id=rule-persistence
+      configuration.id=RULEBASE
     </config>
-    <config name="org.openengsb.persistence.config-flow">
-      backend.id=persistenceService
-      configuration.id=FLOW
+	<config name="org.openengsb.persistence.config-global">
+      backend.id=global-persistence
+      configuration.id=GLOBAL
+    </config>
+	<config name="org.openengsb.persistence.config-import">
+      backend.id=import-persistence
+      configuration.id=IMPORT
     </config>
     <config name="org.openengsb.persistence.config-connector">
-      backend.id=persistenceService
+      backend.id=connector-jpa-persistence
       configuration.id=CONNECTOR
     </config>
     <config name="org.openengsb.persistence.config-workflow">
@@ -53,14 +59,31 @@
     </config>
 
     <!-- Well, those are comming from karaf; as long as the karaf version is right that one is right too... -->
+    <feature>standard</feature>
+    <feature>package</feature>
+    <feature>ssh</feature>
+    <feature>aries-annotation</feature>
+    <feature>jasypt-encryption</feature>
+    <feature>kar</feature>
+    <feature>eventadmin</feature>
+    <feature>scheduler</feature>
     <feature>spring</feature>
     <feature>spring-web</feature>
     <feature>spring-dm</feature>
     <feature>war</feature>
+    <feature>transaction</feature>
+    <feature>jpa</feature>
+    <feature>jndi</feature>
+    <feature>shiro-core</feature>
+    <feature>shiro-web</feature>
+    <feature>shiro-spring</feature>
+
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
 
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
+    <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-locator/${geronimo.locator.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${smx.specs.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/${geronimo.ws.metadata.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/${geronimo.jpa2.version}</bundle>
@@ -68,100 +91,85 @@
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${geronimo.jta.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.5_spec/${geronimo-spec-j2ee.1-5.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-management_1.1_spec/${geronimo.j2ee.management.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${stax.api.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxb-api-2.2/${jaxb.api.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/${saaj.api.version}</bundle>
-    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/${jaxws.api.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${smx.specs.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/${smx.specs.version}</bundle>
     <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle> 
-    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${smx.specs.version}</bundle>
     <!-- Templating -->
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
-    <bundle>mvn:org.apache.velocity/velocity/${velocity.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.velocity/velocity/${velocity.version}</bundle>
     <!-- jaxb -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/${jaxb.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
     <!-- AspectJ -->
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
-    <!-- Spring Security -->
-    <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
     <!-- Drools -->
-    <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
-    <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
-    <bundle>mvn:org.mvel/mvel2/${mvel2.version}</bundle>
-    <bundle>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
-    <bundle>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
-    <bundle>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
-    <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
-    <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
-    <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
-    <bundle>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
-    <bundle>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
+    <bundle start-level='20'>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
+    <bundle start-level='20'>mvn:org.mvel/mvel2/${mvel2.version}</bundle>
+    <bundle start-level='20'>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
+    <bundle start-level='20'>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/knowledge-api/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/drools-core/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
 
     <!-- OpenEngSB Commons Dependencies -->
-    <bundle>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
-    <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
-    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
-    <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
-    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/1.8.2_2</bundle>
-    <bundle>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
+    <bundle start-level='20'>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
+    <bundle start-level='20'>mvn:commons-io/commons-io/${commons.io.version}</bundle>
+    <bundle start-level='20'>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+    <bundle start-level='20'>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
+    <bundle start-level='20'>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/1.8.2_2</bundle>
+    <bundle start-level='20'>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
-    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
-    <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
-    <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
-
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/${javassist.version}</bundle>
+    <!-- Graph DB -->
+    <bundle start-level='20'>mvn:com.orientechnologies/orient-commons/${orientdb.version}</bundle>
+    <bundle start-level='20'>mvn:com.orientechnologies/orientdb-core/${orientdb.version}</bundle>
+    <!-- Labs-delegation for handling delegated classloading -->
+    <bundle start-level='40'>mvn:org.openengsb.labs.delegation/org.openengsb.labs.delegation.service/${labs.delegation.version}</bundle>
     <!-- JPA Infrastructure -->
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
-    <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container.context/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
-    <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
-	
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
+    <bundle start-level='30'>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
+    <bundle start-level='30'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
+    <bundle start-level='30'>mvn:com.h2database/h2/${h2.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
     <!-- OpenEngSB ConfigPersistence Implementations -->
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>	
+    <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.persistence/org.openengsb.persistence.rulebase/${project.version}</bundle>
     <!-- OpenEngSB Core Features -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
-		
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.weaver.service/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.jpa/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.impl/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.drools/${project.version}</bundle>
     <!-- OpenEngSB Console -->
-    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
     <!-- security domains and connectors -->
-    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
@@ -176,9 +184,7 @@
     <bundle>mvn:org.apache.activemq/activemq-console/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-ra/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-pool/${activemq.version}</bundle>
-    <bundle>mvn:org.apache.activemq/activemq-karaf/${activemq.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${scripting.version}</bundle>
-    <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${smx.specs.version}</bundle>
   </feature>
 
   <feature name="activemq-web-console" version="${project.version}" description="ActiveMQ Webconsole">
@@ -195,6 +201,7 @@
       This feature provides activemq support including the queue configurations for the OpenEngSB.
     </details>
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
+    <feature>spring-jms</feature>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jms/${project.version}</bundle>
   </feature>
 
@@ -244,7 +251,6 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
     <bundle>mvn:org.apache.cxf/cxf-bundle/${cxf.version}</bundle>
-    <bundle>mvn:org.apache.cxf.karaf/cxf-karaf-commands/${cxf.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-ws" version="${project.version}" description="OpenEngSB WS Port Integration">
@@ -266,9 +272,12 @@
     <details>
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
-    <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.wicket/org.ops4j.pax.wicket.service/${pax.wicket.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/1.7R2_2</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.5.0_2</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ui-admin" version="${project.version}" description="OpenEngSB UI Administration">
@@ -276,7 +285,6 @@
       Based on the OpenEngSB UI Core this feature setup a complete administration UI to control and configure
       the OpenEngSB according to the needs of a project.
     </details>
-    <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.admin/${project.version}</bundle>
   </feature>

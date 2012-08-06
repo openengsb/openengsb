@@ -27,13 +27,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.common.util.Comparators;
 
 public class ComparatorsTest {
 
     @Test
-    public void testDomainProviderComparator() throws Exception {
+    public void testDomainProviderComparator_shouldSortDomainProviders() {
         List<DomainProvider> list =
             Arrays.asList(mockDomainProvider("z"), mockDomainProvider("b"), mockDomainProvider("1"));
         Collections.sort(list, Comparators.forDomainProvider());
@@ -44,6 +45,22 @@ public class ComparatorsTest {
 
     private DomainProvider mockDomainProvider(String id) {
         DomainProvider p1 = mock(DomainProvider.class);
+        when(p1.getId()).thenReturn(id);
+        return p1;
+    }
+
+    @Test
+    public void testConnectorProviderComparator_shouldSortConnectorProviders() {
+        List<ConnectorProvider> list =
+            Arrays.asList(mockConnectorProvider("z"), mockConnectorProvider("b"), mockConnectorProvider("1"));
+        Collections.sort(list, Comparators.forConnectorProvider());
+        assertThat(list.get(0).getId(), is("1"));
+        assertThat(list.get(1).getId(), is("b"));
+        assertThat(list.get(2).getId(), is("z"));
+    }
+
+    private ConnectorProvider mockConnectorProvider(String id) {
+        ConnectorProvider p1 = mock(ConnectorProvider.class);
         when(p1.getId()).thenReturn(id);
         return p1;
     }

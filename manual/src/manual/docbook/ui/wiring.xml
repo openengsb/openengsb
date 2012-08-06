@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="ui.wiring" version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   
+          http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   
+          http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Wiring</title>
+
+  <para>This user interface constitutes a way for administrators to do wiring. 
+    Wiring is a process, where global variables get connected with connectors (domain endpoints) 
+    in a certain context. As there are several steps to do that, this page gives you a fast  
+    and easy managing possibility. For further reading, please visit  
+    <link xlink:href="http://www.openengsb.org/nightly/docbook/developer.context.html"></link>.
+  </para>
+
+  <section>
+    <title>Wire a global variable with a service</title>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Select a domain-type in the drop-down-field. Doing that, all domain endpoints and all 
+          globals of this domain-type will be loaded. If nothing appears, then there will be probably no 
+          suitable global available and no suitable connector is instantiated. This can be checked on the 
+          <link xlink:href="http://www.openengsb.org/nightly/docbook/ui.testclient.html">Testclient page</link>.
+        </para>
+        <mediaobject>
+          <alt>Selecting a domain in the drop-down-field lets globals and endpoints appear</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_domains.png" format="png" width="400" align="center"/>
+          </imageobject>
+          <caption>
+            <para>Selecting a domain in the drop-down-field lets globals and endpoints appear</para>
+          </caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You have to choose a global, because that is the object you want to get wired with a connector.
+          A global variable is part of a rule allowing the workflow service to communicate with connectors 
+          and other objects. More information you can find in the Chapter about
+          <link xlink:href="http://www.openengsb.org/docbook/user.workflows.html">Workflows</link>.
+        </para>
+        <para>
+          There are two possibilities to specify a global. Either you select one from the list or you write 
+          autonomous a name of a global in the corresponding text field. If the global doesn't exist, there 
+          will be a new one created with the type of the selected domain. If a global already exists and have 
+          another type as selected, then there will be an error message after submitting.  
+        </para>
+        <mediaobject>
+          <alt>Input field for the global variable</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_global.png" format="png" width="50" align="center"/>
+          </imageobject>
+          <caption><para>Input field for the global variable</para></caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You must select a domain endpoint from the corresponding list. The list will be loaded
+          after you have selected a domain.
+        </para>
+        <mediaobject>
+          <alt>Input field for the service Id, which can be edited by selecting an endpoint from the list.</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_serviceId.png" format="png" width="50" align="center"/>
+          </imageobject>
+          <caption>
+            <para>Input field for the service Id, which can be edited by selecting an endpoint from the list</para>
+          </caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You must select the contexts, where the wiring shall happen. You can select all but at least one 
+          have to be selected. Information about what a context means can be found at the 
+          <link xlink:href="http://www.openengsb.org/docbook/user.context.html">Context Management</link>.
+        </para>
+        <mediaobject>
+          <alt>List of all available contexts, which can be selected.</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_contexts.png" format="png" width="100" align="center"/>
+          </imageobject>
+          <caption><para>List of all available contexts</para></caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>After submitting the form, a success message for each context should appear. If an error occurs, 
+          an error message will be shown.
+        </para>
+        <mediaobject>
+          <alt>Screenshot of the wiring results</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_submit.png" format="png" width="350" align="center"/>
+          </imageobject>
+          <caption><para>Screenshot of the wiring results</para></caption>
+        </mediaobject>  
+      </listitem>
+    </orderedlist>
+  </section>
+  
+  <section>
+    <title>What wiring does in the background</title>
+    <para>The properties of the service will be updated. First, it will try to get the property with the key 
+      'location.' + context from these properties, because there are all locations stored. If there is no such 
+      property, a new one will be added. After that, it will insert a new location in that property, which is the 
+      name of the given global. As there can be more locations, the new one will be appended excepted such 
+      location already exists. Then nothing will be changed, but an info message will appear.
+    </para>
+  </section>
+
+</chapter>

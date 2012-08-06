@@ -67,14 +67,22 @@
     <service-properties>
       <entry key="composite.strategy.name" value="authorization.affirmativebased" />
     </service-properties>
-    <bean class="org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy" />
+    <bean class="org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy">
+      <property name="utilsService" ref="osgiUtilsService" />
+    </bean>
   </service>
+
+  <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
 
   <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
     <service-properties>
       <entry key="composite.strategy.name" value="authentication.provider" />
     </service-properties>
-    <bean class="org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy" />
+    <bean class="org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy">
+      <property name="utilsService" ref="osgiUtilsService" />
+    </bean>
   </service>
 
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)"
@@ -87,7 +95,7 @@
       <value>org.openengsb.domain.authorization.AuthorizationDomain</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="authorization+admin+admin" />
+      <entry key="service.pid" value="authorization+admin+admin" />
       <entry key="domain" value="authorization" />
       <entry key="connector" value="admin" />
       <entry key="location.root">
@@ -111,12 +119,21 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.api.security.PermissionProvider">
-    <service-properties>
-      <entry key="connector" value="root" />
-      <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
-    </service-properties>
-    <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)"
+    activation="lazy" availability="optional" />
+
+  <bean id="securityManager" class="org.openengsb.core.security.internal.OpenEngSBSecurityManager" init-method="init">
+    <property name="authenticator">
+      <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
+
+  <service ref="securityManager">
+    <interfaces>
+      <value>org.apache.shiro.mgt.SecurityManager</value>
+    </interfaces>
   </service>
 
 </blueprint>

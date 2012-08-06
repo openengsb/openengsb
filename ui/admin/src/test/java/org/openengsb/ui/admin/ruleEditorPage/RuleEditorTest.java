@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,23 +42,17 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.api.RuleBaseException;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 
 public class RuleEditorTest extends AbstractUITest {
-    private RuleManager ruleManager;
     private RuleBaseElementId ruleBaseElementId;
 
     @Before
     public void init() throws RuleBaseException {
-        ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
-        // tester.getApplication().addComponentInstantiationListener(
-        // new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
         Collection<RuleBaseElementId> rules = Arrays
             .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));
@@ -71,7 +64,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void renderEditorPage() throws Exception {
+    public void testRenderEditorPage_shouldShowPage() {
         tester.assertRenderedPage(RuleEditorPage.class);
         tester.assertComponent("ruleEditor", RuleEditorPanel.class);
         tester.assertComponent("ruleEditor:form", Form.class);
@@ -80,8 +73,6 @@ public class RuleEditorTest extends AbstractUITest {
         assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").isVisible());
         tester.assertComponent("ruleEditor:form:save", AjaxButton.class);
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
-        // tester.assertComponent("ruleEditor:form:ruleName", TextField.class);
-        // assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleName").isVisible());
         tester.assertComponent("ruleEditor:form:cancel", AjaxButton.class);
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         tester.assertComponent("ruleEditor:form:new", AjaxButton.class);
@@ -103,7 +94,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testChangeSelectedRule() throws Exception {
+    public void testChangeSelectedRule_shouldSelectRule() {
         FormTester formTester = tester.newFormTester("ruleEditor:form");
         formTester.select("ruleChoice", 0);
         tester.executeAjaxEvent("ruleEditor:form:ruleChoice", "onchange");
@@ -114,7 +105,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testChangeSelectedRuleType() throws Exception {
+    public void testChangeSelectedRuleType_shouldChangeRuleType() {
         FormTester formTester = tester.newFormTester("ruleEditor:form");
 
         formTester.select("typeChoice", 1);
@@ -154,7 +145,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitChanges() throws Exception {
+    public void testSubmitChanges_shouldSaveChanges() {
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
 
@@ -168,7 +159,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testClickCancleButton() throws Exception {
+    public void testClickCancelButton_shouldCancelAction() {
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:cancel", "onclick");
 
@@ -182,7 +173,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitChanges_withErrors() throws Exception {
+    public void testSubmitChangesWithErrors_shouldShowError() {
         doThrow(new RuleBaseException("error")).when(ruleManager).update((RuleBaseElementId) anyObject(), anyString());
 
         enterText();
@@ -203,7 +194,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testButtonStateOnSecondChange() throws Exception {
+    public void testButtonStateOnSecondChange_shouldBeDisabled() {
         enterText();
         FormTester formTester = tester.newFormTester("ruleEditor:form");
         formTester.select("ruleChoice", 0);
@@ -218,7 +209,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateNewRule() throws Exception {
+    public void testCreateNewRule_shouldAddRule() {
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = (TextField<String>) tester
             .getComponentFromLastRenderedPage("ruleEditor:form:ruleName");
@@ -252,7 +243,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitNew_withErrors() throws Exception {
+    public void testSubmitNewWithErrors_shouldShowError() {
         doThrow(new RuleBaseException("error")).when(ruleManager).add((RuleBaseElementId) anyObject(), anyString());
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = (TextField<String>) tester

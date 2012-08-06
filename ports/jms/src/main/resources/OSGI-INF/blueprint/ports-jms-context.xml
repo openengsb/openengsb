@@ -19,7 +19,7 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-  xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" >
+  xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
   <!-- Allows us to use system properties as variables in this configuration file -->
   <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
@@ -34,7 +34,7 @@
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
-      <entry key="id" value="jms-json" />
+      <entry key="service.pid" value="jms-json" />
     </service-properties>
     <ref component-id="outgoingPortBean" />
   </service>
@@ -46,12 +46,10 @@
   </bean>
 
   <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
-    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
+    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallMessage" />
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
-        <value>org.openengsb.core.security.filter.OutgoingWrapperFilter</value>
         <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
           <property name="factory">
@@ -77,6 +75,10 @@
     <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
+  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
     <property name="inputType" value="java.lang.String" />
     <property name="outputType" value="java.lang.String" />
@@ -89,9 +91,9 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
-        <value>org.openengsb.core.security.filter.WrapperFilter</value>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+          <property name="utilsService" ref="utilsService" />
+        </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
@@ -106,9 +108,9 @@
       <list>
         <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
-        <value>org.openengsb.core.security.filter.WrapperFilter</value>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+          <property name="utilsService" ref="utilsService" />
+        </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
@@ -116,11 +118,6 @@
     </property>
   </bean>
 
-  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
-    <property name="authenticationManager" ref="authenticator" />
-  </bean>
-
-  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />

@@ -21,15 +21,21 @@ import java.util.List;
 
 /**
  * Represents a generic model which should be used by any model data in the domains. With this model it is possible to
- * use one model for all kinds of domain model data. The function here defined should convert any specific domain tool
- * data into our most generic model type.
+ * use one model for all kinds of domain model data. Every domain model marked with the Model interface get this
+ * interface injected.
  */
 public interface OpenEngSBModel {
 
     /**
      * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.
      */
-    List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
+    List<OpenEngSBModelEntry> toOpenEngSBModelEntries();
+
+    /**
+     * Returns the internal model id of the model. This id is defined through the OpenEngSBModelId annotation. Returns
+     * null if no model id is defined.
+     */
+    Object retrieveInternalModelId();
 
     /**
      * Adds a OpenEngSBModelEntry to the model. Can be used to add information that is not in a domain model defined
@@ -42,4 +48,16 @@ public interface OpenEngSBModel {
      * types or lists. Should only be used to maintain the "tail".
      */
     void removeOpenEngSBModelEntry(String key);
+
+    /**
+     * Returns the tail of the model, which are all elements added by addOpenEngSBModelEntry. Elements which are added
+     * there are mainly elements added by the OpenEngSB internally or by the user directly.
+     */
+    List<OpenEngSBModelEntry> getOpenEngSBModelTail();
+
+    /**
+     * Sets the tail of the model. Caution: values added here have nothing to do with the normal properties of the
+     * model.
+     */
+    void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries);
 }

@@ -24,8 +24,8 @@ import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.VirtualConnectorFactory;
+import org.openengsb.core.common.util.FilterUtils;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -38,17 +38,19 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompositeConnectorFactory.class);
 
-    protected CompositeConnectorFactory(DomainProvider domainProvider) {
+    private OsgiUtilsService utilsService;
+
+    protected CompositeConnectorFactory(DomainProvider domainProvider, OsgiUtilsService utilsService) {
         super(domainProvider);
+        this.utilsService = utilsService;
     }
 
     @Override
     protected void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
-        OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
         String strategyFilter = createStrategyFilterString(attributes.get("compositeStrategy"));
-        Filter filter = serviceUtils.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
+        Filter filter = FilterUtils.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
         CompositeConnectorStrategy strategy =
-            serviceUtils.getOsgiServiceProxy(filter, CompositeConnectorStrategy.class);
+                utilsService.getOsgiServiceProxy(filter, CompositeConnectorStrategy.class);
         handler.setQueryString(attributes.get("queryString"));
         handler.setCompositeHandler(strategy);
     }
@@ -59,7 +61,7 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
 
     @Override
     protected CompositeConnector createNewHandler(String id) {
-        return new CompositeConnector(id);
+        return new CompositeConnector(id, utilsService);
     }
 
     @Override

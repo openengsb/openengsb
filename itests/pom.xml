@@ -66,13 +66,41 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>reserve-network-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <configuration>
+              <portNames>
+                <portName>jetty.http.port</portName>
+                <portName>jms.openwire.port</portName>
+                <portName>jms.stomp.port</portName>
+                <portName>rmi.registry.port</portName>
+                <portName>rmi.server.port</portName>
+              </portNames>
+              <outputFile>${project.basedir}/target/test-classes/ports.properties</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.openengsb.labs.paxexam.karaf</groupId>
-      <artifactId>paxexam-karaf-container</artifactId>
+      <groupId>org.apache.karaf.tooling.exam</groupId>
+      <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ops4j.pax.url</groupId>
+          <artifactId>pax-url-aether</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -89,10 +117,30 @@
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.tinybundles</groupId>
+      <artifactId>tinybundles</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -101,8 +149,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.workflow</artifactId>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.drools</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -132,16 +180,23 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.authorization</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.usernamepassword</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
+    
     <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <scope>test</scope>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>org.openengsb.ui.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -150,12 +205,24 @@
       <version>1.0.0.r08.w1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 
     <!-- Drools Dependencies -->
     <dependency>
@@ -188,7 +255,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
 </project>

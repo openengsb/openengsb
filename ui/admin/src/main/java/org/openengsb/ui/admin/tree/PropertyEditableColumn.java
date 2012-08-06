@@ -33,23 +33,26 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.tree.dropDownPanel.DropDownPanel;
 import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
-@SuppressWarnings("serial")
-public class PropertyEditableColumn extends PropertyRenderableColumn {
+public class PropertyEditableColumn extends PropertyRenderableColumn<Void> {
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    private static final long serialVersionUID = -6534594928754905369L;
 
-    private WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+    @PaxWicketBean
+    private List<DomainProvider> domains;
+    
+    @PaxWicketBean
+    private WiringService wiringService;
 
     public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {
         super(location, header, propertyExpression);
     }
 
+    @SuppressWarnings("serial")
     @Override
     public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
         DefaultMutableTreeNode fieldNode = (DefaultMutableTreeNode) node;
@@ -57,12 +60,12 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
 
         if (Pattern.matches("/domain/.+/defaultConnector/id", userObject.getKey())) {
             return new DropDownPanel(id, new PropertyModel<String>(node, getPropertyExpression()),
-                    new LoadableDetachableModel<List<String>>() {
-                        @Override
-                        protected List<String> load() {
-                            return getServices(userObject.getKey());
-                        }
-                    });
+                new LoadableDetachableModel<List<String>>() {
+                    @Override
+                    protected List<String> load() {
+                        return getServices(userObject.getKey());
+                    }
+                });
         }
         return new EditablePanel(id, new PropertyModel<String>(node, getPropertyExpression()));
     }
@@ -78,7 +81,6 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
 
     private List<String> getServices(String keyPath) {
         List<String> services = new ArrayList<String>();
-        List<DomainProvider> domains = serviceUtils.listServices(DomainProvider.class);
         for (DomainProvider domainProvider : domains) {
             String domainProvierName = domainProvider.getId();
             if (("/domain/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {

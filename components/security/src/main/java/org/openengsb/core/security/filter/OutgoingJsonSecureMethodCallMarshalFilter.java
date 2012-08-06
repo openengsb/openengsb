@@ -27,55 +27,57 @@ import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.common.util.JsonUtils;
 
 /**
- * This filter takes a {@link SecureRequest} and serializes it to JSON. The String s then passed on to the next filter.
- * The returned JSON-String representing a {@link SecureResponse} is then deserialized and returned.
+ * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
+ * filter. The returned JSON-String representing a {@link MethodResultMessage} is then deserialized and returned.
  * 
  * <code>
  * <pre>
- *      [SecureRequest]   > Filter > [SecureRequest as JSON-string]     > ...
+ *      [MethodCallMessage]   > Filter > [MethodCallMessage as JSON-string]     > ...
  *                                                                                 |
  *                                                                                 v
- *      [SecureResponse] < Filter < [SecureResponse as JSON-string]   < ...
+ *      [MethodResultMessage] < Filter < [MethodResultMessage as JSON-string]   < ...
  * </pre>
  * </code>
  */
 public class OutgoingJsonSecureMethodCallMarshalFilter extends
-        AbstractFilterChainElement<SecureRequest, SecureResponse> {
+        AbstractFilterChainElement<MethodCallMessage, MethodResultMessage> {
 
     private FilterAction next;
 
-    public OutgoingJsonSecureMethodCallMarshalFilter() {
-        super(SecureRequest.class, SecureResponse.class);
-    }
-
     @Override
-    public SecureResponse doFilter(SecureRequest input, Map<String, Object> metadata) throws FilterException {
+    public MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = createObjectMapper();
-        SecureResponse resultMessage;
+        MethodResultMessage resultMessage;
         try {
             String jsonString = objectMapper.writeValueAsString(input);
             String resultString = (String) next.filter(jsonString, metadata);
             if (resultString == null) {
                 return null;
             }
-            resultMessage = objectMapper.readValue(resultString, SecureResponse.class);
+            resultMessage = objectMapper.readValue(resultString, MethodResultMessage.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
-        MethodResult result = resultMessage.getMessage().getResult();
+        MethodResult result = resultMessage.getResult();
 
         if (result.getType().equals(ReturnType.Void)) {
             result.setArg(null);
         } else {
-            JsonUtils.convertResult(result);
+            Class<?> resultType;
+            try {
+                resultType = Class.forName(result.getClassName());
+            } catch (ClassNotFoundException e) {
+                throw new FilterException(e);
+            }
+            Object convertedValue = objectMapper.convertValue(result.getArg(), resultType);
+            result.setArg(convertedValue);
         }
         return resultMessage;
     }

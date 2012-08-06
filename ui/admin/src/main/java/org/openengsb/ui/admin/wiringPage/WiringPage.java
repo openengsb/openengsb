@@ -60,10 +60,10 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.FilterUtils;
+import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -74,18 +74,21 @@ import org.slf4j.LoggerFactory;
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "wiring")
 public class WiringPage extends BasePage {
+
+    private static final long serialVersionUID = 4196803215701011090L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private DropDownChoice<Class<? extends Domain>> domains;
@@ -126,8 +129,8 @@ public class WiringPage extends BasePage {
                 globals.setModel(createGlobalTreeModel(domainType));
                 endpoints.setModel(createEndpointsModel(domainType));
                 resetWiringForm(target);
-                target.addComponent(globals);
-                target.addComponent(endpoints);
+                target.add(globals);
+                target.add(endpoints);
             }
         });
         domainChooseForm.add(domains);
@@ -186,37 +189,40 @@ public class WiringPage extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.debug("Start wiring {} with {}", globalName, instanceId);
                 if (noGlobalNameSet() || noInstanceIdSet() || noContextSet()) {
-                    target.addComponent(feedbackPanel);
+                    target.add(feedbackPanel);
                     return;
                 }
-                ConnectorId connectorId = null;
-                ConnectorDescription description = null;
+                ConnectorDescription description;
                 try {
-                    connectorId = ConnectorId.fromFullId(instanceId);
-                    if (!typeOfGlobalAndServiceAreEqual(connectorId.getDomainType())) {
-                        target.addComponent(feedbackPanel);
+                    description = serviceManager.getAttributeValues(instanceId);
+                    if (!typeOfGlobalAndServiceAreEqual(description.getDomainType())) {
+                        target.add(feedbackPanel);
                         return;
                     }
-                    description = serviceManager.getAttributeValues(connectorId);
                 } catch (Exception e) {
                     presentAndLogError(new StringResourceModel("wiringInitError", this, null).getString(), e);
                     resetWiringForm(target);
                     return;
                 }
                 try {
-                    updateLocations(connectorId, description);
+                    updateLocations(instanceId, description);
                 } catch (Exception e) {
                     presentAndLogError(new StringResourceModel("wiringError", this, null).getString(), e);
                 } finally {
                     resetWiringForm(target);
                 }
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.warn("Linking Ajax Link produces an error.");
+            }
         };
         wiringForm.add(wireButton);
         add(wiringForm);
     }
 
-    private void updateLocations(ConnectorId connectorId, ConnectorDescription description) throws Exception {
+    private void updateLocations(String connectorId, ConnectorDescription description) throws Exception {
         boolean updated = false;
         ValueMap vmap = new ValueMap();
         vmap.put("globalName", globalName);
@@ -286,7 +292,7 @@ public class WiringPage extends BasePage {
 
     private String getDomainTypeOfServiceName(String domainName) {
         Filter filter =
-            serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
+            FilterUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
         DomainProvider dp = (DomainProvider) serviceUtils.getService(filter);
         if (dp == null || dp.getDomainInterface() == null) {
             return null;
@@ -393,9 +399,9 @@ public class WiringPage extends BasePage {
     private void resetWiringForm(AjaxRequestTarget target) {
         globalName = "";
         instanceId = "";
-        target.addComponent(txtGlobalName);
-        target.addComponent(txtInstanceId);
-        target.addComponent(feedbackPanel);
+        target.add(txtGlobalName);
+        target.add(txtInstanceId);
+        target.add(feedbackPanel);
     }
 
     public String getGlobalName() {
@@ -430,7 +436,7 @@ public class WiringPage extends BasePage {
                 return;
             }
             subject.setDefaultModelObject(mnode.getUserObject());
-            target.addComponent(subject);
+            target.add(subject);
         }
 
         @Override

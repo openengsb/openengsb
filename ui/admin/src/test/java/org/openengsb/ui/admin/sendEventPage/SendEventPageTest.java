@@ -39,12 +39,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowException;
-import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
-import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.core.workflow.api.WorkflowException;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -55,17 +53,14 @@ public class SendEventPageTest extends AbstractUITest {
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
     private RepeatingView fieldList;
-    private AuditingDomain domain;
-
+    
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
-        RuleManager ruleManager = mock(RuleManager.class);
-        domain = mock(AuditingDomain.class);
-
+        
         List<Event> allAudits = new ArrayList<Event>();
         Event event1 = new Event();
         event1.setName("123");
@@ -76,10 +71,8 @@ public class SendEventPageTest extends AbstractUITest {
         allAudits.add(event1);
         allAudits.add(event2);
 
-        Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
-        context.putBean(ruleManager);
+        Mockito.when(auditingDomain.getAllAudits()).thenReturn(allAudits);
         context.putBean("eventService", eventService);
-        context.putBean("audit", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
@@ -94,14 +87,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testStandardPageComponents() throws Exception {
+    public void testStandardPageComponents_shouldBeNotNull() {
         tester.assertVisible("form:dropdown");
         tester.assertVisible("form:fieldContainer:fields");
         assertThat(dropdown, notNullValue());
     }
 
     @Test
-    public void givenClassesInCtor_shouldAddThemToTheDropDown() {
+    public void testGivenClassesInCtor_shouldAddThemToTheDropDown() {
         assertEquals(eventClasses.size(), dropdown.getChoices().size());
         assertEquals(NullEvent2.class, dropdown.getChoices().get(0));
         assertEquals("NullEvent2", dropdown.getValue());
@@ -109,14 +102,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
+    public void testFirstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
         assertThat(fieldList.size(), is(4));
         Component attributeName = fieldList.get("testProperty:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
     @Test
-    public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
+    public void testSelectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
         assertThat(fieldList.size(), is(3));
@@ -125,7 +118,7 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
+    public void testSubmittingForm_shouldCallDroolsServiceWithInstantiatedEvent() {
         formTester.setValue("fieldContainer:fields:testProperty:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
@@ -140,14 +133,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void sendingEvent_shouldShowSuccessFeedback() throws Exception {
+    public void testSendingEvent_shouldShowSuccessFeedback() {
         submitForm();
         tester.assertNoErrorMessage();
         assertThat(tester.getMessages(FeedbackMessage.INFO).size(), is(1));
     }
 
     @Test
-    public void buildingEventFails_shouldShowErrorFeedback() throws Exception {
+    public void testBuildingEventFails_shouldShowErrorFeedback() {
         selectEventType(2);
         submitForm();
         tester.assertNoInfoMessage();
@@ -155,7 +148,7 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void processingEventthrowsException_shouldShowErrorFeedback() throws Exception {
+    public void testProcessingEventthrowsException_shouldShowErrorFeedback() {
         doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event> any());
         submitForm();
         tester.assertNoInfoMessage();
@@ -170,15 +163,14 @@ public class SendEventPageTest extends AbstractUITest {
     }
 
     @Test
-    public void openSite_shouldShowAuditLog() {
+    public void testOpenSite_shouldShowAuditLog() {
         tester.assertVisible("auditsContainer:audits");
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");
         int i = 0;
-        for (Event event : domain.getAllAudits()) {
+        for (Event event : auditingDomain.getAllAudits()) {
             tester.assertLabel("auditsContainer:audits:" + i + ":audit", event.getName());
             i++;
         }
-
     }
 }

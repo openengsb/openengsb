@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.howto.internal.connector" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>How To Create an Internal Connector</title>
+
+  <para>This chapter describes how to implement a connector for the OpenEngSB environment. A connector is an adapter
+    between an external tool and the OpenEngSB environment. Every connector belongs to a domain which defines the common
+    interface of all its connectors. This means that the connector is responsible to translate all calls to the common
+    interface to the externally provided tool.</para>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
+      <xref linkend="architecture.concept.tooldomains" /> is a good starting point. If there's already a matching domain for
+      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="contributor.howto.internal.domain" />.</para>
+  </section>
+
+  <section>
+    <title>Creating a new connector project</title>
+
+    <para>To take burden off the developer of creating the initial boilerplate code and configuration, a Maven archetype
+      is provided for creating the initial project structure. Furthermore we provide the
+      <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>)
+      (or the <filename>etc/scripts/gen-connector.sh</filename> script, which wraps the invocation of the maven plug-in)
+      which simplifies the creation of a connector project from the archetype. It should be used for assisted creation
+      of a new connector project.</para>
+
+   <section>
+      <title>Using the Maven Archetype</title>
+
+      <para>It is not recommended to use the maven archetype directly, because the <literal>genConnector</literal> goal
+      of the openengsb-maven-plugin executes additional tasks, I.e. renaming of the resulting project. Furthermore,
+      it tries to make sure that the new project is consistent with the naming conventions of the
+      OpenEngSB project.</para>
+      
+      <para>The following parameters have to be specified to execute the correct archetype:
+        <itemizedlist>
+          <listitem>archetypeGroupId - the groupId of the OpenEngSB connector archetype.</listitem>
+          <listitem>archetypeArtifactId - the artifactId of the OpenEngSB connector archetype.</listitem>
+          <listitem>archetypeVersion - the current version of the OpenEngSB connector archetype.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the parent of the new connector. It is not solely parent
+      of the connector itself, but parent of the implementation of the domain and all other connectors of this domain too. 
+        <itemizedlist>
+          <listitem>parentArtifactId - the artifactId of the project parent.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the domain of the new connector.
+        <itemizedlist>
+          <listitem>groupId - the groupId of the domain.</listitem>
+          <listitem>domainArtifactId - the artifactId of the domain.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the connector. 
+        <itemizedlist>
+          <listitem>artifactId - the connector artifact id. Has to be &quot;openengsb-domains-&lt;yourDomain&gt;-&lt;yourConnector&gt;&quot;.</listitem>
+          <listitem>version - the package for the source code of the domain implementation. Has to be &quot;org.openengsb.domains.&lt;yourDomain&gt;&quot;.</listitem>
+          <listitem>domainInterface - The name of the domain interface.</listitem>
+          <listitem>parentPackage - The package in which the domain interface can be found.</listitem>
+          <listitem>package - the package for the connector code. Usually &lt;parentPackage&gt;.&lt;yourConnector&gt; is used.</listitem>
+          <listitem>name - the name of the implementation module. Has to be &quot;OpenEngSB :: Domains :: &lt;yourDomain&gt; :: &lt;yourConnector&gt;&quot;</listitem>
+        </itemizedlist>
+        Where &lt;yourDomain&gt; has to be replaced by your domain name and &lt;yourConnector&gt; has to be replaced by the respective connector name.
+      </para>
+      <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
+      connector name. Therefore you will have to rename the resulting project (however if you use the
+      <literal>genConnector</literal> mojo, this renaming will be performed automatically).
+      Do not forget to check that the new connector is included in the modules section of the domain parent pom xml file.</para>
+    </section>
+
+    <section>
+      <title>Using <literal>mvn openengsb:genConnector</literal></title>
+
+      <para>
+        Simply invoke <literal>mvn openengsb:genConnector</literal> from the connector directory
+        (<literal>connector/</literal>) (alternatively the <literal>etc/scripts/gen-connector.sh</literal> script can
+        be used which invokes the openengsb-maven-plugin for you).
+      </para>
+
+      <literallayout>
+        <command>connector $</command> mvn openengsb:genConnector
+      </literallayout>
+
+      <para>The mojo tries to guess as much as possible from your previous input. Guessed values
+        are displayed in brackets. If the guess is what you want, simply acknowledge with <literal>Return</literal>. The
+        following output has been recorded by executing the script in the <literal>connector/</literal>
+        directory:</para>
+
+      <literallayout><command>Domain Name [domain]: </command>notification &lt;Enter>
+<command>Domain Interface [NotificationDomain]: </command>&lt;Enter>
+<command>Connector Name [myconnector]: </command>twitter &lt;Enter>
+<command>Version [1.0.0-SNAPSHOT]: </command>&lt;Enter>
+<command>Project Name [OpenEngSB :: Domains :: Notification :: Twitter]: </command>&lt;Enter></literallayout>
+
+      <para>Only the domain and connector name was set, everything else has been guessed correctly. After these inputs
+        are provided the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
+        each time to acknowledge standard values. If it finishes successfully the new
+        connector project is created and you may start implementing.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Project Structure</title>
+
+    <para>The newly created connector project should have the exact same structure as the following listing:</para>
+
+    <programlisting>-- src
+|  -- main
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- connector
+|                 -- [myconnector]
+|                    -- internal
+|                    |  -- [MyConnector]Connector.java
+|                    |  -- [MyConnector]ConnectorProvider.java
+|                    |  -- [MyConnector]InstanceFactory.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- [myconnector]-[mydomain]-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
+-- pom.xml</programlisting>
+
+    <para>The <literal>MyServiceConnector</literal> class implements the interface of the domain and thus is the
+      communication link between the OpenEngSB and the connected tool. To give the OpenEngSB (and in the long run the
+      end user) enough information on how to configure a connector, the <literal>MyServiceInstanceFactory</literal>
+      class provides the OpenEngSB with meta information for configuring and functionality for creating and updating a
+      connector instances. The <literal>MyServiceConnectorProvider</literal> class connects connector instances with the
+      underlying OSGi engine and OpenEngSB infrastructure. It exports instances as OSGi services and adds necessary meta
+      information to each instance. Since the basic functionality is mostly similar for all service managers, the
+      <literal>MyServiceConnectorProvider</literal> class extends a common base class
+      <literal>AbstractConnectorProvider</literal>. In addition the <literal>AbstractConnectorProvider</literal> also 
+      persists the configuration of each connector, so that the connector instances can be restored after a system
+      restart.</para>
+
+    <para>The blueprint setup in the resources folder contains the setup of the service manager. Additional bean setup and
+    dependency injection can be configured there.</para>
+
+    <para>The OpenEngSB has been designed with localization in mind. The Maven Archetype already generates two
+        <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
+      (bundle_de.properties) language. Each connector has to provide localization through the properties files for
+      service and attributes text values. This includes localization for names, descriptions, attribute validation,
+      option values and more. For convenience the <literal>BundleStrings</literal> class is provided on all method calls
+      where text is needed for user representation for a specific locale.</para>
+  </section>
+
+  <section>
+    <title>Integrating the Connector into the OpenEngSB environment</title>
+
+    <para>The connector provided is responsible for the integration of the connector into the OpenEngSB infrastructure. The correct
+    definition of this service is critical.</para>
+  </section>
+
+</chapter>

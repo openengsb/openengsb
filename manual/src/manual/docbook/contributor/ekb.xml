@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.ekb" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+    
+    <title>Engineering Knowledge Base - EKB</title>
+    <para>
+        The EKB is the semantic backbone of the OpenEngSB project. Its main purpose is the handling of semantic elements
+        (models) in the OpenEngSB. The components included in the EKB handle for example the registering, the saving and 
+        the loading of models.
+    </para>
+    <para>
+        As persistence back end, the EKB uses the <link linkend="contributor.edb" >EDB</link>
+    </para>
+    
+    <section>
+        <title>Motivation</title>
+        <para>
+            The main idea for the introduction of the EKB is the idea to provide automatic transformations of domain models
+            between tools and the OpenEngSB. But soon it was clear that this will not the only task the EKB should provide.
+        </para>
+        <para>
+            It contains many components, which have all their own area of influence. In the following, the components will
+            be introduced and their purpose will be explained.
+        </para>
+    </section>
+    <section  xml:id='contributor.ekb.queryservice'>
+        <title>Query Interface</title>
+        <para>
+            This service has the task to load models from the EDB. Since models are no real objects but
+            proxied interfaces, this service has to create a new model instance. This new model instance
+            is initialised with the data which are loaded from the EDB. 
+        </para>
+        <para>
+            After all loaded data is inserted, the user can start work with this model. The converting between 
+            the EDB format and the models is done in this service. The user doesn't have to worry about that. 
+            In fact, he won't even notice that all this steps were necessary.
+        </para>
+        <para>
+            The query service provide a list of possibilities how to load models from the EDB (e.g. based on the model id or
+            based on the key value pairs of the model).
+        </para>            
+    </section>
+    <section xml:id='contributor.ekb.persistservice'>
+        <title>Persist Interface</title>
+        <para>
+            This service has the task to save models to the EDB. It transform models into an EDB readable format, append 
+            informations and forwards the objects to the EDB. The PersistInterface consist of three methods, namely "commit",
+            "forceCommit" and "check".
+        </para>
+        <para>
+            The "commit" function performs sanity checks on the models which shall be persisted. If they are successfully passed,
+            the models are forwarded to the EDB for persisting.
+        </para>
+        <para>
+            The "forceCommit" function forwards the models to the EDB without performing sanity checks.
+        </para>
+        <para>
+            The "check" function only performs the sanity checks and give back the result of the sanity checks.
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.sanitychecker'>
+        <title>Sanity Checker</title>
+        <para>
+            The sanity checker is a part of the EKB environment. It's purpose is the controlling of models before they get
+            persisted. The control mechanism is able to run so called sanity checks over models when they should get saved
+            into the EDB.
+        </para>
+        <para>
+            This component is currently under development and can't be used by now.
+            <link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2717">Issue</link>
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.modeldefinitioncomponent'>
+        <title>Model definition component</title>
+        <para>
+            The purpose of this component is the possibility to let an external script language define models for the OpenEngSB.
+            It has the responsibility to convert a script based defined model into an OpenEngSBModel and the other way round.
+        </para>
+        <para>
+            Conceptional it is possible to write such a component with every script language, but for now we will provide OWL
+            as scripting possibility.
+        </para>
+        <para>
+            This component is currently under development and can't be used by now.
+            <link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2754">Issue</link>
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.modelregistry'>
+        <title>Model registry</title>
+        <para>
+            The model registry does the scanning of bundles for models. It is a bundle listener, which checks every bundle which
+            get installed, for models and their versions. This information is then added to the internal storage. It also  checks 
+            every bundle that get uninstalled for models and remove them from the inernal storage. The internal storage is a graph
+            database, which is used by the model registry and the transformation engine.
+        </para>
+        <para>
+            Other functions the model registry provides are: The loading of models and simple check methods which return meta-data
+            about models. For now, it can only tell the user which fields a specific annotation have.
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.transformer'>
+        <title>Transformation engine</title>
+        <para>
+            This units purpose is the transformation from one model in a specific version into another model in a specific version.
+            It gets it informations how it should do that from the internal storage. Also it adds and removes transformations from
+            the internal storage.
+        </para>
+        <para>
+            The transformation engine uses transformation descriptions as base for its transformations. This descriptions can either
+            be added written as java objects to the transformation engine, or through xml files. The format of the xml files are 
+            explained <link linkend="contributor.transformations" >here</link>. These xml files need to have the ending 
+            ".transformation" and shall be put into the config folder of the OpenEngSB. At startup, these files get scanned and 
+            added to the internal storage.
+        </para>
+    </section>
+    <section xml:id='contributor.ekb.graph'>
+        <title>Internal Storage - Graph database</title>
+        <para>
+            The internal storage is used by the model registry and the transformation engine. It is a core component for the 
+            transformation engine, since it does all its transformations based on the results it gets from the internal storage.
+        </para>
+        <para>
+            The reason why the internal storage is a graph database, is that models and its transformations can be easily maintained
+            as a graph, where the nodes are models and the edges are transformations. With such a graph as background, it is easily
+            possible to send graph based requests to the internal storage, like "find a way to transform model A of version V1 to 
+            model B of version V2.
+        </para>
+    </section>
+</chapter>

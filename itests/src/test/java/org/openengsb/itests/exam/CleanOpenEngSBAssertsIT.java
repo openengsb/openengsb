@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
@@ -34,8 +34,9 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 public class CleanOpenEngSBAssertsIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
-    public void testServiceDoesNotExist() throws Exception {
-        assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class),
+    public void testServiceDoesNotExist_shouldNotFindExampleDomain() throws Exception {
+        WiringService wiringService = getOsgiService(WiringService.class);
+        assertThat(wiringService.isConnectorCurrentlyPresent(ExampleDomain.class),
             is(false));
     }
 

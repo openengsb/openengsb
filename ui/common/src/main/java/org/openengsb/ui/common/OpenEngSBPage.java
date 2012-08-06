@@ -20,8 +20,9 @@ package org.openengsb.ui.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -31,16 +32,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
  * time. In order for this page to work, a spring-bean of the class
- * 
+ *
  * @link{org.openengsb.core.common.context.ContextCurrentService must be available
  */
 public abstract class OpenEngSBPage extends WebPage {
+
+    private static final long serialVersionUID = -9066059315599403517L;
 
     public static final String CONTEXT_PARAM = "context";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "contextCurrentService")
     private ContextCurrentService contextService;
 
     public OpenEngSBPage() {
@@ -50,9 +53,9 @@ public abstract class OpenEngSBPage extends WebPage {
     public OpenEngSBPage(PageParameters parameters) {
         super(parameters);
         LOGGER.debug("creating new page using parameters: {}", parameters);
-        Object object = parameters.get(CONTEXT_PARAM);
-        if (object != null && object instanceof String[]) {
-            final String contextId = ((String[]) object)[0];
+        StringValue context = parameters.get(CONTEXT_PARAM);
+        if (context != null && context.toOptionalString() != null) {
+            final String contextId = context.toOptionalString();
             LOGGER.debug("setting context-id from pageparameter: {}", contextId);
             ContextHolder.get().setCurrentContextId(contextId);
         }
@@ -82,7 +85,7 @@ public abstract class OpenEngSBPage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     * 
+     *
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

@@ -23,7 +23,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -32,25 +32,30 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER")
-@SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
+
+    private static final long serialVersionUID = 9090970567917075638L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceListPanel.class);
 
     private class ServiceEntry implements Comparable<ServiceEntry>, Serializable {
+
+        private static final long serialVersionUID = -7322597299600275467L;
+
         private Dictionary<String, Object> properties = new Hashtable<String, Object>();
         private AliveState aliveState;
 
         private String getInstanceId() {
-            return (String) properties.get("id");
+            return (String) properties.get(Constants.SERVICE_PID);
         }
 
         @Override
@@ -62,20 +67,25 @@ public class ServiceListPanel extends Panel {
         }
     }
 
-    @PaxWicketBean
-    private OsgiUtilsService serviceUtils;
+    @PaxWicketBean(name = "blueprintBundleContext")
+    private BundleContext bundleContext;
+
+    @PaxWicketBean(name = "connectorList")
+    private List<ServiceReference<Domain>> serviceReferences;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {
+
+        private static final long serialVersionUID = 3124873169012607189L;
+
         @Override
         protected List<ServiceEntry> load() {
-            List<ServiceReference> listServiceReferences = serviceUtils.listServiceReferences(Domain.class);
             List<ServiceEntry> result = new ArrayList<ServiceListPanel.ServiceEntry>();
-            for (ServiceReference ref : listServiceReferences) {
+            for (ServiceReference<Domain> ref : serviceReferences) {
                 ServiceEntry entry = new ServiceEntry();
                 for (String key : ref.getPropertyKeys()) {
                     entry.properties.put(key, ref.getProperty(key));
                 }
-                Domain service = serviceUtils.getService(Domain.class, ref);
+                Domain service = bundleContext.getService(ref);
                 try {
                     entry.aliveState = service.getAliveState();
                 } catch (Exception e) {
@@ -88,6 +98,7 @@ public class ServiceListPanel extends Panel {
         }
     }
 
+    @SuppressWarnings("serial")
     public ServiceListPanel(String id) {
         super(id);
         WebMarkupContainer container = new WebMarkupContainer("serviceListContainer");
@@ -98,13 +109,13 @@ public class ServiceListPanel extends Panel {
                 item.add(new Label("service.state", item.getModelObject().aliveState.name()));
                 switch (item.getModelObject().aliveState) {
                     case OFFLINE:
-                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOffline"));
+                        item.get("service.state").add(AttributeModifier.replace("id", "aliveStateOffline"));
                         break;
                     case ONLINE:
-                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOnline"));
+                        item.get("service.state").add(AttributeModifier.replace("id", "aliveStateOnline"));
                         break;
                     default:
-                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOther"));
+                        item.get("service.state").add(AttributeModifier.replace("id", "aliveStateOther"));
                         break;
                 }
             }

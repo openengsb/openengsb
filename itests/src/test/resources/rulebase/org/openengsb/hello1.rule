@@ -18,4 +18,4 @@
 when
 	Event(name == "42")
 then
-	example.doSomething("Hello World");
+	example.doSomethingWithMessage("Hello World");

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="user.semantics" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+    
+    <title>Semantics in the OpenEngSB</title>
+    
+    <para>
+        One of the core concepts of the OpenEngSB is the correct handling of domain models, versionize
+        them and perform model transformations on such models so that they can be easily used by tools
+        which connect to the OpenEngSB.
+    </para>
+    
+    <section>
+        <title>Domain Models</title>
+        <para>
+            A domain model represents an abstraction of data a domain has to work with (e.g. Issue for issue
+            tracking systems). It capsulates all information which is needed for one information unit. Such
+            domain models are defined in the domains and can be used by connectors which use the domain.
+        </para>
+        <para>
+            This domain models can be saved and versionized with the help of the OpenEngSB and two core components,
+            namely the EDB(Engineering Database) and the EKB(Engineering Knowledge base). Those two components will
+            be explained in more detail in the contributor manual.
+        </para>
+        <para>
+            A domain model is a Java Bean annotated with the @Model annotation. During runtime, this bean is enhanced
+            to be an OpenEngSBModel object. To save,update or delete models at the EDB you should use the PersistInterface
+            service of the EKB bundle. This service deals with the conversion of models to an EDB format and performs the
+            wanted actions for you. The PersistInterface expects an EKBCommit object, which contains all changes which
+            need to be committed. In the AbstractOpenEngSBConnectorService class a method is implemented which returns
+            you a fitting instance of an EKBCommit for your connector, which then needs to be filled.
+        </para>
+        <para>
+            Every OpenEngSBModel can define an id for itself. This id can be used for easier finding of domain models
+            and to enable the versioning possibility when they are saved in the EDB. Such an id can easily be defined 
+            by setting a special annotation over the field which defines the id for the object. This annotation is 
+            called @OpenEngSBModelId.
+        </para>
+    </section>
+    <section>
+        <title>Load Domain Models</title>
+        <para>
+            Domain models can be loaded from the EDB through the EKB. The EKB bundle provides a service called QueryInterface.
+            This service provides all needed functionality to search and load models from the EDB. It also convert the elements
+            from the EDB to a new instance of the domain model you request.
+        </para>
+    </section>
+    <section>
+        <title>Model Transformation</title>
+        <para>
+            Through model transformations it is possible to transform models to another model if a transformation can be performed.
+            The interface for that is the TransformationEngine which has an implementation in the EKB. A complete list of instructions
+            for this topic can be found in the transformation chapter (<xref linkend="user.transformations" />)
+        </para>
+    </section>
+</chapter>

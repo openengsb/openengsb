@@ -20,7 +20,7 @@ package org.openengsb.ui.common.taskbox.web;
 import java.util.ArrayList;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -30,9 +30,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.WorkflowException;
-import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.api.TaskboxService;
+import org.openengsb.core.workflow.api.WorkflowException;
+import org.openengsb.core.workflow.api.model.Task;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +50,6 @@ public class TaskPanel extends Panel {
         super(id);
         task = t;
 
-        add(new Label("taskid", task.getTaskId()));
-        add(new Label("taskname", task.getName()));
-        add(new Label("tasktype", task.getTaskType() != null ? task.getTaskType() : "N/A"));
-
-        add(new Label("taskdescription", task.getDescription() != null ? task.getDescription() : "N/A"));
-
         // CompoundPropertyModel<Task> taskModel = new CompoundPropertyModel<Task>(task);
         Form<Task> form = new Form<Task>("inputForm");
         form.setOutputMarkupId(true);
@@ -70,12 +64,12 @@ public class TaskPanel extends Panel {
         form.add(new TextArea<String>("taskdescription", new PropertyModel<String>(task, "description"))
             .setRequired(true));
 
-        form.add(new AjaxButton("submitButton", form) {
+        form.add(new AjaxSubmitLink("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
-                    setResponsePage(getPage().getClass());
+                    target.add(TaskPanel.this.getParent());
                 } catch (WorkflowException e) {
                     LOGGER.error("Cant finish task", e);
                 }

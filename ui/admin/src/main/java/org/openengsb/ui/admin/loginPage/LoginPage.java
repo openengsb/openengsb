@@ -17,20 +17,23 @@
 
 package org.openengsb.ui.admin.loginPage;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.model.UsernamePassword;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
 public class LoginPage extends BasePage {
+
+    private static final long serialVersionUID = 4704550987311760491L;
+
     private UsernamePassword user = new UsernamePassword();
 
     public LoginPage() {

@@ -39,9 +39,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +49,11 @@ import com.google.common.collect.Maps;
 
 public final class MethodUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
-
-    private static EngineeringKnowledgeBaseService ekbService;
     private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private MethodUtil() {
+
+    }
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -102,15 +102,7 @@ public final class MethodUtil {
     @SuppressWarnings("unchecked")
     public static <T> T buildBean(Class<T> beanClass, Map<String, String> values) {
         try {
-            Object obj = null;
-
-            if (beanClass.isInterface()) {
-                Class<? extends OpenEngSBModel> model = (Class<? extends OpenEngSBModel>) beanClass;
-                obj = ekbService.createEmptyModelObject(model);
-            } else {
-                obj = beanClass.newInstance();
-            }
-
+            Object obj = beanClass.newInstance();
             BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -187,7 +179,7 @@ public final class MethodUtil {
     }
 
     public enum TestEnum {
-            a, b, c
+        a, b, c
     }
 
     public static Object convertToCorrectClass(Class<?> type, Object value) {
@@ -241,9 +233,4 @@ public final class MethodUtil {
             return null;
         }
     }
-
-    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
-        MethodUtil.ekbService = ekbService;
-    }
-
 }

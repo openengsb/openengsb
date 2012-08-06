@@ -18,7 +18,9 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -106,6 +108,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
         </dependencies>
       </plugin>
       <plugin>
@@ -116,6 +123,9 @@
           <instructions>
             <Bundle-Activator>org.openengsb.core.security.internal.SecurityBundleActivator</Bundle-Activator>
             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+            <Delegation-Annotations>true</Delegation-Annotations>
+            <!--  to make the secure-json-filter work -->
+            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -137,25 +147,10 @@
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-openid</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <scope>compile</scope>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
     </dependency>
 
     <dependency>
@@ -179,12 +174,6 @@
     <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.serviceacl</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>org.openengsb.connector.wicketacl</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -226,10 +215,17 @@
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
 
-
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

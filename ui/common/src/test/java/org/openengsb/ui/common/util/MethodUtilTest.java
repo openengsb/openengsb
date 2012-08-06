@@ -33,6 +33,7 @@ import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
+import org.openengsb.core.test.DummyModel;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
@@ -84,6 +85,10 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
+        @Override
+        public void commitModel(DummyModel model) {
+
+        }
     }
 
     public interface TestInterface2 extends Domain {
@@ -119,6 +124,11 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
+
+        @Override
+        public void commitModel(DummyModel model) {
+
+        }
     }
 
     public static enum TestEnum {
@@ -126,7 +136,7 @@ public class MethodUtilTest {
     }
 
     @Test
-    public void addEnumValues() {
+    public void testAddEnumValues_shouldWork() {
         StringLocalizer mock = Mockito.mock(StringLocalizer.class);
         LocalizableString mock2 = Mockito.mock(LocalizableString.class);
         LocalizableString mock3 = Mockito.mock(LocalizableString.class);

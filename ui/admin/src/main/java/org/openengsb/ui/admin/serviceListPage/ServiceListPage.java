@@ -18,14 +18,16 @@
 package org.openengsb.ui.admin.serviceListPage;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceListPanel.ServiceListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "services")
 public class ServiceListPage extends BasePage {
+
+    private static final long serialVersionUID = 252433504169343260L;
 
     public ServiceListPage() {
         initContent();

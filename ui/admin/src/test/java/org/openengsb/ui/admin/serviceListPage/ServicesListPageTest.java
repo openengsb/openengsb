@@ -33,14 +33,10 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
 
 public class ServicesListPageTest extends AbstractUITest {
 
@@ -51,8 +47,8 @@ public class ServicesListPageTest extends AbstractUITest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONNECTOR_KEY, "bla");
 
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
 
     }
 
@@ -62,21 +58,22 @@ public class ServicesListPageTest extends AbstractUITest {
     }
 
     @Test
-    public void verifyRenderedPage_ShouldBeServiceListPage() {
+    public void testVerifyRenderedPage_shouldBeServiceListPage() {
         startPage();
         tester.assertRenderedPage(ServiceListPage.class);
     }
 
     @Test
-    public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
+    public void testVerifyListViews_shouldShowServiceStatus() {
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(Constants.ID_KEY, "test-service");
+        props.put(org.osgi.framework.Constants.SERVICE_PID, "test-service");
         props.put("testprop", "42");
         registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();
+        tester.debugComponentTrees();
         Label nameLabel =
             (Label) tester
                 .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.name");
@@ -86,13 +83,5 @@ public class ServicesListPageTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.state");
         assertThat(stateLabel.getDefaultModelObjectAsString(), is(AliveState.CONNECTING.name()));
         tester.debugComponentTrees();
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

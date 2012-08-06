@@ -30,14 +30,14 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.framework.edb</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.edb</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.edb.jpa</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.edb.jpa</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.framework</groupId>
-  <artifactId>org.openengsb.framework.edb</artifactId>
+  <groupId>org.openengsb.framework.edb</groupId>
+  <artifactId>org.openengsb.framework.edb.jpa</artifactId>
   <version>3.0.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Framework :: Engineering Database</name>
+  <name>OpenEngSB :: Framework :: EDB :: JPA</name>
 
   <packaging>bundle</packaging>
 
@@ -105,6 +105,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
         </dependencies>
       </plugin>
       <plugin>
@@ -156,8 +161,8 @@
 
     <!-- OpenEngSb dependencies -->
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.api</artifactId>
+      <groupId>org.openengsb.framework.edb</groupId>
+      <artifactId>org.openengsb.framework.edb.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -181,6 +186,10 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
     </dependency>
   </dependencies>
 </project>

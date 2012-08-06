@@ -27,21 +27,24 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
+import org.openengsb.core.common.AbstractDataRow;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
 /**
  * This entity-class is used to save Java-beans to the Database. Because the Object is not serialized and saved as a
  * BLOB, there are some restrictions on the bean-properties.
- *
+ * 
  * Only types are allowed which have a String-only-constructor, that can be used to instantiate the original instance
  * with a previous result of the type's toString-method.
- *
+ * 
  * Arrays and Collections of such objects are also supported.
  */
+@SuppressWarnings("serial")
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class BeanData {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class BeanData extends AbstractDataRow {
 
     @Column(name = "type", nullable = false)
     private String type;

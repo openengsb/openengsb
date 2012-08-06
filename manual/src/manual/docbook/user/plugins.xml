@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="user.plugins" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>External Domains and Connectors</title>
+
+  <para>Since tools are mostly neither developed for the OpenEngSB nor written in any way that they can be directly
+    deployed in the OpenEngSB environment a way is required to connect via different programming languages than Java
+    and from multiple protocols.</para>
+
+  <section xml:id="user.plugins.proxy">
+    <title>Proxying</title>
+    <para>The proxy mechanism allows for any method call to be intercepted.</para>
+    <section>
+      <title>Proxying internal Connector calls</title>
+      <para>The proxy mechanism allows to create proxies for any domain. To create a proxy you have to provide a
+        port id, destination and service id to call on the remote service. A Port encapsulates the protocol that
+        is used to call another service. There are an OutgoingPort and IncomingPort interface for respective purposes.
+        The port id is used to load the Port via OSGi. To include a Port in OPENENGSB it just has to be exported via OSGi.
+        The destination is a string that has to be correctly interpreted by the port to call the remote server.
+        The service id is added as metadata do identify the service that should get called on the remote server. It may not
+        be needed for certain implementations.</para>
+      <para>The proxy calls the CallRouter which redirects the methodcall to the respective Port. Security is implemented
+        in this layer.</para>
+    </section>
+  </section>
+</chapter>
+

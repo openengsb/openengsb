@@ -102,6 +102,61 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ConnectorManagerWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.ConnectorManager</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/ConnectorManager.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>ProxyConnectorRegistryWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.remote.ProxyConnectorRegistry</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/ProxyConnectorRegistry.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/generated/wsdl/ConnectorManager.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>ConnectorManager</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/ProxyConnectorRegistry.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>ProxyConnectorRegistry</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -110,10 +165,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>knowledge-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
     </dependency>
     <dependency>
       <groupId>xmlunit</groupId>

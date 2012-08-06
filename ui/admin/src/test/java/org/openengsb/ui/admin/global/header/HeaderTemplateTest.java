@@ -28,11 +28,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
@@ -44,31 +41,30 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
-
     }
 
     @Test
-    public void testNavigationFieldForIndex() {
+    public void testNavigationFieldForIndex_shouldNavigate() {
         setupIndexPage();
         Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationFieldForTestClient() {
+    public void testNavigationFieldForTestClient_shouldForwardToTestClient() {
         setupTestClientPage();
         Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
         Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationForNonExistingNavigationButton() {
+    public void testNavigationForNonExistingNavigationButton_shouldForwardToImprintPage() {
         Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
         Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testToNavigate() {
+    public void testToNavigate_shouldForwardToTestClient() {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
         tester.clickLink("header:headerMenuItems:0:link");
@@ -84,7 +80,6 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     private void setupTestClientPage() {
         context.putBean(bundleContext);
-        context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
@@ -94,17 +89,14 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @SuppressWarnings("unchecked")
     private void setUpSendEventPage() {
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("ruleManagerBean", mock(RuleManager.class));
-        context.putBean("auditing", mock(AuditingDomain.class));
-        context.putBean(mock(ProxyFactory.class));
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

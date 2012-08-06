@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,19 +36,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.ui.admin.AbstractUITest;
 
 public class OrganizeImportsPageTest extends AbstractUITest {
-    private RuleManager ruleManager;
     private List<String> imports;
 
     @Before
     public void init() throws RuleBaseException {
-        ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
-
         imports = new ArrayList<String>();
         imports.add("aaaa.bbbb.ccc");
         imports.add("aaaa.bbbb.ddd");
@@ -83,7 +77,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void renderOrganizeImportsPage() throws Exception {
+    public void testRenderOrganizeImportsPage_shouldShowPage() {
         tester.assertRenderedPage(OrganizeImportsPage.class);
         tester.assertComponent("tree", LinkTree.class);
         tester.assertComponent("editForm", Form.class);
@@ -97,7 +91,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSelectImport() throws Exception {
+    public void testSelectImport_shouldSelectImport() {
         tester.clickLink("tree:i:1:nodeComponent:contentLink", true);
         TextField<String> importName =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editForm:importName");
@@ -106,7 +100,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddNewImport() throws Exception {
+    public void testAddNewImport_shouldAddImport() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("submitButton");
@@ -116,7 +110,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteImport() throws Exception {
+    public void testDeleteImport_shouldDeleteImport() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("deleteButton");
@@ -126,7 +120,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteNotExistingImport() throws Exception {
+    public void testDeleteNotExistingImport_shouldWork() {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "test");
         formTester.submit("deleteButton");

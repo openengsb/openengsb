@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.workflow-editor" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Use the workflow Editor</title>
+  <para>This HowTo will show the basics of creating and editing a Workflow in the Editor.
+    As the Editor is still very much under development this is a current preview version.</para>
+  <section>
+    <title>Elements of the Workflow</title>
+    <para>The Workflow Editor currently uses Actions and Events to describe Workflows. </para>
+    <variablelist>
+      <varlistentry>
+        <term>Action</term>
+        <listitem>
+          <para>An Action calls a specific method on a connector instance. Every Action can have 
+            follow up Actions that will be called after the connector method was executed. You can
+            also add Events to an Action. If the method you call on an Action has @Raises Annotations
+            and thus raises Events you can add Handlers for that Event.</para>
+          <para>You can edit the code that is executed in the Action. When setting the Domain, Method
+            and Location the Action should execute you can create a template Method call.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Event</term>
+        <listitem>
+          <para>When a connector method raises an Event you can add a Handler for that. An Event
+            gets an associated Action that should be executed whenever the Event is raised.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+    <para>When starting the WorkflowEditor you have to create a Workflow if none already exists. When
+      creating a Workflow you have to set a root Action which gets executed as the first step of
+      the workflow.</para>
+    <para>After creating the workflow you can either add Actions or Events to your current workflow, create
+      another workflow or, if you already created various workflows, choose which one you want to edit.</para>
+    <para>The workflows are currently only held in memory in a service that will support storage and retrieval
+      upon restart at a later stage.</para>
+  </section>
+  <section>
+    <title>Exporting a Workflow</title>
+    <para>You can export the currently selected Workflow at any time, by pressing the Export button in the
+      WorkflowEditor. The Workflow will be exported to the RuleManager and should then be visible and
+      executable on the SendEvent Page.</para>
+  </section>
+  <section>
+    <title>Validating a Workflow</title>
+    <para>To validate a Workflow before exporting simply implement the org.openengsb.core.workflow.api.WorkflowValidator
+    interface and export it to OSGi with the same interface. An example would be
+    <code>
+      <service interface="org.openengsb.core.workflow.api.WorkflowValidator">
+        <bean class="org.openengsb.core.workflow.editor.validator.WorkflowValidatorImplementation"/>
+      </service>
+    </code>Upon Export of a Workflow every Validator is called and if errors exist the export is stopped.</para>
+  </section>
+</chapter>
+

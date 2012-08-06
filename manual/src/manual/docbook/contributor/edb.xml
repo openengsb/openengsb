@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.edb" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>Engineering Database - EDB</title>
+
+    <para>
+        The EDB is a core component of the semantic part of the OpenEngSB. It's purpose is the persisting
+        and versioning of domain models (so called OpenEngSBModel objects).
+    </para>
+
+    <section>
+        <title>Motivation</title>
+        <para>
+            The EDB concept was introduced with the idea to build a central persisting unit for the domain
+            models of all domains. This central approach offers some interesting advantages, like for example: 
+        </para>
+        <itemizedlist>
+            <listitem>easy to change</listitem>
+            <listitem>easy data maintainence</listitem>
+            <listitem>single point of versioning configuration</listitem>
+            <listitem>central instance where model transformations can take place</listitem>
+        </itemizedlist>
+        <para>
+            Model transformation is the out of the scope of the EDB and will be covered
+            by the EKB.
+        </para>
+        <para>
+            Another important feature of the EDB are build-in conflict checkers. Until now, there is only
+            one implementation which is based on version numbers. Whenever someone tries to
+            save something into the EDB with the wrong version, the conflict checker tells the user that
+            a conflict has been found and that he has to checkout the newest version of the model before
+            he can save the model.
+        </para>
+    </section>
+    <section>
+        <title>Structure</title>
+        <para>
+            The EDB is a JPA based implementation of a central database supplier in service orientated
+            architectures, which also have the additional functionality to version data. Currently we are
+            using OpenJPA as JPA implementation.
+        </para>
+        <para>
+            Since the EDB simulates the functionality of a scm system, the structures of the tables in the EDB 
+            are no big surprise. They consist of objects which have a list of key/value pairs bound to them. 
+            Also there exist a commit table, with which the EDB is able to keep track of all meta-data of changes.
+        </para>
+    </section>
+    <section>
+        <title>Usage</title>
+        <para>
+            An important point to consider is, that the EDB isn't supposed to be used directly. Instead, the EKB
+            (Engineering KnowledgeBase) component provides two interfaces which shall be used to access the EDB
+            indirectly. The reason for that is, that the EKB handles the OpenEngSBModels, their transformations
+            and everything related to them. The EDB on the other hand is only the persistence used by the EKB in
+            the background.
+        </para>
+        <para>
+            The saving of models to the EDB directly is conceptionally possible, but should always be done through the
+            PersistenceInterface provided by the EKB bundle, since this service does the automatic transformation work of
+            elements from OpenEngSBModel to EDB savable objects. See the detailed explanation of the EKB for more informations.
+        </para>
+        <para>
+            The loading of models from the EDB is conceptionally possible, but should always be done through the QueryInterface
+            of the EKB bundle, since this service does the automatic transformation work of elements from the EDB to an
+            OpenEngSBModel. See the detailed explanation of the EKB for more informations.
+        </para>
+    </section>
+    <section>
+        <title>Conflict Detection</title>
+        <para>
+            The conflict detection, as it is implemented now, is a very simple implementation of a conflict checker. The
+            checker is based on simple version numbers. If the version number of the model which has to be saved doesn't
+            fit to the actual version number, the conflict detection throws an error.
+        </para>
+        <para>
+            In the future there should be more possibilities for conflict detections been found. But for the start, this
+            conflict detection is enough(<link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2432">Jira-ISSUE</link>).
+        </para>
+    </section>
+</chapter>
+

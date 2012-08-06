@@ -25,6 +25,7 @@ import java.util.Hashtable;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.connector.serviceacl.internal.ServiceAclServiceImpl;
@@ -32,12 +33,10 @@ import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
@@ -49,10 +48,9 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.osgi.framework.BundleContext;
-import org.springframework.security.util.MethodInvocationUtils;
 
 public class ServiceAclTest extends AbstractOsgiMockServiceTest {
 
@@ -60,6 +58,9 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     private AuthorizationDomain servicePermissionAccessConnector;
     private UserDataManager userManager;
     private SecurityAttributeProviderImpl attributeStore;
+
+    @Rule
+    public DedicatedThread dedicatedThread = new DedicatedThread();
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +86,8 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         servicePermissionAccessConnector = serviceAclServiceImpl;
 
         registerServiceAtLocation(servicePermissionAccessConnector, "authorization/service", AuthorizationDomain.class);
-        CompositeConnectorStrategy strategy = new AffirmativeBasedAuthorizationStrategy();
+        AffirmativeBasedAuthorizationStrategy strategy = new AffirmativeBasedAuthorizationStrategy();
+        strategy.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
 
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("composite.strategy.name", "accessControlStrategy");
@@ -96,7 +98,9 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         attributes.put("queryString", "(location.foo=authorization/*)");
 
         DomainProvider provider = createDomainProviderMock(AuthorizationDomain.class, "accessControl");
-        ConnectorInstanceFactory factory = new CompositeConnectorProvider().createFactory(provider);
+        CompositeConnectorProvider compositeConnectorProvider = new CompositeConnectorProvider();
+        compositeConnectorProvider.setBundleContext(bundleContext);
+        ConnectorInstanceFactory factory = compositeConnectorProvider.createFactory(provider);
         accessControl = (AuthorizationDomain) factory.createNewInstance("authProvider");
 
         factory.applyAttributes((Connector) accessControl, attributes);
@@ -106,13 +110,13 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkAdminAccess_shouldGrant() throws Exception {
+    public void testCheckAdminAccess_shouldGrant() {
         MethodInvocation invocation = MethodInvocationUtils.create(new Object(), "toString");
         assertThat(accessControl.checkAccess("admin", invocation), is(Access.GRANTED));
     }
 
     @Test
-    public void checkServiceAccess_shouldGrant() throws Exception {
+    public void testCheckServiceAccess_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
@@ -122,7 +126,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkServiceAccessByName_shouldGrant() throws Exception {
+    public void testCheckServiceAccessByName_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
@@ -132,7 +136,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkMethodAccessByName_shouldGrant() throws Exception {
+    public void testCheckMethodAccessByName_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -142,7 +146,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkMethodAccessByWrongName_shouldDeny() throws Exception {
+    public void testCheckMethodAccessByWrongName_shouldDeny() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -152,7 +156,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkMethodAccessByMethodName_shouldGrant() throws Exception {
+    public void testCheckMethodAccessByMethodName_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -162,7 +166,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkServiceInstanceAccessById_shouldGrant() throws Exception {
+    public void testCheckServiceInstanceAccessById_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -176,18 +180,11 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkMethodPublicAccess_shouldGrant() throws Exception {
+    public void testCheckMethodPublicAccess_shouldGrant() {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "getInstanceId");
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

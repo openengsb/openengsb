@@ -18,25 +18,13 @@
 package org.openengsb.core.common;
 
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.DomainEvents;
-import org.openengsb.core.api.DomainMethodExecutionException;
-import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
-import org.openengsb.core.api.edb.EDBEvent;
-import org.openengsb.core.api.edb.EDBEventType;
-import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Base class for implementations of connector services. It also contains the method for sending EDB events to the EDB.
+ * Base class for implementations of connector services.
  */
 public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
-
     protected String domainId;
     protected String connectorId;
-    protected EDBBatchEvent batchEvent;
 
     public AbstractOpenEngSBConnectorService() {
         super();
@@ -44,67 +32,6 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
 
     public AbstractOpenEngSBConnectorService(String instanceId) {
         super(instanceId);
-    }
-
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events)
-        throws EDBException {
-        switch (type) {
-            case INSERT:
-                EDBInsertEvent create = new EDBInsertEvent(model);
-                enrichEDBEvent(create);
-                events.raiseEvent(create);
-                break;
-            case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(model);
-                enrichEDBEvent(delete);
-                events.raiseEvent(delete);
-                break;
-            case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model);
-                enrichEDBEvent(update);
-                events.raiseEvent(update);
-                break;
-            default:
-                throw new DomainMethodExecutionException("unsupported type of event --> " + type);
-        }
-    }
-
-    public void initiateEDBBatch() {
-        batchEvent = new EDBBatchEvent();
-        enrichEDBEvent(batchEvent);
-    }
-
-    public void addInsertModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelInsert(model);
-    }
-
-    public void addDeleteModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelDelete(model);
-    }
-
-    public void addUpdateModelToBatch(OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelUpdate(model);
-    }
-
-    public void sendEDBBatchEvent(DomainEvents events) throws EDBException {
-        checkEDBBatchEvent();
-        events.raiseEvent(batchEvent);
-        batchEvent = null;
-    }
-
-    private void checkEDBBatchEvent() {
-        if (batchEvent == null) {
-            throw new EDBException("EDBBatchEvent wasn't initiated");
-        }
-    }
-
-    private void enrichEDBEvent(EDBEvent event) {
-        event.setDomainId(domainId);
-        event.setConnectorId(connectorId);
-        event.setInstanceId(instanceId);
     }
 
     @Override

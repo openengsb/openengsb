@@ -39,22 +39,20 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openengsb.core.api.AbstractPermissionProvider;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.osgi.framework.BundleContext;
+import org.openengsb.labs.delegation.service.ClassProvider;
+import org.openengsb.labs.delegation.service.Constants;
+import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 
 public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
@@ -103,42 +101,25 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    private static EntityManager entityManager;
+    private EntityManager entityManager;
 
     private UserDataManager userManager;
 
     private UserData testUser2;
     private UserData testUser3;
 
-    private static EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
     @Before
     public void setUp() throws Exception {
-        executeDelete("UserData", "PermissionData", "PermissionSetData", "EntryValue");
+        EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
+        emf = Persistence.createEntityManagerFactory("security-test");
+        entityManager = emf.createEntityManager();
         setupUserManager();
         testUser2 = new UserData("testUser2");
         entityManager.persist(testUser2);
         testUser3 = new UserData("testUser3");
         entityManager.persist(testUser3);
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        emf = Persistence.createEntityManagerFactory("security-test");
-        setupPersistence();
-    }
-
-    private static void setupPersistence() {
-        entityManager = emf.createEntityManager();
-    }
-
-    private void executeDelete(String... query) {
-        entityManager.getTransaction().begin();
-        for (String q : query) {
-            // somehow fails after 3 tests ro so with JPQL-queries
-            entityManager.createQuery(String.format("DELETE FROM %s", q)).executeUpdate();
-        }
-        entityManager.getTransaction().commit();
     }
 
     private void setupUserManager() {
@@ -164,10 +145,11 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
                 new Class<?>[]{ UserDataManager.class }, invocationHandler);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("permissionClass", TestPermission.class.getName());
-        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
-        };
-        registerService(permissionProvider, props, PermissionProvider.class);
+        props.put(Constants.PROVIDED_CLASSES_KEY, TestPermission.class.getName());
+        props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_PERMISSIONS);
+        ClassProvider permissionProvider =
+            new ClassProviderImpl(bundle, Sets.newHashSet(TestPermission.class.getName()));
+        registerService(permissionProvider, props, ClassProvider.class);
 
     }
 
@@ -229,7 +211,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addPermissionSetToSet_shouldBeListedAsMember() throws Exception {
+    public void testAddPermissionSetToSet_shouldBeListedAsMember() throws Exception {
         userManager.createPermissionSet("ROLE_ADMIN");
         userManager.createPermissionSet("ROLE_ROOT");
         userManager.addPermissionSetToPermissionSet("ROLE_ROOT", "ROLE_ADMIN");
@@ -238,7 +220,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addPermissionSetToSet_shouldGrantAllPermissions() throws Exception {
+    public void testAddPermissionSetToSet_shouldGrantAllPermissions() throws Exception {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.createPermissionSet("ROLE_PROJECTMEMBER", permission);
@@ -250,7 +232,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addSingleUserAttribute_shouldContainAttribute() throws Exception {
+    public void testAddSingleUserAttribute_shouldContainAttribute() throws Exception {
         userManager.createUser("admin1");
         userManager.createUser("admin2");
         userManager.setUserAttribute("admin1", "test", 42);
@@ -264,7 +246,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void addAndRemoveUserAttribute_shouldNotBeSetAnymore() throws Exception {
+    public void testAddAndRemoveUserAttribute_shouldNotBeSetAnymore() throws Exception {
         userManager.createUser("admin1");
         userManager.setUserAttribute("admin1", "test", 42);
         userManager.removeUserAttribute("admin1", "test");
@@ -273,13 +255,5 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     private void assertAttributeValue(List<Object> actual, Object... expected) {
         assertThat(actual, is(Arrays.asList(expected)));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

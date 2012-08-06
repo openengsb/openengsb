@@ -21,11 +21,17 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.Constants;
+
+import com.google.common.collect.ImmutableMap;
+
 /**
  * Specific configuration model for the configuration to get up an connector.
  */
 @XmlRootElement
 public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
+
+    private static final long serialVersionUID = -6374621307230358813L;
 
     public static final String TYPE_ID = "CONNECTOR";
 
@@ -37,13 +43,12 @@ public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
         super(metaData, content);
     }
 
-    public ConnectorConfiguration(ConnectorId id, ConnectorDescription content) {
-        this.metaData = id.toMetaData();
+    public ConnectorConfiguration(String id, ConnectorDescription content) {
+        metaData = ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id);
         this.content = content;
     }
 
-    public ConnectorId getConnectorId() {
-        return ConnectorId.fromMetaData(metaData);
+    public String getConnectorId() {
+        return metaData.get(Constants.CONNECTOR_PERSISTENT_ID);
     }
-
 }

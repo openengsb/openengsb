@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -42,14 +41,15 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowException;
-import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.WorkflowException;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
@@ -57,6 +57,7 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
+import org.openengsb.ui.common.workflow.WorkflowStartPanel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
@@ -66,19 +67,21 @@ import org.slf4j.LoggerFactory;
 @PaxWicketMountPoint(mountPoint = "events")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
+    private static final long serialVersionUID = -6450762722099473732L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "eventService")
     private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "auditing")
     private AuditingDomain auditing;
 
     private RepeatingView fieldList;
@@ -124,7 +127,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                 Class<?> theClass = dropDownChoice.getModelObject();
                 fieldList.removeAll();
                 container.replace(createEditorPanelForClass(theClass));
-                target.addComponent(container);
+                target.add(container);
             }
         });
         form.add(dropDownChoice);
@@ -152,13 +155,13 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
                 }
-                target.addComponent(form);
-                target.addComponent(auditsContainer);
+                target.add(form);
+                target.add(auditsContainer);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(form);
+                target.add(form);
             }
         };
         submitButton.setOutputMarkupId(true);
@@ -177,6 +180,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         };
         auditsContainer.add(listView);
         add(auditsContainer);
+        add(new WorkflowStartPanel("workflowStartPanel"));
         add(new RuleEditorPanel("ruleEditor", this));
     }
 

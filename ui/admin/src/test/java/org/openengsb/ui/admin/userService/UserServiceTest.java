@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +38,6 @@ import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-
-import com.google.common.collect.ImmutableMap;
 
 public class UserServiceTest extends AbstractUITest {
 
@@ -59,18 +57,18 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionUserManagement() throws Exception {
+    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() {
         tester.startPage(Index.class);
         tester.assertContains("User Management");
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners()
+            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
-    public void createUserPageWithoutParams_shouldEnableUsernameField() throws Exception {
+    public void testCreateUserPageWithoutParams_shouldEnableUsernameField() {
         tester.startPage(UserEditPage.class);
         tester.assertRenderedPage(UserEditPage.class);
         Component usernameField =
@@ -79,8 +77,10 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
-        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "admin")));
+    public void testCreateUserPageWithUserParam_shouldDisableUsernameField() {
+        PageParameters parameters = new PageParameters();
+        parameters.set("user", "admin");
+        tester.startPage(UserEditPage.class, parameters);
         tester.assertRenderedPage(UserEditPage.class);
         Component usernameField =
             tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
@@ -88,7 +88,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
+    public void testCreateUserLink_shouldCreateEmptyEditPage() {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
         AjaxLink<?> button =
@@ -101,7 +101,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testUserCreation_ShouldWork() {
+    public void testUserCreation_shouldWork() {
         tester.startPage(UserEditPage.class);
 
         FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
@@ -116,7 +116,7 @@ public class UserServiceTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void testCreatePermission() {
+    public void testCreatePermission_shouldAddPermission() {
         tester.startPage(UserEditPage.class);
         tester.debugComponentTrees();
         tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission",
@@ -138,7 +138,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void deleteUser_shouldBeRemovedFromList() throws Exception {
+    public void testDeleteUser_shouldBeRemovedFromList() {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.delete");
@@ -147,20 +147,6 @@ public class UserServiceTest extends AbstractUITest {
         assertThat(userManager.getUserList(), not(hasItem("test")));
     }
 
-    //
-    // @Test
-    // public void testUserCreationWithoutRoles_ShouldWork() throws Exception {
-    // tester.startPage(UserListPage.class);
-    //
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("passwordVerification", "password");
-    // formTester.submit();
-    // tester.assertNoErrorMessage();
-    // assertThat(userManager.getUserCredentials("user1", "password"), is("password"));
-    // }
-    //
     @Test
     public void testErrorMessage_shouldReturnUserExists() throws Exception {
         tester.startPage(UserEditPage.class);
@@ -175,15 +161,17 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testShowCreatedUser_ShouldShowAdmin() {
+    public void testShowCreatedUser_shouldShowAdmin() {
         tester.startPage(UserListPage.class);
         tester.assertContains("admin");
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
+    public void testErrorMessage_shouldReturnWrongSecondPassword() throws Exception {
         userManager.createUser("user1");
-        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "user1")));
+        PageParameters parameters = new PageParameters();
+        parameters.set("user", "user1");
+        tester.startPage(UserEditPage.class, parameters);
         FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
@@ -192,20 +180,4 @@ public class UserServiceTest extends AbstractUITest {
         tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
     }
 
-    // @Test
-    // public void testShowUserAuthorities() throws Exception {
-    // tester.startPage(UserListPage.class);
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("passwordVerification", "password");
-    // formTester.setValue("roles", "ROLE_ADMIN");
-    // formTester.submit();
-    // tester.assertNoErrorMessage();
-    // //
-    // // ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
-    // // verify(userManager, times(1)).createUser(argCaptor.capture());
-    // // User userCreated = argCaptor.getValue();
-    // // assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
-    // }
 }

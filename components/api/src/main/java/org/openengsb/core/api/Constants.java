@@ -41,6 +41,20 @@ public final class Constants {
     public static final String CONFIG_CONNECTOR = "CONNECTOR";
 
     /**
+     * represents the id of the ConfigPersistenceService the RuleManager uses for GlobalDeclarations.
+     */
+    public static final String CONFIG_RULE_GLOBAL = "GLOBAL";
+
+    /**
+     * represents the id of the ConfigPersistenceService the RuleManager uses for ImportDeclarations.
+     */
+    public static final String CONFIG_RULE_IMPORT = "IMPORT";
+
+    /**
+     * represents the id of the ConfigPersistenceService the RuleManager uses for RuleBaseElements.
+     */
+    public static final String CONFIG_RULE_RULEBASE = "RULEBASE";
+    /**
      * represents the property-key for type of connector in osgi-service-properties
      */
     public static final String CONNECTOR_KEY = "connector";
@@ -51,15 +65,50 @@ public final class Constants {
     public static final String DOMAIN_KEY = "domain";
 
     /**
+     * Connector-attribute that makes sure setDomainType and setConnectorType are not called during creating.
+     */
+    public static final String SKIP_SET_DOMAIN_TYPE = "skipSetDomainType";
+
+    /**
      * represents the property-key for a connector's instanceid in osgi-service-properties
      */
-    public static final String ID_KEY = "id";
+    public static final String CONNECTOR_PERSISTENT_ID = "id";
 
     /**
      * connectors of this type require special handling. They represent proxies to connector-services running outside
      * the OpenEngSB and can represent any domain.
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
+
+    /**
+     * delegation context under which all models should be provided by delegated classloading.
+     */
+    public static final String DELEGATION_CONTEXT_MODELS = "models";
+
+    public static final String DELEGATION_CONTEXT_CREDENTIALS = "credentials";
+
+    public static final String DELEGATION_CONTEXT_PERMISSIONS = "permissions";
+
+    /**
+     * Used in bundle MANIFEST.MF to specify the short name of a domain.
+     *
+     * Domain-Name: example
+     */
+    public static final String DOMAIN_NAME_HEADER = "Domain-Name";
+
+    /**
+     * Used in bundle MANIFEST.MF to specify the fully qualified classname of the domain-interface
+     *
+     * Domain-Interface: org.openengsb.domain.example.ExampleDomain
+     */
+    public static final String DOMAIN_INTERFACE_HEADER = "Domain-Interface";
+
+    /**
+     * Used in bundle MANIFEST.MF to specify the fully qualified classname of the domain-events-interface
+     *
+     * DomainEvents-Interface: org.openengsb.domain.example.ExampleDomainEvents
+     */
+    public static final String DOMAIN_EVENTS_INTERFACE_HEADER = "DomainEvents-Interface";
 
     private Constants() {
         // this class should not be instanciated.

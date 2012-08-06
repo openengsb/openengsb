@@ -34,6 +34,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.ui.admin.edb.EdbClient;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -43,7 +44,6 @@ import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
@@ -85,11 +85,13 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
-        if (openengsbVersion == null) {
-            openengsbVersion = new OpenEngSBFallbackVersion();
-        }
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
-            add(new Label("version", openengsbVersion.getVersionNumber()));
+            if (openengsbVersion == null) {
+                add(new Label("version", new StringResourceModel("unknown.version", this, null)));
+            } else {
+                add(new Label("version", openengsbVersion.getVersionNumber()));
+            }
+            return;
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }
@@ -99,11 +101,11 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("Index", Index.class, "index.title");
 
         addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+        addHeaderMenuItem("EdbClient", EdbClient.class, "edbclient.title");
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
         addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
-        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
         addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
 
@@ -124,7 +126,7 @@ public class HeaderTemplate extends Panel {
 
                 // set menu item to active
                 if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
-                    item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
+                    item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
                         @Override
                         public String getObject() {
                             return "active";

@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -30,14 +31,14 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.framework.workflow</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.workflow</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.workflow.drools</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.workflow.drools</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.framework</groupId>
-  <artifactId>org.openengsb.framework.workflow</artifactId>
+  <groupId>org.openengsb.framework.workflow</groupId>
+  <artifactId>org.openengsb.framework.workflow.drools</artifactId>
   <version>3.0.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Framework :: Workflow Engine</name>
+  <name>OpenEngSB :: Framework :: Workflow :: Drools</name>
 
   <packaging>bundle</packaging>
 
@@ -82,6 +83,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Bundle-Activator>org.openengsb.core.workflow.drools.internal.Activator</Bundle-Activator>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
@@ -89,12 +91,15 @@
               org.aopalliance.aop,
               org.aopalliance.intercept,
               org.springframework.aop,
-              org.springframework.aop.framework, *
+              org.springframework.aop.framework,
+              org.apache.felix.fileinstall;version="[3,4)",
+              *
             </Import-Package>
             <!--
               Workflows need to access used classes in a dynamic way.
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
+
           </instructions>
         </configuration>
       </plugin>
@@ -128,6 +133,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.workflow</groupId>
+      <artifactId>org.openengsb.framework.workflow.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
@@ -157,16 +167,19 @@
       <artifactId>org.openengsb.domain.example</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <optional>true</optional>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.auditing</artifactId>
     </dependency>
   </dependencies>
 </project>

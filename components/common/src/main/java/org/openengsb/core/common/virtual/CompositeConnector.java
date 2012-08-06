@@ -17,12 +17,11 @@
 package org.openengsb.core.common.virtual;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.VirtualConnector;
 import org.osgi.framework.ServiceReference;
 
@@ -30,9 +29,11 @@ public class CompositeConnector extends VirtualConnector {
 
     private String queryString;
     private CompositeConnectorStrategy compositeHandler;
+    private final OsgiUtilsService utilsService;
 
-    public CompositeConnector(String instanceId) {
+    public CompositeConnector(String instanceId, OsgiUtilsService utilsService) {
         super(instanceId);
+        this.utilsService = utilsService;
     }
 
     @Override
@@ -43,10 +44,12 @@ public class CompositeConnector extends VirtualConnector {
 
     @SuppressWarnings("unchecked")
     private List<ServiceReference> getOsgiServices() {
-        OsgiUtilsService utilsService = OpenEngSBCoreServices.getServiceUtilsService();
-        List<ServiceReference> references = utilsService.listServiceReferences(queryString);
-        Collections.sort(references);
-        return references;
+        List<ServiceReference<?>> references = utilsService.listServiceReferences(queryString);
+        List<ServiceReference> result = new ArrayList<ServiceReference>();
+        for (ServiceReference<?> reference : references) {
+            result.add(reference);
+        }
+        return result;
     }
 
     public void setQueryString(String queryString) {

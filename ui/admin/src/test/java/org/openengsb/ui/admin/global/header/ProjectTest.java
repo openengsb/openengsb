@@ -24,14 +24,13 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.AbstractLoginTest;
-import org.openengsb.ui.admin.basePage.BasePage;
 
 public class ProjectTest extends AbstractLoginTest {
     private Page basePage;
@@ -49,12 +48,11 @@ public class ProjectTest extends AbstractLoginTest {
 
         when(contextCurrentService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
 
-        basePage = tester.startPage(new BasePage() {
-        });
+        basePage = tester.startPage(new DummyPage());
     }
 
     @Test
-    public void testIfLabelIsPresent() {
+    public void testIfLabelIsPresent_shouldContainLabelString() {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
                 basePage.get("header"));
@@ -76,21 +74,7 @@ public class ProjectTest extends AbstractLoginTest {
         formTester.select("projectChoice", 1);
 
         // simulated page reload...
-        tester.startPage(new BasePage() {
-        });
+        tester.startPage(new DummyPage());
         assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
-    }
-
-    @Test
-    public void testSelectContext_shouldRedirectToChoicesResponsePage() {
-        FormTester formTester = tester.newFormTester("projectChoiceForm");
-        formTester.select("projectChoice", 1);
-
-        @SuppressWarnings("unchecked")
-        DropDownChoice<String> choice =
-            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
-
-        Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();
-        assertThat(choice.getPage(), is(responsePage));
     }
 }

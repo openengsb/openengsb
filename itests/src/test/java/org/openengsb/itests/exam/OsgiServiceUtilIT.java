@@ -31,7 +31,8 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -46,11 +47,11 @@ import org.osgi.framework.Constants;
 public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
-    public void testOsgiServiceUtilMethods() throws Exception {
+    public void testOsgiServiceUtilMethods_shouldFindService() {
         DomainProvider provider = getServiceUtils().getService(DomainProvider.class);
         assertThat(provider, notNullValue());
         provider =
-            (DomainProvider) getServiceUtils().getService(getServiceUtils().makeFilter(DomainProvider.class,
+            (DomainProvider) getServiceUtils().getService(FilterUtils.makeFilter(DomainProvider.class,
                 String.format("(%s=example)", org.openengsb.core.api.Constants.DOMAIN_KEY)));
         assertThat(provider, notNullValue());
 
@@ -58,10 +59,10 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testOsgiServiceProxy() throws Exception {
+    public void testOsgiServiceProxy_shouldProxyService() throws Exception {
         ConnectorProvider proxy =
             getServiceUtils().getOsgiServiceProxy(
-                getServiceUtils().makeFilter(ConnectorProvider.class,
+                FilterUtils.makeFilter(ConnectorProvider.class,
                     String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
                 ConnectorProvider.class);
         assertThat(proxy.getId(), is("example"));
@@ -74,12 +75,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
@@ -94,14 +90,14 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
     }
 
     @Test
-    public void testLocationUtils() throws Exception {
+    public void testLocationUtils_shouldLoadServiceByLocation() {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -137,7 +133,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testMutlipleLocations() throws Exception {
+    public void testMutlipleLocations_shouldWork() {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -153,6 +149,6 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private OsgiUtilsService getServiceUtils() {
-        return OpenEngSBCoreServices.getServiceUtilsService();
+        return new DefaultOsgiUtilsService(getBundleContext());
     }
 }

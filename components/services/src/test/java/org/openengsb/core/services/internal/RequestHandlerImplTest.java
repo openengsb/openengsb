@@ -17,7 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
@@ -30,25 +30,23 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
-    private DefaultOsgiUtilsService serviceUtils;
     private RequestHandler requestHandler;
 
     public interface TestInterface {
@@ -67,7 +65,9 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setup() throws Exception {
-        requestHandler = new RequestHandlerImpl();
+        RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
+        requestHandlerImpl.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
+        requestHandler = requestHandlerImpl;
     }
 
     private TestInterface mockServiceWithProps(Map<String, Object> propData) {
@@ -81,6 +81,16 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
         registerService(mockService, props, TestInterface.class);
         return mockService;
+    }
+
+    @Test
+    public void testMethodCallWithNullParameters_shouldBeSerialized() throws Exception {
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 });
+        ObjectMapper objectMapper = new ObjectMapper();
+        String writeValueAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCall);
+        System.out.println(writeValueAsString);
+        MethodCall readValue = objectMapper.readValue(writeValueAsString, MethodCall.class);
+        assertThat(readValue, is(methodCall));
     }
 
     @Test
@@ -115,7 +125,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testCallByFilterAndServiceId_shouldCallService() throws Exception {
         Map<String, Object> propData =
-            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", }, "id", "xxx");
+            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", }, Constants.SERVICE_PID, "xxx");
         TestInterface mockService = mockServiceWithProps(propData);
         when(mockService.test(anyInt())).thenReturn(21);
 
@@ -131,7 +141,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testCallByFilterAndServiceIdWithCustomMarshaller_shouldCallService() throws Exception {
         Map<String, Object> propData =
-            ImmutableMap.of("testprop", (Object) new String[]{ "blub", "bleh", }, "id", "xxx");
+            ImmutableMap.of("testprop", (Object) new String[]{ "blub", "bleh", }, Constants.SERVICE_PID, "xxx");
         TestInterface realObject = new TestInterface() {
             @Override
             public Integer test(@UseCustomJasonMarshaller(CustomMarshaller.class) Integer arg) {
@@ -161,14 +171,6 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         } catch (IllegalArgumentException e) {
             verifyZeroInteractions(mockService);
         }
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
     }
 
 }

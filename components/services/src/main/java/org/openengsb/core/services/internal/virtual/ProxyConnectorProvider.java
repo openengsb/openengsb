@@ -22,9 +22,14 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.AbstractConnectorProvider;
 
 public class ProxyConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
+
+    private OutgoingPortUtilService outgoingPortUtilService;
+
+    private ProxyConnectorRegistryImpl connectorRegistry;
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -43,6 +48,14 @@ public class ProxyConnectorProvider extends AbstractConnectorProvider implements
 
     @Override
     public ConnectorInstanceFactory createFactory(DomainProvider provider) {
-        return new ProxyServiceFactory(provider);
+        return new ProxyServiceFactory(provider, outgoingPortUtilService, connectorRegistry);
+    }
+
+    public void setOutgoingPortUtilService(OutgoingPortUtilService outgoingPortUtilService) {
+        this.outgoingPortUtilService = outgoingPortUtilService;
+    }
+
+    public void setConnectorRegistry(ProxyConnectorRegistryImpl connectorRegistry) {
+        this.connectorRegistry = connectorRegistry;
     }
 }

@@ -17,9 +17,9 @@
 
 package org.openengsb.ui.admin.ruleEditorPage;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
@@ -30,7 +30,9 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "rules")
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
-    @PaxWicketBean
+    private static final long serialVersionUID = 3042519856428070188L;
+
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     public RuleEditorPage() {

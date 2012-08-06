@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.transformations" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>Transformations</title>
+
+    <para>
+        The OpenEngSB project is able to do transformations between models for you. To accomplish this, you have
+        to define the transformations. This can be done either through java objects (TransformationDescription)
+        which is passed to the <link linkend="contributor.ekb.transformer">Transformation Engine</link> or by
+        writing xml files which describe the transformation.        
+    </para>
+
+    <section>
+        <title>Motivation</title>
+        <para>
+            As soon as there are more than one component which want to communicate with each other, the need for
+            transformations between the model formats of both components is there. Through the definitions of
+            transformations, the Transformation Engine is able to do such transformations for the user. The user
+            only have to define the transformations and put the file into the config folder of the OpenEngSB project.
+        </para>
+    </section>
+    <section>
+        <title>File format</title>
+        <para>
+            Each transformation description file need to have the file ending ".transformation". 
+            The root element of each of this files is:
+            <programlisting>
+<![CDATA[
+<transformations>
+  // put your transformations here
+</transformations>
+]]>
+          </programlisting>
+        </para>
+        <para>
+            The root element of each transformation descriptions is:
+            <programlisting>
+<![CDATA[
+<transformation source="org.openengsb.presentation.ModelA;1.0.0" 
+     target="org.openengsb.presentation.ModelB;1.0.0" 
+     id="transformModelAToModelB_1">
+  // put your transformation steps here
+</transformation>
+]]>
+            </programlisting>
+            The attributes define the meta data about this transformation description. The source defines
+            the source model from where this transformation would start. The number behind the model classname
+            is the version of the model. The target attribute define the target model in which the transformation
+            ends. 
+        </para>
+        <para>
+            The id is an optional value which you can set. Since there can be unlimited many transformations
+            between two models, you can add transformations for special cases. If you call the transformation engine
+            you can pass a list of ids, where each of this ids must be in the transformation path so that there is a
+            valid transformation.
+        </para>
+    </section>
+    <section>
+        <title>The transformation steps</title>
+        <para>
+            There are a list of transformation steps (or transformation operations) you can use for your transformation
+            definition. This operations are introduced in the following paragraphs.
+        </para>
+        <para>
+            The forward operation is the simplest operation. It just forwards a field value from a source field to a 
+            target field.
+            <programlisting>
+            <![CDATA[
+<forward>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+</forward>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The substring operation is a string operation. It only takes a part of the string from the source field and
+            set it into the target field.
+            <programlisting>
+            <![CDATA[
+<substring>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+     <param key="from" value="0" />
+     <param key="to" value="4" />     
+  </params> 
+</substring>
+]]>
+            </programlisting>
+            The parameters define the exact values from which index to which index the string should be cut. Both options
+            are optional. The from parameter has a standard value 0 and the to parameter has as standard value the length
+            of the string in the source field.
+        </para>
+        <para>
+            The concat operation is a string operation. It combines the values of the source fields and writes a string
+            containing all source field strings in the target field.
+            <programlisting>
+            <![CDATA[
+<concat>
+  <source-fields>
+    <source-field>field1A</source-field>
+    <source-field>field2A</source-field>   
+  </source-fields>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="concatString" value="#" />
+  </params>
+</concat>
+]]>
+            </programlisting>
+            The parameter concatString is optional. If set, this string is set between each source field. The standard 
+            value is the empty string.
+        </para>
+        <para>
+            The map operation maps based on the source field into another value for the target field.
+            <programlisting>
+            <![CDATA[
+<map>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+   	<param key="dog" value="cat" />
+   	<param key="hello" value="world" />
+  </params> 
+</map>
+]]>
+            </programlisting>
+            The parameters define the mapping. The example mapping means: if there stands 'dog' in the fieldA, write
+            'cat' into fieldB. If no map matches, the value of fieldA will be written into fieldB.
+        </para>
+        <para>
+            The split operation is a string operation, which splits a string based on a parameter into parts.
+            <programlisting>
+            <![CDATA[
+<split>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="splitString" value="#" />
+    <param key="resultIndex" value="0" />
+  </params>
+</split>
+]]>
+            </programlisting>
+            This operation splits fieldA based on the split string parameter and write the 0th result into fieldB. Example:
+            fieldA='test1#test2#test3' as input would write 'test1' into fieldB.
+        </para>
+        <para>
+            The trim operation is a string operation. It removes the blanks at the beginning and the end of the source field
+            string and write the result into the target field.
+            <programlisting>
+            <![CDATA[
+<trim>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+</trim>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The length operation can calculate the length of an element in the source field and write the result as string
+            into the target field.
+            <programlisting>
+            <![CDATA[
+<length>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <!-- With the parameter function it is possible to define the function which calculates the length of the source field.
+       It must be a function the object of the source field is supporting.
+  <params>
+    <param key="function" value="customLength" />
+  </params>
+  -->   
+</length>
+]]>
+            </programlisting>
+            With the optional parameter function you can define which function should be used to calculate the length.
+            E.g. If in fieldA there is a list, you would write the value "size" into the function parameter.
+        </para>
+        <para>
+            The replace operation is a string operation. It can be used to replace a certain part of the string in the
+            source field with another string.
+            <programlisting>
+            <![CDATA[
+<replace>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="oldString" value="old" />
+    <param key="newString" value="new" />
+  </params>
+</replace>
+]]>
+            </programlisting>
+            The parameters define which string should be replaced with which string. E.g. with the above definition:
+            fieldA='this is old' would be changed to fieldB='this is new'.
+        </para>
+        <para>
+            The to lower operation is a string operation which convert a string from the source field into its lower case
+            equivalent and writes it to the target field.
+            <programlisting>
+            <![CDATA[
+<toLower>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+</toLower>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The to upper operation is a string operation which convert a string from the source field into its upper case
+            equivalent and writes it to the target field.
+            <programlisting>
+            <![CDATA[
+<toUpper>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+</toUpper>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The value operation is used to set a constant value into a target field.
+            <programlisting>
+            <![CDATA[
+<value> 
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="value" value="Hello World" />     
+  </params>   
+</value>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The pad operation is a string operation which takes the string of the source field and pad it
+            based on the parameters and write result into the target field.
+            <programlisting>
+            <![CDATA[
+<pad>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="length" value="4" />
+    <param key="char" value="0" />
+    <param key="direction" value="Start" />   
+  </params>
+</pad>
+]]>
+            </programlisting>
+            The length parameter defines how long the padding is done. The char parameter defines which character
+            is used for the padding. The direction defines from where the padding is started. This is an optional
+            parameter and its default value is Start. The other one is End.
+            Example: fieldA='1' would set into fieldB='0001'
+        </para>
+        <para>
+            The instantiate operation is used to support other field types than only strings.
+            <programlisting>
+            <![CDATA[
+<instantiate>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="targetType" value="java.lang.Integer" />
+    <param key="targetTypeInit" value="parseInt" />
+        <!-- optional value. If this parameter isn't set, the constructor of the target type with the object
+         class of the source field as parameter will be used. Also this paramater can be a static method or 
+         a instance method -->     
+  </params>
+</instantiate>
+]]>
+            </programlisting>
+            The parameter targetType defines the class which shall be used for the instantiation. The targetTypeInit
+            parameter is used to define which function of the targetType is used for initiating. Here the value of
+            the source field is taken as parameter. If this parameter isn't set, the constructor of the targetType
+            with the source field as parameter will be used.
+        </para>
+        <para>
+            The remove leading operation is a string operation. It takes the string from the source field and removes
+            all elements at the start which match a regular expression.
+            <programlisting>
+            <![CDATA[
+<removeleading>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="regexString" value="[?#]+" />
+    <param key="length" value="0" />
+  </params>
+</removeleading>
+]]>
+            </programlisting>
+            The parameter regexString defines the regular expression. The length parameter defines how long the removing
+            is done at maximum. This is an optional parameter. Its default value is 0. 0 means that the whole string will
+            be taken for the remove operation. Example: fieldA='??##??id' would set fieldB='id' with the parameters shown above.
+        </para>
+        <para>
+            The reverse operation is a string operation. It takes the string from the source field, reverses it and writes
+            the result into the target field.
+            <programlisting>
+            <![CDATA[
+<reverse>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>   
+</value>
+]]>
+            </programlisting>
+        </para>
+        <para>
+            The split regex operation is a string parameter. It works exactly like the split operation, but takes a
+            regular expression as base for the splitting and not a single character.
+            <programlisting>
+            <![CDATA[
+<splitRegex>
+  <source-field>fieldA</source-field>
+  <target-field>fieldB</target-field>
+  <params>
+    <param key="regexString" value="[^#]+" />
+    <param key="resultIndex" value="0" />
+  </params>
+</splitRegex>
+]]>
+            </programlisting>
+            The parameter regexString defines the regular expression. The parameter resultIndex defines like in
+            split which result will be written into the target field. Example fieldA='value1#value2#value3' would
+            result in fieldB='value1' with the above parameters.
+        </para>
+    </section>
+    
+</chapter>
+

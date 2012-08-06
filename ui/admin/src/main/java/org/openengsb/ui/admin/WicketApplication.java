@@ -18,22 +18,21 @@
 package org.openengsb.ui.admin;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
+import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
-import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 
 public class WicketApplication extends OpenEngSBWicketApplication {
 
-    private final ApplicationLifecycleListener lifecycleListener;
-
-    public WicketApplication(ApplicationLifecycleListener lifecycleListener) {
-        this.lifecycleListener = lifecycleListener;
+    @Override
+    protected void init() {
+        super.init();
     }
 
     @Override
@@ -47,29 +46,13 @@ public class WicketApplication extends OpenEngSBWicketApplication {
     }
 
     @Override
-    protected void addInjector() {
-        // a ComponentInitializationListener is set by pax-wicket
-    }
-
-    @Override
-    protected void init() {
-        lifecycleListener.onInit(this);
-        super.init();
-    }
-
-    @Override
     public Session newSession(Request request, Response response) {
-        return new AdminWebSession(request);
+        return new OpenEngSBWebSession(request);
     }
 
     @Override
     protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
-        return AdminWebSession.class;
+        return OpenEngSBWebSession.class;
     }
 
-    @Override
-    protected void onDestroy() {
-        lifecycleListener.onDestroy(this);
-        super.onDestroy();
-    }
 }

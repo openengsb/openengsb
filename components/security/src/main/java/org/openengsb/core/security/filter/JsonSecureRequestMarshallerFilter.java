@@ -24,8 +24,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.api.remote.MethodCallMessage;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.util.JsonUtils;
 import org.slf4j.Logger;
@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This filter takes a {@link String} representing a JSON-encoded {@link SecureRequest} and parses it. The next filter
  * returns a SecureResponse which is marshaled to JSON again.
- * 
+ *
  * This filter is intended for incoming ports.
- * 
+ *
  * <code>
  * <pre>
  *      [JSON-String]         > Filter > [SecureRequest]    > ...
@@ -52,28 +52,24 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
 
     private FilterAction next;
 
-    private ObjectMapper mapper = new ObjectMapper();
-
-    public JsonSecureRequestMarshallerFilter() {
-        super(byte[].class, byte[].class);
-    }
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
-        SecureRequest request;
+        MethodCallMessage request;
         try {
             LOGGER.trace("attempt to read SecureRequest from inputData");
-            request = mapper.readValue(input, SecureRequest.class);
+            request = mapper.readValue(input, MethodCallMessage.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
-        String callId = request.getMessage().getCallId();
+        String callId = request.getCallId();
         LOGGER.info("extracted callId \"{}\" from message", callId);
         metaData.put("callId", callId);
         LOGGER.debug("converting arguments of inputmessage");
-        JsonUtils.convertAllArgs(request.getMessage());
+        JsonUtils.convertAllArgs(request);
         LOGGER.debug("invoking next filter: {}", next.getClass().getName());
-        SecureResponse response = (SecureResponse) next.filter(request, metaData);
+        MethodResultMessage response = (MethodResultMessage) next.filter(request, metaData);
         LOGGER.debug("response received for callId {}: {}. serializing to json", callId, response);
         try {
             return mapper.writeValueAsBytes(response);
@@ -85,7 +81,7 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
     }
 }

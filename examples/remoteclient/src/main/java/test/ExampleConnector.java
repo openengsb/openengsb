@@ -19,7 +19,6 @@ package test;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -65,15 +64,9 @@ class ExampleConnector implements ExampleDomain, Connector {
     }
 
     @Override
-    public String doSomething(String message) {
+    public String doSomethingWithMessage(String message) {
         LOGGER.info(message);
         return message;
-    }
-
-    @Override
-    public String doSomething(ExampleEnum exampleEnum) {
-        LOGGER.info("ExampleEnum: {}", exampleEnum);
-        return exampleEnum.toString();
     }
 
     @Override
@@ -83,9 +76,9 @@ class ExampleConnector implements ExampleDomain, Connector {
     }
 
     @Override
-    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+    public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
         LOGGER.info("RequestModelEvent: {}", model);
-        ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        ExampleResponseModel response = new ExampleResponseModel();
         response.setResult("success");
         return response;
     }

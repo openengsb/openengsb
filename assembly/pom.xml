@@ -25,8 +25,10 @@
   <properties>
     <java.min.mem>256M</java.min.mem>
     <java.max.mem>1024M</java.max.mem>
-    <java.min.perm>64M</java.min.perm>
-    <java.max.perm>128M</java.max.perm>
+    <java.min.perm>128M</java.min.perm>
+    <java.max.perm>256M</java.max.perm>
+    <felix.framework.version>4.0.3</felix.framework.version>
+    <equinox.version>3.8.0.v20120529-1548</equinox.version>
   </properties>
 
   <parent>
@@ -69,14 +71,27 @@
       <type>tar.gz</type>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
+      <groupId>org.apache.karaf.features</groupId>
       <artifactId>standard</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>spring</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
       <artifactId>enterprise</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-features</artifactId>
+      <version>${shiro.version}</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
@@ -154,25 +169,37 @@
       </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>features-maven-plugin</artifactId>
+        <artifactId>karaf-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>add-features-to-repo</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>add-features-to-repo</goal>
+              <goal>features-add-to-repository</goal>
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-                <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
                 <!-- Missing Karaf Features -->
                 <feature>config</feature>
                 <feature>management</feature>
-                <feature>wrapper</feature>
+                <feature>kar</feature>
+                <feature>eventadmin</feature>
+                <feature>spring</feature>
+                <feature>spring-web</feature>
+                <feature>spring-dm</feature>
+                <feature>war</feature>
+                <feature>transaction</feature>
+                <feature>jpa</feature>
+                <feature>jndi</feature>
+                <feature>shiro-core</feature>
+                <feature>shiro-web</feature>
                 <!-- OpenEngSB Remoting -->
                 <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>
@@ -180,9 +207,10 @@
                 <!-- OpenEngSB Administration -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
-                <feature>openengsb-domain-auditing</feature>
+                <feature>openengsb-domain-example</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
+                <feature>openengsb-connector-example</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
@@ -222,19 +250,32 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <appendAssemblyId>false</appendAssemblyId>
-          <descriptors>
-            <descriptor>${project.basedir}/src/main/descriptors/bin.xml</descriptor>
-          </descriptors>
-        </configuration>
         <executions>
           <execution>
-            <id>assembly-openengsb</id>
+            <id>assembly-framework</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>${project.basedir}/src/descriptors/bin.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>assembly-others</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>true</appendAssemblyId>
+              <descriptors>
+                <descriptor>${project.basedir}/src/descriptors/src.xml</descriptor>
+              </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>

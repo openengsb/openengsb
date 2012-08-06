@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.ServiceReference;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Composite strategy for {@link AuthorizationDomain}.
- *
+ * 
  * On every associated connector the "supports" method is called to determine if they can handle the supplied object.
  * For a successful authorization at least one {@link Access#GRANTED} vote is required. The first {@link Access#DENIED}
  * vote causes the strategy to deny access too. If all connectors abstain, the strategy abstains too.
@@ -40,19 +40,22 @@ public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffirmativeBasedAuthorizationStrategy.class);
 
+    private OsgiUtilsService utilsService;
+
     private static class CompositeAccessControlProvider extends AbstractOpenEngSBConnectorService
             implements AuthorizationDomain {
         private List<ServiceReference> providers;
+        private OsgiUtilsService utilsService;
 
-        public CompositeAccessControlProvider(List<ServiceReference> providers) {
+        public CompositeAccessControlProvider(List<ServiceReference> providers, OsgiUtilsService utilsService) {
             this.providers = providers;
+            this.utilsService = utilsService;
         }
 
         @Override
         public Access checkAccess(final String user, Object action) {
             Iterator<AuthorizationDomain> serviceIterator =
-                OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthorizationDomain.class);
+                utilsService.getServiceIterator(providers, AuthorizationDomain.class);
             LOGGER.debug("iterating {} authenticationProviderServices", providers.size());
             boolean granted = false;
             while (serviceIterator.hasNext()) {
@@ -75,12 +78,16 @@ public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrat
 
     @Override
     protected Object createDelegate(List<ServiceReference> services) {
-        return new CompositeAccessControlProvider(services);
+        return new CompositeAccessControlProvider(services, utilsService);
     }
 
     @Override
     public boolean supports(Class<?> domainClass) {
         return AuthorizationDomain.class.isAssignableFrom(domainClass);
+    }
+
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
     }
 
 }

@@ -19,11 +19,9 @@ package org.openengsb.connector.example.internal;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.LogLevel;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.slf4j.Logger;
@@ -45,27 +43,17 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public String doSomething(String message) {
+    public String doSomethingWithMessage(String message) {
         message = prefix + ": " + message;
-        LogLevel level = LogLevel.INFO;
-        if ("DEBUG".equals(outputMode)) {
-            LOGGER.debug(message);
-            level = LogLevel.DEBUG;
-        } else if ("INFO".equals(outputMode)) {
-            LOGGER.info(message);
-            level = LogLevel.INFO;
-        } else if ("WARN".equals(outputMode)) {
-            LOGGER.warn(message);
-            level = LogLevel.WARN;
-        } else if ("ERROR".equals(outputMode)) {
-            LOGGER.error(message);
-            level = LogLevel.ERROR;
+        String level = "INFO";
+        if (outputMode != null) {
+            level = outputMode;
         }
         raiseEvent(message, level);
         return "LogServiceCalled with: " + message;
     }
 
-    private void raiseEvent(String message, LogLevel level) {
+    private void raiseEvent(String message, String level) {
         LogEvent event = new LogEvent();
         event.setMessage(message);
         event.setLevel(level);
@@ -87,20 +75,14 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     @Override
-    public String doSomething(ExampleEnum exampleEnum) {
-        LOGGER.info("{}", exampleEnum);
-        return "Called with: " + exampleEnum.toString();
-    }
-
-    @Override
     public String doSomethingWithLogEvent(LogEvent event) {
         return "Called: " + event.getMessage() + " " + event.getLevel();
     }
 
     @Override
-    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+    public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
         LOGGER.info("received model with the id \"{}\" and name \"{}\"", model.getId(), model.getName());
-        ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        ExampleResponseModel response = new ExampleResponseModel();
         return response;
     }
 

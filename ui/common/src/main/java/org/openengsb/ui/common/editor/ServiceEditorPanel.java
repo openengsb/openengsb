@@ -28,10 +28,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -45,12 +48,14 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
 import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -59,12 +64,17 @@ import com.google.common.collect.Lists;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
- *
+ * 
  */
-@SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
+    private static final long serialVersionUID = 5593901084329552949L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEditorPanel.class);
+
     private final class EntryModel implements IModel<String> {
+
+        private static final long serialVersionUID = -6996584309100143740L;
 
         private Entry<String, Object> entry;
         private int index;
@@ -83,6 +93,22 @@ public class ServiceEditorPanel extends Panel {
                 }
             } else if (index > 0) {
                 entry.setValue(new Object[index + 1]);
+            }
+        }
+
+        public void deleteSubElement(int index) {
+            if (isArray()) {
+                Object[] oldArray = getArray();
+                Object[] newArray = new Object[oldArray.length - 1];
+                int j = 0;
+                for (int i = 0; i < oldArray.length; i++) {
+                    if (i == index) {
+                        continue;
+                    }
+                    newArray[j] = oldArray[i];
+                    j++;
+                }
+                entry.setValue(newArray.length == 1 ? newArray[0] : newArray);
             }
         }
 
@@ -128,16 +154,27 @@ public class ServiceEditorPanel extends Panel {
     private WebMarkupContainer propertiesContainer;
     private ListView<MapEntry<String, Object>> propertiesList;
     private final Form<?> parentForm;
-    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
-        org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
-        Constants.SERVICE_ID, Constants.OBJECTCLASS);
+    private Map<String, Object> properties;
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(
+        org.openengsb.core.api.Constants.CONNECTOR_KEY,
+        org.openengsb.core.api.Constants.DOMAIN_KEY,
+        Constants.SERVICE_ID, Constants.OBJECTCLASS, Constants.SERVICE_PID);
 
+    @SuppressWarnings({ "serial" })
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, Form<?> parentForm) {
         super(id);
         this.attributes = attributes;
         this.parentForm = parentForm;
+        this.properties = properties;
         initPanel(attributes, attributeMap, properties);
+        add(new Behavior() {
+            @Override
+            public void renderHead(Component component, IHeaderResponse response) {
+                response.renderCSSReference(new PackageResourceReference(ServiceEditorPanel.class,
+                    "ServiceEditorPanel.css"));
+            }
+        });
     }
 
     public void reloadList(Map<String, Object> properties) {
@@ -149,7 +186,7 @@ public class ServiceEditorPanel extends Panel {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
-
+        this.properties = properties;
         propertiesList.setList(entryList);
     }
 
@@ -182,15 +219,24 @@ public class ServiceEditorPanel extends Panel {
         }
     }
 
+    /**
+     * Removes the property with the given key and reloads the property list afterwards
+     */
+    public void removeProperty(String key) {
+        properties.remove(key);
+        reloadList(properties);
+    }
+
+    @SuppressWarnings("serial")
     private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
             Map<String, Object> properties) {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeMap);
         add(fields);
+        setOutputMarkupId(true);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
-
         propertiesList = new ListView<MapEntry<String, Object>>("properties") {
             @Override
             protected void populateItem(final ListItem<MapEntry<String, Object>> item) {
@@ -199,16 +245,31 @@ public class ServiceEditorPanel extends Panel {
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
 
-                RepeatingView repeater = new RepeatingView("values");
+                item.add(new WebMarkupContainer("buttonKey").add(new AjaxEventBehavior("onclick") {
+                    protected void onEvent(AjaxRequestTarget target) {
+                        ServiceEditorPanel.this.removeProperty(modelObject.getKey());
+                        target.add(ServiceEditorPanel.this);
+                    }
+                }));
+
+                final RepeatingView repeater = new RepeatingView("values");
                 item.add(repeater);
                 Object value = modelObject.getValue();
                 if (value.getClass().isArray()) {
                     Object[] values = (Object[]) value;
                     for (int i = 0; i < values.length; i++) {
                         WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                        final EntryModel model = new EntryModel(modelObject, i);
+                        final int index = i;
                         AjaxEditableLabel<String> l =
-                            new AjaxEditableLabel<String>("value", new EntryModel(modelObject, i));
+                            new AjaxEditableLabel<String>("value", model);
                         container.add(l);
+                        container.add(new WebMarkupContainer("buttonValue").add(new AjaxEventBehavior("onclick") {
+                            protected void onEvent(AjaxRequestTarget target) {
+                                model.deleteSubElement(index);
+                                target.add(ServiceEditorPanel.this);
+                            }
+                        }));
                         repeater.add(container);
                     }
                 } else {
@@ -216,6 +277,7 @@ public class ServiceEditorPanel extends Panel {
                     IModel<String> valueModel = new EntryModel(modelObject, 0);
                     AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
                     container.add(l);
+                    container.add(new WebMarkupContainer("buttonValue").setVisible(false));
                     repeater.add(container);
                 }
 
@@ -234,8 +296,13 @@ public class ServiceEditorPanel extends Panel {
                             newArray[1] = "";
                             modelObject.setValue(newArray);
                         }
-                        target.addComponent(item);
-                        target.addComponent(ServiceEditorPanel.this);
+                        target.add(item);
+                        target.add(ServiceEditorPanel.this);
+                    }
+
+                    @Override
+                    protected void onError(AjaxRequestTarget target, Form<?> form) {
+                        LOGGER.warn("Error occured during submit!");
                     }
                 };
                 item.add(button);
@@ -258,6 +325,8 @@ public class ServiceEditorPanel extends Panel {
     public void attachFormValidator(final Form<?> form, final FormValidator validator) {
         form.add(new AbstractFormValidator() {
 
+            private static final long serialVersionUID = -4181095793820830517L;
+
             @Override
             public void validate(Form<?> form) {
                 Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
@@ -271,7 +340,7 @@ public class ServiceEditorPanel extends Panel {
                     Map<String, String> attributeErrorMessages = e.getErrorMessages();
                     for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
                         FormComponent<?> fc = loadFormComponents.get(entry.getKey());
-                        fc.error((IValidationError) new ValidationError().setMessage(entry.getValue()));
+                        fc.error(new ValidationError().setMessage(entry.getValue()));
                     }
                 }
 

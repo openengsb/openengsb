@@ -23,6 +23,7 @@
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
+	<class>org.openengsb.core.common.AbstractDataRow</class>
     <class>org.openengsb.core.security.internal.model.EntryElement</class>
     <class>org.openengsb.core.security.internal.model.EntryValue</class>
     <class>org.openengsb.core.security.internal.model.BeanData</class>
@@ -36,7 +37,7 @@
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
       <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1" />
       <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000" /> 
-      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add,deleteTableContents',ForeignKeys=true)" />
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported" />
       <property name="openjpa.DataCache" value="true" />
       <property name="openjpa.ConnectionRetainMode" value="always" />

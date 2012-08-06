@@ -23,13 +23,30 @@
   xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
   xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0">
 
-  <bean id="edbServiceProvider" class="org.openengsb.core.edb.internal.JPADatabase">
+  <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
+    <property name="errorHooks" ref="errorHooks" />
+    <property name="postCommitHooks" ref="postCommitHooks" />
+    <property name="preCommitHooks" ref="preCommitHooks" />
+    <property name="beginCommitHooks" ref="beginCommitHooks" />
   </bean>
+  
+  <bean id="preCommitHook" class="org.openengsb.core.edb.jpa.internal.CheckPreCommitHook">
+    <jpa:context property="entityManager" unitname="edb" /> 
+  </bean>
+  
+  <service interface="org.openengsb.core.edb.api.hooks.EDBPreCommitHook">
+    <ref component-id="preCommitHook" /> 
+  </service>
 
-  <service interface="org.openengsb.core.api.edb.EngineeringDatabaseService">
+  <service interface="org.openengsb.core.edb.api.EngineeringDatabaseService">
     <ref component-id="edbServiceProvider" />
   </service>
+  
+  <reference-list id="errorHooks" interface="org.openengsb.core.edb.api.hooks.EDBErrorHook" availability="optional" />
+  <reference-list id="postCommitHooks" interface="org.openengsb.core.edb.api.hooks.EDBPostCommitHook" availability="optional"/>
+  <reference-list id="preCommitHooks" interface="org.openengsb.core.edb.api.hooks.EDBPreCommitHook" availability="optional"/>
+  <reference-list id="beginCommitHooks" interface="org.openengsb.core.edb.api.hooks.EDBBeginCommitHook" availability="optional"/>
 
 </blueprint>

@@ -17,11 +17,11 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.ByteArrayInputStream;
@@ -39,13 +39,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
@@ -57,8 +57,8 @@ import org.w3c.dom.Document;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
-    private static final String WSDL_URL = "http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl";
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
+    private String wsdlUrl;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -68,18 +68,20 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Before
     public void checkIfTestsAreReady() throws Exception {
-        waitForSiteToBeAvailable(WSDL_URL, MAX_SLEEP_TIME_IN_SECONDS);
+        String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
+        wsdlUrl = String.format("http://localhost:%s/ws/receiver/?wsdl", httpPort);
+        waitForSiteToBeAvailable(wsdlUrl, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @Test
-    public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "ws-json", 60000);
+    public void testWsPort_shouldBeExportedWithCorrectId() {
+        DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(getBundleContext());
+        OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "ws-json", 60000);
         assertNotNull(serviceWithId);
     }
 
     @Test
-    public void startSimpleWorkflow_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflow_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
@@ -94,7 +96,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void startSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
+    public void testStartSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
@@ -125,7 +127,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+    public void testRecordAuditInCoreService_shouldReturnVoid() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
@@ -144,7 +146,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL(WSDL_URL), serviceName);
+        Service service = Service.create(new URL(wsdlUrl), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;
@@ -182,5 +184,4 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         String result = (String) expression.evaluate(document, XPathConstants.STRING);
         return result;
     }
-
 }

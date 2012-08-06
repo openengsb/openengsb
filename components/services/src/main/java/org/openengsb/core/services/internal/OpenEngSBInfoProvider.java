@@ -19,7 +19,8 @@ package org.openengsb.core.services.internal;
 
 import java.util.Properties;
 
-import org.apache.karaf.shell.commands.info.InfoProvider;
+import org.apache.karaf.shell.commands.InfoProvider;
+
 
 /**
  * Showing base OpenEngSB information in Karaf info command

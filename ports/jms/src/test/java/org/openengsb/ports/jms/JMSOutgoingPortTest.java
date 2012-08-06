@@ -24,10 +24,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
@@ -37,21 +35,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
-import org.openengsb.core.security.filter.OutgoingWrapperFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -59,22 +51,19 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String METHOD_RESULT_MESSAGE = ""
             + "{"
-            + "   \"message\":{"
-            + "      \"result\":{"
-            + "         \"type\":\"Object\","
-            + "         \"className\":\"java.lang.String\","
-            + "         \"arg\":\"42\","
-            + "         \"metaData\":{"
-            + ""
-            + "         }"
-            + "      },"
-            + "      \"callId\":\"12345\""
-            + "   },"
+            + "   \"result\":{"
+            + "       \"type\":\"Object\","
+            + "       \"className\":\"java.lang.String\","
+            + "       \"arg\":\"42\","
+            + "       \"metaData\":{"
+            + "       }"
+            + "    },"
+            + "   \"callId\":\"12345\","
             + "   \"timestamp\":1321314411697"
             + "}"
             + "";
 
-    private MethodCallRequest call;
+    private MethodCallMessage call;
     private JmsTemplate jmsTemplate;
     private JMSTemplateFactory jmsTemplateFactory;
 
@@ -88,7 +77,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     public void setup() throws Exception {
         MethodResult methodResult = new MethodResult("42");
         MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
-        String writeValueAsString = new ObjectMapper().writeValueAsString(SecureResponse.create(methodResultMessage));
+        String writeValueAsString = new ObjectMapper().writeValueAsString(methodResultMessage);
 
         System.out.println(writeValueAsString);
 
@@ -105,16 +94,16 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         metaData = new HashMap<String, String>();
         metaData.put("serviceId", "test");
         MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
-        call = new MethodCallRequest(methodCall, "123");
+        call = new MethodCallMessage(methodCall, "123");
         call.setDestination("host?receive");
 
         JMSOutgoingPort jmsOutgoingPort = new JMSOutgoingPort();
         jmsOutgoingPort.setFactory(jmsTemplateFactory);
 
-        FilterChainFactory<MethodCallRequest, MethodResultMessage> factory =
-            new FilterChainFactory<MethodCallRequest, MethodResultMessage>(MethodCallRequest.class,
+        FilterChainFactory<MethodCallMessage, MethodResultMessage> factory =
+            new FilterChainFactory<MethodCallMessage, MethodResultMessage>(MethodCallMessage.class,
                 MethodResultMessage.class);
-        factory.setFilters(Arrays.asList(OutgoingWrapperFilter.class, OutgoingJsonSecureMethodCallMarshalFilter.class,
+        factory.setFilters(Arrays.asList(OutgoingJsonSecureMethodCallMarshalFilter.class,
             jmsOutgoingPort));
 
         OutgoingPortImpl outgoingPort = new OutgoingPortImpl();
@@ -124,13 +113,13 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void callSend_shouldSendMessageViaJMS() throws URISyntaxException, IOException {
+    public void testCallSend_shouldSendMessageViaJMS() throws IOException {
         outgoingPort.send(call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
-        JsonNode readTree = requestMessage.get("message").get("methodCall");
+        JsonNode readTree = requestMessage.get("methodCall");
 
         assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
                 + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.TestClass\"]"));
@@ -140,7 +129,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
+    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws IOException {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);
@@ -148,16 +137,8 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
 
         String destination =
-            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("message")
-                .get("callId").getValueAsText();
+            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
+                .asText();
         assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
 }

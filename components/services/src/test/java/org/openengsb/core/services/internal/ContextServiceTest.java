@@ -34,23 +34,16 @@ import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.test.DummyConfigPersistenceService;
 
 public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
-    private DefaultOsgiUtilsService serviceUtils;
     private ContextCurrentService cs;
     private DefaultConfigPersistenceService configPersistence;
 
@@ -63,15 +56,11 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend<?> persistenceBackend = new CorePersistenceServiceBackend<Object>();
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
-        persistenceBackend.setPersistenceManager(persistenceManager);
-        persistenceBackend.setBundleContext(bundleContext);
-        persistenceBackend.init();
+        DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, ContextConfiguration.TYPE_ID);
         props.put(Constants.BACKEND_ID, "dummy");
-        configPersistence = new DefaultConfigPersistenceService(persistenceBackend);
+        configPersistence = new DefaultConfigPersistenceService(backend);
         registerService(configPersistence, props, ConfigPersistenceService.class);
     }
 
@@ -81,7 +70,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testGetContext() throws Exception {
+    public void testGetContext_shoulWork() throws Exception {
         cs.createContext("a");
         cs.createContext("b");
         ContextHolder.get().setCurrentContextId("a");
@@ -97,19 +86,19 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void getEmptyAvailableContexts() {
+    public void testGetEmptyAvailableContexts_shouldReturnEmptyContextList() {
         assertThat(cs.getAvailableContexts().size(), is(0));
     }
 
     @Test
-    public void getSingleAvailableContexts() {
+    public void testGetSingleAvailableContexts_shouldReturnOneContext() {
         createTestContextA();
         assertThat(cs.getAvailableContexts().size(), is(1));
         assertThat(cs.getAvailableContexts().get(0), is("a"));
     }
 
     @Test
-    public void getAvailableContextsWithCreate() throws PersistenceException {
+    public void testGetAvailableContextsWithCreate_shouldReturnTwoContextInstances() {
         createTestContextA();
         cs.createContext("temp");
         assertThat(cs.getAvailableContexts().contains("a"), is(true));
@@ -118,7 +107,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void getCurrentThreadContext() {
+    public void testGetCurrentThreadContext_shouldReturnCurrentContext() {
         createTestContextA();
         assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
@@ -127,7 +116,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 5000)
-    public void contextIsLocalToCurrentThread() throws Exception {
+    public void testContextIsLocalToCurrentThread_shouldNotGetLocalContext() throws Exception {
         createTestContextA();
         cs.createContext("threadLocal");
         assertThat(cs.getContext(), notNullValue());
@@ -152,7 +141,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testChangeCurrentContext() throws Exception {
+    public void testChangeCurrentContext_shouldChangeContext() {
         createTestContextA();
         cs.createContext("x");
         ContextHolder.get().setCurrentContextId("x");
@@ -160,17 +149,10 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void createAndDeleteContext_shouldBeAbleToRecreate() throws Exception {
+    public void testCreateAndDeleteContext_shouldBeAbleToRecreate() {
         cs.createContext("foobar");
         cs.deleteContext("foobar");
         assertThat(cs.getAvailableContexts(), not(hasItem("foobar")));
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-    }
 }

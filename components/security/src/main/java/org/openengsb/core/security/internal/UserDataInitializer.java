@@ -17,13 +17,11 @@
 
 package org.openengsb.core.security.internal;
 
-import org.openengsb.connector.serviceacl.ServicePermission;
-import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.service.PermissionSetAlreadyExistsException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -36,11 +34,16 @@ public class UserDataInitializer implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataInitializer.class);
 
+    private OsgiUtilsService utilsService;
+
+    public UserDataInitializer(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
+
     @Override
     public void run() {
-        OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
-        Filter filter = serviceUtilsService.makeFilter(UserDataManager.class, "(internal=true)");
-        UserDataManager userManager = (UserDataManager) serviceUtilsService.getService(filter);
+        Filter filter = FilterUtils.makeFilter(UserDataManager.class, "(internal=true)");
+        UserDataManager userManager = (UserDataManager) utilsService.getService(filter);
 
         if (!userManager.getUserList().isEmpty()) {
             return;
@@ -58,15 +61,6 @@ public class UserDataInitializer implements Runnable {
 
             userManager.createPermissionSet("ROLE_ROOT", new RootPermission());
             userManager.addPermissionSetToUser("admin", "ROLE_ROOT");
-
-            userManager.createPermissionSet("ROLE_USER");
-            userManager.addPermissionSetToUser("user", "ROLE_USER");
-
-            userManager.addPermissionToSet("ROLE_USER", new ServicePermission("domain.example",
-                "something"));
-            userManager.addPermissionToSet("ROLE_USER", new WicketPermission("SERVICE_USER"));
-
-            userManager.addPermissionToUser("user", new WicketPermission("SERVICE_EDITOR"));
         } catch (PermissionSetAlreadyExistsException e) {
             LOGGER.error("this should not happen... I just checked whether the userbase is empty", e);
         }

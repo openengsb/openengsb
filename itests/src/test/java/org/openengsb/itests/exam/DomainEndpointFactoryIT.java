@@ -27,12 +27,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -45,6 +47,10 @@ import org.osgi.framework.Constants;
 // This one will run each test in it's own container (slower speed)
 // @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper {
+
+    @Inject
+    private WiringService wiringService;
+
     private static class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
 
         public DummyService(String instanceId) {
@@ -52,12 +58,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         }
 
         @Override
-        public String doSomething(ExampleEnum exampleEnum) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
@@ -72,14 +73,14 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
     }
 
     @Test
-    public void testSingleMethodProxies() throws Exception {
+    public void testSingleMethodProxies_shouldProxyService() {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -88,8 +89,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
-        ExampleDomain domainEndpoint =
-            OpenEngSBCoreServices.getWiringService().getDomainEndpoint(ExampleDomain.class, "foo");
+        ExampleDomain domainEndpoint = wiringService.getDomainEndpoint(ExampleDomain.class, "foo");
         assertThat(domainEndpoint.getInstanceId(), is("test"));
 
         service = new DummyService("test2");
@@ -99,15 +99,14 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         properties.put(Constants.SERVICE_RANKING, 1);
 
         /* create the proxy before the service is registered */
-        ExampleDomain domainEndpoint2 =
-            OpenEngSBCoreServices.getWiringService().getDomainEndpoint(ExampleDomain.class, "foo2");
+        ExampleDomain domainEndpoint2 = wiringService.getDomainEndpoint(ExampleDomain.class, "foo2");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         assertThat(domainEndpoint2.getInstanceId(), is("test2"));
     }
 
     @Test
-    public void testListMethod() throws Exception {
+    public void testListMethod_shouldListMethods() {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -130,8 +129,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
-        List<ExampleDomain> domainEndpoints =
-            OpenEngSBCoreServices.getWiringService().getDomainEndpoints(ExampleDomain.class, "main/*");
+        List<ExampleDomain> domainEndpoints = wiringService.getDomainEndpoints(ExampleDomain.class, "main/*");
         List<String> ids = new ArrayList<String>();
         for (ExampleDomain endpoint : domainEndpoints) {
             ids.add(endpoint.getInstanceId());
@@ -141,7 +139,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @Test
-    public void testServiceDoesExist() throws Exception {
+    public void testServiceDoesExist_shouldNotFindService() {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -149,6 +147,6 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         properties.put("location.foo", new String[]{ "test/foo", "main/foo", "main/bla", });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
+        assertThat(wiringService.isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
     }
 }

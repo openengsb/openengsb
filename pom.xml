@@ -33,12 +33,12 @@
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
-  </properties>
+  </properties>  
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>26</version>
+    <version>34-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.framework</groupId>
@@ -74,21 +74,13 @@
     <module>tooling</module>
     <!-- OpenEngSB Framework Modules -->
     <module>components/api</module>
+    <module>components/edb-api</module>
+    <module>components/ekb-api</module>
+    <module>components/workflow-api</module>
     <module>components/test</module>
     <module>components/common</module>
-    <!-- OpenEngSB Core Domain Modules -->
-    <module>domain/auditing</module>
-    <module>domain/example</module>
-    <module>domain/authentication</module>
-    <module>domain/authorization</module>
-    <module>domain/binarytransformation</module>
-    <!-- OpenEngSB Core Connector Modules -->
-    <module>connector/memoryauditing</module>
-    <module>connector/example</module>
-    <module>connector/usernamepassword</module>
-    <module>connector/serviceacl</module>
-    <module>connector/smooksbinarytransformation</module>
-    <!-- OpenEngSB UI Modules -->
+    <module>components/weaver/service</module>
+    <module>components/weaver/test</module>
     <module>components/console</module>
     <module>components/edb</module>
     <module>components/ekb</module>
@@ -96,6 +88,17 @@
     <module>components/security</module>
     <module>components/services</module>
     <module>components/workflow</module>
+    <module>components/info</module>
+    <!-- OpenEngSB Core Domain Modules -->
+    <module>domain/auditing</module>
+    <module>domain/example</module>
+    <module>domain/authentication</module>
+    <module>domain/authorization</module>
+    <!-- OpenEngSB Core Connector Modules -->
+    <module>connector/memoryauditing</module>
+    <module>connector/example</module>
+    <module>connector/usernamepassword</module>
+    <module>connector/serviceacl</module>
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
@@ -113,15 +116,27 @@
     <module>loom</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
-	<!-- OpenEngSB Manual -->
-	<module>manual</module>
+    <!-- OpenEngSB Manual -->
+    <module>manual</module>
   </modules>
+
+  <inceptionYear>2009</inceptionYear>
 
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
+  </ciManagement>
 
   <build>
     <resources>
@@ -156,158 +171,176 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <inherited>false</inherited>
+          <groupId>com.mycila.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <configuration>
+            <header>etc/license/header.txt</header>
+            <failIfMissing>true</failIfMissing>
+            <aggregate>true</aggregate>
+            <strictCheck>true</strictCheck>
+            <excludes>
+              <!-- openengs-maven-plugin test resources -->
+              <exclude>src/main/resources/license/header.txt</exclude>
+              <exclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</exclude>
+              <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
+              <!-- #################################### -->
+              <exclude>docs/examples/**/*.config</exclude>
+              <exclude>etc/eclipse/checkstyle.xml</exclude>
+              <exclude>license.txt</exclude>
+              <exclude>**/*.vm</exclude>
+              <exclude>**/license.txt</exclude>
+              <exclude>runner/**</exclude>
+              <exclude>assembly/runner/**</exclude>
+              <exclude>features/**</exclude>
+              <exclude>NOTICE</exclude>
+              <exclude>**/*.3pm</exclude>
+              <exclude>**/*.dll</exclude>
+              <exclude>**/*.pdb</exclude>
+              <exclude>**/*.pdf</exclude>
+              <exclude>**/LICENSE</exclude>
+              <exclude>**/*checkstyle.xml</exclude>
+              <exclude>**/*.log.*</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>**/*.packlist</exclude>
+              <exclude>**/*.pod</exclude>
+              <exclude>**/imports</exclude>
+              <exclude>**/globals</exclude>
+              <exclude>**/.keep</exclude>
+              <exclude>**/EngSB.sln</exclude>
+              <exclude>**/nb-configuration.xml</exclude>
+              <exclude>**/*.checkstyle</exclude>
+              <exclude>**/*.rf</exclude>
+              <exclude>.idea/**</exclude>
+              <exclude>atlassian-ide-plugin.xml</exclude>
+            </excludes>
+            <mapping>
+              <bnd>SCRIPT_STYLE</bnd>
+              <drl>SCRIPT_STYLE</drl>
+              <index>SCRIPT_STYLE</index>
+              <gitignore>SCRIPT_STYLE</gitignore>
+              <cfg>SCRIPT_STYLE</cfg>
+              <wsdl>XML_STYLE</wsdl>
+              <csproj>XML_STYLE</csproj>
+              <rf>XML_STYLE</rf>
+              <composite>SCRIPT_STYLE</composite>
+              <config>XML_STYLE</config>
+              <script>DOUBLESLASH_STYLE</script>
+              <rule>SCRIPT_STYLE</rule>
+            </mapping>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
     <profile>
-      <id>features</id>
-      <modules>
-        <module>features</module>
-      </modules>
+      <id>itests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
-      <id>nightly</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/master</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/master</github.raw>
-        <repos.current>${repos.snapshot}</repos.current>
-        <sitesubtype>nightly</sitesubtype>
-      </properties>
+      <id>licenseCheck</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
-      <id>milestone</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>milestone</sitesubtype>
-      </properties>
+      <id>licenseFormat</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
-      <id>final</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
+      <id>checkstyle</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+              <configLocation>etc/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <enableRulesSummary>true</enableRulesSummary>
+              <failsOnError>true</failsOnError>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>checkstyle</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
-    <profile>
-      <id>support</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
-    </profile>
-    <profile>
-      <id>rc</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>rc</sitesubtype>
-      </properties>
-    </profile>
-  <profile><id>17671e98-facb-4e82-8cd5-59d2daa0a1ed</id><build><plugins><plugin>
-      <inherited>false</inherited>
-      <groupId>com.mycila.maven-license-plugin</groupId>
-      <artifactId>maven-license-plugin</artifactId>
-      <configuration>
-        <!-- header is added dynamically -->
-        <failIfMissing>true</failIfMissing>
-        <aggregate>true</aggregate>
-        <strictCheck>true</strictCheck>
-        <excludes>
-          <!-- openengs-maven-plugin test resources -->
-          <exclude>src/main/resources/license/header.txt</exclude>
-          <eclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
-          <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
-          <!-- #################################### -->
-          <exclude>docs/examples/**/*.config</exclude>
-          <exclude>etc/eclipse/checkstyle.xml</exclude>
-          <exclude>license.txt</exclude>
-          <exclude>**/*.vm</exclude>
-          <exclude>**/license.txt</exclude>
-          <exclude>runner/**</exclude>
-          <exclude>assembly/runner/**</exclude>
-          <exclude>features/**</exclude>
-          <exclude>NOTICE</exclude>
-          <exclude>**/*.3pm</exclude>
-          <exclude>**/*.dll</exclude>
-          <exclude>**/*.pdb</exclude>
-          <exclude>**/*.pdf</exclude>
-          <exclude>**/LICENSE</exclude>
-          <exclude>**/*checkstyle.xml</exclude>
-          <exclude>**/*.log.*</exclude>
-          <exclude>**/*.log</exclude>
-          <exclude>**/*.packlist</exclude>
-          <exclude>**/*.pod</exclude>
-          <exclude>**/imports</exclude>
-          <exclude>**/globals</exclude>
-          <exclude>**/.keep</exclude>
-          <exclude>**/EngSB.sln</exclude>
-          <exclude>**/nb-configuration.xml</exclude>
-          <exclude>**/*.checkstyle</exclude>
-          <exclude>**/*.rf</exclude>
-        </excludes>
-        <mapping>
-          <bnd>SCRIPT_STYLE</bnd>
-          <drl>SCRIPT_STYLE</drl>
-          <index>SCRIPT_STYLE</index>
-          <gitignore>SCRIPT_STYLE</gitignore>
-          <cfg>SCRIPT_STYLE</cfg>
-          <wsdl>XML_STYLE</wsdl>
-          <csproj>XML_STYLE</csproj>
-          <rf>XML_STYLE</rf>
-          <composite>SCRIPT_STYLE</composite>
-          <config>XML_STYLE</config>
-          <script>DOUBLESLASH_STYLE</script>
-          <rule>SCRIPT_STYLE</rule>
-        </mapping>
-      <header>/tmp/169565ba-24ba-4984-b5cc-7edd674279ab3512372767440309811.txt</header></configuration>
-      <executions>
-        <execution>
-          <id>check-headers</id>
-          <phase>validate</phase>
-          <goals>
-            <!-- the goal (check/format) is added dynamically -->
-          <goal>check</goal></goals>
-        </execution>
-      </executions>
-    </plugin><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-checkstyle-plugin</artifactId>
-      <configuration>
-        <!-- the config location is added dynamically by the mojo -->
-        <consoleOutput>true</consoleOutput>
-        <enableRulesSummary>true</enableRulesSummary>
-        <failsOnError>true</failsOnError>
-        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-      <configLocation>file:/tmp/c9013b88-13e3-42a3-9964-9bca90bac0b2846521654383049706.xml</configLocation></configuration>
-      <executions>
-        <execution>
-          <id>check</id>
-          <phase>verify</phase>
-          <goals>
-            <goal>checkstyle</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-surefire-plugin</artifactId>
-      <configuration>
-        <excludes>
-          <exclude>*</exclude>
-        </excludes>
-        <includes>
-          <include>**/*Test.java</include>
-          <include>**/*IT.java</include>
-        </includes>
-      </configuration>
-    </plugin></plugins><resources/></build><modules/></profile></profiles>
-
+  </profiles>
+  
+  <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
 

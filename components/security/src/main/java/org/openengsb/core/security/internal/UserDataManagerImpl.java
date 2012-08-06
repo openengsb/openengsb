@@ -23,6 +23,9 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
@@ -55,8 +58,10 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Collection<String> getUserList() {
-        TypedQuery<String> query = entityManager.createQuery("SELECT u.username from UserData u", String.class);
-        return query.getResultList();
+        synchronized (entityManager) {
+            TypedQuery<String> query = entityManager.createQuery("SELECT u.username from UserData u", String.class);
+            return query.getResultList();
+        }
     }
 
     @Override
@@ -65,7 +70,9 @@ public class UserDataManagerImpl implements UserDataManager {
         newUser.setUsername(username);
         UserPermissionSetData permissionSetData = new UserPermissionSetData(username);
         newUser.setPermissionSet(permissionSetData);
-        entityManager.persist(newUser);
+        synchronized (entityManager) {
+            entityManager.persist(newUser);
+        }
     }
 
     @Override
@@ -77,7 +84,9 @@ public class UserDataManagerImpl implements UserDataManager {
             LOGGER.warn("user {} was to be deleted, but not found", username);
             return;
         }
-        entityManager.remove(found);
+        synchronized (entityManager) {
+            entityManager.remove(found);
+        }
     }
 
     @Override
@@ -90,14 +99,18 @@ public class UserDataManagerImpl implements UserDataManager {
     public void setUserCredentials(String username, String type, String value) throws UserNotFoundException {
         UserData found = doFindUser(username);
         found.getCredentials().put(type, value);
-        entityManager.merge(found);
+        synchronized (entityManager) {
+            entityManager.merge(found);
+        }
     }
 
     @Override
     public void removeUserCredentials(String username, String type) throws UserNotFoundException {
         UserData found = doFindUser(username);
         found.getCredentials().remove(type);
-        entityManager.merge(found);
+        synchronized (entityManager) {
+            entityManager.merge(found);
+        }
     }
 
     @Override
@@ -119,7 +132,9 @@ public class UserDataManagerImpl implements UserDataManager {
         List<EntryElement> entryElementList = EntryUtils.makeEntryElementList(value);
         entryValue.setValue(entryElementList);
         user.getAttributes().put(attributename, entryValue);
-        entityManager.merge(user);
+        synchronized (entityManager) {
+            entityManager.merge(user);
+        }
     }
 
     @Override
@@ -132,7 +147,9 @@ public class UserDataManagerImpl implements UserDataManager {
             return;
         }
         user.getAttributes().remove(attributename);
-        entityManager.merge(user);
+        synchronized (entityManager) {
+            entityManager.merge(user);
+        }
     }
 
     @Override
@@ -187,8 +204,10 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Collection<String> getPermissionSetList() {
-        TypedQuery<String> query = entityManager.createQuery("SELECT s.id from PermissionSetData s", String.class);
-        return query.getResultList();
+        synchronized (entityManager) {
+            TypedQuery<String> query = entityManager.createQuery("SELECT s.id from PermissionSetData s", String.class);
+            return query.getResultList();
+        }
     }
 
     @Override
@@ -200,7 +219,9 @@ public class UserDataManagerImpl implements UserDataManager {
                 permissions.add(convertPermissionToPermissionData(p));
             }
         }
-        entityManager.persist(data);
+        synchronized (entityManager) {
+            entityManager.persist(data);
+        }
     }
 
     @Override
@@ -210,7 +231,7 @@ public class UserDataManagerImpl implements UserDataManager {
         return Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
-                return input.getId();
+                return input.getName();
             }
         });
     }
@@ -239,7 +260,7 @@ public class UserDataManagerImpl implements UserDataManager {
         return Collections2.transform(parent.getPermissionSets(), new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
-                return input.getId();
+                return input.getName();
             }
         });
     }
@@ -273,7 +294,9 @@ public class UserDataManagerImpl implements UserDataManager {
             PermissionData data = convertPermissionToPermissionData(p);
             set.getPermissions().add(data);
         }
-        entityManager.merge(set);
+        synchronized (entityManager) {
+            entityManager.merge(set);
+        }
     }
 
     @Override
@@ -297,7 +320,9 @@ public class UserDataManagerImpl implements UserDataManager {
             PermissionSetData child = doFindPermissionSet(p);
             parent.getPermissionSets().add(child);
         }
-        entityManager.merge(parent);
+        synchronized (entityManager) {
+            entityManager.merge(parent);
+        }
     }
 
     private void doRemovePermissionSetFromSet(PermissionSetData parent, String... permissionSet) {
@@ -305,7 +330,9 @@ public class UserDataManagerImpl implements UserDataManager {
             PermissionSetData child = doFindPermissionSet(p);
             parent.getPermissionSets().remove(child);
         }
-        entityManager.merge(parent);
+        synchronized (entityManager) {
+            entityManager.merge(parent);
+        }
     }
 
     private Collection<Permission> getPermissionsFromSetData(PermissionSetData set) {
@@ -316,7 +343,7 @@ public class UserDataManagerImpl implements UserDataManager {
     private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
         Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
         for (PermissionSetData child : set.getPermissionSets()) {
-            result.addAll(getAllPermissionsFromPermissionSet(child.getId()));
+            result.addAll(getAllPermissionsFromPermissionSet(child.getName()));
         }
         return result;
     }
@@ -326,23 +353,42 @@ public class UserDataManagerImpl implements UserDataManager {
             PermissionData data = convertPermissionToPermissionData(p);
             set.getPermissions().remove(data);
         }
-        entityManager.merge(set);
+        synchronized (entityManager) {
+            entityManager.merge(set);
+        }
     }
 
     private UserData doFindUser(String username) throws UserNotFoundException {
-        UserData found = entityManager.find(UserData.class, username);
-        if (found == null) {
-            throw new UserNotFoundException("User with name " + username + " not found");
+        synchronized (entityManager) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<UserData> query = cb.createQuery(UserData.class);
+            Root<UserData> from = query.from(UserData.class);
+            query.where(cb.equal(from.get("username"), username));
+            query.select(from);
+            try {
+                UserData found = entityManager.createQuery(query).getSingleResult();
+                return found;
+            } catch (Exception ex) {
+                throw new UserNotFoundException("User with name " + username + " not found");
+            }
         }
-        return found;
     }
 
     private PermissionSetData doFindPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
-        PermissionSetData set = entityManager.find(PermissionSetData.class, permissionSet);
-        if (set == null) {
-            throw new PermissionSetNotFoundException("permissionSet " + permissionSet + " not found");
+        synchronized (entityManager) {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<PermissionSetData> query = cb.createQuery(PermissionSetData.class);
+            Root<PermissionSetData> from = query.from(PermissionSetData.class);
+            query.where(cb.equal(from.get("name"), permissionSet));
+            query.select(from);
+
+            try {
+                PermissionSetData found = entityManager.createQuery(query).getSingleResult();
+                return found;
+            } catch (Exception ex) {
+                throw new PermissionSetNotFoundException("permissionSet " + permissionSet + " not found");
+            }
         }
-        return set;
     }
 
     public void setEntityManager(EntityManager entityManager) {

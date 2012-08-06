@@ -31,13 +31,13 @@ import javax.xml.transform.dom.DOMResult;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * This filter takes a {@link Document} representing a {@link MethodCallRequest} and deserializes it. The
+ * This filter takes a {@link Document} representing a {@link MethodCallMessage} and deserializes it. The
  * MethodCallRequest is then passed to the next filter. The resulting {@link MethodResultMessage} is then seralized to
  * XML again and returned.
  *
@@ -45,7 +45,7 @@ import org.w3c.dom.Node;
  *
  * <code>
  * <pre>
- *      [org.w3c.dom.Document] > Filter > [MethodCallRequest]     > ...
+ *      [org.w3c.dom.Document] > Filter > [MethodCallMessage]     > ...
  *                                                                   |
  *                                                                   v
  *      [org.w3c.dom.Document] < Filter < [MethodResultMessage]   < ...
@@ -58,9 +58,8 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     private Unmarshaller unmarshaller;
 
     public XmlMethodCallMarshalFilter() {
-        super(Document.class, Document.class);
         try {
-            JAXBContext context = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);
+            JAXBContext context = JAXBContext.newInstance(MethodCallMessage.class, MethodResultMessage.class);
             unmarshaller = context.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
@@ -69,7 +68,7 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
 
     @Override
     public Document doFilter(Document input, Map<String, Object> metadata) throws FilterException {
-        MethodCallRequest call;
+        MethodCallMessage call;
         try {
             call = parseMethodCall(input);
         } catch (JAXBException e) {
@@ -96,8 +95,8 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
         return (Document) domResult.getNode();
     }
 
-    private MethodCallRequest parseMethodCall(Document input) throws JAXBException {
-        MethodCallRequest request = unmarshaller.unmarshal(input, MethodCallRequest.class).getValue();
+    private MethodCallMessage parseMethodCall(Document input) throws JAXBException {
+        MethodCallMessage request = unmarshaller.unmarshal(input, MethodCallMessage.class).getValue();
         MethodCall result = request.getMethodCall();
         List<String> classNames = result.getClasses();
         Class<?>[] clazzes = new Class<?>[classNames.size()];
@@ -120,7 +119,7 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
 
     @Override
     public void setNext(FilterAction next) {
-        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        checkNextInputAndOutputTypes(next, MethodCallMessage.class, MethodResultMessage.class);
         this.next = next;
 
     }

@@ -25,4 +25,10 @@ Supported file types
 --------------------
 .connector (property file) - Connector instance configuration
 .context - Context configuration
+.rf - Workflow-process files
+.rule - Rule definitions
+.function - Function definitions
+.import - list of imports for drools
+.globals - list of drools globals
+.transformation - Transformation description definitions
 

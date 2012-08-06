@@ -23,18 +23,15 @@ import static org.junit.Assert.assertThat;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.api.RuleManager;
+import org.openengsb.core.workflow.api.WorkflowService;
+import org.openengsb.core.workflow.api.model.RuleBaseElementId;
+import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -43,8 +40,6 @@ import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -55,7 +50,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         private boolean wasCalled = false;
 
         @Override
-        public String doSomething(String message) {
+        public String doSomethingWithMessage(String message) {
             wasCalled = true;
             return "something";
         }
@@ -63,12 +58,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         @Override
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
-        }
-
-        @Override
-        public String doSomething(ExampleEnum exampleEnum) {
-            wasCalled = true;
-            return "something";
         }
 
         @Override
@@ -82,20 +71,14 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         }
 
         @Override
-        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             wasCalled = true;
-            return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            return new ExampleResponseModel();
         }
     }
 
     @Test
-    public void testCorrectContextHolderStrategy() throws Exception {
-        assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
-            is("InheritableThreadLocalSecurityContextHolderStrategy"));
-    }
-
-    @Test
-    public void testCreateRuleAndTriggerDomain() throws Exception {
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         DummyLogDomain exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -114,7 +97,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
                 "when\n" +
                 "    l : LogEvent()\n" +
                 "then\n" +
-                "    example2.doSomething(\"42\");\n"
+                "    example2.doSomethingWithMessage(\"42\");\n"
             );
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -133,7 +116,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         properties.put("domain", "example");
         properties.put("connector", "example");
         properties.put("location.foo", "example2");
-        properties.put(Constants.ID_KEY, "example2");
+        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
         getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
 
         RuleManager ruleManager = getOsgiService(RuleManager.class);
@@ -148,7 +131,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
                 + "    l : LogEvent()\n"
                 + "then\n"
                 + "   ExampleDomain origin = (ExampleDomain) OsgiHelper.getResponseProxy(l, ExampleDomain.class);"
-                + "   origin.doSomething(\"42\");"
+                + "   origin.doSomethingWithMessage(\"42\");"
             );
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -160,14 +143,4 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(exampleMock.wasCalled, is(true));
     }
-
-    /**
-     * Ignored because security manager is commented in the moment.
-     */
-    @Ignore
-    @Test(expected = AccessDeniedException.class)
-    public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
-        authenticate("user", "password");
-    }
-
 }

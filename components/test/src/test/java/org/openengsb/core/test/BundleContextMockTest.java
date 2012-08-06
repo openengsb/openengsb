@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
@@ -37,17 +36,17 @@ import org.osgi.util.tracker.ServiceTracker;
 public class BundleContextMockTest extends AbstractOsgiMockServiceTest {
 
     @Test
-    public void registerAndRetrieveService() throws Exception {
+    public void testRegisterAndRetrieveService_shouldWork() throws Exception {
         mockService(Collection.class, "foo");
         // bundleContext.registerService(Collection.class.getName(), new HashSet<Object>(),
         // new Hashtable<String, Object>());
-        ServiceReference[] serviceReferences2 = bundleContext.getServiceReferences(Collection.class.getName(), null);
+        ServiceReference<?>[] serviceReferences2 = bundleContext.getServiceReferences(Collection.class.getName(), null);
         assertThat(serviceReferences2, not(nullValue()));
         assertThat(serviceReferences2.length, is(1));
     }
 
     @Test
-    public void createServiceTrackerAndCreateService_shouldBeInTracker() throws Exception {
+    public void testCreateServiceTrackerAndCreateService_shouldBeInTracker() {
         ServiceTracker serviceTracker = new ServiceTracker(bundleContext, Collection.class.getName(), null);
         serviceTracker.open();
         mockService(Collection.class, "foo");
@@ -55,18 +54,14 @@ public class BundleContextMockTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void createServiceTrackerAndUnregisterService_shouldNotBeInTracker() throws Exception {
-        ServiceRegistration serviceRegistration =
+    public void testCreateServiceTrackerAndUnregisterService_shouldNotBeInTracker() {
+        ServiceRegistration<?> serviceRegistration =
             bundleContext.registerService(Collection.class.getName(), new HashSet<Object>(),
                 new Hashtable<String, Object>());
         ServiceTracker serviceTracker = new ServiceTracker(bundleContext, Collection.class.getName(), null);
         serviceTracker.open();
         serviceRegistration.unregister();
         assertNull(serviceTracker.getService());
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
     }
 
 }

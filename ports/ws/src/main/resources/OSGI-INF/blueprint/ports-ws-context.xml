@@ -23,7 +23,7 @@
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
-      <entry key="id" value="ws-json" />
+      <entry key="service.pid" value="ws-json" />
     </service-properties>
     <ref component-id="outgoingPortBean" />
   </service>
@@ -42,19 +42,21 @@
     </property>
   </bean>
 
-
   <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
-    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
+    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallMessage" />
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
         <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.ws.WSOutgoingPort">
           <property name="bundleContext" ref="blueprintBundleContext" />
         </bean>
       </list>
     </property>
+  </bean>
+
+  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -69,18 +71,14 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
-        <value>org.openengsb.core.security.filter.WrapperFilter</value>
-        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+          <property name="utilsService" ref="utilsService" />
+        </bean>	
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
       </list>
     </property>
-  </bean>
-
-  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
-    <property name="authenticationManager" ref="authenticator" />
   </bean>
 
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
