@@ -175,54 +175,22 @@ public class LdapDao {
     }
 
     /**
-     * Deletes the parent and its entire subtree.<br>
-     * 
-     * @throws NoSuchNodeException if parent does not exist
-     * @throws MissingParentException if some node above parent does not exist
+     * Deletes root and its entire subtree. Throws NoSuchNodeException if root does not exist. Throws
+     * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeIncludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
-
-        try {
-            if (!connection.exists(parent.getParent())) {
-                throw new MissingParentException(lastMatch(parent));
-            } else if (!connection.exists(parent)) {
-                throw new NoSuchNodeException(parent);
-            }
-        } catch (LdapException e) {
-            throw new LdapGeneralException(e);
-        }
-
-        try {
-            EntryCursor entryCursor = connection.search(parent, "(objectclass=*)", SearchScope.ONELEVEL);
-            while (entryCursor.next()) {
-                deleteSubtreeIncludingRoot(entryCursor.get().getDn());
-            }
-        } catch (Exception e) {
-            throw new LdapGeneralException(e);
-        }
-        deleteLeaf(parent);
+    public void deleteSubtreeIncludingRoot(Dn root) throws MissingParentException, NoSuchNodeException {
+        deleteSubtreeExcludingRoot(root);
+        deleteLeaf(root);
     }
 
     /**
-     * Deletes the entire subtree of parent but not parent itself.<br>
-     * 
-     * @throws NoSuchNodeException if parent does not exist
-     * @throws MissingParentException if some node above parent does not exist
+     * Deletes the entire subtree of root but not root itself. Throws NoSuchNodeException if root does not exist. Throws
+     * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeExcludingRoot(Dn parent) throws MissingParentException, NoSuchNodeException {
-
+    public void deleteSubtreeExcludingRoot(Dn root) throws MissingParentException, NoSuchNodeException {
+        existsCheck(root);
         try {
-            if (!connection.exists(parent.getParent())) {
-                throw new MissingParentException(lastMatch(parent));
-            } else if (!connection.exists(parent)) {
-                throw new NoSuchNodeException(parent);
-            }
-        } catch (LdapException e) {
-            throw new LdapGeneralException(e);
-        }
-
-        try {
-            EntryCursor entryCursor = connection.search(parent, "(objectclass=*)", SearchScope.ONELEVEL);
+            EntryCursor entryCursor = connection.search(root, "(objectclass=*)", SearchScope.ONELEVEL);
             while (entryCursor.next()) {
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
@@ -231,6 +199,9 @@ public class LdapDao {
         }
     }
 
+    /**
+     * Returns true if dn exists, false otherwise.
+     * */
     public boolean exists(Dn dn) {
         try {
             return connection.exists(dn);
@@ -240,28 +211,28 @@ public class LdapDao {
     }
 
     /**
-     * @param dn
-     * @return entry
-     * @throws NoSuchNodeException if dn does not exist but its parent does
-     * @throws MissingParentException if the dn's parent does not exist
+     * Returns the {@link Entry} with given {@link Dn}. If dn does not exist but its parent does, a
+     * {@link NoSuchNodeException} is thrown. If one of dn's ancestors does not exist, a {@link MissingParentException}
+     * is thrown.
      */
     public Entry lookup(Dn dn) throws NoSuchNodeException, MissingParentException {
-        Entry entry;
+        existsCheck(dn);
         try {
-            entry = connection.lookup(dn);
+            return connection.lookup(dn);
         } catch (LdapException e) {
             throw new LdapGeneralException(e);
         }
+    }
 
-        if (entry != null) {
-            return entry;
-        }
-
+    /**
+     * Throws appropriate exceptions for connection.exists(dn).
+     * */
+    private void existsCheck(Dn dn) {
         try {
-            if (connection.exists(dn.getParent())) {
-                throw new NoSuchNodeException(dn);
-            } else {
+            if (!connection.exists(dn.getParent())) {
                 throw new MissingParentException(lastMatch(dn));
+            } else if (!connection.exists(dn)) {
+                throw new NoSuchNodeException(dn);
             }
         } catch (LdapException e) {
             throw new LdapGeneralException(e);
