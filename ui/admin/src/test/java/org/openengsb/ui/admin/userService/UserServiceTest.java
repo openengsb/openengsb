@@ -51,7 +51,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class UserServiceTest extends LocalisedTest {
-
     private WicketTester tester;
 
     private ApplicationContextMock context;
@@ -74,7 +73,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() {
+    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() throws Exception {
         tester.startPage(Index.class);
         tester.assertContains("User Management");
     }
@@ -85,9 +84,8 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testUserCreation_shouldWork() {
+    public void testUserCreation_shouldWork() throws Exception {
         tester.startPage(UserService.class);
-
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
@@ -157,7 +155,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
+    public void testPersistenceError_shouldThrowUserManagementExceptionAndShowErrorMessage() throws Exception {
         tester.startPage(UserService.class);
         doThrow(new UserManagementException("database error")).when(userManager).createUser(
             new User("user1", "password"));
@@ -171,7 +169,7 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
-    public void testShowUserAuthorities() throws Exception {
+    public void testShowUserAuthorities_shouldWork() throws Exception {
         tester.startPage(UserService.class);
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");

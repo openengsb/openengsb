@@ -88,7 +88,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void testJmsPortPresence_shouldBeExportedWithCorrectId() {
+    public void testJmsPortPresence_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
     }

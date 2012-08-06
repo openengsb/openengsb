@@ -51,7 +51,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testSimpleModelToEDBObjectConversion_shouldWork() {
+    public void testSimpleModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setId("test");
         Date date = new Date();
@@ -77,7 +77,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testComplexModelToEDBObjectConversion_shouldWork() {
+    public void testComplexModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setId("test");
 
@@ -97,7 +97,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testComplexListModelToEDBObjectConversion_shouldWork() {
+    public void testComplexListModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setId("test");
 
@@ -132,7 +132,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testMapModelToEDBObjectConversion_shouldWork() {
+    public void testMapModelToEDBObjectConversion_shouldWork() throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         map.put("keyA", "valueA");
         map.put("keyB", "valueB");

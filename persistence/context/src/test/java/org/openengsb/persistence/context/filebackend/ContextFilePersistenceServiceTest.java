@@ -54,7 +54,7 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void testLoad_shouldGetAllFiles() {
+    public void testLoad_shouldGetAllFiles() throws Exception {
         Map<String, String> metaData = Collections.emptyMap();
 
         List<ConfigItem<Map<String, String>>> items = persistenceService.load(metaData);
@@ -63,7 +63,7 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void testFilteredLoad_shouldReturnConfigurationWithCorrespindingMetaData() {
+    public void testFilteredLoad_shouldReturnConfigurationWithCorrespindingMetaData() throws Exception {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put(ContextId.META_KEY_ID, "context2");
 
@@ -75,22 +75,22 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void testContextFilePersistenceService_shouldSupportContext() {
+    public void testContextFilePersistenceService_shouldSupportContext() throws Exception {
         assertThat(persistenceService.supports(ContextConfiguration.class), is(true));
     }
 
     @Test
-    public void testContextFilePersistenceService_shouldNotSupportUnknownConfigItemType() {
+    public void testContextFilePersistenceService_shouldNotSupportUnknownConfigItemType() throws Exception {
         assertThat(persistenceService.supports(UnknownConfigItem.class), is(false));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPersistingUnknownItemType_shouldThrowException() {
+    public void testPersistingUnknownItemType_shouldThrowException() throws Exception {
         persistenceService.persist(new UnknownConfigItem());
     }
 
     @Test
-    public void testPersistingContext_shouldCreateNewFile() {
+    public void testPersistingContext_shouldCreateNewFile() throws Exception {
         File configFileThatShouldBeCreated = new File(temporaryFolder.getRoot(), "contextFoo.context");
         Integer filesBefore = countFilesInTempFolder();
 
@@ -102,7 +102,7 @@ public class ContextFilePersistenceServiceTest {
     }
 
     @Test
-    public void testRemovingConfiguration_shouldDeleteFile() {
+    public void testRemovingConfiguration_shouldDeleteFile() throws Exception {
         File configFileThatShouldBeDeleted = new File(temporaryFolder.getRoot(), "context3.context");
 
         persistenceService.remove(getMetaDataWithContextId("context3"));
@@ -126,5 +126,4 @@ public class ContextFilePersistenceServiceTest {
 
     private class UnknownConfigItem extends ConfigItem<Map<String, String>> {
     }
-
 }

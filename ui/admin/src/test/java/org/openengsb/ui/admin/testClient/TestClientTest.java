@@ -148,7 +148,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionTestClient_shouldShowTestClient() {
+    public void testLinkAppearsWithCaptionTestClient_shouldShowTestClient() throws Exception {
         setupIndexPage();
         tester.startPage(Index.class);
         tester.assertContains("Test Client");
@@ -725,5 +725,4 @@ public class TestClientTest extends AbstractUITest {
     private void setupIndexPage() {
         setupTesterWithSpringMockContext();
     }
-
 }

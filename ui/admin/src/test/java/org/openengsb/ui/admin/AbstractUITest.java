@@ -103,5 +103,4 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
         context.putBean("domainProviders", makeServiceList(DomainProvider.class));
     }
-
 }

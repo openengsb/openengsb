@@ -138,5 +138,4 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertTrue(userIndexPage.asText().contains("This page represents"));
         assertFalse(userIndexPage.asText().contains("User Management"));
     }
-
 }

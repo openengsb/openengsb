@@ -64,32 +64,32 @@ public class AbstractDomainProviderTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testGetName_shouldLookupInDomainName() {
+    public void testGetName_shouldLookupInDomainName() throws Exception {
         assertThat(provider.getName().getString(Locale.getDefault()), is("name"));
     }
 
     @Test
-    public void testGetDescription_shouldLookupInDomainDescription() {
+    public void testGetDescription_shouldLookupInDomainDescription() throws Exception {
         assertThat(provider.getDescription().getString(Locale.getDefault()), is("desc"));
     }
 
     @Test
-    public void testParameterizedDomain_shouldExtractDomainInterfaceFromGenerics() {
+    public void testParameterizedDomain_shouldExtractDomainInterfaceFromGenerics() throws Exception {
         Assert.assertEquals(NullDomain.class, provider.getDomainInterface());
     }
 
     @Test
-    public void testGetId_shouldReturnSimpleClassNameOfDomain() {
+    public void testGetId_shouldReturnSimpleClassNameOfDomain() throws Exception {
         assertThat(provider.getId(), is(NullDomain.class.getSimpleName()));
     }
 
     @Test
-    public void testParameterizedDomainEvents_shouldExtractDomainEventsInterfaceFromGenerics() {
+    public void testParameterizedDomainEvents_shouldExtractDomainEventsInterfaceFromGenerics() throws Exception {
         Assert.assertEquals(NullDomainEvents.class, provider.getDomainEventInterface());
     }
 
     @Test
-    public void testGetEvents_shouldReturnDummyEvent() {
+    public void testGetEvents_shouldReturnDummyEvent() throws Exception {
         List<Class<? extends Event>> events = provider.getEvents();
         assertThat(events.contains(NullEvent.class), is(true));
         assertThat(events.size(), is(1));

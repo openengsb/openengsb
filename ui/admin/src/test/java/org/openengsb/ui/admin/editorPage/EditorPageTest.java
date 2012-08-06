@@ -80,7 +80,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAttributesWithDefaultValues_shouldInitializeModelWithDefaults() {
+    public void testAttributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         RepeatingView list =
             (RepeatingView) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields");
@@ -111,7 +111,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testIdFieldIsEditable_shouldBeEditable() {
+    public void testIdFieldIsEditable_shouldBeEditable() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         tester.debugComponentTrees();
         @SuppressWarnings("unchecked")
@@ -121,7 +121,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddProperty_shouldAddProperty() {
+    public void testAddProperty_shouldAddProperty() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
         FormTester newFormTester = tester.newFormTester("editor:form");
@@ -133,7 +133,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateService_shouldAddService() {
+    public void testCreateService_shouldAddService() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         tester.debugComponentTrees();
@@ -146,7 +146,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCancelButton_shouldWork() {
+    public void testCancelButton_shouldWork() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         tester.debugComponentTrees();
@@ -156,7 +156,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateServiceProperties_shouldRegisterWithProperties() {
+    public void testCreateServiceProperties_shouldRegisterWithProperties() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
@@ -171,7 +171,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateServicePropertiesLeaveFieldEmpty_shouldAddServiceProperty() {
+    public void testCreateServicePropertiesLeaveFieldEmpty_shouldAddServiceProperty() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
@@ -215,7 +215,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testAddServiceManagerValidationError_shouldPutErrorMessagesOnPage() {
+    public void testAddServiceManagerValidationError_shouldPutErrorMessagesOnPage() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "Service Validation Error");
         when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
@@ -233,7 +233,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testUncheckValidationCheckbox_shouldBypassValidation() {
+    public void testUncheckValidationCheckbox_shouldBypassValidation() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "Service Validation Error");
         when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
@@ -252,7 +252,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testMultiValueServiceProperties_shouldAddFields() {
+    public void testMultiValueServiceProperties_shouldAddFields() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
@@ -269,7 +269,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddNewPropertyEntry_shouldResetKeyNameTextField() {
+    public void testAddNewPropertyEntry_shouldResetKeyNameTextField() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
@@ -279,7 +279,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddPropertyWithoutName_shouldLeaveListUnchanged() {
+    public void testAddPropertyWithoutName_shouldLeaveListUnchanged() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
         AbstractRepeater properties =
@@ -307,7 +307,7 @@ public class EditorPageTest extends AbstractUITest {
     // }
 
     @Test
-    public void testAddPropertyWithSameName_shouldLeaveListUnchanged() {
+    public void testAddPropertyWithSameName_shouldLeaveListUnchanged() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("attributesPanel:fields:a:row:field", "someValue");

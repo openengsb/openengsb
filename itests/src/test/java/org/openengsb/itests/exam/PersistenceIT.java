@@ -67,7 +67,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCreateAndQuery_shouldFindPersistedObject() {
+    public void testCreateAndQuery_shouldFindPersistedObject() throws Exception {
         PersistenceTestObject test = new PersistenceTestObject("test", 1);
         persistence.create(test);
         List<PersistenceTestObject> result = persistence.query(new PersistenceTestObject("test", null));
@@ -76,7 +76,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testConfigPersistenceSetup() throws Exception {
+    public void testConfigPersistenceSetup_shouldWork() throws Exception {
         ConfigPersistenceService configPersistenceService = retrieveAndConfigureRuleCorePersistenceService();
 
         assertThat(configPersistenceService, notNullValue());
@@ -110,7 +110,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testUpdateAndQuery_shouldFindUpdatedObject() {
+    public void testUpdateAndQuery_shouldFindUpdatedObject() throws Exception {
         element.setString("foo");
 
         persistence.update(persistence.query(wildcard).get(0), element);
@@ -121,10 +121,9 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testDelete_shouldNotFindObject() {
+    public void testDelete_shouldNotFindObject() throws Exception {
         persistence.delete(element);
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.isEmpty(), is(true));
     }
-
 }

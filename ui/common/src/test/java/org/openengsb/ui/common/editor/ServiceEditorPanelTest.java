@@ -68,7 +68,7 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void testEditingStringAttribute_shouldRenderTextFieldWithPresetValues() {
+    public void testEditingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
         startEditorPanel(attrib);
         tester.debugComponentTrees();
         TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
@@ -76,26 +76,26 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void testAttributeWithDescription_shouldRenderTooltipImageWithTitle() {
+    public void testAttributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
         startEditorPanel(attrib);
         assertThat(((Image) getEditorField(attrib.getId()).get("tooltip")).isVisible(), is(true));
     }
 
     @Test
-    public void testAttributeWithoutDescription_shouldShowNoTooltipImage() {
+    public void testAttributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
         startEditorPanel(attribNoDesc);
         assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
     }
 
     @Test
-    public void testOptionAttribute_shouldBeDisplayedAsDropDown() {
+    public void testOptionAttribute_shouldBeDisplayedAsDropDown() throws Exception {
         startEditorPanel(attribOption);
         DropDownChoice<?> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class);
         assertThat(choice.getChoices().size(), is(attribOption.getOptions().size()));
     }
 
     @Test
-    public void testChoicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
+    public void testChoicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() throws Exception {
         startEditorPanel(attribOption);
         @SuppressWarnings("unchecked")
         List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
@@ -105,14 +105,14 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void testBoolAttribute_shouldBeDisplayedAsCheckBox() {
+    public void testBoolAttribute_shouldBeDisplayedAsCheckBox() throws Exception {
         startEditorPanel(attribBoolean);
         CheckBox cb = getEditorFieldFormComponent(attribBoolean.getId(), CheckBox.class);
         assertThat(cb, notNullValue());
     }
 
     @Test
-    public void testContainsInitialPropertiesFields_shouldContainProperties() {
+    public void testContainsInitialPropertiesFields_shouldContainProperties() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", "42");
         props.put("foo", "bar");
@@ -134,7 +134,7 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void testContainsInitialPropertiesFieldsWithArray_shouldContainProperties() {
+    public void testContainsInitialPropertiesFieldsWithArray_shouldContainProperties() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);
@@ -154,7 +154,7 @@ public class ServiceEditorPanelTest {
     }
     
     @Test
-    public void testDeleteProperty_shouldWork() {
+    public void testDeleteProperty_shouldWork() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         props.put("testpropy", new String[]{ "ping", "pong"});
@@ -171,7 +171,7 @@ public class ServiceEditorPanelTest {
     }
 
     @Test
-    public void testDeletePropertyValue_shouldWork() {
+    public void testDeletePropertyValue_shouldWork() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);

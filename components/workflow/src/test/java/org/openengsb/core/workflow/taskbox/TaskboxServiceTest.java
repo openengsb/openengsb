@@ -71,13 +71,13 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testCreateNewTask_shouldReturnNewTask() {
+    public void testCreateNewTask_shouldReturnNewTask() throws Exception {
         internalService.createNewTask(new ProcessBag());
         verify(persistenceService).create(Mockito.any(Task.class));
     }
 
     @Test
-    public void testGetOpenTasks_shouldReturnOpenTasks() {
+    public void testGetOpenTasks_shouldReturnOpenTasks() throws Exception {
         List<Task> result = new ArrayList<Task>();
         result.add(new Task());
         when(persistenceService.query(any(Task.class))).thenReturn(result);
@@ -87,7 +87,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testGetTaskForId_shouldRunQuery() {
+    public void testGetTaskForId_shouldRunQuery() throws Exception {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setTaskId("1");
 
@@ -99,7 +99,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testGetTaskForProcessId_shouldRunQuery() {
+    public void testGetTaskForProcessId_shouldRunQuery() throws Exception {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setProcessId("1");
 
@@ -108,7 +108,7 @@ public class TaskboxServiceTest {
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetTaskForId_shouldThrowExceptionWhenNothingFound() {
+    public void testGetTaskForId_shouldThrowExceptionWhenNothingFound() throws Exception {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setTaskId("1");
         when(persistenceService.query(any(Task.class))).thenReturn(new ArrayList<Task>());
@@ -116,7 +116,7 @@ public class TaskboxServiceTest {
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetTaskForId_shouldThrowExceptionWhenMoreThanOneFound() {
+    public void testGetTaskForId_shouldThrowExceptionWhenMoreThanOneFound() throws Exception {
         Task task = Task.createTaskWithAllValuesSetToNull();
         task.setTaskId("1");
 
@@ -128,7 +128,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTask_shouldProcessEvent() {
+    public void testFinishTask_shouldProcessEvent() throws Exception {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -140,7 +140,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTaskTwice_shouldProcessEventOnlyOnce() {
+    public void testFinishTaskTwice_shouldProcessEventOnlyOnce() throws Exception {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -158,7 +158,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTask_shouldDeleteAndProcessEvent() {
+    public void testFinishTask_shouldDeleteAndProcessEvent() throws Exception {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
@@ -176,7 +176,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testUpdateTask_shouldReturnUpdatedTask() {
+    public void testUpdateTask_shouldReturnUpdatedTask() throws Exception {
         Task task = new Task();
         task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();

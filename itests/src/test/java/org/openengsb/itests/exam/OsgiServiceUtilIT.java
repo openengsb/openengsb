@@ -47,7 +47,7 @@ import org.osgi.framework.Constants;
 public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
-    public void testOsgiServiceUtilMethods_shouldFindService() {
+    public void testOsgiServiceUtilMethods_shouldFindService() throws Exception {
         DomainProvider provider = getServiceUtils().getService(DomainProvider.class);
         assertThat(provider, notNullValue());
         provider =
@@ -102,7 +102,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testLocationUtils_shouldLoadServiceByLocation() {
+    public void testLocationUtils_shouldLoadServiceByLocation() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -138,7 +138,7 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testMutlipleLocations_shouldWork() {
+    public void testMutlipleLocations_shouldWork() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");

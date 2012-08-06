@@ -34,94 +34,94 @@ public class ContextTest {
     }
 
     @Test
-    public void testEmptyContext_shouldHaveNoKeys() {
+    public void testEmptyContext_shouldHaveNoKeys() throws Exception {
         assertThat(context.getKeys().size(), is(0));
     }
 
     @Test
-    public void testEmptyContext_shouldHaveNoChildren() {
+    public void testEmptyContext_shouldHaveNoChildren() throws Exception {
         assertThat(context.getChildren().size(), is(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPutKeyWithSlash_shouldThrowIllegalArgumentException() {
+    public void testPutKeyWithSlash_shouldThrowIllegalArgumentException() throws Exception {
         context.put("with/slash", "");
     }
 
     @Test
-    public void testGetPuttedValueByKey_shouldReturnPuttedValue() {
+    public void testGetPuttedValueByKey_shouldReturnPuttedValue() throws Exception {
         context.put("a", "b");
         assertThat(context.get("a"), is("b"));
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullKey_shouldThrowNullPointerException() {
+    public void testNullKey_shouldThrowNullPointerException() throws Exception {
         context.put(null, "");
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullValue_shouldThrowNullPointerException() {
+    public void testNullValue_shouldThrowNullPointerException() throws Exception {
         context.put("a", null);
     }
 
     @Test
-    public void testGetNonExistingKey_shouldReturnNull() {
+    public void testGetNonExistingKey_shouldReturnNull() throws Exception {
         assertThat(context.get("non-existing"), nullValue());
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testIfGetKeysValuesAreUnmodifiable_shouldBeUnmodifiable() {
+    public void testIfGetKeysValuesAreUnmodifiable_shouldBeUnmodifiable() throws Exception {
         context.getKeys().clear();
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testIfGetChildrenValuesAreUnmodifiable_shouldBeUnmodifiable() {
+    public void testIfGetChildrenValuesAreUnmodifiable_shouldBeUnmodifiable() throws Exception {
         context.getChildren().clear();
     }
 
     @Test
-    public void testGetNonExistingChild_shouldReturnNull() {
+    public void testGetNonExistingChild_shouldReturnNull() throws Exception {
         assertThat(context.getChild("non-existing"), nullValue());
     }
 
     @Test
-    public void testCreatingNewChild_shouldReturnNewlyCreatedChild() {
+    public void testCreatingNewChild_shouldReturnNewlyCreatedChild() throws Exception {
         Context child = context.createChild("a");
         assertThat(context.getChild("a"), is(child));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreatingNewChildWithSlashInName_shouldThrowIllegalArgumentException() {
+    public void testCreatingNewChildWithSlashInName_shouldThrowIllegalArgumentException() throws Exception {
         context.createChild("with/slash");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateChildWithExistingNamedChild_shouldThrowIllegalArgumentException() {
+    public void testCreateChildWithExistingNamedChild_shouldThrowIllegalArgumentException() throws Exception {
         context.createChild("a");
         context.createChild("a");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testKeysAndNames_shouldNotOverlap() {
+    public void testKeysAndNames_shouldNotOverlap() throws Exception {
         context.createChild("a");
         context.put("a", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNamesAndKeys_shouldNotOverlap() {
+    public void testNamesAndKeys_shouldNotOverlap() throws Exception {
         context.put("a", "");
         context.createChild("a");
     }
 
     @Test
-    public void testRemoveOfKeyValue_shouldReturnNullOnGet() {
+    public void testRemoveOfKeyValue_shouldReturnNullOnGet() throws Exception {
         context.put("a", "");
         context.remove("a");
         assertThat(context.get("a"), nullValue());
     }
 
     @Test
-    public void testRemoveOfChild_shouldReturnNullOnGetChild() {
+    public void testRemoveOfChild_shouldReturnNullOnGetChild() throws Exception {
         context.createChild("a");
         context.remove("a");
         assertThat(context.getChild("a"), nullValue());

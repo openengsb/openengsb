@@ -94,12 +94,12 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testIfServiceIsFound_shouldWork() {
+    public void testIfServiceIsFound_shouldWork() throws Exception {
         assertThat(edbService, notNullValue());
     }
 
     @Test
-    public void testInsert_shouldWork() {
+    public void testInsert_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("testobject");
         testObject.put("testkey", "testvalue");
@@ -109,14 +109,14 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    public void testDoubleCommit_shouldThrowException() {
+    public void testDoubleCommit_shouldThrowException() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         edbService.commit(commit);
         edbService.commit(commit);
     }
 
     @Test
-    public void testRetrieveObject_shouldWork() {
+    public void testRetrieveObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject");
         testObject.put("newtestkey", "newtestvalue");
@@ -129,7 +129,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testQueryForObject_shouldWork() {
+    public void testQueryForObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject");
         testObject.put("newtestkey", "newtestvalue");
@@ -384,8 +384,9 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
-    
+
     @Test
+    @SuppressWarnings("deprecation")
     public void testSupportOfCustomModels_shouldWork() throws Exception {
         RealModel model = new RealModel();
         model.setId("testReal/1");

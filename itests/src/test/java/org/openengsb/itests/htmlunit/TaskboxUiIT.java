@@ -192,5 +192,4 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         form.getInputByName("password").setValueAttribute("password");
         loginButton.click();
     }
-
 }

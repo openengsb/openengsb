@@ -28,7 +28,7 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.WorkflowService;
 
 public class MethodFinderTest {
-
+    
     public static class TestEvent extends Event {
 
     }

@@ -58,13 +58,13 @@ public class ServicesListPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testVerifyRenderedPage_shouldBeServiceListPage() {
+    public void testVerifyRenderedPage_shouldBeServiceListPage() throws Exception {
         startPage();
         tester.assertRenderedPage(ServiceListPage.class);
     }
 
     @Test
-    public void testVerifyListViews_shouldShowServiceStatus() {
+    public void testVerifyListViews_shouldShowServiceStatus() throws Exception {
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
 

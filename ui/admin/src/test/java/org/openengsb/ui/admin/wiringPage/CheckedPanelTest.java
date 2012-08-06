@@ -58,20 +58,20 @@ public class CheckedPanelTest {
     }
     
     @Test
-    public void testRendered_shouldHaveAllComponents() {
+    public void testRendered_shouldHaveAllComponents() throws Exception {
         tester.assertComponent(checkedPanel.getId() + ":check", CheckBox.class);
         tester.assertComponent(checkedPanel.getId() + ":label", SimpleFormComponentLabel.class);
     }
     
     @Test
-    public void testLabel_shouldShowLabelModelObject() {
+    public void testLabel_shouldShowLabelModelObject() throws Exception {
         SimpleFormComponentLabel label = (SimpleFormComponentLabel) 
             tester.getComponentFromLastRenderedPage(checkedPanel.getId() + ":label");
         assertThat(label.getDefaultModelObjectAsString(), is("testlabel"));
     }
     
     @Test
-    public void testAttributeOfLabel_shouldBeIdOfTheCheckBox() {
+    public void testAttributeOfLabel_shouldBeIdOfTheCheckBox() throws Exception {
         CheckBox checkBox = (CheckBox) 
             tester.getComponentFromLastRenderedPage(checkedPanel.getId() + ":check");
         TagTester tagTester = tester.getTagByWicketId("label");

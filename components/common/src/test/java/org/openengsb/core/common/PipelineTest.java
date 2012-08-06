@@ -143,7 +143,7 @@ public class PipelineTest {
     }
 
     @Test(expected = FilterConfigurationException.class)
-    public void testCreateFilterWithIncompatibleFirst_shouldThrowFilterConfigurationException() {
+    public void testCreateFilterWithIncompatibleFirst_shouldThrowFilterConfigurationException() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
 
@@ -155,7 +155,7 @@ public class PipelineTest {
     }
 
     @Test(expected = FilterConfigurationException.class)
-    public void testCreateFilterWithIncompatibleElements_shouldThrowFilterConfigurationException() {
+    public void testCreateFilterWithIncompatibleElements_shouldThrowFilterConfigurationException() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =

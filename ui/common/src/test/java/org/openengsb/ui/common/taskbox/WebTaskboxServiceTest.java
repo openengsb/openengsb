@@ -68,7 +68,7 @@ public class WebTaskboxServiceTest {
     }
 
     @Test
-    public void testGetTaskPanel_shouldReturnDefaultPanel() {
+    public void testGetTaskPanel_shouldReturnDefaultPanel() throws Exception {
         Task t = new Task();
         t.setTaskType("Type1");
         Panel p = service.getTaskPanel(t, "panel");
@@ -76,7 +76,7 @@ public class WebTaskboxServiceTest {
     }
 
     @Test
-    public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() {
+    public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() throws Exception {
         List<PanelRegistryEntry> list = new ArrayList<PanelRegistryEntry>();
         list.add(new PanelRegistryEntry("Type1", CustomTaskPanel.class));
 

@@ -140,5 +140,4 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
             FileUtils.deleteQuietly(ruleDir);
         }
     }
-
 }

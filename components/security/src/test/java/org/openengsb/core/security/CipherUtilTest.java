@@ -168,5 +168,4 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
 
         assertThat(new String(decrypt), is(TEST_STRING));
     }
-
 }
