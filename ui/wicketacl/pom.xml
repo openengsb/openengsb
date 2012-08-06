@@ -77,7 +77,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-              ${openengsb.imports},
+              org.openengsb.core.*;version="[${openengsb.version.min},${openengsb.version.max})",
               org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>

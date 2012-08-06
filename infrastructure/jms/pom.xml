@@ -87,6 +87,7 @@
             <!--
               The JMS infrastructure needs dynamic import for exporting the various cxf things.
             -->
+            <Import-Package>*</Import-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
