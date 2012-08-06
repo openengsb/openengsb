@@ -29,13 +29,13 @@ import org.junit.Test;
 public class ContextIdTest {
 
     @Test
-    public void testContextIdConstructor_shouldInitializeId() {
+    public void testContextIdConstructor_shouldInitializeId() throws Exception {
         ContextId contextId = new ContextId("someId");
         assertThat(contextId.getId(), is("someId"));
     }
 
     @Test
-    public void testFromMetaData_shouldProvideTheRightId() {
+    public void testFromMetaData_shouldProvideTheRightId() throws Exception {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("id", "metaId");
         ContextId convertedContextId = ContextId.fromMetaData(metaData);
@@ -43,7 +43,7 @@ public class ContextIdTest {
     }
 
     @Test
-    public void testToMetaData_shouldStoreIdInMap() {
+    public void testToMetaData_shouldStoreIdInMap() throws Exception {
         ContextId contextId = new ContextId("idFromContextId");
 
         Map<String, String> metaData = contextId.toMetaData();
@@ -52,7 +52,7 @@ public class ContextIdTest {
     }
 
     @Test
-    public void testEquals_shouldBeTrueForEqualIds() {
+    public void testEquals_shouldBeTrueForEqualIds() throws Exception {
         ContextId id1 = new ContextId("theId");
         ContextId id2 = new ContextId("theId");
 
@@ -61,8 +61,7 @@ public class ContextIdTest {
     }
 
     @Test
-    public void testGetContextWildCard_shouldReturnEmptyMap() {
+    public void testGetContextWildCard_shouldReturnEmptyMap() throws Exception {
         assertThat(ContextId.getContextIdWildCard().isEmpty(), is(true));
     }
-
 }

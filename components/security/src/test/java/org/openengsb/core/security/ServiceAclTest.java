@@ -110,13 +110,13 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckAdminAccess_shouldGrant() {
+    public void testCheckAdminAccess_shouldGrant() throws Exception {
         MethodInvocation invocation = MethodInvocationUtils.create(new Object(), "toString");
         assertThat(accessControl.checkAccess("admin", invocation), is(Access.GRANTED));
     }
 
     @Test
-    public void testCheckServiceAccess_shouldGrant() {
+    public void testCheckServiceAccess_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
@@ -126,7 +126,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckServiceAccessByName_shouldGrant() {
+    public void testCheckServiceAccessByName_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
@@ -136,7 +136,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckMethodAccessByName_shouldGrant() {
+    public void testCheckMethodAccessByName_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -146,7 +146,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckMethodAccessByWrongName_shouldDeny() {
+    public void testCheckMethodAccessByWrongName_shouldDeny() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -156,7 +156,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckMethodAccessByMethodName_shouldGrant() {
+    public void testCheckMethodAccessByMethodName_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -166,7 +166,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckServiceInstanceAccessById_shouldGrant() {
+    public void testCheckServiceInstanceAccessById_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
@@ -180,11 +180,10 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCheckMethodPublicAccess_shouldGrant() {
+    public void testCheckMethodPublicAccess_shouldGrant() throws Exception {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "getInstanceId");
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
-
 }

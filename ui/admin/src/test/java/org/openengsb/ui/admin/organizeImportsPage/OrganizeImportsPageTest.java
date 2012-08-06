@@ -77,7 +77,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testRenderOrganizeImportsPage_shouldShowPage() {
+    public void testRenderOrganizeImportsPage_shouldShowPage() throws Exception {
         tester.assertRenderedPage(OrganizeImportsPage.class);
         tester.assertComponent("tree", LinkTree.class);
         tester.assertComponent("editForm", Form.class);
@@ -91,7 +91,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSelectImport_shouldSelectImport() {
+    public void testSelectImport_shouldSelectImport() throws Exception {
         tester.clickLink("tree:i:1:nodeComponent:contentLink", true);
         TextField<String> importName =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editForm:importName");
@@ -100,7 +100,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddNewImport_shouldAddImport() {
+    public void testAddNewImport_shouldAddImport() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("submitButton");
@@ -110,7 +110,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteImport_shouldDeleteImport() {
+    public void testDeleteImport_shouldDeleteImport() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "aaaa.bbbb.fff");
         formTester.submit("deleteButton");
@@ -120,7 +120,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteNotExistingImport_shouldWork() {
+    public void testDeleteNotExistingImport_shouldWork() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("importName", "test");
         formTester.submit("deleteButton");

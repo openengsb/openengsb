@@ -55,14 +55,14 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testIfModelAgentIsSet_shouldWork() {
+    public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
             model instanceof OpenEngSBModel, is(true));
     }
 
     @Test
-    public void testSimpleModelToEDBObjectConversion_shouldWork() {
+    public void testSimpleModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("test");
         Date date = new Date();
@@ -87,7 +87,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testComplexModelToEDBObjectConversion_shouldWork() {
+    public void testComplexModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("test");
 
@@ -107,7 +107,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testComplexListModelToEDBObjectConversion_shouldWork() {
+    public void testComplexListModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("test");
 
@@ -142,7 +142,7 @@ public class EDBConverterTest {
     }
 
     @Test
-    public void testMapModelToEDBObjectConversion_shouldWork() {
+    public void testMapModelToEDBObjectConversion_shouldWork() throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         map.put("keyA", "valueA");
         map.put("keyB", "valueB");

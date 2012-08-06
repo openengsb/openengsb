@@ -172,5 +172,4 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
             verifyZeroInteractions(mockService);
         }
     }
-
 }

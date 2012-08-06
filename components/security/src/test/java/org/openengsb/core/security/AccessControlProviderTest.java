@@ -97,13 +97,13 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void checkAdminAccess_shouldGrant() {
+    public void checkAdminAccess_shouldGrant() throws Exception {
         MethodInvocation invocation = mock(MethodInvocation.class);
         assertThat(accessControl.checkAccess("admin", invocation), is(Access.GRANTED));
     }
 
     @Test
-    public void checkServiceAccess_shouldGrant() {
+    public void checkServiceAccess_shouldGrant() throws Exception {
         OpenEngSBService service = mock(OpenEngSBService.class);
         when(service.getInstanceId()).thenReturn("fooService");
         MethodInvocation invocation = mock(MethodInvocation.class);
@@ -111,5 +111,4 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         when(servicePermissionAccessConnector.checkAccess("testuser", invocation)).thenReturn(Access.GRANTED);
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
-
 }

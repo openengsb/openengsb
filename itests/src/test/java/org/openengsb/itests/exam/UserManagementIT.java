@@ -73,5 +73,4 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
         Authentication authenticate = authenticator.authenticate("test", new Password("password"));
         assertThat(authenticate, not(nullValue()));
     }
-
 }

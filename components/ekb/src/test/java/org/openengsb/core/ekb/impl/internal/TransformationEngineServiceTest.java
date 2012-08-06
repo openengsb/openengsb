@@ -110,7 +110,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testIfTransformationDescriptionsBuiltCorrectly_shouldWork() {
+    public void testIfTransformationDescriptionsBuiltCorrectly_shouldWork() throws Exception {
         TransformationDescription desc1 = getDescriptionForModelAToModelB();
         desc1.setId("aTob");
         desc1.forwardField("bla", "blub");
@@ -126,7 +126,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testSimpleForwardTransformations_shouldWork() {
+    public void testSimpleForwardTransformations_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
@@ -146,7 +146,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testForwardTransformationsWithTemporaryField_shouldWork() {
+    public void testForwardTransformationsWithTemporaryField_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
@@ -167,7 +167,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testMixedForwardTransformations_shouldWork() {
+    public void testMixedForwardTransformations_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "testB");
         desc.forwardField("testA", "blubB");
@@ -186,7 +186,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testConcatTransformation_shouldWork() {
+    public void testConcatTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
@@ -206,7 +206,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testSplitTransformation_shouldWork() {
+    public void testSplitTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.forwardField("idB", "idA");
         desc.forwardField("testB", "testA");
@@ -227,7 +227,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testSplitRegexTransformation_shouldWork() {
+    public void testSplitRegexTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.splitRegexField("blubB", "blubA", "[^#]+", "0");
         desc.splitRegexField("blubB", "blaA", "[^#]+", "1");
@@ -242,7 +242,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testMapTransformation_shoulWork() {
+    public void testMapTransformation_shoulWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.forwardField("idB", "idA");
         desc.forwardField("testB", "testA");
@@ -270,7 +270,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testSubStringTransformation_shouldWork() {
+    public void testSubStringTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.substringField("idA", "idB", "0", "4");
         service.saveDescription(desc);
@@ -283,7 +283,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testValueTransformation_shouldWork() {
+    public void testValueTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.valueField("testB", "blub");
@@ -298,7 +298,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testLengthTransformation_shouldWork() {
+    public void testLengthTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.lengthField("testB", "testA", null);
         desc.lengthField("elements", "blubA", "size");
@@ -318,7 +318,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testTrimTransformation_shouldWork() {
+    public void testTrimTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.trimField("testB", "testA");
         service.saveDescription(desc);
@@ -331,7 +331,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testToUpperTransformation_shouldWork() {
+    public void testToUpperTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.toUpperField("testA", "testB");
         service.saveDescription(desc);
@@ -344,7 +344,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testToLowerTransformation_shouldWork() {
+    public void testToLowerTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.toLowerField("testA", "testB");
         service.saveDescription(desc);
@@ -357,7 +357,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testReplaceTransformation_shouldWork() {
+    public void testReplaceTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.replaceField("testA", "testB", "test", "blub");
         service.saveDescription(desc);
@@ -370,7 +370,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testReverseTransformation_shouldWork() {
+    public void testReverseTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.reverseField("testA", "testB");
         service.saveDescription(desc);
@@ -383,7 +383,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testPadTransformation_shouldWork() {
+    public void testPadTransformation_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.padField("idA", "idB", "4", "0", "Start");
         desc.padField("testA", "testB", "7", "!", "End");
@@ -399,7 +399,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testRemoveLeadingText_shouldWork() {
+    public void testRemoveLeadingText_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelBToModelA();
         desc.removeLeadingField("idB", "idA", "[#?]+", "3");
         desc.removeLeadingField("testB", "testA", "#+", "2");
@@ -492,7 +492,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testIfTransformationPathSearchIsWorking_shouldWork() {
+    public void testIfTransformationPathSearchIsWorking_shouldWork() throws Exception {
         setupPathSearchEnvironment();
         ModelA model = new ModelA();
         model.setIdA("testid");
@@ -504,7 +504,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testIfTransformationPathWithIdsSearchIsWorking_shouldWork() {
+    public void testIfTransformationPathWithIdsSearchIsWorking_shouldWork() throws Exception {
         setupPathSearchEnvironment();
         ModelA model = new ModelA();
         model.setIdA("testid");
@@ -516,7 +516,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testIfTransformationPathChecksInactiveModels_shouldWork() {
+    public void testIfTransformationPathChecksInactiveModels_shouldWork() throws Exception {
         setupPathSearchEnvironment();
         ModelRegistryService.getInstance().unregisterModel(getModelBDescription());
 
@@ -538,7 +538,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testReadTransformationMetaDataFromFile_shouldWork() {
+    public void testReadTransformationMetaDataFromFile_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
@@ -551,7 +551,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testRetrievedTransformationsFromFile1_shouldWork() {
+    public void testRetrievedTransformationsFromFile1_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
@@ -582,7 +582,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testRetrievedTransformationsFromFile2_shouldWork() {
+    public void testRetrievedTransformationsFromFile2_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription2.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
@@ -616,7 +616,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testRetrievedTransformationsFromFile3_shouldWork() {
+    public void testRetrievedTransformationsFromFile3_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription3.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
@@ -644,7 +644,7 @@ public class TransformationEngineServiceTest {
     }
 
     @Test
-    public void testGetDescriptionsByFile_shouldWork() {
+    public void testGetDescriptionsByFile_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription3.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);

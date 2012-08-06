@@ -118,14 +118,14 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testIfModelAgentIsSet_shouldWork() {
+    public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
             model instanceof OpenEngSBModel, is(true));
     }
 
     @Test
-    public void testGetOpenEngSBModelGeneral_shouldWork() {
+    public void testGetOpenEngSBModelGeneral_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
         TestModel model2 = ModelUtils.createModel(TestModel.class, ModelUtils.getOpenEngSBModelEntries(model));
 
@@ -142,7 +142,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() {
+    public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         SubModel sub = model.getSub();
@@ -163,7 +163,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() {
+    public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
 
@@ -189,7 +189,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testGetModelWithProxiedInterface_shouldWork() {
+    public void testGetModelWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         assertThat(model.getName(), is("testname"));
@@ -199,7 +199,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testGetModelWithImplementedClass_shouldWork() {
+    public void testGetModelWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         assertThat(model.getName(), is("testname"));
@@ -209,7 +209,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testListAsParameterWithImplementedClass_shouldWork() {
+    public void testListAsParameterWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         List<String> testList = model.getList();
@@ -235,7 +235,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testListAsParameterWithProxiedInterface_shouldWork() {
+    public void testListAsParameterWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<String> testList = model.getList();
@@ -261,7 +261,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testComplexAsParameterWithImplementedClass_shouldWork() {
+    public void testComplexAsParameterWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         SubModel sub = model.getSub();
@@ -277,7 +277,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testListOfComplexAsParameterWithImplementedClass_shouldWork() {
+    public void testListOfComplexAsParameterWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         List<SubModel> sub = model.getSubs();
@@ -289,7 +289,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testListOfComplexAsParameterWithProxiedInterface_shouldWork() {
+    public void testListOfComplexAsParameterWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<SubModel> sub = model.getSubs();
@@ -301,7 +301,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testComplexAsParameterWithProxiedInterface_shouldWork() {
+    public void testComplexAsParameterWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         SubModel sub = model.getSub();
@@ -317,7 +317,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testInteractionWithEnumValuesWithRealImplementation_shouldWork() {
+    public void testInteractionWithEnumValuesWithRealImplementation_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         ENUM temp = model.getEnumeration();
@@ -328,7 +328,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testInteractionWithEnumValuesWithProxiedInterface_shouldWork() {
+    public void testInteractionWithEnumValuesWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         ENUM temp = model.getEnumeration();
@@ -339,7 +339,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() {
+    public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
 
@@ -358,14 +358,14 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testLoadEDBObjectWithWrongModel_shouldReturnNull() {
+    public void testLoadEDBObjectWithWrongModel_shouldReturnNull() throws Exception {
         // testoidimpl returns a TestModel2 object
         TestModel model = service.getModel(TestModel.class, "testoidimpl");
         assertThat(model, nullValue());
     }
 
     @Test
-    public void testMapSupportOfProxiedInterface_shouldWork() {
+    public void testMapSupportOfProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "mapoid");
         assertThat(model.getMap().get("keyA").toString(), is("valueA"));
         assertThat(model.getMap().get("keyB").toString(), is("valueB"));
@@ -373,7 +373,7 @@ public class QueryInterfaceServiceTest {
     }
 
     @Test
-    public void testRegexCheckOfQueryForModels_shouldWork() {
+    public void testRegexCheckOfQueryForModels_shouldWork() throws Exception {
         assertThat("query with one condition don't work", checkQuery("a:b"), is(true));
         assertThat("combined query with two conditions don't work", checkQuery("a:b and b:c"), is(true));
         assertThat("combined query with three conditions don't work", checkQuery("a:b and b:c and c:d"), is(true));

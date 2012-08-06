@@ -74,7 +74,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void testWsPort_shouldBeExportedWithCorrectId() {
+    public void testWsPort_shouldBeExportedWithCorrectId() throws Exception {
         DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(getBundleContext());
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "ws-json", 60000);
         assertNotNull(serviceWithId);

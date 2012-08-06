@@ -31,14 +31,14 @@ import org.openengsb.core.common.util.ModelUtils;
 public class ManipulationUtilsTest {
 
     @Test
-    public void testIfModelAgentIsSet_shouldWork() {
+    public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
             model instanceof OpenEngSBModel, is(true));
     }
 
     @Test
-    public void testIfGetOpenEngSBModelEntriesWork_shouldWork() {
+    public void testIfGetOpenEngSBModelEntriesWork_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("testId");
         model.setName("testName");
@@ -57,7 +57,7 @@ public class ManipulationUtilsTest {
     }
 
     @Test
-    public void testIfAddOpenEngSBModelEntryWork_shouldWork() {
+    public void testIfAddOpenEngSBModelEntryWork_shouldWork() throws Exception {
         TestModel model = new TestModel();
         OpenEngSBModel bla = (OpenEngSBModel) model;
 
@@ -74,7 +74,7 @@ public class ManipulationUtilsTest {
     }
 
     @Test
-    public void testIfRemoveOpenEngSBModelEntryWork_shouldWork() {
+    public void testIfRemoveOpenEngSBModelEntryWork_shouldWork() throws Exception {
         TestModel model = new TestModel();
         ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
         ModelUtils.removeOpenEngSBModelEntry(model, "test");
@@ -84,7 +84,7 @@ public class ManipulationUtilsTest {
     }
 
     @Test
-    public void testIfModelIdInsertionWorks_shouldWork() {
+    public void testIfModelIdInsertionWorks_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("id");
         String id = (String) ModelUtils.getInternalModelId(model);
@@ -92,7 +92,7 @@ public class ManipulationUtilsTest {
     }
     
     @Test
-    public void testIfModelTailRetrievingWorks_shouldWork() {
+    public void testIfModelTailRetrievingWorks_shouldWork() throws Exception {
         TestModel model = new TestModel();
         ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
         List<OpenEngSBModelEntry> tail = ModelUtils.getOpenEngSBModelTail(model);
@@ -101,7 +101,7 @@ public class ManipulationUtilsTest {
     }
     
     @Test
-    public void testIfModelTailSettingWorks_shouldWork() {
+    public void testIfModelTailSettingWorks_shouldWork() throws Exception {
         TestModel model = new TestModel();
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         entries.add(new OpenEngSBModelEntry("test", "test", String.class));
@@ -112,7 +112,7 @@ public class ManipulationUtilsTest {
     }
     
     @Test
-    public void testIfNullModelTailSettingWorks_shouldThrowNoException() {
+    public void testIfNullModelTailSettingWorks_shouldThrowNoException() throws Exception {
         TestModel model = new TestModel();
         ModelUtils.setOpenEngSBModelTail(model, null);
         assertThat(ModelUtils.getOpenEngSBModelTail(model).size(), is(0));

@@ -72,12 +72,12 @@ public class JPATestIT {
     }
 
     @Test
-    public void testOpenDatabase_shouldWork() {
+    public void testOpenDatabase_shouldWork() throws Exception {
         assertThat(db, notNullValue());
     }
 
     @Test
-    public void testCommit_shouldWork() {
+    public void testCommit_shouldWork() throws Exception {
         try {
             JPACommit ci = db.createCommit("TestCommit", "Role");
             EDBObject obj = new EDBObject("Tester");
@@ -100,7 +100,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testGetCommits_shouldWork() {
+    public void testGetCommits_shouldWork() throws Exception {
         try {
             JPACommit ci = db.createCommit("TestCommit2", "Testcontext");
             EDBObject obj = new EDBObject("TestObject");
@@ -122,13 +122,13 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testGetInexistantObject_shouldThrowException() {
+    public void testGetInexistantObject_shouldThrowException() throws Exception {
         db.getObject("/this/object/does/not/exist");
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetHistoryAndCheckForElements_shouldWork() {
+    public void testGetHistoryAndCheckForElements_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -193,7 +193,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testHistoryOfDeletion_shouldWork() {
+    public void testHistoryOfDeletion_shouldWork() throws Exception {
         JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
         ci.insert(utils.createRandomTestObject("/deletion/1"));
         long time1 = db.commit(ci);
@@ -212,7 +212,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testGetLog_shouldWork() {
+    public void testGetLog_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -266,7 +266,7 @@ public class JPATestIT {
 
     @SuppressWarnings("serial")
     @Test
-    public void testQueryWithSomeAspects_shouldWork() {
+    public void testQueryWithSomeAspects_shouldWork() throws Exception {
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("A", "B");
@@ -328,7 +328,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testDiff_shouldWork() {
+    public void testDiff_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -375,7 +375,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testGetResurrectedOIDs_shouldWork() {
+    public void testGetResurrectedOIDs_shouldWork() throws Exception {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
         EDBObject v1 = new EDBObject("/ress/object", data1);
@@ -404,7 +404,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitTwiceSameCommit_shouldThrowError() {
+    public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
         EDBObject v1 = new EDBObject("/fail/object", data1);
@@ -415,7 +415,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryOfOldVersion_shouldWork() {
+    public void testQueryOfOldVersion_shouldWork() throws Exception {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
         data1v1.put("pre:KeyA", "pre:Value A 1");
         data1v1.put("pre:KeyB", "pre:Value A 1");
@@ -502,7 +502,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryWithTimestamp_shouldWork() {
+    public void testQueryWithTimestamp_shouldWork() throws Exception {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("K", "B");
         data1.put("Cow", "Milk");
@@ -534,7 +534,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryWithTimestampAndEmptyMap_shouldWork() {
+    public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("K", "B");
         data1.put("Cow", "Milk");
@@ -578,7 +578,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testQueryOfLastKnownVersion_shouldWork() {
+    public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
         data1v1.put("KeyA", "Value A 1");
         data1v1.put("KeyB", "Value A 1");
@@ -670,7 +670,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testCommitEDBObjectsInsert_shouldWork() {
+    public void testCommitEDBObjectsInsert_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/insert/1");
         object.put("bla", "blub");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
@@ -684,7 +684,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitEDBObjectsInsertDouble_shouldThrowException() {
+    public void testCommitEDBObjectsInsertDouble_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/insert/2");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
         inserts.add(object);
@@ -694,7 +694,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testIfConflictDetectionIsWorking_shouldThrowException() {
+    public void testIfConflictDetectionIsWorking_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/insert/3");
         object.put("bla", "blub");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
@@ -710,7 +710,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testCommitEDBObjectsUpdate_shouldWork() {
+    public void testCommitEDBObjectsUpdate_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/update/1");
         object.put("testkey", "testvalue");
         List<EDBObject> objects = new ArrayList<EDBObject>();
@@ -735,7 +735,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() {
+    public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/update/2");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
@@ -746,7 +746,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testCommitEDBObjectsDelete_shouldWork() {
+    public void testCommitEDBObjectsDelete_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/delete/1");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
@@ -758,7 +758,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitEDBObjectsDeleteNonExisting_shouldThrowException() {
+    public void testCommitEDBObjectsDeleteNonExisting_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/delete/2");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
@@ -766,7 +766,7 @@ public class JPATestIT {
     }
 
     @Test(expected = EDBException.class)
-    public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() {
+    public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/delete/3");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);

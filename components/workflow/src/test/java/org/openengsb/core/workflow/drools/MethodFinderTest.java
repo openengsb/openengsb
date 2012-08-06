@@ -29,10 +29,6 @@ import org.openengsb.core.workflow.api.WorkflowService;
 
 public class MethodFinderTest {
 
-    public static class TestEvent extends Event {
-
-    }
-
     @Test
     public void testFindMethodWithSubclass_shouldReturnSameMethod() throws Exception {
         Method matchingAccessibleMethod =

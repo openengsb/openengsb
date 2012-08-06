@@ -33,19 +33,19 @@ import org.openengsb.ui.admin.testClient.TestClient;
 public class LoginPageTest extends AbstractLoginTest {
 
     @Test
-    public void testLoginPageIsDisplayed_shouldShowLoginPage() {
+    public void testLoginPageIsDisplayed_shouldShowLoginPage() throws Exception {
         tester.startPage(LoginPage.class);
         tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
-    public void testRedirectToLogin_shouldRedirectToLoginPage() {
+    public void testRedirectToLogin_shouldRedirectToLoginPage() throws Exception {
         tester.startPage(TestClient.class);
         tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
-    public void testEnterLogin_shouldEnterCredentials() {
+    public void testEnterLogin_shouldEnterCredentials() throws Exception {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -56,7 +56,7 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testLogout_shouldLogOutUser() {
+    public void testLogout_shouldLogOutUser() throws Exception {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -67,7 +67,7 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testInvalidLogin_shouldNotLogInUser() {
+    public void testInvalidLogin_shouldNotLogInUser() throws Exception {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
@@ -79,9 +79,8 @@ public class LoginPageTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testIfHeaderAndFooterIsVisible_shouldShowElements() {
+    public void testIfHeaderAndFooterIsVisible_shouldShowElements() throws Exception {
         tester.startPage(LoginPage.class);
         tester.assertComponent("header", HeaderTemplate.class);
     }
-
 }

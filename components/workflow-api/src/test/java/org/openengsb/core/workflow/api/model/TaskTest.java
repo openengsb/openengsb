@@ -36,13 +36,13 @@ public class TaskTest {
     }
 
     @Test
-    public void testInitializeProperties_shouldWork() {
+    public void testInitializeProperties_shouldWork() throws Exception {
         assertTrue(task.getTaskId().length() > 0);
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
 
     @Test
-    public void testCreateTaskWithGivenOtherTask_shouldWork() {
+    public void testCreateTaskWithGivenOtherTask_shouldWork() throws Exception {
         newtask.setTaskId("ID_newtask");
         newtask.setDescription("Desc");
         assertFalse(newtask.containsProperty("taskCreationTimestamp"));

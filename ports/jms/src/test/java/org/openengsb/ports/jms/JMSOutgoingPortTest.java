@@ -22,7 +22,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,7 +112,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCallSend_shouldSendMessageViaJMS() throws IOException {
+    public void testCallSend_shouldSendMessageViaJMS() throws Exception {
         outgoingPort.send(call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
@@ -129,7 +128,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws IOException {
+    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws Exception {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);

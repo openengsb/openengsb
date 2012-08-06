@@ -171,7 +171,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
-
         authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticator", authConnector);

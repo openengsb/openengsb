@@ -25,7 +25,7 @@ import org.junit.Test;
 public class EventTest {
 
     @Test
-    public void testToString_shouldReturnCorrectString() {
+    public void testToString_shouldReturnCorrectString() throws Exception {
         Event event = new TestEvent("test");
         String eventString = event.toString();
         assertThat(eventString, containsString("class:" + event.getClass()));

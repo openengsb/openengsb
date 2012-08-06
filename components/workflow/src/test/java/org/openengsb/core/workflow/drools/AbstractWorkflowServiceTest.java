@@ -118,5 +118,4 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         domains.put(name, mock2);
         return (T) mock2;
     }
-
 }

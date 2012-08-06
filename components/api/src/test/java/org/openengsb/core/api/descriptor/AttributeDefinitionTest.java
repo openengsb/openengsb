@@ -61,71 +61,71 @@ public class AttributeDefinitionTest {
     }
 
     @Test
-    public void testBuilderShouldLocalizeNameAndDescription_shouldWork() {
+    public void testBuilderShouldLocalizeNameAndDescription_shouldWork() throws Exception {
         assertThat(builder.build().getName().getString(null), is("name"));
         assertThat(builder.build().getDescription().getString(null), is("desc"));
     }
 
     @Test
-    public void testBuildWithoutId_shouldThrowIllegalStateException() {
+    public void testBuildWithoutId_shouldThrowIllegalStateException() throws Exception {
         builder.id(null);
         assertBuildException("id");
     }
 
     @Test
-    public void testBuildWithoutName_shouldThrowIllegalStateException() {
+    public void testBuildWithoutName_shouldThrowIllegalStateException() throws Exception {
         builder.name(null);
         assertBuildException("name");
     }
 
     @Test
-    public void testBuildWithoutDescription_shouldWork() {
+    public void testBuildWithoutDescription_shouldWork() throws Exception {
         builder.description(null);
         builder.build();
     }
 
     @Test
-    public void testBuilderShouldLocalizeOptionLabel_shouldWork() {
+    public void testBuilderShouldLocalizeOptionLabel_shouldWork() throws Exception {
         builder.option("optionLabelKey", "value");
         assertThat(builder.build().getOptions().get(0).getValue(), is("value"));
         assertThat(builder.build().getOptions().get(0).getLabel().getString(null), is("option"));
     }
 
     @Test
-    public void testEmptyOptionLabel_shouldThrowIllegalStateException() {
+    public void testEmptyOptionLabel_shouldThrowIllegalStateException() throws Exception {
         builder.option("", "value");
         assertBuildException("option");
     }
 
     @Test
-    public void testEmptyOptionValue_shouldThrowIllegalStateException() {
+    public void testEmptyOptionValue_shouldThrowIllegalStateException() throws Exception {
         builder.option("optionLabelKey", "");
         assertBuildException("option");
     }
 
     @Test
-    public void testBuildWithOptionAndBooleanSettings_shouldThrowIllegalStateException() {
+    public void testBuildWithOptionAndBooleanSettings_shouldThrowIllegalStateException() throws Exception {
         builder.option("optionLabelKey", "value");
         builder.asBoolean();
         assertBuildException("boolean");
     }
 
     @Test
-    public void testBuildWithOptionAndPasswordSettings_shouldThrowIllegalStateException() {
+    public void testBuildWithOptionAndPasswordSettings_shouldThrowIllegalStateException() throws Exception {
         builder.option("optionLabelKey", "value");
         builder.asPassword();
         assertBuildException("password");
     }
 
     @Test
-    public void testBuildWithBooleanAndPasswordSettings_shouldThrowIllegalStateException() {
+    public void testBuildWithBooleanAndPasswordSettings_shouldThrowIllegalStateException() throws Exception {
         builder.asBoolean();
         builder.asPassword();
         assertBuildException("password");
     }
 
     @Test
-    public void testBuildWithValidator_shouldReturnSameValidator() {
+    public void testBuildWithValidator_shouldReturnSameValidator() throws Exception {
         @SuppressWarnings("serial")
         FieldValidator fieldValidator = new FieldValidator() {
             @Override

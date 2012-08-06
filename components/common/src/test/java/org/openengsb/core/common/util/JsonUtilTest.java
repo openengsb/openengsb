@@ -57,7 +57,7 @@ public class JsonUtilTest {
     }
 
     @Test
-    public void testConvertBeanArgument_shouldConvertToBean() {
+    public void testConvertBeanArgument_shouldConvertToBean() throws Exception {
         MethodCall methodCall = new MethodCall("test", new Object[]{ ImmutableMap.of("x", "foo") },
             Arrays.asList(TestBean.class.getName()));
         JsonUtils.convertAllArgs(methodCall);
