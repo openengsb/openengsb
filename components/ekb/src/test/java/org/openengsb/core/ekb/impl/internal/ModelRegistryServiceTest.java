@@ -69,7 +69,6 @@ public class ModelRegistryServiceTest {
     @Test
     public void testIfModelRegistryOnlyAddsModels_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(true);
-        when(event.getType()).thenReturn(BundleEvent.STARTED);
         registry.addingBundle(event.getBundle(), event);
         verify(graph).addModel(getCorrectModel());
         verify(graph, never()).addModel(getIncorrectModel());
@@ -78,19 +77,7 @@ public class ModelRegistryServiceTest {
     @Test
     public void testIfModelRegistryCanWorkWithEmptyBundles_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(false);
-        when(event.getType()).thenReturn(BundleEvent.STARTED);
         registry.addingBundle(event.getBundle(), event);
-    }
-    
-    @Test
-    public void testIfModelRegistryRegistersAndUnregisteresModels_shouldWork() throws Exception {
-        BundleEvent event = getMockedBundleEvent(true);
-        when(event.getType()).thenReturn(BundleEvent.STARTED);
-        registry.addingBundle(event.getBundle(), event);
-        when(event.getType()).thenReturn(BundleEvent.STOPPED);
-        registry.removedBundle(event.getBundle(), event, null);
-        verify(graph).addModel(getCorrectModel());
-        verify(graph).removeModel(getCorrectModel());
     }
     
     @Test
