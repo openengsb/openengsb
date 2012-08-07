@@ -38,6 +38,7 @@ import org.openengsb.core.ekb.impl.internal.graph.EKBModelGraph;
 import org.openengsb.core.ekb.impl.internal.models.ModelA;
 import org.openengsb.core.ekb.impl.internal.models.ModelB;
 import org.openengsb.core.ekb.impl.internal.models.ModelC;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 public class TransformationEngineServiceTest {
@@ -47,7 +48,8 @@ public class TransformationEngineServiceTest {
     public void init() {
         service = new TransformationEngineService();
         EKBModelGraph graph = EKBModelGraph.getInstance();
-        ModelRegistryService registry = ModelRegistryService.getInstance(null);
+        BundleContext context = null;
+        ModelRegistryService registry = ModelRegistryService.getInstance(context);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
         service.setModelRegistry(registry);

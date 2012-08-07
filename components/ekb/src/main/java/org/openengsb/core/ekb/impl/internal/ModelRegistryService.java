@@ -73,7 +73,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
 
     @Override
     public Object addingBundle(Bundle bundle, BundleEvent event) {
-        Set<ModelDescription> models = getModels(bundle);
+        Set<ModelDescription> models = scanBundleForModels(bundle);
         for (ModelDescription model : models) {
             registerModel(model);
             LOGGER.info("Registered model: {}", model);
@@ -94,15 +94,10 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     /**
      * Check all found classes of the bundle if they are models and return a set of all found model descriptions.
      */
-    private Set<ModelDescription> getModels(Bundle bundle) {
+    private Set<ModelDescription> scanBundleForModels(Bundle bundle) {
         Set<ModelDescription> models = new HashSet<ModelDescription>();
-        if (!skipBundle(bundle)) {
-            Set<String> classes = discoverClasses(bundle);
-            for (String classname : classes) {
-                if (isModelClass(classname, bundle)) {
-                    models.add(new ModelDescription(classname, bundle.getVersion()));
-                }
-            }
+        if (!shouldSkipBundle(bundle)) {
+            models = loadModelsOfBundle(bundle);
         }
         return models;
     }
@@ -110,13 +105,33 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     /**
      * Returns true if the given bundle should be skipped in the model search process. Returns false otherwise.
      */
-    private boolean skipBundle(Bundle bundle) {
+    private boolean shouldSkipBundle(Bundle bundle) {
         for (String filter : bundleFilter) {
             if (bundle.getSymbolicName().contains(filter)) {
                 return true;
             }
         }
         return false;
+    }
+    
+    /**
+     * Searches the bundle for model classes and return a set of them.
+     */
+    private Set<ModelDescription> loadModelsOfBundle(Bundle bundle) {
+        Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
+        Set<ModelDescription> models = new HashSet<ModelDescription>();
+        if (classEntries == null) {
+            LOGGER.debug("Found no classes in the bundle {}", bundle);
+            return models;
+        }
+        while (classEntries.hasMoreElements()) {
+            URL classURL = classEntries.nextElement();
+            String classname = extractClassName(classURL);
+            if (isModelClass(classname, bundle)) {
+                models.add(new ModelDescription(classname, bundle.getVersion()));
+            }
+        }
+        return models;
     }
 
     /**
@@ -144,24 +159,6 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
             return false;
         }
         return clazz.isAnnotationPresent(Model.class);
-    }
-
-    /**
-     * Searches the bundle for classes and return a set of all class names.
-     */
-    private Set<String> discoverClasses(Bundle bundle) {
-        Enumeration<URL> classEntries = bundle.findEntries("/", "*.class", true);
-        Set<String> discoveredClasses = new HashSet<String>();
-        if (classEntries == null) {
-            LOGGER.debug("Found no classes in the bundle {}", bundle);
-            return discoveredClasses;
-        }
-        while (classEntries.hasMoreElements()) {
-            URL classURL = classEntries.nextElement();
-            String className = extractClassName(classURL);
-            discoveredClasses.add(className);
-        }
-        return discoveredClasses;
     }
 
     /**

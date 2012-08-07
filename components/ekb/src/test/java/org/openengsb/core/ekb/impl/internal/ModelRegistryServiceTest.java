@@ -34,6 +34,7 @@ import org.openengsb.core.ekb.impl.internal.models.ModelA;
 import org.openengsb.core.ekb.impl.internal.models.TestAnnotation;
 import org.openengsb.core.ekb.impl.internal.models.TestModel;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Version;
 
@@ -43,7 +44,8 @@ public class ModelRegistryServiceTest {
 
     @Before
     public void init() {
-        registry = ModelRegistryService.getInstance(null);
+        BundleContext context = null;
+        registry = ModelRegistryService.getInstance(context);
         graph = mock(ModelGraph.class);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
