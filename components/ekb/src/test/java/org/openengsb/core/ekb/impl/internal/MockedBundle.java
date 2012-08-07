@@ -143,7 +143,7 @@ public class MockedBundle implements Bundle {
 
     @Override
     public String getSymbolicName() {
-        return null;
+        return "org.openengsb.core.ekb.impl.internal.MockedBundle";
     }
 
     @Override
