@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the model registry. It also implements a bundle listener which checks bundles for models and
+ * Implementation of the model registry. It also implements a bundle tracker which checks bundles for models and
  * register/unregister them.
  */
 public final class ModelRegistryService extends BundleTracker implements ModelRegistry {
@@ -50,6 +50,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
     private ModelGraph graphDb;
+    private List<String> bundleFilter;
 
     public static ModelRegistryService getInstance(BundleContext context) {
         if (instance == null) {
@@ -61,15 +62,27 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     private ModelRegistryService(BundleContext context) {
         super(context, Bundle.ACTIVE, null);
         cache = new HashMap<Bundle, Set<ModelDescription>>();
+        bundleFilter = new ArrayList<String>();
+        bundleFilter.add("org.apache.xbean.finder");
+        bundleFilter.add("org.ops4j.pax.url.mvn");
+        bundleFilter.add("org.eclipse.jetty.aggregate.jetty-all-server");
+        bundleFilter.add("org.apache.cxf.bundle");
+        bundleFilter.add("PAXEXAM-PROBE");
+        bundleFilter.add("wrap_mvn_junit_junit");
+        bundleFilter.add("org.apache.servicemix.bundles.jaxb-xjc");
+        bundleFilter.add("org.ops4j.pax.web.pax-web-extender-whiteboard");
+        bundleFilter.add("org.ops4j.pax.web.pax-web-extender-war");
     }
 
     @Override
     public Object addingBundle(Bundle bundle, BundleEvent event) {
         Set<ModelDescription> models = getModels(bundle);
-        cache.put(bundle, models);
-        for (ModelDescription model : models) {
-            registerModel(model);
-            LOGGER.info("Registered model: {}", model);
+        if (!models.isEmpty()) {
+            cache.put(bundle, models);
+            for (ModelDescription model : models) {
+                registerModel(model);
+                LOGGER.info("Registered model: {}", model);
+            }
         }
         return bundle;
     }
@@ -77,9 +90,12 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     @Override
     public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
         Set<ModelDescription> models = cache.get(bundle);
-        for (ModelDescription model : models) {
-            unregisterModel(model);
-            LOGGER.info("Unregistered model: {}", model);
+        if (models != null) {
+            for (ModelDescription model : models) {
+                unregisterModel(model);
+                cache.remove(bundle);
+                LOGGER.info("Unregistered model: {}", model);
+            }
         }
     }
 
@@ -87,15 +103,28 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
      * Check all found classes of the bundle if they are models and return a set of all found model descriptions.
      */
     private Set<ModelDescription> getModels(Bundle bundle) {
-        Set<String> classes = discoverClasses(bundle);
         Set<ModelDescription> models = new HashSet<ModelDescription>();
-
-        for (String classname : classes) {
-            if (isModelClass(classname, bundle)) {
-                models.add(new ModelDescription(classname, bundle.getVersion()));
+        if (!skipBundle(bundle)) {
+            Set<String> classes = discoverClasses(bundle);
+            for (String classname : classes) {
+                if (isModelClass(classname, bundle)) {
+                    models.add(new ModelDescription(classname, bundle.getVersion()));
+                }
             }
         }
         return models;
+    }
+
+    /**
+     * Returns true if the given bundle should be skipped in the model search process. Returns false otherwise.
+     */
+    private boolean skipBundle(Bundle bundle) {
+        for (String filter : bundleFilter) {
+            if (bundle.getSymbolicName().contains(filter)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -108,17 +137,17 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
         try {
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
-            LOGGER.warn("Bundle could not load its own class: {}", classname);
+            LOGGER.warn("Bundle could not load its own class: {} bundle: {}", classname, bundle.getSymbolicName());
             LOGGER.debug("Exact error which happened: ", e);
             return false;
         } catch (NoClassDefFoundError e) {
             // ignore since this happens if bundle have optional imports
             return false;
         } catch (Error e) {
-            // there are a few situations where this catch clause is needed. It seems that there
-            // are some irregularities with our setup, since VerifyErrors and IncompatibleClassChangeErrors
-            // appear sometimes
-            LOGGER.warn("Error while loading class: {} due to {}", classname, e.getMessage());
+            // there are some bundles where this catch clause is needed. Some bundles throw errors like VerifyErrors
+            // and IncompatibleClassChangeErrors when trying to load a class. All classes which where found to throw
+            // such errors, were put in the bundleFilter list.
+            LOGGER.warn("Error while loading class: '{}' in bundle: '{}'", classname, bundle.getSymbolicName());
             LOGGER.debug("Exact error which happened: ", e);
             return false;
         }
