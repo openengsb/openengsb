@@ -20,20 +20,25 @@ package org.openengsb.core.ekb.impl.internal;
 import org.openengsb.core.ekb.impl.internal.graph.EKBModelGraph;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.BundleTracker;
 
 /**
  * Activator for the EKB bundle. It adds the model registry as bundle listener
  */
 public class Activator implements BundleActivator {
+    private BundleTracker tracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        context.addBundleListener(ModelRegistryService.getInstance());
+        ModelRegistryService service = ModelRegistryService.getInstance(context);
+        service.setGraphDb(EKBModelGraph.getInstance());
+        tracker = service;
+        tracker.open();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        context.removeBundleListener(ModelRegistryService.getInstance());
+        tracker.close();
         EKBModelGraph.shutdown();
     }
 
