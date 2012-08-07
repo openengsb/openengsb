@@ -22,10 +22,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -47,7 +45,6 @@ import org.slf4j.LoggerFactory;
 public final class ModelRegistryService extends BundleTracker implements ModelRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
     private static ModelRegistryService instance;
-    private Map<Bundle, Set<ModelDescription>> cache;
     private EKBClassLoader ekbClassLoader;
     private ModelGraph graphDb;
     private List<String> bundleFilter;
@@ -61,7 +58,6 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
 
     private ModelRegistryService(BundleContext context) {
         super(context, Bundle.ACTIVE, null);
-        cache = new HashMap<Bundle, Set<ModelDescription>>();
         bundleFilter = new ArrayList<String>();
         bundleFilter.add("org.apache.xbean.finder");
         bundleFilter.add("org.ops4j.pax.url.mvn");
@@ -77,25 +73,20 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     @Override
     public Object addingBundle(Bundle bundle, BundleEvent event) {
         Set<ModelDescription> models = getModels(bundle);
-        if (!models.isEmpty()) {
-            cache.put(bundle, models);
-            for (ModelDescription model : models) {
-                registerModel(model);
-                LOGGER.info("Registered model: {}", model);
-            }
+        for (ModelDescription model : models) {
+            registerModel(model);
+            LOGGER.info("Registered model: {}", model);
         }
-        return bundle;
+        return models;
     }
 
     @Override
     public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
-        Set<ModelDescription> models = cache.get(bundle);
-        if (models != null) {
-            for (ModelDescription model : models) {
-                unregisterModel(model);
-                cache.remove(bundle);
-                LOGGER.info("Unregistered model: {}", model);
-            }
+        @SuppressWarnings("unchecked")
+        Set<ModelDescription> models = (Set<ModelDescription>) object;
+        for (ModelDescription model : models) {
+            unregisterModel(model);
+            LOGGER.info("Unregistered model: {}", model);
         }
     }
 
