@@ -58,6 +58,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
 
     private ModelRegistryService(BundleContext context) {
         super(context, Bundle.ACTIVE, null);
+        // all bundles listed here made problems because of Errors (e.g. VerifyErrors and IncompatibleClassChangeErrors)
         bundleFilter = new ArrayList<String>();
         bundleFilter.add("org.apache.xbean.finder");
         bundleFilter.add("org.ops4j.pax.url.mvn");
@@ -123,13 +124,13 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
      * the class couldn't be loaded.
      */
     private boolean isModelClass(String classname, Bundle bundle) {
-        LOGGER.debug("Check if model class: {}", classname);
+        LOGGER.debug("Check if class '{}' is a model class", classname);
         Class<?> clazz;
         try {
             clazz = bundle.loadClass(classname);
         } catch (ClassNotFoundException e) {
-            LOGGER.warn("Bundle could not load its own class: {} bundle: {}", classname, bundle.getSymbolicName());
-            LOGGER.debug("Exact error which happened: ", e);
+            LOGGER.warn("Bundle could not load its own class: '{}' bundle: '{}'", classname, bundle.getSymbolicName());
+            LOGGER.debug("Exact error: ", e);
             return false;
         } catch (NoClassDefFoundError e) {
             // ignore since this happens if bundle have optional imports
@@ -139,7 +140,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
             // and IncompatibleClassChangeErrors when trying to load a class. All classes which where found to throw
             // such errors, were put in the bundleFilter list.
             LOGGER.warn("Error while loading class: '{}' in bundle: '{}'", classname, bundle.getSymbolicName());
-            LOGGER.debug("Exact error which happened: ", e);
+            LOGGER.debug("Exact error: ", e);
             return false;
         }
         return clazz.isAnnotationPresent(Model.class);
