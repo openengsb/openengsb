@@ -130,6 +130,9 @@
         <configuration>
           <instructions>
             <Delegation-Annotations>true</Delegation-Annotations>
+            <Domain-Name>domainmodelsql</Domain-Name>
+            <Domain-Interface>org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain</Domain-Interface>
+            <DomainEvents-Interface>org.openengsb.domain.DomainModelSQL.DomainModelSQLDomainEvents</DomainEvents-Interface>            
           </instructions>
         </configuration>
       </plugin>      

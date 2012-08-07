@@ -131,6 +131,9 @@
         <configuration>
           <instructions>
             <Delegation-Annotations>true</Delegation-Annotations>
+            <Domain-Name>domainmodeloosource</Domain-Name>
+            <Domain-Interface>org.openengsb.domain.DomainModelOOSource.DomainModelOOSourceDomain</Domain-Interface>
+            <DomainEvents-Interface>org.openengsb.domain.DomainModelOOSource.DomainModelOOSourceDomainEvents</DomainEvents-Interface>                        
           </instructions>
         </configuration>
       </plugin>      
