@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal.xlink;
 
+import org.openengsb.core.services.xlink.XLinkUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 
