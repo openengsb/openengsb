@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.xlink;
+package org.openengsb.core.services.xlink;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

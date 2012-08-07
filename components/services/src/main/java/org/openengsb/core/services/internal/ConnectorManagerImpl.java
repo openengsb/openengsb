@@ -45,7 +45,7 @@ import java.util.Arrays;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
-import org.openengsb.core.services.internal.xlink.XLinkUtils;
+import org.openengsb.core.services.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
