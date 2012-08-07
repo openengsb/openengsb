@@ -99,7 +99,6 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
-
                         MethodCallMessage deserialize;
 
                         try {

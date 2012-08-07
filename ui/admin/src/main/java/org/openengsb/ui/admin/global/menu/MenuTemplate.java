@@ -76,7 +76,6 @@ public class MenuTemplate extends Panel {
     }
 
     private void initMainMenu() {
-
         if (MenuTemplate.getActiveIndex() == null || !avialableItems.contains(MenuTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
             MenuTemplate.menuIndex = "Index";

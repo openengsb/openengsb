@@ -169,7 +169,6 @@ public class ConnectorEditorPage extends BasePage {
     /*
      * create a new connector
      */
-
     public ConnectorEditorPage(String domainType, String connectorType) {
         this.domainType = domainType;
         this.connectorType = connectorType;

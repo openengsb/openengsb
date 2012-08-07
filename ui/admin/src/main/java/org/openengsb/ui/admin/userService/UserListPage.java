@@ -55,7 +55,6 @@ public class UserListPage extends BasePage {
             target.add(userDialogue);
             target.appendJavaScript("showModalDialogue('" + createUser.getMarkupId()
                     + "','" + getLocalizer().getString("add.user", this) + "',false,500,400);");
-
         }
 
         @Override

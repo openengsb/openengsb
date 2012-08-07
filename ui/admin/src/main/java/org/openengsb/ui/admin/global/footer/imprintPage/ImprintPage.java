@@ -33,7 +33,6 @@ public class ImprintPage extends BasePage {
 
         public MyImprintPanel(String id) {
             super(id);
-
         }
     }
 

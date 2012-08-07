@@ -63,7 +63,6 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
     }
 
     @Override
-
     protected MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
 

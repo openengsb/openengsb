@@ -54,9 +54,6 @@ public abstract class BasePage extends OpenEngSBPage {
         response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
         response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
-        /*
-         * add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator .getFavIcon()));
-         */
     }
 
     private void initCommonContent() {
