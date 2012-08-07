@@ -43,12 +43,12 @@ import org.osgi.framework.Version;
 
 public class TransformationEngineServiceTest {
     private TransformationEngineService service;
+    private BundleContext context;
 
     @Before
     public void init() {
         service = new TransformationEngineService();
         EKBModelGraph graph = EKBModelGraph.getInstance();
-        BundleContext context = null;
         ModelRegistryService registry = ModelRegistryService.getInstance(context);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
@@ -520,7 +520,7 @@ public class TransformationEngineServiceTest {
     @Test
     public void testIfTransformationPathChecksInactiveModels_shouldWork() {
         setupPathSearchEnvironment();
-        ModelRegistryService.getInstance(null).unregisterModel(getModelBDescription());
+        ModelRegistryService.getInstance(context).unregisterModel(getModelBDescription());
 
         ModelA model = new ModelA();
         model.setIdA("testid");
@@ -533,7 +533,7 @@ public class TransformationEngineServiceTest {
         } catch (Exception e) {
             notFound = true;
         }
-        ModelRegistryService.getInstance(null).registerModel(getModelBDescription());
+        ModelRegistryService.getInstance(context).registerModel(getModelBDescription());
         assertThat(result.getIdC(), is(model.getIdA()));
         assertThat(result.getTestC(), is(model.getTestA()));
         assertThat(notFound, is(true));

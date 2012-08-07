@@ -41,10 +41,10 @@ import org.osgi.framework.Version;
 public class ModelRegistryServiceTest {
     private ModelRegistryService registry;
     private ModelGraph graph;
+    private BundleContext context;
 
     @Before
     public void init() {
-        BundleContext context = null;
         registry = ModelRegistryService.getInstance(context);
         graph = mock(ModelGraph.class);
         registry.setEkbClassLoader(new EKBTestClassLoader());
