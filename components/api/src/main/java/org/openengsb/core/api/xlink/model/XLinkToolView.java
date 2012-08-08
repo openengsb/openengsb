@@ -76,7 +76,9 @@ public class XLinkToolView  implements Serializable {
         return hash;
     }
     
-    
+    public XLinkToolView(){
+        
+    }
 
     public XLinkToolView(String viewId, String name, Map<String, String> descriptions) {
         this.viewId = viewId;
