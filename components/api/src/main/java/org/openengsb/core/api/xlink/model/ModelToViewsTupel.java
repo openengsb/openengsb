@@ -26,6 +26,10 @@ public class ModelToViewsTupel {
     private ModelDescription description;
     private List<XLinkToolView> views;
 
+    public ModelToViewsTupel(){
+        
+    }
+    
     public ModelToViewsTupel(ModelDescription description, List<XLinkToolView> views) {
         this.description = description;
         this.views = views;
