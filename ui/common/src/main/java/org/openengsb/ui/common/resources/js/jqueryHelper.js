@@ -36,9 +36,9 @@
  
  });
  
- $(function() {
+$(function() {
 
-$(".dropdownTrigger").click(function() {
+  $(".dropdownTrigger").click(function() {
         var $actList = $(this).find("ul");
 
         var callback = function() {
@@ -51,6 +51,15 @@ $(".dropdownTrigger").click(function() {
             callback();
         }
     });
+  
+$(function () {
+
+	$("table.dataTable > tr").click(function(){
+		alert('serwas');
+		$actRow.find(".inlistButton").toggleClass(".hidden");
+	});
+	
+}); 
 
 $("body").click(function(event) {
 var $target = $(event.target);

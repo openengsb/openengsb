@@ -29,17 +29,17 @@ limitations under the License.
               <th class="size4of5"><wicket:message key="username.tableHead" /></th>
               <th><wicket:message key="action.tableHead" /></th>
             </tr>
-            <tr wicket:id="list">
+            <tr wicket:id="list" onmouseover="toggeInlistButtons(this)" onmouseout="toggeInlistButtons(this)">
               <td>
                 <span wicket:id="item.name">[service.name]</span>
                 <div wicket:id="confirm" />
               </td>
               <td>
-              <a href="UserService.html#" wicket:id="item.delete">
-                <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
+              <a href="UserService.html#" wicket:id="item.delete" class="inlistButton hidden">
+                <wicket:message key="delete.item.title" />
               </a>
-              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog">
-                <img wicket:message="title:update.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
+              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog inlistButton hidden">
+                <wicket:message key="update.item.title" />
               </a>
               </td>
             </tr>
