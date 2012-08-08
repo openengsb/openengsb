@@ -54,11 +54,13 @@ $(function() {
   
 $(function () {
 
-	$("table.dataTable > tr").click(function(){
-		alert('serwas');
-		$actRow.find(".inlistButton").toggleClass(".hidden");
+	$(".dataTable").find("tr").mouseenter(function(){
+		$(this).find(".inlistButton").toggleClass("hidden");
 	});
-	
+
+	$(".dataTable").find("tr").mouseleave(function(){
+		$(this).find(".inlistButton").toggleClass("hidden");
+	});
 }); 
 
 $("body").click(function(event) {

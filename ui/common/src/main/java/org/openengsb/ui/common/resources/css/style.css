@@ -204,6 +204,9 @@ input[type=submit] {
 	display: hidden;
 	}
 
+.bottomSpace{
+	margin-bottom: 15px;
+}
     
 #headerLogo {
     height: 34px;
@@ -344,7 +347,7 @@ input[type=submit] {
 }
 
 .inlistButton{
-    url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/inlistButton_background.png") repeat-x scroll 0 0 #EEEEEE
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/inlistButton_background.png") repeat-x scroll 0 0 #EEEEEE;
     border: 1px solid #999999;
     border-radius: 2px 2px 2px 2px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
