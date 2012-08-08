@@ -29,7 +29,7 @@ import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.services.internal.xlink.XLinkUtils;
+import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
 public class ToolChooserLogic {

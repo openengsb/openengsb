@@ -51,7 +51,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkLocalTool;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.services.internal.xlink.XLinkUtils;
+import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 import org.ops4j.pax.wicket.api.PaxWicketBean;

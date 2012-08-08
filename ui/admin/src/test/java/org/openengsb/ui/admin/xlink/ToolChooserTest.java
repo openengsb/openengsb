@@ -44,7 +44,7 @@ import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
 import org.openengsb.core.api.xlink.model.XLinkToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
-import org.openengsb.core.services.internal.xlink.XLinkUtils;
+import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.xlink.mocking.ExampleObjectOrientedModel;

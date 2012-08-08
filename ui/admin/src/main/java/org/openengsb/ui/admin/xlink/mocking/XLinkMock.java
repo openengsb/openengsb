@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.services.internal.xlink.XLinkUtils;
+import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
@@ -138,10 +140,10 @@ public final class XLinkMock {
         List<Object> matches = new ArrayList<Object>();
         matches.add(modelObjectsDestination);
         
-        Object serviceObject = osgiService.getService("service.pid="+connectorToCall, 100L);
+        Object serviceObject = osgiService.getService("(service.pid="+connectorToCall+")", 100L);
         if(serviceObject == null) throw new OpenXLinkException(connectorNotFound);
         LinkableDomain service = (LinkableDomain) serviceObject;
-
+        SecurityContext.login("admin", new Password("password"));
         service.openXLinks(matches, viewToCall);
     }
     
