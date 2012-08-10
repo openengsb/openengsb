@@ -135,9 +135,8 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
             // ignore since this happens if bundle have optional imports
             return false;
         } catch (Error e) {
-            // there are some bundles where this catch clause is needed. Some bundles throw errors like VerifyErrors
-            // and IncompatibleClassChangeErrors when trying to load a class. All classes which where found to throw
-            // such errors, were put in the bundleFilter list.
+            // if this catch clause is reached, then the bundle which caused this error need to be checked. There
+            // is something wrong with the setup of the bundle (e.g. double import of a library of different versions)
             LOGGER.warn("Error while loading class: '{}' in bundle: '{}'", classname, bundle.getSymbolicName());
             LOGGER.debug("Exact error: ", e);
             return false;
