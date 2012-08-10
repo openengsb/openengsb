@@ -38,16 +38,18 @@ import org.openengsb.core.ekb.impl.internal.graph.EKBModelGraph;
 import org.openengsb.core.ekb.impl.internal.models.ModelA;
 import org.openengsb.core.ekb.impl.internal.models.ModelB;
 import org.openengsb.core.ekb.impl.internal.models.ModelC;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 public class TransformationEngineServiceTest {
     private TransformationEngineService service;
+    private BundleContext context;
 
     @Before
     public void init() {
         service = new TransformationEngineService();
         EKBModelGraph graph = EKBModelGraph.getInstance();
-        ModelRegistryService registry = ModelRegistryService.getInstance();
+        ModelRegistryService registry = ModelRegistryService.getInstance(context);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
         service.setModelRegistry(registry);
@@ -518,7 +520,7 @@ public class TransformationEngineServiceTest {
     @Test
     public void testIfTransformationPathChecksInactiveModels_shouldWork() throws Exception {
         setupPathSearchEnvironment();
-        ModelRegistryService.getInstance().unregisterModel(getModelBDescription());
+        ModelRegistryService.getInstance(context).unregisterModel(getModelBDescription());
 
         ModelA model = new ModelA();
         model.setIdA("testid");
@@ -531,7 +533,7 @@ public class TransformationEngineServiceTest {
         } catch (Exception e) {
             notFound = true;
         }
-        ModelRegistryService.getInstance().registerModel(getModelBDescription());
+        ModelRegistryService.getInstance(context).registerModel(getModelBDescription());
         assertThat(result.getIdC(), is(model.getIdA()));
         assertThat(result.getTestC(), is(model.getTestA()));
         assertThat(notFound, is(true));
