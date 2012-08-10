@@ -34,18 +34,16 @@ import org.openengsb.core.ekb.impl.internal.models.ModelA;
 import org.openengsb.core.ekb.impl.internal.models.TestAnnotation;
 import org.openengsb.core.ekb.impl.internal.models.TestModel;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Version;
 
 public class ModelRegistryServiceTest {
     private ModelRegistryService registry;
     private ModelGraph graph;
-    private BundleContext context;
 
     @Before
     public void init() {
-        registry = ModelRegistryService.getInstance(context);
+        registry = ModelRegistryService.getInstance();
         graph = mock(ModelGraph.class);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);
@@ -69,15 +67,46 @@ public class ModelRegistryServiceTest {
     @Test
     public void testIfModelRegistryOnlyAddsModels_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(true);
-        registry.addingBundle(event.getBundle(), event);
+        when(event.getType()).thenReturn(BundleEvent.STARTED);
+        registry.bundleChanged(event);
         verify(graph).addModel(getCorrectModel());
         verify(graph, never()).addModel(getIncorrectModel());
     }
     
     @Test
+    public void testIfModelRegistryRemovesModels_shouldWork() throws Exception {
+        BundleEvent event = getMockedBundleEvent(true);
+        when(event.getType()).thenReturn(BundleEvent.STOPPED);
+        registry.bundleChanged(event);
+        verify(graph).removeModel(getCorrectModel());
+        verify(graph, never()).removeModel(getIncorrectModel());
+    }
+    
+    @Test
+    public void testIfModelRegistryIgnoresOtherEventTypes_shouldWork() throws Exception {
+        BundleEvent event = getMockedBundleEvent(true);
+        when(event.getType()).thenReturn(BundleEvent.INSTALLED);
+        registry.bundleChanged(event);
+        verify(graph, never()).removeModel(getCorrectModel());
+        verify(graph, never()).removeModel(getIncorrectModel());
+    }
+    
+    @Test
     public void testIfModelRegistryCanWorkWithEmptyBundles_shouldWork() throws Exception {
         BundleEvent event = getMockedBundleEvent(false);
-        registry.addingBundle(event.getBundle(), event);
+        when(event.getType()).thenReturn(BundleEvent.STARTED);
+        registry.bundleChanged(event);
+    }
+    
+    @Test
+    public void testIfModelRegistryRegistersAndUnregisteresModels_shouldWork() throws Exception {
+        BundleEvent event = getMockedBundleEvent(true);
+        when(event.getType()).thenReturn(BundleEvent.STARTED);
+        registry.bundleChanged(event);
+        when(event.getType()).thenReturn(BundleEvent.STOPPED);
+        registry.bundleChanged(event);
+        verify(graph).addModel(getCorrectModel());
+        verify(graph).removeModel(getCorrectModel());
     }
     
     @Test

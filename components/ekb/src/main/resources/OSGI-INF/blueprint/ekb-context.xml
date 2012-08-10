@@ -54,7 +54,6 @@
   
   <!-- Model Registry -->
   <bean id="modelRegistryService" class="org.openengsb.core.ekb.impl.internal.ModelRegistryService" factory-method="getInstance">
-    <argument ref="blueprintBundleContext" />
     <property name="ekbClassLoader" ref="classLoader" />
     <property name="graphDb" ref="graphDB" />
   </bean>
