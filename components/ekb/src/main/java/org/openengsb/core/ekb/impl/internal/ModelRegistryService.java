@@ -69,6 +69,9 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
         bundleFilter.add("org.apache.servicemix.bundles.jaxb-xjc");
         bundleFilter.add("org.ops4j.pax.web.pax-web-extender-whiteboard");
         bundleFilter.add("org.ops4j.pax.web.pax-web-extender-war");
+        bundleFilter.add("org.apache.shiro.core");
+        bundleFilter.add("org.apache.shiro.web");
+        bundleFilter.add("org.apache.shiro.spring");
     }
 
     @Override
