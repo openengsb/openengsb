@@ -41,7 +41,7 @@ public class QueryInterfaceService implements QueryInterface {
     private EDBConverter edbConverter;
 
     private static final Pattern MAP_OUT_OF_STRING_QUERY_PATTERN = Pattern
-        .compile("(\\w+\\:\\w+(\\s(and)\\s\\w+\\:\\w+)*)?");
+        .compile("(\\w+\\:\\\"[^\\\"]*\\\"(\\s(and)\\s\\w+\\:\\\"[^\\\"]*\\\")*)?");
 
     @Override
     public <T> T getModel(Class<T> model, String oid) {
@@ -133,7 +133,7 @@ public class QueryInterfaceService implements QueryInterface {
         String[] elements = query.split(" and ");
         for (String element : elements) {
             String[] parts = element.split(":");
-            map.put(parts[0], parts[1]);
+            map.put(parts[0], parts[1].substring(1, parts[1].length() - 1));
         }
         return map;
     }
