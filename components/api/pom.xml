@@ -99,6 +99,7 @@
               net.sf.cglib.proxy; resolution:="optional",
               net.sf.cglib.reflect; resolution:="optional", *
             </Import-Package>
+            <Provide-Models>true</Provide-Models>
           </instructions>
         </configuration>
       </plugin>
