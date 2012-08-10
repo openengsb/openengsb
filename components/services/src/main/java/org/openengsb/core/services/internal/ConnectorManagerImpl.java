@@ -74,7 +74,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
                             + "factory-service was missing", configuration.getConnectorId());
                     continue;
                 } catch (Exception e) {
-                    LOGGER.error("connector {}  that has been loaded from persistence could not be created because of an unexpected Error", e);
+                    LOGGER.error("connector {}  that has been loaded from persistence could not be created because of"
+                            + "an unexpected Error", e);
                     break;
                 }
             }
