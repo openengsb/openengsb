@@ -25,10 +25,12 @@ import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.openengsb.core.api.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -93,7 +95,9 @@ public class MockedBundle implements Bundle {
 
     @Override
     public Dictionary<String, String> getHeaders() {
-        return null;
+        Dictionary<String, String> headers = new Hashtable<String, String>();
+        headers.put(Constants.PROVIDE_MODELS_HEADER, "true");
+        return headers;
     }
 
     @Override
@@ -143,7 +147,7 @@ public class MockedBundle implements Bundle {
 
     @Override
     public String getSymbolicName() {
-        return null;
+        return "org.openengsb.core.ekb.impl.internal.MockedBundle";
     }
 
     @Override
