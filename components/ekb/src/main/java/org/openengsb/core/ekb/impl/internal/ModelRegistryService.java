@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -47,7 +48,6 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
     private static ModelRegistryService instance;
     private EKBClassLoader ekbClassLoader;
     private ModelGraph graphDb;
-    private List<String> bundleFilter;
 
     public static ModelRegistryService getInstance(BundleContext context) {
         if (instance == null) {
@@ -58,17 +58,6 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
 
     private ModelRegistryService(BundleContext context) {
         super(context, Bundle.ACTIVE, null);
-        // all bundles listed here made problems because of Errors (e.g. VerifyErrors and IncompatibleClassChangeErrors)
-        bundleFilter = new ArrayList<String>();
-        bundleFilter.add("org.apache.xbean.finder");
-        bundleFilter.add("org.ops4j.pax.url.mvn");
-        bundleFilter.add("org.eclipse.jetty.aggregate.jetty-all-server");
-        bundleFilter.add("org.apache.cxf.bundle");
-        bundleFilter.add("PAXEXAM-PROBE");
-        bundleFilter.add("wrap_mvn_junit_junit");
-        bundleFilter.add("org.apache.servicemix.bundles.jaxb-xjc");
-        bundleFilter.add("org.ops4j.pax.web.pax-web-extender-whiteboard");
-        bundleFilter.add("org.ops4j.pax.web.pax-web-extender-war");
     }
 
     @Override
@@ -106,14 +95,9 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
      * Returns true if the given bundle should be skipped in the model search process. Returns false otherwise.
      */
     private boolean shouldSkipBundle(Bundle bundle) {
-        for (String filter : bundleFilter) {
-            if (bundle.getSymbolicName().contains(filter)) {
-                return true;
-            }
-        }
-        return false;
+        return bundle.getHeaders().get(Constants.PROVIDE_MODELS_HEADER) == null;
     }
-    
+
     /**
      * Searches the bundle for model classes and return a set of them.
      */
