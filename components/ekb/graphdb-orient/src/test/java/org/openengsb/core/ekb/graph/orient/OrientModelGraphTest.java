@@ -179,6 +179,4 @@ public class OrientModelGraphTest {
         assertThat(possible1, is(true));
         assertThat(possible2, is(false));
     }
-
-    // TODO: fill this class with tests
 }

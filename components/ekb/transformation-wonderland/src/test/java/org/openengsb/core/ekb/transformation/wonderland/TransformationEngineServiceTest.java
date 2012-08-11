@@ -121,7 +121,7 @@ public class TransformationEngineServiceTest {
         assertThat(result.getIdB(), is("test1"));
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
-    }   
+    }
 
     @Test
     public void testForwardTransformationsWithTemporaryField_shouldWork() throws Exception {
