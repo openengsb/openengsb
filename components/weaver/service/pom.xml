@@ -103,9 +103,6 @@
               <descriptors>
                 <descriptor>${project.basedir}/src/descriptors/agent.xml</descriptor>
               </descriptors>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
               <archive>
                 <manifestEntries>
                   <Premain-Class>org.openengsb.core.weaver.service.internal.ModelAgent</Premain-Class>
