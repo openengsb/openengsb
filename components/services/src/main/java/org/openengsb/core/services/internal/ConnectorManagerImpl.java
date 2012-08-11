@@ -48,7 +48,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
 
-    private ExecutorService executor = Executors.newFixedThreadPool(5);
+    private ExecutorService executor = Executors.newCachedThreadPool();
     private Semaphore semaphore;
 
     class ConnectorInstaller implements Runnable {
