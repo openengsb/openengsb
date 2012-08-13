@@ -28,7 +28,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -368,21 +367,16 @@ public class DefaultJPADao implements JPADao {
                 return 0;
             }
         }
-    }
+    }    
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException {
         synchronized (entityManager) {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
-
-            Root from = criteriaQuery.from(JPAObject.class);
-            Path oid = from.get("oid");
-            Expression maxExpression = criteriaBuilder.max(from.get("timestamp"));
-
-            criteriaQuery.multiselect(oid, maxExpression);
-
+            CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
+            
+            Root<JPAObject> from = criteriaQuery.from(JPAObject.class);
             List<Predicate> predicates = new ArrayList<Predicate>();
             for (Map.Entry<String, Object> value : values.entrySet()) {
                 Join<?, ?> join = from.join("entries");
@@ -392,41 +386,21 @@ public class DefaultJPADao implements JPADao {
 
                 predicates.add(criteriaBuilder.and(predicate1, predicate2));
             }
-            predicates.add(criteriaBuilder.le(from.get("timestamp"), timestamp.longValue()));
             predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
-
+            
+            Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
+            Root subFrom = subquery.from(JPAObject.class);
+            Expression<Long> maxExpression = criteriaBuilder.max(subFrom.get("timestamp"));
+            subquery.select(maxExpression);
+            Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
+            Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), timestamp);
+            subquery.where(criteriaBuilder.and(p1, p2));
+            
+            predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
-            criteriaQuery.groupBy(oid);
-
-            TypedQuery<Object> typedQuery = entityManager.createQuery(criteriaQuery);
-
-            List<JPAObject> result = new ArrayList<JPAObject>();
-            List listActual = typedQuery.getResultList();
-
-            for (int i = 0; i < listActual.size(); i++) {
-                Object[] array = (Object[]) listActual.get(i);
-                String tempOid = (String) array[0];
-                long tempTime = (Long) array[1];
-
-                CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-                Root f = query.from(JPAObject.class);
-
-                criteriaBuilder.max(f.get("timestamp"));
-                query.select(maxExpression);
-                Predicate p1 = criteriaBuilder.equal(f.get("oid"), tempOid);
-                Predicate p2 = criteriaBuilder.gt(f.get("timestamp"), tempTime);
-                Predicate p3 = criteriaBuilder.le(f.get("timestamp"), timestamp);
-                query.where(criteriaBuilder.and(p1, p2, p3));
-
-                TypedQuery<Long> r = entityManager.createQuery(query);
-                Long l = r.getSingleResult();
-
-                if (l == 0) {
-                    result.add(getJPAObject(tempOid, tempTime));
-                }
-            }
-
-            return result;
+            
+            TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
+            return typedQuery.getResultList();
         }
     }
 
