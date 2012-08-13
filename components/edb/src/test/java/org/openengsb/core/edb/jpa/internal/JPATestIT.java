@@ -254,7 +254,6 @@ public class JPATestIT {
 
             time4 = db.commit(ci);
         } catch (Exception ex) {
-            ex.printStackTrace();
             fail("getHistory failed, didn't even get to try getLog: " + ex.toString());
         }
 
