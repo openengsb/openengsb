@@ -32,8 +32,6 @@ import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 
-/**
- */
 public final class XLinkMock {
     
     private XLinkMock() {
@@ -55,59 +53,27 @@ public final class XLinkMock {
             String viewToCall,
             OsgiUtilsService osgiService) throws ClassNotFoundException, 
             OsgiServiceNotAvailableException, ClassCastException, OpenXLinkException {
-        
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "transformAndOpenMatch was called:");
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelClass - " + sourceModelClass);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "sourceModelVersion - " + sourceModelVersion);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "soureObject - " + soureObject);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "destinationModelClass - " + destinationModelClass);
-        Logger.getLogger(XLinkMock.class.getName()).log(
-                Level.INFO, "destinationModelVersion - " +  destinationModelVersion);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
-
-        
         if (isTransformationPossible(sourceModelClass, 
             sourceModelVersion, destinationModelClass, destinationModelVersion)) {
-            //Object modelObjectSource = queryEngine(sourceModelClass, sourceModelVersion, sourceModelIdentifierMap, osgiService);
-            Object modelObjectsDestination = transformModelObject(sourceModelClass, 
-                    sourceModelVersion, destinationModelClass, destinationModelVersion, soureObject, osgiService);
-            String cId = connectorToCall;
-            openPotentialMatches(modelObjectsDestination, cId, viewToCall, osgiService);
+            List<Object> modelObjectsDestination = transformModelObject(sourceModelClass, 
+                    destinationModelClass, destinationModelVersion, soureObject, osgiService);
+            if(!modelObjectsDestination.isEmpty()) {
+                openPotentialMatches(modelObjectsDestination, connectorToCall, viewToCall, osgiService);
+            }
         }else{
             throw new OpenXLinkException(noTransformationPossible);
         }
     }
-    
-    /*private static Object queryEngine(
-            String sourceModelClass, 
-            String sourceModelVersion, 
-            Map<String, String> sourceModelIdentifierMap,
-            OsgiUtilsService osgiService) throws ClassNotFoundException {
-        Object toReturn = null;
-        if(sourceModelClass.equals(sqlModel)){
-            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
-            sqlcreate.setTableName(sourceModelIdentifierMap.get("tableName"));
-            toReturn = sqlcreate;
-        }else if(sourceModelClass.equals(ooModel)){
-            OOClassModel ooclass = (OOClassModel) XLinkUtils.createInstanceOfModelClass(sourceModelClass, sourceModelVersion, osgiService);
-            ooclass.setClassName(sourceModelIdentifierMap.get("className"));
-            toReturn = ooclass;
-        }
-        return toReturn;
-    }*/
-    private static Object transformModelObject(
-            String sourceModelClass, 
-            String sourceModelVersion, 
+ 
+    private static List<Object> transformModelObject(
+            String sourceModelClass,  
             String destinationModelClass, 
             String destinationModelVersion, 
             Object modelObjectSource,
             OsgiUtilsService osgiService) throws ClassNotFoundException {
         if(modelObjectSource == null)return null;
         Object resultObject = null;
-        
         Class destinationClass = XLinkUtils.getClassOfOpenEngSBModel(destinationModelClass, destinationModelVersion, osgiService);
-        
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
             OOClassModel ooclass = (OOClassModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
@@ -125,26 +91,26 @@ public final class XLinkMock {
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
             resultObject = sqlSource;
         }
-        return resultObject;
+        List<Object> matches = new ArrayList<Object>();
+        matches.add(resultObject);
+        return matches;
     }
     private static void openPotentialMatches(
-            Object modelObjectsDestination, 
+            List<Object> modelObjectsDestination, 
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
             ClassCastException, OpenXLinkException{
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "openPotentialMatches was called:");
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "modelObjectsDestination - " + modelObjectsDestination);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "connectorToCall - " + connectorToCall);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.INFO, "viewToCall - " + viewToCall);
-        List<Object> matches = new ArrayList<Object>();
-        matches.add(modelObjectsDestination);
-        
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "openPotentialMatches was called:");
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "modelObjectsDestination - " + modelObjectsDestination.get(0));
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "connectorToCall - " + connectorToCall);
+        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "viewToCall - " + viewToCall);
+
         Object serviceObject = osgiService.getService("(service.pid="+connectorToCall+")", 100L);
         if(serviceObject == null) throw new OpenXLinkException(connectorNotFound);
         LinkableDomain service = (LinkableDomain) serviceObject;
         SecurityContext.login("admin", new Password("password"));
-        service.openXLinks(matches, viewToCall);
+        service.openXLinks(modelObjectsDestination, viewToCall);
     }
     
     public static  boolean isTransformationPossible(
@@ -158,77 +124,6 @@ public final class XLinkMock {
         }
         //todo implement real check here
         return true;
-    }    
-
-    /*    
-     *  String toolName_SQLCreateModel = "Tool SQLCreateModel";
-        String connectorId_SQLCreateModel = "test3+test3+test3";
-        
-        String toolName_OOClassModel = "Tool OOClassModel";
-        String connectorId_OOClassModel = "test4+test4+test4";
-     * 
-     * private void registerTool_SQLCreateModel(String hostId, String toolName, String connectorId) {
-        
-        ConnectorDescription connectorDescription =
-            new ConnectorDescription("domainmodelsql", "virtual-test-connector", new HashMap<String, String>(),
-                new HashMap<String, Object>());
-        
-        serviceManager.createWithId(connectorId, connectorDescription); 
-        
-         List<ModelToViewsTupel> modelsToViews_SQLCreateModel 
-            = new ArrayList<ModelToViewsTupel>();  
-        String viewId_SQLCreateModel_1 = "viewId_SQLCreateModel_1";
-        String viewId_SQLCreateModel_2 = "viewId_SQLCreateModel_2";
-        
-        HashMap<String, String> descriptions_SQLCreateModel  = new HashMap<String, String>();
-        descriptions_SQLCreateModel.put("en", "This is an SQLCreateModel view.");
-        descriptions_SQLCreateModel.put("de", "Das ist eine SQLCreateModel view.");
-        
-        List<XLinkToolView> views_SQLCreateModel = new ArrayList<XLinkToolView>();
-        views_SQLCreateModel.add(new XLinkToolView(viewId_SQLCreateModel_1, "View 1", descriptions_SQLCreateModel));
-        views_SQLCreateModel.add(new XLinkToolView(viewId_SQLCreateModel_2, "View 2", descriptions_SQLCreateModel));          
-        
-        modelsToViews_SQLCreateModel.add(
-                new ModelToViewsTupel(
-                        new ModelDescription(
-                                SQLCreateModel.class.getName(),
-                                "3.0.0.SNAPSHOT")
-                        , views_SQLCreateModel));    
-        
-        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews_SQLCreateModel);           
-        
-    }
-    
-    private void registerTool_OOClassModel(String hostId, String toolName, String connectorId) {
-        
-        ConnectorDescription connectorDescription =
-            new ConnectorDescription("domainmodeloosource", "virtual-test-connector", new HashMap<String, String>(),
-                new HashMap<String, Object>());
-        
-        serviceManager.createWithId(connectorId, connectorDescription); 
-        
-        List<ModelToViewsTupel> modelsToViews_OOClassModel 
-            = new ArrayList<ModelToViewsTupel>();  
-        String viewId_OOClassModel_1 = "viewId_OOClassModel_1";
-        String viewId_OOClassModel_2 = "viewId_OOClassModel_2";
-        
-        HashMap<String, String> descriptions_OOClassModel  = new HashMap<String, String>();
-        descriptions_OOClassModel.put("en", "This is an OOClassModel view.");
-        descriptions_OOClassModel.put("de", "Das ist eine OOClassModel view.");
-        
-        List<XLinkToolView> views_OOClassModel = new ArrayList<XLinkToolView>();
-        views_OOClassModel.add(new XLinkToolView(viewId_OOClassModel_1, "View 1", descriptions_OOClassModel));
-        views_OOClassModel.add(new XLinkToolView(viewId_OOClassModel_2, "View 2", descriptions_OOClassModel));  
-        
-        modelsToViews_OOClassModel.add(
-                new ModelToViewsTupel(
-                        new ModelDescription(
-                                OOClassModel.class.getName(),
-                                "3.0.0.SNAPSHOT")
-                        , views_OOClassModel));     
-        
-        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews_OOClassModel);           
-        
-    }      */
+    }   
     
 }
