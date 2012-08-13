@@ -25,7 +25,7 @@ import org.openengsb.core.api.model.ModelDescription;
 /**
  * Modelclass to store a registration, of a remote tool, to XLink.
  */
-public class XLinkToolRegistration {
+public class RemoteToolRegistration {
     
     /**
      * HostId of the client, provided during registration.
@@ -52,7 +52,7 @@ public class XLinkToolRegistration {
      */
     private XLinkTemplate xLinkTemplate;
 
-    public XLinkToolRegistration(String hostId, String connectorId, String toolName, 
+    public RemoteToolRegistration(String hostId, String connectorId, String toolName, 
             Map<ModelDescription, List<RemoteToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
