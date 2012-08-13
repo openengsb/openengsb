@@ -19,7 +19,6 @@ package org.openengsb.core.ekb.impl.internal.converter;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -95,47 +95,22 @@ public class EDBConverter {
         if (!checkEDBObjectModelType(object, model)) {
             return null;
         }
-        Object instance = null;
-        try {
-            instance = model.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("InstantiationException while creating instance of model "
-                    + model.getName(), e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("IllegalAccessException while creating instance of model "
-                    + model.getName(), e);
-        }
-
+        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
-            if (propertyDescriptor.getWriteMethod() == null) {
+            if (propertyDescriptor.getWriteMethod() == null
+                    || propertyDescriptor.getName().equals("openEngSBModelTail")) {
                 continue;
             }
-            Method setterMethod = propertyDescriptor.getWriteMethod();
             Object value = getValueForProperty(propertyDescriptor, object);
-            if (value != null) {
-                invokeSetterMethod(setterMethod, instance, value);
+            Class<?> propertyClass = propertyDescriptor.getPropertyType();
+            if (propertyClass.isPrimitive()) {
+                entries.add(new OpenEngSBModelEntry(propertyDescriptor.getName(), value, ClassUtils
+                    .primitiveToWrapper(propertyClass)));
+            } else {
+                entries.add(new OpenEngSBModelEntry(propertyDescriptor.getName(), value, propertyClass));
             }
         }
-        return instance;
-    }
-
-    /**
-     * Invokes a setter method of the given object with the given parameter.
-     */
-    private void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
-        try {
-            setterMethod.invoke(instance, parameter);
-        } catch (IllegalArgumentException ex) {
-            LOGGER.error("illegal argument exception when invoking {} with argument {}",
-                setterMethod.getName(), parameter);
-        } catch (IllegalAccessException ex) {
-            LOGGER.error("illegal access exception when invoking {} with argument {}",
-                setterMethod.getName(), parameter);
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            LOGGER.error("invocatin target exception when invoking {} with argument {}",
-                setterMethod.getName(), parameter);
-        }
+        return ModelUtils.createModel(model, entries);
     }
 
     /**
