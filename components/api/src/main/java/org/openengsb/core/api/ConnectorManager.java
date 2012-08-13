@@ -24,7 +24,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 
 /**
  * Manages connector instances.
@@ -144,5 +144,5 @@ public interface ConnectorManager {
      * Returns a list of ToolRegistrations to a given hostId. 
      * If the hostId is unknown, returns an empty list.
      */
-    List<XLinkToolRegistration> getXLinkRegistration(String hostId);
+    List<RemoteToolRegistration> getXLinkRegistration(String hostId);
 }
