@@ -81,19 +81,14 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         assertThat(taskboxService.getOpenTasks().size(), is(0));
 
         workflowService.startFlow("TaskDemoWorkflow", parameterMap);
-        System.out.println("workflow started, getting processId");
         assertNotNull(processBag.getProcessId());
-        System.out.println("got processId");
         assertThat(taskboxService.getOpenTasks().size(), is(1));
-        System.out.println("opentasks is 1");
 
         Task task = taskboxService.getOpenTasks().get(0);
-        System.out.println("got task");
         assertEquals(task.getProcessId(), processBag.getProcessId());
         assertEquals(task.getProperty("test"), "test");
         assertEquals(task.getTaskType(), "demo");
         assertNotNull(task.getTaskId());
-        System.out.println("task correct, finishing");
         taskboxService.finishTask(task);
         assertTrue(taskboxService.getOpenTasks().size() == 0);
     }

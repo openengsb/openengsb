@@ -160,6 +160,5 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     private void authenticate(String user, String password) {
         Subject subject = SecurityUtils.getSubject();
         subject.login(new OpenEngSBAuthenticationToken(user, new Password(password)));
-        System.out.println(subject.isAuthenticated());
     }
 }

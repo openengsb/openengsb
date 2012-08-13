@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.impl.internal.converter;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -312,10 +313,15 @@ public class EDBConverter {
             if (entry.getValue() == null) {
                 continue;
             } else if (entry.getType().equals(FileWrapper.class)) {
-                FileWrapper wrapper = (FileWrapper) entry.getValue();
-                String content = Base64.encodeBase64String(wrapper.getContent());
-                object.put(entry.getKey(), content);
-                object.put(entry.getKey() + ".filename", wrapper.getFilename());
+                try {
+                    FileWrapper wrapper = (FileWrapper) entry.getValue();
+                    String content = Base64.encodeBase64String(wrapper.getContent());
+                    object.put(entry.getKey(), content);
+                    object.put(entry.getKey() + ".filename", wrapper.getFilename());
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
             } else if (OpenEngSBModel.class.isAssignableFrom(entry.getType())) {
                 OpenEngSBModel temp = (OpenEngSBModel) entry.getValue();
                 String subOid = convertSubModel(temp, objects, info);
