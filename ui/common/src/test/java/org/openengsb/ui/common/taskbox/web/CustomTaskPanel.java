@@ -34,8 +34,11 @@ import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.model.Task;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomTaskPanel extends Panel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomTaskPanel.class);
     private static final long serialVersionUID = -1163492145404543013L;
 
     private Task task;
@@ -59,11 +62,11 @@ public class CustomTaskPanel extends Panel {
 
         form.add(new Label("taskid", new PropertyModel<String>(task, "taskId")));
         form.add(new TextField<String>("taskname", new PropertyModel<String>(task, "name")).setRequired(true).add(
-                StringValidator.minimumLength(2)));
+            StringValidator.minimumLength(2)));
         form.add(new TextField<String>("tasktype", new PropertyModel<String>(task, "taskType")).setRequired(true).add(
             StringValidator.minimumLength(2)));
         form.add(new Label("taskcreationTimestamp",
-                task.getTaskCreationTimestamp() != null ? task.getTaskCreationTimestamp().toString() : "N/A"));
+            task.getTaskCreationTimestamp() != null ? task.getTaskCreationTimestamp().toString() : "N/A"));
         form.add(new TextArea<String>("taskdescription", new PropertyModel<String>(task, "description"))
             .setRequired(true));
 
@@ -73,9 +76,8 @@ public class CustomTaskPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
-                    // setResponsePage(TaskOverviewPage.class);
                 } catch (WorkflowException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
                 }
             }
 
