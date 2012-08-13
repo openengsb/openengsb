@@ -732,7 +732,19 @@ public class JPATestIT {
         object.put("test", "test");
         db.commitEDBObjects(null, objects, null);
     }
-    
+
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsUpdateVerstionConflict2_shouldThrowException() throws Exception {
+        EDBObject object = new EDBObject("/commit/test/update/3");
+        db.commitEDBObjects(Arrays.asList(object), null, null);
+        EDBObject receive1 = db.getObject("/commit/test/update/3");
+        EDBObject receive2 = db.getObject("/commit/test/update/3");
+        receive1.put("test1", "test1");
+        receive2.put("test1", "test2");
+        db.commitEDBObjects(null, Arrays.asList(receive1), null);
+        db.commitEDBObjects(null, Arrays.asList(receive2), null);
+    }
+
     @Test
     public void testCommitEDBObjectsDelete_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/delete/1");
