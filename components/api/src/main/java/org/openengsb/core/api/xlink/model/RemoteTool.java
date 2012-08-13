@@ -22,12 +22,12 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Modelclass to transfere information about a tool that is registered for XLink.
- * Carries the ConnectorId of the tool and the views it offers for XLink, represented
- * as a HashMap of keyNames and short descriptions. The HostId of the tool is not 
- * needed, since this information is only sent to tools of the same host.
+ * Modelclass to transfere information about remote tools, registered for XLink.
+ * <br/><br/>
+ * Carries the ToolName, the ConnectorId of a tool and the views it offers for XLink.
+ * A remote Host should only receive information about it´s local tools.
  */
-public class XLinkLocalTool implements Serializable {
+public class RemoteTool implements Serializable {
     
     // @extract-start XLinkRegisteredTool
     /**
@@ -36,21 +36,21 @@ public class XLinkLocalTool implements Serializable {
     private String id;
     
     /**
-     * Human readable name of the tool
+     * Human readable name of the tool, may be null
      */
     private String toolName;
     
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
-    private List<XLinkToolView> availableViews;
+    private List<RemoteToolView> availableViews;
     
     // @extract-end
 
-    public XLinkLocalTool() {
+    public RemoteTool() {
     }
 
-    public XLinkLocalTool(String id, String toolName, List<XLinkToolView> availableViews) {
+    public RemoteTool(String id, String toolName, List<RemoteToolView> availableViews) {
         this.id = id;
         this.toolName = toolName;
         this.availableViews = availableViews;
@@ -59,11 +59,11 @@ public class XLinkLocalTool implements Serializable {
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */    
-    public List<XLinkToolView> getAvailableViews() {
+    public List<RemoteToolView> getAvailableViews() {
         return availableViews;
     }
 
-    public void setAvailableViews(List<XLinkToolView> availableViews) {
+    public void setAvailableViews(List<RemoteToolView> availableViews) {
         this.availableViews = availableViews;
     }
 
