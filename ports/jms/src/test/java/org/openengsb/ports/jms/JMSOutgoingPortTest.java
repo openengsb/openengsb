@@ -36,7 +36,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
-import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OutgoingPortImpl;
@@ -74,12 +73,6 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setup() throws Exception {
-        MethodResult methodResult = new MethodResult("42");
-        MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
-        String writeValueAsString = new ObjectMapper().writeValueAsString(methodResultMessage);
-
-        System.out.println(writeValueAsString);
-
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
         Mockito.when(jmsTemplateFactory.createJMSTemplate(any(DestinationUrl.class))).thenReturn(jmsTemplate);

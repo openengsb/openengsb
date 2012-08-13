@@ -240,7 +240,7 @@ public final class ManipulationUtils {
             m.setBody(builder.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(builder.toString());
+            System.err.println(builder.toString());
         }
         clazz.addMethod(m);
     }

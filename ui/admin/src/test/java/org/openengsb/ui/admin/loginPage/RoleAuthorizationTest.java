@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,12 +91,6 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         tester.debugComponentTrees();
         assertThat(tester.getComponentFromLastRenderedPage("header"), notNullValue());
         assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems"), notNullValue());
-        ListItem<?> componentFromLastRenderedPage =
-            (ListItem<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:1");
-        System.out.println(componentFromLastRenderedPage);
-        Component component = componentFromLastRenderedPage.get(0);
-        System.out.println(component);
-
         assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems:1:link"), notNullValue());
         tester.clickLink("header:headerMenuItems:1:link");
         tester.assertRenderedPage(TestClient.class);
