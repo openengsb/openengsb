@@ -147,7 +147,13 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      * Investigates the version of an EDBObject and checks if a conflict can be found.
      */
     private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
-        Integer modelVersion = (Integer) newObject.get(EDBConstants.MODEL_VERSION);
+        Object version = newObject.get(EDBConstants.MODEL_VERSION);
+        Integer modelVersion;
+        if (version.getClass().equals(Integer.class)) {
+            modelVersion = (Integer) version;
+        } else {
+            modelVersion = Integer.valueOf((String) version);
+        }
         String oid = newObject.getOID();
 
         if (modelVersion != null) {
