@@ -62,6 +62,7 @@ public class QueryInterfaceServiceTest {
         edbObject.put("sub", "suboid1");
         edbObject.put("subs0", "suboid2");
         edbObject.put("subs1", "suboid3");
+        edbObject.put("number", 42);
         edbObject.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
 
         EDBObject edbObjectImpl = new EDBObject("testoidimpl");
@@ -85,6 +86,7 @@ public class QueryInterfaceServiceTest {
         mapTest.put("map1.value", "valueB");
         mapTest.put("map2.key", "keyC");
         mapTest.put("map2.value", "valueC");
+        mapTest.put("number", 42);
         mapTest.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
 
         EDBObject subObject1 = new EDBObject("suboid1");
