@@ -488,7 +488,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
         Object version = newObject.get(EDBConstants.MODEL_VERSION);
         Integer modelVersion;
-        if (version.getClass().equals(Integer.class)) {
+        if (version == null) {
+            modelVersion = null;
+        } else if (version.getClass().equals(Integer.class)) {
             modelVersion = (Integer) version;
         } else {
             modelVersion = Integer.valueOf((String) version);
