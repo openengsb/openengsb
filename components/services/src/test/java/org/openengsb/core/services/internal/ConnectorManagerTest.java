@@ -56,9 +56,9 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
@@ -280,7 +280,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -292,7 +292,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -314,7 +314,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -333,7 +333,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertFalse(serviceManager.getXLinkRegistration(hostId).isEmpty());
@@ -344,10 +344,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
-        XLinkTemplate template 
-            = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
         assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
         assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
@@ -360,7 +359,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String toolName = "myTool";
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        ModelToViewsTupel[] modelsToViews
+        ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         XLinkTemplate template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
@@ -381,29 +380,29 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelToViewsTupel[] modelsToViews 
+        ModelToViewsTuple[] modelsToViews 
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
         assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
     }       
     
-    private ModelToViewsTupel[] createModelViewsMap(String toolName) {
+    private ModelToViewsTuple[] createModelViewsMap(String toolName) {
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        ModelToViewsTupel[] modelsToViews 
-            = new ModelToViewsTupel[1];  
+        ModelToViewsTuple[] modelsToViews 
+            = new ModelToViewsTuple[1];  
         HashMap<String, String> descriptions  = new HashMap<String, String>();
-        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+        List<RemoteToolView> views = new ArrayList<RemoteToolView>();
         
         descriptions.put("en", "This is a demo view.");
         descriptions.put("de", "Das ist eine demonstration view.");
         views = new ArrayList();
-        views.add(new XLinkToolView(viewId1, toolName, descriptions));
-        views.add(new XLinkToolView(viewId2, toolName, descriptions));        
+        views.add(new RemoteToolView(viewId1, toolName, descriptions));
+        views.add(new RemoteToolView(viewId2, toolName, descriptions));        
         
         modelsToViews[0] = 
-                new ModelToViewsTupel(
+                new ModelToViewsTuple(
                         new ModelDescription(
                                 ExampleObjectOrientedModel.class.getName(),
                                 "3.0.0.SNAPSHOT")
