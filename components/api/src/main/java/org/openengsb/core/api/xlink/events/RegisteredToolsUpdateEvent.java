@@ -20,7 +20,7 @@ package org.openengsb.core.api.xlink.events;
 import java.util.List;
 
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.RemoteTool;
 
 /**
  * Event, indicating that the list of tools registered for XLinking, at the host,
@@ -32,17 +32,17 @@ public class RegisteredToolsUpdateEvent extends Event {
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */
-    List<XLinkLocalTool> registeredTools;
+    List<RemoteTool> registeredTools;
 
     /**
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */    
-    public List<XLinkLocalTool> getRegisteredTools() {
+    public List<RemoteTool> getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<XLinkLocalTool> registeredTools) {
+    public void setRegisteredTools(List<RemoteTool> registeredTools) {
         this.registeredTools = registeredTools;
     }
     

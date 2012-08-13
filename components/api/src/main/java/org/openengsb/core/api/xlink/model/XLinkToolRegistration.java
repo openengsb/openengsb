@@ -23,40 +23,47 @@ import java.util.Map;
 import org.openengsb.core.api.model.ModelDescription;
 
 /**
- * Simple Modelclass to store a registration to XLink
+ * Modelclass to store a registration, of a remote tool, to XLink.
  */
 public class XLinkToolRegistration {
     
     /**
-     * HostId of the client, provided during registration
+     * HostId of the client, provided during registration.
      */
     private String hostId;
+    
     /**
      * Id of the connector, identifying the tool
      */    
     private String connectorId;
+    
     /**
-     * Human readable name of the tool
+     * Human readable name of the tool, may be null.
      */    
     private String toolName;
+    
     /**
      * Model/View associations, provided by the client during registration
      */
-    private Map<ModelDescription, List<XLinkToolView>> modelsToViews;
+    private Map<ModelDescription, List<RemoteToolView>> modelsToViews;
+    
     /**
      * Template that was generated and returned to the client during registration
      */
     private XLinkTemplate xLinkTemplate;
 
     public XLinkToolRegistration(String hostId, String connectorId, String toolName, 
-            Map<ModelDescription, List<XLinkToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
+            Map<ModelDescription, List<RemoteToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;
         this.modelsToViews = modelsToViews;
         this.xLinkTemplate = xLinkTemplate;
     }
-
+    
+    /**
+     * Id of the connector, identifying the tool
+     */   
     public String getConnectorId() {
         return connectorId;
     }
@@ -64,7 +71,10 @@ public class XLinkToolRegistration {
     public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
-
+    
+    /**
+     * HostId of the client, provided during registration.
+     */
     public String getHostId() {
         return hostId;
     }
@@ -72,15 +82,21 @@ public class XLinkToolRegistration {
     public void setHostId(String hostId) {
         this.hostId = hostId;
     }
-
-    public Map<ModelDescription, List<XLinkToolView>> getModelsToViews() {
+    
+    /**
+     * Model/View associations, provided by the client during registration
+     */
+    public Map<ModelDescription, List<RemoteToolView>> getModelsToViews() {
         return modelsToViews;
     }
 
-    public void setModelsToViews(Map<ModelDescription, List<XLinkToolView>> modelsToViews) {
+    public void setModelsToViews(Map<ModelDescription, List<RemoteToolView>> modelsToViews) {
         this.modelsToViews = modelsToViews;
     }
-
+    
+    /**
+     * Human readable name of the tool, may be null.
+     */  
     public String getToolName() {
         return toolName;
     }
@@ -88,7 +104,10 @@ public class XLinkToolRegistration {
     public void setToolName(String toolName) {
         this.toolName = toolName;
     }
-
+    
+    /**
+     * Template that was generated and returned to the client during registration
+     */
     public XLinkTemplate getxLinkTemplate() {
         return xLinkTemplate;
     }
