@@ -19,6 +19,10 @@ package org.openengsb.core.workflow.drools.internal;
 import org.drools.KnowledgeBase;
 import org.openengsb.core.workflow.api.RuleManager;
 
+/**
+ * Extension of the RuleManager interface for this JBoss Drools-based implementations.
+ * It just provides an additional method to translate the managed rules into a drools-rulebase
+ */
 public interface DroolsRuleManager extends RuleManager {
 
 
