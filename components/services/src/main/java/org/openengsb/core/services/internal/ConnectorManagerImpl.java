@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
-import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -231,7 +231,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            ModelToViewsTupel[] modelsToViews){
+            ModelToViewsTuple[] modelsToViews){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
