@@ -131,7 +131,6 @@ public class EDBConverter {
         } catch (IllegalAccessException ex) {
             LOGGER.error("illegal access exception when invoking {} with argument {}",
                 setterMethod.getName(), parameter);
-            ex.printStackTrace();
         } catch (InvocationTargetException ex) {
             LOGGER.error("invocatin target exception when invoking {} with argument {}",
                 setterMethod.getName(), parameter);
