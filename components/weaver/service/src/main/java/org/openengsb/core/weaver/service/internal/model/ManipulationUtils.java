@@ -159,7 +159,7 @@ public final class ManipulationUtils {
         method.setBody("{ return new ArrayList(openEngSBModelTail.values()); }");
         clazz.addMethod(method);
     }
-    
+
     /**
      * Adds the setOpenEngSBModelTail method to the class.
      */
@@ -236,12 +236,7 @@ public final class ManipulationUtils {
             builder.append(handleField(field, clazz));
         }
         builder.append("return elements; } ");
-        try {
-            m.setBody(builder.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(builder.toString());
-        }
+        m.setBody(builder.toString());
         clazz.addMethod(m);
     }
 
