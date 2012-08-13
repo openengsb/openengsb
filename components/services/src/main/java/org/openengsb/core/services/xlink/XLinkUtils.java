@@ -37,17 +37,19 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
+import org.openengsb.core.api.xlink.model.XLinkTemplateKeyNames;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.osgi.framework.Version;
 
 /**
- * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
- * and how valid XLink-Urls are generated.
+ * Static util class for xlink, defining XLink keyNames, UtilMethods and DemonstrationMethods. 
+ * Provides the preparaition of XLinkTemplates and demonstrates how 
+ * valid XLink-Urls are generated.
  */
 public final class XLinkUtils {
 
@@ -88,44 +90,45 @@ public final class XLinkUtils {
     // @extract-start XLinkUtilsPrepareTemplate
 
     /**
-     * Demonstrates how the baseUrl of a XLinkTemplate may be prepared before it is transmitted to the client. 
-     * Every baseUrl must contain the expirationDate as a GET-Paramter, before it is 
-     * transmited to the connector. The models are naively assigned to the views.
-     * The contextIdKeyName is added to the template, must be set by the tool to 
-     * determine the OpenEngSB context of the XLink
+     * Prepares the XLinkTemplate before it is transmitted to the remote tool. 
+     * <br/><br/>
+     * The baseUrl is prepared and the KeyNames are added. <br/>
+     * The models are assigned to the views (yet in an naive order). <br/>
      * The ConnectorId/value combination and the ViewId-Key are also added to the Template to enable 
      * Local Switching.
      */
     public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            Map<ModelDescription, List<XLinkToolView>> modelsToViews, 
+            Map<ModelDescription, List<RemoteToolView>> modelsToViews, 
             int expirationDays, 
-            List<XLinkLocalTool> registeredTools) {
+            List<RemoteTool> registeredTools) {
         baseUrl +=
             "?" + XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
         String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
         Map<String, ModelDescription> viewToModels = assigneModelsToViews(modelsToViews);
         return new XLinkTemplate(baseUrl, 
                 viewToModels, 
-                XLINK_MODELCLASS_KEY,
-                XLINK_VERSION_KEY,
-                registeredTools,
-                XLINK_CONTEXTID_KEY, 
+                registeredTools,        
                 connectorIdParam, 
-                XLINK_VIEW_KEY,
-                XLINK_IDENTIFIER_KEY);
+                new XLinkTemplateKeyNames(
+                        XLINK_MODELCLASS_KEY, 
+                        XLINK_VERSION_KEY, 
+                        XLINK_IDENTIFIER_KEY, 
+                        XLINK_CONTEXTID_KEY, 
+                        XLINK_VIEW_KEY)
+                );
     }
     
     /**
      * Naive model to view assignment. 
-     * Current model is choosen for the first occurence of the view.
+     * The current model is choosen for the first occurence of the view.
      */
     private static Map<String, ModelDescription> assigneModelsToViews(Map<ModelDescription, 
-            List<XLinkToolView>> modelsToViews) {
+            List<RemoteToolView>> modelsToViews) {
         HashMap<String, ModelDescription> viewsToModels = new HashMap<String, ModelDescription>();
         for (ModelDescription modelInfo : modelsToViews.keySet()) {
-            List<XLinkToolView> currentViewList = modelsToViews.get(modelInfo);
-            for (XLinkToolView view : currentViewList) {
+            List<RemoteToolView> currentViewList = modelsToViews.get(modelInfo);
+            for (RemoteToolView view : currentViewList) {
                 if (!viewsToModels.containsKey(view.getViewId())) {
                     viewsToModels.put(view.getViewId(), modelInfo);
                 }
@@ -148,24 +151,34 @@ public final class XLinkUtils {
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrl
     /**
-     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, the Modelclass and a List of values, 
-     * corresponding to the List of keyFields of the Modelclass. 
-     * Depending on the contained Keys, the XLink is useable for local switching, or not.
+     * For demonstration ONLY method.
+     * <br/><br/>
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, 
+     * a ModelDescription and an Identifying Object, serialized with JSON.
+     * This Method does not prepare the url for local switching.
      */
     public static String generateValidXLinkUrl(XLinkTemplate template, 
             ModelDescription modelInformation, 
             String contextId,
             String objectAsJsonString) {
         String completeUrl = template.getBaseUrl();    
-        completeUrl += "&" + template.getModelClassKey() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
-        completeUrl += "&" + template.getModelVersionKey() + "=" + urlEncodeParameter(modelInformation.getVersionString());
-        completeUrl += "&" + template.getContextIdKeyName() + "=" + urlEncodeParameter(contextId);   
-        completeUrl += "&" + template.getIdentifierKeyName() + "=" + urlEncodeParameter(objectAsJsonString);
+        completeUrl += "&" + template.getKeyNames().getModelClassKeyName() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
+        completeUrl += "&" + template.getKeyNames().getModelVersionKeyName() + "=" + urlEncodeParameter(modelInformation.getVersionString());
+        completeUrl += "&" + template.getKeyNames().getContextIdKeyName() + "=" + urlEncodeParameter(contextId);   
+        completeUrl += "&" + template.getKeyNames().getIdentifierKeyName() + "=" + urlEncodeParameter(objectAsJsonString);
         return completeUrl;
     }
 
     // @extract-end
     
+    /**
+     * For demonstration ONLY method.
+     * <br/><br/>
+     * Fetches the class object to the given ModelDescription.
+     * Creates an emtpy instance to the fetched Classobject and set List of values to
+     * sequentially to the fields of the empty instance. 
+     * Serializes this object to JSON and returns the String.
+     */
     public static String serializeModelObjectToJSON(
             List<Object> identifierValues,
             ModelDescription modelInformation,
@@ -184,6 +197,10 @@ public final class XLinkUtils {
         return mapper.writeValueAsString(modelOfView);        
     }
     
+    /**
+     * Sets the value, of the field defined in the OpenEngSBModelEntry, the the given model, 
+     * with reflection.
+     */
     public static void setValueOfModel(Object model, OpenEngSBModelEntry entry, Object value) throws 
             NoSuchFieldException, 
             IllegalArgumentException, 
@@ -194,16 +211,28 @@ public final class XLinkUtils {
         field.set(model, value);    
     }
       
+    /**
+     * Returns an empty instance to a given Classobject.
+     * Returns null, if an error happens during the instantiation.
+     */
     public static Object createEmptyInstanceOfModelClass(Class clazzObject) {
         return createInstanceOfModelClass(clazzObject,
                 new ArrayList<OpenEngSBModelEntry>());
     }  
     
+    /**
+     * Returns an instance to a given Classobject and a List of OpenEngSBModelEntries.
+     * Returns null, if an error happens during the instantiation.
+     */
     public static Object createInstanceOfModelClass(Class clazzObject,
             List<OpenEngSBModelEntry> entries) {
         return ModelUtils.createModel(clazzObject, entries);
     }      
     
+    /**
+     * Returns the Classobject to a given clazzString and a given version.
+     * Throws a ClassNotFoundException if the Class/Version pair is not found.
+     */
     public static Class getClassOfOpenEngSBModel(String clazz, 
             String version,
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
@@ -216,9 +245,11 @@ public final class XLinkUtils {
 
     // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
     /**
-     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, the Modelclass and a List of values, 
-     * corresponding to the List of keyFields of the Modelclass. The connectorId and viewId parameters are added 
-     * in the end, to mark the link for Local Switching
+     * For demonstration ONLY method.
+     * <br/><br/>
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate, 
+     * a ModelDescription and an Identifying Object, serialized with JSON.
+     * The connectorId and viewId parameters are added, to mark the url for Local Switching
      */
     public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template,
             ModelDescription modelInformation, 
@@ -228,12 +259,17 @@ public final class XLinkUtils {
         String xLink = generateValidXLinkUrl(template, modelInformation, contextId, objectAsJsonString);
         xLink += "&" 
                 + template.getConnectorId() + "&" 
-                + template.getViewIdKeyName() + "=" + urlEncodeParameter(viewIdValue);
+                + template.getKeyNames().getViewIdKeyName() + "=" + urlEncodeParameter(viewIdValue);
         return xLink;
     }
 
     // @extract-end
     
+    /**
+     * Returns a Calendarobject to a given dateString in the Format 'DATEFORMAT'.
+     * If the given String is of the wrong format, null is returned.
+     * @see XLinkUtils#DATEFORMAT
+     */
     public static Calendar dateStringToCalendar(String dateString) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat(DATEFORMAT);
@@ -245,6 +281,9 @@ public final class XLinkUtils {
         return calendar;
     }
     
+    /**
+     * Encodes a given Parameter in UTF-8. 
+     */
     private static String urlEncodeParameter(String parameter) {
         try {
             return URLEncoder.encode(parameter, "UTF-8");
@@ -254,11 +293,16 @@ public final class XLinkUtils {
         return parameter;
     }
     
-    public static List<XLinkToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
-        List<XLinkToolView> viewsOfRegistration = new ArrayList<XLinkToolView>();
-        Map<ModelDescription, List<XLinkToolView>> modelsToViews = registration.getModelsToViews();
-        for (List<XLinkToolView> views : modelsToViews.values()) {
-            for (XLinkToolView view : views) {
+    /**
+     * Returns a distinct List of all RemoteToolViews, contained in a RemoteToolRegistration.
+     * @see RemoteToolView
+     * @see XLinkToolRegistration
+     */
+    public static List<RemoteToolView> getViewsOfRegistration(XLinkToolRegistration registration) {
+        List<RemoteToolView> viewsOfRegistration = new ArrayList<RemoteToolView>();
+        Map<ModelDescription, List<RemoteToolView>> modelsToViews = registration.getModelsToViews();
+        for (List<RemoteToolView> views : modelsToViews.values()) {
+            for (RemoteToolView view : views) {
                 if (!viewsOfRegistration.contains(view)) {
                     viewsOfRegistration.add(view);
                 }
@@ -267,11 +311,18 @@ public final class XLinkUtils {
         return viewsOfRegistration;
     }
     
-    public static List<XLinkLocalTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
-        List<XLinkLocalTool> tools = new ArrayList<XLinkLocalTool>();
+    /**
+     * Returns a list of RemoteTools to a list of RemoteToolRegistrations.
+     * The list of RemoteTool can be sent to a remote host. A RemoteToolRegistration
+     * is for internal usage only.
+     * @see XLinkToolRegistration
+     * @see RemoteTool
+     */
+    public static List<RemoteTool> getLocalToolFromRegistrations(List<XLinkToolRegistration> registrations) {
+        List<RemoteTool> tools = new ArrayList<RemoteTool>();
         for (XLinkToolRegistration registration : registrations) {
-            XLinkLocalTool newLocalTools 
-                = new XLinkLocalTool(
+            RemoteTool newLocalTools 
+                = new RemoteTool(
                         registration.getConnectorId(), 
                         registration.getToolName(), 
                         getViewsOfRegistration(registration));

@@ -35,7 +35,7 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.services.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
@@ -237,11 +237,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
             }
         }       
     }
-    
-    private boolean isRegistered(String id, String hostId) {
-        XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
-        return xlinkRegistrations.containsKey(key);
-    }
 
     @Override
     public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
@@ -256,11 +251,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return registrationsOfHostId;
     }
     
-    private Map<ModelDescription, List<XLinkToolView>> convertToMapWithModelDescriptionAsKey(
-            List<ModelToViewsTupel> modelsToViews){
-        Map<ModelDescription, List<XLinkToolView>> convertedMap 
-                = new HashMap<ModelDescription, List<XLinkToolView>>();
-        for (ModelToViewsTupel tupel : modelsToViews) {
+    private Map<ModelDescription, List<RemoteToolView>> convertToMapWithModelDescriptionAsKey(
+            List<ModelToViewsTuple> modelsToViews){
+        Map<ModelDescription, List<RemoteToolView>> convertedMap 
+                = new HashMap<ModelDescription, List<RemoteToolView>>();
+        for (ModelToViewsTuple tupel : modelsToViews) {
             convertedMap.put(tupel.getDescription(), tupel.getViews());
         }        
         return convertedMap;
@@ -271,9 +266,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            ModelToViewsTupel[] modelsToViewsArray) {
-        List<ModelToViewsTupel> modelsToViews = Arrays.asList(modelsToViewsArray);
-        Map<ModelDescription, List<XLinkToolView>> convertedModelsToViews 
+            ModelToViewsTuple[] modelsToViewsArray) {
+        List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
+        Map<ModelDescription, List<RemoteToolView>> convertedModelsToViews 
                 = convertToMapWithModelDescriptionAsKey(modelsToViews);
         List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
         XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(

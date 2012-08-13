@@ -35,9 +35,9 @@ import static org.mockito.Mockito.isA;
 
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
 
 public class XLinkUtilsTest {
@@ -45,8 +45,8 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<ModelDescription, List<XLinkToolView>> modelsToViews 
-        = new HashMap<ModelDescription, List<XLinkToolView>>();  
+    private static HashMap<ModelDescription, List<RemoteToolView>> modelsToViews 
+        = new HashMap<ModelDescription, List<RemoteToolView>>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
@@ -58,9 +58,13 @@ public class XLinkUtilsTest {
     /**Descriptions in different languages for a view*/    
     private static HashMap<String, String> descriptions  = new HashMap<String, String>();
     /**Composed viewdata as a list.*/
-    private static List<XLinkToolView> views = new ArrayList<XLinkToolView>();
+    private static List<RemoteToolView> views = new ArrayList<RemoteToolView>();
     /**Id of the Testcontext at the OpenEngSB*/
     private String contextId = "ExampleContext";
+    /**Modelclass to use for Testing*/
+    private static Class exampleModelClass = ExampleObjectOrientedModel.class;
+    /**Version of ModelClass*/
+    private static String exampleModelClassVersion = "3.0.0.SNAPSHOT";
     
     private static OsgiUtilsService serviceFinder;
     
@@ -69,17 +73,15 @@ public class XLinkUtilsTest {
         descriptions.put("en", "This is a demo view.");
         descriptions.put("de", "Das ist eine demonstration view.");
         views = new ArrayList();
-        views.add(new XLinkToolView(viewId1, toolName, descriptions));
-        views.add(new XLinkToolView(viewId2, toolName, descriptions));
-        modelsToViews.put(new ModelDescription(ExampleObjectOrientedModel.class.getName(), "3.0.0.SNAPSHOT"), views);
+        views.add(new RemoteToolView(viewId1, toolName, descriptions));
+        views.add(new RemoteToolView(viewId2, toolName, descriptions));
+        modelsToViews.put(new ModelDescription(exampleModelClass.getName(), exampleModelClassVersion), views);
     
-        //mocking
         serviceFinder = mock(OsgiUtilsService.class);
         ModelRegistry registry = mock(ModelRegistry.class);
         when(serviceFinder.getService(ModelRegistry.class)).thenReturn(registry);
         
-        Class clazz = ExampleObjectOrientedModel.class;
-        when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz); 
+        when(registry.loadModel(isA(ModelDescription.class))).thenReturn(exampleModelClass); 
         
     }
     // @extract-end
@@ -90,7 +92,7 @@ public class XLinkUtilsTest {
     /**Days until the XLink expires*/
     private int expiresInDays = 3;
     /**List with already registered tools*/
-    private List<XLinkLocalTool> registeredTools = null;
+    private List<RemoteTool> registeredTools = null;
     // @extract-end
 
     // @extract-start XLinkUtilsTestPrepareTemplate
@@ -104,7 +106,7 @@ public class XLinkUtilsTest {
 
         assertTrue(xLinkTemplate.getViewToModels().containsKey(viewId1));
         assertTrue(xLinkTemplate.getViewToModels().get(viewId1)
-                .getModelClassName().equals(ExampleObjectOrientedModel.class.getName()));
+                .getModelClassName().equals(exampleModelClass.getName()));
     }
 
     // @extract-end
