@@ -21,6 +21,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -77,7 +78,7 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveInternalModelId();
     }
-    
+
     /**
      * Performs the getOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
@@ -86,7 +87,7 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).getOpenEngSBModelTail();
     }
-    
+
     /**
      * Performs the setOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
@@ -95,7 +96,7 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         ((OpenEngSBModel) model).setOpenEngSBModelTail(entries);
     }
-    
+
     /**
      * Creates a model of the given type and uses the list of OpenEngSBModelEntries as initialization data.
      */
@@ -104,16 +105,8 @@ public final class ModelUtils {
         try {
             T instance = model.newInstance();
             for (OpenEngSBModelEntry entry : entries) {
-                try {
-                    String setterName = getSetterName(entry.getKey());
-                    Method method = model.getMethod(setterName, entry.getType());
-                    method.invoke(instance, entry.getValue());
-                } catch (NoSuchMethodException e) {
+                if (!tryToSetValueThroughField(entry, instance) && !tryToSetValueThroughSetter(entry, instance)) {
                     ((OpenEngSBModel) instance).addOpenEngSBModelEntry(entry);
-                } catch (IllegalArgumentException e) {
-                    LOGGER.error("IllegalArgumentException while trying to set values for the new model.", e);
-                } catch (InvocationTargetException e) {
-                    LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
                 }
             }
             return instance;
@@ -128,6 +121,48 @@ public final class ModelUtils {
     }
 
     /**
+     * Tries to set the value of an OpenEngSBModelEntry to its corresponding field of the model. Returns true if the
+     * field can be set, returns false if not.
+     */
+    private static boolean tryToSetValueThroughField(OpenEngSBModelEntry entry, Object instance)
+        throws IllegalAccessException {
+        try {
+            Field field = instance.getClass().getDeclaredField(entry.getKey());
+            field.setAccessible(true);
+            field.set(instance, entry.getValue());
+            field.setAccessible(false);
+            return true;
+        } catch (NoSuchFieldException e) {
+            // if no field with this name exist, try to use the corresponding setter
+        } catch (SecurityException e) {
+            // if a security manager is installed which don't allow this change of a field value, try
+            // to use the corresponding setter
+        }
+        return false;
+    }
+
+    /**
+     * Tries to set the value of an OpenEngSBModelEntry to its corresponding setter of the model. Returns true if the
+     * setter can be called, returns false if not.
+     */
+    private static boolean tryToSetValueThroughSetter(OpenEngSBModelEntry entry, Object instance)
+        throws IllegalAccessException {
+        try {
+            String setterName = getSetterName(entry.getKey());
+            Method method = instance.getClass().getMethod(setterName, entry.getType());
+            method.invoke(instance, entry.getValue());
+            return true;
+        } catch (NoSuchMethodException e) {
+            // if there exist no such method, then it is an entry meant for the model tail
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("IllegalArgumentException while trying to set values for the new model.", e);
+        } catch (InvocationTargetException e) {
+            LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
+        }
+        return false;
+    }
+
+    /**
      * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
     public static void checkIfObjectIsModel(Object model) {
@@ -135,7 +170,7 @@ public final class ModelUtils {
             throw new IllegalArgumentException("The given object is no model");
         }
     }
-    
+
     /**
      * Returns true if the given object is an OpenEngSBModel, returns false if not.
      */
@@ -151,14 +186,14 @@ public final class ModelUtils {
             throw new IllegalArgumentException("The given class is no model");
         }
     }
-    
+
     /**
      * Returns true if the given class is an OpenEngSBModel, returns false if not.
      */
     public static boolean isClassModel(Class<?> clazz) {
         return OpenEngSBModel.class.isAssignableFrom(clazz);
     }
-    
+
     /**
      * Returns all property descriptors for a given class.
      */
