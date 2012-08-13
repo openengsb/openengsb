@@ -34,7 +34,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 
 import org.slf4j.Logger;
@@ -53,8 +53,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
-    private Map<XLinkRegistrationKey, XLinkToolRegistration> xlinkRegistrations
-        = new HashMap<XLinkRegistrationKey, XLinkToolRegistration>();
+    private Map<XLinkRegistrationKey, RemoteToolRegistration> xlinkRegistrations
+        = new HashMap<XLinkRegistrationKey, RemoteToolRegistration>();
     private String xLinkBaseUrl;
     private int xLinkExpiresIn = 3;
 
@@ -239,8 +239,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
-        List<XLinkToolRegistration> registrationsOfHostId = new ArrayList<XLinkToolRegistration>();
+    public List<RemoteToolRegistration> getXLinkRegistration(String hostId) {
+        List<RemoteToolRegistration> registrationsOfHostId = new ArrayList<RemoteToolRegistration>();
         synchronized (xlinkRegistrations) {
             for (XLinkRegistrationKey key : xlinkRegistrations.keySet()) {
                 if (key.getHostId().equals(hostId)) {
@@ -270,29 +270,29 @@ public class ConnectorManagerImpl implements ConnectorManager {
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, List<RemoteToolView>> convertedModelsToViews 
                 = convertToMapWithModelDescriptionAsKey(modelsToViews);
-        List<XLinkToolRegistration> registrations = getXLinkRegistration(hostId);
+        List<RemoteToolRegistration> registrations = getXLinkRegistration(hostId);
         XLinkTemplate template = XLinkUtils.prepareXLinkTemplate(
                 xLinkBaseUrl, 
                 id, 
                 convertedModelsToViews, 
                 xLinkExpiresIn, 
                 XLinkUtils.getLocalToolFromRegistrations(registrations));
-        XLinkToolRegistration newRegistration;
+        RemoteToolRegistration newRegistration;
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             newRegistration
-                = new XLinkToolRegistration(hostId, id, toolName, convertedModelsToViews, template);
+                = new RemoteToolRegistration(hostId, id, toolName, convertedModelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
         notifyAboutRegistration(newRegistration);
         return template;
     }
     
-    private void notifyAboutRegistration(XLinkToolRegistration newRegistration) {
+    private void notifyAboutRegistration(RemoteToolRegistration newRegistration) {
         //TODO notify other tools of Host about registration here
     }
     
-    private void notifyAboutDeRegistration(XLinkToolRegistration oldRegistration) {
+    private void notifyAboutDeRegistration(RemoteToolRegistration oldRegistration) {
         //TODO notify other tools of Host about deregistration here
     }
 
