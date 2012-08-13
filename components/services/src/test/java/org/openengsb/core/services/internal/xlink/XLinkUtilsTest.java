@@ -39,6 +39,7 @@ import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
+import org.openengsb.core.services.xlink.XLinkDemonstrationUtils;
 
 public class XLinkUtilsTest {
 
@@ -119,8 +120,8 @@ public class XLinkUtilsTest {
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
 
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String modelAsJsonString = XLinkUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
+        String modelAsJsonString = XLinkDemonstrationUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);
+        String xLinkUrl = XLinkDemonstrationUtils.generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
         
         //(encoded) xLinkUrl = 
         //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
@@ -150,8 +151,8 @@ public class XLinkUtilsTest {
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String modelAsJsonString = XLinkUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);     
-        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
+        String modelAsJsonString = XLinkDemonstrationUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);     
+        String xLinkUrl = XLinkDemonstrationUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
                 modelInformation, contextId, viewId1, modelAsJsonString);
 
         //(encoded) xLinkUrl =
