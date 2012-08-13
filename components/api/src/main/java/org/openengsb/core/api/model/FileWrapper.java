@@ -21,13 +21,15 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  * The FileWrapper class is needed for the proper sending of File objects (with Jason).
@@ -38,20 +40,20 @@ public class FileWrapper {
     private String filename;
     private int buffer = 2048;
     private String tempDir = System.getProperty("java.io.tmpdir") + File.separator + "OpenEngSBModelTemp";
-    
+
     public FileWrapper() {
     }
-    
+
     public FileWrapper(File file) {
         this.file = file;
     }
-    
+
     public FileWrapper(byte[] content, String filename) {
         this.content = content;
         this.filename = filename;
     }
 
-    public File returnFile() {
+    public File returnFile() throws IOException {
         if (file == null) {
             deserialize();
         }
@@ -64,17 +66,17 @@ public class FileWrapper {
         filename = null;
     }
 
-    public byte[] getContent() {
+    public byte[] getContent() throws IOException {
         if (content == null) {
             serialize();
         }
         return content;
     }
-    
+
     public void setContent(byte[] content) {
         this.content = content;
     }
-    
+
     public void setFilename(String filename) {
         this.filename = filename;
     }
@@ -86,7 +88,7 @@ public class FileWrapper {
         return filename;
     }
 
-    public void serialize() {
+    public void serialize() throws IOException {
         File zipFile = zipFile(file);
         FileInputStream fileInputStream = null;
         try {
@@ -96,49 +98,25 @@ public class FileWrapper {
 
             this.filename = file.getName();
             this.content = data;
-            zipFile.delete();
-        } catch (FileNotFoundException ex) {
-            System.err.println("File " + file.getAbsolutePath() + " was not found");
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            System.err.println("IOException while reading from file " + file.getAbsolutePath());
-            ex.printStackTrace();
+            FileUtils.forceDelete(zipFile);
         } finally {
-            try {
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-            } catch (IOException ex) {
-                System.err.println("Error while closing InputStream");
-                ex.printStackTrace();
+            if (fileInputStream != null) {
+                IOUtils.closeQuietly(fileInputStream);
             }
         }
         file = null;
     }
 
-    public void deserialize() {
+    public void deserialize() throws IOException {
         File f = new File(tempDir + File.separator + filename + ".zip");
         FileOutputStream stream = null;
         try {
             f.createNewFile();
             stream = new FileOutputStream(f);
-            stream.write(content);
+            IOUtils.write(content, stream);
             stream.flush();
-            stream.close();
-        } catch (FileNotFoundException ex) {
-            System.err.println("File " + f.getAbsolutePath() + " could not be created");
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            System.err
-                .println("IOException while writing the byte array of the wrapper to file " + f.getAbsolutePath());
-            ex.printStackTrace();
         } finally {
-            try {
-                stream.close();
-            } catch (IOException ex) {
-                System.err.println("Error while closing FileOutputStream");
-                ex.printStackTrace();
-            }
+            IOUtils.closeQuietly(stream);
         }
 
         file = unzipFile(f, filename);
@@ -146,7 +124,7 @@ public class FileWrapper {
         filename = null;
     }
 
-    private File zipFile(File file) {
+    private File zipFile(File file) throws IOException {
         File result = new File(tempDir + File.separator + file.getName() + ".zip");
         result.getParentFile().mkdir();
         ZipOutputStream out = null;
@@ -173,65 +151,47 @@ public class FileWrapper {
                 }
                 bis.close();
             }
-        } catch (FileNotFoundException ex) {
-            System.err.println("File " + file.getAbsolutePath() + " was not found");
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            System.err.println("IOException while zipping file " + file.getAbsolutePath());
-            ex.printStackTrace();
         } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                System.err.println("Error while closing ZipOutputStream");
-                ex.printStackTrace();
-            }
+            IOUtils.closeQuietly(out);
         }
         return result;
     }
 
-    private File unzipFile(File file, String fileName) {
+    private File unzipFile(File file, String fileName) throws IOException {
         String parentPath = file.getParentFile().getAbsolutePath();
         File result = new File(parentPath + File.separator + fileName);
-        try {
-            BufferedOutputStream dest = null;
-            BufferedInputStream is = null;
-            ZipEntry entry;
-            ZipFile zipfile = new ZipFile(file);
-            int entryCount = zipfile.size();
-            @SuppressWarnings("rawtypes")
-            Enumeration e = zipfile.entries();
-            String elementPath = "";
-            if (entryCount == 1) {
-                elementPath = parentPath;
-            } else {
-                result.mkdir();
-                elementPath = parentPath + File.separator + fileName;
-            }
 
-            while (e.hasMoreElements()) {
-                entry = (ZipEntry) e.nextElement();
-                is = new BufferedInputStream(zipfile.getInputStream(entry));
-                int count;
-                byte[] data = new byte[buffer];
-                FileOutputStream fos = new FileOutputStream(elementPath + File.separator + entry.getName());
-                dest = new BufferedOutputStream(fos, buffer);
-                while ((count = is.read(data, 0, buffer)) != -1) {
-                    dest.write(data, 0, count);
-                }
-                dest.flush();
-                dest.close();
-                is.close();
-            }
-            file.delete();
-        } catch (FileNotFoundException ex) {
-            System.err.println("File " + file.getAbsolutePath() + " was not found");
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            System.err.println("IOException while unzipping file " + file.getAbsolutePath());
-            ex.printStackTrace();
+        BufferedOutputStream dest = null;
+        BufferedInputStream is = null;
+
+        ZipEntry entry;
+        ZipFile zipfile = new ZipFile(file);
+        int entryCount = zipfile.size();
+        @SuppressWarnings("rawtypes")
+        Enumeration e = zipfile.entries();
+        String elementPath = "";
+        if (entryCount == 1) {
+            elementPath = parentPath;
+        } else {
+            result.mkdir();
+            elementPath = parentPath + File.separator + fileName;
         }
+
+        while (e.hasMoreElements()) {
+            entry = (ZipEntry) e.nextElement();
+            is = new BufferedInputStream(zipfile.getInputStream(entry));
+            int count;
+            byte[] data = new byte[buffer];
+            FileOutputStream fos = new FileOutputStream(elementPath + File.separator + entry.getName());
+            dest = new BufferedOutputStream(fos, buffer);
+            while ((count = is.read(data, 0, buffer)) != -1) {
+                dest.write(data, 0, count);
+            }
+            dest.flush();
+            dest.close();
+            is.close();
+        }
+        FileUtils.forceDelete(file);
         return result;
     }
 }
-
