@@ -33,7 +33,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,7 +222,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public List<XLinkToolRegistration> getXLinkRegistration(String hostId) {
+    public List<RemoteToolRegistration> getXLinkRegistration(String hostId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
