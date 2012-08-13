@@ -22,20 +22,23 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Modelclass of a view of a certain tool. Every information about a view must be
- * sent by the tool. Must provide an id, a human readable name and a descriptions 
+ * Modelclass of a xlink view, of a remote tool. 
+ * Viewinformation is sent by a remote tool during a XLink registration. 
+ * Must provide an unique viewId, a human readable name and descriptions 
  * in different languages.
  */
-public class XLinkToolView  implements Serializable {
+public class RemoteToolView  implements Serializable {
     
     /**
      * Unique Id of the View
      */
     private String viewId;
+    
     /**
      * Human readable name of the view
      */
     private String name;
+    
     /**
      * Map with locale strings as key (such as "en" and "de") and an description of the
      * view in the specified language. Implementation must make sure that a default 
@@ -53,7 +56,7 @@ public class XLinkToolView  implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final XLinkToolView other = (XLinkToolView) obj;
+        final RemoteToolView other = (RemoteToolView) obj;
         if ((this.viewId == null) ? (other.viewId != null) : !this.viewId.equals(other.viewId)) {
             return false;
         }
@@ -76,11 +79,11 @@ public class XLinkToolView  implements Serializable {
         return hash;
     }
     
-    public XLinkToolView(){
+    public RemoteToolView() {
         
     }
 
-    public XLinkToolView(String viewId, String name, Map<String, String> descriptions) {
+    public RemoteToolView(String viewId, String name, Map<String, String> descriptions) {
         this.viewId = viewId;
         this.name = name;
         this.descriptions = descriptions;
@@ -110,8 +113,11 @@ public class XLinkToolView  implements Serializable {
 
     /**
      * Map with locale strings as key (such as "en" and "de") and an description of the
-     * view in the specified language.
-     */    
+     * view in the specified language. Implementation must make sure that a default 
+     * value is returned if a locale is not contained. If the system encounters
+     * a null-value for a certain locale, the first entry of the map is taken 
+     * instead.
+     */   
     public Map<String, String> getDescriptions() {
         return descriptions;
     }

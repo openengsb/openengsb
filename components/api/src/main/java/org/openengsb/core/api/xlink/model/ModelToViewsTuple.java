@@ -21,20 +21,34 @@ import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
 
-public class ModelToViewsTupel {
+/**
+ * Modelclass to transfere XLink Model/View associations from a remote tool
+ * during the XLink registration.
+ */
+public class ModelToViewsTuple {
     
+    /**
+     * Identifier of an OpenEngSBModel
+     */
     private ModelDescription description;
-    private List<XLinkToolView> views;
+    
+    /**
+     * List of Views, offered by the remote tool
+     */
+    private List<RemoteToolView> views;
 
-    public ModelToViewsTupel(){
+    public ModelToViewsTuple() {
         
     }
     
-    public ModelToViewsTupel(ModelDescription description, List<XLinkToolView> views) {
+    public ModelToViewsTuple(ModelDescription description, List<RemoteToolView> views) {
         this.description = description;
         this.views = views;
     }
-    
+        
+    /**
+     * Identifier of an OpenEngSBModel
+     */
     public ModelDescription getDescription() {
         return description;
     }
@@ -42,12 +56,15 @@ public class ModelToViewsTupel {
     public void setDescription(ModelDescription description) {
         this.description = description;
     }
-
-    public List<XLinkToolView> getViews() {
+    
+    /**
+     * List of Views, offered by the remote tool
+     */
+    public List<RemoteToolView> getViews() {
         return views;
     }
 
-    public void setViews(List<XLinkToolView> views) {
+    public void setViews(List<RemoteToolView> views) {
         this.views = views;
     }
     
