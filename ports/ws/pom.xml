@@ -30,6 +30,7 @@
   <properties>
     <bundle.symbolicName>org.openengsb.ports.ws</bundle.symbolicName>
     <bundle.namespace>org.openengsb.ports.ws</bundle.namespace>
+    <spring.osgi.version>1.2.1</spring.osgi.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -120,7 +121,26 @@
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
+      <version>${spring.osgi.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.aop</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

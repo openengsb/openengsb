@@ -85,7 +85,6 @@
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
     <guava.version>11.0.1</guava.version>
     <guava.wrapped.version>11.0.1_1</guava.wrapped.version>
-    <spring.osgi.version>1.2.1</spring.osgi.version>
     <spring.version>3.1.2.RELEASE</spring.version>
     <shiro.version>1.2.0</shiro.version>
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
@@ -793,37 +792,6 @@
         <artifactId>spring-jms</artifactId>
         <version>${spring.version}</version>
         <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.osgi</groupId>
-        <artifactId>spring-osgi-core</artifactId>
-        <version>${spring.osgi.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.asm</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.expression</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.core</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
