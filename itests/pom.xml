@@ -155,11 +155,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.services</artifactId>
       <scope>test</scope>
     </dependency>
@@ -259,6 +254,11 @@
           <artifactId>org.apache.karaf.shell.dev</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.services</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
