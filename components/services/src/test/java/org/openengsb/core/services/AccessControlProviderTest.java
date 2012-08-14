@@ -41,7 +41,6 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.services.internal.security.AdminAccessConnector;
 import org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy;
-import org.openengsb.core.services.internal.security.AdminAccessConnector;
 import org.openengsb.core.services.internal.security.model.RootPermission;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;

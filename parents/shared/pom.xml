@@ -160,6 +160,7 @@
     <labs.delegation.version>0.1.0</labs.delegation.version>
     <javassist.version>3.12.1.GA_3</javassist.version>
     <tinybundles.version>1.0.0</tinybundles.version>
+    <aopalliance.version>1.0</aopalliance.version>
   </properties>
 
   <dependencyManagement>
@@ -408,6 +409,11 @@
         <groupId>org.apache.velocity</groupId>
         <artifactId>velocity</artifactId>
         <version>${velocity.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${aopalliance.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>
