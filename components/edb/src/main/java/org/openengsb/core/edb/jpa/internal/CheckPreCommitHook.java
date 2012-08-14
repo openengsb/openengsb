@@ -19,7 +19,6 @@ package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -28,6 +27,7 @@ import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
@@ -106,7 +106,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             if (checkIfActiveOidExisting(oid)) {
                 failedObjects.add(insert);
             } else {
-                insert.put(EDBConstants.MODEL_VERSION, 1);
+                insert.putEDBObjectEntry(EDBConstants.MODEL_VERSION, 1, Integer.class);
             }
         }
         return failedObjects;
@@ -135,7 +135,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             try {
                 Integer modelVersion = investigateVersionAndCheckForConflict(update);
                 modelVersion++;
-                update.put(EDBConstants.MODEL_VERSION, modelVersion);
+                update.putEDBObjectEntry(EDBConstants.MODEL_VERSION, modelVersion, Integer.class);
             } catch (EDBException e) {
                 failedObjects.add(update);
             }
@@ -147,15 +147,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      * Investigates the version of an EDBObject and checks if a conflict can be found.
      */
     private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
-        Object version = newObject.get(EDBConstants.MODEL_VERSION);
-        Integer modelVersion;
-        if (version == null) {
-            modelVersion = null;
-        } else if (version.getClass().equals(Integer.class)) {
-            modelVersion = (Integer) version;
-        } else {
-            modelVersion = Integer.valueOf((String) version);
-        }
+        Integer modelVersion = newObject.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         String oid = newObject.getOID();
 
         if (modelVersion != null) {
@@ -184,11 +176,11 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     private void checkForConflict(EDBObject newObject) throws EDBException {
         String oid = newObject.getOID();
         EDBObject object = getObject(oid);
-        for (Map.Entry<String, Object> entry : newObject.entrySet()) {
+        for (EDBObjectEntry entry : newObject.values()) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
                 continue;
             }
-            Object value = object.get(entry.getKey());
+            Object value = object.getObject(entry.getKey());
             if (value == null || !value.equals(entry.getValue())) {
                 LOGGER.debug("Conflict detected at key %s when comparing %s with %s", new Object[]{ entry.getKey(),
                     entry.getValue(), value == null ? "null" : value.toString() });
@@ -218,7 +210,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      */
     private EDBObject getObject(String oid) throws EDBException {
         JPAObject temp = dao.getJPAObject(oid);
-        return temp.getObject();
+        return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 
     /**

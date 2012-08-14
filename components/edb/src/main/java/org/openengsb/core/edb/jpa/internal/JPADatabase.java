@@ -105,7 +105,7 @@ public class JPADatabase implements EngineeringDatabaseService {
             commit.setTimestamp(timestamp);
             for (EDBObject update : commit.getObjects()) {
                 update.updateTimestamp(timestamp);
-                entityManager.persist(new JPAObject(update));
+                entityManager.persist(EDBUtils.convertEDBObjectToJPAObject(update));
             }
 
             try {
@@ -120,8 +120,8 @@ public class JPADatabase implements EngineeringDatabaseService {
                 for (String id : commit.getDeletions()) {
                     EDBObject o = new EDBObject(id);
                     o.updateTimestamp(timestamp);
-                    o.put("isDeleted", new Boolean(true));
-                    JPAObject j = new JPAObject(o);
+                    o.putEDBObjectEntry("isDeleted", new Boolean(true), Boolean.class.getName());
+                    JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
                     entityManager.persist(j);
                 }
 
@@ -236,7 +236,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     public EDBObject getObject(String oid) throws EDBException {
         LOGGER.debug("loading newest JPAObject with the oid {}", oid);
         JPAObject temp = dao.getJPAObject(oid);
-        return temp.getObject();
+        return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 
     @Override
@@ -244,7 +244,7 @@ public class JPADatabase implements EngineeringDatabaseService {
         List<JPAObject> objects = dao.getJPAObjects(oids);
         List<EDBObject> result = new ArrayList<EDBObject>();
         for (JPAObject object : objects) {
-            result.add(object.getObject());
+            result.add(EDBUtils.convertJPAObjectToEDBObject(object));
         }
         return result;
     }
@@ -269,8 +269,8 @@ public class JPADatabase implements EngineeringDatabaseService {
      */
     private List<EDBObject> generateEDBObjectList(List<JPAObject> jpaObjects) {
         List<EDBObject> result = new ArrayList<EDBObject>();
-        for (JPAObject j : jpaObjects) {
-            result.add(j.getObject());
+        for (JPAObject object : jpaObjects) {
+            result.add(EDBUtils.convertJPAObjectToEDBObject(object));
         }
         return result;
     }

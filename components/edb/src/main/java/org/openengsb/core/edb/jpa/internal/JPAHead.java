@@ -31,8 +31,8 @@ public class JPAHead {
     
     public List<EDBObject> getEDBObjects() {
         List<EDBObject> loaded = new ArrayList<EDBObject>();
-        for (JPAObject o : objects) {
-            loaded.add(o.getObject());
+        for (JPAObject object : objects) {
+            loaded.add(EDBUtils.convertJPAObjectToEDBObject(object));
         }
         return loaded;
     }
