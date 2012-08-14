@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.jpa.internal;
+package org.openengsb.core.edb.jpa.internal.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.beanutils.MethodUtils;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.jpa.internal.JPAEntry;
+import org.openengsb.core.edb.jpa.internal.JPAObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 
 /**
  * The EDBUtils class contains functions needed in the whole EDB implementation.
  */
 public class EDBUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBUtils.class);
+    private static List<EDBConverterStep> steps = new ArrayList<EDBConverterStep>(Arrays.asList(
+        new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
 
     private EDBUtils() {
     }
@@ -45,78 +46,28 @@ public class EDBUtils {
      * object with a string parameter is used. If that didn't work either, the simple string will be set in the entry.
      */
     public static EDBObjectEntry convertJPAEntryToEDBObjectEntry(JPAEntry entry) {
-        EDBObjectEntry result = new EDBObjectEntry();
-        result.setKey(entry.getKey());
-        result.setType(entry.getType());
-        result.setValue(getEntryValue(entry));
-        return result;
-    }
-
-    /**
-     * Tries to get the object value for a given JPAEntry. To instantiate the type first the static method "valueOf" of
-     * the type will be tried. If that didn't work, then the constructor of the object with a string parameter is used.
-     * If that didn't work either, the simple string will be set in the entry.
-     */
-    public static Object getEntryValue(JPAEntry entry) {
-        if (entry.getType().equals(String.class.getName())) {
-            return entry.getValue();
-        }
-        try {
-            Class<?> typeClass = loadClass(entry.getType());
-            if (typeClass == null) {
-                return entry.getValue();
+        for (EDBConverterStep step : steps) {
+            if (step.doesStepFit(entry.getType())) {
+                LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
+                return step.convertToEDBObjectEntry(entry);
             }
-            Object result = invokeValueOf(typeClass, entry.getValue());
-            if (result != null) {
-                return result;
-            }
-            Constructor<?> constructor = ClassUtils.getConstructorIfAvailable(typeClass, String.class);
-            return constructor.newInstance(entry.getValue());
-        } catch (IllegalAccessException e) {
-            LOGGER.error("IllegalAccessException when trying to create object of type {}", entry.getType(), e);
-        } catch (InvocationTargetException e) {
-            LOGGER.error("InvocationTargetException when trying to create object of type {}", entry.getType(), e);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("IllegalArgumentException when trying to create object of type {}", entry.getType(), e);
-        } catch (InstantiationException e) {
-            LOGGER.error("InstantiationException when trying to create object of type {}", entry.getType(), e);
         }
-        return entry.getType();
-    }
-
-    /**
-     * Tries to load the class with the given name. Returns the class object if the class can be loaded. Returns null if
-     * the class could not be loaded.
-     */
-    private static Class<?> loadClass(String className) {
-        try {
-            return EDBUtils.class.getClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            LOGGER.error("Class {} can not be found by the EDB. This object type is not supported by the EDB",
-                className);
-        }
+        LOGGER.error("No EDBConverterStep fit for JPAEntry {}", entry);
         return null;
-    }
-
-    /**
-     * Tries to invoke the method valueOf of the given class object. If this method can be called, the result will be
-     * given back based on the given value which is used as parameter for the method. If this method can't be called
-     * null will be given back.
-     */
-    private static Object invokeValueOf(Class<?> clazz, String value) throws IllegalAccessException,
-        InvocationTargetException {
-        try {
-            return MethodUtils.invokeExactStaticMethod(clazz, "valueOf", value);
-        } catch (NoSuchMethodException e) {
-            return null;
-        }
     }
 
     /**
      * Converts a JPAEntry object into an EDBObjectEntry.
      */
     public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry) {
-        return new JPAEntry(entry.getKey(), entry.getValue().toString(), entry.getType());
+        for (EDBConverterStep step : steps) {
+            if (step.doesStepFit(entry.getType())) {
+                LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
+                return step.convertToJPAEntry(entry);
+            }
+        }
+        LOGGER.error("No EDBConverterStep fit for EDBObjectEntry {}", entry);
+        return null;
     }
 
     /**

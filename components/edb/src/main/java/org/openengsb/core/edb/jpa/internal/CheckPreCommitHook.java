@@ -31,6 +31,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
+import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

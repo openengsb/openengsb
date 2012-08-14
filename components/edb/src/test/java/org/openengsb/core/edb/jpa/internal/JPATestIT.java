@@ -812,4 +812,16 @@ public class JPATestIT {
         assertThat(value.getClass().getName(), is(Boolean.class.getName()));
         assertThat((Boolean) value, is(Boolean.TRUE));
     }
+    
+    @Test
+    public void testIfOtherTypesThanStringWorks_shouldProcessDate() throws Exception {
+        EDBObject object = new EDBObject("test/type/date");
+        Date date = new Date();
+        object.putEDBObjectEntry("value", date, Date.class);
+        db.commitEDBObjects(Arrays.asList(object), null, null);
+        object = db.getObject("test/type/date");
+        Object value = object.getObject("value");
+        assertThat(value.getClass().getName(), is(Date.class.getName()));
+        assertThat((Date) value, is(date));
+    }
 }
