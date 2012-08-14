@@ -19,18 +19,13 @@ package org.openengsb.ui.admin.xlink;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +39,6 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ThreadContext;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -58,50 +52,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.verify;
-import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
-import org.openengsb.connector.wicketacl.WicketPermission;
-import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
-import org.openengsb.core.api.CompositeConnectorStrategy;
-import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserExistsException;
-import org.openengsb.core.api.xlink.model.ModelToViewsTupel;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
-import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
-import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
-import org.openengsb.core.security.internal.AdminAccessConnector;
-import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
-import org.openengsb.core.security.internal.SecurityInterceptor;
-import org.openengsb.core.security.internal.model.RootPermission;
-import org.openengsb.core.services.internal.ConnectorManagerImpl;
-import org.openengsb.core.services.internal.ConnectorRegistrationManager;
-import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.core.test.DummyConfigPersistenceService;
-import org.openengsb.core.test.UserManagerStub;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain;
-import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.openengsb.labs.delegation.service.ClassProvider;
-import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.openengsb.ui.admin.AbstractUITest;
-import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.admin.xlink.mocking.ExampleObjectOrientedModel;
-import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -184,8 +146,8 @@ public class ToolChooserTest extends AbstractUITest {
     
     private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) {
         
-        ModelToViewsTupel[] modelsToViews 
-            = new ModelToViewsTupel[1];  
+        ModelToViewsTuple[] modelsToViews 
+            = new ModelToViewsTuple[1];  
         String viewId_ExampleObjectOrientedModel_1 = "viewId_ExampleObjectOrientedModel_1";
         String viewId_ExampleObjectOrientedModel_2 = "viewId_ExampleObjectOrientedModel_2";
         
@@ -193,12 +155,12 @@ public class ToolChooserTest extends AbstractUITest {
         descriptions.put("en", "This is an ExampleObjectOrientedModel view.");
         descriptions.put("de", "Das ist eine ExampleObjectOrientedModel view.");
         
-        List<XLinkToolView> views = new ArrayList<XLinkToolView>();
-        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
-        views.add(new XLinkToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
+        List<RemoteToolView> views = new ArrayList<RemoteToolView>();
+        views.add(new RemoteToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
+        views.add(new RemoteToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
         
         modelsToViews[0] = 
-                new ModelToViewsTupel(
+                new ModelToViewsTuple(
                         new ModelDescription(
                                 ExampleObjectOrientedModel.class.getName(),
                                 "3.0.0.SNAPSHOT")

@@ -24,9 +24,9 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
+import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkToolRegistration;
+import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
@@ -41,7 +41,7 @@ public class ToolChooserLogic {
         this.osgiService = osgiService;
     }
     
-    public List<XLinkLocalTool> getRegisteredToolsFromHost(String hostId) {
+    public List<RemoteTool> getRegisteredToolsFromHost(String hostId) {
         return XLinkUtils.getLocalToolFromRegistrations(
                 serviceManager.getXLinkRegistration(hostId));
     } 
@@ -55,8 +55,8 @@ public class ToolChooserLogic {
         return null;
     }    
     
-    private XLinkToolRegistration getRegistration(String hostId, String connectorId) {
-        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+    private RemoteToolRegistration getRegistration(String hostId, String connectorId) {
+        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration;
             }
@@ -90,7 +90,7 @@ public class ToolChooserLogic {
     }    
     
     public boolean isConnectorRegistrated(String hostId, String connectorId){
-        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return true;
             }
@@ -99,7 +99,7 @@ public class ToolChooserLogic {
     }
     
     public boolean isViewExisting(String hostId, String connectorId, String viewId){
-        for (XLinkToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration.getxLinkTemplate().getViewToModels().containsKey(viewId);
             }

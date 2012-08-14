@@ -42,17 +42,15 @@ import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkLocalTool;
-import org.openengsb.core.api.xlink.model.XLinkToolView;
+import org.openengsb.core.api.xlink.model.RemoteTool;
+import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
@@ -284,15 +282,15 @@ public class ToolChooserPage extends WebPage {
         String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
         hostIdMsg = String.format(hostIdMsg, hostId);
         add(new Label("hostId", hostIdMsg));
-        List<XLinkLocalTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
+        List<RemoteTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
-                final XLinkLocalTool tool = (XLinkLocalTool) item.getModelObject();
+                final RemoteTool tool = (RemoteTool) item.getModelObject();
                 item.add(new Label("toolName", tool.getToolName()));
                 ListView viewList = new ListView("viewList", tool.getAvailableViews()) {
                     @Override
                     protected void populateItem(ListItem li) {
-                        final XLinkToolView view = (XLinkToolView) li.getModelObject();
+                        final RemoteToolView view = (RemoteToolView) li.getModelObject();
                         li.add(new Label("viewName", view.getName()));
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              

@@ -23,6 +23,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+/**
+ * 
+ */
 public class MachineResponsePage extends WebPage {
     
     boolean isSuccess;
