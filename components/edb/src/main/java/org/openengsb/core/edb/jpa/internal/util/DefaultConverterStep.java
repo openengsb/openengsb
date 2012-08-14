@@ -70,7 +70,11 @@ public class DefaultConverterStep implements EDBConverterStep {
                 return result;
             }
             Constructor<?> constructor = ClassUtils.getConstructorIfAvailable(typeClass, String.class);
-            return constructor.newInstance(entry.getValue());
+            if (constructor != null) {
+                return constructor.newInstance(entry.getValue());
+            }
+            LOGGER.debug("DefaultConverterStep didn't find any possibility to convert entry {}. "
+                    + "The simple string value will be returned", entry);
         } catch (IllegalAccessException e) {
             LOGGER.error("IllegalAccessException when trying to create object of type {}", entry.getType(), e);
         } catch (InvocationTargetException e) {
@@ -91,8 +95,8 @@ public class DefaultConverterStep implements EDBConverterStep {
         try {
             return EDBUtils.class.getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            LOGGER.error("Class {} can not be found by the EDB. This object type is not supported by the EDB",
-                className);
+            LOGGER.debug("Class {} can not be found by the EDB. This object type is not supported by the EDB."
+                + " Maybe the conversion need to be done at model level.", className);
         }
         return null;
     }
