@@ -53,6 +53,10 @@ public class XLinkTemplateKeyNames {
      */    
     private String viewIdKeyName;
 
+    public XLinkTemplateKeyNames(){
+        
+    }
+    
     public XLinkTemplateKeyNames(String modelClassKeyName, 
             String modelVersionKeyName, String identifierKeyName, 
             String contextIdKeyName, String viewIdKeyName) {
