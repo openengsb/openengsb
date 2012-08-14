@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.xlink;
 
+import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import java.io.IOException;
@@ -301,7 +302,7 @@ public class ToolChooserTest extends AbstractUITest {
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
-        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_OK));
+        assertThat(tester.getLastResponse().getStatus(),is(MockHttpServletResponse.SC_OK));
         verify(connector).openXLinks(anyList(), anyString());
     }    
     

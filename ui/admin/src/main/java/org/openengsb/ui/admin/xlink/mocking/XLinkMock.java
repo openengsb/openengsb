@@ -41,8 +41,6 @@ public final class XLinkMock {
     
     public static final String sqlModel = SQLCreateModel.class.getName();
     public static final String ooModel = OOClassModel.class.getName();
-    public static final String connectorNotFound = "Connectorservice was not found.";
-    public static final String noTransformationPossible = "Transformation is not possible.";
     
     public static void transformAndOpenMatch(
             String sourceModelClass, 
@@ -62,20 +60,24 @@ public final class XLinkMock {
                 openPotentialMatches(modelObjectsDestination, connectorToCall, viewToCall, osgiService);
             }
         }else{
-            throw new OpenXLinkException(noTransformationPossible);
+            
         }
     }
  
     /**
      * Transforms the given ModelObject from it´s SourceClass to the defined DestinationModel.
      */
-    private static List<Object> transformModelObject(
+    public static List<Object> transformModelObject(
             String sourceModelClass,  
             String sourceModelVersion,             
             String destinationModelClass, 
             String destinationModelVersion, 
             Object modelObjectSource,
-            OsgiUtilsService osgiService) throws ClassNotFoundException {
+            OsgiUtilsService osgiService) throws ClassNotFoundException, OpenXLinkException {
+        if (!isTransformationPossible(sourceModelClass, 
+            sourceModelVersion, destinationModelClass, destinationModelVersion)) {
+            throw new OpenXLinkException();      
+        }
         if(modelObjectSource == null)return null;
         Object resultObject = null;
         Class destinationClass = XLinkUtils.getClassOfOpenEngSBModel(destinationModelClass, destinationModelVersion, osgiService);
@@ -111,14 +113,14 @@ public final class XLinkMock {
      * Calls the given connector to process the list of transformed Objects as 
      * potential XLink matches.
      */
-    private static void openPotentialMatches(
+    public static void openPotentialMatches(
             List<Object> modelObjectsDestination, 
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
             ClassCastException, OpenXLinkException{
         Object serviceObject = osgiService.getService("(service.pid="+connectorToCall+")", 100L);
-        if(serviceObject == null) throw new OpenXLinkException(connectorNotFound);
+        if(serviceObject == null) throw new OpenXLinkException();
         LinkableDomain service = (LinkableDomain) serviceObject;
         /*TODO remove after implementation of filter on wicketpage*/
         SecurityContext.login("admin", new Password("password"));

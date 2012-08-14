@@ -108,31 +108,9 @@ public class ToolChooserPage extends WebPage {
         } catch (OpenXLinkException ex) {
             handleErrorResponse(ex.getMessage());
         }
-        if (checkForLocalSwitchingParameters()) {
-            String sourceModelClass = modelId;           
+        if (checkForLocalSwitchingParameters()) {           
             ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
-            try {
-                XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                        versionId, identifierObject, destinationModelClass.getModelClassName(), 
-                        destinationModelClass.getVersionString(), connectorId, viewId, serviceUtils);
-            } catch (ClassNotFoundException ex) {
-                String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
-                handleErrorResponse(String.format(errorMsg, ex.getMessage()));
-            } catch (OsgiServiceNotAvailableException ex) {             
-                String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
-                handleErrorResponse(errorMsg);
-            } catch (ClassCastException ex) {
-                String errorMsg = new StringResourceModel("error.connectorNotLinkable", this, null).getString();
-                handleErrorResponse(errorMsg);
-            } catch (OpenXLinkException ex) {
-                String errorMsg = null;
-                if(ex.getMessage().equals(XLinkMock.connectorNotFound)){
-                    errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
-                }else{
-                    errorMsg = new StringResourceModel("error.transformationNotPossible", this, null).getString();
-                }
-                handleErrorResponse(errorMsg);
-            }
+            triggerXLinkProcessing(destinationModelClass, connectorId, viewId);
             handleSuccessResponse(resp);
             return;
         }
@@ -341,25 +319,7 @@ public class ToolChooserPage extends WebPage {
                             = chooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
-                                String sourceModelClass = modelId;   
-                                try {
-                                    XLinkMock.transformAndOpenMatch(sourceModelClass, 
-                                            versionId, identifierObject, destModelInfo.getModelClassName(), 
-                                            destModelInfo.getVersionString(), tool.getId(), 
-                                            view.getViewId(), serviceUtils);
-                                } catch (ClassNotFoundException ex) {
-                                    String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
-                                    handleErrorResponse(String.format(errorMsg, ex.getMessage()));
-                                } catch (OsgiServiceNotAvailableException ex) {             
-                                    String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
-                                    handleErrorResponse(errorMsg);
-                                } catch (ClassCastException ex) {
-                                    String errorMsg = new StringResourceModel("error.connectorNotLinkable", this, null).getString();
-                                    handleErrorResponse(errorMsg);
-                                } catch (OpenXLinkException ex) {
-                                    String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
-                                    handleErrorResponse(errorMsg);
-                                }
+                                triggerXLinkProcessing(destModelInfo, tool.getId(), view.getViewId());
                                 handleSuccessResponse(resp);
                             }
                         };
@@ -379,6 +339,43 @@ public class ToolChooserPage extends WebPage {
             }
         };
         add(toolList);        
+    }
+    
+    /**
+     * Triggers the processing of the supplied XLink
+     */
+    private void triggerXLinkProcessing(ModelDescription destModelInfo,
+            String connectorId, String viewId){
+        List<Object> modelObjectsDestination = new ArrayList<Object>();
+        try {
+            modelObjectsDestination = XLinkMock.transformModelObject(
+                    modelId, 
+                    versionId,
+                    destModelInfo.getModelClassName(),
+                    destModelInfo.getVersionString(),
+                    identifierObject,
+                    serviceUtils);
+        } catch (ClassNotFoundException ex) {
+            String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
+            handleErrorResponse(String.format(errorMsg, ex.getMessage()));
+        } catch (OpenXLinkException ex) {
+            String errorMsg = new StringResourceModel("error.transformationNotPossible", this, null).getString();
+            handleErrorResponse(String.format(errorMsg, ex.getMessage()));                                
+        }
+        try {
+            if(!modelObjectsDestination.isEmpty()) {
+                XLinkMock.openPotentialMatches(modelObjectsDestination, connectorId, viewId, serviceUtils);
+            }                   
+        } catch (OsgiServiceNotAvailableException ex) {             
+            String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
+            handleErrorResponse(errorMsg);
+        } catch (ClassCastException ex) {
+            String errorMsg = new StringResourceModel("error.connectorNotLinkable", this, null).getString();
+            handleErrorResponse(errorMsg);
+        } catch (OpenXLinkException ex) {
+            String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
+            handleErrorResponse(errorMsg);
+        }        
     }
     
     private void setContextFromId() {
