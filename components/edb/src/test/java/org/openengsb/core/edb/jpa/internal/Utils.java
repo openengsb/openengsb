@@ -18,10 +18,10 @@
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 
 public class Utils {
 
@@ -45,15 +45,15 @@ public class Utils {
     };
 
     public EDBObject createRandomTestObject(String oid) {
-        Map<String, Object> testData = new HashMap<String, Object>();
+        EDBObject result = new EDBObject(oid);
         int max = 5;
 
         for (int i = 0; i < max; ++i) {
             String key = RANDOMKEYS[rand.nextInt(RANDOMKEYS.length)] + Integer.toString(i);
             String value = "key value " + Integer.toString(rand.nextInt(100));
-            testData.put(key, value);
+            result.putEDBObjectEntry(key, value, String.class.getName());
         }
-        return new EDBObject(oid, testData);
+        return new EDBObject(oid);
     }
 
     public String getRandomCommitter() {
@@ -64,4 +64,7 @@ public class Utils {
         return RANDOMROLES[rand.nextInt(RANDOMROLES.length)];
     }
 
+    public static void putValue(String key, Object value, HashMap<String, EDBObjectEntry> map) {
+        map.put(key, new EDBObjectEntry(key, value, value.getClass()));
+    }
 }
