@@ -38,6 +38,12 @@ public class EDBUtils {
     private EDBUtils() {
     }
 
+    /**
+     * Converts a JPAEntry object into an EDBObjectEntry element. If there is a problem with the instantiation of the
+     * type of the JPAEntry, the simple string object will be written in the resulting element. To instantiate the type
+     * first the static method "valueOf" of the type will be tried. If that didn't work, then the constructor of the
+     * object with a string parameter is used. If that didn't work either, the simple string will be set in the entry.
+     */
     public static EDBObjectEntry convertJPAEntryToEDBObjectEntry(JPAEntry entry) {
         EDBObjectEntry result = new EDBObjectEntry();
         result.setKey(entry.getKey());
@@ -46,7 +52,15 @@ public class EDBUtils {
         return result;
     }
 
+    /**
+     * Tries to get the object value for a given JPAEntry. To instantiate the type first the static method "valueOf" of
+     * the type will be tried. If that didn't work, then the constructor of the object with a string parameter is used.
+     * If that didn't work either, the simple string will be set in the entry.
+     */
     public static Object getEntryValue(JPAEntry entry) {
+        if (entry.getType().equals(String.class.getName())) {
+            return entry.getValue();
+        }
         try {
             Class<?> typeClass = loadClass(entry.getType());
             if (typeClass == null) {
@@ -59,21 +73,21 @@ public class EDBUtils {
             Constructor<?> constructor = ClassUtils.getConstructorIfAvailable(typeClass, String.class);
             return constructor.newInstance(entry.getValue());
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("IllegalAccessException when trying to create object of type {}", entry.getType(), e);
         } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("InvocationTargetException when trying to create object of type {}", entry.getType(), e);
         } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("IllegalArgumentException when trying to create object of type {}", entry.getType(), e);
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("InstantiationException when trying to create object of type {}", entry.getType(), e);
         }
         return entry.getType();
     }
 
+    /**
+     * Tries to load the class with the given name. Returns the class object if the class can be loaded. Returns null if
+     * the class could not be loaded.
+     */
     private static Class<?> loadClass(String className) {
         try {
             return EDBUtils.class.getClassLoader().loadClass(className);
@@ -84,6 +98,11 @@ public class EDBUtils {
         return null;
     }
 
+    /**
+     * Tries to invoke the method valueOf of the given class object. If this method can be called, the result will be
+     * given back based on the given value which is used as parameter for the method. If this method can't be called
+     * null will be given back.
+     */
     private static Object invokeValueOf(Class<?> clazz, String value) throws IllegalAccessException,
         InvocationTargetException {
         try {
@@ -93,10 +112,16 @@ public class EDBUtils {
         }
     }
 
+    /**
+     * Converts a JPAEntry object into an EDBObjectEntry.
+     */
     public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry) {
         return new JPAEntry(entry.getKey(), entry.getValue().toString(), entry.getType());
     }
 
+    /**
+     * Converts a JPAObject object into an EDBObject.
+     */
     public static EDBObject convertJPAObjectToEDBObject(JPAObject object) {
         EDBObject result = new EDBObject(object.getOID());
         for (JPAEntry kvp : object.getEntries()) {
@@ -108,6 +133,9 @@ public class EDBUtils {
         return result;
     }
 
+    /**
+     * Converts an EDBObject object into a JPAObject object.
+     */
     public static JPAObject convertEDBObjectToJPAObject(EDBObject object) {
         JPAObject result = new JPAObject();
         result.setTimestamp(object.getTimestamp());
@@ -118,6 +146,28 @@ public class EDBUtils {
             entries.add(convertEDBObjectEntryToJPAEntry(entry));
         }
         result.setEntries(entries);
+        return result;
+    }
+
+    /**
+     * Converts a list of EDBObjects into a list of JPAObjects
+     */
+    public static List<JPAObject> convertEDBObjectsToJPAObjects(List<EDBObject> objects) {
+        List<JPAObject> result = new ArrayList<JPAObject>();
+        for (EDBObject object : objects) {
+            result.add(convertEDBObjectToJPAObject(object));
+        }
+        return result;
+    }
+
+    /**
+     * Converts a list of JPAObjects into a list of EDBObjects
+     */
+    public static List<EDBObject> convertJPAObjectsToEDBObjects(List<JPAObject> objects) {
+        List<EDBObject> result = new ArrayList<EDBObject>();
+        for (JPAObject object : objects) {
+            result.add(convertJPAObjectToEDBObject(object));
+        }
         return result;
     }
 }

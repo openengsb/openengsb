@@ -17,7 +17,6 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.edb.api.EDBObject;
@@ -30,11 +29,7 @@ public class JPAHead {
     private Long timestamp;
     
     public List<EDBObject> getEDBObjects() {
-        List<EDBObject> loaded = new ArrayList<EDBObject>();
-        for (JPAObject object : objects) {
-            loaded.add(EDBUtils.convertJPAObjectToEDBObject(object));
-        }
-        return loaded;
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
     
     public void setJPAObjects(List<JPAObject> objects) {

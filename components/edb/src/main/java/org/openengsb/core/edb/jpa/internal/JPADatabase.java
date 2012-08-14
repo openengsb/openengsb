@@ -82,7 +82,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public Long commit(EDBCommit commit) throws EDBException {
         if (commit.isCommitted()) {
-            throw new EDBException("EDBCommit was already commitet!");
+            throw new EDBException("EDBCommit is already commitet.");
         }
         runBeginCommitHooks(commit);
         EDBException exception = runPreCommitHooks(commit);
@@ -120,7 +120,7 @@ public class JPADatabase implements EngineeringDatabaseService {
                 for (String id : commit.getDeletions()) {
                     EDBObject o = new EDBObject(id);
                     o.updateTimestamp(timestamp);
-                    o.putEDBObjectEntry("isDeleted", new Boolean(true), Boolean.class.getName());
+                    o.putEDBObjectEntry("isDeleted", new Boolean(true), Boolean.class);
                     JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
                     entityManager.persist(j);
                 }
@@ -242,37 +242,22 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public List<EDBObject> getObjects(List<String> oids) throws EDBException {
         List<JPAObject> objects = dao.getJPAObjects(oids);
-        List<EDBObject> result = new ArrayList<EDBObject>();
-        for (JPAObject object : objects) {
-            result.add(EDBUtils.convertJPAObjectToEDBObject(object));
-        }
-        return result;
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
         LOGGER.debug("loading history of JPAObject with the oid {}", oid);
-        List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
-        return generateEDBObjectList(jpa);
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid {} from "
                 + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
-        List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
-        return generateEDBObjectList(jpa);
-    }
-
-    /**
-     * transforms a list of JPAObjects to a List of EDBObjects
-     */
-    private List<EDBObject> generateEDBObjectList(List<JPAObject> jpaObjects) {
-        List<EDBObject> result = new ArrayList<EDBObject>();
-        for (JPAObject object : jpaObjects) {
-            result.add(EDBUtils.convertJPAObjectToEDBObject(object));
-        }
-        return result;
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid, from, to);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
@@ -326,7 +311,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
         try {
-            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap)));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -335,7 +320,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
         try {
-            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap, timestamp)));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, timestamp));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -409,23 +394,18 @@ public class JPADatabase implements EngineeringDatabaseService {
      * Returns the actual authenticated user. If this class is called from JUnit, the string "testuser" is returned.
      */
     private String getAuthenticatedUser() {
-        // if JPADatabase is called via integration tests
+        // if JPADatabase is called via integration tests username is null so testuser is returned
         String username = (String) authenticationContext.getAuthenticatedPrincipal();
-        if (username == null) {
-            return "testuser";
-        }
-        return username;
+        return username != null ? username : "testuser";
     }
 
     /**
      * Returns the actual context id. If this class is called from JUnit, the string "testcontext" is returned.
      */
     private String getActualContextId() {
-        // if JPADatabase is called via integration tests
-        if (ContextHolder.get() == null) {
-            return "testcontext";
-        }
-        return ContextHolder.get().getCurrentContextId();
+        // if JPADatabase is called via integration tests, holder is null so testcontext is returned
+        ContextHolder holder = ContextHolder.get();
+        return holder != null ? holder.getCurrentContextId() : "testcontext";
     }
 
     @Override
@@ -475,5 +455,4 @@ public class JPADatabase implements EngineeringDatabaseService {
     public void setAuthenticationContext(AuthenticationContext authenticationContext) {
         this.authenticationContext = authenticationContext;
     }
-
 }

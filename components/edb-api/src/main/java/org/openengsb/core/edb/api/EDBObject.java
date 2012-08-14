@@ -25,40 +25,28 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, EDBObjectEntry> {
-    private Long timestamp;
-    private String oid;
-
     private static final String OID_CONST = "oid";
     private static final String TIMESTAMP_CONST = "timestamp";
     private static final String DELETED_CONST = "isDeleted";
+
+    private Long timestamp;
+    private String oid;
 
     /**
      * Create an EDBObject with a specified OID.
      */
     public EDBObject(String oid) {
         super();
-        this.oid = oid;
-        putEDBObjectEntry(OID_CONST, oid, String.class.getName());
-    }
-
-    /**
-     * Convenience constructor to create an EDBObject using a Map of data. The OID is stored after loading the data Map,
-     * so any already existing values with the special key representing the OID will be overwritten by the provided
-     * parameters.
-     */
-    public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
-        super(data);
         setOID(oid);
     }
 
     /**
-     * Usually used by a Database query function to create an EDBObject out of raw database-data. This will extract the
-     * metadata from the raw data Map.
+     * Create an EDBObject using a Map of data. The OID is stored after loading the data Map, so any already existing
+     * values with the special key representing the OID will be overwritten by the provided parameters.
      */
-    public EDBObject(Map<String, EDBObjectEntry> rawData) {
-        super(rawData);
-        this.timestamp = (Long) rawData.get(TIMESTAMP_CONST).getValue();
-        this.oid = (String) rawData.get(OID_CONST).getValue();
+    public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
+        super(data);
+        setOID(oid);
     }
 
     /**
@@ -70,11 +58,11 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
 
     /**
      * This function updates the timestamp for this object. This is necessary if you want to commit the object to the
-     * database! Should be set by the EnterpriseDatabaseService in the commit procedure.
+     * database. Should be set by the EnterpriseDatabaseService in the commit procedure.
      */
     public void updateTimestamp(Long timestamp) {
         this.timestamp = timestamp;
-        putEDBObjectEntry(TIMESTAMP_CONST, timestamp, Long.class.getName());
+        putEDBObjectEntry(TIMESTAMP_CONST, timestamp, Long.class);
     }
 
     /**
@@ -89,14 +77,17 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
         }
     }
 
-    /** Change the OID */
+    /**
+     * Sets the OID
+     */
     public void setOID(String oid) {
         this.oid = oid;
-        putEDBObjectEntry(OID_CONST, oid, String.class.getName());
+        putEDBObjectEntry(OID_CONST, oid, String.class);
     }
 
     /**
-     * Convenience function to retrieve a value as String.
+     * Returns the value of the EDBObjectEntry for the given key, casted as String. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
      */
     public String getString(String key) {
         EDBObjectEntry entry = get(key);
@@ -104,23 +95,26 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     }
 
     /**
-     * Convenience function to retrieve a value as long.
+     * Returns the value of the EDBObjectEntry for the given key, casted as Long. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
      */
     public Long getLong(String key) {
         EDBObjectEntry entry = get(key);
         return entry == null ? null : (Long) entry.getValue();
     }
-    
+
     /**
-     * Convenience function to retrieve a value as object.
+     * Returns the value of the EDBObjectEntry for the given key. Returns null if there is no element for the given key,
+     * or the value for the given key is null.
      */
     public Object getObject(String key) {
         EDBObjectEntry entry = get(key);
         return entry == null ? null : entry.getValue();
     }
-    
+
     /**
-     * Convenience function to retrieve a value as object.
+     * Returns the value of the EDBObjectEntry for the given key, casted as the given class. Returns null if there is no
+     * element for the given key, or the value for the given key is null.
      */
     @SuppressWarnings("unchecked")
     public <T> T getObject(String key, Class<T> clazz) {
@@ -129,7 +123,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     }
 
     /**
-     * Test if this object is a "deletion" entry in a history.
+     * Returns true if the object is deleted.
      */
     public final Boolean isDeleted() {
         EDBObjectEntry deleted = get(DELETED_CONST);
@@ -138,18 +132,18 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
         }
         return (Boolean) deleted.getValue();
     }
-    
+
     public void setDeleted(Boolean deleted) {
         put(DELETED_CONST, new EDBObjectEntry(DELETED_CONST, deleted, Boolean.class));
     }
-    
+
     /**
      * Adds an EDBObjectEntry to this EDBObject
      */
     public void putEDBObjectEntry(String key, Object value, String type) {
         put(key, new EDBObjectEntry(key, value, type));
     }
-    
+
     /**
      * Adds an EDBObjectEntry to this EDBObject
      */
@@ -169,7 +163,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     }
 
     /**
-     * analyzes the entry and write the specific information into the StringBuilder.
+     * Analyzes the entry and write the specific information into the StringBuilder.
      */
     private void appendEntry(Map.Entry<String, EDBObjectEntry> entry, StringBuilder builder) {
         if (builder.length() > 2) {

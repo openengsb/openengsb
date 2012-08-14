@@ -54,7 +54,7 @@ public class Diff implements EDBDiff {
         }
 
         createObjectDiffs();
-        LOGGER.debug("Diff created. Difference count = " + diff.size());
+        LOGGER.debug("Diff created. Difference count = {}", diff.size());
     }
 
     /**
