@@ -877,11 +877,6 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.security</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.workflow</artifactId>
         <version>${project.version}</version>
       </dependency>

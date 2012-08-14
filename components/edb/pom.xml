@@ -189,7 +189,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
+      <artifactId>org.openengsb.framework.services</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

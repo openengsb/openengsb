@@ -66,7 +66,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
+      <artifactId>org.openengsb.framework.services</artifactId>
     </dependency>
   </dependencies>
   <build>

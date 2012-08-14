@@ -64,14 +64,14 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
-        <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
+        <value>org.openengsb.core.services.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.services.filter.MessageCryptoFilterFactory">
           <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+        <value>org.openengsb.core.services.filter.JsonSecureRequestMarshallerFilter</value>
+        <value>org.openengsb.core.services.filter.MessageVerifierFilter</value>
+        <bean class="org.openengsb.core.services.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
           <property name="authenticationContext" ref="authenticationContext" />
         </bean>	

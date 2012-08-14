@@ -220,6 +220,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.persistence</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.ui</groupId>
       <artifactId>org.openengsb.ui.api</artifactId>
       <scope>provided</scope>
@@ -258,11 +263,6 @@
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.wicketacl</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

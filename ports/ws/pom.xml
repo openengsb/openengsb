@@ -113,11 +113,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
