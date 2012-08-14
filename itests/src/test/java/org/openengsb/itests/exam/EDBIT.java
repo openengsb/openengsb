@@ -17,9 +17,7 @@
 
 package org.openengsb.itests.exam;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -221,6 +219,19 @@ public class EDBIT extends AbstractExamTestHelper {
 
         assertThat(name, is("test"));
         assertThat(version, is(1));
+    }
+
+    @Test
+    public void testEKBInsertCommitAndQueryData_shouldReturnModelObject() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "C:\\test");
+        setProperty(model, "setEdbId", "createevent/5");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+
+        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        assertThat(result.isEmpty(), is(false));
+        assertThat(result.get(0), is(getTestModel()));
     }
 
     @Test

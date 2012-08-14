@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.QueryInterface;
@@ -132,7 +133,7 @@ public class QueryInterfaceService implements QueryInterface {
         }
         String[] elements = query.split(" and ");
         for (String element : elements) {
-            String[] parts = element.split(":");
+            String[] parts = StringUtils.split(element, ":", 2);
             map.put(parts[0], parts[1].substring(1, parts[1].length() - 1));
         }
         return map;
