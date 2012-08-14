@@ -82,7 +82,7 @@ public class EDBConverter {
             LOGGER.warn(String.format("The EDBObject with the oid %s has no model type information."
                     + "The resulting model may be a different model type than expected.", object.getOID()));
         }
-        if (modelClass != null && !modelClass.equals(model.toString())) {
+        if (modelClass != null && !modelClass.equals(model.getName())) {
             return false;
         }
         return true;
@@ -144,7 +144,7 @@ public class EDBConverter {
     private Object getValueForProperty(PropertyDescriptor propertyDescriptor, EDBObject object) {
         Method setterMethod = propertyDescriptor.getWriteMethod();
         String propertyName = propertyDescriptor.getName();
-        Object value = object.get(propertyName);
+        Object value = object.getObject(propertyName);
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
         // TODO: OPENENGSB-2719 do that in a better way than just an if-else series
@@ -160,7 +160,7 @@ public class EDBConverter {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
         } else if (parameterType.equals(FileWrapper.class)) {
             FileWrapper wrapper = new FileWrapper();
-            String filename = (String) object.get(propertyName + ".filename");
+            String filename = object.getString(propertyName + ".filename");
             String content = (String) value;
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
@@ -211,7 +211,7 @@ public class EDBConverter {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
             String property = propertyName + i;
-            Object obj = object.get(property);
+            Object obj = object.getObject(property);
             if (obj == null) {
                 break;
             }
@@ -234,8 +234,8 @@ public class EDBConverter {
             if (!object.containsKey(keyProperty)) {
                 break;
             }
-            Object key = object.get(keyProperty);
-            Object value = object.get(valueProperty);
+            Object key = object.getObject(keyProperty);
+            Object value = object.getObject(valueProperty);
             if (OpenEngSBModel.class.isAssignableFrom(keyType)) {
                 key = convertEDBObjectToUncheckedModel(keyType, edbService.getObject(key.toString()));
             }
@@ -316,8 +316,8 @@ public class EDBConverter {
                 try {
                     FileWrapper wrapper = (FileWrapper) entry.getValue();
                     String content = Base64.encodeBase64String(wrapper.getContent());
-                    object.put(entry.getKey(), content);
-                    object.put(entry.getKey() + ".filename", wrapper.getFilename());
+                    object.putEDBObjectEntry(entry.getKey(), content, String.class);
+                    object.putEDBObjectEntry(entry.getKey() + ".filename", wrapper.getFilename(), String.class);
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage());
                     e.printStackTrace();
@@ -325,7 +325,7 @@ public class EDBConverter {
             } else if (OpenEngSBModel.class.isAssignableFrom(entry.getType())) {
                 OpenEngSBModel temp = (OpenEngSBModel) entry.getValue();
                 String subOid = convertSubModel(temp, objects, info);
-                object.put(entry.getKey(), subOid);
+                object.putEDBObjectEntry(entry.getKey(), subOid, String.class);
             } else if (List.class.isAssignableFrom(entry.getType())) {
                 List<?> list = (List<?>) entry.getValue();
                 if (list == null || list.size() == 0) {
@@ -340,7 +340,7 @@ public class EDBConverter {
                     if (modelItems) {
                         item = convertSubModel((OpenEngSBModel) item, objects, info);
                     }
-                    object.put(entry.getKey() + i, item);
+                    object.putEDBObjectEntry(entry.getKey() + i, item, item.getClass());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
                 Map<?, ?> map = (Map<?, ?>) entry.getValue();
@@ -365,19 +365,19 @@ public class EDBConverter {
                     if (valueIsModel) {
                         value = convertSubModel((OpenEngSBModel) value, objects, info);
                     }
-                    object.put(entry.getKey() + i + ".key", key);
-                    object.put(entry.getKey() + i + ".value", value);
+                    object.putEDBObjectEntry(entry.getKey() + i + ".key", key, key.getClass());
+                    object.putEDBObjectEntry(entry.getKey() + i + ".value", value, value.getClass());
                     i++;
                 }
             } else {
-                object.put(entry.getKey(), entry.getValue());
+                object.putEDBObjectEntry(entry.getKey(), entry.getValue(), entry.getClass());
             }
         }
         Class<?> modelType = model.getClass();
-        object.put(EDBConstants.MODEL_TYPE, modelType.toString());
-        object.put("domainId", info.getDomainId());
-        object.put("connectorId", info.getConnectorId());
-        object.put("instanceId", info.getInstanceId());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, modelType.toString(), String.class);
+        object.putEDBObjectEntry("domainId", info.getDomainId(), String.class);
+        object.putEDBObjectEntry("connectorId", info.getConnectorId(), String.class);
+        object.putEDBObjectEntry("instanceId", info.getInstanceId(), String.class);
         objects.add(object);
         return oid;
     }
