@@ -26,6 +26,7 @@
   <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
+    <property name="authenticationContext" ref="authenticationContext" />
     <property name="errorHooks" ref="errorHooks" />
     <property name="postCommitHooks" ref="postCommitHooks" />
     <property name="preCommitHooks" ref="preCommitHooks" />
@@ -44,6 +45,7 @@
     <ref component-id="edbServiceProvider" />
   </service>
   
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext"/>
   <reference-list id="errorHooks" interface="org.openengsb.core.edb.api.hooks.EDBErrorHook" availability="optional" />
   <reference-list id="postCommitHooks" interface="org.openengsb.core.edb.api.hooks.EDBPostCommitHook" availability="optional"/>
   <reference-list id="preCommitHooks" interface="org.openengsb.core.edb.api.hooks.EDBPreCommitHook" availability="optional"/>

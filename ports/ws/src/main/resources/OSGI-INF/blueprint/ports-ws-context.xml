@@ -73,6 +73,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
+          <property name="authenticationContext" ref="authenticationContext" />
         </bean>	
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -85,6 +86,7 @@
   <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="httpService" interface="org.osgi.service.http.HttpService" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
 
 </blueprint>
 

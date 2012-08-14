@@ -68,6 +68,7 @@ import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.internal.FileKeySource;
 import org.openengsb.core.security.internal.OpenEngSBSecurityManager;
+import org.openengsb.core.security.internal.model.ShiroContext;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -145,7 +146,8 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
                 MethodResultMessage.class);
         List<Object> filterFactories = new LinkedList<Object>();
         filterFactories.add(MessageVerifierFilter.class);
-        filterFactories.add(new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)));
+        filterFactories.add(new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext),
+                new ShiroContext()));
         filterFactories.add(new RequestMapperFilter(requestHandler));
         factory.setFilters(filterFactories);
         factory.create();

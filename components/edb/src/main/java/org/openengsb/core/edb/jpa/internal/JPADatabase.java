@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
@@ -37,7 +38,6 @@ import org.openengsb.core.edb.api.hooks.EDBPostCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
-import org.openengsb.core.security.SecurityContext;
 import org.osgi.service.blueprint.container.ServiceUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     private EntityTransaction utx;
     private EntityManager entityManager;
     private JPADao dao;
+    private AuthenticationContext authenticationContext;
 
     private List<EDBErrorHook> errorHooks;
     private List<EDBPostCommitHook> postCommitHooks;
@@ -409,7 +410,7 @@ public class JPADatabase implements EngineeringDatabaseService {
      */
     private String getAuthenticatedUser() {
         // if JPADatabase is called via integration tests
-        String username = (String) SecurityContext.getAuthenticatedPrincipal();
+        String username = (String) authenticationContext.getAuthenticatedPrincipal();
         if (username == null) {
             return "testuser";
         }
@@ -470,4 +471,9 @@ public class JPADatabase implements EngineeringDatabaseService {
     public void setBeginCommitHooks(List<EDBBeginCommitHook> beginCommitHooks) {
         this.beginCommitHooks = beginCommitHooks;
     }
+
+    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
+    }
+
 }

@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import javax.persistence.Persistence;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
@@ -50,9 +52,11 @@ public class JPATestIT {
 
     @Before
     public void initDB() {
+        AuthenticationContext authenticationContext = mock(AuthenticationContext.class);
         try {
             utils = new Utils();
             db = new JPADatabase();
+            db.setAuthenticationContext(authenticationContext);
             Properties props = new Properties();
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("edb-test", props);
             EntityManager em = emf.createEntityManager();
