@@ -98,20 +98,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
-              *
-            </Import-Package>
-            <!--
-              Good question; I dont think this is required but have to be revaluated
-            -->
-            <DynamicImport-Package>*</DynamicImport-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>

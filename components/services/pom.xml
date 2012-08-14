@@ -121,11 +121,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
-              org.apache.felix.fileinstall;version="[3,4)", *
+            <Import-Package>org.apache.felix.fileinstall;version="[3,4)", *
             </Import-Package>
             <Bundle-Activator>org.openengsb.core.services.internal.security.SecurityBundleActivator</Bundle-Activator>
             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
