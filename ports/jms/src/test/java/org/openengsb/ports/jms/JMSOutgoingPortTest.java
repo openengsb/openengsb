@@ -40,7 +40,7 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
+import org.openengsb.core.services.filter.OutgoingJsonSecureMethodCallMarshalFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;

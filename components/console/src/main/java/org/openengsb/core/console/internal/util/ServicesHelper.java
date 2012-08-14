@@ -43,7 +43,7 @@ import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.console.internal.ServiceCommands;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.services.SecurityContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

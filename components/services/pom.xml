@@ -82,6 +82,40 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <configuration>
+          <addDefaultConstructor>true</addDefaultConstructor>
+          <enforcePropertyRestriction>true</enforcePropertyRestriction>
+        </configuration>
+        <executions>
+          <execution>
+            <id>enhancer</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>enhance</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <version>${openjpa.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -94,6 +128,9 @@
               org.springframework.aop.framework,
               org.apache.felix.fileinstall;version="[3,4)", *
             </Import-Package>
+            <Bundle-Activator>org.openengsb.core.services.internal.security.SecurityBundleActivator</Bundle-Activator>
+            <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+            <Delegation-Annotations>true</Delegation-Annotations>
             <!--
               We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
               Additional domains can be installed any time.
@@ -116,10 +153,28 @@
       <artifactId>org.openengsb.framework.common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.authentication</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.authorization</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.serviceacl</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
@@ -139,6 +194,27 @@
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.commands</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jpa_2.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

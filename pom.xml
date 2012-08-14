@@ -85,7 +85,6 @@
     <module>components/edb</module>
     <module>components/ekb</module>
     <module>components/persistence</module>
-    <module>components/security</module>
     <module>components/services</module>
     <module>components/workflow</module>
     <module>components/info</module>

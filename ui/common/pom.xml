@@ -167,11 +167,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
       <scope>test</scope>
     </dependency>
@@ -200,6 +195,14 @@
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
     </dependency>
   </dependencies>
 

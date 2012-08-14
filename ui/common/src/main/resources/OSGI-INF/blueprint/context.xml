@@ -69,7 +69,7 @@
 
   <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
     <property name="authenticator">
-      <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
+      <bean class="org.openengsb.core.services.OpenEngSBShiroAuthenticator">
         <property name="authenticator" ref="authenticator" />
       </bean>
     </property>
