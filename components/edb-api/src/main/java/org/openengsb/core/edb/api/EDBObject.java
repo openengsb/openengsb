@@ -24,7 +24,7 @@ import java.util.Map;
  * DB-Objects handle an object that is ready to be put into a DB and give access to the metadata.
  */
 @SuppressWarnings("serial")
-public class EDBObject extends HashMap<String, Object> {
+public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private Long timestamp;
     private String oid;
 
@@ -38,8 +38,7 @@ public class EDBObject extends HashMap<String, Object> {
     public EDBObject(String oid) {
         super();
         this.oid = oid;
-
-        put(OID_CONST, oid);
+        putEDBObjectEntry(OID_CONST, oid, String.class.getName());
     }
 
     /**
@@ -47,21 +46,19 @@ public class EDBObject extends HashMap<String, Object> {
      * so any already existing values with the special key representing the OID will be overwritten by the provided
      * parameters.
      */
-    public EDBObject(String oid, Map<String, Object> data) {
+    public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
         super(data);
-        this.oid = oid;
-
-        put(OID_CONST, oid);
+        setOID(oid);
     }
 
     /**
      * Usually used by a Database query function to create an EDBObject out of raw database-data. This will extract the
      * metadata from the raw data Map.
      */
-    public EDBObject(Map<String, Object> rawData) {
+    public EDBObject(Map<String, EDBObjectEntry> rawData) {
         super(rawData);
-        this.timestamp = (Long) rawData.get(TIMESTAMP_CONST);
-        this.oid = (String) rawData.get(OID_CONST);
+        this.timestamp = (Long) rawData.get(TIMESTAMP_CONST).getValue();
+        this.oid = (String) rawData.get(OID_CONST).getValue();
     }
 
     /**
@@ -77,17 +74,17 @@ public class EDBObject extends HashMap<String, Object> {
      */
     public void updateTimestamp(Long timestamp) {
         this.timestamp = timestamp;
-        put(TIMESTAMP_CONST, timestamp);
+        putEDBObjectEntry(TIMESTAMP_CONST, timestamp, Long.class.getName());
     }
 
     /**
      * Retrieve the OID for this object.
      */
-    public final String getOID() {
+    public String getOID() {
         if (oid != null) {
             return oid;
         } else {
-            oid = (String) get(OID_CONST);
+            oid = (String) get(OID_CONST).getValue();
             return oid;
         }
     }
@@ -95,38 +92,75 @@ public class EDBObject extends HashMap<String, Object> {
     /** Change the OID */
     public void setOID(String oid) {
         this.oid = oid;
-        put(OID_CONST, oid);
+        putEDBObjectEntry(OID_CONST, oid, String.class.getName());
     }
 
     /**
      * Convenience function to retrieve a value as String.
      */
-    public final String getString(String key) {
-        return (String) get(key);
+    public String getString(String key) {
+        EDBObjectEntry entry = get(key);
+        return entry == null ? null : (String) entry.getValue();
     }
 
     /**
      * Convenience function to retrieve a value as long.
      */
-    public final long getLong(String key) {
-        return (Long) get(key);
+    public Long getLong(String key) {
+        EDBObjectEntry entry = get(key);
+        return entry == null ? null : (Long) entry.getValue();
+    }
+    
+    /**
+     * Convenience function to retrieve a value as object.
+     */
+    public Object getObject(String key) {
+        EDBObjectEntry entry = get(key);
+        return entry == null ? null : entry.getValue();
+    }
+    
+    /**
+     * Convenience function to retrieve a value as object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getObject(String key, Class<T> clazz) {
+        EDBObjectEntry entry = get(key);
+        return entry == null ? null : (T) entry.getValue();
     }
 
     /**
      * Test if this object is a "deletion" entry in a history.
      */
-    public final boolean isDeleted() {
-        Object id = get(DELETED_CONST);
-        if (id == null) {
+    public final Boolean isDeleted() {
+        EDBObjectEntry deleted = get(DELETED_CONST);
+        if (deleted == null) {
             return false;
         }
-        return (Boolean) id;
+        return (Boolean) deleted.getValue();
+    }
+    
+    public void setDeleted(Boolean deleted) {
+        put(DELETED_CONST, new EDBObjectEntry(DELETED_CONST, deleted, Boolean.class));
+    }
+    
+    /**
+     * Adds an EDBObjectEntry to this EDBObject
+     */
+    public void putEDBObjectEntry(String key, Object value, String type) {
+        put(key, new EDBObjectEntry(key, value, type));
+    }
+    
+    /**
+     * Adds an EDBObjectEntry to this EDBObject
+     */
+    public void putEDBObjectEntry(String key, Object value, Class<?> type) {
+        putEDBObjectEntry(key, value, type.getName());
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
-        for (Map.Entry<String, Object> entry : this.entrySet()) {
+        for (Map.Entry<String, EDBObjectEntry> entry : this.entrySet()) {
             appendEntry(entry, builder);
         }
         builder.append("}");
@@ -137,22 +171,11 @@ public class EDBObject extends HashMap<String, Object> {
     /**
      * analyzes the entry and write the specific information into the StringBuilder.
      */
-    private void appendEntry(Map.Entry<String, Object> entry, StringBuilder builder) {
+    private void appendEntry(Map.Entry<String, EDBObjectEntry> entry, StringBuilder builder) {
         if (builder.length() > 2) {
             builder.append(",");
         }
-        String key = entry.getKey();
-        Object value = entry.getValue();
-
-        builder.append(" \"").append(key).append("\"");
-        builder.append(" : ");
-
-        if (value.getClass().equals(String.class)) {
-            builder.append("\"").append((String) value).append("\" ");
-        } else if (value.getClass().equals(Long.class)) {
-            builder.append((Long) value).append(" ");
-        } else {
-            builder.append(value.toString()).append(" ");
-        }
+        builder.append(" \"").append(entry.getKey()).append("\"");
+        builder.append(" : ").append(entry.getValue());
     }
 }
