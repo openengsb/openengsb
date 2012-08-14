@@ -19,8 +19,6 @@ package org.openengsb.ui.admin.xlink.mocking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.LinkableDomain;
@@ -32,6 +30,9 @@ import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
 import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 
+/**
+ * This class mocks the unfinished xlink-functionality
+ */
 public final class XLinkMock {
     
     private XLinkMock() {
@@ -55,7 +56,7 @@ public final class XLinkMock {
             OsgiServiceNotAvailableException, ClassCastException, OpenXLinkException {
         if (isTransformationPossible(sourceModelClass, 
             sourceModelVersion, destinationModelClass, destinationModelVersion)) {
-            List<Object> modelObjectsDestination = transformModelObject(sourceModelClass, 
+            List<Object> modelObjectsDestination = transformModelObject(sourceModelClass, sourceModelVersion,
                     destinationModelClass, destinationModelVersion, soureObject, osgiService);
             if(!modelObjectsDestination.isEmpty()) {
                 openPotentialMatches(modelObjectsDestination, connectorToCall, viewToCall, osgiService);
@@ -65,8 +66,12 @@ public final class XLinkMock {
         }
     }
  
+    /**
+     * Transforms the given ModelObject from it´s SourceClass to the defined DestinationModel.
+     */
     private static List<Object> transformModelObject(
             String sourceModelClass,  
+            String sourceModelVersion,             
             String destinationModelClass, 
             String destinationModelVersion, 
             Object modelObjectSource,
@@ -74,6 +79,9 @@ public final class XLinkMock {
         if(modelObjectSource == null)return null;
         Object resultObject = null;
         Class destinationClass = XLinkUtils.getClassOfOpenEngSBModel(destinationModelClass, destinationModelVersion, osgiService);
+       
+        //########### MOCK !!! Todo replace with real transformation        
+        
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
             OOClassModel ooclass = (OOClassModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
@@ -91,28 +99,35 @@ public final class XLinkMock {
             SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
             resultObject = sqlSource;
         }
+        
+        //########### MOCK !!! Todo replace with real transformation    
+        
         List<Object> matches = new ArrayList<Object>();
         matches.add(resultObject);
         return matches;
     }
+    
+    /**
+     * Calls the given connector to process the list of transformed Objects as 
+     * potential XLink matches.
+     */
     private static void openPotentialMatches(
             List<Object> modelObjectsDestination, 
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
             ClassCastException, OpenXLinkException{
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "openPotentialMatches was called:");
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "modelObjectsDestination - " + modelObjectsDestination.get(0));
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "connectorToCall - " + connectorToCall);
-        Logger.getLogger(XLinkMock.class.getName()).log(Level.FINER, "viewToCall - " + viewToCall);
-
         Object serviceObject = osgiService.getService("(service.pid="+connectorToCall+")", 100L);
         if(serviceObject == null) throw new OpenXLinkException(connectorNotFound);
         LinkableDomain service = (LinkableDomain) serviceObject;
+        /*TODO remove after implementation of filter on wicketpage*/
         SecurityContext.login("admin", new Password("password"));
         service.openXLinks(modelObjectsDestination, viewToCall);
     }
     
+    /**
+     * Returns true, if the transformation between the two defined ModelClasses is possible.
+     */
     public static  boolean isTransformationPossible(
             String srcModelClass, 
             String srcModelVersion, 

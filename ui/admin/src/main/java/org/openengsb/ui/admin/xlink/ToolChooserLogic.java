@@ -31,6 +31,9 @@ import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
+/**
+ * This class supplies the logic to process a call from an XLink URL.
+ */
 public class ToolChooserLogic {
     
     private ConnectorManager serviceManager;
@@ -41,13 +44,19 @@ public class ToolChooserLogic {
         this.osgiService = osgiService;
     }
     
+    /**
+     * Returns the Tools of a given HostId, which are registered for XLink.
+     */
     public List<RemoteTool> getRegisteredToolsFromHost(String hostId) {
         return XLinkUtils.getLocalToolFromRegistrations(
                 serviceManager.getXLinkRegistration(hostId));
     } 
     
-    public ModelDescription getModelClassOfView(String hostId, String cId, String viewId) {
-        String connectorId = cId;
+    /**
+     * Returns the ModelDescription to a given XLinkRegistration and ViewId.
+     * Returns null, if the XLinkRegistration or the ViewId could not be found.
+     */
+    public ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId) {
         if (getRegistration(hostId, connectorId) != null) {
             XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();
             return template.getViewToModels().get(viewId);            
@@ -55,6 +64,10 @@ public class ToolChooserLogic {
         return null;
     }    
     
+    /**
+     * Returns the Registrationdata to a given HostId and ConnectorId.
+     * Returns null, if no XLinkRegistration was found.
+     */
     private RemoteToolRegistration getRegistration(String hostId, String connectorId) {
         for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
@@ -64,7 +77,11 @@ public class ToolChooserLogic {
         return null;
     }
  
-    public List<String> getModelIdentifierToModelId(
+    /**
+     * Returns the FieldNames of the given ModelDescription (e.g. ModelClass and ModelVersion) which
+     * are marked as identifying Fields for XLink.
+     */
+    public List<String> getModelIdentifierToModelDescription(
             String modelId, 
             String versionId) throws ClassNotFoundException {
         //Todo fetch real identifiers
@@ -89,6 +106,10 @@ public class ToolChooserLogic {
         return identifierKeyNames;
     }    
     
+    /**
+     * Returns true, if the given Connector is registered for XLink on the given 
+     * HostId.
+     */
     public boolean isConnectorRegistrated(String hostId, String connectorId){
         for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
@@ -98,6 +119,9 @@ public class ToolChooserLogic {
         return false;
     }
     
+    /**
+     * Returns true, if the given View exists for the defined XLinkRegistration.
+     */
     public boolean isViewExisting(String hostId, String connectorId, String viewId){
         for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {

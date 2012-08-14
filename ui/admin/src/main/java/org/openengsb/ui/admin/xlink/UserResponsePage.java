@@ -21,7 +21,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
- *
+ * This class renders the success or error message after the processing of an
+ * xlink, readable for users.
  */
 public class UserResponsePage extends WebPage {
     

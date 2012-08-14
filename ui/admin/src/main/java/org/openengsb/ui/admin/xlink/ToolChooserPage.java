@@ -58,6 +58,8 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 /**
+ * Manages the processing of an incoming XLink and, if necessary, renders a page
+ * where the user can choose between available Views for XLinking.
  */
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
@@ -80,8 +82,6 @@ public class ToolChooserPage extends WebPage {
     
     private String connectorId;
     private String viewId;
-
-    //private Map<String, String> identifierValues;
     
     private Map<String, String[]> requestParameters;
     
@@ -94,6 +94,9 @@ public class ToolChooserPage extends WebPage {
         processPage();
     }
     
+    /**
+     * Validates the incoming request and manages the further processing of the XLink.
+     */
     private void processPage() {
         chooserLogic = new ToolChooserLogic(serviceManager, serviceUtils);
         requestParameters = getRequestParametersAsAMap();
@@ -136,6 +139,9 @@ public class ToolChooserPage extends WebPage {
         buildToolChooserPage(resp);      
     }
     
+    /**
+     * Returns the Requestparameter as a Map. 
+     */
     private Map<String, String[]> getRequestParametersAsAMap() {
         Map<String, String[]> parameterMap = new HashMap<String, String[]>();
         IRequestParameters parameters = getRequest().getQueryParameters();
@@ -150,10 +156,18 @@ public class ToolChooserPage extends WebPage {
         return parameterMap;
     }
     
+    /**
+     * Returns the value of the given key from the parameterMap or null.
+     */
     private String getParameterFromMap(String key) {
         return requestParameters.get(key) == null ? null : requestParameters.get(key)[0];
     }
     
+    /**
+     * Throws an OpenXLinkException, if the calling request was not a well-formed XLink,
+     * does not contain the mandatory xlink parameters or does not contain the necessary IdentifyingFields
+     * to the defined ModelClass.
+     */
     private void checkIfXLinkIsValid(HttpServletRequest req) throws OpenXLinkException {
         fetchXLinkParameters(req);
         checkMandatoryXLinkParameters();
@@ -163,7 +177,7 @@ public class ToolChooserPage extends WebPage {
         checkXLinkIsExpired();
         List<String> keyFields = null;
         try {
-            keyFields = chooserLogic.getModelIdentifierToModelId(modelId, versionId);
+            keyFields = chooserLogic.getModelIdentifierToModelDescription(modelId, versionId);
         } catch (ClassNotFoundException ex) {
             String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
             Logger.getLogger(ToolChooserPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -172,6 +186,9 @@ public class ToolChooserPage extends WebPage {
         fetchAndCheckIdentifier(keyFields);
     }
     
+    /**
+     * Fetches the mandatory parameters for XLink from the calling request.
+     */
     private void fetchXLinkParameters(HttpServletRequest req) {
         contextId = getParameterFromMap(XLinkUtils.XLINK_CONTEXTID_KEY);
         modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
@@ -184,6 +201,9 @@ public class ToolChooserPage extends WebPage {
         identifier = getParameterFromMap(XLinkUtils.XLINK_IDENTIFIER_KEY);
     }    
 
+    /**
+     * Throws an OpenXLinkException, if one or more mandatory parameter for XLink where not supplied.
+     */
     private void checkMandatoryXLinkParameters() throws OpenXLinkException {
         String errorMsg = new StringResourceModel("error.missingMandatoryGetParam", this, null).getString();
         if (contextId == null) { errorMsg += " " + XLinkUtils.XLINK_CONTEXTID_KEY; }
@@ -202,6 +222,9 @@ public class ToolChooserPage extends WebPage {
         }
     }    
     
+    /**
+     * Throws an OpenXLinkException, if the calling XLink has expired.
+     */
     private void checkXLinkIsExpired() throws OpenXLinkException {
         if (expirationDate != null ? Calendar.getInstance().after(expirationDate) : false) {
             String expiredMsg = new StringResourceModel("error.xlinkHasExpired", this, null).getString();
@@ -209,6 +232,10 @@ public class ToolChooserPage extends WebPage {
         }        
     }  
     
+    /**
+     * Throws an OpenXLinkException, if the supplied connector or viewId are registered for XLink
+     * or do not exist.
+     */
     private void checkConnectorAndViewExists() throws OpenXLinkException{
         String errorConnectorNotRegistered = new StringResourceModel("error.connectorNotRegistrated", this, null).getString();
         String errorViewNotExisting = new StringResourceModel("error.viewNotExisting", this, null).getString();
@@ -216,6 +243,9 @@ public class ToolChooserPage extends WebPage {
         if(!chooserLogic.isViewExisting(hostId, connectorId, viewId))throw new OpenXLinkException(errorViewNotExisting);
     }
     
+    /**
+     * Fetches and validates the Paramters from the request, to the defined IdentifyingFields.
+     */
     private void fetchAndCheckIdentifier(List<String> identifierKeyNames) throws OpenXLinkException {      
         Class clazz;
         try {
@@ -250,10 +280,17 @@ public class ToolChooserPage extends WebPage {
         }
     }
     
+    /**
+     * Returns true, if the calling XLink contains the nessecary parameters for 
+     * 'local-switching'.
+     */
     private boolean checkForLocalSwitchingParameters() {
         return (connectorId != null) && (viewId != null);
     }
     
+    /**
+     * Redirects the Request to the Page, that renders the Errormessage to a xlink call.
+     */
     private void handleErrorResponse(String error) {
         if (checkForLocalSwitchingParameters()) {    
             throw new RestartResponseException(new MachineResponsePage(error,false));  
@@ -264,6 +301,9 @@ public class ToolChooserPage extends WebPage {
         }
     }
     
+    /**
+     * Redirects the Request to the Page, that renders the Successmessage to a xlink call.
+     */
     private void handleSuccessResponse(HttpServletResponse resp) {
         if (checkForLocalSwitchingParameters()) {
             String successMsg = new StringResourceModel("success.localSwitch", this, null).getString();
@@ -278,6 +318,9 @@ public class ToolChooserPage extends WebPage {
      
     }
     
+    /**
+     * Builds the Page where the user can choose between the available Views for XLinking.
+     */
     private void buildToolChooserPage(final HttpServletResponse resp) {
         String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
         hostIdMsg = String.format(hostIdMsg, hostId);
@@ -348,6 +391,11 @@ public class ToolChooserPage extends WebPage {
         }
     }    
     
+    /**
+     * Returns the description for the currently configured locale. 
+     * If no description could be found for the configured locale, the first one
+     * from the iterator is returned.
+     */
     private String returnLocalizedDescription(Map<String, String> descriptions) {
         if (descriptions.isEmpty()) {
             return null;
@@ -358,6 +406,9 @@ public class ToolChooserPage extends WebPage {
         return descriptions.get(getLocaleKey());
     }
     
+    /**
+     * Returns the currently configured locale key.
+     */
     private String getLocaleKey() {
         return getLocale().getLanguage();
     }

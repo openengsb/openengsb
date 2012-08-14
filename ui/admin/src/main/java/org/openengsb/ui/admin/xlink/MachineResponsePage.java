@@ -24,7 +24,9 @@ import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
- * 
+ * This class renders the webpage´s response during a XLink 'local-switch'.
+ * It is adapted to be processable for machine-clients. The response contains 
+ * the message as body and the HTTP-Status code as header.
  */
 public class MachineResponsePage extends WebPage {
     
