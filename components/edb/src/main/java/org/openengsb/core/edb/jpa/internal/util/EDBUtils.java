@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The EDBUtils class contains functions needed in the whole EDB implementation.
  */
-public class EDBUtils {
+public final class EDBUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBUtils.class);
     private static List<EDBConverterStep> steps = new ArrayList<EDBConverterStep>(Arrays.asList(
         new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));

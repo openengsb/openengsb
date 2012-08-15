@@ -34,7 +34,7 @@ public class DateConverterStep implements EDBConverterStep {
 
     @Override
     public JPAEntry convertToJPAEntry(EDBObjectEntry entry) {
-        return new JPAEntry(entry.getKey(), "" + ((Date)entry.getValue()).getTime(), entry.getType());
+        return new JPAEntry(entry.getKey(), "" + ((Date) entry.getValue()).getTime(), entry.getType());
     }
 
     @Override
