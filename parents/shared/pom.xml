@@ -851,13 +851,33 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.edb</artifactId>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.ekb</artifactId>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.edb</groupId>
+        <artifactId>org.openengsb.framework.edb.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.ekb</groupId>
+        <artifactId>org.openengsb.framework.ekb.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.drools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.edb</groupId>
+        <artifactId>org.openengsb.framework.edb.jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -927,6 +947,16 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authentication</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authorization</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>org.openengsb.connector.memoryauditing</artifactId>
         <version>${project.version}</version>
@@ -934,6 +964,21 @@
       <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>org.openengsb.connector.example</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.wicketacl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.serviceacl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
