@@ -107,7 +107,7 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testInsert_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("testobject");
-        testObject.putEDBObjectEntry("testkey", "testvalue", String.class);
+        testObject.putEDBObjectEntry("testkey", "testvalue");
         commit.insert(testObject);
         Long testtime = edbService.commit(commit);
         assertThat(testtime.longValue(), not(0L));
@@ -124,7 +124,7 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testRetrieveObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject");
-        testObject.putEDBObjectEntry("newtestkey", "newtestvalue", String.class);
+        testObject.putEDBObjectEntry("newtestkey", "newtestvalue");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -137,7 +137,7 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testQueryForObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject1");
-        testObject.putEDBObjectEntry("newtestkey1", "newtestvalue1", String.class);
+        testObject.putEDBObjectEntry("newtestkey1", "newtestvalue1");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -151,7 +151,7 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testConflictDetection_shouldThrowException() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject2");
-        testObject.putEDBObjectEntry("newtestkey2", "newtestvalue2", String.class);
+        testObject.putEDBObjectEntry("newtestkey2", "newtestvalue2");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -159,8 +159,8 @@ public class EDBIT extends AbstractExamTestHelper {
         commit = edbService.createCommit("test", "test");
 
         EDBObject obj = edbService.getObject("newtestobject2");
-        obj.putEDBObjectEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        obj.putEDBObjectEntry("test", "test", String.class);
+        obj.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(0));
+        obj.putEDBObjectEntry("test", "test");
 
         commit.update(obj);
         edbService.commit(commit);

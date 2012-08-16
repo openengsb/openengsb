@@ -365,8 +365,8 @@ public class EDBConverter {
                     if (valueIsModel) {
                         value = convertSubModel((OpenEngSBModel) value, objects, info);
                     }
-                    object.putEDBObjectEntry(entry.getKey() + i + ".key", key, key.getClass());
-                    object.putEDBObjectEntry(entry.getKey() + i + ".value", value, value.getClass());
+                    object.putEDBObjectEntry(entry.getKey() + i + ".key", key);
+                    object.putEDBObjectEntry(entry.getKey() + i + ".value", value);
                     i++;
                 }
             } else {
@@ -374,10 +374,10 @@ public class EDBConverter {
             }
         }
         Class<?> modelType = model.getClass();
-        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, modelType.getName(), String.class);
-        object.putEDBObjectEntry("domainId", info.getDomainId(), String.class);
-        object.putEDBObjectEntry("connectorId", info.getConnectorId(), String.class);
-        object.putEDBObjectEntry("instanceId", info.getInstanceId(), String.class);
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, modelType.getName());
+        object.putEDBObjectEntry("domainId", info.getDomainId());
+        object.putEDBObjectEntry("connectorId", info.getConnectorId());
+        object.putEDBObjectEntry("instanceId", info.getInstanceId());
         objects.add(object);
         return oid;
     }

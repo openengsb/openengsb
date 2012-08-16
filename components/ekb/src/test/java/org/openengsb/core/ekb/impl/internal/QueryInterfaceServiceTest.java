@@ -52,55 +52,55 @@ public class QueryInterfaceServiceTest {
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
 
         EDBObject edbObject = new EDBObject("testoid");
-        edbObject.putEDBObjectEntry("id", "testid", String.class);
-        edbObject.putEDBObjectEntry("date", new Date(), Date.class);
-        edbObject.putEDBObjectEntry("name", "testname", String.class);
+        edbObject.putEDBObjectEntry("id", "testid");
+        edbObject.putEDBObjectEntry("date", new Date());
+        edbObject.putEDBObjectEntry("name", "testname");
         edbObject.putEDBObjectEntry("enumeration", "A", ENUM.class);
-        edbObject.putEDBObjectEntry("list0", "blub", String.class);
-        edbObject.putEDBObjectEntry("list1", "blab", String.class);
-        edbObject.putEDBObjectEntry("list2", "blob", String.class);
+        edbObject.putEDBObjectEntry("list0", "blub");
+        edbObject.putEDBObjectEntry("list1", "blab");
+        edbObject.putEDBObjectEntry("list2", "blob");
         edbObject.putEDBObjectEntry("sub", "suboid1", SubModel.class);
         edbObject.putEDBObjectEntry("subs0", "suboid2", SubModel.class);
         edbObject.putEDBObjectEntry("subs1", "suboid3", SubModel.class);
-        edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName(), String.class);
+        edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName());
 
         EDBObject edbObjectImpl = new EDBObject("testoidimpl");
-        edbObjectImpl.putEDBObjectEntry("id", "testid", String.class);
-        edbObjectImpl.putEDBObjectEntry("date", new Date(), Date.class);
-        edbObjectImpl.putEDBObjectEntry("name", "testname", String.class);
+        edbObjectImpl.putEDBObjectEntry("id", "testid");
+        edbObjectImpl.putEDBObjectEntry("date", new Date());
+        edbObjectImpl.putEDBObjectEntry("name", "testname");
         edbObjectImpl.putEDBObjectEntry("enumeration", "A", ENUM.class);
-        edbObjectImpl.putEDBObjectEntry("list0", "blub", String.class);
-        edbObjectImpl.putEDBObjectEntry("list1", "blab", String.class);
-        edbObjectImpl.putEDBObjectEntry("list2", "blob", String.class);
+        edbObjectImpl.putEDBObjectEntry("list0", "blub");
+        edbObjectImpl.putEDBObjectEntry("list1", "blab");
+        edbObjectImpl.putEDBObjectEntry("list2", "blob");
         edbObjectImpl.putEDBObjectEntry("sub", "suboid1", SubModel.class);
         edbObjectImpl.putEDBObjectEntry("subs0", "suboid2", SubModel.class);
         edbObjectImpl.putEDBObjectEntry("subs1", "suboid3", SubModel.class);
-        edbObjectImpl.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel2.class.getName(), String.class);
+        edbObjectImpl.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel2.class.getName());
 
         EDBObject mapTest = new EDBObject("mapoid");
-        mapTest.putEDBObjectEntry("id", "testid", String.class);
-        mapTest.putEDBObjectEntry("map0.key", "keyA", String.class);
-        mapTest.putEDBObjectEntry("map0.value", "valueA", String.class);
-        mapTest.putEDBObjectEntry("map1.key", "keyB", String.class);
-        mapTest.putEDBObjectEntry("map1.value", "valueB", String.class);
-        mapTest.putEDBObjectEntry("map2.key", "keyC", String.class);
-        mapTest.putEDBObjectEntry("map2.value", "valueC", String.class);
-        mapTest.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName(), String.class);
+        mapTest.putEDBObjectEntry("id", "testid");
+        mapTest.putEDBObjectEntry("map0.key", "keyA");
+        mapTest.putEDBObjectEntry("map0.value", "valueA");
+        mapTest.putEDBObjectEntry("map1.key", "keyB");
+        mapTest.putEDBObjectEntry("map1.value", "valueB");
+        mapTest.putEDBObjectEntry("map2.key", "keyC");
+        mapTest.putEDBObjectEntry("map2.value", "valueC");
+        mapTest.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName());
 
         EDBObject subObject1 = new EDBObject("suboid1");
-        subObject1.putEDBObjectEntry("id", "testid", String.class);
-        subObject1.putEDBObjectEntry("value", "testvalue", String.class);
-        subObject1.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName(), String.class);
+        subObject1.putEDBObjectEntry("id", "testid");
+        subObject1.putEDBObjectEntry("value", "testvalue");
+        subObject1.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName());
 
         EDBObject subObject2 = new EDBObject("suboid2");
-        subObject2.putEDBObjectEntry("id", "AAAAA", String.class);
-        subObject2.putEDBObjectEntry("value", "BBBBB", String.class);
-        subObject2.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName(), String.class);
+        subObject2.putEDBObjectEntry("id", "AAAAA");
+        subObject2.putEDBObjectEntry("value", "BBBBB");
+        subObject2.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName());
 
         EDBObject subObject3 = new EDBObject("suboid3");
-        subObject3.putEDBObjectEntry("id", "CCCCC", String.class);
-        subObject3.putEDBObjectEntry("value", "DDDDD", String.class);
-        subObject3.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName(), String.class);
+        subObject3.putEDBObjectEntry("id", "CCCCC");
+        subObject3.putEDBObjectEntry("value", "DDDDD");
+        subObject3.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName());
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
         when(edbService.getObject("testoidimpl")).thenReturn(edbObjectImpl);
