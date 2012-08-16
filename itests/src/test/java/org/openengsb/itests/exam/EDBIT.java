@@ -255,6 +255,27 @@ public class EDBIT extends AbstractExamTestHelper {
         EDBDeleteEvent event = new EDBDeleteEvent(model);
         edbService.processEDBDeleteEvent(event);
     }
+    
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testModelTailIsLoaded_shouldLoadModelTail() throws Exception {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setName("blub");
+        model.setEdbId("modeltailtest/1");
+        EDBInsertEvent event = new EDBInsertEvent(model);
+        enrichEDBEvent(event);
+        edbService.processEDBInsertEvent(event);
+        
+        model = query.getModel(TestModel.class, "testdomain/testconnector/modeltailtest/1");
+        Boolean versionPresent = false;
+        for(OpenEngSBModelEntry entry : ((OpenEngSBModel) model).getOpenEngSBModelEntries()) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                versionPresent = true;
+            }
+        }
+        
+        assertThat(versionPresent, is(true));
+    }
 
     @Test
     @SuppressWarnings("deprecation")
