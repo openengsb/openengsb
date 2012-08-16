@@ -51,20 +51,13 @@ public class DefaultPersistenceServiceTest {
     }
 
     @Test
-    public void testPersistingAndLoadingObject_shouldChangeAfterworks() throws Exception {
-        persistenceService.create(new B());
-        List<B> query = persistenceService.query(new B());
-        assertEquals(1, query.size());
-        assertEquals("lala", query.get(0).getAdditionalValue());
-    }
-
-    @Test
     public void testPersistingAndLoadingVariousObject_shouldWork() throws Exception {
         persistenceService.create(new B());
         persistenceService.create(new A());
         List<A> query = persistenceService.query(new A());
         assertEquals(2, query.size());
     }
+
 
     @Test
     public void testQueryBySample_shouldReturnCorrectObject() throws Exception {
