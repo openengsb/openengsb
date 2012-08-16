@@ -107,7 +107,7 @@
     <mockito.version>1.8.5</mockito.version>
     <felix.fileinstall.version>3.2.2</felix.fileinstall.version>
     <jsch.wrapped.version>0.1.44_2</jsch.wrapped.version>
-    <activemq.version>5.5.1</activemq.version>
+    <activemq.version>5.6.0</activemq.version>
     <hamcrest.version>1.1</hamcrest.version>
     <joda.version>1.6.2</joda.version>
     <opensaml.version>2.5.1_1</opensaml.version>
@@ -142,7 +142,7 @@
     <jasypt.version>1.6_1</jasypt.version>
     <mvel2.version>2.1.0.drools4</mvel2.version>
     <fastinfoset.version>1.2.7_4</fastinfoset.version>
-    <smx.specs.version>2.0-SNAPSHOT</smx.specs.version>
+    <smx.specs.version>2.0.0</smx.specs.version>
     <xstream.version>1.3.1</xstream.version>
     <xmlpull.version>1.1.4.c</xmlpull.version>
     <antlr.version>3.1.3</antlr.version>
