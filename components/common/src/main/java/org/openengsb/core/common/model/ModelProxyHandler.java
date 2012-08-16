@@ -49,13 +49,7 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         objects = new HashMap<String, OpenEngSBModelEntry>();
         fillModelWithNullValues(model);
         for (OpenEngSBModelEntry entry : entries) {
-            if (objects.containsKey(entry.getKey()) || entry.getKey().equals(EDBConstants.MODEL_OID)
-                    || entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
-                objects.put(entry.getKey(), entry);
-            } else {
-                LOGGER.error("entry \"{}\" can not be set because the interface doesn't contain this field!",
-                    entry.getKey());
-            }
+            objects.put(entry.getKey(), entry);
         }
         initializeModelConverterSteps();
     }

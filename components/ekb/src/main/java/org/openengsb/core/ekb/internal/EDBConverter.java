@@ -116,17 +116,38 @@ public class EDBConverter {
             return null;
         }
         Object instance = createNewInstance(model);
+        EDBObject workingCopy = new EDBObject(object);
 
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
             Method setterMethod = propertyDescriptor.getWriteMethod();
-            Object value = getValueForProperty(propertyDescriptor, object);
+            Object value = getValueForProperty(propertyDescriptor, workingCopy);
             if (value != null) {
                 invokeSetterMethod(setterMethod, instance, value);
             }
         }
+
+        for (Map.Entry<String, Object> entry : workingCopy.entrySet()) {
+            if (entry.getKey().endsWith(".type") || entry.getValue() == null) {
+                continue;
+            }
+            String type = workingCopy.getString(entry.getKey() + ".type");
+            Class<?> clazz = null;
+            if (type == null) {
+                clazz = entry.getValue().getClass();
+            } else {
+                try {
+                    clazz = model.getClassLoader().loadClass(type);
+                } catch (ClassNotFoundException e) {
+                    clazz = entry.getValue().getClass();
+                }
+            }
+            OpenEngSBModelEntry newEntry = new OpenEngSBModelEntry(entry.getKey(), entry.getValue(), clazz);
+            ((OpenEngSBModel) instance).addOpenEngSBModelEntry(newEntry);
+        }
+
         return instance;
     }
 
@@ -168,6 +189,8 @@ public class EDBConverter {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
+            object.remove(propertyName);
+            object.remove(propertyName + ".type");
         } else if (parameterType.equals(File.class)) {
             FileWrapper wrapper = new FileWrapper();
             String filename = (String) object.get(propertyName + ".filename");
@@ -175,12 +198,15 @@ public class EDBConverter {
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
             value = FileConverterStep.getInstance().convertForGetter(wrapper);
+            object.remove(propertyName + ".filename");
+            object.remove(propertyName + ".type");
         } else if (object.containsKey(propertyName)) {
             if (parameterType.isEnum()) {
                 value = getEnumValue(parameterType, value);
             }
         }
 
+        object.remove(propertyName);
         return value;
     }
 
@@ -226,6 +252,8 @@ public class EDBConverter {
                 obj = convertEDBObjectToUncheckedModel(type, edbService.getObject(object.getString(property)));
             }
             temp.add(obj);
+            object.remove(property);
+            object.remove(property + ".type");
         }
         return temp;
     }
@@ -250,6 +278,10 @@ public class EDBConverter {
                 value = convertEDBObjectToUncheckedModel(valueType, edbService.getObject(value.toString()));
             }
             temp.put(key, value);
+            object.remove(keyProperty);
+            object.remove(keyProperty + ".type");
+            object.remove(valueProperty);
+            object.remove(valueProperty + ".type");
         }
         return temp;
     }
@@ -308,12 +340,15 @@ public class EDBConverter {
                 String content = Base64.encodeBase64String(wrapper.getContent());
                 object.put(entry.getKey(), content);
                 object.put(entry.getKey() + ".filename", wrapper.getFilename());
+                object.put(entry.getKey() + ".type", FileWrapper.class.getName());
             } else if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
-                OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                Object subModel = ModelUtils.generateModelOutOfWrapper(wrapper,
                     model.getClass().getClassLoader());
+                OpenEngSBModel temp = (OpenEngSBModel) subModel;
                 String subOid = convertSubModel(temp, objects, id);
                 object.put(entry.getKey(), subOid);
+                object.put(entry.getKey() + ".type", subModel.getClass().getName());
             } else if (List.class.isAssignableFrom(entry.getType())) {
                 List<?> list = (List<?>) entry.getValue();
                 if (list == null || list.size() == 0) {
@@ -329,6 +364,7 @@ public class EDBConverter {
                         item = createSubModelOutOfWrapper(item, model, objects, id);
                     }
                     object.put(entry.getKey() + i, item);
+                    object.put(entry.getKey() + ".type", item.getClass().getName());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
                 Map<?, ?> map = (Map<?, ?>) entry.getValue();
@@ -354,11 +390,14 @@ public class EDBConverter {
                         value = createSubModelOutOfWrapper(key, model, objects, id);
                     }
                     object.put(entry.getKey() + i + ".key", key);
+                    object.put(entry.getKey() + i + ".key.type", key.getClass().getName());
                     object.put(entry.getKey() + i + ".value", value);
+                    object.put(entry.getKey() + i + ".value.type", value.getClass().getName());
                     i++;
                 }
             } else {
                 object.put(entry.getKey(), entry.getValue());
+                object.put(entry.getKey() + ".type", entry.getValue().getClass().getName());
             }
         }
         Class<?> modelType = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
