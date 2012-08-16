@@ -24,7 +24,7 @@
 
   <parent>
     <groupId>org.openengsb.framework</groupId>
-    <artifactId>openengsb-framework-root</artifactId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
@@ -71,6 +71,7 @@
     <osgi.compendium.version>4.2.0</osgi.compendium.version>
 
     <!-- Library Versions -->
+    <aopalliance.version>1.0</aopalliance.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
     <jaxb.version>2.2.4</jaxb.version>
     <jaxb.wrapped.version>2.2.4_1</jaxb.wrapped.version>
@@ -164,6 +165,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${aopalliance.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.orientechnologies</groupId>
         <artifactId>orient-commons</artifactId>
