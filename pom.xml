@@ -71,7 +71,7 @@
     <module>parents/connector</module>
     <module>parents/framework</module>
     <!-- OpenEngSB Tooling Modules -->
-    <module>tooling</module>
+    <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->
     <module>components/api</module>
     <module>components/edb-api</module>
