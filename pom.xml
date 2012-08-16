@@ -111,8 +111,6 @@
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
     <module>examples</module>
-    <!-- OpenEngSB Loom Support Modules -->
-    <module>loom</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
     <!-- OpenEngSB Manual -->
