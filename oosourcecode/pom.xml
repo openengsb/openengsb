@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.openengsb.domain</groupId>
+    <artifactId>openengsb-domain-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../parents/domain/</relativePath>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>org.openengsb.domain.OOSourceCode</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.domain.OOSourceCode</bundle.namespace>
+    <domain.name>OOSourceCodeDomain</domain.name>
+  </properties>
+
+  <groupId>org.openengsb.domain</groupId>
+  <artifactId>org.openengsb.domain.OOSourceCode</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: Domain :: OOSourceCode</name>
+
+  <packaging>bundle</packaging>
+  
+  <description>Domain to demostrate the XLink Funktionality. Provides means to manage Modelclasses of different higher-programming Languages for a project.</description>
+
+  <url>http://www.openengsb.org</url>
+  
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
+  </scm>
+  
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/generated/wsdl/${domain.name}Events.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>${domain.name}Events</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/${domain.name}.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>${domain.name}</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Delegation-Annotations>true</Delegation-Annotations>
+            <Domain-Name>oosourcecode</Domain-Name>
+            <Domain-Interface>org.openengsb.domain.OOSourceCode.OOSourceCodeDomain</Domain-Interface>
+            <DomainEvents-Interface>org.openengsb.domain.OOSourceCode.OOSourceCodeDomainEvents</DomainEvents-Interface>                        
+          </instructions>
+        </configuration>
+      </plugin>      
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <scope>provided</scope>
+    </dependency>     
+  </dependencies>
+
+</project>
+
