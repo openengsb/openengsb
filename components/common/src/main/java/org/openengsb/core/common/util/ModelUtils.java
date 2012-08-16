@@ -105,9 +105,13 @@ public final class ModelUtils {
         try {
             T instance = model.newInstance();
             for (OpenEngSBModelEntry entry : entries) {
-                if (!tryToSetValueThroughField(entry, instance) && !tryToSetValueThroughSetter(entry, instance)) {
-                    ((OpenEngSBModel) instance).addOpenEngSBModelEntry(entry);
+                if (tryToSetValueThroughField(entry, instance)) {
+                    continue;
                 }
+                if (tryToSetValueThroughSetter(entry, instance)) {
+                    continue;
+                }
+                ((OpenEngSBModel) instance).addOpenEngSBModelEntry(entry);
             }
             return instance;
         } catch (InstantiationException e) {
