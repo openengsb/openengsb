@@ -124,7 +124,7 @@ public final class XLinkMock {
         LinkableDomain service = (LinkableDomain) serviceObject;
         /*TODO remove after implementation of filter on wicketpage*/
         SecurityContext.login("admin", new Password("password"));
-        service.openXLinks(modelObjectsDestination, viewToCall);
+        service.openXLinks(modelObjectsDestination.toArray(), viewToCall);
     }
     
     /**

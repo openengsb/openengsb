@@ -47,7 +47,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
 import org.junit.After;
-import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -303,7 +302,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
         assertThat(tester.getLastResponse().getStatus(),is(MockHttpServletResponse.SC_OK));
-        verify(connector).openXLinks(anyList(), anyString());
+        verify(connector).openXLinks(any(Object[].class), anyString());
     }    
     
     @Test
