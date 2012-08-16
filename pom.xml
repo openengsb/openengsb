@@ -115,7 +115,8 @@
     <!-- OpenEngSB Framework Assembly Module -->
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
-    <module>examples</module>
+    <module>examples/remoteclient</module>
+    <module>examples/remotesamples</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
     <!-- OpenEngSB Manual -->
