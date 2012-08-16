@@ -29,9 +29,6 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private static final String TIMESTAMP_CONST = "timestamp";
     private static final String DELETED_CONST = "isDeleted";
 
-    private Long timestamp;
-    private String oid;
-
     /**
      * Create an EDBObject with a specified OID.
      */
@@ -53,7 +50,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Retrieve the timestamp for this object.
      */
     public final Long getTimestamp() {
-        return timestamp;
+        return getLong(TIMESTAMP_CONST);
     }
 
     /**
@@ -61,28 +58,21 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * database. Should be set by the EnterpriseDatabaseService in the commit procedure.
      */
     public void updateTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-        putEDBObjectEntry(TIMESTAMP_CONST, timestamp, Long.class);
+        putEDBObjectEntry(TIMESTAMP_CONST, timestamp);
     }
 
     /**
      * Retrieve the OID for this object.
      */
     public String getOID() {
-        if (oid != null) {
-            return oid;
-        } else {
-            oid = (String) get(OID_CONST).getValue();
-            return oid;
-        }
+        return getString(OID_CONST);
     }
 
     /**
      * Sets the OID
      */
     public void setOID(String oid) {
-        this.oid = oid;
-        putEDBObjectEntry(OID_CONST, oid, String.class);
+        putEDBObjectEntry(OID_CONST, oid);
     }
 
     /**
@@ -90,8 +80,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * for the given key, or the value for the given key is null.
      */
     public String getString(String key) {
-        EDBObjectEntry entry = get(key);
-        return entry == null ? null : (String) entry.getValue();
+        return getObject(key, String.class);
     }
 
     /**
@@ -99,8 +88,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * for the given key, or the value for the given key is null.
      */
     public Long getLong(String key) {
-        EDBObjectEntry entry = get(key);
-        return entry == null ? null : (Long) entry.getValue();
+        return getObject(key, Long.class);
     }
 
     /**
@@ -108,8 +96,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * or the value for the given key is null.
      */
     public Object getObject(String key) {
-        EDBObjectEntry entry = get(key);
-        return entry == null ? null : entry.getValue();
+        return getObject(key, Object.class);
     }
 
     /**
@@ -126,15 +113,15 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Returns true if the object is deleted.
      */
     public final Boolean isDeleted() {
-        EDBObjectEntry deleted = get(DELETED_CONST);
-        if (deleted == null) {
-            return false;
-        }
-        return (Boolean) deleted.getValue();
+        Boolean deleted = getObject(DELETED_CONST, Boolean.class);
+        return deleted != null ? deleted : false;
     }
 
+    /**
+     * Sets the boolean value if the object is deleted or not
+     */
     public void setDeleted(Boolean deleted) {
-        put(DELETED_CONST, new EDBObjectEntry(DELETED_CONST, deleted, Boolean.class));
+        putEDBObjectEntry(DELETED_CONST, deleted);
     }
 
     /**
@@ -149,6 +136,13 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      */
     public void putEDBObjectEntry(String key, Object value, Class<?> type) {
         putEDBObjectEntry(key, value, type.getName());
+    }
+    
+    /**
+     * Adds an EDBObjectEntry to this EDBObject. It uses the type of the given object value as type parameter
+     */
+    public void putEDBObjectEntry(String key, Object value) {
+        putEDBObjectEntry(key, value, value.getClass());
     }
 
     @Override
