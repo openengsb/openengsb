@@ -17,8 +17,6 @@
 
 package org.openengsb.domain.SQLCode.model;
 
-import java.util.List;
-
 public class SQLCreateField {
     
     private String fieldName;    
