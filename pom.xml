@@ -103,7 +103,8 @@
     <module>persistence/connector</module>
     <module>persistence/rulebase</module>
     <!-- OpenEngSB Infrastructure Modules -->
-    <module>infrastructure</module>
+    <module>infrastructure/jpa</module>
+    <module>infrastructure/jms</module>
     <!-- OpenEngSB Port Modules -->
     <module>ports/jms</module>
     <module>ports/ws</module>
