@@ -67,6 +67,13 @@
             are no big surprise. They consist of objects which have a list of key/value pairs bound to them. 
             Also there exist a commit table, with which the EDB is able to keep track of all meta-data of changes.
         </para>
+        <para>
+            The values of the key/value pairs are Object types. The EDB is able to handle all object types, which can reverse 
+            a toString created string representation. That means that they either have a static class method with the name 
+            "valueOf" which takes a String object as paramter, have a constructor with a String type. In addition to these 
+            object types, also the support for the type Date was added. If the object type isn't available for the EDB or 
+            the previous mentioned conditions don't fit, the value stays a String.
+        </para>
     </section>
     <section>
         <title>Usage</title>
