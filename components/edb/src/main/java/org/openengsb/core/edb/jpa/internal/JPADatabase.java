@@ -121,7 +121,7 @@ public class JPADatabase implements EngineeringDatabaseService {
                 for (String id : commit.getDeletions()) {
                     EDBObject o = new EDBObject(id);
                     o.updateTimestamp(timestamp);
-                    o.putEDBObjectEntry("isDeleted", new Boolean(true), Boolean.class);
+                    o.setDeleted(true);
                     JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
                     entityManager.persist(j);
                 }

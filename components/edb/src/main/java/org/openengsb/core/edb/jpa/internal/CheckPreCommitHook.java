@@ -107,7 +107,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             if (checkIfActiveOidExisting(oid)) {
                 failedObjects.add(insert);
             } else {
-                insert.putEDBObjectEntry(EDBConstants.MODEL_VERSION, 1, Integer.class);
+                insert.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
             }
         }
         return failedObjects;
@@ -136,7 +136,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             try {
                 Integer modelVersion = investigateVersionAndCheckForConflict(update);
                 modelVersion++;
-                update.putEDBObjectEntry(EDBConstants.MODEL_VERSION, modelVersion, Integer.class);
+                update.putEDBObjectEntry(EDBConstants.MODEL_VERSION, modelVersion);
             } catch (EDBException e) {
                 failedObjects.add(update);
             }

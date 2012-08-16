@@ -17,7 +17,7 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.openengsb.core.edb.api.EDBObject;
@@ -51,7 +51,7 @@ public class Utils {
         for (int i = 0; i < max; ++i) {
             String key = RANDOMKEYS[rand.nextInt(RANDOMKEYS.length)] + Integer.toString(i);
             String value = "key value " + Integer.toString(rand.nextInt(100));
-            result.putEDBObjectEntry(key, value, String.class.getName());
+            result.putEDBObjectEntry(key, value);
         }
         return new EDBObject(oid);
     }
@@ -64,7 +64,7 @@ public class Utils {
         return RANDOMROLES[rand.nextInt(RANDOMROLES.length)];
     }
 
-    public static void putValue(String key, Object value, HashMap<String, EDBObjectEntry> map) {
+    public static void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
         map.put(key, new EDBObjectEntry(key, value, value.getClass()));
     }
 }

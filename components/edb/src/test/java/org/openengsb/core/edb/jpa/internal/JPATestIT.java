@@ -21,7 +21,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
@@ -48,28 +47,24 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 
+import com.google.common.collect.Maps;
+
 public class JPATestIT {
     private static JPADatabase db;
     private static Utils utils;
 
     @Before
-    public void initDB() {
+    public void initDB() throws Exception {
         AuthenticationContext authenticationContext = mock(AuthenticationContext.class);
-        try {
-            utils = new Utils();
-            db = new JPADatabase();
-            db.setAuthenticationContext(authenticationContext);
-            Properties props = new Properties();
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("edb-test", props);
-            EntityManager em = emf.createEntityManager();
-            db.open(em);
-            EDBPreCommitHook preCommitHook = new CheckPreCommitHook(em);
-            db.setPreCommitHooks(Arrays.asList(preCommitHook));
-        } catch (Exception ex) {
-            db = null;
-            fail("Cannot open database: " + ex.toString());
-        }
-
+        utils = new Utils();
+        db = new JPADatabase();
+        db.setAuthenticationContext(authenticationContext);
+        Properties props = new Properties();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("edb-test", props);
+        EntityManager em = emf.createEntityManager();
+        db.open(em);
+        EDBPreCommitHook preCommitHook = new CheckPreCommitHook(em);
+        db.setPreCommitHooks(Arrays.asList(preCommitHook));
     }
 
     @After
@@ -84,47 +79,39 @@ public class JPATestIT {
 
     @Test
     public void testCommit_shouldWork() throws Exception {
-        try {
-            JPACommit ci = db.createCommit("TestCommit", "Role");
-            EDBObject obj = new EDBObject("Tester");
-            obj.putEDBObjectEntry("Test", "Hooray", String.class);
-            ci.insert(obj);
+        JPACommit ci = db.createCommit("TestCommit", "Role");
+        EDBObject obj = new EDBObject("Tester");
+        obj.putEDBObjectEntry("Test", "Hooray");
+        ci.insert(obj);
 
-            long time = db.commit(ci);
+        long time = db.commit(ci);
 
-            obj = null;
-            obj = db.getObject("Tester");
-            String hooray = (String) obj.get("Test").getValue();
+        obj = null;
+        obj = db.getObject("Tester");
+        String hooray = obj.getString("Test");
 
-            assertThat(obj, notNullValue());
-            assertThat(hooray, notNullValue());
+        assertThat(obj, notNullValue());
+        assertThat(hooray, notNullValue());
 
-            checkTimeStamps(Arrays.asList(time));
-        } catch (EDBException ex) {
-            fail("Error: " + ex.toString());
-        }
+        checkTimeStamps(Arrays.asList(time));
     }
 
     @Test
     public void testGetCommits_shouldWork() throws Exception {
-        try {
-            JPACommit ci = db.createCommit("TestCommit2", "Testcontext");
-            EDBObject obj = new EDBObject("TestObject");
-            obj.putEDBObjectEntry("Bla", "Blabla", String.class);
-            ci.insert(obj);
+        JPACommit ci = db.createCommit("TestCommit2", "Testcontext");
+        EDBObject obj = new EDBObject("TestObject");
+        obj.putEDBObjectEntry("Bla", "Blabla");
+        ci.insert(obj);
 
-            long time = db.commit(ci);
+        long time = db.commit(ci);
 
-            List<EDBCommit> commits1 = db.getCommits("context", "Testcontext");
-            List<EDBCommit> commits2 = db.getCommits("context", "DoesNotExist");
+        List<EDBCommit> commits1 = db.getCommits("context", "Testcontext");
+        List<EDBCommit> commits2 = db.getCommits("context", "DoesNotExist");
 
-            assertThat(commits1.size(), is(1));
-            assertThat(commits2.size(), is(0));
+        assertThat(commits1.size(), is(1));
+        assertThat(commits2.size(), is(0));
 
-            checkTimeStamps(Arrays.asList(time));
-        } catch (EDBException ex) {
-            fail("Faild to fetch commit list..." + ex.getLocalizedMessage());
-        }
+        checkTimeStamps(Arrays.asList(time));
     }
 
     @Test(expected = EDBException.class)
@@ -139,43 +126,39 @@ public class JPATestIT {
         long time2 = 0;
         long time3 = 0;
         long time4 = 0;
-        try {
-            HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-            Utils.putValue("Lock", "Key", data1);
-            Utils.putValue("Door", "Bell", data1);
-            Utils.putValue("Cat", "Spongebob", data1);
-            EDBObject v1 = new EDBObject("/history/object", data1);
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/1"));
-            ci.insert(v1);
+        HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("Lock", "Key", data1);
+        Utils.putValue("Door", "Bell", data1);
+        Utils.putValue("Cat", "Spongebob", data1);
+        EDBObject v1 = new EDBObject("/history/object", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/1"));
+        ci.insert(v1);
 
-            time1 = db.commit(ci);
+        time1 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data2 = (HashMap<String, EDBObjectEntry>) data1.clone();
-            Utils.putValue("Lock", "Smith", data2);
-            EDBObject v2 = new EDBObject("/history/object", data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/2"));
-            ci.update(v2);
+        HashMap<String, EDBObjectEntry> data2 = (HashMap<String, EDBObjectEntry>) data1.clone();
+        Utils.putValue("Lock", "Smith", data2);
+        EDBObject v2 = new EDBObject("/history/object", data2);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/2"));
+        ci.update(v2);
 
-            time2 = db.commit(ci);
+        time2 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data3 = (HashMap<String, EDBObjectEntry>) data2.clone();
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/3"));
-            ci.insert(utils.createRandomTestObject("/useless/4"));
-            time3 = db.commit(ci);
+        HashMap<String, EDBObjectEntry> data3 = (HashMap<String, EDBObjectEntry>) data2.clone();
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/3"));
+        ci.insert(utils.createRandomTestObject("/useless/4"));
+        time3 = db.commit(ci);
 
-            Utils.putValue("Cat", "Dog", data3);
-            EDBObject v3 = new EDBObject("/history/object", data3);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.update(v3);
-            ci.insert(utils.createRandomTestObject("/useless/5"));
+        Utils.putValue("Cat", "Dog", data3);
+        EDBObject v3 = new EDBObject("/history/object", data3);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.update(v3);
+        ci.insert(utils.createRandomTestObject("/useless/5"));
 
-            time4 = db.commit(ci);
-        } catch (EDBException ex) {
-            fail("Error: " + ex.toString());
-        }
+        time4 = db.commit(ci);
 
         List<EDBObject> history = db.getHistory("/history/object");
 
@@ -223,44 +206,40 @@ public class JPATestIT {
         long time2 = 0;
         long time3 = 0;
         long time4 = 0;
-        try {
-            HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-            Utils.putValue("Burger", "Salad", data1);
-            Utils.putValue("Bla", "Blub", data1);
-            Utils.putValue("Cheese", "Butter", data1);
-            EDBObject v1 = new EDBObject("/history/test/object", data1);
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/test/1"));
-            ci.insert(utils.createRandomTestObject("/deletion/test/1"));
-            ci.insert(v1);
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("Burger", "Salad", data1);
+        Utils.putValue("Bla", "Blub", data1);
+        Utils.putValue("Cheese", "Butter", data1);
+        EDBObject v1 = new EDBObject("/history/test/object", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/test/1"));
+        ci.insert(utils.createRandomTestObject("/deletion/test/1"));
+        ci.insert(v1);
 
-            time1 = db.commit(ci);
+        time1 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>(data1);
-            Utils.putValue("Burger", "Meat", data2);
-            EDBObject v2 = new EDBObject("/history/test/object", data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/test/2"));
-            ci.delete("/deletion/test/1");
-            ci.update(v2);
-            time2 = db.commit(ci);
+        Map<String, EDBObjectEntry> data2 = Maps.newHashMap(data1);
+        Utils.putValue("Burger", "Meat", data2);
+        EDBObject v2 = new EDBObject("/history/test/object", data2);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/test/2"));
+        ci.delete("/deletion/test/1");
+        ci.update(v2);
+        time2 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data3 = new HashMap<String, EDBObjectEntry>(data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(utils.createRandomTestObject("/useless/test/3"));
-            ci.insert(utils.createRandomTestObject("/useless/test/4"));
-            time3 = db.commit(ci);
-            Utils.putValue("Cheese", "Milk", data3);
+        Map<String, EDBObjectEntry> data3 = Maps.newHashMap(data2);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(utils.createRandomTestObject("/useless/test/3"));
+        ci.insert(utils.createRandomTestObject("/useless/test/4"));
+        time3 = db.commit(ci);
+        Utils.putValue("Cheese", "Milk", data3);
 
-            EDBObject v3 = new EDBObject("/history/test/object", data3);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.update(v3);
-            ci.insert(utils.createRandomTestObject("/useless/test/5"));
+        EDBObject v3 = new EDBObject("/history/test/object", data3);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.update(v3);
+        ci.insert(utils.createRandomTestObject("/useless/test/5"));
 
-            time4 = db.commit(ci);
-        } catch (Exception ex) {
-            fail("getHistory failed, didn't even get to try getLog: " + ex.toString());
-        }
+        time4 = db.commit(ci);
 
         List<EDBLogEntry> log = db.getLog("/history/test/object", time1, time4);
         assertThat(log.size(), is(3));
@@ -271,64 +250,60 @@ public class JPATestIT {
     @SuppressWarnings("serial")
     @Test
     public void testQueryWithSomeAspects_shouldWork() throws Exception {
-        try {
-            HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-            Utils.putValue("A", "B", data1);
-            Utils.putValue("Cow", "Milk", data1);
-            Utils.putValue("Dog", "Food", data1);
-            EDBObject v1 = new EDBObject("/test/query1", data1);
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(v1);
-            long time1 = db.commit(ci);
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("A", "B", data1);
+        Utils.putValue("Cow", "Milk", data1);
+        Utils.putValue("Dog", "Food", data1);
+        EDBObject v1 = new EDBObject("/test/query1", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(v1);
+        long time1 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>();
-            Utils.putValue("Cow", "Milk", data2);
-            Utils.putValue("House", "Garden", data2);
-            v1 = new EDBObject("/test/query2", data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
-            ci.insert(v1);
-            long time2 = db.commit(ci);
+        Map<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("Cow", "Milk", data2);
+        Utils.putValue("House", "Garden", data2);
+        v1 = new EDBObject("/test/query2", data2);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(v1);
+        long time2 = db.commit(ci);
 
-            List<EDBObject> list1 = db.query("A", "B");
-            List<EDBObject> list2 = db.query(new HashMap<String, Object>() {
-                {
-                    put("A", "B");
-                    put("Dog", "Food");
-                }
-            });
+        List<EDBObject> list1 = db.query("A", "B");
+        List<EDBObject> list2 = db.query(new HashMap<String, Object>() {
+            {
+                put("A", "B");
+                put("Dog", "Food");
+            }
+        });
 
-            List<EDBObject> list3 = db.query(new HashMap<String, Object>() {
-                {
-                    put("Cow", "Milk");
-                }
-            });
+        List<EDBObject> list3 = db.query(new HashMap<String, Object>() {
+            {
+                put("Cow", "Milk");
+            }
+        });
 
-            List<EDBObject> list4 = db.query(new HashMap<String, Object>() {
-                {
-                    put("A", "B");
-                    put("Cow", "Milk");
-                    put("House", "Garden");
-                }
-            });
+        List<EDBObject> list4 = db.query(new HashMap<String, Object>() {
+            {
+                put("A", "B");
+                put("Cow", "Milk");
+                put("House", "Garden");
+            }
+        });
 
-            assertThat(list1.size(), is(1));
-            assertThat(list2.size(), is(1));
-            assertThat(list3.size(), is(2));
-            assertThat(list4.size(), is(0));
+        assertThat(list1.size(), is(1));
+        assertThat(list2.size(), is(1));
+        assertThat(list3.size(), is(2));
+        assertThat(list4.size(), is(0));
 
-            checkTimeStamps(Arrays.asList(time1, time2));
+        checkTimeStamps(Arrays.asList(time1, time2));
 
-            // removed because of the by jpa not supported regex command
-            // list = db.query(new HashMap<String, Object>() {
-            // {
-            // put("Cat", "Dog");
-            // put("Lock", Pattern.compile("Smith|Key"));
-            // }
-            // });
-            // assertTrue("There's one object in HEAD with Cat:Dog,Lock:/Smith|Key/", list.size() == 1);
-        } catch (EDBException ex) {
-            fail("DB error: " + ex.toString());
-        }
+        // removed because of the by jpa not supported regex command
+        // list = db.query(new HashMap<String, Object>() {
+        // {
+        // put("Cat", "Dog");
+        // put("Lock", Pattern.compile("Smith|Key"));
+        // }
+        // });
+        // assertTrue("There's one object in HEAD with Cat:Dog,Lock:/Smith|Key/", list.size() == 1);
     }
 
     @Test
@@ -336,36 +311,32 @@ public class JPATestIT {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
-        try {
-            HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-            Utils.putValue("KeyA", "Value A 1", data1);
-            Utils.putValue("KeyB", "Value B 1", data1);
-            Utils.putValue("KeyC", "Value C 1", data1);
-            EDBObject v1 = new EDBObject("/diff/object", data1);
-            JPACommit ci = db.createCommit("Blub", "Testing");
-            ci.insert(v1);
-            time1 = db.commit(ci);
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("KeyA", "Value A 1", data1);
+        Utils.putValue("KeyB", "Value B 1", data1);
+        Utils.putValue("KeyC", "Value C 1", data1);
+        EDBObject v1 = new EDBObject("/diff/object", data1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.insert(v1);
+        time1 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>(data1);
+        Map<String, EDBObjectEntry> data2 = Maps.newHashMap(data1);
 
-            Utils.putValue("KeyD", "Value D 1", data2);
-            Utils.putValue("KeyA", "Value A 2", data2);
-            EDBObject v2 = new EDBObject("/diff/object", data2);
-            ci = db.createCommit("Blub", "Testing");
-            ci.update(v2);
-            time2 = db.commit(ci);
+        Utils.putValue("KeyD", "Value D 1", data2);
+        Utils.putValue("KeyA", "Value A 2", data2);
+        EDBObject v2 = new EDBObject("/diff/object", data2);
+        ci = db.createCommit("Blub", "Testing");
+        ci.update(v2);
+        time2 = db.commit(ci);
 
-            HashMap<String, EDBObjectEntry> data3 = new HashMap<String, EDBObjectEntry>(data2);
+        Map<String, EDBObjectEntry> data3 = Maps.newHashMap(data2);
 
-            data3.remove("KeyB");
-            Utils.putValue("KeyC", "Value C 3", data3);
-            EDBObject v3 = new EDBObject("/diff/object", data3);
-            ci = db.createCommit("Blub", "Testing");
-            ci.update(v3);
-            time3 = db.commit(ci);
-        } catch (EDBException ex) {
-            fail("Failed to prepare commits for comparison!" + ex.getLocalizedMessage());
-        }
+        data3.remove("KeyB");
+        Utils.putValue("KeyC", "Value C 3", data3);
+        EDBObject v3 = new EDBObject("/diff/object", data3);
+        ci = db.createCommit("Blub", "Testing");
+        ci.update(v3);
+        time3 = db.commit(ci);
 
         checkTimeStamps(Arrays.asList(time1, time2, time3));
 
@@ -380,7 +351,7 @@ public class JPATestIT {
 
     @Test
     public void testGetResurrectedOIDs_shouldWork() throws Exception {
-        HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = new EDBObject("/ress/object", data1);
         JPACommit ci = db.createCommit("Blub", "Testing");
@@ -409,7 +380,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
-        HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = new EDBObject("/fail/object", data1);
         JPACommit ci = db.createCommit("Blub", "Testing");
@@ -420,18 +391,18 @@ public class JPATestIT {
 
     @Test
     public void testQueryOfOldVersion_shouldWork() throws Exception {
-        HashMap<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 1", data1v1);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data1v1);
         EDBObject v11 = new EDBObject("pre:/test/object1", data1v1);
         JPACommit ci = db.createCommit("Blub", "Testing");
         ci.insert(v11);
-        HashMap<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 2", data2v1);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data2v1);
         EDBObject v12 = new EDBObject("pre:/test/object2", data2v1);
         ci.insert(v12);
-        HashMap<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 3", data3v1);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data3v1);
         EDBObject v13 = new EDBObject("pre:/test/object3", data3v1);
@@ -439,18 +410,18 @@ public class JPATestIT {
 
         long time1 = db.commit(ci);
 
-        HashMap<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 1", data1v2);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data1v2);
         EDBObject v21 = new EDBObject("pre:/test/object1", data1v2);
         ci = db.createCommit("Blub", "Testing");
         ci.update(v21);
-        HashMap<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 2", data2v2);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data2v2);
         EDBObject v22 = new EDBObject("pre:/test/object2", data2v2);
         ci.update(v22);
-        HashMap<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 4", data4v1);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data4v1);
         EDBObject v23 = new EDBObject("pre:/test/object4", data4v1);
@@ -458,18 +429,18 @@ public class JPATestIT {
 
         long time2 = db.commit(ci);
 
-        HashMap<String, EDBObjectEntry> data1v3 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1v3 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 1", data1v3);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data1v3);
         EDBObject v31 = new EDBObject("pre:/test/object1", data1v3);
         ci = db.createCommit("Blub", "Testing");
         ci.update(v31);
-        HashMap<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 2a", data2v3);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data2v3);
         EDBObject v32 = new EDBObject("pre:/test/object2", data2v3);
         ci.update(v32);
-        HashMap<String, EDBObjectEntry> data4v2 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data4v2 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("pre:KeyA", "pre:Value A 4", data4v2);
         Utils.putValue("pre:KeyB", "pre:Value A 1", data4v2);
         EDBObject v33 = new EDBObject("pre:/test/object4", data4v2);
@@ -507,7 +478,7 @@ public class JPATestIT {
 
     @Test
     public void testQueryWithTimestamp_shouldWork() throws Exception {
-        HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("K", "B", data1);
         Utils.putValue("Cow", "Milk", data1);
         Utils.putValue("Dog", "Food", data1);
@@ -539,7 +510,7 @@ public class JPATestIT {
 
     @Test
     public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
-        HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("K", "B", data1);
         Utils.putValue("Cow", "Milk", data1);
         Utils.putValue("Dog", "Food", data1);
@@ -583,18 +554,18 @@ public class JPATestIT {
 
     @Test
     public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
-        HashMap<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 1", data1v1);
         Utils.putValue("KeyB", "Value A 1", data1v1);
         EDBObject v11 = new EDBObject("/test/object1", data1v1);
         JPACommit ci = db.createCommit("Blub", "Testing");
         ci.insert(v11);
-        HashMap<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 2", data2v1);
         Utils.putValue("KeyB", "Value A 1", data2v1);
         EDBObject v12 = new EDBObject("/test/object2", data2v1);
         ci.insert(v12);
-        HashMap<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 3", data3v1);
         Utils.putValue("KeyB", "Value A 1", data3v1);
         EDBObject v13 = new EDBObject("/test/object3", data3v1);
@@ -603,12 +574,12 @@ public class JPATestIT {
         long time1 = db.commit(ci);
 
         ci = db.createCommit("Blub", "Testing");
-        HashMap<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 1", data1v2);
         Utils.putValue("KeyB", "Value A 1", data1v2);
         EDBObject v21 = new EDBObject("/test/object1", data1v2);
         ci.update(v21);
-        HashMap<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 2", data2v2);
         Utils.putValue("KeyB", "Value A 1", data2v2);
         EDBObject v22 = new EDBObject("/test/object2", data2v2);
@@ -617,12 +588,12 @@ public class JPATestIT {
         long time2 = db.commit(ci);
 
         ci = db.createCommit("Blub", "Testing");
-        HashMap<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 2a", data2v3);
         Utils.putValue("KeyB", "Value A 1", data2v3);
         EDBObject v32 = new EDBObject("/test/object2", data2v3);
         ci.update(v32);
-        HashMap<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
+        Map<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
         Utils.putValue("KeyA", "Value A 4", data4v1);
         Utils.putValue("KeyB", "Value A 1", data4v1);
         EDBObject v33 = new EDBObject("/test/object4", data4v1);
@@ -676,14 +647,14 @@ public class JPATestIT {
     @Test
     public void testCommitEDBObjectsInsert_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/insert/1");
-        object.putEDBObjectEntry("bla", "blub", String.class);
+        object.putEDBObjectEntry("bla", "blub");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
         inserts.add(object);
 
         db.commitEDBObjects(inserts, null, null);
 
         object = db.getObject("/commit/test/insert/1");
-        assertThat(object.get("bla").getValue().toString(), is("blub"));
+        assertThat(object.getString("bla"), is("blub"));
         assertThat(object.getObject(EDBConstants.MODEL_VERSION, Integer.class), is(1));
     }
 
@@ -700,15 +671,15 @@ public class JPATestIT {
     @Test(expected = EDBException.class)
     public void testIfConflictDetectionIsWorking_shouldThrowException() throws Exception {
         EDBObject object = new EDBObject("/commit/test/insert/3");
-        object.putEDBObjectEntry("bla", "blub", String.class);
+        object.putEDBObjectEntry("bla", "blub");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
         inserts.add(object);
 
         db.commitEDBObjects(inserts, null, null);
 
         object = db.getObject("/commit/test/insert/3");
-        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        object.putEDBObjectEntry("test", "test", String.class);
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(0));
+        object.putEDBObjectEntry("test", "test");
 
         db.commitEDBObjects(null, Arrays.asList(object), null);
     }
@@ -716,7 +687,7 @@ public class JPATestIT {
     @Test
     public void testCommitEDBObjectsUpdate_shouldWork() throws Exception {
         EDBObject object = new EDBObject("/commit/test/update/1");
-        object.putEDBObjectEntry("testkey", "testvalue", String.class);
+        object.putEDBObjectEntry("testkey", "testvalue");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
 
@@ -725,7 +696,7 @@ public class JPATestIT {
         EDBObject first = db.getObject("/commit/test/update/1");
 
         objects.clear();
-        object.putEDBObjectEntry("testkey", "testvalue1", String.class);
+        object.putEDBObjectEntry("testkey", "testvalue1");
         objects.add(object);
 
         db.commitEDBObjects(null, objects, null);
@@ -744,8 +715,8 @@ public class JPATestIT {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
         db.commitEDBObjects(objects, null, null);
-        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        object.putEDBObjectEntry("test", "test", String.class);
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(0));
+        object.putEDBObjectEntry("test", "test");
         db.commitEDBObjects(null, objects, null);
     }
 
@@ -755,8 +726,8 @@ public class JPATestIT {
         db.commitEDBObjects(Arrays.asList(object), null, null);
         EDBObject receive1 = db.getObject("/commit/test/update/3");
         EDBObject receive2 = db.getObject("/commit/test/update/3");
-        receive1.putEDBObjectEntry("test1", "test1", String.class);
-        receive2.putEDBObjectEntry("test1", "test2", String.class);
+        receive1.putEDBObjectEntry("test1", "test1");
+        receive2.putEDBObjectEntry("test1", "test2");
         db.commitEDBObjects(null, Arrays.asList(receive1), null);
         db.commitEDBObjects(null, Arrays.asList(receive2), null);
     }
@@ -790,34 +761,34 @@ public class JPATestIT {
         db.commitEDBObjects(null, null, objects);
         db.commitEDBObjects(null, null, objects);
     }
-    
+
     @Test
     public void testIfOtherTypesThanStringWorks_shouldProcessInteger() throws Exception {
         EDBObject object = new EDBObject("test/type/integer");
-        object.putEDBObjectEntry("value", 42, Integer.class);
+        object.putEDBObjectEntry("value", Integer.valueOf(42));
         db.commitEDBObjects(Arrays.asList(object), null, null);
         object = db.getObject("test/type/integer");
         Object value = object.getObject("value");
         assertThat(value.getClass().getName(), is(Integer.class.getName()));
         assertThat((Integer) value, is(42));
     }
-    
+
     @Test
     public void testIfOtherTypesThanStringWorks_shouldProcessBoolean() throws Exception {
         EDBObject object = new EDBObject("test/type/boolean");
-        object.putEDBObjectEntry("value", Boolean.TRUE, Boolean.class);
+        object.putEDBObjectEntry("value", Boolean.TRUE);
         db.commitEDBObjects(Arrays.asList(object), null, null);
         object = db.getObject("test/type/boolean");
         Object value = object.getObject("value");
         assertThat(value.getClass().getName(), is(Boolean.class.getName()));
         assertThat((Boolean) value, is(Boolean.TRUE));
     }
-    
+
     @Test
     public void testIfOtherTypesThanStringWorks_shouldProcessDate() throws Exception {
         EDBObject object = new EDBObject("test/type/date");
         Date date = new Date();
-        object.putEDBObjectEntry("value", date, Date.class);
+        object.putEDBObjectEntry("value", date);
         db.commitEDBObjects(Arrays.asList(object), null, null);
         object = db.getObject("test/type/date");
         Object value = object.getObject("value");

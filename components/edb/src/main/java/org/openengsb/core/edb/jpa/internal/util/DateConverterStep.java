@@ -41,5 +41,4 @@ public class DateConverterStep implements EDBConverterStep {
     public EDBObjectEntry convertToEDBObjectEntry(JPAEntry entry) {
         return new EDBObjectEntry(entry.getKey(), new Date(Long.parseLong(entry.getValue())), entry.getType());
     }
-
 }
