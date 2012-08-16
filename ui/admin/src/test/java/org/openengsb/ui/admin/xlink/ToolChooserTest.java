@@ -60,7 +60,7 @@ import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.domain.DomainModelSQL.DomainModelSQLDomain;
+import org.openengsb.domain.SQLCode.SQLCodeDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -72,7 +72,7 @@ public class ToolChooserTest extends AbstractUITest {
     
     private OsgiUtilsService mockedServiceUtils;
     private ApplicationContextMock customContext;
-    private DomainModelSQLDomain connector;
+    private SQLCodeDomain connector;
     
     @Before
     public void setup() throws Exception {
@@ -115,7 +115,7 @@ public class ToolChooserTest extends AbstractUITest {
         when(mockedServiceUtils.getService(ModelRegistry.class)).thenReturn(registry);
         Class clazz = ExampleObjectOrientedModel.class;
         when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz);  
-        connector = mock(DomainModelSQLDomain.class);
+        connector = mock(SQLCodeDomain.class);
         when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(connector);
     }
     

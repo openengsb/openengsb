@@ -26,8 +26,8 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.domain.DomainModelOOSource.model.OOClassModel;
-import org.openengsb.domain.DomainModelSQL.model.SQLCreateModel;
+import org.openengsb.domain.OOSourceCode.model.OOClass;
+import org.openengsb.domain.SQLCode.model.SQLCreate;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 
 /**
@@ -39,8 +39,8 @@ public final class XLinkMock {
         
     }
     
-    public static final String sqlModel = SQLCreateModel.class.getName();
-    public static final String ooModel = OOClassModel.class.getName();
+    public static final String sqlModel = SQLCreate.class.getName();
+    public static final String ooModel = OOClass.class.getName();
     
     public static void transformAndOpenMatch(
             String sourceModelClass, 
@@ -85,20 +85,20 @@ public final class XLinkMock {
         //########### MOCK !!! Todo replace with real transformation        
         
         if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
-            SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
-            OOClassModel ooclass = (OOClassModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
+            SQLCreate sqlSource = (SQLCreate) modelObjectSource;
+            OOClass ooclass = (OOClass) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             ooclass.setClassName(sqlSource.getTableName());
             resultObject = ooclass;
         } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(sqlModel)){
-            OOClassModel ooSource = (OOClassModel) modelObjectSource;
-            SQLCreateModel sqlcreate = (SQLCreateModel) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
+            OOClass ooSource = (OOClass) modelObjectSource;
+            SQLCreate sqlcreate = (SQLCreate) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             sqlcreate.setTableName(ooSource.getClassName());
             resultObject = sqlcreate;
         } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(ooModel)){
-            OOClassModel ooSource = (OOClassModel) modelObjectSource;
+            OOClass ooSource = (OOClass) modelObjectSource;
             resultObject = ooSource;
         }else if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(sqlModel)){
-            SQLCreateModel sqlSource = (SQLCreateModel) modelObjectSource;
+            SQLCreate sqlSource = (SQLCreate) modelObjectSource;
             resultObject = sqlSource;
         }
         
