@@ -23,8 +23,8 @@
 >
 
   <parent>
-    <groupId>org.openengsb.infrastructure</groupId>
-    <artifactId>openengsb-infrastructure-parent</artifactId>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-bundle-settings</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 

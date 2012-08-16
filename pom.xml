@@ -71,7 +71,7 @@
     <module>parents/connector</module>
     <module>parents/framework</module>
     <!-- OpenEngSB Tooling Modules -->
-    <module>tooling</module>
+    <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->
     <module>components/api</module>
     <module>components/edb-api</module>
@@ -103,14 +103,20 @@
     <module>persistence/connector</module>
     <module>persistence/rulebase</module>
     <!-- OpenEngSB Infrastructure Modules -->
-    <module>infrastructure</module>
+    <module>infrastructure/jpa</module>
+    <module>infrastructure/jms</module>
     <!-- OpenEngSB Port Modules -->
-    <module>ports</module>
-    <module>ui</module>
+    <module>ports/jms</module>
+    <module>ports/ws</module>
+    <module>ui/api</module>
+    <module>ui/common</module>
+    <module>ui/admin</module>
+    <module>ui/wicketacl</module>
     <!-- OpenEngSB Framework Assembly Module -->
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
-    <module>examples</module>
+    <module>examples/remoteclient</module>
+    <module>examples/remotesamples</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
     <!-- OpenEngSB Manual -->
