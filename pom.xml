@@ -105,7 +105,8 @@
     <!-- OpenEngSB Infrastructure Modules -->
     <module>infrastructure</module>
     <!-- OpenEngSB Port Modules -->
-    <module>ports</module>
+    <module>ports/jms</module>
+    <module>ports/ws</module>
     <module>ui/api</module>
     <module>ui/common</module>
     <module>ui/admin</module>
