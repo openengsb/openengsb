@@ -308,12 +308,15 @@ public class EDBConverter {
                 String content = Base64.encodeBase64String(wrapper.getContent());
                 object.put(entry.getKey(), content);
                 object.put(entry.getKey() + ".filename", wrapper.getFilename());
+                object.put(entry.getKey() + ".type", FileWrapper.class.getName());
             } else if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
-                OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                Object subModel = ModelUtils.generateModelOutOfWrapper(wrapper,
                     model.getClass().getClassLoader());
+                OpenEngSBModel temp = (OpenEngSBModel) subModel;
                 String subOid = convertSubModel(temp, objects, id);
                 object.put(entry.getKey(), subOid);
+                object.put(entry.getKey() + ".type", subModel.getClass().getName());
             } else if (List.class.isAssignableFrom(entry.getType())) {
                 List<?> list = (List<?>) entry.getValue();
                 if (list == null || list.size() == 0) {
@@ -329,6 +332,7 @@ public class EDBConverter {
                         item = createSubModelOutOfWrapper(item, model, objects, id);
                     }
                     object.put(entry.getKey() + i, item);
+                    object.put(entry.getKey() + ".type", item.getClass().getName());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
                 Map<?, ?> map = (Map<?, ?>) entry.getValue();
@@ -354,11 +358,14 @@ public class EDBConverter {
                         value = createSubModelOutOfWrapper(key, model, objects, id);
                     }
                     object.put(entry.getKey() + i + ".key", key);
+                    object.put(entry.getKey() + i + ".key.type", key.getClass().getName());
                     object.put(entry.getKey() + i + ".value", value);
+                    object.put(entry.getKey() + i + ".value.type", value.getClass().getName());
                     i++;
                 }
             } else {
                 object.put(entry.getKey(), entry.getValue());
+                object.put(entry.getKey() + ".value", entry.getValue());
             }
         }
         Class<?> modelType = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
