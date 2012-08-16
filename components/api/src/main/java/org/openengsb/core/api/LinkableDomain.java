@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api;
 
-import java.util.List;
 
 import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
 
@@ -32,7 +31,7 @@ public interface LinkableDomain extends Domain {
      * PushMethod to transfere a List of potential Matches, of modelObjects, to the Clienttool. Also defines the Id of
      * View to open Matches in. The transfered modelObjects are instances of the Clienttools model.
      */
-    void openXLinks(List<Object> modelObjects, String viewId);
+    void openXLinks(Object[] modelObjects, String viewId);
 
     // @extract-end
 
