@@ -106,7 +106,10 @@
     <module>infrastructure</module>
     <!-- OpenEngSB Port Modules -->
     <module>ports</module>
-    <module>ui</module>
+    <module>ui/api</module>
+    <module>ui/common</module>
+    <module>ui/admin</module>
+    <module>ui/wicketacl</module>
     <!-- OpenEngSB Framework Assembly Module -->
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
