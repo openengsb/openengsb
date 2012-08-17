@@ -53,7 +53,7 @@ public class XLinkTemplateKeyNames {
      */    
     private String viewIdKeyName;
 
-    public XLinkTemplateKeyNames(){
+    public XLinkTemplateKeyNames() {
         
     }
     
