@@ -232,6 +232,10 @@ public class ConnectorManagerImpl implements ConnectorManager {
         this.registrationManager = registrationManager;
     }
 
+    public void setServiceUtils(OsgiUtilsService serviceUtils) {
+        this.serviceUtils = serviceUtils;
+    }    
+
     @Override
     public void disconnectFromXLink(String id, String hostId) {
         RemoteToolRegistration foundReg = null;
