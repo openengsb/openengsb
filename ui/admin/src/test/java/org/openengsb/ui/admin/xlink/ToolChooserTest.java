@@ -58,6 +58,7 @@ import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
+import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.SQLCode.SQLCodeDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -116,9 +117,11 @@ public class ToolChooserTest extends AbstractUITest {
         when(registry.loadModel(isA(ModelDescription.class))).thenReturn(clazz);  
         connector = mock(SQLCodeDomain.class);
         when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(connector);
+        when(mockedServiceUtils.getService("(service.pid=test1+test1+test1)", 100L)).thenReturn(connector);
     }
     
     private void customMockContext() throws UserExistsException{
+        ((ConnectorManagerImpl)serviceManager).setServiceUtils(mockedServiceUtils);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
         customContext.putBean("serviceManager", serviceManager);      
