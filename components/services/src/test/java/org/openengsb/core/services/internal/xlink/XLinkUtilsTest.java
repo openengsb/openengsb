@@ -17,29 +17,28 @@
 
 package org.openengsb.core.services.internal.xlink;
 
-import org.openengsb.core.services.xlink.XLinkUtils;
 import java.io.IOException;
+
 import java.util.ArrayList;
-
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.isA;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.xlink.XLinkDemonstrationUtils;
+import org.openengsb.core.services.xlink.XLinkUtils;
 
 public class XLinkUtilsTest {
 
@@ -114,14 +113,19 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrl
     @Test
-    public void testGenerateValidXLinkUrl() throws ClassNotFoundException, IOException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void testGenerateValidXLinkUrl() throws ClassNotFoundException, 
+        IOException, NoSuchFieldException, IllegalArgumentException, 
+        IllegalAccessException {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
+                XLinkUtils.prepareXLinkTemplate(servletUrl, 
+                connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
 
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String modelAsJsonString = XLinkDemonstrationUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);
-        String xLinkUrl = XLinkDemonstrationUtils.generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
+        String modelAsJsonString = XLinkDemonstrationUtils
+            .serializeModelObjectToJSON(values, modelInformation, serviceFinder);
+        String xLinkUrl = XLinkDemonstrationUtils
+            .generateValidXLinkUrl(xLinkTemplate, modelInformation, contextId, modelAsJsonString);
         
         //(encoded) xLinkUrl = 
         //http://openengsb.org/registryServlet.html?expirationDate=20120728183009
@@ -136,9 +140,9 @@ public class XLinkUtilsTest {
         //%22%3A%22testClass%22%2C%22oopackageName%22%3A%22testPackage%22%7D
 
 
-        assertTrue(xLinkUrl.contains("oomethodName%22%3A%22testMethod"));
-        assertTrue(xLinkUrl.contains("ooclassName%22%3A%22testClass"));
-        assertTrue(xLinkUrl.contains("oopackageName%22%3A%22testPackage"));
+        assertTrue(xLinkUrl.contains("ooMethodName%22%3A%22testMethod"));
+        assertTrue(xLinkUrl.contains("ooClassName%22%3A%22testClass"));
+        assertTrue(xLinkUrl.contains("ooPackageName%22%3A%22testPackage"));
 
     }
 
@@ -146,12 +150,15 @@ public class XLinkUtilsTest {
 
     // @extract-start XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching
     @Test
-    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, IOException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, 
+        IOException, NoSuchFieldException, 
+        IllegalArgumentException, IllegalAccessException {
         XLinkTemplate xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
-        String modelAsJsonString = XLinkDemonstrationUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);     
+        String modelAsJsonString
+            = XLinkDemonstrationUtils.serializeModelObjectToJSON(values, modelInformation, serviceFinder);     
         String xLinkUrl = XLinkDemonstrationUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, 
                 modelInformation, contextId, viewId1, modelAsJsonString);
 

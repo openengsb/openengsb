@@ -36,9 +36,9 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkTemplateKeyNames;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -104,17 +104,18 @@ public final class XLinkUtils {
             "?" + XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
         String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
         Map<String, ModelDescription> viewToModels = assigneModelsToViews(modelsToViews);
-        return new XLinkTemplate(baseUrl, 
+        return 
+            new XLinkTemplate(baseUrl, 
                 viewToModels, 
                 registeredTools,        
                 connectorIdParam, 
-                new XLinkTemplateKeyNames(
-                        XLINK_MODELCLASS_KEY, 
-                        XLINK_VERSION_KEY, 
-                        XLINK_IDENTIFIER_KEY, 
-                        XLINK_CONTEXTID_KEY, 
-                        XLINK_VIEW_KEY)
-                );
+            new XLinkTemplateKeyNames(
+                XLINK_MODELCLASS_KEY, 
+                XLINK_VERSION_KEY, 
+                XLINK_IDENTIFIER_KEY, 
+                XLINK_CONTEXTID_KEY, 
+                XLINK_VIEW_KEY)
+        );
     }
     
     /**
@@ -188,7 +189,7 @@ public final class XLinkUtils {
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
         ModelRegistry registry = serviceFinder.getService(ModelRegistry.class);
         Version versionObj = new Version(version);
-        ModelDescription modelDescription = new ModelDescription(clazz,versionObj);
+        ModelDescription modelDescription = new ModelDescription(clazz, versionObj);
         Class clazzObject = registry.loadModel(modelDescription);   
         return clazzObject;
     }

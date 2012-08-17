@@ -18,7 +18,6 @@
 package org.openengsb.core.api;
 
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
 
 /**
