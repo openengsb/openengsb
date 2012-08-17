@@ -75,15 +75,15 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
 
-        assertThat(object.get("connectorId").toString(), is("testconnector"));
-        assertThat(object.get("id").toString(), is("test"));
-        assertThat(object.get("oid").toString(), is(EDBConverterUtils.createOID(model, "testdomain", "testconnector")));
-        assertThat(object.get("domainId").toString(), is("testdomain"));
-        assertThat(object.get("name").toString(), is("testobject"));
-        assertThat(object.get("instanceId").toString(), is("testinstance"));
-        assertThat((ENUM) object.get("enumeration"), is(ENUM.A));
-        assertThat((Date) object.get("date"), is(date));
-        assertThat((object.get(EDBConstants.MODEL_TYPE)).toString(), is(TestModel.class.toString()));
+        assertThat(object.getString("connectorId"), is("testconnector"));
+        assertThat(object.getString("id"), is("test"));
+        assertThat(object.getString("oid"), is(EDBConverterUtils.createOID(model, "testdomain", "testconnector")));
+        assertThat(object.getString("domainId"), is("testdomain"));
+        assertThat(object.getString("name"), is("testobject"));
+        assertThat(object.getString("instanceId"), is("testinstance"));
+        assertThat(object.getObject("enumeration", ENUM.class), is(ENUM.A));
+        assertThat(object.getObject("date", Date.class), is(date));
+        assertThat(object.getString(EDBConstants.MODEL_TYPE), is(TestModel.class.getName()));
     }
 
     @Test
@@ -100,10 +100,10 @@ public class EDBConverterTest {
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(1);
-        assertThat(object.get("sub").toString(), is(EDBConverterUtils.createOID(sub, "testdomain", "testconnector")));
+        assertThat(object.getString("sub"), is(EDBConverterUtils.createOID(sub, "testdomain", "testconnector")));
         EDBObject subObject = objects.get(0);
-        assertThat(subObject.get("id").toString(), is("sub"));
-        assertThat((subObject.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
+        assertThat(subObject.getString("id"), is("sub"));
+        assertThat(subObject.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
     }
 
     @Test
@@ -128,17 +128,17 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
 
-        assertThat(object.get("subs0").toString(),
+        assertThat(object.getString("subs0"),
             is(EDBConverterUtils.createOID(sub1, "testdomain", "testconnector")));
-        assertThat(object.get("subs1").toString(),
+        assertThat(object.getString("subs1"),
             is(EDBConverterUtils.createOID(sub2, "testdomain", "testconnector")));
 
         EDBObject subObject1 = objects.get(0);
-        assertThat(subObject1.get("id").toString(), is("sub1"));
-        assertThat((subObject1.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
+        assertThat(subObject1.getString("id"), is("sub1"));
+        assertThat(subObject1.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
         EDBObject subObject2 = objects.get(1);
-        assertThat(subObject2.get("id").toString(), is("sub2"));
-        assertThat((subObject2.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
+        assertThat(subObject2.getString("id"), is("sub2"));
+        assertThat(subObject2.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
     }
 
     @Test
@@ -154,10 +154,28 @@ public class EDBConverterTest {
 
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
 
-        assertThat(object.get("map0.key").toString(), is("keyA"));
-        assertThat(object.get("map0.value").toString(), is("valueA"));
-        assertThat(object.get("map1.key").toString(), is("keyB"));
-        assertThat(object.get("map1.value").toString(), is("valueB"));
+        assertThat(object.getString("map0.key"), is("keyA"));
+        assertThat(object.getString("map0.value"), is("valueA"));
+        assertThat(object.getString("map1.key"), is("keyB"));
+        assertThat(object.getString("map1.value"), is("valueB"));
+    }
+    
+    @Test
+    public void testConversionInBothDirections_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        model.setId("test");
+        Date date = new Date();
+        model.setDate(date);
+        model.setEnumeration(ENUM.A);
+        model.setName("testobject");
+        
+        EDBObject object = converter.convertModelToEDBObject(model, getTestConnectorInformation()).get(0);
+        TestModel result = converter.convertEDBObjectToModel(TestModel.class, object);
+        
+        assertThat(model.getId(), is(result.getId()));
+        assertThat(model.getDate(), is(result.getDate()));
+        assertThat(model.getEnumeration(), is(result.getEnumeration()));
+        assertThat(model.getName(), is(result.getName()));
     }
 
     private ConnectorInformation getTestConnectorInformation() {

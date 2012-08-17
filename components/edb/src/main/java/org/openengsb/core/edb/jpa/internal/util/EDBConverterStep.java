@@ -15,37 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.jpa.internal;
+package org.openengsb.core.edb.jpa.internal.util;
 
-import java.util.List;
-
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.jpa.internal.JPAEntry;
 
 /**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
+ * An EDBConverterStep is a possible EDBObjectEntry <-> JPAEntry converting step. When the doesStepFit method returns
+ * true the other two methods are used to perform a conversion, if there was no step earlier found which fits.
  */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
-    
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
-    }
-    
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
+public interface EDBConverterStep {
 
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
-    
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    
-    public Long getTimestamp() {
-        return timestamp;
-    }
+    /**
+     * Returns true if the converter step should handle this type of class. False if not
+     */
+    Boolean doesStepFit(String classname);
+
+    /**
+     * Converts an EDBObjectEntry into a JPAEntry.
+     */
+    JPAEntry convertToJPAEntry(EDBObjectEntry entry);
+
+    /**
+     * Converts a JPAEntry into an EDBObjectEntry.
+     */
+    EDBObjectEntry convertToEDBObjectEntry(JPAEntry entry);
 }
