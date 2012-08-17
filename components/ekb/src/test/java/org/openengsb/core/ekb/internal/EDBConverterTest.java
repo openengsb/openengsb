@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -33,6 +34,8 @@ import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
@@ -148,5 +151,29 @@ public class EDBConverterTest {
         assertThat(object.get("map0.value").toString(), is("valueA"));
         assertThat(object.get("map1.key").toString(), is("keyB"));
         assertThat(object.get("map1.value").toString(), is("valueB"));
+    }
+    
+    @Test
+    public void testEDBObjectToModelConversion_shouldWork() throws Exception {
+        EDBObject object = new EDBObject("test");
+        object.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
+        object.put(EDBConstants.MODEL_OID, "test");
+        object.put(EDBConstants.MODEL_VERSION, 1);
+        object.put("id", "test");
+        object.put("name", "testname");
+        
+        TestModel model = converter.convertEDBObjectToModel(TestModel.class, object);
+        assertThat(model.getId(), is("test"));
+        assertThat(model.getName(), is("testname"));
+        List<OpenEngSBModelEntry> entries = ((OpenEngSBModel) model).getOpenEngSBModelEntries();
+        Integer version = null;
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                version = (Integer) entry.getValue();
+                break;
+            }
+        }
+        assertThat(version, notNullValue());
+        assertThat(version, is(1));
     }
 }
