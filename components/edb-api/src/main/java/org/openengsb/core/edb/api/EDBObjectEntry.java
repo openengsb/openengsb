@@ -19,6 +19,10 @@ package org.openengsb.core.edb.api;
 
 import com.google.common.base.Objects;
 
+/**
+ * The EDBObjectEntry class represents a key/value/type triple. An EDBObject has a number of these entries which
+ * represent the actual information which is saved in the EDB.
+ */
 public class EDBObjectEntry {
     private String key;
     private Object value;
@@ -30,7 +34,7 @@ public class EDBObjectEntry {
     public EDBObjectEntry(String key, Object value, Class<?> type) {
         this(key, value, type.getName());
     }
-    
+
     public EDBObjectEntry(String key, Object value, String type) {
         this.key = key;
         this.value = value;
