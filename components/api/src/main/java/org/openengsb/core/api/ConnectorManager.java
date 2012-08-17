@@ -23,8 +23,8 @@ import java.util.List;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 
 /**
  * Manages connector instances.
