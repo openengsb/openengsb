@@ -54,10 +54,14 @@ public final class XLinkDemonstrationUtils {
             String contextId,
             String objectAsJsonString) {
         String completeUrl = template.getBaseUrl();    
-        completeUrl += "&" + template.getKeyNames().getModelClassKeyName() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
-        completeUrl += "&" + template.getKeyNames().getModelVersionKeyName() + "=" + urlEncodeParameter(modelInformation.getVersionString());
-        completeUrl += "&" + template.getKeyNames().getContextIdKeyName() + "=" + urlEncodeParameter(contextId);   
-        completeUrl += "&" + template.getKeyNames().getIdentifierKeyName() + "=" + urlEncodeParameter(objectAsJsonString);
+        completeUrl += "&" + template.getKeyNames()
+            .getModelClassKeyName() + "=" + urlEncodeParameter(modelInformation.getModelClassName());
+        completeUrl += "&" + template.getKeyNames()
+            .getModelVersionKeyName() + "=" + urlEncodeParameter(modelInformation.getVersionString());
+        completeUrl += "&" + template.getKeyNames()
+            .getContextIdKeyName() + "=" + urlEncodeParameter(contextId);   
+        completeUrl += "&" + template.getKeyNames()
+            .getIdentifierKeyName() + "=" + urlEncodeParameter(objectAsJsonString);
         return completeUrl;
     }
 
@@ -79,7 +83,8 @@ public final class XLinkDemonstrationUtils {
             NoSuchFieldException, 
             IllegalArgumentException, 
             IllegalAccessException {
-        Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelInformation.getModelClassName(), modelInformation.getVersionString(), serviceFinder);
+        Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelInformation.getModelClassName(), 
+            modelInformation.getVersionString(), serviceFinder);
         Object modelOfView = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
         List<OpenEngSBModelEntry> keyNames = ModelUtils.getOpenEngSBModelEntries(modelOfView);
         for (int i = 0; i < keyNames.size(); i++) {
