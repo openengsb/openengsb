@@ -15,37 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.jpa.internal;
+package org.openengsb.core.edb.jpa.internal.util;
 
-import java.util.List;
+import java.util.Date;
 
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.jpa.internal.JPAEntry;
 
 /**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
+ * The DateConverterStep is the step which shall be used if the entry type is a Date.
  */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
-    
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
-    }
-    
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
+public class DateConverterStep implements EDBConverterStep {
+
+    @Override
+    public Boolean doesStepFit(String classname) {
+        return classname.equals(Date.class.getName());
     }
 
-    public List<JPAObject> getJPAObjects() {
-        return objects;
+    @Override
+    public JPAEntry convertToJPAEntry(EDBObjectEntry entry) {
+        return new JPAEntry(entry.getKey(), "" + ((Date) entry.getValue()).getTime(), entry.getType());
     }
-    
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    
-    public Long getTimestamp() {
-        return timestamp;
+
+    @Override
+    public EDBObjectEntry convertToEDBObjectEntry(JPAEntry entry) {
+        return new EDBObjectEntry(entry.getKey(), new Date(Long.parseLong(entry.getValue())), entry.getType());
     }
 }

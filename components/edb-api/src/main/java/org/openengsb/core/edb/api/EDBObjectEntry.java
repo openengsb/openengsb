@@ -15,66 +15,54 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.jpa.internal;
+package org.openengsb.core.edb.api;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import com.google.common.base.Objects;
 
-import org.openengsb.core.common.AbstractDataRow;
-import org.openengsb.core.edb.api.EDBObjectEntry;
-
-/**
- * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as it wants. So to say the JPAEntries
- * are concrete key/value pairs extending JPAObjects.
- */
-@SuppressWarnings("serial")
-@Entity
-public class JPAEntry extends AbstractDataRow {
-    @Column(name = "KEY")
+public class EDBObjectEntry {
     private String key;
-    @Column(name = "VALUE")
-    private String value;
-    @Column(name = "TYPE")
+    private Object value;
     private String type;
 
-    public JPAEntry() {
-        key = "";
-        value = null;
+    public EDBObjectEntry() {
     }
 
-    public JPAEntry(String key, String value, String type) {
+    public EDBObjectEntry(String key, Object value, Class<?> type) {
+        this(key, value, type.getName());
+    }
+    
+    public EDBObjectEntry(String key, Object value, String type) {
         this.key = key;
         this.value = value;
         this.type = type;
-    }
-    
-    public JPAEntry(EDBObjectEntry entry) {
-        this.key = entry.getKey();
-        this.value = entry.getValue().toString();
-        this.type = entry.getType();
     }
 
     public String getKey() {
         return key;
     }
-    
+
     public void setKey(String key) {
         this.key = key;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
-    
-    public void setValue(String value) {
+
+    public void setValue(Object value) {
         this.value = value;
     }
-    
+
     public String getType() {
         return type;
     }
-    
+
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(getClass()).add("key", key).add("value", value).add("type", type).toString();
     }
 }

@@ -46,42 +46,42 @@ public class QueryInterfaceService implements QueryInterface {
 
     @Override
     public <T> T getModel(Class<T> model, String oid) {
-        LOGGER.debug("Invoked getModel with the model %s and the oid %s", model.getName(), oid);
+        LOGGER.debug("Invoked getModel with the model {} and the oid {}", model.getName(), oid);
         EDBObject object = edbService.getObject(oid);
         return (T) edbConverter.convertEDBObjectToModel(model, object);
     }
 
     @Override
     public <T> List<T> getModelHistory(Class<T> model, String oid) {
-        LOGGER.debug("Invoked getModelHistory with the model %s and the oid %s", model.getName(), oid);
+        LOGGER.debug("Invoked getModelHistory with the model {} and the oid {}", model.getName(), oid);
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid));
     }
 
     @Override
     public <T> List<T> getModelHistoryForTimeRange(Class<T> model,
             String oid, Long from, Long to) {
-        LOGGER.debug("Invoked getModelHistoryForTimeRange with the model %s and the oid %s for the "
-                + "time period of %s to %s", new Object[]{ model.getName(), oid, new Date(from).toString(),
+        LOGGER.debug("Invoked getModelHistoryForTimeRange with the model {} and the oid {} for the "
+                + "time period of {} to {}", new Object[]{ model.getName(), oid, new Date(from).toString(),
             new Date(to).toString() });
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid, from, to));
     }
 
     @Override
     public <T> List<T> queryForModels(Class<T> model, String key, Object value) {
-        LOGGER.debug("Invoked queryForModels with the model %s, the key %s and the value %s", new Object[]{
+        LOGGER.debug("Invoked queryForModels with the model {}, the key {} and the value {}", new Object[]{
             model.getName(), key, value });
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(key, value));
     }
 
     @Override
     public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
-        LOGGER.debug("Invoked queryForModels with the model %s and a map", model.getName());
+        LOGGER.debug("Invoked queryForModels with the model {} and a map", model.getName());
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
     }
 
     @Override
     public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp) {
-        LOGGER.debug("Invoked queryForModels with the model %s, a map for the time %s", model.getName(), new Date(
+        LOGGER.debug("Invoked queryForModels with the model {}, a map for the time {}", model.getName(), new Date(
             timestamp).toString());
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
     }
@@ -98,7 +98,7 @@ public class QueryInterfaceService implements QueryInterface {
             timestamp = new Date().getTime() + "";
         }
         Long time = Long.parseLong(timestamp);
-        LOGGER.debug("Invoked queryForModels with the model %s and the querystring %s for the time %s",
+        LOGGER.debug("Invoked queryForModels with the model {} and the querystring {} for the time {}",
             new Object[]{ model.getName(), query, new Date(time).toString() });
         Map<String, Object> map = generateMapOutOfString(query);
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
@@ -106,14 +106,14 @@ public class QueryInterfaceService implements QueryInterface {
 
     @Override
     public <T> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
-        LOGGER.debug("Invoked queryForActiveModels with the model %s and a query map", model.getName());
+        LOGGER.debug("Invoked queryForActiveModels with the model {} and a query map", model.getName());
         Long now = System.currentTimeMillis();
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
     }
 
     @Override
     public <T> List<T> queryForActiveModels(Class<T> model) {
-        LOGGER.debug("Invoked queryForActiveModels with the model %s", model.getName());
+        LOGGER.debug("Invoked queryForActiveModels with the model {}", model.getName());
         Long now = System.currentTimeMillis();
         Map<String, Object> map = new HashMap<String, Object>();
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
