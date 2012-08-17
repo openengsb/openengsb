@@ -43,8 +43,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 
+import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
+import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.services.xlink.XLinkUtils;
 
 public class ConnectorManagerImpl implements ConnectorManager {
@@ -53,6 +57,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
+    private OsgiUtilsService serviceUtils;
     private Map<XLinkRegistrationKey, RemoteToolRegistration> xlinkRegistrations
         = new HashMap<XLinkRegistrationKey, RemoteToolRegistration>();
     private String xLinkBaseUrl;
@@ -229,13 +234,15 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     @Override
     public void disconnectFromXLink(String id, String hostId) {
+        RemoteToolRegistration foundReg = null;
         synchronized (xlinkRegistrations) {
             XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             if (xlinkRegistrations.get(key) != null) {
-                notifyAboutDeRegistration(xlinkRegistrations.get(key));
+                foundReg = xlinkRegistrations.get(key);
                 xlinkRegistrations.remove(key);
             }
-        }       
+        }  
+        if(foundReg != null)notifyAboutDeRegistration(foundReg);
     }
 
     @Override
@@ -278,22 +285,64 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 xLinkExpiresIn, 
                 XLinkUtils.getLocalToolFromRegistrations(registrations));
         RemoteToolRegistration newRegistration;
+        XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
         synchronized (xlinkRegistrations) {
-            XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
             newRegistration
                 = new RemoteToolRegistration(hostId, id, toolName, convertedModelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
-        notifyAboutRegistration(newRegistration);
+        notifyAboutRegistration(key, newRegistration);
         return template;
     }
     
-    private void notifyAboutRegistration(RemoteToolRegistration newRegistration) {
-        //TODO notify other tools of Host about registration here
+    private void notifyAboutRegistration(XLinkRegistrationKey filterKey, RemoteToolRegistration newRegistration) {
+        List<RemoteToolRegistration> hostRegistrations
+                = getXLinkRegistration(newRegistration.getHostId());
+        RegisteredToolsUpdateEvent updateEvent = new RegisteredToolsUpdateEvent();
+        for(RemoteToolRegistration currentRegistration : hostRegistrations){
+            if(!currentRegistration.getConnectorId().equals(filterKey.getConnectorId())){
+                currentRegistration.getxLinkTemplate().getRegisteredTools().add(convertRegisteredToolToRemoteTool(newRegistration));
+                updateEvent.setRegisteredTools(currentRegistration.getxLinkTemplate().getRegisteredTools());
+                Object serviceObject = serviceUtils.getService("(service.pid="+currentRegistration.getConnectorId()+")", 100L);
+                if(serviceObject == null) continue;
+                try{
+                    LinkableDomain service = (LinkableDomain) serviceObject;
+                    service.onRegisteredToolsUpdateEvent(updateEvent);
+                } catch (ClassCastException e){
+                    e.printStackTrace();
+                    //this should not happen but may happen. 
+                    //maybe implement test at connect
+                    //remove connector from list?
+                }
+            }
+        }
     }
     
     private void notifyAboutDeRegistration(RemoteToolRegistration oldRegistration) {
-        //TODO notify other tools of Host about deregistration here
+        List<RemoteToolRegistration> hostRegistrations
+                = getXLinkRegistration(oldRegistration.getHostId());
+        RegisteredToolsUpdateEvent updateEvent = new RegisteredToolsUpdateEvent();
+        for(RemoteToolRegistration currentRegistration : hostRegistrations){
+            currentRegistration.getxLinkTemplate().getRegisteredTools().remove(convertRegisteredToolToRemoteTool(oldRegistration));
+            updateEvent.setRegisteredTools(currentRegistration.getxLinkTemplate().getRegisteredTools());
+            Object serviceObject = serviceUtils.getService("(service.pid="+currentRegistration.getConnectorId()+")", 100L);
+            if(serviceObject == null) continue;
+            try{
+                LinkableDomain service = (LinkableDomain) serviceObject;
+                service.onRegisteredToolsUpdateEvent(updateEvent);
+            } catch (ClassCastException e){
+                e.printStackTrace();
+                //this should not happen but may happen. 
+                //maybe implement test at connect
+                //remove connector from list?
+            }
+        }
+    }
+    
+    private RemoteTool convertRegisteredToolToRemoteTool(RemoteToolRegistration registration){
+        List<RemoteToolRegistration> regList = new ArrayList<RemoteToolRegistration>();
+        regList.add(registration);
+        return XLinkUtils.getLocalToolFromRegistrations(regList).get(0);
     }
 
     public void setxLinkBaseUrl(String xLinkBaseUrl) {
