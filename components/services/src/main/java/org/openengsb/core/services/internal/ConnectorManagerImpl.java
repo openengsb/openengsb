@@ -32,13 +32,13 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
-import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
@@ -231,7 +231,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            ModelToViewsTuple[] modelsToViews){
+            ModelToViewsTuple[] modelsToViews) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
