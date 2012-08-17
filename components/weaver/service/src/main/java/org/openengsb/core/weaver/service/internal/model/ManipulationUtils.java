@@ -37,6 +37,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
+import javassist.CtPrimitiveType;
 import javassist.LoaderClassPath;
 import javassist.Modifier;
 import javassist.NotFoundException;
@@ -226,6 +227,7 @@ public final class ManipulationUtils {
         CtMethod m = new CtMethod(cp.get(List.class.getName()), "toOpenEngSBModelEntries", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append("{ \nList elements = new ArrayList();\n");
+        builder.append("Object entry = null;\n");
         builder.append("elements.addAll(openEngSBModelTail.values());\n");
         for (CtField field : clazz.getDeclaredFields()) {
             String property = field.getName();
@@ -259,10 +261,16 @@ public final class ManipulationUtils {
             builder.append(wrapperName).append("\", ").append(wrapperName);
             builder.append(", ").append(wrapperName).append(".getClass()));}\n");
             addFileFunction(clazz, property);
+        } else if (fieldType.isPrimitive()) {
+            CtPrimitiveType primitiveType = (CtPrimitiveType) fieldType;
+            String wrapperName = primitiveType.getWrapperName();
+            builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
+            builder.append(wrapperName).append(".valueOf(").append(property).append("), ");
+            builder.append(primitiveType.getWrapperName()).append(".class));\n");
         } else {
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
-            builder.append(property).append("\", ").append(property).append(", ");
-            builder.append(fieldType.getName()).append(".class));\n");
+            builder.append(property).append("\", ").append(property).append(", ").append(fieldType.getName());
+            builder.append(".class));\n");
         }
         return builder.toString();
     }
