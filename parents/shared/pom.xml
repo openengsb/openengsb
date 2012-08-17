@@ -85,7 +85,6 @@
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
     <guava.version>11.0.1</guava.version>
     <guava.wrapped.version>11.0.1_1</guava.wrapped.version>
-    <spring.osgi.version>1.2.1</spring.osgi.version>
     <spring.version>3.1.2.RELEASE</spring.version>
     <shiro.version>1.2.0</shiro.version>
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
@@ -160,6 +159,7 @@
     <labs.delegation.version>0.1.0</labs.delegation.version>
     <javassist.version>3.12.1.GA_3</javassist.version>
     <tinybundles.version>1.0.0</tinybundles.version>
+    <aopalliance.version>1.0</aopalliance.version>
   </properties>
 
   <dependencyManagement>
@@ -408,6 +408,11 @@
         <groupId>org.apache.velocity</groupId>
         <artifactId>velocity</artifactId>
         <version>${velocity.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${aopalliance.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>
@@ -787,37 +792,6 @@
         <artifactId>spring-jms</artifactId>
         <version>${spring.version}</version>
         <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.osgi</groupId>
-        <artifactId>spring-osgi-core</artifactId>
-        <version>${spring.osgi.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.asm</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.expression</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.core</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>

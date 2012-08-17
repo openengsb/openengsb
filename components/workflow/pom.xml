@@ -87,11 +87,6 @@
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
               org.apache.felix.fileinstall;version="[3,4)",
               *
             </Import-Package>
