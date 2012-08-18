@@ -22,12 +22,12 @@
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
   
   <!-- EDB Converter -->
-  <bean id="edbConverter" class="org.openengsb.core.ekb.impl.internal.converter.EDBConverter">
+  <bean id="edbConverter" class="org.openengsb.core.ekb.persistence.edb.internal.EDBConverter">
     <property name="edbService" ref="edbService"/>
   </bean>
   
   <!-- Query Interface -->
-  <bean id="queryInterfaceService" class="org.openengsb.core.ekb.impl.internal.QueryInterfaceService">
+  <bean id="queryInterfaceService" class="org.openengsb.core.ekb.persistence.edb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
     <property name="edbConverter" ref="edbConverter"/>
   </bean>
@@ -40,7 +40,7 @@
   </service>
   
   <!-- Persist Interface -->
-  <bean id="persistInterfaceService" class="org.openengsb.core.ekb.impl.internal.PersistInterfaceService">
+  <bean id="persistInterfaceService" class="org.openengsb.core.ekb.persistence.edb.internal.PersistInterfaceService">
     <property name="edbService" ref="edbService"/>
     <property name="edbConverter" ref="edbConverter"/>
   </bean>
@@ -50,43 +50,6 @@
       <entry key="location.root" value="ekbPersistService" />
     </service-properties>
     <ref component-id="persistInterfaceService"/>
-  </service>
-  
-  <!-- Model Registry -->
-  <bean id="modelRegistryService" class="org.openengsb.core.ekb.impl.internal.ModelRegistryService" factory-method="getInstance">
-    <argument ref="blueprintBundleContext" />
-    <property name="ekbClassLoader" ref="classLoader" />
-    <property name="graphDb" ref="graphDB" />
-  </bean>
-  
-  <service interface="org.openengsb.core.ekb.api.ModelRegistry">
-    <ref component-id="modelRegistryService"/>
-  </service>
-  
-  <!-- Transformation Engine -->
-  <bean id="transformationEngineService" class="org.openengsb.core.ekb.impl.internal.TransformationEngineService">
-    <property name="modelRegistry" ref="modelRegistryService" />
-    <property name="graphDb" ref="graphDB" />
-  </bean>
-  
-  <service interface="org.openengsb.core.ekb.api.TransformationEngine">
-    <service-properties>
-      <entry key="location.root" value="ekbTransformationService" />
-    </service-properties>
-    <ref component-id="transformationEngineService"/>
-  </service>
-  
-  <!-- EKB ClassLoader -->
-  <bean id="classLoader" class="org.openengsb.core.ekb.impl.internal.loader.EKBClassLoaderService">
-   	<argument ref="blueprintBundleContext" />  
-  </bean>
-  
-  <bean id="graphDB" class="org.openengsb.core.ekb.impl.internal.graph.EKBModelGraph" factory-method="getInstance" />
-  
-  <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
-    <bean class="org.openengsb.core.ekb.impl.internal.deployer.TransformationDeployerService">
-      <property name="engine" ref="transformationEngineService" />
-    </bean>
   </service>
   
   <!-- References to other bundles -->
