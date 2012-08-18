@@ -29,7 +29,7 @@ public class SQLCreate {
     
     private SQLCreateField[] fields;
 
-    public SQLCreate() {}
+    public SQLCreate() { }
     
     public SQLCreate(String tableName, SQLCreateField[] fields) {
         this.tableName = tableName;

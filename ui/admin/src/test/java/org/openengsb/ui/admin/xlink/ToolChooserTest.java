@@ -17,19 +17,26 @@
 
 package org.openengsb.ui.admin.xlink;
 
-import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.aop.MethodInvocation;
 import org.apache.shiro.authc.AuthenticationException;
@@ -40,18 +47,12 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.Is.is;
-import org.junit.After;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.isA;
-import static org.mockito.Mockito.verify;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
@@ -91,7 +92,7 @@ public class ToolChooserTest extends AbstractUITest {
         ThreadContext.unbindSubject();
     }
     
-    private void startSecurityManager(){
+    private void startSecurityManager() {
         DefaultSecurityManager sm = new DefaultSecurityManager();
         sm.setAuthenticator(new Authenticator() {
             @Override
@@ -109,7 +110,7 @@ public class ToolChooserTest extends AbstractUITest {
 
     }
     
-    private void mockOsgiService() throws Exception{
+    private void mockOsgiService() throws Exception {
         mockedServiceUtils = mock(OsgiUtilsService.class);
         ModelRegistry registry = mock(ModelRegistry.class);
         when(mockedServiceUtils.getService(ModelRegistry.class)).thenReturn(registry);
@@ -120,8 +121,8 @@ public class ToolChooserTest extends AbstractUITest {
         when(mockedServiceUtils.getService("(service.pid=test1+test1+test1)", 100L)).thenReturn(connector);
     }
     
-    private void customMockContext() throws UserExistsException{
-        ((ConnectorManagerImpl)serviceManager).setServiceUtils(mockedServiceUtils);
+    private void customMockContext() throws UserExistsException {
+        ((ConnectorManagerImpl) serviceManager).setServiceUtils(mockedServiceUtils);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
         customContext.putBean("serviceManager", serviceManager);      
@@ -133,34 +134,34 @@ public class ToolChooserTest extends AbstractUITest {
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), customContext));
     }   
     
-   public void mockRegistrationOfTools(){
+    public void mockRegistrationOfTools() {
         String hostId = "localhost";
                 
-        String toolName_A = "Tool A";        
-        String connectorId_A = "test1+test1+test1";
+        String toolNameA = "Tool A";        
+        String connectorIdA = "test1+test1+test1";
         
-        String toolName_B = "Tool B";
-        String connectorId_B = "test2+test2+test2";       
+        String toolNameB = "Tool B";
+        String connectorIdB = "test2+test2+test2";       
         //test2%2Btest2%2Btest2
         
-        registerTool_ExampleObjectOrientedModel(hostId, toolName_A, connectorId_A);
-        registerTool_ExampleObjectOrientedModel(hostId, toolName_B, connectorId_B);        
+        registerTool_ExampleObjectOrientedModel(hostId, toolNameA, connectorIdA);
+        registerTool_ExampleObjectOrientedModel(hostId, toolNameB, connectorIdB);        
     }
     
     private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) {
         
         ModelToViewsTuple[] modelsToViews 
             = new ModelToViewsTuple[1];  
-        String viewId_ExampleObjectOrientedModel_1 = "viewId_ExampleObjectOrientedModel_1";
-        String viewId_ExampleObjectOrientedModel_2 = "viewId_ExampleObjectOrientedModel_2";
+        String viewIdExampleObjectOrientedModel1 = "viewId_ExampleObjectOrientedModel_1";
+        String viewIdExampleObjectOrientedModel2 = "viewId_ExampleObjectOrientedModel_2";
         
         HashMap<String, String> descriptions  = new HashMap<String, String>();
         descriptions.put("en", "This is an ExampleObjectOrientedModel view.");
         descriptions.put("de", "Das ist eine ExampleObjectOrientedModel view.");
         
         List<RemoteToolView> views = new ArrayList<RemoteToolView>();
-        views.add(new RemoteToolView(viewId_ExampleObjectOrientedModel_1, "View 1", descriptions));
-        views.add(new RemoteToolView(viewId_ExampleObjectOrientedModel_2, "View 2", descriptions));          
+        views.add(new RemoteToolView(viewIdExampleObjectOrientedModel1, "View 1", descriptions));
+        views.add(new RemoteToolView(viewIdExampleObjectOrientedModel2, "View 2", descriptions));          
         
         modelsToViews[0] = 
                 new ModelToViewsTuple(
@@ -187,9 +188,9 @@ public class ToolChooserTest extends AbstractUITest {
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
         ObjectMapper mapper = new ObjectMapper();
         ExampleObjectOrientedModel model = new ExampleObjectOrientedModel();
-        model.setOOClassName("testClass");
-        model.setOOMethodName("testMethod");
-        model.setOOPackageName("testPackage");
+        model.setOoClassName("testClass");
+        model.setOoMethodName("testMethod");
+        model.setOoPackageName("testPackage");
         String identifyingString = null;
         try {
             identifyingString = mapper.writeValueAsString(model);
@@ -197,7 +198,7 @@ public class ToolChooserTest extends AbstractUITest {
             Logger.getLogger(ToolChooserTest.class.getName()).log(Level.SEVERE, null, ex);
         } 
         
-        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY,identifyingString);    
+        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY, identifyingString);    
     }    
     
     private void setupNessecaryHeader() {
@@ -304,7 +305,7 @@ public class ToolChooserTest extends AbstractUITest {
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
-        assertThat(tester.getLastResponse().getStatus(),is(MockHttpServletResponse.SC_OK));
+        assertThat(tester.getLastResponse().getStatus(), is(MockHttpServletResponse.SC_OK));
         verify(connector).openXLinks(any(Object[].class), anyString());
     }    
     
@@ -322,7 +323,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
         tester.assertContains("ConnectorId");
-        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_BAD_REQUEST));
+        assertThat(tester.getLastResponse().getStatus(), is(tester.getLastResponse().SC_BAD_REQUEST));
     }
     
     @Test
@@ -339,7 +340,7 @@ public class ToolChooserTest extends AbstractUITest {
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
         tester.assertContains("ViewId");
-        assertThat(tester.getLastResponse().getStatus(),is(tester.getLastResponse().SC_BAD_REQUEST));
+        assertThat(tester.getLastResponse().getStatus(), is(tester.getLastResponse().SC_BAD_REQUEST));
     }   
     
 }

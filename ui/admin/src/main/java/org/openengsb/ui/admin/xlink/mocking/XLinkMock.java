@@ -39,30 +39,8 @@ public final class XLinkMock {
         
     }
     
-    public static final String sqlModel = SQLCreate.class.getName();
-    public static final String ooModel = OOClass.class.getName();
-    
-    public static void transformAndOpenMatch(
-            String sourceModelClass, 
-            String sourceModelVersion, 
-            Object soureObject, 
-            String destinationModelClass, 
-            String destinationModelVersion, 
-            String connectorToCall, 
-            String viewToCall,
-            OsgiUtilsService osgiService) throws ClassNotFoundException, 
-            OsgiServiceNotAvailableException, ClassCastException, OpenXLinkException {
-        if (isTransformationPossible(sourceModelClass, 
-            sourceModelVersion, destinationModelClass, destinationModelVersion)) {
-            List<Object> modelObjectsDestination = transformModelObject(sourceModelClass, sourceModelVersion,
-                    destinationModelClass, destinationModelVersion, soureObject, osgiService);
-            if(!modelObjectsDestination.isEmpty()) {
-                openPotentialMatches(modelObjectsDestination, connectorToCall, viewToCall, osgiService);
-            }
-        }else{
-            
-        }
-    }
+    public static final String SQLMODEL = SQLCreate.class.getName();
+    public static final String OOMODEL = OOClass.class.getName();
  
     /**
      * Transforms the given ModelObject from it´s SourceClass to the defined DestinationModel.
@@ -78,26 +56,31 @@ public final class XLinkMock {
             sourceModelVersion, destinationModelClass, destinationModelVersion)) {
             throw new OpenXLinkException();      
         }
-        if(modelObjectSource == null)return null;
+        if (modelObjectSource == null) {
+            return null;
+        }
         Object resultObject = null;
-        Class destinationClass = XLinkUtils.getClassOfOpenEngSBModel(destinationModelClass, destinationModelVersion, osgiService);
+        Class destinationClass 
+            = XLinkUtils.getClassOfOpenEngSBModel(
+                destinationModelClass, destinationModelVersion, 
+                osgiService);
        
         //########### MOCK !!! Todo replace with real transformation        
         
-        if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(ooModel)){
+        if (sourceModelClass.equals(SQLMODEL) && destinationModelClass.equals(OOMODEL)) {
             SQLCreate sqlSource = (SQLCreate) modelObjectSource;
             OOClass ooclass = (OOClass) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             ooclass.setClassName(sqlSource.getTableName());
             resultObject = ooclass;
-        } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(sqlModel)){
+        } else if (sourceModelClass.equals(OOMODEL) && destinationModelClass.equals(SQLMODEL)) {
             OOClass ooSource = (OOClass) modelObjectSource;
             SQLCreate sqlcreate = (SQLCreate) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
             sqlcreate.setTableName(ooSource.getClassName());
             resultObject = sqlcreate;
-        } else if(sourceModelClass.equals(ooModel) && destinationModelClass.equals(ooModel)){
+        } else if (sourceModelClass.equals(OOMODEL) && destinationModelClass.equals(OOMODEL)) {
             OOClass ooSource = (OOClass) modelObjectSource;
             resultObject = ooSource;
-        }else if(sourceModelClass.equals(sqlModel) && destinationModelClass.equals(sqlModel)){
+        } else if (sourceModelClass.equals(SQLMODEL) && destinationModelClass.equals(SQLMODEL)) {
             SQLCreate sqlSource = (SQLCreate) modelObjectSource;
             resultObject = sqlSource;
         }
@@ -118,9 +101,11 @@ public final class XLinkMock {
             String connectorToCall, 
             String viewToCall,
             OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
-            ClassCastException, OpenXLinkException{
-        Object serviceObject = osgiService.getService("(service.pid="+connectorToCall+")", 100L);
-        if(serviceObject == null) throw new OpenXLinkException();
+            ClassCastException, OpenXLinkException {
+        Object serviceObject = osgiService.getService("(service.pid=" + connectorToCall + ")", 100L);
+        if (serviceObject == null) {
+            throw new OpenXLinkException();
+        }
         LinkableDomain service = (LinkableDomain) serviceObject;
         /*TODO remove after implementation of filter on wicketpage*/
         SecurityContext.login("admin", new Password("password"));
@@ -135,8 +120,8 @@ public final class XLinkMock {
             String srcModelVersion, 
             String destModelClass, 
             String destModelVersion) {
-        if(!srcModelClass.equals(ExampleObjectOrientedModel.class.getName()) 
-            && destModelClass.equals(ExampleObjectOrientedModel.class.getName())){
+        if (!srcModelClass.equals(ExampleObjectOrientedModel.class.getName()) 
+            && destModelClass.equals(ExampleObjectOrientedModel.class.getName())) {
             return false;
         }
         //todo implement real check here

@@ -33,7 +33,7 @@ public class OOClass {
     
     private StringBuffer methods;
 
-    public OOClass() {}
+    public OOClass() { }
     
     public OOClass(String className, String packageName, OOVariable[] attributes, StringBuffer methods) {
         this.className = className;

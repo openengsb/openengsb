@@ -173,7 +173,9 @@ public class ToolChooserPage extends WebPage {
         versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
         hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); 
-        if(hostId.contains(":"))hostId = hostId.substring(0,hostId.indexOf(":"));
+        if (hostId.contains(":")) {
+            hostId = hostId.substring(0, hostId.indexOf(":"));
+        }
         connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
         viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
         identifier = getParameterFromMap(XLinkUtils.XLINK_IDENTIFIER_KEY);
@@ -214,11 +216,17 @@ public class ToolChooserPage extends WebPage {
      * Throws an OpenXLinkException, if the supplied connector or viewId are registered for XLink
      * or do not exist.
      */
-    private void checkConnectorAndViewExists() throws OpenXLinkException{
-        String errorConnectorNotRegistered = new StringResourceModel("error.connectorNotRegistrated", this, null).getString();
-        String errorViewNotExisting = new StringResourceModel("error.viewNotExisting", this, null).getString();
-        if(!chooserLogic.isConnectorRegistrated(hostId, connectorId))throw new OpenXLinkException(errorConnectorNotRegistered);
-        if(!chooserLogic.isViewExisting(hostId, connectorId, viewId))throw new OpenXLinkException(errorViewNotExisting);
+    private void checkConnectorAndViewExists() throws OpenXLinkException {
+        String errorConnectorNotRegistered 
+            = new StringResourceModel("error.connectorNotRegistrated", this, null).getString();
+        String errorViewNotExisting 
+            = new StringResourceModel("error.viewNotExisting", this, null).getString();
+        if (!chooserLogic.isConnectorRegistrated(hostId, connectorId)) {
+            throw new OpenXLinkException(errorConnectorNotRegistered);
+        }
+        if (!chooserLogic.isViewExisting(hostId, connectorId, viewId)) {
+            throw new OpenXLinkException(errorViewNotExisting);
+        }
     }
     
     /**
@@ -242,16 +250,16 @@ public class ToolChooserPage extends WebPage {
         boolean found;
         for (String key : identifierKeyNames) {
             found = false;
-            for(OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(identifierObject)) {
-                if(entry.getKey().equals(key)){
+            for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(identifierObject)) {
+                if (entry.getKey().equals(key)) {
                     found = true;
-                    if(entry.getValue() == null){
+                    if (entry.getValue() == null) {
                         String errorMsg = new StringResourceModel("error.missingIdentifier", this, null).getString();
                         throw new OpenXLinkException(String.format(errorMsg, entry.getKey()));
                     }
                 }
             }
-            if(!found){
+            if (!found) {
                 String errorMsg = new StringResourceModel("error.missingIdentifyingField", this, null).getString();
                 throw new OpenXLinkException(String.format(errorMsg, key));
             }
@@ -271,7 +279,7 @@ public class ToolChooserPage extends WebPage {
      */
     private void handleErrorResponse(String error) {
         if (checkForLocalSwitchingParameters()) {    
-            throw new RestartResponseException(new MachineResponsePage(error,false));  
+            throw new RestartResponseException(new MachineResponsePage(error, false));  
         } else {   
             String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
             hostIdMsg = String.format(hostIdMsg, hostId);              
@@ -285,7 +293,7 @@ public class ToolChooserPage extends WebPage {
     private void handleSuccessResponse(HttpServletResponse resp) {
         if (checkForLocalSwitchingParameters()) {
             String successMsg = new StringResourceModel("success.localSwitch", this, null).getString();
-            throw new RestartResponseException(new MachineResponsePage(successMsg,true));
+            throw new RestartResponseException(new MachineResponsePage(successMsg, true));
         } else {         
             String successMsg = new StringResourceModel("success.normalSwitch", this, null).getString();
             String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
@@ -345,7 +353,7 @@ public class ToolChooserPage extends WebPage {
      * Triggers the processing of the supplied XLink
      */
     private void triggerXLinkProcessing(ModelDescription destModelInfo,
-            String connectorId, String viewId){
+            String connectorId, String viewId) {
         List<Object> modelObjectsDestination = new ArrayList<Object>();
         try {
             modelObjectsDestination = XLinkMock.transformModelObject(
@@ -363,7 +371,7 @@ public class ToolChooserPage extends WebPage {
             handleErrorResponse(String.format(errorMsg, ex.getMessage()));                                
         }
         try {
-            if(!modelObjectsDestination.isEmpty()) {
+            if (!modelObjectsDestination.isEmpty()) {
                 XLinkMock.openPotentialMatches(modelObjectsDestination, connectorId, viewId, serviceUtils);
             }                   
         } catch (OsgiServiceNotAvailableException ex) {             

@@ -25,8 +25,8 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
@@ -92,7 +92,7 @@ public class ToolChooserLogic {
         
         //########### MOCK !!!
         
-        if(modelId.equals(XLinkMock.ooModel)){
+        if (modelId.equals(XLinkMock.OOMODEL)) {
             identifierKeyNames.add("className");
             identifierKeyNames.add("attributes");
             return identifierKeyNames;
@@ -110,7 +110,7 @@ public class ToolChooserLogic {
      * Returns true, if the given Connector is registered for XLink on the given 
      * HostId.
      */
-    public boolean isConnectorRegistrated(String hostId, String connectorId){
+    public boolean isConnectorRegistrated(String hostId, String connectorId) {
         for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return true;
@@ -122,7 +122,7 @@ public class ToolChooserLogic {
     /**
      * Returns true, if the given View exists for the defined XLinkRegistration.
      */
-    public boolean isViewExisting(String hostId, String connectorId, String viewId){
+    public boolean isViewExisting(String hostId, String connectorId, String viewId) {
         for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration.getxLinkTemplate().getViewToModels().containsKey(viewId);

@@ -25,34 +25,34 @@ import org.openengsb.core.api.model.annotation.Model;
 @Model
 public class ExampleObjectOrientedModel {
 
-    private String OOMethodName;
+    private String ooMethodName;
     
-    private String OOClassName;
+    private String ooClassName;
     
-    private String OOPackageName;
+    private String ooPackageName;
 
-    public String getOOClassName() {
-        return OOClassName;
+    public String getOoClassName() {
+        return ooClassName;
     }
 
-    public void setOOClassName(String OOClassName) {
-        this.OOClassName = OOClassName;
+    public void setOoClassName(String ooClassName) {
+        this.ooClassName = ooClassName;
     }
 
-    public String getOOMethodName() {
-        return OOMethodName;
+    public String getOoMethodName() {
+        return ooMethodName;
     }
 
-    public void setOOMethodName(String OOMethodName) {
-        this.OOMethodName = OOMethodName;
+    public void setOoMethodName(String ooMethodName) {
+        this.ooMethodName = ooMethodName;
     }
 
-    public String getOOPackageName() {
-        return OOPackageName;
+    public String getOoPackageName() {
+        return ooPackageName;
     }
 
-    public void setOOPackageName(String OOPackageName) {
-        this.OOPackageName = OOPackageName;
+    public void setOoPackageName(String ooPackageName) {
+        this.ooPackageName = ooPackageName;
     }
-   
+
 }

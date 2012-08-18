@@ -18,6 +18,7 @@ package org.openengsb.ui.admin.xlink;
 
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.http.WebResponse;
@@ -49,7 +50,9 @@ public class MachineResponsePage extends WebPage {
     @Override
     protected void configureResponse(WebResponse response) {
         super.configureResponse(response);
-        if(!isSuccess)response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (!isSuccess) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
     
 

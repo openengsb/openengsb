@@ -24,7 +24,7 @@ public class OOVariable {
     private boolean isStatic;
     private boolean isFinal;
 
-    public OOVariable() {}
+    public OOVariable() { }
     
     public OOVariable(String name, String type, boolean isStatic, boolean isFinal) {
         this.name = name;

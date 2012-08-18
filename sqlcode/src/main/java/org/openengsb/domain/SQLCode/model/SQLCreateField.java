@@ -23,7 +23,7 @@ public class SQLCreateField {
     private String fieldType;    
     private String[] constraints;
 
-    public SQLCreateField() {}
+    public SQLCreateField() { }
 
     public SQLCreateField(String fieldName, String fieldType, String[] constraints) {
         this.fieldName = fieldName;

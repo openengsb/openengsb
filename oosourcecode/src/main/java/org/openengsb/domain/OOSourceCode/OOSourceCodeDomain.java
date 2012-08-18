@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.OOSourceCode;
 
-import org.openengsb.domain.OOSourceCode.model.OOClass;
 import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.domain.OOSourceCode.model.OOClass;
 
 public interface OOSourceCodeDomain extends LinkableDomain {
 

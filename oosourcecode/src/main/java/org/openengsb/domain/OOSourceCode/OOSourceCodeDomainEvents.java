@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.OOSourceCode;
 
-import org.openengsb.domain.OOSourceCode.model.OOClass;
 import org.openengsb.core.api.DomainEvents;
+import org.openengsb.domain.OOSourceCode.model.OOClass;
 
 public interface OOSourceCodeDomainEvents extends DomainEvents {
 

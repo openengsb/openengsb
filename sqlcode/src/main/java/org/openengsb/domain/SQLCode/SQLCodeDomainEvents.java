@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.SQLCode;
 
-import org.openengsb.domain.SQLCode.model.SQLCreate;
 import org.openengsb.core.api.DomainEvents;
+import org.openengsb.domain.SQLCode.model.SQLCreate;
 
 public interface SQLCodeDomainEvents extends DomainEvents {
 
