@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.persistence.edb;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -30,6 +31,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -128,9 +131,9 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
 
-        assertThat(object.getString("subs0"),
+        assertThat(object.getString("subs.0"),
             is(EDBConverterUtils.createOID(sub1, "testdomain", "testconnector")));
-        assertThat(object.getString("subs1"),
+        assertThat(object.getString("subs.1"),
             is(EDBConverterUtils.createOID(sub2, "testdomain", "testconnector")));
 
         EDBObject subObject1 = objects.get(0);
@@ -154,12 +157,12 @@ public class EDBConverterTest {
 
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
 
-        assertThat(object.getString("map0.key"), is("keyA"));
-        assertThat(object.getString("map0.value"), is("valueA"));
-        assertThat(object.getString("map1.key"), is("keyB"));
-        assertThat(object.getString("map1.value"), is("valueB"));
+        assertThat(object.getString("map.0.key"), is("keyA"));
+        assertThat(object.getString("map.0.value"), is("valueA"));
+        assertThat(object.getString("map.1.key"), is("keyB"));
+        assertThat(object.getString("map.1.value"), is("valueB"));
     }
-    
+
     @Test
     public void testConversionInBothDirections_shouldWork() throws Exception {
         TestModel model = new TestModel();
@@ -168,14 +171,39 @@ public class EDBConverterTest {
         model.setDate(date);
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
-        
+
         EDBObject object = converter.convertModelToEDBObject(model, getTestConnectorInformation()).get(0);
         TestModel result = converter.convertEDBObjectToModel(TestModel.class, object);
-        
+
         assertThat(model.getId(), is(result.getId()));
         assertThat(model.getDate(), is(result.getDate()));
         assertThat(model.getEnumeration(), is(result.getEnumeration()));
         assertThat(model.getName(), is(result.getName()));
+    }
+
+    @Test
+    public void testEDBObjectToModelConversion_shouldWork() throws Exception {
+        EDBObject object = new EDBObject("test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_OID, "test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
+        object.putEDBObjectEntry("id", "test");
+        object.putEDBObjectEntry("name", "testname");
+        object.putEDBObjectEntry("number", 42);
+        TestModel model = converter.convertEDBObjectToModel(TestModel.class, object);
+        assertThat(model.getId(), is("test"));
+        assertThat(model.getName(), is("testname"));
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        Integer version = null;
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                version = (Integer) entry.getValue();
+                break;
+            }
+        }
+        assertThat(version, notNullValue());
+        assertThat(version, is(1));
+
     }
 
     private ConnectorInformation getTestConnectorInformation() {

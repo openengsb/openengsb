@@ -57,12 +57,12 @@ public class QueryInterfaceServiceTest {
         edbObject.putEDBObjectEntry("date", new Date());
         edbObject.putEDBObjectEntry("name", "testname");
         edbObject.putEDBObjectEntry("enumeration", "A", ENUM.class);
-        edbObject.putEDBObjectEntry("list0", "blub");
-        edbObject.putEDBObjectEntry("list1", "blab");
-        edbObject.putEDBObjectEntry("list2", "blob");
+        edbObject.putEDBObjectEntry("list.0", "blub");
+        edbObject.putEDBObjectEntry("list.1", "blab");
+        edbObject.putEDBObjectEntry("list.2", "blob");
         edbObject.putEDBObjectEntry("sub", "suboid1", SubModel.class);
-        edbObject.putEDBObjectEntry("subs0", "suboid2", SubModel.class);
-        edbObject.putEDBObjectEntry("subs1", "suboid3", SubModel.class);
+        edbObject.putEDBObjectEntry("subs.0", "suboid2", SubModel.class);
+        edbObject.putEDBObjectEntry("subs.1", "suboid3", SubModel.class);
         edbObject.putEDBObjectEntry("number", Integer.valueOf(42));
         edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName());
 
@@ -71,22 +71,22 @@ public class QueryInterfaceServiceTest {
         edbObjectImpl.putEDBObjectEntry("date", new Date());
         edbObjectImpl.putEDBObjectEntry("name", "testname");
         edbObjectImpl.putEDBObjectEntry("enumeration", "A", ENUM.class);
-        edbObjectImpl.putEDBObjectEntry("list0", "blub");
-        edbObjectImpl.putEDBObjectEntry("list1", "blab");
-        edbObjectImpl.putEDBObjectEntry("list2", "blob");
+        edbObjectImpl.putEDBObjectEntry("list.0", "blub");
+        edbObjectImpl.putEDBObjectEntry("list.1", "blab");
+        edbObjectImpl.putEDBObjectEntry("list.2", "blob");
         edbObjectImpl.putEDBObjectEntry("sub", "suboid1", SubModel.class);
-        edbObjectImpl.putEDBObjectEntry("subs0", "suboid2", SubModel.class);
-        edbObjectImpl.putEDBObjectEntry("subs1", "suboid3", SubModel.class);
+        edbObjectImpl.putEDBObjectEntry("subs.0", "suboid2", SubModel.class);
+        edbObjectImpl.putEDBObjectEntry("subs.1", "suboid3", SubModel.class);
         edbObjectImpl.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel2.class.getName());
 
         EDBObject mapTest = new EDBObject("mapoid");
         mapTest.putEDBObjectEntry("id", "testid");
-        mapTest.putEDBObjectEntry("map0.key", "keyA");
-        mapTest.putEDBObjectEntry("map0.value", "valueA");
-        mapTest.putEDBObjectEntry("map1.key", "keyB");
-        mapTest.putEDBObjectEntry("map1.value", "valueB");
-        mapTest.putEDBObjectEntry("map2.key", "keyC");
-        mapTest.putEDBObjectEntry("map2.value", "valueC");
+        mapTest.putEDBObjectEntry("map.0.key", "keyA");
+        mapTest.putEDBObjectEntry("map.0.value", "valueA");
+        mapTest.putEDBObjectEntry("map.1.key", "keyB");
+        mapTest.putEDBObjectEntry("map.1.value", "valueB");
+        mapTest.putEDBObjectEntry("map.2.key", "keyC");
+        mapTest.putEDBObjectEntry("map.2.value", "valueC");
         mapTest.putEDBObjectEntry("number", Integer.valueOf(42));
         mapTest.putEDBObjectEntry(EDBConstants.MODEL_TYPE, TestModel.class.getName());
 

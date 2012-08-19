@@ -399,8 +399,28 @@ public class EDBIT extends AbstractExamTestHelper {
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs.0"), is("testdomain/testconnector/testSub/4"));
+        assertThat(mainObject.getString("subs.1"), is("testdomain/testconnector/testSub/5"));
+    }
+
+    @Test
+    public void testModelTailIsLoaded_shouldLoadModelTail() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "blub");
+        setProperty(model, "setEdbId", "modeltailtest/1");
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+
+        Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modeltailtest/1");
+        Boolean versionPresent = false;
+        for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(result)) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                versionPresent = true;
+            }
+        }
+
+        assertThat(versionPresent, is(true));
     }
 
     private void setProperty(Object model, String methodName, Object... params) throws Exception {

@@ -37,6 +37,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.slf4j.Logger;
@@ -111,6 +112,17 @@ public class EDBConverter {
                 entries.add(new OpenEngSBModelEntry(propertyDescriptor.getName(), value, propertyClass));
             }
         }
+
+        for (Map.Entry<String, EDBObjectEntry> objectEntry : object.entrySet()) {
+            EDBObjectEntry entry = objectEntry.getValue();
+            Class<?> entryType;
+            try {
+                entryType = model.getClassLoader().loadClass(entry.getType());
+                entries.add(new OpenEngSBModelEntry(entry.getKey(), entry.getValue(), entryType));
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("Unable to load class {} of the model tail", entry.getType());
+            }
+        }
         return ModelUtils.createModel(model, entries);
     }
 
@@ -124,16 +136,18 @@ public class EDBConverter {
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
         // TODO: OPENENGSB-2719 do that in a better way than just an if-else series
-        if (object.containsKey(propertyName + "0.key")) {
+        if (object.containsKey(propertyName + ".0.key")) {
             List<Class<?>> classes = getGenericMapParameterClasses(setterMethod);
             value = getMapValue(classes.get(0), classes.get(1), propertyName, object);
-        } else if (object.containsKey(propertyName + "0")) {
+        } else if (object.containsKey(propertyName + ".0")) {
             Class<?> clazz = getGenericListParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
         } else if (value == null) {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
-            value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
+            EDBObject obj = edbService.getObject((String) value);
+            value = convertEDBObjectToUncheckedModel(parameterType, obj);
+            object.remove(propertyName);
         } else if (parameterType.equals(FileWrapper.class)) {
             FileWrapper wrapper = new FileWrapper();
             String filename = object.getString(propertyName + ".filename");
@@ -141,6 +155,7 @@ public class EDBConverter {
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
             value = wrapper;
+            object.remove(propertyName + ".filename");
         } else if (parameterType.equals(File.class)) {
             return null;
         } else if (object.containsKey(propertyName)) {
@@ -150,6 +165,7 @@ public class EDBConverter {
                 value = NumberUtils.createNumber((String) value);
             }
         }
+        object.remove(propertyName);
         return value;
     }
 
@@ -186,7 +202,7 @@ public class EDBConverter {
     private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
-            String property = propertyName + i;
+            String property = propertyName + "." + i;
             Object obj = object.getObject(property);
             if (obj == null) {
                 break;
@@ -195,6 +211,7 @@ public class EDBConverter {
                 obj = convertEDBObjectToUncheckedModel(type, edbService.getObject(object.getString(property)));
             }
             temp.add(obj);
+            object.remove(property);
         }
         return temp;
     }
@@ -205,8 +222,8 @@ public class EDBConverter {
     private Object getMapValue(Class<?> keyType, Class<?> valueType, String propertyName, EDBObject object) {
         Map<Object, Object> temp = new HashMap<Object, Object>();
         for (int i = 0;; i++) {
-            String keyProperty = propertyName + i + ".key";
-            String valueProperty = propertyName + i + ".value";
+            String keyProperty = propertyName + "." + i + ".key";
+            String valueProperty = propertyName + "." + i + ".value";
             if (!object.containsKey(keyProperty)) {
                 break;
             }
@@ -219,6 +236,8 @@ public class EDBConverter {
                 value = convertEDBObjectToUncheckedModel(valueType, edbService.getObject(value.toString()));
             }
             temp.put(key, value);
+            object.remove(keyProperty);
+            object.remove(valueProperty);
         }
         return temp;
     }
@@ -316,7 +335,7 @@ public class EDBConverter {
                     if (modelItems) {
                         item = convertSubModel((OpenEngSBModel) item, objects, info);
                     }
-                    object.putEDBObjectEntry(entry.getKey() + i, item, item.getClass());
+                    object.putEDBObjectEntry(entry.getKey() + "." + i, item, item.getClass());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
                 Map<?, ?> map = (Map<?, ?>) entry.getValue();
@@ -341,8 +360,8 @@ public class EDBConverter {
                     if (valueIsModel) {
                         value = convertSubModel((OpenEngSBModel) value, objects, info);
                     }
-                    object.putEDBObjectEntry(entry.getKey() + i + ".key", key);
-                    object.putEDBObjectEntry(entry.getKey() + i + ".value", value);
+                    object.putEDBObjectEntry(entry.getKey() + "." + i + ".key", key);
+                    object.putEDBObjectEntry(entry.getKey() + "." + i + ".value", value);
                     i++;
                 }
             } else {
