@@ -131,9 +131,9 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
 
-        assertThat(object.getString("subs.0"),
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 0)),
             is(EDBConverterUtils.createOID(sub1, "testdomain", "testconnector")));
-        assertThat(object.getString("subs.1"),
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 1)),
             is(EDBConverterUtils.createOID(sub2, "testdomain", "testconnector")));
 
         EDBObject subObject1 = objects.get(0);
@@ -157,10 +157,10 @@ public class EDBConverterTest {
 
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
 
-        assertThat(object.getString("map.0.key"), is("keyA"));
-        assertThat(object.getString("map.0.value"), is("valueA"));
-        assertThat(object.getString("map.1.key"), is("keyB"));
-        assertThat(object.getString("map.1.value"), is("valueB"));
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapKey("map", 0)), is("keyA"));
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapValue("map", 0)), is("valueA"));
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapKey("map", 1)), is("keyB"));
+        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapValue("map", 1)), is("valueB"));
     }
 
     @Test

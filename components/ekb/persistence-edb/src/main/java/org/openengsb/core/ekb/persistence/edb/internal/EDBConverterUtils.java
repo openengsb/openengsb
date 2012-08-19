@@ -29,6 +29,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
  * <-> Models
  */
 public final class EDBConverterUtils {
+    public static final String FILEWRAPPER_FILENAME_SUFFIX = ".filename";
 
     private EDBConverterUtils() {
     }
@@ -95,4 +96,36 @@ public final class EDBConverterUtils {
         return new ConnectorInformation(domainId, connectorId, instanceId);
     }
 
+    /**
+     * Returns the entry name for a map key in the EDB format. E.g. the map key for the property "map" with the index 0
+     * would be "map.0.key".
+     */
+    public static String getEntryNameForMapKey(String property, Integer index) {
+        return getEntryNameForMap(property, true, index);
+    }
+
+    /**
+     * Returns the entry name for a map value in the EDB format. E.g. the map value for the property "map" with the
+     * index 0 would be "map.0.value".
+     */
+    public static String getEntryNameForMapValue(String property, Integer index) {
+        return getEntryNameForMap(property, false, index);
+    }
+
+    /**
+     * Returns the entry name for a map element in the EDB format. The key parameter defines if the entry name should be
+     * generated for the key or the value of the map. E.g. the map key for the property "map" with the index 0 would be
+     * "map.0.key".
+     */
+    private static String getEntryNameForMap(String property, Boolean key, Integer index) {
+        return String.format("%s.%d.%s", property, index, key ? "key" : "value");
+    }
+
+    /**
+     * Returns the entry name for a list element in the EDB format. E.g. the list element for the property "list" with
+     * the index 0 would be "list.0".
+     */
+    public static String getEntryNameForList(String property, Integer index) {
+        return String.format("%s.%d", property, index);
+    }
 }

@@ -136,10 +136,10 @@ public class EDBConverter {
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
         // TODO: OPENENGSB-2719 do that in a better way than just an if-else series
-        if (object.containsKey(propertyName + ".0.key")) {
+        if (object.containsKey(EDBConverterUtils.getEntryNameForMapKey(propertyName, 0))) {
             List<Class<?>> classes = getGenericMapParameterClasses(setterMethod);
             value = getMapValue(classes.get(0), classes.get(1), propertyName, object);
-        } else if (object.containsKey(propertyName + ".0")) {
+        } else if (object.containsKey(EDBConverterUtils.getEntryNameForList(propertyName, 0))) {
             Class<?> clazz = getGenericListParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
         } else if (value == null) {
@@ -150,12 +150,12 @@ public class EDBConverter {
             object.remove(propertyName);
         } else if (parameterType.equals(FileWrapper.class)) {
             FileWrapper wrapper = new FileWrapper();
-            String filename = object.getString(propertyName + ".filename");
+            String filename = object.getString(propertyName + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX);
             String content = (String) value;
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
             value = wrapper;
-            object.remove(propertyName + ".filename");
+            object.remove(propertyName + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX);
         } else if (parameterType.equals(File.class)) {
             return null;
         } else if (object.containsKey(propertyName)) {
@@ -202,7 +202,7 @@ public class EDBConverter {
     private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
-            String property = propertyName + "." + i;
+            String property = EDBConverterUtils.getEntryNameForList(propertyName, i);
             Object obj = object.getObject(property);
             if (obj == null) {
                 break;
@@ -222,8 +222,8 @@ public class EDBConverter {
     private Object getMapValue(Class<?> keyType, Class<?> valueType, String propertyName, EDBObject object) {
         Map<Object, Object> temp = new HashMap<Object, Object>();
         for (int i = 0;; i++) {
-            String keyProperty = propertyName + "." + i + ".key";
-            String valueProperty = propertyName + "." + i + ".value";
+            String keyProperty = EDBConverterUtils.getEntryNameForMapKey(propertyName, i);
+            String valueProperty = EDBConverterUtils.getEntryNameForMapValue(propertyName, i);
             if (!object.containsKey(keyProperty)) {
                 break;
             }
@@ -312,7 +312,8 @@ public class EDBConverter {
                     FileWrapper wrapper = (FileWrapper) entry.getValue();
                     String content = Base64.encodeBase64String(wrapper.getContent());
                     object.putEDBObjectEntry(entry.getKey(), content, String.class);
-                    object.putEDBObjectEntry(entry.getKey() + ".filename", wrapper.getFilename(), String.class);
+                    object.putEDBObjectEntry(entry.getKey() + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX,
+                        wrapper.getFilename(), String.class);
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage());
                     e.printStackTrace();
@@ -335,7 +336,8 @@ public class EDBConverter {
                     if (modelItems) {
                         item = convertSubModel((OpenEngSBModel) item, objects, info);
                     }
-                    object.putEDBObjectEntry(entry.getKey() + "." + i, item, item.getClass());
+                    String entryName = EDBConverterUtils.getEntryNameForList(entry.getKey(), i);
+                    object.putEDBObjectEntry(entryName, item, item.getClass());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
                 Map<?, ?> map = (Map<?, ?>) entry.getValue();
@@ -360,8 +362,8 @@ public class EDBConverter {
                     if (valueIsModel) {
                         value = convertSubModel((OpenEngSBModel) value, objects, info);
                     }
-                    object.putEDBObjectEntry(entry.getKey() + "." + i + ".key", key);
-                    object.putEDBObjectEntry(entry.getKey() + "." + i + ".value", value);
+                    object.putEDBObjectEntry(EDBConverterUtils.getEntryNameForMapKey(entry.getKey(), i), key);
+                    object.putEDBObjectEntry(EDBConverterUtils.getEntryNameForMapValue(entry.getKey(), i), value);
                     i++;
                 }
             } else {
