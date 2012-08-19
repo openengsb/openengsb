@@ -136,10 +136,10 @@ public class EDBConverter {
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
         // TODO: OPENENGSB-2719 do that in a better way than just an if-else series
-        if (object.containsKey(EDBConverterUtils.getEntryNameForMapKey(propertyName, 0))) {
+        if (Map.class.isAssignableFrom(parameterType)) {
             List<Class<?>> classes = getGenericMapParameterClasses(setterMethod);
             value = getMapValue(classes.get(0), classes.get(1), propertyName, object);
-        } else if (object.containsKey(EDBConverterUtils.getEntryNameForList(propertyName, 0))) {
+        } else if (List.class.isAssignableFrom(parameterType)) {
             Class<?> clazz = getGenericListParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
         } else if (value == null) {
