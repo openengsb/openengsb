@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,6 +71,7 @@ import org.openengsb.core.workflow.api.model.RemoteEvent;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.api.model.Task;
+import org.openengsb.core.workflow.drools.WorkflowHelper;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -212,8 +214,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
         throws WorkflowException {
-        WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
-        return executor.submit(workflowStarter);
+        Callable<Long> call = WorkflowHelper.getCallable(getSessionForCurrentContext(), processId, paramterMap);
+        return executor.submit(call);
     }
 
     @Override
