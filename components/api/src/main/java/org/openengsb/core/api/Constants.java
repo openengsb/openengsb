@@ -109,6 +109,11 @@ public final class Constants {
      * DomainEvents-Interface: org.openengsb.domain.example.ExampleDomainEvents
      */
     public static final String DOMAIN_EVENTS_INTERFACE_HEADER = "DomainEvents-Interface";
+    
+    /**
+     * Used in bundle MANIFEST.MF to specify if the bundle provides models for the OpenEngSB
+     */
+    public static final String PROVIDE_MODELS_HEADER = "Provide-Models";
 
     private Constants() {
         // this class should not be instanciated.

@@ -85,8 +85,7 @@
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
     <guava.version>11.0.1</guava.version>
     <guava.wrapped.version>11.0.1_1</guava.wrapped.version>
-    <spring.osgi.version>1.2.1</spring.osgi.version>
-    <spring.version>3.1.1.RELEASE</spring.version>
+    <spring.version>3.1.2.RELEASE</spring.version>
     <shiro.version>1.2.0</shiro.version>
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
@@ -107,7 +106,7 @@
     <mockito.version>1.8.5</mockito.version>
     <felix.fileinstall.version>3.2.2</felix.fileinstall.version>
     <jsch.wrapped.version>0.1.44_2</jsch.wrapped.version>
-    <activemq.version>5.5.1</activemq.version>
+    <activemq.version>5.6.0</activemq.version>
     <hamcrest.version>1.1</hamcrest.version>
     <joda.version>1.6.2</joda.version>
     <opensaml.version>2.5.1_1</opensaml.version>
@@ -142,7 +141,7 @@
     <jasypt.version>1.6_1</jasypt.version>
     <mvel2.version>2.1.0.drools4</mvel2.version>
     <fastinfoset.version>1.2.7_4</fastinfoset.version>
-    <smx.specs.version>2.0-SNAPSHOT</smx.specs.version>
+    <smx.specs.version>2.0.0</smx.specs.version>
     <xstream.version>1.3.1</xstream.version>
     <xmlpull.version>1.1.4.c</xmlpull.version>
     <antlr.version>3.1.3</antlr.version>
@@ -160,6 +159,7 @@
     <labs.delegation.version>0.1.0</labs.delegation.version>
     <javassist.version>3.12.1.GA_3</javassist.version>
     <tinybundles.version>1.0.0</tinybundles.version>
+    <aopalliance.version>1.0</aopalliance.version>
   </properties>
 
   <dependencyManagement>
@@ -408,6 +408,11 @@
         <groupId>org.apache.velocity</groupId>
         <artifactId>velocity</artifactId>
         <version>${velocity.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${aopalliance.version}</version>
       </dependency>
       <dependency>
         <groupId>org.aspectj</groupId>
@@ -789,37 +794,6 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>org.springframework.osgi</groupId>
-        <artifactId>spring-osgi-core</artifactId>
-        <version>${spring.osgi.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.asm</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.expression</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-bundle</artifactId>
         <version>${cxf.version}</version>
@@ -851,13 +825,33 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.edb</artifactId>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.ekb</artifactId>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.edb</groupId>
+        <artifactId>org.openengsb.framework.edb.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.ekb</groupId>
+        <artifactId>org.openengsb.framework.ekb.api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.workflow</groupId>
+        <artifactId>org.openengsb.framework.workflow.drools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework.edb</groupId>
+        <artifactId>org.openengsb.framework.edb.jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -873,11 +867,6 @@
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.persistence</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.security</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -932,6 +921,16 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authentication</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authorization</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>org.openengsb.connector.memoryauditing</artifactId>
         <version>${project.version}</version>
@@ -939,6 +938,21 @@
       <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>org.openengsb.connector.example</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.wicketacl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>org.openengsb.connector.serviceacl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

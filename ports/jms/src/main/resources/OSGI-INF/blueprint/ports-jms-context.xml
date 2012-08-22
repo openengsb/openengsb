@@ -50,7 +50,7 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
+        <value>org.openengsb.core.services.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
           <property name="factory">
             <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
@@ -84,15 +84,16 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
-        <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
+        <value>org.openengsb.core.services.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.services.filter.MessageCryptoFilterFactory">
           <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+        <value>org.openengsb.core.services.filter.JsonSecureRequestMarshallerFilter</value>
+        <value>org.openengsb.core.services.filter.MessageVerifierFilter</value>
+        <bean class="org.openengsb.core.services.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
+          <property name="authenticationContext" ref="authenticationContext" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -106,10 +107,11 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
-        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <bean class="org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory">
+        <value>org.openengsb.core.services.filter.JsonSecureRequestStringMarshallerFilter</value>
+        <value>org.openengsb.core.services.filter.MessageVerifierFilter</value>
+        <bean class="org.openengsb.core.services.filter.MessageAuthenticatorFilterFactory">
           <property name="utilsService" ref="utilsService" />
+          <property name="authenticationContext" ref="authenticationContext" />
         </bean>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -121,6 +123,7 @@
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
 
 </blueprint>
 

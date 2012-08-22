@@ -79,7 +79,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void attributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
+    public void testAttributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         RepeatingView list =
             (RepeatingView) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields");
@@ -90,7 +90,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testIfValuesOfAttributesAreShown() throws Exception {
+    public void testIfValuesOfAttributesAreShown_shouldShowAttributeValues() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
         String connectorId = serviceManager.create(
@@ -112,7 +112,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddProperty() throws Exception {
+    public void testAddProperty_shouldAddProperty() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
         FormTester newFormTester = tester.newFormTester("editor:form");
@@ -124,7 +124,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateService() throws Exception {
+    public void testCreateService_shouldAddService() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         tester.debugComponentTrees();
@@ -162,7 +162,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateServicePropertiesLeaveFieldEmpty() throws Exception {
+    public void testCreateServicePropertiesLeaveFieldEmpty_shouldAddServiceProperty() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester newFormTester = tester.newFormTester("editor:form");
         AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
@@ -175,7 +175,7 @@ public class EditorPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testEditService() throws Exception {
+    public void testEditService_shouldUpdateService() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("test", "val");
         String id = serviceManager.create(new ConnectorDescription("testdomain", "testconnector", null, props));
@@ -205,7 +205,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+    public void testAddServiceManagerValidationError_shouldPutErrorMessagesOnPage() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "Service Validation Error");
         when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
@@ -223,7 +223,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void uncheckValidationCheckbox_shouldBypassValidation() {
+    public void testUncheckValidationCheckbox_shouldBypassValidation() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "Service Validation Error");
         when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
@@ -304,5 +304,4 @@ public class EditorPageTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("editor:form:attributesPanel:properties:0:values");
         assertThat(list.size(), is(2));
     }
-
 }

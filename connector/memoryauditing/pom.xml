@@ -96,17 +96,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
-              *
-            </Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
  </build>

@@ -42,13 +42,13 @@ import org.osgi.framework.Constants;
 public class BundleStringsTest {
 
     @Test
-    public void noSpecificEntryForLocale_shouldLookupStringFromDefaultEntry() throws Exception {
+    public void testNoSpecificEntryForLocale_shouldLookupStringFromDefaultEntry() throws Exception {
         BundleStrings bl = new BundleStrings(createBundle());
         assertThat(bl.getString("unique_key", new Locale("a", "b", "c")), is("default"));
     }
 
     @Test
-    public void searchingAllEntriesInBundle_shouldSearchWithRightDirectoryAndFilePattern() throws Exception {
+    public void testSearchingAllEntriesInBundle_shouldSearchWithRightDirectoryAndFilePattern() throws Exception {
         Bundle bundle = mock(Bundle.class);
         mockHeaders(bundle);
         BundleStrings bl = new BundleStrings(bundle);
@@ -57,13 +57,13 @@ public class BundleStringsTest {
     }
 
     @Test
-    public void entryExistsForLocale_shouldReturnKeyFromEntry() throws Exception {
+    public void testEntryExistsForLocale_shouldReturnKeyFromEntry() throws Exception {
         BundleStrings bl = new BundleStrings(createBundle());
         assertThat(bl.getString("abc", new Locale("a", "b", "c")), is("c"));
     }
 
     @Test
-    public void noEntryForLocale_shouldReturnKeyFromNextSpecificEntry() throws Exception {
+    public void testNoEntryForLocale_shouldReturnKeyFromNextSpecificEntry() throws Exception {
         BundleStrings bl = new BundleStrings(createBundle());
         assertThat(bl.getString("ab", new Locale("a", "b", "c")), is("b"));
         assertThat(bl.getString("a", new Locale("a", "b", "c")), is("a"));
@@ -71,7 +71,7 @@ public class BundleStringsTest {
     }
 
     @Test
-    public void passThroughLocalizer_shouldReturnKey() {
+    public void testPassThroughLocalizer_shouldReturnKey() throws Exception {
         assertThat(new PassThroughStringLocalizer().getString("a", Locale.GERMAN), is("a"));
     }
 

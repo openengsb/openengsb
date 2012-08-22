@@ -47,5 +47,4 @@ public class DestinationUrlTest {
     public void testCreatingDestinationWithMoreThanOneQuestionMark_shouldThrowError() throws Exception {
         DestinationUrl.createDestinationUrl("bli?bla?blub");
     }
-
 }

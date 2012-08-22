@@ -142,5 +142,4 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
-
 }

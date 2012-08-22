@@ -41,27 +41,27 @@ import org.springframework.aop.framework.ProxyFactory;
 public class MenuTemplateTest extends AbstractUITest {
 
     @Test
-    public void testNavigationFieldForIndex() {
+    public void testNavigationFieldForIndex_shouldNavigate() throws Exception {
         setupIndexPage();
         Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationFieldForTestClient() {
+    public void testNavigationFieldForTestClient_shouldForwardToTestClient() throws Exception {
         setupTestClientPage();
         Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
         Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationForNonExistingNavigationButton() {
+    public void testNavigationForNonExistingNavigationButton_shouldForwardToImprintPage() throws Exception {
         Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
         Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testToNavigate() {
+    public void testToNavigate_shouldForwardToTestClient() throws Exception {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
         tester.clickLink("menu:menuItems:0:link");
@@ -100,5 +100,4 @@ public class MenuTemplateTest extends AbstractUITest {
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
     }
-
 }

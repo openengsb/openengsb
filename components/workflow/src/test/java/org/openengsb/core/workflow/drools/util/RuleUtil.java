@@ -28,6 +28,7 @@ import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.drools.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.drools.model.GlobalDeclaration;
 import org.openengsb.core.workflow.drools.model.ImportDeclaration;
@@ -39,7 +40,7 @@ public final class RuleUtil {
 
     }
 
-    public static RuleManager getRuleManager() throws Exception {
+    public static DroolsRuleManager getRuleManager() throws Exception {
         PersistenceRuleManager ruleManager = new PersistenceRuleManager();
         ruleManager.setGlobalPersistence(new DefaultConfigPersistenceService(
             new DummyConfigPersistenceService<GlobalDeclaration>()));

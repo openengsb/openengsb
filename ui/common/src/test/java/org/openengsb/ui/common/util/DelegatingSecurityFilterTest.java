@@ -45,7 +45,7 @@ public class DelegatingSecurityFilterTest {
     }
     
     @Test
-    public void testCreateFilter_shouldReturnDelegatingSecurityFilter() {
+    public void testCreateFilter_shouldReturnDelegatingSecurityFilter() throws Exception {
         assertThat(filterFactory.createFilter(mock(ConfigurableFilterConfig.class)),
             CoreMatchers.instanceOf(DelegatingSecurityFilter.class));
     }
@@ -63,7 +63,7 @@ public class DelegatingSecurityFilterTest {
     }
     
     @Test(expected = IllegalStateException.class)
-    public void testDoFilter_withoutSettedDelegatee_shouldThrowException() throws Exception {
+    public void testDoFilterWithoutSettedDelegatee_shouldThrowException() throws Exception {
         ServletRequest req = mock(ServletRequest.class);
         ServletResponse resp = mock(ServletResponse.class);
         FilterChain chain = mock(FilterChain.class);

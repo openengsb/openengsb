@@ -67,7 +67,7 @@ public class JsonUtilTest {
     }
 
     @Test
-    public void testConvertListArguments() throws Exception {
+    public void testConvertListArguments_shouldConvertListValue() throws Exception {
         MethodCall methodCall = new MethodCall("test", new Object[]{ new TestBean[]{ new TestBean("foo") } });
         String stringValue = objectMapper.writeValueAsString(methodCall);
         methodCall = objectMapper.readValue(stringValue, MethodCall.class);

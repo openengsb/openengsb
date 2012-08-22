@@ -47,7 +47,7 @@ public class ProjectTest extends AbstractUITest {
     }
 
     @Test
-    public void testIfLabelIsPresent() {
+    public void testIfLabelIsPresent_shouldContainLabelString() throws Exception {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
                 basePage.get("header"));
@@ -55,13 +55,13 @@ public class ProjectTest extends AbstractUITest {
     }
 
     @Test
-    public void testInitDefaultContext_shouldSetFooContext() {
+    public void testInitDefaultContext_shouldSetFooContext() throws Exception {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
     @Test
-    public void testChangeContextDropdown_shouldChangeThreadlocal() {
+    public void testChangeContextDropdown_shouldChangeThreadlocal() throws Exception {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
 
@@ -72,5 +72,4 @@ public class ProjectTest extends AbstractUITest {
         tester.startPage(TestClient.class);
         assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
-
 }

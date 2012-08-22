@@ -38,7 +38,7 @@ import org.openengsb.core.common.util.MapAsDictionary;
 public class DictonaryUtilTest {
 
     @Test
-    public void testWrapDictionary() throws Exception {
+    public void testWrapDictionary_shouldWrapDictionaryAsMap() throws Exception {
         Dictionary<String, Object> dict = new Hashtable<String, Object>();
         dict.put("test", 42L);
         dict.put("foo", "bar");
@@ -48,7 +48,7 @@ public class DictonaryUtilTest {
     }
 
     @Test
-    public void testIterateWrappedDictionary() throws Exception {
+    public void testIterateWrappedDictionary_shouldReturnKeysAndValues() throws Exception {
         Dictionary<String, Object> dict = new Hashtable<String, Object>();
         dict.put("test", 42L);
         dict.put("foo", "bar");
@@ -58,7 +58,7 @@ public class DictonaryUtilTest {
     }
 
     @Test
-    public void testIterateEntriesOfWrappedDictionary() throws Exception {
+    public void testIterateEntriesOfWrappedDictionary_shouldWork() throws Exception {
         Dictionary<String, Object> dict = new Hashtable<String, Object>();
         dict.put("test", 42L);
         dict.put("foo", "bar");
@@ -72,7 +72,7 @@ public class DictonaryUtilTest {
     }
 
     @Test
-    public void wrapMapToDictionary() throws Exception {
+    public void wrapMapToDictionary_shouldWrapMapAsDictionary() throws Exception {
         Map<String, String> testMap = new HashMap<String, String>();
         testMap.put("test", "42");
         testMap.put("foo", "bar");
@@ -81,5 +81,4 @@ public class DictonaryUtilTest {
         List<String> list = EnumerationUtils.toList(dict.elements());
         assertThat(list, hasItems("42", "bar"));
     }
-
 }

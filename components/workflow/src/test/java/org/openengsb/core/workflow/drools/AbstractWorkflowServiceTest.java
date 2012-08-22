@@ -28,12 +28,12 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.TaskboxServiceInternal;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+import org.openengsb.core.workflow.drools.internal.DroolsRuleManager;
 import org.openengsb.core.workflow.drools.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.drools.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.drools.internal.WorkflowServiceImpl;
@@ -43,7 +43,7 @@ import org.openengsb.domain.auditing.AuditingDomain;
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
     protected WorkflowServiceImpl service;
-    protected RuleManager manager;
+    protected DroolsRuleManager manager;
     protected DummyService myservice;
     protected HashMap<String, Domain> domains;
     protected TaskboxService taskbox;
@@ -118,5 +118,4 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         domains.put(name, mock2);
         return (T) mock2;
     }
-
 }

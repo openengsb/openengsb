@@ -59,7 +59,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testExactMatchQuery_shouldReturnSingleResult() {
+    public void testExactMatchQuery_shouldReturnSingleResult() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
         example.setTestEnum(TestEnum.A);
         List<PersistenceTestBean> results = persistence.query(example);
@@ -69,7 +69,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testSlightlyModifiedMatchQuery_shouldNotReturnSingleResult() {
+    public void testSlightlyModifiedMatchQuery_shouldNotReturnSingleResult() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
         example.setTestEnum(TestEnum.B);
         List<PersistenceTestBean> results = persistence.query(example);
@@ -77,7 +77,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMatchQuery_shouldReturnSingleResult() {
+    public void testMatchQuery_shouldReturnSingleResult() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean("A", null, null);
         List<PersistenceTestBean> results = persistence.query(example);
         assertThat(results.size(), is(1));
@@ -86,7 +86,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMatchQuery_shouldReturnTwoResults() {
+    public void testMatchQuery_shouldReturnTwoResults() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean(null, 1, null);
         List<PersistenceTestBean> results = persistence.query(example);
         assertThat(results.size(), is(2));
@@ -95,7 +95,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMultipleExampleQuery_shouldBehaveLikeMultipleSimpleExampleQueries() {
+    public void testMultipleExampleQuery_shouldBehaveLikeMultipleSimpleExampleQueries() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean("A", null, null);
         PersistenceTestBean example2 = new PersistenceTestBean("B", null, null);
         List<PersistenceTestBean> results = persistence.query(example);
@@ -106,7 +106,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testCreate_shouldStoreElement() throws PersistenceException {
+    public void testCreate_shouldStoreElement() throws Exception {
         PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
         persistence.create(additional);
 
@@ -115,7 +115,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testCreateSameElementTwice_shouldStoreElementTwice() throws PersistenceException {
+    public void testCreateSameElementTwice_shouldStoreElementTwice() throws Exception {
         PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
         persistence.create(additional);
         persistence.create(additional);
@@ -127,7 +127,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testCreateAndChange_shouldNotAffectStoredElement() throws PersistenceException {
+    public void testCreateAndChange_shouldNotAffectStoredElement() throws Exception {
         PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
         persistence.create(additional);
 
@@ -139,7 +139,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMultiCreate_shouldWork() throws PersistenceException {
+    public void testMultiCreate_shouldWork() throws Exception {
         PersistenceTestBean additional1 = new PersistenceTestBean("Test", 1, null);
         PersistenceTestBean additional2 = new PersistenceTestBean("Test", 2, null);
         persistence.create(Arrays.asList(new PersistenceTestBean[]{ additional1, additional2 }));
@@ -151,7 +151,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testUpdate_shouldUpdateElement() throws PersistenceException {
+    public void testUpdate_shouldUpdateElement() throws Exception {
         PersistenceTestBean newBeanA = new PersistenceTestBean("Foo", 1, null);
         persistence.update(beanA, newBeanA);
 
@@ -167,13 +167,13 @@ public class PersistenceServiceTest {
     }
 
     @Test(expected = PersistenceException.class)
-    public void testUpdateSourceElementNotPresent_shouldFail() throws PersistenceException {
+    public void testUpdateSourceElementNotPresent_shouldFail() throws Exception {
         PersistenceTestBean newBeanA = new PersistenceTestBean("Foo", 1, null);
         persistence.update(newBeanA, beanB);
     }
 
     @Test(expected = PersistenceException.class)
-    public void testUpdateSourceElementNotUnique_shouldFail() throws PersistenceException {
+    public void testUpdateSourceElementNotUnique_shouldFail() throws Exception {
         PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
         persistence.create(additional);
         persistence.create(additional);
@@ -184,7 +184,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMultiUpdate_shouldWork() throws PersistenceException {
+    public void testMultiUpdate_shouldWork() throws Exception {
         PersistenceTestBean updated1 = new PersistenceTestBean("Test", 1, null);
         PersistenceTestBean updated2 = new PersistenceTestBean("Foo", 2, null);
         PersistenceTestBean updated3 = new PersistenceTestBean("Bar", 3, null);
@@ -207,20 +207,20 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testDelete_shouldDeleteElement() throws PersistenceException {
+    public void testDelete_shouldDeleteElement() throws Exception {
         persistence.delete(beanA);
         List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("A", 1, null));
         assertThat(results.isEmpty(), is(true));
     }
 
     @Test(expected = PersistenceException.class)
-    public void testDeleteElementNotPresent_shouldFail() throws PersistenceException {
+    public void testDeleteElementNotPresent_shouldFail() throws Exception {
         PersistenceTestBean test = new PersistenceTestBean("Test", 1, null);
         persistence.delete(test);
     }
 
     @Test
-    public void testDeleteMultipleHits_shouldWork() throws PersistenceException {
+    public void testDeleteMultipleHits_shouldWork() throws Exception {
         PersistenceTestBean example = new PersistenceTestBean(null, 1, null);
         List<PersistenceTestBean> results = persistence.query(example);
         assertThat(results.size(), is(2));
@@ -231,7 +231,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void testMultiDelete_shouldWork() throws PersistenceException {
+    public void testMultiDelete_shouldWork() throws Exception {
         PersistenceTestBean wildcard = new PersistenceTestBean(null, null, null);
         List<PersistenceTestBean> results = persistence.query(wildcard);
         assertThat(results.size(), is(3));
@@ -244,5 +244,4 @@ public class PersistenceServiceTest {
         results = persistence.query(wildcard);
         assertThat(results.isEmpty(), is(true));
     }
-
 }

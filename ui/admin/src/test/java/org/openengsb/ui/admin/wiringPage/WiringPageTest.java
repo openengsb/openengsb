@@ -59,7 +59,6 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
@@ -104,7 +103,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringPage_shouldBeRendered() {
+    public void testWiringPage_shouldBeRendered() throws Exception {
         tester.assertRenderedPage(WiringPage.class);
         tester.assertComponent("domainChooseForm", Form.class);
         tester.assertComponent("domainChooseForm:domains", DropDownChoice.class);
@@ -119,7 +118,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDomainList_shouldBeLoaded() {
+    public void testDomainList_shouldBeLoaded() throws Exception {
         @SuppressWarnings("unchecked")
         DropDownChoice<Class<? extends Domain>> domains = (DropDownChoice<Class<? extends Domain>>)
             tester.getComponentFromLastRenderedPage("domainChooseForm:domains");
@@ -129,7 +128,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testContextList_shouldBeLoaded() {
+    public void testContextList_shouldBeLoaded() throws Exception {
         CheckedTree globals = (CheckedTree) tester.getComponentFromLastRenderedPage("wiringForm:contextList");
         TreeModel tree = globals.getModelObject();
         assertThat(tree.getChildCount(tree.getRoot()), is(6));
@@ -137,7 +136,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectDomain_shouldUpdateGlobals() {
+    public void testSelectDomain_shouldUpdateGlobals() throws Exception {
         selectDomain(1); // TestDomainInterface
         LinkTree globals = (LinkTree) tester.getComponentFromLastRenderedPage("globals");
         TreeModel tree = globals.getModelObject();
@@ -146,7 +145,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectDomain_shouldUpdateEndpoints() {
+    public void testSelectDomain_shouldUpdateEndpoints() throws Exception {
         selectDomain(1); // TestDomainInterface
         LinkTree endpoints = (LinkTree) tester.getComponentFromLastRenderedPage("endpoints");
         TreeModel tree = endpoints.getModelObject();
@@ -155,7 +154,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectGlobal_shouldUpdateTextField() {
+    public void testSelectGlobal_shouldUpdateTextField() throws Exception {
         selectDomain(1);
         selectFirstGlobal();
 
@@ -164,7 +163,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectRootOfGlobals_shouldNotUpdateTextField() {
+    public void testSelectRootOfGlobals_shouldNotUpdateTextField() throws Exception {
         selectDomain(1);
 
         tester.clickLink("globals:i:0:nodeComponent:contentLink");
@@ -174,7 +173,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testSelectEndpoint_shouldUpdateLabel() {
+    public void testSelectEndpoint_shouldUpdateLabel() throws Exception {
         selectDomain(1);
         selectFirstEndpoint();
 
@@ -183,7 +182,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testNewLocation_shouldUpdateServiceProperties() {
+    public void testNewLocation_shouldUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         selectContext(1); // bar
@@ -197,7 +196,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testUpdateExistingLocation_shouldUpdateServiceProperties() {
+    public void testUpdateExistingLocation_shouldUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -215,7 +214,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testUpdateExistingLocationArray_shouldUpdateServiceProperties() {
+    public void testUpdateExistingLocationArray_shouldUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -233,7 +232,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringGlobalTwoTimesAtOneContext_shouldNotUpdateServiceProperties() {
+    public void testWiringGlobalTwoTimesAtOneContext_shouldNotUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -248,7 +247,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringGlobalTwoTimesAtOneContext_Array_shouldNotUpdateServiceProperties() {
+    public void testWiringGlobalTwoTimesAtOneContextArray_shouldNotUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -263,7 +262,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testNewGlobal_shouldUpdateServiceProperties() {
+    public void testNewGlobal_shouldUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal("newGlob");
@@ -278,7 +277,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringExistingGlobalWithAnotherType_shouldNotUpdateServiceProperties() {
+    public void testWiringExistingGlobalWithAnotherType_shouldNotUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(anotherGlob);
@@ -292,7 +291,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringInMultipleContexts_shouldUpdateServiceProperties() {
+    public void testWiringInMultipleContexts_shouldUpdateServiceProperties() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -308,7 +307,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testPressWireButtonWithoutSettedGlobal_shouldShowError() {
+    public void testPressWireButtonWithoutSettedGlobal_shouldShowError() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         selectContext(1); // bar
@@ -319,7 +318,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testPressWireButtonWithoutSettedEndpoint_shouldShowError() {
+    public void testPressWireButtonWithoutSettedEndpoint_shouldShowError() throws Exception {
         selectDomain(1); // TestDomainInterface
         setGlobal(globTest);
         selectContext(1); // bar
@@ -330,7 +329,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testPressWireButtonWithoutSettedContext_shouldShowError() {
+    public void testPressWireButtonWithoutSettedContext_shouldShowError() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
@@ -341,7 +340,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testWiringWithDeletedConnector_shouldShowError() throws PersistenceException {
+    public void testWiringWithDeletedConnector_shouldShowError() throws Exception {
         selectDomain(1); // TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);

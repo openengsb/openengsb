@@ -63,10 +63,10 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.security.RootSubjectHolder;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
@@ -103,6 +103,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
+        connectorDeployerService.setBundleContext(bundleContext);
 
         setupPersistence();
         createServiceManagerMock();
@@ -301,12 +302,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            // The service-manager will refuse to create the connector
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
         assertThat("old service is not there anymore", references, not(nullValue()));
@@ -438,7 +434,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void updateFailure_shouldCreateBackupFile() throws Exception {
+    public void testUpdateFailure_shouldCreateBackupFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -463,7 +459,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void installFailure_shouldLeaveFileAsIs() throws Exception {
+    public void testInstallFailure_shouldLeaveFileAsIs() throws Exception {
         Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription("mydomain", "aconnector",
@@ -471,19 +467,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            assertThat(connectorFile.exists(), is(true));
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat(connectorFile.exists(), is(true));
         assertThat("old service is not there anymore", references, not(nullValue()));
     }
 
     @Test
-    public void updateFailure_shouldReplaceWithOldConfigFile() throws Exception {
+    public void testUpdateFailure_shouldReplaceWithOldConfigFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -508,7 +500,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void updateTwice_shouldUpdateCachedVersion() throws Exception {
+    public void testUpdateTwice_shouldUpdateCachedVersion() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
             "property.foo=bar", "attribute.x=original-file-value"));
@@ -585,5 +577,4 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             throw thrown.get();
         }
     }
-
 }

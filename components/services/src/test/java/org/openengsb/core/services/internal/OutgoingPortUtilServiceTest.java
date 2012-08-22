@@ -89,7 +89,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testReceiveMethodCallWithArgument() throws Exception {
+    public void testReceiveMethodCallWithArgument_shouldCallMethod() throws Exception {
         MethodCall call2 = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
         requestHandler.handleCall(call2);
         verify(serviceMock, never()).test();
@@ -97,7 +97,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void recieveMethodCall_shouldSendResponse() throws Exception {
+    public void testRecieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         MethodCall call2 = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
         MethodResult result = requestHandler.handleCall(call2);
@@ -107,7 +107,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void recieveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
+    public void testReceiveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
         MethodResult result = requestHandler.handleCall(methodCall);
 
         verify(serviceMock).test();
@@ -147,7 +147,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 10000)
-    public void testHandleCallsParallel() throws Exception {
+    public void testHandleCallsParallel_shouldWork() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         final Semaphore sync = new Semaphore(0);
         Answer<Long> answer = new Answer<Long>() {
@@ -195,5 +195,4 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 
         Long getOtherAnswer();
     }
-
 }

@@ -28,7 +28,7 @@ import org.openengsb.ui.common.editor.NumberValidator;
 public class NumberValidatorTest {
 
     @Test
-    public void passLetterInsteadOfNumber_shouldNotValidateAndGiveErrorMessage() {
+    public void testPassLetterInsteadOfNumber_shouldNotValidateAndGiveErrorMessage() throws Exception {
         NumberValidator numberValidator = new NumberValidator();
         SingleAttributeValidationResult validate = numberValidator.validate("A");
         assertFalse(validate.isValid());
@@ -40,11 +40,10 @@ public class NumberValidatorTest {
     // TODO: [OPENENGSB-1250] public void testUsingEnglishLocale_shouldReturnEnglishMessage()
 
     @Test
-    public void validateNumber_shouldReturnValidAndNoErrorMessage() {
+    public void testValidateNumber_shouldReturnValidAndNoErrorMessage() throws Exception {
         NumberValidator validator = new NumberValidator();
         SingleAttributeValidationResult validate = validator.validate("123");
         assertTrue(validate.isValid());
         assertEquals("", validate.getErrorMessageId());
     }
-
 }

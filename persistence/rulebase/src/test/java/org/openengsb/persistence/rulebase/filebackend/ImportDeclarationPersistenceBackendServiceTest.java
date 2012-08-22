@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,13 +51,13 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testServiceSupportsConfigItem_shouldAcceptImportConfiguration() {
+    public void testServiceSupportsConfigItem_shouldAcceptImportConfiguration() throws Exception {
         assertTrue(service.supports(ImportConfiguration.class));
         assertFalse(service.supports(GlobalConfiguration.class));
     }
 
     @Test
-    public void testPersistImportConfiguration_shouldPersistAndLoadConfig() {
+    public void testPersistImportConfiguration_shouldPersistAndLoadConfig() throws Exception {
         ImportConfiguration conf = new ImportConfiguration(new ImportDeclaration("java.util.List"));
         service.persist(conf);
 
@@ -69,7 +68,7 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testPersistImportConfiguration_shouldCreateFileIfNoneExists() throws IOException {
+    public void testPersistImportConfiguration_shouldCreateFileIfNoneExists() throws Exception {
         FileUtils.forceDelete(storageFile);
         assertFalse(storageFile.exists());
         ImportConfiguration conf = new ImportConfiguration(new ImportDeclaration("java.util.List"));
@@ -78,7 +77,7 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadImportConfiguration_shouldOnlyLoadOneConfig() {
+    public void testLoadImportConfiguration_shouldOnlyLoadOneConfig() throws Exception {
         ImportConfiguration conf1 = new ImportConfiguration(new ImportDeclaration("java.util.List"));
         ImportConfiguration conf2 = new ImportConfiguration(new ImportDeclaration("java.util.Map"));
         ImportConfiguration conf3 = new ImportConfiguration(new ImportDeclaration("java.util.Dictionary"));
@@ -94,7 +93,7 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadImportConfiguration_shouldLoadAllConfig() {
+    public void testLoadImportConfiguration_shouldLoadAllConfig() throws Exception {
         ImportConfiguration conf1 = new ImportConfiguration(new ImportDeclaration("java.util.List"));
         ImportConfiguration conf2 = new ImportConfiguration(new ImportDeclaration("java.util.Map"));
         ImportConfiguration conf3 = new ImportConfiguration(new ImportDeclaration("java.util.Dictionary"));
@@ -108,7 +107,7 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadImportConfigurationWithEmptyFile_shouldReturnEmptyList() throws IOException {
+    public void testLoadImportConfigurationWithEmptyFile_shouldReturnEmptyList() throws Exception {
         FileUtils.forceDelete(storageFile);
 
         List<ConfigItem<ImportDeclaration>> loaded = service.load(new HashMap<String, String>());
@@ -116,7 +115,7 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testRemoveImportConfiguration_ShouldDeleteConfiguration() {
+    public void testRemoveImportConfiguration_ShouldDeleteConfiguration() throws Exception {
         ImportConfiguration conf1 = new ImportConfiguration(new ImportDeclaration("java.util.List"));
         ImportConfiguration conf2 = new ImportConfiguration(new ImportDeclaration("java.util.Map"));
 
@@ -129,5 +128,4 @@ public class ImportDeclarationPersistenceBackendServiceTest extends AbstractOpen
         ImportConfiguration confLoaded = (ImportConfiguration) loaded.get(0);
         assertEquals("java.util.Map", confLoaded.getContent().getClassName());
     }
-
 }

@@ -23,8 +23,9 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.ops4j.pax.wicket.api.InjectorHolder;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +38,12 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 
+    @PaxWicketBean(name = "authenticationContext")
+    private AuthenticationContext authenticationContext;
+
     public OpenEngSBWebSession(Request request) {
         super(request);
+        injectDependencies();
     }
 
     public static OpenEngSBWebSession get() {
@@ -56,7 +61,7 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         try {
-            SecurityContext.login(username, new Password(password));
+            authenticationContext.login(username, new Password(password));
         } catch (AuthenticationException e) {
             LOGGER.error("Authentication failed");
             LOGGER.info("Reason: ", e);
@@ -68,7 +73,7 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public void signOut() {
         super.signOut();
-        SecurityContext.logout();
+        authenticationContext.logout();
     }
 
     @Override

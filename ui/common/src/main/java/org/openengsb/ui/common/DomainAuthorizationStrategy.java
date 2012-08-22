@@ -25,11 +25,11 @@ import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
@@ -46,6 +46,9 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     @PaxWicketBean(name = "authorizer")
     private AuthorizationDomain authorizer;
+
+    @PaxWicketBean(name = "authenticationContext")
+    private AuthenticationContext authenticationContext;
 
     @PaxWicketBean(name = "attributeProviders")
     private List<SecurityAttributeProvider> attributeProviders;
@@ -101,8 +104,8 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         return authorizer.checkAccess(user, new UIAction(getSecurityAttributes(componentClass))) == Access.GRANTED;
     }
 
-    private static String getAuthenticatedUser() {
-        Object principal = SecurityContext.getAuthenticatedPrincipal();
+    private String getAuthenticatedUser() {
+        Object principal = authenticationContext.getAuthenticatedPrincipal();
         if (principal == null) {
             return null;
         }

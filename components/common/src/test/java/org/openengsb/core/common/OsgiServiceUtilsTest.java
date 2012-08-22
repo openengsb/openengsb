@@ -59,13 +59,13 @@ public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(expected = OsgiServiceNotAvailableException.class)
-    public void getProxyForNonExistingservice_shouldThrowNotAvailableException() throws Exception {
+    public void testGetProxyForNonExistingservice_shouldThrowNotAvailableException() throws Exception {
         NullDomain osgiServiceProxy = utils.getOsgiServiceProxy(NullDomain.class, 1);
         osgiServiceProxy.getAliveState();
     }
 
     @Test
-    public void handleParallelProxyCalls() throws Exception {
+    public void testHandleParallelProxyCalls_shouldGetAnswersParallely() throws Exception {
         registerServiceViaId(new BlockingNullDomain(), "foo", NullDomain.class);
 
         final NullDomain service = utils.getOsgiServiceProxy(NullDomain.class);

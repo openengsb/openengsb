@@ -67,7 +67,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testToExecuteOpenEngSBInfoCommand() throws Exception {
+    public void testToExecuteOpenEngSBInfoCommand_shouldPrintOpenEngSBInformation() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
@@ -86,7 +86,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testToExecuteOpenEngSBDomainInfoCommand() throws Exception {
+    public void testToExecuteOpenEngSBDomainInfoCommand_shouldPrintInfoAboutDomain() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
@@ -105,7 +105,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testToExecuteOpenEngSBServiceListCommand() throws Exception {
+    public void testToExecuteOpenEngSBServiceListCommand_shouldListServices() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
@@ -158,7 +158,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testToExecuteOpenEngSBServiceCreateCommand() throws Exception {
+    public void testToExecuteOpenEngSBServiceCreateCommand_shouldCreateService() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
@@ -169,7 +169,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         b.start();
 
         waitForDefaultConnectors();
-        System.out.println("starting  ");
         String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing "
                 + "service.pid:testID attr:something");
         cs.execute(executeCommand);

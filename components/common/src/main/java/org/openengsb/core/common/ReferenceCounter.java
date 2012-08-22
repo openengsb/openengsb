@@ -17,6 +17,7 @@
 package org.openengsb.core.common;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class ReferenceCounter<T> {
     private Map<T, Set<File>> dataByValue = Maps.newHashMap();
     private Map<File, Set<T>> dataByFile = Maps.newHashMap();
 
-    public void addReference(File artifact, T object) {
+    public synchronized void addReference(File artifact, T object) {
         Set<File> fileList = dataByValue.get(object);
         if (fileList == null) {
             fileList = Sets.newHashSet();
@@ -45,7 +46,7 @@ public class ReferenceCounter<T> {
         valueList.add(object);
     }
 
-    public void removeReference(File artifact, T object) {
+    public synchronized void removeReference(File artifact, T object) {
         if (!dataByValue.containsKey(object)) {
             return;
         }
@@ -66,8 +67,11 @@ public class ReferenceCounter<T> {
         }
     }
 
-    public Set<T> removeFile(File artifact) {
+    public synchronized Set<T> removeFile(File artifact) {
         Set<T> valueSet = dataByFile.get(artifact);
+        if (valueSet == null) {
+            return Collections.emptySet();
+        }
         Set<T> garbage = Sets.newHashSet(valueSet);
         for (Iterator<T> iterator = valueSet.iterator(); iterator.hasNext();) {
             T r = iterator.next();

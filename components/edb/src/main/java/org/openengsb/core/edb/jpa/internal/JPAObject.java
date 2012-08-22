@@ -17,10 +17,7 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,13 +26,12 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.openengsb.core.common.AbstractDataRow;
-import org.openengsb.core.edb.api.EDBObject;
 
 @SuppressWarnings("serial")
 @Entity
 /**
  * this defines a jpa object in the database. The correlation to the EDBObject is that
- * the JPAObject can be converted to an EDBObject.
+ * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
 public class JPAObject extends AbstractDataRow {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -50,53 +46,36 @@ public class JPAObject extends AbstractDataRow {
     public JPAObject() {
         isDeleted = false;
     }
-
-    public JPAObject(EDBObject o) {
-        timestamp = o.getTimestamp().longValue();
-        oid = o.getOID();
-        isDeleted = o.isDeleted();
-
-        loadValues(o);
+    
+    public List<JPAEntry> getEntries() {
+        return entries;
     }
-
-    private void loadValues(EDBObject o) {
-        entries = new ArrayList<JPAEntry>();
-        for (Map.Entry<String, Object> entry : o.entrySet()) {
-            entries.add(new JPAEntry(entry.getKey(), entry.getValue()));
-        }
-    }
-
-    public EDBObject getObject() {
-        Map<String, Object> data = new HashMap<String, Object>();
-        for (JPAEntry kvp : entries) {
-            data.put(kvp.getKey(), kvp.getValue());
-        }
-        String s = (String) data.get("isDeleted");
-        if (s != null) {
-            data.put("isDeleted", s.equals("true"));
-        }
-        EDBObject object = new EDBObject(oid, data);
-        object.updateTimestamp(timestamp);
-        return object;
+    
+    public void setEntries(List<JPAEntry> entries) {
+        this.entries = entries;
     }
 
     public Boolean isDeleted() {
         return isDeleted;
     }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
     }
 
     public Long getTimestamp() {
         return timestamp;
+    }
+    
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getOID() {
         return oid;
     }
 
-    public List<JPAEntry> getPairs() {
-        return entries;
+    public void setOID(String oid) {
+        this.oid = oid;
     }
 }

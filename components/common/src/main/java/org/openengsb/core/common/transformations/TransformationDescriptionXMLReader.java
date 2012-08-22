@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.ModelDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.xml.sax.Attributes;

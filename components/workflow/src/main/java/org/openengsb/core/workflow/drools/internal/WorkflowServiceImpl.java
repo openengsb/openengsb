@@ -61,7 +61,6 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.workflow.api.RemoteEventProcessor;
 import org.openengsb.core.workflow.api.RuleBaseException;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.WorkflowService;
@@ -89,7 +88,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private static final String FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD = ", %s == \"%s\"";
 
-    private RuleManager rulemanager;
+    private DroolsRuleManager rulemanager;
     private BundleContext bundleContext;
     private TaskboxService taskbox;
 
@@ -433,7 +432,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
-    public void setRulemanager(RuleManager rulemanager) {
+    public void setRulemanager(DroolsRuleManager rulemanager) {
         this.rulemanager = rulemanager;
     }
 

@@ -38,7 +38,7 @@ import org.openengsb.core.common.util.BeanUtilsExtended;
 public class BeanUtilsExtendedTest {
 
     @Test
-    public void buildAttributeMapFromSimpleStringBean_shouldReturnMapThatContainsProperties() throws Exception {
+    public void testBuildAttributeMapFromSimpleStringBean_shouldReturnMapThatContainsProperties() throws Exception {
         SimpleBeanWithStrings testBean = new SimpleBeanWithStrings("foo", "bar");
         Map<String, String> attributeMap = BeanUtilsExtended.buildStringAttributeMap(testBean);
         assertThat(attributeMap.get("value1"), is("foo"));
@@ -46,7 +46,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void buildAttributeMapAndBuildNewBean_shouldBeEqualToOriginalBean() throws Exception {
+    public void testBuildAttributeMapAndBuildNewBean_shouldBeEqualToOriginalBean() throws Exception {
         SimpleBeanWithStrings testBean = new SimpleBeanWithStrings("foo", "bar");
         Map<String, String> attributeMap = BeanUtilsExtended.buildStringAttributeMap(testBean);
         SimpleBeanWithStrings bean2 =
@@ -56,7 +56,7 @@ public class BeanUtilsExtendedTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void buildMapFromMultiValueBean_shouldContainAllValues() throws Exception {
+    public void testBuildMapFromMultiValueBean_shouldContainAllValues() throws Exception {
         BeanWithMultiValues testBean = new BeanWithMultiValues(42, 2.0, 3.1415, 1.4142135);
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(testBean);
         assertThat((Long) map.get("id"), is(42L));
@@ -64,7 +64,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void buildMapFromMultiValueBeanAndRebuild_shouldBeEqualtoOriginalBean() throws Exception {
+    public void testBuildMapFromMultiValueBeanAndRebuild_shouldBeEqualtoOriginalBean() throws Exception {
         BeanWithMultiValues testBean = new BeanWithMultiValues(42, 2.0, 3.1415, 1.4142135);
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(testBean);
         BeanWithMultiValues built = BeanUtilsExtended.createBeanFromAttributeMap(BeanWithMultiValues.class, map);
@@ -72,7 +72,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void buildMapWithComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
+    public void testBuildMapWithComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithComplexAttributes bean =
             new BeanWithComplexAttributes(new CustomStringClass("foo:bar"), new BigDecimal("1"));
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -82,7 +82,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void buildMapWithIncompleteComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
+    public void testBuildMapWithIncompleteComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithComplexAttributes bean =
             new BeanWithComplexAttributes(new CustomStringClass("foo:bar"));
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -92,7 +92,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void buildMapWithBeanWithProtectedPropertiesAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
+    public void testBuildMapWithBeanWithProtectedPropertiesAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithProtectedProperties bean =
             new BeanWithProtectedProperties("foo", "bar");
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -103,9 +103,8 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test(expected = SecurityException.class)
-    public void buildMapFromBeanWithFaultyGetter_shouldThrowException() throws Exception {
+    public void testBuildMapFromBeanWithFaultyGetter_shouldThrowException() throws Exception {
         BeanWithFaultyGetter bean = new BeanWithFaultyGetter();
         BeanUtilsExtended.buildObjectAttributeMap(bean);
     }
-
 }

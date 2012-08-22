@@ -19,7 +19,6 @@ package org.openengsb.core.common;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -38,7 +37,7 @@ public class ThreadLocalUT {
      * shows the impact of the proxying and argument-manipulation on performance.
      */
     @Test
-    public void threadPoolPerformance() throws Exception {
+    public void testThreadPoolPerformance_printsPerformanceValues() throws Exception {
         Runnable command = new Runnable() {
             @Override
             public void run() {
@@ -60,7 +59,7 @@ public class ThreadLocalUT {
         LOGGER.info("" + (System.currentTimeMillis() - start));
     }
 
-    private long executeTasks(Runnable command, ExecutorService pool) throws InterruptedException, ExecutionException {
+    private long executeTasks(Runnable command, ExecutorService pool) throws Exception {
         Collection<Future<?>> futures = new HashSet<Future<?>>();
         long start = System.currentTimeMillis();
         for (int i = 0; i < 1000000; i++) {

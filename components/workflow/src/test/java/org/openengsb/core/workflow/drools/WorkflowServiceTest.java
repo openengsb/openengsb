@@ -69,7 +69,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testProcessEvent() throws Exception {
+    public void testProcessEvent_shouldProcessEvent() throws Exception {
         service.processEvent(new Event());
     }
 
@@ -81,7 +81,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testProcessEventTriggersHelloWorld() throws Exception {
+    public void testProcessEvent_shouldTriggerHelloWorld() throws Exception {
         Event event = new Event();
         service.processEvent(event);
         verify(notification, atLeast(1)).notify("Hello");
@@ -90,14 +90,14 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testUseLog() throws Exception {
+    public void testUseLog_shouldLog() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
         verify(logService).doSomething("42");
     }
 
     @Test
-    public void testUpdateRule() throws Exception {
+    public void testUpdateRule_shouldWork() throws Exception {
         manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"21\");");
         Event event = new Event("test-context");
@@ -106,14 +106,14 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testUseLogContent() throws Exception {
+    public void testUseLogContent_shouldCallLogService() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
         verify(logService, times(2)).doSomething(anyString());
     }
 
     @Test
-    public void addInvalidRule_shouldNotModifyRulebase() throws Exception {
+    public void testAddInvalidRule_shouldNotModifyRulebase() throws Exception {
         try {
             manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "hello"), "this*is_invalid");
             fail("expected Exception");
@@ -126,7 +126,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void invalidModifyRule_shouldNotModifyRulebase() throws Exception {
+    public void testInvalidModifyRule_shouldNotModifyRulebase() throws Exception {
         try {
             manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
             fail("expected Exception");
@@ -186,7 +186,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testCiWorkflow() throws Exception {
+    public void testCiWorkflow_shouldRunWorkflow() throws Exception {
         long id = service.startFlow("ci");
         service.processEvent(new BuildSuccess());
         service.processEvent(new TestSuccess());
@@ -197,14 +197,14 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testStartInBackgroundWithoutStartedEvent() throws Exception {
+    public void testStartInBackgroundWithoutStartedEvent_shouldRunInBackground() throws Exception {
         long id = service.startFlow("backgroundFlow");
         service.waitForFlowToFinish(id, 5000);
         verify(logService).doSomething(eq("" + id));
     }
 
     @Test
-    public void testStartWorkflowTriggeredByEvent() throws Exception {
+    public void testStartWorkflowTriggeredByEvent_shouldStartWorkflow() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n" + "  Event()\n" + "then\n"
                 + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
         service.processEvent(new Event());
@@ -212,7 +212,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterWorkflowTrigger() throws Exception {
+    public void testRegisterWorkflowTrigger_shouldRegisterTrigger() throws Exception {
         service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
         service.processEvent(new Event());
         service.processEvent(new Event("triggerEvent"));
@@ -220,7 +220,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterWorkflowTriggerWithSubclass() throws Exception {
+    public void testRegisterWorkflowTriggerWithSubclass_shouldRegisterTrigger() throws Exception {
         NullEvent3 testEvent = new NullEvent3();
         testEvent.setName("triggerEvent");
         testEvent.setTestProperty("foo");
@@ -234,7 +234,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterWorkflowTriggerIgnoreNullFields() throws Exception {
+    public void testRegisterWorkflowTriggerIgnoreNullFields_shouldRegisterTrigger() throws Exception {
         NullEvent3 testEvent = new NullEvent3();
         testEvent.setName("triggerEvent");
         service.registerFlowTriggerEvent(testEvent, "ci");
@@ -244,7 +244,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed() throws Exception {
+    public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed_shouldRegisterTrigger() throws Exception {
         NullEvent3 testEvent = new NullEvent3();
         testEvent.setName("triggerEvent");
         testEvent.setTestStringProp("bar");
@@ -256,7 +256,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test(timeout = 3000)
-    public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
+    public void testRegisterWorkflowTriggerWithFlowStartedEvent_shouldRegisterTrigger() throws Exception {
         service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
         service.processEvent(new Event("triggerEvent"));
         for (Long id : service.getRunningFlows()) {
@@ -265,7 +265,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testIfEventIsRetracted() throws Exception {
+    public void testIfEventIsRetracted_shouldWork() throws Exception {
         Event event = new Event();
         service.processEvent(event);
         event = new Event("test-context");
@@ -274,7 +274,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
+    public void testStartProcessWithProperyBagAndChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
@@ -284,7 +284,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void processEventsConcurrently_shouldProcessBothEvents() throws Exception {
+    public void testProcessEventsConcurrently_shouldProcessBothEvents() throws Exception {
         manager.addImport(TestEvent.class.getName());
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test"), "when\n"
                 + "TestEvent(value == \"0\")\n"
@@ -317,7 +317,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testExecuteWorkflow() throws Exception {
+    public void testExecuteWorkflow_shouldRunWorkFlow() throws Exception {
         ProcessBag result = service.executeWorkflow("simpleFlow", new ProcessBag());
         assertThat((Integer) result.getProperty("test"), is(42));
         assertThat((String) result.getProperty("alternativeName"),
@@ -325,14 +325,14 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testCancelWorkflow() throws Exception {
+    public void testCancelWorkflow_shouldAbortWorkflow() throws Exception {
         long pid = service.startFlow("ci");
         service.cancelFlow(pid);
         service.waitForFlowToFinish(pid, 5000);
     }
 
     @Test
-    public void testCancelWorkflowWithOpenTasks() throws Exception {
+    public void testCancelWorkflowWithOpenTasks_shouldAbortWorkflow() throws Exception {
         long pid = service.startFlow("ci");
         ProcessBag bag = new ProcessBag();
         bag.setProcessId(Long.toString(pid));
@@ -359,7 +359,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testResponseRule() throws Exception {
+    public void testResponseRule_shouldProcessEvent() throws Exception {
         NullDomain nullDomainImpl = mock(NullDomain.class);
         registerServiceViaId(nullDomainImpl, "test-connector", NullDomain.class, Domain.class);
 
@@ -414,7 +414,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void serializeConsequenceException_shouldReturnString() throws Exception {
+    public void testSerializeConsequenceException_shouldReturnString() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
                 + "when\n"
                 + "   e : Event(name==\"evil\")\n"
@@ -431,7 +431,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void throwEvent_shouldAuditEvent() throws Exception {
+    public void testThrowEvent_shouldAuditEvent() throws Exception {
         Event event = new Event("good");
         service.processEvent(event);
         verify(auditingMock).onEvent(event);

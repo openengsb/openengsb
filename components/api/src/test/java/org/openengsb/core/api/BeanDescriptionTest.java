@@ -39,8 +39,8 @@ public class BeanDescriptionTest {
         BeanDescription beanDescription = BeanDescription.fromObject(bean);
         SimpleTestBean bean2 = beanDescription.toObject(SimpleTestBean.class);
 
-        assertThat(bean2.longValue, is(42L));
-        assertThat(bean2.stringValue, is("42"));
+        assertThat(bean2.getLongValue(), is(42L));
+        assertThat(bean2.getStringValue(), is("42"));
     }
 
 }
