@@ -105,7 +105,8 @@ public class RemoteTool implements Serializable {
         if ((this.toolName == null) ? (other.toolName != null) : !this.toolName.equals(other.toolName)) {
             return false;
         }
-        if (this.availableViews != other.availableViews && (this.availableViews == null || !this.availableViews.equals(other.availableViews))) {
+        if (this.availableViews != other.availableViews 
+            && (this.availableViews == null || !this.availableViews.equals(other.availableViews))) {
             return false;
         }
         return true;

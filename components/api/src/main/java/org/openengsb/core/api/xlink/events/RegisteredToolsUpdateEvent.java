@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api.xlink.events;
 
-import java.util.List;
 
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.xlink.model.RemoteTool;

@@ -280,7 +280,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String hostId, 
             String toolName, 
             ModelToViewsTuple[] modelsToViewsArray) 
-            throws DomainNotLinkableException {
+        throws DomainNotLinkableException {
         isConnectorLinkable(id);
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, List<RemoteToolView>> convertedModelsToViews 
