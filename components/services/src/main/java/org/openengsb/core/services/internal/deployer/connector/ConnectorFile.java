@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
@@ -35,6 +37,7 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
@@ -148,6 +151,7 @@ public class ConnectorFile {
         }
         try {
             props.load(reader);
+            Collections2.transform(props.values(), new TrimFunction<Object, String>());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
@@ -222,4 +226,11 @@ public class ConnectorFile {
         return properties;
     }
 
+    private class TrimFunction<F, T> implements Function<F, T> {
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object apply(@Nullable Object input) {
+            return (input == null) ? null : ((String) input).trim();
+        }
+    }
 }
