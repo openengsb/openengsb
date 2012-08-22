@@ -476,7 +476,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         assertNull(testConnector.getEvent());
     }   
     
-    @Test(expected=DomainNotLinkableException.class)
+    @Test(expected = DomainNotLinkableException.class)
     public void connectorIsNullAndFailsTest() throws DomainNotLinkableException {
         String connectorId = "test3+test3+test3";
         String hostId = "127.0.0.1";
@@ -486,7 +486,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
     }
     
-    @Test(expected=DomainNotLinkableException.class)
+    @Test(expected = DomainNotLinkableException.class)
     public void connectorIsNotLinkableAndFailsTest() throws DomainNotLinkableException {
         String connectorId = "test4+test4+test4";
         String hostId = "127.0.0.1";
