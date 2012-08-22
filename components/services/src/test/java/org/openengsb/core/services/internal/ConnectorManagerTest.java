@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -45,6 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
@@ -52,10 +54,13 @@ import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
@@ -70,10 +75,12 @@ import org.openengsb.core.test.NullDomainImpl;
 public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
+    private DefaultOsgiUtilsService mockedServiceUtils;
     private ConnectorManager serviceManager;
     private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
+    private LinableTestConnector testConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -83,6 +90,14 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceRegistrationManagerImpl = new ConnectorRegistrationManager();
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
+        mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
+        testConnector = new LinableTestConnector();
+        LinableTestConnector testConnector2 = new LinableTestConnector();
+        NormalTestConnector testConnector3 = new NormalTestConnector();
+        when(mockedServiceUtils.getService("(service.pid=test+test+test)", 100L)).thenReturn(testConnector);
+        when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(testConnector2);
+        when(mockedServiceUtils.getService("(service.pid=test3+test3+test3)", 100L)).thenReturn(null);
+        when(mockedServiceUtils.getService("(service.pid=test4+test4+test4)", 100L)).thenReturn(testConnector3);
         createServiceManager();
     }
 
@@ -101,6 +116,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManagerImpl.setxLinkBaseUrl("http://localhost/openXLink");
         serviceManagerImpl.setxLinkExpiresIn(3);
+        serviceManagerImpl.setServiceUtils(mockedServiceUtils);
         serviceManager = serviceManagerImpl;
     }
 
@@ -276,7 +292,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_ReturnsTemplate() {
+    public void testConnectToXLink_ReturnsTemplate() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -288,7 +304,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_TemplateContainsCorrectIdentifier() {
+    public void testConnectToXLink_TemplateContainsCorrectIdentifier() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -308,7 +324,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }    
     
     @Test
-    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() {
+    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -329,7 +345,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     } 
    
     @Test
-    public void testGetXLinkRegistration_returnsConnectedRegistration() {
+    public void testGetXLinkRegistration_returnsConnectedRegistration() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -340,7 +356,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() {
+    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -353,7 +369,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() {
+    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -366,7 +382,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId)));
         assertNotNull(template.getViewToModels().get(viewId1));
         assertNotNull(template.getViewToModels().get(viewId2));
-    }     
+    }    
     
     @Test
     public void testDisconnectFromXLink_OnMissingRegistration_NoFail() {
@@ -376,7 +392,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }         
     
     @Test
-    public void testDisconnectFromXLink_isEmptyAfterDisconnect() {
+    public void testDisconnectFromXLink_isEmptyAfterDisconnect() throws DomainNotLinkableException {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -385,7 +401,100 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
         assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
-    }       
+    }      
+    
+    @Test
+    public void connectorIsNotfiedAfterRegistrationTest() throws DomainNotLinkableException {
+        String connectorId = "test+test+test";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName);
+        String connectorId2 = "test2+test2+test2";
+        String toolName2 = "myTool2";
+        ModelToViewsTuple[] modelsToViews2 
+            = createModelViewsMap(toolName2);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.connectToXLink(connectorId2, hostId, toolName2, modelsToViews2);
+        assertThat(testConnector.getEvent().getRegisteredTools().length, is(1));
+        assertThat(testConnector.getEvent().getRegisteredTools()[0].getToolName(), is(toolName2));
+    }
+
+    @Test
+    public void registrationIsFromDifferentHostNoNotificationTest() throws DomainNotLinkableException {
+        String connectorId = "test+test+test";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName);
+        String connectorId2 = "test2+test2+test2";
+        String toolName2 = "myTool2";
+        String hostId2 = "127.0.0.2";
+        ModelToViewsTuple[] modelsToViews2 
+            = createModelViewsMap(toolName2);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.connectToXLink(connectorId2, hostId2, toolName2, modelsToViews2);
+        assertNull(testConnector.getEvent());
+    }
+
+    @Test
+    public void connectorIsNotfiedAfterDeRegistrationTest() throws DomainNotLinkableException {
+        String connectorId = "test+test+test";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName);
+        String connectorId2 = "test2+test2+test2";
+        String toolName2 = "myTool2";
+        ModelToViewsTuple[] modelsToViews2 
+            = createModelViewsMap(toolName2);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.connectToXLink(connectorId2, hostId, toolName2, modelsToViews2);
+        assertThat(testConnector.getEvent().getRegisteredTools().length, is(1));
+        assertThat(testConnector.getEvent().getRegisteredTools()[0].getToolName(), is(toolName2));
+        serviceManager.disconnectFromXLink(connectorId2, hostId);
+        assertThat(testConnector.getEvent().getRegisteredTools().length, is(0));
+    }
+
+
+    @Test
+    public void deRegistrationIsFromDifferentHostNoNotificationTest() throws DomainNotLinkableException {
+        String connectorId = "test+test+test";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName);
+        String connectorId2 = "test2+test2+test2";
+        String toolName2 = "myTool2";
+        String hostId2 = "127.0.0.2";
+        ModelToViewsTuple[] modelsToViews2 
+            = createModelViewsMap(toolName2);
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+        serviceManager.connectToXLink(connectorId2, hostId2, toolName2, modelsToViews2);
+        assertNull(testConnector.getEvent());
+        serviceManager.disconnectFromXLink(connectorId2, hostId);
+        assertNull(testConnector.getEvent());
+    }   
+    
+    @Test(expected=DomainNotLinkableException.class)
+    public void connectorIsNullAndFailsTest() throws DomainNotLinkableException {
+        String connectorId = "test3+test3+test3";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName); 
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+    }
+    
+    @Test(expected=DomainNotLinkableException.class)
+    public void connectorIsNotLinkableAndFailsTest() throws DomainNotLinkableException {
+        String connectorId = "test4+test4+test4";
+        String hostId = "127.0.0.1";
+        String toolName = "myTool";
+        ModelToViewsTuple[] modelsToViews 
+            = createModelViewsMap(toolName); 
+        serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
+    }    
     
     private ModelToViewsTuple[] createModelViewsMap(String toolName) {
         String viewId1 = "exampleViewId_1";
@@ -444,5 +553,63 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Hashtable<String, Object> domainProviderProps = new Hashtable<String, Object>();
         domainProviderProps.put("domain", "test");
         registerService(domainProvider, domainProviderProps, DomainProvider.class);
+    }
+    
+    private interface LinkableTestDomain extends LinkableDomain {
+    }
+    
+    private interface TestDomain extends Domain {
+    }
+    
+    private class LinableTestConnector implements LinkableTestDomain {
+        
+        private RegisteredToolsUpdateEvent event;
+        
+        public LinableTestConnector() {
+            event = null;
+        }
+
+        @Override
+        public void openXLinks(Object[] modelObjects, String viewId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void onRegisteredToolsUpdateEvent(RegisteredToolsUpdateEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public String getInstanceId() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public RegisteredToolsUpdateEvent getEvent() {
+            return event;
+        }
+
+        public void setEvent(RegisteredToolsUpdateEvent event) {
+            this.event = event;
+        }
+        
+    }
+    
+    private class NormalTestConnector implements TestDomain {
+
+        @Override
+        public AliveState getAliveState() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public String getInstanceId() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
     }
 }
