@@ -60,6 +60,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 /**
  * Manages the processing of an incoming XLink and, if necessary, renders a page
  * where the user can choose between available Views for XLinking.
+ * TODO [OPENENGSB-3267] Hook filter onto this WebPage
  */
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
@@ -71,6 +72,7 @@ public class ToolChooserPage extends WebPage {
     private OsgiUtilsService serviceUtils;
     
     private ToolChooserLogic chooserLogic;
+    private XLinkMock xLinkMock;
     
     private String contextId;
     private String modelId;
@@ -98,7 +100,9 @@ public class ToolChooserPage extends WebPage {
      * Validates the incoming request and manages the further processing of the XLink.
      */
     private void processPage() {
-        chooserLogic = new ToolChooserLogic(serviceManager, serviceUtils);
+        chooserLogic = new ToolChooserLogic(serviceManager);
+        xLinkMock = new XLinkMock(serviceUtils);
+        
         requestParameters = getRequestParametersAsAMap();
         HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
         HttpServletResponse resp = (HttpServletResponse) getResponse().getContainerResponse();
@@ -155,7 +159,7 @@ public class ToolChooserPage extends WebPage {
         checkXLinkIsExpired();
         List<String> keyFields = null;
         try {
-            keyFields = chooserLogic.getModelIdentifierToModelDescription(modelId, versionId);
+            keyFields = xLinkMock.getModelIdentifierToModelDescription(modelId, versionId);
         } catch (ClassNotFoundException ex) {
             String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
             Logger.getLogger(ToolChooserPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -331,7 +335,7 @@ public class ToolChooserPage extends WebPage {
                                 handleSuccessResponse(resp);
                             }
                         };
-                        if (XLinkMock.isTransformationPossible(modelId, versionId, destModelInfo.getModelClassName(), 
+                        if (xLinkMock.isTransformationPossible(modelId, versionId, destModelInfo.getModelClassName(), 
                                 destModelInfo.getVersionString())) {
                             String labelText = new StringResourceModel("toolchooser.match", this, null).getString();
                             viewLink.add(new Label("viewLinkLabel", labelText));                  
@@ -356,13 +360,12 @@ public class ToolChooserPage extends WebPage {
             String connectorId, String viewId) {
         List<Object> modelObjectsDestination = new ArrayList<Object>();
         try {
-            modelObjectsDestination = XLinkMock.transformModelObject(
+            modelObjectsDestination = xLinkMock.transformModelObject(
                     modelId, 
                     versionId,
                     destModelInfo.getModelClassName(),
                     destModelInfo.getVersionString(),
-                    identifierObject,
-                    serviceUtils);
+                    identifierObject);
         } catch (ClassNotFoundException ex) {
             String errorMsg = new StringResourceModel("error.modelClass.notfound", this, null).getString();
             handleErrorResponse(String.format(errorMsg, ex.getMessage()));
@@ -372,7 +375,7 @@ public class ToolChooserPage extends WebPage {
         }
         try {
             if (!modelObjectsDestination.isEmpty()) {
-                XLinkMock.openPotentialMatches(modelObjectsDestination, connectorId, viewId, serviceUtils);
+                xLinkMock.openPotentialMatches(modelObjectsDestination, connectorId, viewId);
             }                   
         } catch (OsgiServiceNotAvailableException ex) {             
             String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();

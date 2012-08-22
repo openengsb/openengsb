@@ -17,19 +17,14 @@
 
 package org.openengsb.ui.admin.xlink;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 
 /**
  * This class supplies the logic to process a call from an XLink URL.
@@ -37,11 +32,10 @@ import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 public class ToolChooserLogic {
     
     private ConnectorManager serviceManager;
-    private OsgiUtilsService osgiService;
+    //private OsgiUtilsService osgiService;
 
-    public ToolChooserLogic(ConnectorManager serviceManager, OsgiUtilsService osgiService) {
+    public ToolChooserLogic(ConnectorManager serviceManager) {
         this.serviceManager = serviceManager;
-        this.osgiService = osgiService;
     }
     
     /**
@@ -76,35 +70,6 @@ public class ToolChooserLogic {
         }
         return null;
     }
- 
-    /**
-     * Returns the FieldNames of the given ModelDescription (e.g. ModelClass and ModelVersion) which
-     * are marked as identifying Fields for XLink.
-     */
-    public List<String> getModelIdentifierToModelDescription(
-            String modelId, 
-            String versionId) throws ClassNotFoundException {
-        //Todo fetch real identifiers
-        Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, osgiService);
-        Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
-        List<String> identifierKeyNames = new ArrayList<String>();
-        
-        //########### MOCK !!!
-        
-        if (modelId.equals(XLinkMock.OOMODEL)) {
-            identifierKeyNames.add("className");
-            identifierKeyNames.add("attributes");
-            return identifierKeyNames;
-        }        
-        
-        //########### MOCK !!!
-        
-        for (OpenEngSBModelEntry entry : entries) {
-            identifierKeyNames.add(entry.getKey());
-        }
-        return identifierKeyNames;
-    }    
     
     /**
      * Returns true, if the given Connector is registered for XLink on the given 

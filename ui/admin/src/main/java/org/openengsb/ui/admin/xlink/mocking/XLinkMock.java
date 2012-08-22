@@ -24,6 +24,8 @@ import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.OOSourceCode.model.OOClass;
@@ -33,10 +35,12 @@ import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 /**
  * This class mocks the unfinished xlink-functionality
  */
-public final class XLinkMock {
+public class XLinkMock {
     
-    private XLinkMock() {
-        
+    private OsgiUtilsService osgiService;
+
+    public XLinkMock(OsgiUtilsService osgiService) {
+        this.osgiService = osgiService;
     }
     
     public static final String SQLMODEL = SQLCreate.class.getName();
@@ -44,14 +48,14 @@ public final class XLinkMock {
  
     /**
      * Transforms the given ModelObject from it´s SourceClass to the defined DestinationModel.
+     * TODO [OPENENGSB-2776] replace with real transformation    
      */
-    public static List<Object> transformModelObject(
+    public List<Object> transformModelObject(
             String sourceModelClass,  
             String sourceModelVersion,             
             String destinationModelClass, 
             String destinationModelVersion, 
-            Object modelObjectSource,
-            OsgiUtilsService osgiService) throws ClassNotFoundException, OpenXLinkException {
+            Object modelObjectSource) throws ClassNotFoundException, OpenXLinkException {
         if (!isTransformationPossible(sourceModelClass, 
             sourceModelVersion, destinationModelClass, destinationModelVersion)) {
             throw new OpenXLinkException();      
@@ -65,7 +69,7 @@ public final class XLinkMock {
                 destinationModelClass, destinationModelVersion, 
                 osgiService);
        
-        //########### MOCK !!! Todo replace with real transformation        
+        //########### MOCK start ###########      
         
         if (sourceModelClass.equals(SQLMODEL) && destinationModelClass.equals(OOMODEL)) {
             SQLCreate sqlSource = (SQLCreate) modelObjectSource;
@@ -85,7 +89,7 @@ public final class XLinkMock {
             resultObject = sqlSource;
         }
         
-        //########### MOCK !!! Todo replace with real transformation    
+        //########### MOCK end ########### 
         
         List<Object> matches = new ArrayList<Object>();
         matches.add(resultObject);
@@ -95,37 +99,67 @@ public final class XLinkMock {
     /**
      * Calls the given connector to process the list of transformed Objects as 
      * potential XLink matches.
+     * TODO [OPENENGSB-3267] remove dummy login after implementation of filter on wicketpage
      */
-    public static void openPotentialMatches(
+    public void openPotentialMatches(
             List<Object> modelObjectsDestination, 
             String connectorToCall, 
-            String viewToCall,
-            OsgiUtilsService osgiService) throws OsgiServiceNotAvailableException, 
+            String viewToCall) throws OsgiServiceNotAvailableException, 
             ClassCastException, OpenXLinkException {
         Object serviceObject = osgiService.getService("(service.pid=" + connectorToCall + ")", 100L);
         if (serviceObject == null) {
             throw new OpenXLinkException();
         }
         LinkableDomain service = (LinkableDomain) serviceObject;
-        /*TODO remove after implementation of filter on wicketpage*/
         SecurityContext.login("admin", new Password("password"));
         service.openXLinks(modelObjectsDestination.toArray(), viewToCall);
     }
     
     /**
      * Returns true, if the transformation between the two defined ModelClasses is possible.
+     * TODO [OPENENGSB-2776] implement real check here
      */
-    public static  boolean isTransformationPossible(
+    public boolean isTransformationPossible(
             String srcModelClass, 
             String srcModelVersion, 
             String destModelClass, 
             String destModelVersion) {
+        //########### MOCK start ###########
         if (!srcModelClass.equals(ExampleObjectOrientedModel.class.getName()) 
             && destModelClass.equals(ExampleObjectOrientedModel.class.getName())) {
             return false;
         }
-        //todo implement real check here
+        //########### MOCK end ###########
         return true;
     }   
+    
+    /**
+     * Returns the FieldNames of the given ModelDescription (e.g. ModelClass and ModelVersion) which
+     * are marked as identifying Fields for XLink.
+     * TODO [OPENENGSB-3266] fetch real xlink identifiers instead all of them
+     */
+    public List<String> getModelIdentifierToModelDescription(
+            String modelId, 
+            String versionId) throws ClassNotFoundException {
+        Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, osgiService);
+        Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<String> identifierKeyNames = new ArrayList<String>();
+        
+        //########### MOCK start ###########
+        
+        if (modelId.equals(XLinkMock.OOMODEL)) {
+            identifierKeyNames.add("className");
+            identifierKeyNames.add("attributes");
+            return identifierKeyNames;
+        }        
+        
+        //########### MOCK end ###########
+        
+        for (OpenEngSBModelEntry entry : entries) {
+            identifierKeyNames.add(entry.getKey());
+        }
+        return identifierKeyNames;
+    }        
     
 }
