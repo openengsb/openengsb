@@ -116,7 +116,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManagerImpl.setxLinkBaseUrl("http://localhost/openXLink");
         serviceManagerImpl.setxLinkExpiresIn(3);
-        serviceManagerImpl.setServiceUtils(mockedServiceUtils);
+        serviceManagerImpl.setUtilsService(mockedServiceUtils);
         serviceManager = serviceManagerImpl;
     }
 
