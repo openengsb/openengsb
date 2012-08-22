@@ -32,17 +32,21 @@ public class RegisteredToolsUpdateEvent extends Event {
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */
-    List<RemoteTool> registeredTools;
+    RemoteTool[] registeredTools;
 
+    public RegisteredToolsUpdateEvent() { 
+        
+    }
+    
     /**
      * List of all other currently registered tools from the same host. The list
      * has changed. This information is used to support local switching between tools.
      */    
-    public List<RemoteTool> getRegisteredTools() {
+    public RemoteTool[] getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<RemoteTool> registeredTools) {
+    public void setRegisteredTools(RemoteTool[] registeredTools) {
         this.registeredTools = registeredTools;
     }
     
