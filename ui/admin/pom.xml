@@ -22,8 +22,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.openengsb.ui</groupId>
-    <artifactId>openengsb-ui-parent</artifactId>
+    <relativePath>../../parents/bundle</relativePath>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-bundle-settings</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
@@ -121,13 +122,12 @@
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
               org.ops4j.pax.wicket.util.proxy,
-              javax.servlet.*;version="[2.5,4)",
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)",
               org.apache.shiro.web.servlet,
-              javax.servlet,
-              javax.servlet.http,
+              javax.servlet;version="[2.5,4)",
+              javax.servlet.http;version="[2.5,4)",
               org.apache.wicket.settings,
               org.apache.wicket.session,
               org.apache.wicket.util.file,
@@ -221,6 +221,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.persistence</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.ui</groupId>
       <artifactId>org.openengsb.ui.api</artifactId>
       <scope>provided</scope>
@@ -258,11 +263,6 @@
     <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.wicketacl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
       <scope>provided</scope>
     </dependency>
 

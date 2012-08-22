@@ -96,5 +96,4 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription("a", "a",
             new HashMap<String, String>(), new HashMap<String, Object>()));
     }
-
 }

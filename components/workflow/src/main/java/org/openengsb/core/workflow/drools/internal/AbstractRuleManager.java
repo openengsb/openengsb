@@ -25,10 +25,9 @@ import java.util.Set;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.openengsb.core.workflow.api.RuleBaseException;
-import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 
-public abstract class AbstractRuleManager implements RuleManager {
+public abstract class AbstractRuleManager implements DroolsRuleManager {
 
     protected KnowledgeBase rulebase;
     protected RulebaseBuilder builder;

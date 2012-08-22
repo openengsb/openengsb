@@ -30,13 +30,13 @@ import org.openengsb.core.api.context.ContextHolder;
 public class ContextHolderTest {
 
     @Test
-    public void testContextHolderHasInitialContext_contextShouldBeNotNull() {
+    public void testContextHolderHasInitialContext_contextShouldBeNotNull() throws Exception {
         ContextHolder context = ContextHolder.get();
         assertThat(context, notNullValue());
     }
 
     @Test
-    public void testGetContext_shouldReturnCurrentContext() {
+    public void testGetContext_shouldReturnCurrentContext() throws Exception {
         ContextHolder context = ContextHolder.get();
         context.setCurrentContextId("foo");
         String contextId = context.getCurrentContextId();

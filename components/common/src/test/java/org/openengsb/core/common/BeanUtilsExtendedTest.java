@@ -38,7 +38,7 @@ import org.openengsb.core.common.util.BeanUtilsExtended;
 public class BeanUtilsExtendedTest {
 
     @Test
-    public void testBuildAttributeMapFromSimpleStringBean_shouldReturnMapThatContainsProperties() {
+    public void testBuildAttributeMapFromSimpleStringBean_shouldReturnMapThatContainsProperties() throws Exception {
         SimpleBeanWithStrings testBean = new SimpleBeanWithStrings("foo", "bar");
         Map<String, String> attributeMap = BeanUtilsExtended.buildStringAttributeMap(testBean);
         assertThat(attributeMap.get("value1"), is("foo"));
@@ -46,7 +46,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void testBuildAttributeMapAndBuildNewBean_shouldBeEqualToOriginalBean() {
+    public void testBuildAttributeMapAndBuildNewBean_shouldBeEqualToOriginalBean() throws Exception {
         SimpleBeanWithStrings testBean = new SimpleBeanWithStrings("foo", "bar");
         Map<String, String> attributeMap = BeanUtilsExtended.buildStringAttributeMap(testBean);
         SimpleBeanWithStrings bean2 =
@@ -56,7 +56,7 @@ public class BeanUtilsExtendedTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testBuildMapFromMultiValueBean_shouldContainAllValues() {
+    public void testBuildMapFromMultiValueBean_shouldContainAllValues() throws Exception {
         BeanWithMultiValues testBean = new BeanWithMultiValues(42, 2.0, 3.1415, 1.4142135);
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(testBean);
         assertThat((Long) map.get("id"), is(42L));
@@ -64,7 +64,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void testBuildMapFromMultiValueBeanAndRebuild_shouldBeEqualtoOriginalBean() {
+    public void testBuildMapFromMultiValueBeanAndRebuild_shouldBeEqualtoOriginalBean() throws Exception {
         BeanWithMultiValues testBean = new BeanWithMultiValues(42, 2.0, 3.1415, 1.4142135);
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(testBean);
         BeanWithMultiValues built = BeanUtilsExtended.createBeanFromAttributeMap(BeanWithMultiValues.class, map);
@@ -72,7 +72,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void testBuildMapWithComlexBeanAndRebuild_shouldBeEqualToOriginalBean() {
+    public void testBuildMapWithComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithComplexAttributes bean =
             new BeanWithComplexAttributes(new CustomStringClass("foo:bar"), new BigDecimal("1"));
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -82,7 +82,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void testBuildMapWithIncompleteComlexBeanAndRebuild_shouldBeEqualToOriginalBean() {
+    public void testBuildMapWithIncompleteComlexBeanAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithComplexAttributes bean =
             new BeanWithComplexAttributes(new CustomStringClass("foo:bar"));
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -92,7 +92,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test
-    public void testBuildMapWithBeanWithProtectedPropertiesAndRebuild_shouldBeEqualToOriginalBean() {
+    public void testBuildMapWithBeanWithProtectedPropertiesAndRebuild_shouldBeEqualToOriginalBean() throws Exception {
         BeanWithProtectedProperties bean =
             new BeanWithProtectedProperties("foo", "bar");
         Map<String, Object> map = BeanUtilsExtended.buildObjectAttributeMap(bean);
@@ -103,7 +103,7 @@ public class BeanUtilsExtendedTest {
     }
 
     @Test(expected = SecurityException.class)
-    public void testBuildMapFromBeanWithFaultyGetter_shouldThrowException() {
+    public void testBuildMapFromBeanWithFaultyGetter_shouldThrowException() throws Exception {
         BeanWithFaultyGetter bean = new BeanWithFaultyGetter();
         BeanUtilsExtended.buildObjectAttributeMap(bean);
     }

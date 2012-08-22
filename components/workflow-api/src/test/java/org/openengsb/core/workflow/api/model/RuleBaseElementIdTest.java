@@ -24,20 +24,19 @@ import org.junit.Test;
 public class RuleBaseElementIdTest {
 
     @Test
-    public void testToStringWithDefaultConstructor_shouldBeEquals() {
+    public void testToStringWithDefaultConstructor_shouldBeEquals() throws Exception {
         assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE, new RuleBaseElementId().toString());
     }
 
     @Test
-    public void testToStringWithNameOnly_shouldBeEquals() {
+    public void testToStringWithNameOnly_shouldBeEquals() throws Exception {
         assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE + ".name", new RuleBaseElementId(RuleBaseElementType.Rule,
                 "name").toString());
     }
 
     @Test
-    public void testToStringWithNameAndPackage_shouldBeEquals() {
+    public void testToStringWithNameAndPackage_shouldBeEquals() throws Exception {
         assertEquals("my.package.name",
                 new RuleBaseElementId(RuleBaseElementType.Rule, "my.package", "name").toString());
     }
-
 }

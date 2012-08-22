@@ -21,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.openengsb.core.common.AbstractDataRow;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 
 /**
  * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as it wants. So to say the JPAEntries
@@ -33,30 +34,47 @@ public class JPAEntry extends AbstractDataRow {
     private String key;
     @Column(name = "VALUE")
     private String value;
+    @Column(name = "TYPE")
+    private String type;
 
     public JPAEntry() {
         key = "";
         value = null;
     }
 
-    public JPAEntry(String key, Object obj) {
+    public JPAEntry(String key, String value, String type) {
         this.key = key;
-        setValue(obj);
+        this.value = value;
+        this.type = type;
     }
-
-    public void setValue(Object v) {
-        if (v != null) {
-            value = v.toString();
-        } else {
-            value = null;
-        }
+    
+    public JPAEntry(EDBObjectEntry entry) {
+        this.key = entry.getKey();
+        this.value = entry.getValue().toString();
+        this.type = entry.getType();
     }
 
     public String getKey() {
         return key;
     }
+    
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getValue() {
         return value;
+    }
+    
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public void setType(String type) {
+        this.type = type;
     }
 }

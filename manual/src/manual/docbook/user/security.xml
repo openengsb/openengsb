@@ -90,7 +90,7 @@ OpenEngSBService securedService = (OpenEngSBService) factory.getProxy();]]></pro
   <section>
     <title>Authentication</title>
     <para>This chapter describes how to deal with security in internal bundles and client projects</para>
-    <para>The util-class org.openengsb.core.security.SecurityContext provides several methods for handling
+    <para>The util-class org.openengsb.core.services.SecurityContext provides several methods for handling
       authentication</para>
   </section>
 

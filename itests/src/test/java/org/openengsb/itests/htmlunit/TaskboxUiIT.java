@@ -266,5 +266,4 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         }
         fail("was waiting for element " + condition + " to appear on the page, but it did not.");
     }
-
 }

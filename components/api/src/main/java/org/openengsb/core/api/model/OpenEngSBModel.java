@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  * use one model for all kinds of domain model data. Every domain model marked with the Model interface get this
  * interface injected.
  */
-public interface OpenEngSBModel {
+public interface OpenEngSBModel extends Serializable {
 
     /**
      * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.

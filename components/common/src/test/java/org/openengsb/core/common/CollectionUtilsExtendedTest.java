@@ -30,7 +30,7 @@ import org.openengsb.core.common.util.CollectionUtilsExtended;
 public class CollectionUtilsExtendedTest {
 
     @Test
-    public void testFilterByClass_shouldFilterArrayByInteger() {
+    public void testFilterByClass_shouldFilterArrayByInteger() throws Exception {
         List<Object> example = Arrays.asList(new Object(), 1, 2, 3, "sadf");
         Collection<Integer> filtered =
             CollectionUtilsExtended.filterCollectionByClass(example, Integer.class);

@@ -55,7 +55,7 @@ public class EdbHistoryPanelTest extends AbstractUITest {
     }
 
     @Test
-    public void testInitPanel_shouldShowHistory() {
+    public void testInitPanel_shouldShowHistory() throws Exception {
         tester.startPage(new EdbHistoryPanel("42"));
         tester.debugComponentTrees();
         ListView<?> list = (ListView<?>) tester.getComponentFromLastRenderedPage("history");

@@ -86,7 +86,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testRenderOrganizeGlobalsPage_shouldOrganizeGlobalsPage() {
+    public void testRenderOrganizeGlobalsPage_shouldOrganizeGlobalsPage() throws Exception {
         tester.assertRenderedPage(OrganizeGlobalsPage.class);
         tester.assertComponent("tree", LinkTree.class);
         tester.assertComponent("editForm", Form.class);
@@ -101,7 +101,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSelectGlobal_shouldSelectGlobal() {
+    public void testSelectGlobal_shouldSelectGlobal() throws Exception {
         tester.clickLink("tree:i:2:nodeComponent:contentLink", true);
         TextField<String> globalName =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editForm:globalName");
@@ -114,7 +114,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddDoubleGlobal_shouldWork() {
+    public void testAddDoubleGlobal_shouldWork() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "test");
         formTester.setValue("className", "test");
@@ -125,7 +125,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testAddNewGlobal_shouldAddGlobal() {
+    public void testAddNewGlobal_shouldAddGlobal() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "glob4");
         formTester.setValue("className", "aaaa.bbbb.fff");
@@ -136,7 +136,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteGlobal_shouldDeleteGlobal() {
+    public void testDeleteGlobal_shouldDeleteGlobal() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "glob4");
         formTester.setValue("className", "aaaa.bbbb.fff");
@@ -147,7 +147,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteNotExistingGlobal_shouldWork() {
+    public void testDeleteNotExistingGlobal_shouldWork() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
         formTester.setValue("globalName", "test");
         formTester.setValue("className", "test");
@@ -156,5 +156,4 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-
 }
