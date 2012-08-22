@@ -123,7 +123,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     private void customMockContext() throws UserExistsException {
-        ((ConnectorManagerImpl) serviceManager).setServiceUtils(mockedServiceUtils);
+        ((ConnectorManagerImpl) serviceManager).setUtilsService(mockedServiceUtils);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
         customContext.putBean("serviceManager", serviceManager);      
