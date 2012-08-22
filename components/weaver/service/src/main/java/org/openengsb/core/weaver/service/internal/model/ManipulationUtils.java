@@ -48,6 +48,8 @@ import javassist.NotFoundException;
  */
 public final class ManipulationUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManipulationUtils.class);
+    private static final String TAIL_FIELD = "openEngSBModelTail";
+    private static final String LOGGER_FIELD = "_INTERNAL_LOGGER";
     private static ClassPool cp = ClassPool.getDefault();
     private static boolean initiated = false;
 
@@ -65,6 +67,7 @@ public final class ManipulationUtils {
         cp.importPackage("java.util");
         cp.importPackage("java.lang.reflect");
         cp.importPackage("org.openengsb.core.api.model");
+        cp.importPackage("org.slf4j");
         initiated = true;
     }
 
@@ -133,7 +136,7 @@ public final class ManipulationUtils {
         ClassNotFoundException {
         CtClass inter = cp.get(OpenEngSBModel.class.getName());
         cc.addInterface(inter);
-        addTail(cc);
+        addFields(cc);
         addGetOpenEngSBModelTail(cc);
         addSetOpenEngSBModelTail(cc);
         addOpenEngSBModelEntryMethod(cc);
@@ -144,11 +147,14 @@ public final class ManipulationUtils {
     }
 
     /**
-     * Adds the map for the model tail to the class.
+     * Adds the fields for the model tail and the logger to the class.
      */
-    private static void addTail(CtClass clazz) throws CannotCompileException, NotFoundException {
-        CtField field = CtField.make("private Map openEngSBModelTail = new HashMap();", clazz);
-        clazz.addField(field);
+    private static void addFields(CtClass clazz) throws CannotCompileException, NotFoundException {
+        CtField tail = CtField.make(String.format("private Map %s = new HashMap();", TAIL_FIELD), clazz);
+        clazz.addField(tail);
+        String loggerDefinition = "private static final Logger %s = LoggerFactory.getLogger(%s.class.getName());";
+        CtField logger = CtField.make(String.format(loggerDefinition, LOGGER_FIELD, clazz.getName()), clazz);
+        clazz.addField(logger);
     }
 
     /**
@@ -157,7 +163,10 @@ public final class ManipulationUtils {
     private static void addGetOpenEngSBModelTail(CtClass clazz) throws CannotCompileException, NotFoundException {
         CtClass[] params = generateClassField();
         CtMethod method = new CtMethod(cp.get(List.class.getName()), "getOpenEngSBModelTail", params, clazz);
-        method.setBody("{ return new ArrayList(openEngSBModelTail.values()); }");
+        StringBuilder body = new StringBuilder();
+        body.append(createTrace("Called getOpenEngSBModelTail"));
+        body.append("return new ArrayList(").append(TAIL_FIELD).append(".values());");
+        method.setBody(createMethodBody(body.toString()));
         clazz.addMethod(method);
     }
 
@@ -168,10 +177,11 @@ public final class ManipulationUtils {
         CtClass[] params = generateClassField(List.class);
         CtMethod method = new CtMethod(CtClass.voidType, "setOpenEngSBModelTail", params, clazz);
         StringBuilder builder = new StringBuilder();
-        builder.append("{ if($1 != null) {for(int i = 0; i < $1.size(); i++) {");
+        builder.append(createTrace("Called setOpenEngSBModelTail"));
+        builder.append("if($1 != null) {for(int i = 0; i < $1.size(); i++) {");
         builder.append("OpenEngSBModelEntry entry = (OpenEngSBModelEntry) $1.get(i);");
-        builder.append("openEngSBModelTail.put(entry.getKey(), entry); } } }");
-        method.setBody(builder.toString());
+        builder.append(TAIL_FIELD).append(".put(entry.getKey(), entry); } }");
+        method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
 
@@ -181,7 +191,10 @@ public final class ManipulationUtils {
     private static void addOpenEngSBModelEntryMethod(CtClass clazz) throws NotFoundException, CannotCompileException {
         CtClass[] params = generateClassField(OpenEngSBModelEntry.class);
         CtMethod method = new CtMethod(CtClass.voidType, "addOpenEngSBModelEntry", params, clazz);
-        method.setBody("{ openEngSBModelTail.put($1.getKey(), $1); }");
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called addOpenEngSBModelEntry"));
+        builder.append("if ($1 != null) { openEngSBModelTail.put($1.getKey(), $1);}");
+        method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
 
@@ -192,7 +205,10 @@ public final class ManipulationUtils {
         CannotCompileException {
         CtClass[] params = generateClassField(String.class);
         CtMethod method = new CtMethod(CtClass.voidType, "removeOpenEngSBModelEntry", params, clazz);
-        method.setBody("{ openEngSBModelTail.remove($1); }");
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called removeOpenEngSBModelEntry"));
+        builder.append("if ($1 != null) { openEngSBModelTail.remove($1);}");
+        method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
 
@@ -210,11 +226,14 @@ public final class ManipulationUtils {
         }
         CtClass[] params = generateClassField();
         CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveInternalModelId"));
         if (modelIdField == null) {
-            method.setBody("{ return null; }");
+            builder.append("return null;");
         } else {
-            method.setBody(String.format("{ return %s; }", modelIdField));
+            builder.append(String.format("return %s;", modelIdField));
         }
+        method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
 
@@ -226,19 +245,21 @@ public final class ManipulationUtils {
         CtClass[] params = generateClassField();
         CtMethod m = new CtMethod(cp.get(List.class.getName()), "toOpenEngSBModelEntries", params, clazz);
         StringBuilder builder = new StringBuilder();
-        builder.append("{ \nList elements = new ArrayList();\n");
-        builder.append("Object entry = null;\n");
-        builder.append("elements.addAll(openEngSBModelTail.values());\n");
+        builder.append(createTrace("Add elements of the model tail"));
+        builder.append("List elements = new ArrayList();\n");
+        builder.append("elements.addAll(").append(TAIL_FIELD).append(".values());\n");
+        builder.append(createTrace("Add properties of the model"));
         for (CtField field : clazz.getDeclaredFields()) {
             String property = field.getName();
-            if (property.equals("openEngSBModelTail")
+            if (property.equals(TAIL_FIELD) || property.equals(LOGGER_FIELD)
                     || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
+                builder.append(createTrace(String.format("Skip property %s of the model", property)));
                 continue;
             }
             builder.append(handleField(field, clazz));
         }
-        builder.append("return elements; } ");
-        m.setBody(builder.toString());
+        builder.append("return elements;");
+        m.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(m);
     }
 
@@ -251,6 +272,7 @@ public final class ManipulationUtils {
         String property = field.getName();
         if (fieldType.equals(cp.get(File.class.getName()))) {
             String wrapperName = property + "wrapper";
+            builder.append(createTrace(String.format("Handle File type property %s", property)));
             builder.append("if(").append(property).append(" == null) {");
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
             builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
@@ -262,12 +284,14 @@ public final class ManipulationUtils {
             builder.append(", ").append(wrapperName).append(".getClass()));}\n");
             addFileFunction(clazz, property);
         } else if (fieldType.isPrimitive()) {
+            builder.append(createTrace(String.format("Handle primitive type property %s", property)));
             CtPrimitiveType primitiveType = (CtPrimitiveType) fieldType;
             String wrapperName = primitiveType.getWrapperName();
             builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
             builder.append(wrapperName).append(".valueOf(").append(property).append("), ");
             builder.append(primitiveType.getWrapperName()).append(".class));\n");
         } else {
+            builder.append(createTrace(String.format("Handle property %s", property)));
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
             builder.append(property).append("\", ").append(property).append(", ").append(fieldType.getName());
             builder.append(".class));\n");
@@ -302,5 +326,19 @@ public final class ManipulationUtils {
         CtMethod newFunc = new CtMethod(CtClass.voidType, funcName, params, clazz);
         newFunc.setBody("{ " + setterName + "($1.returnFile());\n }");
         clazz.addMethod(newFunc);
+    }
+    
+    /**
+     * Returns the string which represents a logger tracing call with the given message
+     */
+    private static String createTrace(String message) {
+        return String.format("%s.trace(\"%s\");\n", LOGGER_FIELD, message);
+    }
+    
+    /**
+     * Wraps a body string with a beginning and ending braces
+     */
+    private static String createMethodBody(String body) {
+        return String.format("{%s}", body);
     }
 }
