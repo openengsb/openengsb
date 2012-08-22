@@ -21,6 +21,7 @@ package org.openengsb.core.api.xlink.model;
 import java.io.Serializable;
 import java.util.List;
 
+
 /**
  * Modelclass to transfere information about remote tools, registered for XLink.
  * <br/><br/>
@@ -87,6 +88,36 @@ public class RemoteTool implements Serializable {
 
     public void setToolName(String toolName) {
         this.toolName = toolName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RemoteTool other = (RemoteTool) obj;
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            return false;
+        }
+        if ((this.toolName == null) ? (other.toolName != null) : !this.toolName.equals(other.toolName)) {
+            return false;
+        }
+        if (this.availableViews != other.availableViews && (this.availableViews == null || !this.availableViews.equals(other.availableViews))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 29 * hash + (this.toolName != null ? this.toolName.hashCode() : 0);
+        hash = 29 * hash + (this.availableViews != null ? this.availableViews.hashCode() : 0);
+        return hash;
     }
     
 }
