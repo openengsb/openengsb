@@ -61,7 +61,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
-    private OsgiUtilsService serviceUtils;
+    private OsgiUtilsService utilsService;
     private Map<XLinkRegistrationKey, RemoteToolRegistration> xlinkRegistrations
         = new HashMap<XLinkRegistrationKey, RemoteToolRegistration>();
     private String xLinkBaseUrl;
@@ -274,9 +274,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
         this.registrationManager = registrationManager;
     }
 
-    public void setServiceUtils(OsgiUtilsService serviceUtils) {
-        this.serviceUtils = serviceUtils;
-    }    
+    public void setUtilsService(OsgiUtilsService utilsService) {
+        this.utilsService = utilsService;
+    }
 
     @Override
     public void disconnectFromXLink(String id, String hostId) {
@@ -356,7 +356,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 updateEvent.setRegisteredTools(currentRegistration
                     .getxLinkTemplate().getRegisteredTools().toArray(new RemoteTool[0]));
                 Object serviceObject 
-                    = serviceUtils.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
+                    = utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
                 if (serviceObject == null) {
                     continue;
                 }
@@ -375,7 +375,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
      */
     private void isConnectorLinkable(String connectorId) throws DomainNotLinkableException {
         Object serviceObject 
-            = serviceUtils.getService("(service.pid=" + connectorId + ")", 100L);
+            = utilsService.getService("(service.pid=" + connectorId + ")", 100L);
         if (serviceObject == null) {
             throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not found.");
         }
@@ -396,7 +396,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             updateEvent.setRegisteredTools(currentRegistration
                 .getxLinkTemplate().getRegisteredTools().toArray(new RemoteTool[0]));
             Object serviceObject 
-                = serviceUtils.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
+                = utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
             if (serviceObject == null) {
                 continue;
             }
