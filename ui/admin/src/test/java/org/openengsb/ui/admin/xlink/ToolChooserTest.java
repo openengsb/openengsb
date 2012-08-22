@@ -56,6 +56,7 @@ import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -134,7 +135,7 @@ public class ToolChooserTest extends AbstractUITest {
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), customContext));
     }   
     
-    public void mockRegistrationOfTools() {
+    public void mockRegistrationOfTools() throws DomainNotLinkableException {
         String hostId = "localhost";
                 
         String toolNameA = "Tool A";        
@@ -148,7 +149,8 @@ public class ToolChooserTest extends AbstractUITest {
         registerTool_ExampleObjectOrientedModel(hostId, toolNameB, connectorIdB);        
     }
     
-    private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) {
+    private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) 
+        throws DomainNotLinkableException {
         
         ModelToViewsTuple[] modelsToViews 
             = new ModelToViewsTuple[1];  
