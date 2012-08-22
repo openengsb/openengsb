@@ -84,6 +84,10 @@ hr {
 .inline {
  	display: inline;
  	}
+ 	
+.uppercase {
+    text-transform: uppercase;
+} 
 
 .tableHead {
 	font-size: 0.9em;

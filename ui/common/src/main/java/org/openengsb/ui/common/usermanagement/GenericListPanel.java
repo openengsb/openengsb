@@ -60,21 +60,24 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
             @Override
             protected void populateItem(final ListItem<T> userListItem) {
                 userListItem.add(new Label("item.name", userListItem.getModelObject().toString()));
-                Panel confirm = new EmptyPanel("confirm");
-                userListItem.add(confirm);
                 userListItem.setOutputMarkupId(true);
+                Panel confirm = new EmptyPanel("confirm");
+                confirm.setOutputMarkupId(true);
+                userListItem.add(confirm);
                 final AjaxLink<String> deleteLink = new AjaxLink<String>("item.delete") {
                     private static final long serialVersionUID = 2004369349622394213L;
-
+                    
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         if (activeConfirm != null) {
-                            activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm"));
+                            activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm").setOutputMarkupId(true));
                             ajaxRequestTarget.add(activeConfirm);
                             activeConfirm = null;
                         }
+                        
+                        
                         final Model<T> model = new Model<T>(userListItem.getModelObject());
-                        ConfirmPanel<T> confirmPanel = new ConfirmPanel<T>("confirm", model, userListItem) {
+                        ConfirmPanel<T> confirmPanel = new ConfirmPanel<T>("confirm", model, userListItem,userListItem.get("item.name").toString()) {
                             private static final long serialVersionUID = -1506781103470764246L;
 
                             @Override
@@ -88,11 +91,14 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                                 ajaxRequestTarget.add(listContainer);
                             }
                         };
+                        ajaxRequestTarget.appendJavaScript("showModalDialogue('" + userListItem.get("confirm").getMarkupId()+"','Delete user: " +userListItem.getModelObject().toString()+ "')");
                         userListItem.get("confirm").replaceWith(confirmPanel);
+                        userListItem.get("confirm").setOutputMarkupId(true);
                         activeConfirm = userListItem;
-                        ajaxRequestTarget.add(userListItem);
+                        ajaxRequestTarget.add(confirmPanel);
                     }
                 };
+                deleteLink.setOutputMarkupId(true);
                 userListItem.add(deleteLink);
                 userListItem.add(new AjaxLink<String>("item.update") {
                     private static final long serialVersionUID = -2327085637957255085L;

@@ -19,6 +19,7 @@ package org.openengsb.ui.common.panel;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -33,11 +34,20 @@ public abstract class ConfirmPanel<T> extends Panel {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmPanel.class);
 
     private WebMarkupContainer parent;
+    
+    private String username;
 
     public ConfirmPanel(String id, IModel<T> model, WebMarkupContainer parent) {
         super(id, model);
         this.parent = parent;
         initContent();
+    }
+    
+    public ConfirmPanel(String id, IModel<T> model, WebMarkupContainer parent, String username) {
+        super(id, model);
+        this.parent = parent;
+        initContent();
+        this.username = username;
     }
 
     public ConfirmPanel(String id, WebMarkupContainer parent) {
@@ -48,6 +58,7 @@ public abstract class ConfirmPanel<T> extends Panel {
 
     private void initContent() {
         setOutputMarkupId(true);
+        add(new Label("username",this.username));
         add(new AjaxButton("yes") {
             private static final long serialVersionUID = 1883099779596621667L;
 

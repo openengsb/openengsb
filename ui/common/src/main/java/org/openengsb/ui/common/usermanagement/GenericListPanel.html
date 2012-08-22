@@ -27,18 +27,18 @@ limitations under the License.
           <table class="dataTable">
             <tr>
               <th class="size4of5"><wicket:message key="username.tableHead" /></th>
-              <th><wicket:message key="action.tableHead" /></th>
+              <th>&nbsp;</th>
             </tr>
             <tr wicket:id="list">
               <td>
                 <span wicket:id="item.name">[service.name]</span>
-                <div wicket:id="confirm" />
-              </td>
+                <div wicket:id="confirm" class="hidden" />
+              </td> 
               <td>
-              <a href="UserService.html#" wicket:id="item.delete" class="inlistButton hidden">
+              <a href="UserService.html#" wicket:id="item.delete" class="inlistButton uppercase hidden">
                 <wicket:message key="delete.item.title" />
               </a>
-              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog inlistButton hidden">
+              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog inlistButton uppercase hidden">
                 <wicket:message key="update.item.title" />
               </a>
               </td>
