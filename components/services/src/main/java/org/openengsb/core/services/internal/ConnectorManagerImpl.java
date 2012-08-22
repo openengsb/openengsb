@@ -275,7 +275,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String hostId, 
             String toolName, 
             ModelToViewsTuple[] modelsToViews) 
-            throws DomainNotLinkableException {
+        throws DomainNotLinkableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
