@@ -22,14 +22,6 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <openengsb.imports>
-      org.openengsb.core.*;version="[${openengsb.version.min},${openengsb.version.max})",
-      org.openengsb.ports.*;version="[${openengsb.version.min},${openengsb.version.max})",
-      org.openengsb.infrastructure.*;version="[${openengsb.version.min},${openengsb.version.max})"
-    </openengsb.imports>
-  </properties>
-
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-shared-settings</artifactId>
@@ -87,7 +79,10 @@
               ${bundle.namespace}.*;version="${project.version}"
             </Export-Package>
             <Private-Package>${bundle.namespace}.internal.*</Private-Package>
-            <Import-Package>${openengsb.imports},*</Import-Package>
+            <Import-Package>
+              org.openengsb.core.api.*;version="[${openengsb.version.min},${openengsb.version.max})",
+              *
+            </Import-Package>
           </instructions>
         </configuration>
       </plugin>

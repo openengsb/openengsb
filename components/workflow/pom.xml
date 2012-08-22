@@ -24,10 +24,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb.framework</groupId>
-    <artifactId>openengsb-framework-parent</artifactId>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-bundle-settings</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../../parents/framework</relativePath>
+    <relativePath>../../parents/bundle</relativePath>
   </parent>
 
   <properties>
@@ -87,11 +87,6 @@
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
               org.apache.felix.fileinstall;version="[3,4)",
               *
             </Import-Package>

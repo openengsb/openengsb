@@ -22,7 +22,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,12 +36,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
-import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
+import org.openengsb.core.services.filter.OutgoingJsonSecureMethodCallMarshalFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -75,12 +73,6 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setup() throws Exception {
-        MethodResult methodResult = new MethodResult("42");
-        MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
-        String writeValueAsString = new ObjectMapper().writeValueAsString(methodResultMessage);
-
-        System.out.println(writeValueAsString);
-
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
         Mockito.when(jmsTemplateFactory.createJMSTemplate(any(DestinationUrl.class))).thenReturn(jmsTemplate);
@@ -113,7 +105,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCallSend_shouldSendMessageViaJMS() throws IOException {
+    public void testCallSend_shouldSendMessageViaJMS() throws Exception {
         outgoingPort.send(call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
@@ -129,7 +121,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws IOException {
+    public void testCallSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws Exception {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);

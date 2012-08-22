@@ -71,11 +71,11 @@
     <module>parents/connector</module>
     <module>parents/framework</module>
     <!-- OpenEngSB Tooling Modules -->
-    <module>tooling</module>
+    <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->
     <module>components/api</module>
     <module>components/edb-api</module>
-    <module>components/ekb-api</module>
+    <module>components/ekb/api</module>
     <module>components/workflow-api</module>
     <module>components/test</module>
     <module>components/common</module>
@@ -83,9 +83,11 @@
     <module>components/weaver/test</module>
     <module>components/console</module>
     <module>components/edb</module>
-    <module>components/ekb</module>
+    <module>components/ekb/graphdb-orient</module>
+    <module>components/ekb/modelregistry-tracker</module>
+    <module>components/ekb/persistence-edb</module>
+    <module>components/ekb/transformation-wonderland</module>
     <module>components/persistence</module>
-    <module>components/security</module>
     <module>components/services</module>
     <module>components/workflow</module>
     <module>components/info</module>
@@ -104,16 +106,20 @@
     <module>persistence/connector</module>
     <module>persistence/rulebase</module>
     <!-- OpenEngSB Infrastructure Modules -->
-    <module>infrastructure</module>
+    <module>infrastructure/jpa</module>
+    <module>infrastructure/jms</module>
     <!-- OpenEngSB Port Modules -->
-    <module>ports</module>
-    <module>ui</module>
+    <module>ports/jms</module>
+    <module>ports/ws</module>
+    <module>ui/api</module>
+    <module>ui/common</module>
+    <module>ui/admin</module>
+    <module>ui/wicketacl</module>
     <!-- OpenEngSB Framework Assembly Module -->
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
-    <module>examples</module>
-    <!-- OpenEngSB Loom Support Modules -->
-    <module>loom</module>
+    <module>examples/remoteclient</module>
+    <module>examples/remotesamples</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
     <!-- OpenEngSB Manual -->

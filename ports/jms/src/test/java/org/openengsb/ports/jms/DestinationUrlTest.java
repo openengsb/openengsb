@@ -25,27 +25,26 @@ import org.junit.Test;
 public class DestinationUrlTest {
 
     @Test
-    public void testCreateDestinationUrlWithValidParams_shouldCreateValidDestination() {
+    public void testCreateDestinationUrlWithValidParams_shouldCreateValidDestination() throws Exception {
         DestinationUrl destinationUrl = DestinationUrl.createDestinationUrl("host?queue");
         assertThat(destinationUrl.getHost(), Matchers.equalTo("host"));
         assertThat(destinationUrl.getJmsDestination(), Matchers.equalTo("queue"));
     }
 
     @Test
-    public void testCreateDestinationUrlWithValidParamsAndPort_shouldCreateValidDestination() {
+    public void testCreateDestinationUrlWithValidParamsAndPort_shouldCreateValidDestination() throws Exception {
         DestinationUrl destinationUrl = DestinationUrl.createDestinationUrl("tcp://host:8080?queue");
         assertThat(destinationUrl.getHost(), Matchers.equalTo("tcp://host:8080"));
         assertThat(destinationUrl.getJmsDestination(), Matchers.equalTo("queue"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidPattern_shouldThrowError() {
+    public void testInvalidPattern_shouldThrowError() throws Exception {
         DestinationUrl.createDestinationUrl("blub");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreatingDestinationWithMoreThanOneQuestionMark_shouldThrowError() {
+    public void testCreatingDestinationWithMoreThanOneQuestionMark_shouldThrowError() throws Exception {
         DestinationUrl.createDestinationUrl("bli?bla?blub");
     }
-
 }

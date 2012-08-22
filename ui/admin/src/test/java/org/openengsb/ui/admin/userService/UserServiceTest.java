@@ -48,7 +48,6 @@ public class UserServiceTest extends AbstractUITest {
         } else {
             return null;
         }
-
     }
 
     @Before
@@ -57,7 +56,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() {
+    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() throws Exception {
         tester.startPage(Index.class);
         tester.assertContains("User Management");
     }
@@ -68,7 +67,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateUserPageWithoutParams_shouldEnableUsernameField() {
+    public void testCreateUserPageWithoutParams_shouldEnableUsernameField() throws Exception {
         tester.startPage(UserEditPage.class);
         tester.assertRenderedPage(UserEditPage.class);
         Component usernameField =
@@ -77,7 +76,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateUserPageWithUserParam_shouldDisableUsernameField() {
+    public void testCreateUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
         PageParameters parameters = new PageParameters();
         parameters.set("user", "admin");
         tester.startPage(UserEditPage.class, parameters);
@@ -88,7 +87,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testCreateUserLink_shouldCreateEmptyEditPage() {
+    public void testCreateUserLink_shouldCreateEmptyEditPage() throws Exception {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
         AjaxLink<?> button =
@@ -101,7 +100,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testUserCreation_shouldWork() {
+    public void testUserCreation_shouldWork() throws Exception {
         tester.startPage(UserEditPage.class);
 
         FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
@@ -138,7 +137,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testDeleteUser_shouldBeRemovedFromList() {
+    public void testDeleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.delete");
@@ -161,7 +160,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testShowCreatedUser_shouldShowAdmin() {
+    public void testShowCreatedUser_shouldShowAdmin() throws Exception {
         tester.startPage(UserListPage.class);
         tester.assertContains("admin");
     }
@@ -179,5 +178,4 @@ public class UserServiceTest extends AbstractUITest {
         formTester.submit();
         tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
     }
-
 }

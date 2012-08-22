@@ -86,19 +86,19 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testGetEmptyAvailableContexts_shouldReturnEmptyContextList() {
+    public void testGetEmptyAvailableContexts_shouldReturnEmptyContextList() throws Exception {
         assertThat(cs.getAvailableContexts().size(), is(0));
     }
 
     @Test
-    public void testGetSingleAvailableContexts_shouldReturnOneContext() {
+    public void testGetSingleAvailableContexts_shouldReturnOneContext() throws Exception {
         createTestContextA();
         assertThat(cs.getAvailableContexts().size(), is(1));
         assertThat(cs.getAvailableContexts().get(0), is("a"));
     }
 
     @Test
-    public void testGetAvailableContextsWithCreate_shouldReturnTwoContextInstances() {
+    public void testGetAvailableContextsWithCreate_shouldReturnTwoContextInstances() throws Exception {
         createTestContextA();
         cs.createContext("temp");
         assertThat(cs.getAvailableContexts().contains("a"), is(true));
@@ -107,7 +107,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testGetCurrentThreadContext_shouldReturnCurrentContext() {
+    public void testGetCurrentThreadContext_shouldReturnCurrentContext() throws Exception {
         createTestContextA();
         assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
@@ -141,7 +141,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testChangeCurrentContext_shouldChangeContext() {
+    public void testChangeCurrentContext_shouldChangeContext() throws Exception {
         createTestContextA();
         cs.createContext("x");
         ContextHolder.get().setCurrentContextId("x");
@@ -149,10 +149,9 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testCreateAndDeleteContext_shouldBeAbleToRecreate() {
+    public void testCreateAndDeleteContext_shouldBeAbleToRecreate() throws Exception {
         cs.createContext("foobar");
         cs.deleteContext("foobar");
         assertThat(cs.getAvailableContexts(), not(hasItem("foobar")));
     }
-
 }

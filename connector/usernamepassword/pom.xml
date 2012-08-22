@@ -82,7 +82,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-              ${openengsb.imports},
+              org.openengsb.core.api.*;version="[${openengsb.version.min},${openengsb.version.max})",
               org.openengsb.domain.authentication.*;version="${project.version}",
               *
             </Import-Package>

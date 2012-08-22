@@ -59,12 +59,12 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
     }
 
     @Test
-    public void testServiceSupportsConfigItem_shouldOnlyExceptConnectorConfiguration() {
+    public void testServiceSupportsConfigItem_shouldOnlyExceptConnectorConfiguration() throws Exception {
         assertTrue(service.supports(ConnectorConfiguration.class));
     }
 
     @Test
-    public void testServiceInsertConfigurationWithBasicType_shouldInsertAndLoadConfiguration() {
+    public void testServiceInsertConfigurationWithBasicType_shouldInsertAndLoadConfiguration() throws Exception {
         ConnectorDescription desc1 = new ConnectorDescription();
         desc1.getAttributes().put("attr1", "attr1");
         desc1.getProperties().put("the answer to live", 42);
@@ -90,7 +90,7 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
     }
 
     @Test
-    public void testServiceInsertConfigurationWithArray_shouldInsertAndLoadConfiguration() {
+    public void testServiceInsertConfigurationWithArray_shouldInsertAndLoadConfiguration() throws Exception {
         String id2 = UUID.randomUUID().toString();
         ConnectorDescription desc2 = new ConnectorDescription();
         desc2.getAttributes().put("attr2", "attr2");
@@ -120,7 +120,7 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testServiceInsertConfigurationWithCollection_shouldInsertAndLoadConfigurations() {
+    public void testServiceInsertConfigurationWithCollection_shouldInsertAndLoadConfigurations() throws Exception {
         String id3 = UUID.randomUUID().toString();
         ConnectorDescription desc3 = new ConnectorDescription();
         desc3.setConnectorType("connectorType3");
@@ -159,7 +159,7 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testServiceUpdateConfiguration_shouldUpdateConfiguration() {
+    public void testServiceUpdateConfiguration_shouldUpdateConfiguration() throws Exception {
         String id4 = UUID.randomUUID().toString();
         ConnectorDescription desc = new ConnectorDescription();
         desc.setConnectorType("connectorType4");
@@ -194,7 +194,7 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
     }
 
     @Test
-    public void testServiceRemoveConfiguration_shouldDeleteConfiguration() {
+    public void testServiceRemoveConfiguration_shouldDeleteConfiguration() throws Exception {
         String id5 = UUID.randomUUID().toString();
         ConnectorDescription desc = new ConnectorDescription();
         desc.setConnectorType("connectorType5");

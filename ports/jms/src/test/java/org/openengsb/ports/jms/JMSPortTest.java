@@ -29,7 +29,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -83,12 +82,13 @@ import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
-import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
-import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
-import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
-import org.openengsb.core.security.filter.MessageVerifierFilter;
+import org.openengsb.core.services.filter.EncryptedJsonMessageMarshaller;
+import org.openengsb.core.services.filter.JsonSecureRequestMarshallerFilter;
+import org.openengsb.core.services.filter.MessageAuthenticatorFilterFactory;
+import org.openengsb.core.services.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.services.filter.MessageVerifierFilter;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
+import org.openengsb.core.services.internal.security.model.ShiroContext;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
@@ -259,7 +259,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(timeout = 100000)
-    public void testStart_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws IOException {
+    public void testStart_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws Exception {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(JsonMethodCallMarshalFilter.class, new RequestMapperFilter(handler)));
         incomingPort.setFilterChain(factory.create());
@@ -345,14 +345,14 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             MessageVerifierFilter.class,
-            new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)),
+            new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext), new ShiroContext()),
             new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();
         return secureChain;
     }
 
     @Test(timeout = 5000)
-    public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() {
+    public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() throws Exception {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             XmlDecoderFilter.class,
@@ -369,7 +369,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testStop_shouldNotReactToIncomingCalls() {
+    public void testStop_shouldNotReactToIncomingCalls() throws Exception {
         SimpleMessageListenerContainer orig = simpleMessageListenerConainer;
         SimpleMessageListenerContainer containerSpy = spy(orig);
         simpleMessageListenerConainer = containerSpy;
@@ -382,12 +382,12 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRequestMapping_shouldDeserialiseRequest() throws IOException {
+    public void testRequestMapping_shouldDeserialiseRequest() throws Exception {
         OBJECT_MAPPER.readValue(METHOD_CALL_REQUEST, MethodCallMessage.class);
     }
 
     @Test
-    public void testMethodReturn_shouldDeserialiseResponse() throws IOException {
+    public void testMethodReturn_shouldDeserialiseResponse() throws Exception {
         StringWriter writer = new StringWriter();
         OBJECT_MAPPER.writeValue(writer, methodReturn);
         JsonNode resultMessage = OBJECT_MAPPER.readTree(writer.toString());
@@ -396,7 +396,5 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("metaData").toString(), equalTo("{\"serviceId\":\"test\"}"));
         assertThat(readTree.get("type").toString(), equalTo("\"Object\""));
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
-
     }
-
 }

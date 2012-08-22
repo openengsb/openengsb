@@ -93,9 +93,6 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registrationManager.updateRegistration(connectorId, connectorDescription);
 
         Object service2 = serviceUtils.getService("(foo=bar)", 100L);
-        for (Class<?> c : service2.getClass().getInterfaces()) {
-            System.out.println(c);
-        }
         NullDomain service = (NullDomain) service2;
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }

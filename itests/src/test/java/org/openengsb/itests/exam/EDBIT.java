@@ -17,9 +17,7 @@
 
 package org.openengsb.itests.exam;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -101,32 +99,32 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testIfServiceIsFound_shouldWork() {
+    public void testIfServiceIsFound_shouldWork() throws Exception {
         assertThat(edbService, notNullValue());
     }
 
     @Test
-    public void testInsert_shouldWork() {
+    public void testInsert_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("testobject");
-        testObject.put("testkey", "testvalue");
+        testObject.putEDBObjectEntry("testkey", "testvalue");
         commit.insert(testObject);
         Long testtime = edbService.commit(commit);
-        assertThat(testtime.intValue(), not(0));
+        assertThat(testtime.longValue(), not(0L));
     }
 
     @Test(expected = EDBException.class)
-    public void testDoubleCommit_shouldThrowException() {
+    public void testDoubleCommit_shouldThrowException() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         edbService.commit(commit);
         edbService.commit(commit);
     }
 
     @Test
-    public void testRetrieveObject_shouldWork() {
+    public void testRetrieveObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject");
-        testObject.put("newtestkey", "newtestvalue");
+        testObject.putEDBObjectEntry("newtestkey", "newtestvalue");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -136,10 +134,10 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testQueryForObject_shouldWork() {
+    public void testQueryForObject_shouldWork() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject1");
-        testObject.put("newtestkey1", "newtestvalue1");
+        testObject.putEDBObjectEntry("newtestkey1", "newtestvalue1");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -150,10 +148,10 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    public void testConflictDetection_shouldThrowException() {
+    public void testConflictDetection_shouldThrowException() throws Exception {
         EDBCommit commit = edbService.createCommit("test", "test");
         EDBObject testObject = new EDBObject("newtestobject2");
-        testObject.put("newtestkey2", "newtestvalue2");
+        testObject.putEDBObjectEntry("newtestkey2", "newtestvalue2");
         commit.insert(testObject);
 
         edbService.commit(commit);
@@ -161,8 +159,8 @@ public class EDBIT extends AbstractExamTestHelper {
         commit = edbService.createCommit("test", "test");
 
         EDBObject obj = edbService.getObject("newtestobject2");
-        obj.put(EDBConstants.MODEL_VERSION, 0);
-        obj.put("test", "test");
+        obj.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(0));
+        obj.putEDBObjectEntry("test", "test");
 
         commit.update(obj);
         edbService.commit(commit);
@@ -216,11 +214,25 @@ public class EDBIT extends AbstractExamTestHelper {
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
 
-        String name = (String) obj.get("name");
-        Integer version = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name = obj.getString("name");
+        Integer version = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         assertThat(name, is("test"));
         assertThat(version, is(1));
+    }
+
+    @Test
+    public void testEKBInsertCommitAndQueryData_shouldReturnModelObject() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "C:\\test");
+        setProperty(model, "setEdbId", "createevent/5");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+
+        @SuppressWarnings("unchecked")
+        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        assertThat(result.isEmpty(), is(false));
+        assertThat(result.get(0), is(getTestModel()));
     }
 
     @Test
@@ -233,8 +245,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/batchevent/1");
 
-        String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name1 = obj.getString("name");
+        Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         setProperty(model, "setName", "test2");
         commit = getTestEKBCommit().addUpdate(model);
@@ -247,13 +259,13 @@ public class EDBIT extends AbstractExamTestHelper {
 
         obj = edbService.getObject("testdomain/testconnector/batchevent/1");
 
-        String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name2 = obj.getString("name");
+        Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         obj = edbService.getObject("testdomain/testconnector/batchevent/2");
 
-        String name3 = (String) obj.get("name");
-        Integer version3 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name3 = obj.getString("name");
+        Integer version3 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         assertThat(name1, is("test1"));
         assertThat(version1, is(1));
@@ -281,8 +293,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/2");
 
-        String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name1 = obj.getString("name");
+        Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         setProperty(model, "setName", "test2");
 
@@ -291,8 +303,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         obj = edbService.getObject("testdomain/testconnector/updateevent/2");
 
-        String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        String name2 = obj.getString("name");
+        Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         assertThat(name1, is("test1"));
         assertThat(version1, is(1));
@@ -309,7 +321,7 @@ public class EDBIT extends AbstractExamTestHelper {
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
-        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
         ModelUtils.addOpenEngSBModelEntry(model, entry);
         commit = getTestEKBCommit().addUpdate(model);
@@ -317,7 +329,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
         // results in no conflict because the values are the same even if the version is different
         obj = edbService.getObject("testdomain/testconnector/updateevent/3");
-        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
+        Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         assertThat(version1, is(1));
         assertThat(version2, is(2));
@@ -387,8 +399,28 @@ public class EDBIT extends AbstractExamTestHelper {
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs.0"), is("testdomain/testconnector/testSub/4"));
+        assertThat(mainObject.getString("subs.1"), is("testdomain/testconnector/testSub/5"));
+    }
+
+    @Test
+    public void testModelTailIsLoaded_shouldLoadModelTail() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "blub");
+        setProperty(model, "setEdbId", "modeltailtest/1");
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+
+        Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modeltailtest/1");
+        Boolean versionPresent = false;
+        for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(result)) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                versionPresent = true;
+            }
+        }
+
+        assertThat(versionPresent, is(true));
     }
 
     private void setProperty(Object model, String methodName, Object... params) throws Exception {
@@ -432,7 +464,8 @@ public class EDBIT extends AbstractExamTestHelper {
                     "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
                             + "org.openengsb.labs.delegation.service")
                 .set(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
-                    "org.openengsb.itests.exam.models.*");
+                    "org.openengsb.itests.exam.models.*")
+                .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
         Bundle providerBundle =
             getBundleContext().installBundle("test://testlocation/test.provider.jar", providerTinyBundle.build());
         providerBundle.start();

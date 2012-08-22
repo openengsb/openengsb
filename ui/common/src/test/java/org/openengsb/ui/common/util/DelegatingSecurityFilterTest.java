@@ -45,7 +45,7 @@ public class DelegatingSecurityFilterTest {
     }
     
     @Test
-    public void testCreateFilter_shouldReturnDelegatingSecurityFilter() {
+    public void testCreateFilter_shouldReturnDelegatingSecurityFilter() throws Exception {
         assertThat(filterFactory.createFilter(mock(ConfigurableFilterConfig.class)),
             CoreMatchers.instanceOf(DelegatingSecurityFilter.class));
     }

@@ -61,27 +61,27 @@ public class ServiceDescriptorTest {
     }
 
     @Test
-    public void testBuilderShouldLocalizeNameAndDescription_shouldWork() {
+    public void testBuilderShouldLocalizeNameAndDescription_shouldWork() throws Exception {
         assertThat(builder.build().getName().getString(Locale.getDefault()), is("name"));
         assertThat(builder.build().getDescription().getString(Locale.getDefault()), is("desc"));
     }
 
     @Test
-    public void testBuildWithouthId_shouldThrowIllegalStateException() {
+    public void testBuildWithouthId_shouldThrowIllegalStateException() throws Exception {
         expectMessage("id");
         builder.id(null);
         builder.build();
     }
 
     @Test
-    public void testBuildWithoutName_shouldThrowIllegalStateException() {
+    public void testBuildWithoutName_shouldThrowIllegalStateException() throws Exception {
         expectMessage("name");
         builder.name("unknownKey");
         builder.build();
     }
 
     @Test
-    public void testBuildWithoutDescription_shouldThrowIllegalStateException() {
+    public void testBuildWithoutDescription_shouldThrowIllegalStateException() throws Exception {
         expectMessage("description");
         builder.description("unknownKey");
         builder.build();

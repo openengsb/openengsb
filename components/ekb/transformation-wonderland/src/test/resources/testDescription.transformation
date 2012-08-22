@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<transformations>
+  <transformation source="org.openengsb.core.ekb.transformation.wonderland.models.ModelA;1.0.0" 
+                  target="org.openengsb.core.ekb.transformation.wonderland.models.ModelB;1.0.0" 
+                  id="transformModelAToModelB_1"> <!-- optional -->
+    <forward>
+      <source-field>idA</source-field>
+      <target-field>idB</target-field>
+    </forward>
+    <substring>
+      <source-field>testA</source-field>
+      <target-field>testB</target-field>
+      <params>
+       <param key="from" value="0" />
+       <param key="to" value="4" />     
+      </params> 
+    </substring>
+    <concat>
+      <source-fields>
+        <source-field>blubA</source-field>
+        <source-field>blaA</source-field>   
+      </source-fields>
+      <target-field>blubB</target-field>
+      <params>
+      	<param key="concatString" value="#" />
+      </params>
+    </concat>
+  </transformation>
+  <transformation target="org.openengsb.core.ekb.transformation.wonderland.models.ModelA;1.0.0" 
+                  source="org.openengsb.core.ekb.transformation.wonderland.models.ModelB;1.0.0"
+                  id="transformModelBToModelA_1"> <!-- optional -->
+    <forward>
+      <source-field>idB</source-field>
+      <target-field>idA</target-field>
+    </forward>
+    <map>
+      <source-field>testB</source-field>
+      <target-field>testA</target-field>
+      <params>
+      	<param key="dog" value="cat" />
+      	<param key="hello" value="world" />
+      </params> 
+    </map>
+    <split>
+      <source-field>blubB</source-field>
+      <target-field>blubA</target-field>
+      <params>
+      	<param key="splitString" value="#" />
+      	<param key="resultIndex" value="0" />
+      </params>
+    </split>
+    <split>
+      <source-field>blubB</source-field>
+      <target-field>blaA</target-field>
+      <params>
+      	<param key="splitString" value="#" />
+      	<param key="resultIndex" value="1" />
+      </params>
+    </split>
+  </transformation>
+</transformations>

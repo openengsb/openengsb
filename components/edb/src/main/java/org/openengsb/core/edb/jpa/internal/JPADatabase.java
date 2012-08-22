@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
@@ -37,7 +38,7 @@ import org.openengsb.core.edb.api.hooks.EDBPostCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 import org.osgi.service.blueprint.container.ServiceUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     private EntityTransaction utx;
     private EntityManager entityManager;
     private JPADao dao;
+    private AuthenticationContext authenticationContext;
 
     private List<EDBErrorHook> errorHooks;
     private List<EDBPostCommitHook> postCommitHooks;
@@ -81,7 +83,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public Long commit(EDBCommit commit) throws EDBException {
         if (commit.isCommitted()) {
-            throw new EDBException("EDBCommit was already commitet!");
+            throw new EDBException("EDBCommit is already commitet.");
         }
         runBeginCommitHooks(commit);
         EDBException exception = runPreCommitHooks(commit);
@@ -99,44 +101,46 @@ public class JPADatabase implements EngineeringDatabaseService {
      * EDBException if an error occurs.
      */
     private Long performCommit(EDBCommit commit) throws EDBException {
-        long timestamp = System.currentTimeMillis();
-        commit.setTimestamp(timestamp);
-        for (EDBObject update : commit.getObjects()) {
-            update.updateTimestamp(timestamp);
-            entityManager.persist(new JPAObject(update));
-        }
-
-        try {
-            if (utx != null) {
-                utx.begin();
-            }
-            commit.setCommitted(true);
-            LOGGER.debug("persisting JPACommit");
-            entityManager.persist(commit);
-
-            LOGGER.debug("setting the deleted elements as deleted");
-            for (String id : commit.getDeletions()) {
-                EDBObject o = new EDBObject(id);
-                o.updateTimestamp(timestamp);
-                o.put("isDeleted", new Boolean(true));
-                JPAObject j = new JPAObject(o);
-                entityManager.persist(j);
+        synchronized (entityManager) {
+            long timestamp = System.currentTimeMillis();
+            commit.setTimestamp(timestamp);
+            for (EDBObject update : commit.getObjects()) {
+                update.updateTimestamp(timestamp);
+                entityManager.persist(EDBUtils.convertEDBObjectToJPAObject(update));
             }
 
-            if (utx != null) {
-                utx.commit();
-            }
-        } catch (Exception ex) {
             try {
                 if (utx != null) {
-                    utx.rollback();
+                    utx.begin();
                 }
-            } catch (Exception e) {
-                throw new EDBException("Failed to rollback transaction to DB", e);
+                commit.setCommitted(true);
+                LOGGER.debug("persisting JPACommit");
+                entityManager.persist(commit);
+
+                LOGGER.debug("setting the deleted elements as deleted");
+                for (String id : commit.getDeletions()) {
+                    EDBObject o = new EDBObject(id);
+                    o.updateTimestamp(timestamp);
+                    o.setDeleted(true);
+                    JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
+                    entityManager.persist(j);
+                }
+
+                if (utx != null) {
+                    utx.commit();
+                }
+            } catch (Exception ex) {
+                try {
+                    if (utx != null) {
+                        utx.rollback();
+                    }
+                } catch (Exception e) {
+                    throw new EDBException("Failed to rollback transaction to DB", e);
+                }
+                throw new EDBException("Failed to commit transaction to DB", ex);
             }
-            throw new EDBException("Failed to commit transaction to DB", ex);
+            return timestamp;
         }
-        return timestamp;
     }
 
     /**
@@ -233,43 +237,28 @@ public class JPADatabase implements EngineeringDatabaseService {
     public EDBObject getObject(String oid) throws EDBException {
         LOGGER.debug("loading newest JPAObject with the oid {}", oid);
         JPAObject temp = dao.getJPAObject(oid);
-        return temp.getObject();
+        return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 
     @Override
     public List<EDBObject> getObjects(List<String> oids) throws EDBException {
         List<JPAObject> objects = dao.getJPAObjects(oids);
-        List<EDBObject> result = new ArrayList<EDBObject>();
-        for (JPAObject object : objects) {
-            result.add(object.getObject());
-        }
-        return result;
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
         LOGGER.debug("loading history of JPAObject with the oid {}", oid);
-        List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
-        return generateEDBObjectList(jpa);
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid {} from "
                 + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
-        List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
-        return generateEDBObjectList(jpa);
-    }
-
-    /**
-     * transforms a list of JPAObjects to a List of EDBObjects
-     */
-    private List<EDBObject> generateEDBObjectList(List<JPAObject> jpaObjects) {
-        List<EDBObject> result = new ArrayList<EDBObject>();
-        for (JPAObject j : jpaObjects) {
-            result.add(j.getObject());
-        }
-        return result;
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid, from, to);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
 
     @Override
@@ -323,7 +312,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
         try {
-            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap)));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -332,7 +321,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
         try {
-            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap, timestamp)));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, timestamp));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -406,23 +395,18 @@ public class JPADatabase implements EngineeringDatabaseService {
      * Returns the actual authenticated user. If this class is called from JUnit, the string "testuser" is returned.
      */
     private String getAuthenticatedUser() {
-        // if JPADatabase is called via integration tests
-        String username = (String) SecurityContext.getAuthenticatedPrincipal();
-        if (username == null) {
-            return "testuser";
-        }
-        return username;
+        // if JPADatabase is called via integration tests username is null so testuser is returned
+        String username = (String) authenticationContext.getAuthenticatedPrincipal();
+        return username != null ? username : "testuser";
     }
 
     /**
      * Returns the actual context id. If this class is called from JUnit, the string "testcontext" is returned.
      */
     private String getActualContextId() {
-        // if JPADatabase is called via integration tests
-        if (ContextHolder.get() == null) {
-            return "testcontext";
-        }
-        return ContextHolder.get().getCurrentContextId();
+        // if JPADatabase is called via integration tests, holder is null so testcontext is returned
+        ContextHolder holder = ContextHolder.get();
+        return holder != null ? holder.getCurrentContextId() : "testcontext";
     }
 
     @Override
@@ -467,5 +451,9 @@ public class JPADatabase implements EngineeringDatabaseService {
 
     public void setBeginCommitHooks(List<EDBBeginCommitHook> beginCommitHooks) {
         this.beginCommitHooks = beginCommitHooks;
+    }
+
+    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
     }
 }
