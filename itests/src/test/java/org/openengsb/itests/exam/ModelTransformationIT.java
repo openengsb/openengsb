@@ -150,30 +150,16 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
             .add(
                 new RuleBaseElementId(RuleBaseElementType.Rule, "example"),
                 ""
-                        +
-                        "when\n"
-                        +
-                        "    event : LogEvent()\n"
-                        +
-                        "then\n"
-                        +
-                        sourceDescription
-                        +
-                        targetDescription
-                        +
-                        "    ExampleResponseModel object = "
-                        +
-                        "(ExampleResponseModel) ModelUtils.createEmptyModelObject(ExampleResponseModel.class, "
-                        +
-                        "new OpenEngSBModelEntry[] {});"
-                        +
-                        "    object.setResult(\"test-42\");"
-                        +
-                        "    ExampleRequestModel model = "
-                        +
-                        "(ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);"
-                        +
-                        "    example2.doSomethingWithModel(model);\n"
+                        + "when\n"
+                        + "  event : LogEvent()\n"
+                        + "then\n"
+                        + sourceDescription
+                        + targetDescription
+                        + "  ExampleResponseModel object = new ExampleResponseModel();"
+                        + "  object.setResult(\"test-42\");"
+                        + "  ExampleRequestModel model = "
+                        + "(ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);"
+                        + "  example2.doSomethingWithModel(model);\n"
         );
 
         ContextHolder.get().setCurrentContextId("foo");

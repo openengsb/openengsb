@@ -188,6 +188,7 @@ public class TestClient extends BasePage {
         add(pc);
     }
     
+    //TODO: OPENENGSB-3272: Extract this into an own component
     private Component createProjectChoice() {
         DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
             @Override

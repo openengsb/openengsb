@@ -75,7 +75,8 @@ public class UserServiceTest extends AbstractUITest {
         assertFalse(usernameField.isEnabled());
     }
      
-    @Test public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
+    @Test
+    public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
         tester.startPage(UserListPage.class); 
         tester.assertRenderedPage(UserListPage.class); 
         tester.clickLink("lazy:addUser");
@@ -85,7 +86,8 @@ public class UserServiceTest extends AbstractUITest {
         assertTrue(usernameField.isEnabled()); 
     }
      
-    @Test public void testUserCreation_ShouldWork() {
+    @Test
+    public void testUserCreation_ShouldWork() {
         tester.startPage(UserListPage.class);
         tester.assertRenderedPage(UserListPage.class); 
         tester.clickLink("lazy:addUser");
@@ -129,7 +131,8 @@ public class UserServiceTest extends AbstractUITest {
         assertThat(userManager.getUserList(), not(hasItem("test")));
     }
      
-    @Test public void testErrorMessage_shouldReturnUserExists() throws Exception {
+    @Test
+    public void testErrorMessage_shouldReturnUserExists() throws Exception {
         tester.startPage(UserListPage.class);
         userManager.createUser("user1");
         tester.clickLink("lazy:addUser");
@@ -150,7 +153,8 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     
-    @Test public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
+    @Test
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
         userManager.createUser("user1");
         tester.startPage(UserListPage.class); 
         tester.assertRenderedPage(UserListPage.class);
