@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
@@ -110,6 +111,8 @@ public interface ConnectorManager {
     
     /**
      * Registers the given Connector for XLinking. 
+     * Throws an Exception if, the supplied Connector was not found or does not 
+     * belong to a linkable domain.
      * <br/><br/>
      * The remote connector must provide a list of OpenEngSBModel/View pairs, it accepts for XLink. 
      * A Toolname must be provided to display a human readable Name of the Tool in the 
@@ -131,7 +134,7 @@ public interface ConnectorManager {
      */    
     XLinkTemplate connectToXLink(String id, String hostId, 
             String toolName, 
-            ModelToViewsTuple[] modelsToViews);
+            ModelToViewsTuple[] modelsToViews) throws DomainNotLinkableException;
     
     /**
      * Unregisters the given Connector from XLink.
