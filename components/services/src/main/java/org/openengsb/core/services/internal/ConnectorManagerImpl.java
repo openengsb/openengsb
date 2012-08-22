@@ -32,6 +32,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
@@ -231,7 +232,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            ModelToViewsTuple[] modelsToViews) {
+            ModelToViewsTuple[] modelsToViews) 
+            throws DomainNotLinkableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
