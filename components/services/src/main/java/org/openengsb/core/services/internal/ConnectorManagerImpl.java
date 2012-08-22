@@ -38,6 +38,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
@@ -278,7 +279,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
             String id, 
             String hostId, 
             String toolName, 
-            ModelToViewsTuple[] modelsToViewsArray) {
+            ModelToViewsTuple[] modelsToViewsArray) 
+            throws DomainNotLinkableException {
+        isConnectorLinkable(id);
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, List<RemoteToolView>> convertedModelsToViews 
             = convertToMapWithModelDescriptionAsKey(modelsToViews);
@@ -308,7 +311,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
             if (!currentRegistration.getConnectorId().equals(filterKey.getConnectorId())) {
                 currentRegistration.getxLinkTemplate()
                     .getRegisteredTools().add(convertRegisteredToolToRemoteTool(newRegistration));
-                updateEvent.setRegisteredTools(currentRegistration.getxLinkTemplate().getRegisteredTools());
+                updateEvent.setRegisteredTools(currentRegistration
+                    .getxLinkTemplate().getRegisteredTools().toArray(new RemoteTool[0]));
                 Object serviceObject 
                     = serviceUtils.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
                 if (serviceObject == null) {
@@ -318,13 +322,26 @@ public class ConnectorManagerImpl implements ConnectorManager {
                     LinkableDomain service = (LinkableDomain) serviceObject;
                     service.onRegisteredToolsUpdateEvent(updateEvent);
                 } catch (ClassCastException e) {
-                    e.printStackTrace();
-                    //this should not happen but may happen. 
-                    //maybe implement test at connect
-                    //remove connector from list?
+                    
                 }
             }
         }
+    }
+    
+    /**
+     * Checks if the given ConnectorId is registered and is an instance of a linkable domain.
+     */
+    private void isConnectorLinkable(String connectorId) throws DomainNotLinkableException {
+        Object serviceObject 
+            = serviceUtils.getService("(service.pid=" + connectorId + ")", 100L);
+        if (serviceObject == null) {
+            throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not found.");
+        }
+        try {
+            serviceObject = (LinkableDomain) serviceObject;
+        } catch (ClassCastException e) { 
+            throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not linkable.");
+        }        
     }
     
     private void notifyAboutDeRegistration(RemoteToolRegistration oldRegistration) {
@@ -335,7 +352,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
             currentRegistration.getxLinkTemplate()
                 .getRegisteredTools().remove(convertRegisteredToolToRemoteTool(oldRegistration));
             updateEvent.setRegisteredTools(currentRegistration
-                .getxLinkTemplate().getRegisteredTools());
+                .getxLinkTemplate().getRegisteredTools().toArray(new RemoteTool[0]));
             Object serviceObject 
                 = serviceUtils.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
             if (serviceObject == null) {
@@ -345,10 +362,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 LinkableDomain service = (LinkableDomain) serviceObject;
                 service.onRegisteredToolsUpdateEvent(updateEvent);
             } catch (ClassCastException e) {
-                e.printStackTrace();
-                //this should not happen but may happen. 
-                //maybe implement test at connect
-                //remove connector from list?
+                
             }
         }
     }
