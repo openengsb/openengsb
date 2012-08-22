@@ -59,7 +59,7 @@ public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test(expected = OsgiServiceNotAvailableException.class)
-    public void testGetProxyForNonExistingservice_shouldThrowNotAvailableException() {
+    public void testGetProxyForNonExistingservice_shouldThrowNotAvailableException() throws Exception {
         NullDomain osgiServiceProxy = utils.getOsgiServiceProxy(NullDomain.class, 1);
         osgiServiceProxy.getAliveState();
     }

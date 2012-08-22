@@ -77,7 +77,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRecieveMethodCall_shouldCallService() {
+    public void testRecieveMethodCall_shouldCallService() throws Exception {
         requestHandler.handleCall(methodCall);
         verify(serviceMock).test();
     }
@@ -89,7 +89,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testReceiveMethodCallWithArgument_shouldCallMethod() {
+    public void testReceiveMethodCallWithArgument_shouldCallMethod() throws Exception {
         MethodCall call2 = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
         requestHandler.handleCall(call2);
         verify(serviceMock, never()).test();
@@ -97,7 +97,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRecieveMethodCall_shouldSendResponse() {
+    public void testRecieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         MethodCall call2 = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
         MethodResult result = requestHandler.handleCall(call2);
@@ -107,7 +107,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testReceiveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() {
+    public void testReceiveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
         MethodResult result = requestHandler.handleCall(methodCall);
 
         verify(serviceMock).test();
@@ -123,7 +123,7 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testSendSyncMethodCall_shouldReturnResult() {
+    public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         MethodResult expectedResult = new MethodResult();
         MethodResultMessage value = mock(MethodResultMessage.class);
@@ -195,5 +195,4 @@ public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 
         Long getOtherAnswer();
     }
-
 }

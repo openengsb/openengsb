@@ -365,11 +365,6 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
-        <artifactId>org.openengsb.framework.security</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.services</artifactId>
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
@@ -381,6 +376,11 @@
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>org.openengsb.domain.auditing</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authentication</artifactId>
         <version>3.0.0-SNAPSHOT</version>
       </dependency>
     </dependencies>

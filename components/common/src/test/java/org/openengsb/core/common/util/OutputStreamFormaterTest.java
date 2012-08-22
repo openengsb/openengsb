@@ -28,22 +28,21 @@ import java.io.PrintStream;
 
 import org.junit.Test;
 
-
 public class OutputStreamFormaterTest {
 
     @Test
-    public void testSpaces_shouldInsertSpaces() {
+    public void testSpaces_shouldInsertSpaces() throws Exception {
         assertThat(OutputStreamFormater.spaces(20).length(), is(20));
     }
 
     @Test
-    public void testFormatValues_shouldFormatString() {
+    public void testFormatValues_shouldFormatString() throws Exception {
         String string = "  \u001B[1mOpenEngSB Version        \u001B[m   3.0.0-SNAPSHOT";
         assertThat(OutputStreamFormater.formatValues("OpenEngSB Version", "3.0.0-SNAPSHOT"), equalTo(string));
     }
 
     @Test
-    public void testPrintValue_shouldPrintValue() {
+    public void testPrintValue_shouldPrintValue() throws Exception {
         PrintStream streamMock = mock(PrintStream.class);
         OutputStreamFormater.setOutputStream(streamMock);
         OutputStreamFormater.printValue("OpenEngSB");
@@ -51,7 +50,7 @@ public class OutputStreamFormaterTest {
     }
 
     @Test
-    public void testPrintValues_shouldPrintValues() {
+    public void testPrintValues_shouldPrintValues() throws Exception {
         String string = "  \u001B[1mOpenEngSB Version        \u001B[m   3.0.0-SNAPSHOT";
         PrintStream streamMock = mock(PrintStream.class);
         OutputStreamFormater.setOutputStream(streamMock);
@@ -60,7 +59,7 @@ public class OutputStreamFormaterTest {
     }
 
     @Test
-    public void testPrintWithPrefix_shouldPrintStringWithPrefix() {
+    public void testPrintWithPrefix_shouldPrintStringWithPrefix() throws Exception {
         String s = OutputStreamFormater.formatValues(9, "id", "status");
         assertThat(s, equalTo("         \u001B[1mid                       \u001B[m   status"));
     }

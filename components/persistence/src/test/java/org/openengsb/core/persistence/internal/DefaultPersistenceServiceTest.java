@@ -44,22 +44,14 @@ public class DefaultPersistenceServiceTest {
     }
 
     @Test
-    public void testPersistingAndLoadingObject_shouldWork() {
+    public void testPersistingAndLoadingObject_shouldWork() throws Exception {
         persistenceService.create(new B());
         List<B> query = persistenceService.query(new B());
         assertEquals(1, query.size());
     }
 
     @Test
-    public void testPersistingAndLoadingObject_shouldChangeAfterworks() {
-        persistenceService.create(new B());
-        List<B> query = persistenceService.query(new B());
-        assertEquals(1, query.size());
-        assertEquals("lala", query.get(0).getAdditionalValue());
-    }
-
-    @Test
-    public void testPersistingAndLoadingVariousObject_shouldWork() {
+    public void testPersistingAndLoadingVariousObject_shouldWork() throws Exception {
         persistenceService.create(new B());
         persistenceService.create(new A());
         List<A> query = persistenceService.query(new A());
@@ -67,7 +59,7 @@ public class DefaultPersistenceServiceTest {
     }
 
     @Test
-    public void testQueryBySample_shouldReturnCorrectObject() {
+    public void testQueryBySample_shouldReturnCorrectObject() throws Exception {
         persistenceService.create(new B("other"));
         persistenceService.create(new A("blub"));
         List<A> query = persistenceService.query(new A("blub"));
@@ -75,14 +67,14 @@ public class DefaultPersistenceServiceTest {
     }
 
     @Test
-    public void testPersistingAndLoadingVariousMultibleObjects() {
+    public void testPersistingAndLoadingVariousMultibleObjects() throws Exception {
         persistenceService.create(Lists.newArrayList(new B(), new A()));
         List<B> query = persistenceService.query(new B());
         assertEquals(1, query.size());
     }
 
     @Test
-    public void testUpdatingAndRetrievingUpdatedObjects_shouldReturnUpdatedObjects() {
+    public void testUpdatingAndRetrievingUpdatedObjects_shouldReturnUpdatedObjects() throws Exception {
         persistenceService.create(Lists.newArrayList(new B(), new A()));
         List<B> query = persistenceService.query(new B("blub"));
         assertEquals(0, query.size());
@@ -92,7 +84,7 @@ public class DefaultPersistenceServiceTest {
     }
 
     @Test
-    public void testDeleteObject_shouldRemoveItFromDatabase() {
+    public void testDeleteObject_shouldRemoveItFromDatabase() throws Exception {
         persistenceService.create(Lists.newArrayList(new B("blub"), new A()));
         List<B> query = persistenceService.query(new B("blub"));
         assertEquals(1, query.size());
@@ -100,5 +92,4 @@ public class DefaultPersistenceServiceTest {
         query = persistenceService.query(new B("blub"));
         assertEquals(0, query.size());
     }
-
 }

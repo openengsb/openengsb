@@ -31,7 +31,7 @@
       workflow, security and persistence.
     </details>
     <config name="org.openengsb.settings">
-      openengsb.version.number=${openengsb.version.number}
+      openengsb.version.number=${project.version}
     </config>
     <config name="org.openengsb.persistence.config-rulebase">
       backend.id=rule-persistence
@@ -154,13 +154,15 @@
     <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.api/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.edb/org.openengsb.framework.edb.jpa/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.api/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.impl/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.persistence.edb/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.graph.orient/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.modelregistry.tracker/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.ekb/org.openengsb.framework.ekb.transformation.wonderland/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
-    <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.api/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.drools/${project.version}</bundle>
     <!-- OpenEngSB Console -->
@@ -273,8 +275,8 @@
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
     <bundle>mvn:org.ops4j.pax.wicket/org.ops4j.pax.wicket.service/${pax.wicket.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/1.7R2_2</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.5.0_2</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/${rhino.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/${xmlbeans.version}</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>

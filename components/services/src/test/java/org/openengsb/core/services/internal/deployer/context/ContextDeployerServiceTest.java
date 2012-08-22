@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.felix.fileinstall.ArtifactInstaller;
@@ -49,21 +48,21 @@ public class ContextDeployerServiceTest {
     }
 
     @Test
-    public void testContextDeployerService_isAnArtifactListener() {
+    public void testContextDeployerService_isAnArtifactListener() throws Exception {
         ArtifactInstaller contextDeployerService = new ContextDeployerService();
 
         assertThat(contextDeployerService, is(notNullValue()));
     }
 
     @Test
-    public void testContextDeployerService_canHandleContextFiles() throws IOException {
+    public void testContextDeployerService_canHandleContextFiles() throws Exception {
         File contextFile = temporaryFolder.newFile("example.context");
 
         assertThat(contextDeployerService.canHandle(contextFile), is(true));
     }
 
     @Test
-    public void testUnknownFiles_shouldNotBeHandledByDeployer() throws IOException {
+    public void testUnknownFiles_shouldNotBeHandledByDeployer() throws Exception {
         File otherFile = temporaryFolder.newFile("other.connector");
 
         assertThat(contextDeployerService.canHandle(otherFile), is(false));

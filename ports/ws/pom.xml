@@ -22,14 +22,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.openengsb.ports</groupId>
-    <artifactId>openengsb-ports-parent</artifactId>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-bundle-settings</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.openengsb.ports.ws</bundle.symbolicName>
     <bundle.namespace>org.openengsb.ports.ws</bundle.namespace>
+    <spring.osgi.version>1.2.1</spring.osgi.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -113,11 +114,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
@@ -125,7 +121,26 @@
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
+      <version>${spring.osgi.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.aop</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

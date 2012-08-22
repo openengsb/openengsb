@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,13 +51,13 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testServiceSupportsConfigItem_shouldAcceptGlobalConfiguration() {
+    public void testServiceSupportsConfigItem_shouldAcceptGlobalConfiguration() throws Exception {
         assertTrue(service.supports(GlobalConfiguration.class));
         assertFalse(service.supports(ImportConfiguration.class));
     }
 
     @Test
-    public void testPersistGlobalConfiguration_shouldPersistAndLoadConfig() {
+    public void testPersistGlobalConfiguration_shouldPersistAndLoadConfig() throws Exception {
         GlobalConfiguration conf = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
         service.persist(conf);
 
@@ -69,7 +68,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testPersistGlobalConfiguration_shouldCreateFileIfNoneExists() throws IOException {
+    public void testPersistGlobalConfiguration_shouldCreateFileIfNoneExists() throws Exception {
         FileUtils.forceDelete(storageFile);
         assertFalse(storageFile.exists());
         GlobalConfiguration conf = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
@@ -78,7 +77,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testPersistGlobalConfiguration_shouldUpdatePreviousConfiguration() {
+    public void testPersistGlobalConfiguration_shouldUpdatePreviousConfiguration() throws Exception {
         GlobalConfiguration conf = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
         service.persist(conf);
 
@@ -93,7 +92,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadGlobalConfiguration_shouldOnlyLoadOneConfig() {
+    public void testLoadGlobalConfiguration_shouldOnlyLoadOneConfig() throws Exception {
         GlobalConfiguration conf1 = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
         GlobalConfiguration conf2 = new GlobalConfiguration(new GlobalDeclaration("java.util.Map", "map"));
         GlobalConfiguration conf3 = new GlobalConfiguration(new GlobalDeclaration("java.util.Dictionary", "dict"));
@@ -110,7 +109,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadGlobalConfiguration_shouldLoadAllConfig() {
+    public void testLoadGlobalConfiguration_shouldLoadAllConfig() throws Exception {
         GlobalConfiguration conf1 = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
         GlobalConfiguration conf2 = new GlobalConfiguration(new GlobalDeclaration("java.util.Map", "map"));
         GlobalConfiguration conf3 = new GlobalConfiguration(new GlobalDeclaration("java.util.Dictionary", "dict"));
@@ -124,7 +123,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testLoadGlobalConfigurationWithEmptyFile_shouldReturnEmptyList() throws IOException {
+    public void testLoadGlobalConfigurationWithEmptyFile_shouldReturnEmptyList() throws Exception {
         FileUtils.forceDelete(storageFile);
 
         List<ConfigItem<GlobalDeclaration>> loaded = service.load(new HashMap<String, String>());
@@ -132,7 +131,7 @@ public class GlobalDeclarationPersistenceBackendServiceTest extends AbstractOpen
     }
 
     @Test
-    public void testRemoveGlobalConfiguration_ShouldDeleteConfiguration() {
+    public void testRemoveGlobalConfiguration_ShouldDeleteConfiguration() throws Exception {
         GlobalConfiguration conf1 = new GlobalConfiguration(new GlobalDeclaration("java.util.List", "list"));
         GlobalConfiguration conf2 = new GlobalConfiguration(new GlobalDeclaration("java.util.Map", "map"));
 

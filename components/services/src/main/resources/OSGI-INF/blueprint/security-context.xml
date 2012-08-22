@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0" xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <bean id="userManager" class="org.openengsb.core.services.internal.security.UserDataManagerImpl">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="openengsb-security" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <service-properties>
+      <entry key="service.ranking" value="-1" />
+      <entry key="internal" value="true" />
+    </service-properties>
+    <ref component-id="userManager" />
+  </service>
+
+  <bean id="secureUserManagerFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.api.security.service.UserDataManager</value>
+      </list>
+    </property>
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+    <property name="target" ref="userManager" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <bean factory-method="getObject" factory-ref="secureUserManagerFactory" />
+  </service>
+
+  <service interface="org.aopalliance.intercept.MethodInterceptor">
+    <service-properties>
+      <entry key="org.openengsb.interceptor" value="security" />
+    </service-properties>
+    <ref component-id="securityInterceptor" />
+  </service>
+
+  <bean id="securityInterceptor" class="org.openengsb.core.services.internal.security.SecurityInterceptor">
+    <property name="authorizer" ref="authorizer" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authorization.affirmativebased" />
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy">
+      <property name="utilsService" ref="osgiUtilsService" />
+    </bean>
+  </service>
+
+  <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authentication.provider" />
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.security.DefaultAuthenticationProviderStrategy">
+      <property name="utilsService" ref="osgiUtilsService" />
+    </bean>
+  </service>
+
+  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)"
+    activation="lazy" availability="optional" />
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.OpenEngSBService</value>
+      <value>org.openengsb.core.api.Domain</value>
+      <value>org.openengsb.domain.authorization.AuthorizationDomain</value>
+    </interfaces>
+    <service-properties>
+      <entry key="service.pid" value="authorization+admin+admin" />
+      <entry key="domain" value="authorization" />
+      <entry key="connector" value="admin" />
+      <entry key="location.root">
+        <array>
+          <value>authorization/admin</value>
+        </array>
+      </entry>
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.security.AdminAccessConnector">
+      <property name="userManager" ref="userManager" />
+    </bean>
+  </service>
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.security.PrivateKeySource</value>
+      <value>org.openengsb.core.api.security.PublicKeySource</value>
+    </interfaces>
+    <bean class="org.openengsb.core.services.internal.security.FileKeySource" init-method="init">
+      <property name="algorithm" value="RSA" />
+    </bean>
+  </service>
+
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)"
+    activation="lazy" availability="optional" />
+
+  <bean id="securityManager" class="org.openengsb.core.services.internal.security.OpenEngSBSecurityManager" init-method="init">
+    <property name="authenticator">
+      <bean class="org.openengsb.core.services.OpenEngSBShiroAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
+
+  <service ref="securityManager">
+    <interfaces>
+      <value>org.apache.shiro.mgt.SecurityManager</value>
+    </interfaces>
+  </service>
+
+  <bean id="authenticationContext" class="org.openengsb.core.services.internal.security.model.ShiroContext" />
+
+  <service interface="org.openengsb.core.api.security.AuthenticationContext" ref="authenticationContext" />
+
+</blueprint>

@@ -21,13 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * DB-Objects handle an object that is ready to be put into a DB and give access to the metadata.
+ * EDBObject handle an object that is ready to be put into the EDB and give access to some metadata. It contains a
+ * map of helper functions for easier adding and retrieving of the EDBObjectEntries and the values it contains.
  */
 @SuppressWarnings("serial")
-public class EDBObject extends HashMap<String, Object> {
-    private Long timestamp;
-    private String oid;
-
+public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private static final String OID_CONST = "oid";
     private static final String TIMESTAMP_CONST = "timestamp";
     private static final String DELETED_CONST = "isDeleted";
@@ -37,96 +35,121 @@ public class EDBObject extends HashMap<String, Object> {
      */
     public EDBObject(String oid) {
         super();
-        this.oid = oid;
-
-        put(OID_CONST, oid);
+        setOID(oid);
     }
 
     /**
-     * Convenience constructor to create an EDBObject using a Map of data. The OID is stored after loading the data Map,
-     * so any already existing values with the special key representing the OID will be overwritten by the provided
-     * parameters.
+     * Create an EDBObject using a Map of data. The OID is stored after loading the data Map, so any already existing
+     * values with the special key representing the OID will be overwritten by the provided parameters.
      */
-    public EDBObject(String oid, Map<String, Object> data) {
+    public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
         super(data);
-        this.oid = oid;
-
-        put(OID_CONST, oid);
-    }
-
-    /**
-     * Usually used by a Database query function to create an EDBObject out of raw database-data. This will extract the
-     * metadata from the raw data Map.
-     */
-    public EDBObject(Map<String, Object> rawData) {
-        super(rawData);
-        this.timestamp = (Long) rawData.get(TIMESTAMP_CONST);
-        this.oid = (String) rawData.get(OID_CONST);
+        setOID(oid);
     }
 
     /**
      * Retrieve the timestamp for this object.
      */
     public final Long getTimestamp() {
-        return timestamp;
+        return getLong(TIMESTAMP_CONST);
     }
 
     /**
      * This function updates the timestamp for this object. This is necessary if you want to commit the object to the
-     * database! Should be set by the EnterpriseDatabaseService in the commit procedure.
+     * database. Should be set by the EnterpriseDatabaseService in the commit procedure.
      */
     public void updateTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-        put(TIMESTAMP_CONST, timestamp);
+        putEDBObjectEntry(TIMESTAMP_CONST, timestamp);
     }
 
     /**
      * Retrieve the OID for this object.
      */
-    public final String getOID() {
-        if (oid != null) {
-            return oid;
-        } else {
-            oid = (String) get(OID_CONST);
-            return oid;
-        }
+    public String getOID() {
+        return getString(OID_CONST);
     }
 
-    /** Change the OID */
+    /**
+     * Sets the OID
+     */
     public void setOID(String oid) {
-        this.oid = oid;
-        put(OID_CONST, oid);
+        putEDBObjectEntry(OID_CONST, oid);
     }
 
     /**
-     * Convenience function to retrieve a value as String.
+     * Returns the value of the EDBObjectEntry for the given key, casted as String. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
      */
-    public final String getString(String key) {
-        return (String) get(key);
+    public String getString(String key) {
+        return getObject(key, String.class);
     }
 
     /**
-     * Convenience function to retrieve a value as long.
+     * Returns the value of the EDBObjectEntry for the given key, casted as Long. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
      */
-    public final long getLong(String key) {
-        return (Long) get(key);
+    public Long getLong(String key) {
+        return getObject(key, Long.class);
     }
 
     /**
-     * Test if this object is a "deletion" entry in a history.
+     * Returns the value of the EDBObjectEntry for the given key. Returns null if there is no element for the given key,
+     * or the value for the given key is null.
      */
-    public final boolean isDeleted() {
-        Object id = get(DELETED_CONST);
-        if (id == null) {
-            return false;
-        }
-        return (Boolean) id;
+    public Object getObject(String key) {
+        return getObject(key, Object.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as the given class. Returns null if there is no
+     * element for the given key, or the value for the given key is null.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getObject(String key, Class<T> clazz) {
+        EDBObjectEntry entry = get(key);
+        return entry == null ? null : (T) entry.getValue();
+    }
+
+    /**
+     * Returns true if the object is deleted.
+     */
+    public final Boolean isDeleted() {
+        Boolean deleted = getObject(DELETED_CONST, Boolean.class);
+        return deleted != null ? deleted : false;
+    }
+
+    /**
+     * Sets the boolean value if the object is deleted or not
+     */
+    public void setDeleted(Boolean deleted) {
+        putEDBObjectEntry(DELETED_CONST, deleted);
+    }
+
+    /**
+     * Adds an EDBObjectEntry to this EDBObject
+     */
+    public void putEDBObjectEntry(String key, Object value, String type) {
+        put(key, new EDBObjectEntry(key, value, type));
+    }
+
+    /**
+     * Adds an EDBObjectEntry to this EDBObject
+     */
+    public void putEDBObjectEntry(String key, Object value, Class<?> type) {
+        putEDBObjectEntry(key, value, type.getName());
+    }
+    
+    /**
+     * Adds an EDBObjectEntry to this EDBObject. It uses the type of the given object value as type parameter
+     */
+    public void putEDBObjectEntry(String key, Object value) {
+        putEDBObjectEntry(key, value, value.getClass());
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
-        for (Map.Entry<String, Object> entry : this.entrySet()) {
+        for (Map.Entry<String, EDBObjectEntry> entry : this.entrySet()) {
             appendEntry(entry, builder);
         }
         builder.append("}");
@@ -135,24 +158,13 @@ public class EDBObject extends HashMap<String, Object> {
     }
 
     /**
-     * analyzes the entry and write the specific information into the StringBuilder.
+     * Analyzes the entry and write the specific information into the StringBuilder.
      */
-    private void appendEntry(Map.Entry<String, Object> entry, StringBuilder builder) {
+    private void appendEntry(Map.Entry<String, EDBObjectEntry> entry, StringBuilder builder) {
         if (builder.length() > 2) {
             builder.append(",");
         }
-        String key = entry.getKey();
-        Object value = entry.getValue();
-
-        builder.append(" \"").append(key).append("\"");
-        builder.append(" : ");
-
-        if (value.getClass().equals(String.class)) {
-            builder.append("\"").append((String) value).append("\" ");
-        } else if (value.getClass().equals(Long.class)) {
-            builder.append((Long) value).append(" ");
-        } else {
-            builder.append(value.toString()).append(" ");
-        }
+        builder.append(" \"").append(entry.getKey()).append("\"");
+        builder.append(" : ").append(entry.getValue());
     }
 }

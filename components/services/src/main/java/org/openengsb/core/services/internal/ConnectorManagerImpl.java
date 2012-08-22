@@ -25,11 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -63,6 +67,41 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private String xLinkBaseUrl;
     private int xLinkExpiresIn = 3;
 
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    private Semaphore semaphore;
+
+    class ConnectorInstaller implements Runnable {
+        private ConnectorConfiguration configuration;
+
+        ConnectorInstaller(ConnectorConfiguration configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    registrationManager.updateRegistration(configuration.getConnectorId(), configuration.getContent());
+                    LOGGER.info("successfully recreated connector {} from persistence", configuration.getConnectorId());
+                    break;
+                } catch (ConnectorValidationFailedException e) {
+                    LOGGER.error("connector {} that has been loaded from persistence was found to be invalid",
+                            configuration.getConnectorId(), e);
+                    break;
+                } catch (OsgiServiceNotAvailableException e) {
+                    LOGGER.warn("connector {}  that has been loaded from persistence could not be created because the"
+                            + "factory-service was missing", configuration.getConnectorId());
+                    continue;
+                } catch (Exception e) {
+                    LOGGER.error("connector {}  that has been loaded from persistence could not be created because of"
+                            + "an unexpected Error", e);
+                    break;
+                }
+            }
+            semaphore.release();
+        }
+    }
+
     public void init() {
         new Thread() {
             @Override
@@ -76,12 +115,15 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 } catch (PersistenceException e) {
                     throw new IllegalStateException(e);
                 }
+                semaphore = new Semaphore(0);
                 for (ConnectorConfiguration c : configs) {
-                    try {
-                        registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
-                    } catch (ConnectorValidationFailedException e) {
-                        throw new IllegalStateException(e);
-                    }
+                    executor.submit(new ConnectorInstaller(c));
+                }
+                try {
+                    semaphore.acquire(configs.size());
+                } catch (InterruptedException e) {
+                    LOGGER.error("interrupted while installing connectors");
+                    executor.shutdownNow();
                 }
             }
         }.start();

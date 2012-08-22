@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.services.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -73,5 +73,4 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
         Authentication authenticate = authenticator.authenticate("test", new Password("password"));
         assertThat(authenticate, not(nullValue()));
     }
-
 }

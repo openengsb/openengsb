@@ -63,10 +63,10 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.security.RootSubjectHolder;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
@@ -103,6 +103,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
+        connectorDeployerService.setBundleContext(bundleContext);
 
         setupPersistence();
         createServiceManagerMock();
@@ -301,12 +302,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            // The service-manager will refuse to create the connector
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
         assertThat("old service is not there anymore", references, not(nullValue()));
@@ -471,14 +467,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         serviceManager.createWithId(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("Exception expected");
-        } catch (Exception e) {
-            assertThat(connectorFile.exists(), is(true));
-        }
+        connectorDeployerService.install(connectorFile);
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat(connectorFile.exists(), is(true));
         assertThat("old service is not there anymore", references, not(nullValue()));
     }
 

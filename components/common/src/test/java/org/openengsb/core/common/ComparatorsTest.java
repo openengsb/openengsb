@@ -34,7 +34,7 @@ import org.openengsb.core.common.util.Comparators;
 public class ComparatorsTest {
 
     @Test
-    public void testDomainProviderComparator_shouldSortDomainProviders() {
+    public void testDomainProviderComparator_shouldSortDomainProviders() throws Exception {
         List<DomainProvider> list =
             Arrays.asList(mockDomainProvider("z"), mockDomainProvider("b"), mockDomainProvider("1"));
         Collections.sort(list, Comparators.forDomainProvider());
@@ -50,7 +50,7 @@ public class ComparatorsTest {
     }
 
     @Test
-    public void testConnectorProviderComparator_shouldSortConnectorProviders() {
+    public void testConnectorProviderComparator_shouldSortConnectorProviders() throws Exception {
         List<ConnectorProvider> list =
             Arrays.asList(mockConnectorProvider("z"), mockConnectorProvider("b"), mockConnectorProvider("1"));
         Collections.sort(list, Comparators.forConnectorProvider());

@@ -113,19 +113,19 @@ public class ServicesHelperTest {
     }
 
     @Test
-    public void testGetRunningServiceIds_shouldReturnTheRunningServiceIds() {
+    public void testGetRunningServiceIds_shouldReturnTheRunningServiceIds() throws Exception {
         List<String> runningServiceIds = serviceHelper.getRunningServiceIds();
         assertTrue(runningServiceIds.contains("dummyId"));
     }
 
     @Test
-    public void testGetDomainProviderNames_shouldReturnProviderNames() {
+    public void testGetDomainProviderNames_shouldReturnProviderNames() throws Exception {
         List<String> domainProviderNames = serviceHelper.getDomainProviderNames();
         assertTrue(domainProviderNames.contains("Dummy Name"));
     }
 
     @Test
-    public void testGetConnectorAttributes_shouldReturnConnectorAttributes() {
+    public void testGetConnectorAttributes_shouldReturnConnectorAttributes() throws Exception {
         //get attributes from user but without reading from the input
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("attr1", "val1");

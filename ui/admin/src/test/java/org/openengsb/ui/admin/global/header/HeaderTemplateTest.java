@@ -44,27 +44,27 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     @Test
-    public void testNavigationFieldForIndex_shouldNavigate() {
+    public void testNavigationFieldForIndex_shouldNavigate() throws Exception {
         setupIndexPage();
         Assert.assertTrue(testNavigation(Index.class, Index.class.getSimpleName()));
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationFieldForTestClient_shouldForwardToTestClient() {
+    public void testNavigationFieldForTestClient_shouldForwardToTestClient() throws Exception {
         setupTestClientPage();
         Assert.assertTrue(testNavigation(TestClient.class, TestClient.class.getSimpleName()));
         Assert.assertEquals(TestClient.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testNavigationForNonExistingNavigationButton_shouldForwardToImprintPage() {
+    public void testNavigationForNonExistingNavigationButton_shouldForwardToImprintPage() throws Exception {
         Assert.assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
         Assert.assertEquals(ImprintPage.class, tester.getLastRenderedPage().getClass());
     }
 
     @Test
-    public void testToNavigate_shouldForwardToTestClient() {
+    public void testToNavigate_shouldForwardToTestClient() throws Exception {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
         tester.clickLink("header:headerMenuItems:0:link");
@@ -101,5 +101,4 @@ public class HeaderTemplateTest extends AbstractUITest {
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
     }
-
 }
