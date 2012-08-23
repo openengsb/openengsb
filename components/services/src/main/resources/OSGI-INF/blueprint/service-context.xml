@@ -66,6 +66,7 @@
     <property name="configPersistence" ref="connectorConfigPersistence" />
     <property name="xLinkBaseUrl" value="${xlink.url}" />
     <property name="xLinkExpiresIn" value="${xlink.expiresIn}" />
+    <property name="utilsService" ref="utilsService" />
   </bean>
 
   <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
