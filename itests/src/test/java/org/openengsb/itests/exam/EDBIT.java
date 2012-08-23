@@ -142,7 +142,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
         edbService.commit(commit);
 
-        List<EDBObject> objects = edbService.query("newtestkey1", "newtestvalue1");
+        List<EDBObject> objects = edbService.queryByKeyValue("newtestkey1", "newtestvalue1");
         assertThat(objects, notNullValue());
         assertThat(objects.size(), not(0));
     }

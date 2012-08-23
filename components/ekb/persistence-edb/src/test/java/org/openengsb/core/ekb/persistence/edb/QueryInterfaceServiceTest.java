@@ -391,7 +391,7 @@ public class QueryInterfaceServiceTest {
 
     private boolean checkQuery(String query) {
         try {
-            service.queryForModels(TestModel.class, query, new Date().getTime() + "");
+            service.queryForModelsAtTimestamp(TestModel.class, query, new Date().getTime() + "");
             return true;
         } catch (IllegalArgumentException e) {
         }
