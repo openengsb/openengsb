@@ -66,20 +66,14 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
-    public <T> List<T> queryForModels(Class<T> model, String key, Object value) {
-        LOGGER.debug("Invoked queryForModels with the model {}, the key {} and the value {}", new Object[]{
-            model.getName(), key, value });
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.queryByKeyValue(key, value));
-    }
-
-    @Override
-    public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
+    public <T> List<T> queryForModelsByQueryMap(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForModels with the model {} and a map", model.getName());
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.queryByMap(queryMap));
     }
 
     @Override
-    public <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp) {
+    public <T> List<T> queryForModelsByQueryMapAtTimestamp(Class<T> model, Map<String, Object> queryMap,
+            Long timestamp) {
         LOGGER.debug("Invoked queryForModels with the model {}, a map for the time {}",
             model.getName(), new Date(timestamp).toString());
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
@@ -87,11 +81,11 @@ public class QueryInterfaceService implements QueryInterface {
 
     @Override
     public <T> List<T> queryForModels(Class<T> model, String query) {
-        return queryForModels(model, query, new Date().getTime() + "");
+        return queryForModelsAtTimestamp(model, query, System.currentTimeMillis() + "");
     }
 
     @Override
-    public <T> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+    public <T> List<T> queryForModelsAtTimestamp(Class<T> model, String query, String timestamp) {
         if (timestamp == null || timestamp.isEmpty()) {
             LOGGER.debug("Got invalid timestamp string. Use the current timestamp instead");
             timestamp = new Date().getTime() + "";
@@ -104,7 +98,7 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
-    public <T> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap) {
+    public <T> List<T> queryForActiveModelsByQueryMap(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForActiveModels with the model {} and a query map", model.getName());
         Long now = System.currentTimeMillis();
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
