@@ -45,6 +45,7 @@
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <reference id="queryInterface" interface="org.openengsb.core.ekb.api.QueryInterface" />
   <reference id="edbService" interface="org.openengsb.core.edb.api.EngineeringDatabaseService" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
   <reference-list id="connectorList" interface="org.openengsb.core.api.Domain" member-type="service-reference" />
   <reference-list id="domainProviders" interface="org.openengsb.core.api.DomainProvider" />
   <reference-list id="modelProviders" interface="org.openengsb.labs.delegation.service.ClassProvider"

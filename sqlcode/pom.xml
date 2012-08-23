@@ -130,6 +130,7 @@
         <configuration>
           <instructions>
             <Delegation-Annotations>true</Delegation-Annotations>
+            <Provide-Models>true</Provide-Models> 
             <Domain-Name>sqlcode</Domain-Name>
             <Domain-Interface>org.openengsb.domain.SQLCode.SQLCodeDomain</Domain-Interface>
             <DomainEvents-Interface>org.openengsb.domain.SQLCode.SQLCodeDomainEvents</DomainEvents-Interface>            

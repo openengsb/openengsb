@@ -56,11 +56,11 @@ import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
-import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
+import org.openengsb.core.services.internal.security.model.ShiroContext;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.SQLCode.SQLCodeDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -126,7 +126,8 @@ public class ToolChooserTest extends AbstractUITest {
         ((ConnectorManagerImpl) serviceManager).setUtilsService(mockedServiceUtils);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
-        customContext.putBean("serviceManager", serviceManager);      
+        customContext.putBean("serviceManager", serviceManager);     
+        customContext.putBean("authenticationContext", new ShiroContext());
     }
 
     private void setupTesterWithSpringMockContext() {
@@ -135,7 +136,7 @@ public class ToolChooserTest extends AbstractUITest {
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), customContext));
     }   
     
-    public void mockRegistrationOfTools() throws DomainNotLinkableException {
+    public void mockRegistrationOfTools() throws Exception {
         String hostId = "localhost";
                 
         String toolNameA = "Tool A";        
@@ -150,7 +151,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     private void registerTool_ExampleObjectOrientedModel(String hostId, String toolName, String connectorId) 
-        throws DomainNotLinkableException {
+        throws Exception {
         
         ModelToViewsTuple[] modelsToViews 
             = new ModelToViewsTuple[1];  

@@ -131,6 +131,7 @@
         <configuration>
           <instructions>
             <Delegation-Annotations>true</Delegation-Annotations>
+            <Provide-Models>true</Provide-Models> 
             <Domain-Name>oosourcecode</Domain-Name>
             <Domain-Interface>org.openengsb.domain.OOSourceCode.OOSourceCodeDomain</Domain-Interface>
             <DomainEvents-Interface>org.openengsb.domain.OOSourceCode.OOSourceCodeDomainEvents</DomainEvents-Interface>                        

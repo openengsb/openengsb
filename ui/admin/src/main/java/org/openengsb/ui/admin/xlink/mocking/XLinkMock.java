@@ -25,8 +25,9 @@ import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.security.AuthenticationContext;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.OOSourceCode.model.OOClass;
 import org.openengsb.domain.SQLCode.model.SQLCreate;
@@ -38,9 +39,12 @@ import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 public class XLinkMock {
     
     private OsgiUtilsService osgiService;
+    private AuthenticationContext authenticationContext;
 
-    public XLinkMock(OsgiUtilsService osgiService) {
+    public XLinkMock(OsgiUtilsService osgiService, 
+        AuthenticationContext authenticationContext) {
         this.osgiService = osgiService;
+        this.authenticationContext = authenticationContext;
     }
     
     public static final String SQLMODEL = SQLCreate.class.getName();
@@ -105,13 +109,18 @@ public class XLinkMock {
             List<Object> modelObjectsDestination, 
             String connectorToCall, 
             String viewToCall) throws OsgiServiceNotAvailableException, 
-            ClassCastException, OpenXLinkException {
+            ClassCastException, OpenXLinkException, DomainNotLinkableException {
         Object serviceObject = osgiService.getService("(service.pid=" + connectorToCall + ")", 100L);
         if (serviceObject == null) {
             throw new OpenXLinkException();
         }
-        LinkableDomain service = (LinkableDomain) serviceObject;
-        SecurityContext.login("admin", new Password("password"));
+        LinkableDomain service;
+        try {
+            service = (LinkableDomain) serviceObject;
+        } catch (Exception e) {
+            throw new DomainNotLinkableException();
+        } 
+        authenticationContext.login("admin", new Password("password"));
         service.openXLinks(modelObjectsDestination.toArray(), viewToCall);
     }
     

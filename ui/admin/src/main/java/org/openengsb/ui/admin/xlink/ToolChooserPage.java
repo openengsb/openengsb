@@ -48,6 +48,8 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.security.AuthenticationContext;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.common.util.ModelUtils;
@@ -73,6 +75,8 @@ public class ToolChooserPage extends WebPage {
     
     private ToolChooserLogic chooserLogic;
     private XLinkMock xLinkMock;
+    @PaxWicketBean(name = "authenticationContext")
+    private AuthenticationContext authenticationContext;
     
     private String contextId;
     private String modelId;
@@ -101,7 +105,7 @@ public class ToolChooserPage extends WebPage {
      */
     private void processPage() {
         chooserLogic = new ToolChooserLogic(serviceManager);
-        xLinkMock = new XLinkMock(serviceUtils);
+        xLinkMock = new XLinkMock(serviceUtils, authenticationContext);
         
         requestParameters = getRequestParametersAsAMap();
         HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
@@ -380,7 +384,7 @@ public class ToolChooserPage extends WebPage {
         } catch (OsgiServiceNotAvailableException ex) {             
             String errorMsg = new StringResourceModel("error.connectorNotFound", this, null).getString();
             handleErrorResponse(errorMsg);
-        } catch (ClassCastException ex) {
+        } catch (DomainNotLinkableException ex) {
             String errorMsg = new StringResourceModel("error.connectorNotLinkable", this, null).getString();
             handleErrorResponse(errorMsg);
         } catch (OpenXLinkException ex) {
