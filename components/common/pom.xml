@@ -81,7 +81,7 @@
         </includes>
       </resource>
     </resources>
-    <plugins>
+    <plugins>       
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>openjpa-maven-plugin</artifactId>
@@ -139,7 +139,7 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-    </dependency>
+    </dependency>  
     <dependency>
       <groupId>org.openengsb.framework.ekb</groupId>
       <artifactId>org.openengsb.framework.ekb.api</artifactId>

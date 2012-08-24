@@ -17,6 +17,7 @@
 
 package org.openengsb.core.test;
 
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 

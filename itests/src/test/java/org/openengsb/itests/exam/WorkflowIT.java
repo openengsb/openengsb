@@ -75,6 +75,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
             wasCalled = true;
             return new ExampleResponseModel();
         }
+
     }
 
     @Test

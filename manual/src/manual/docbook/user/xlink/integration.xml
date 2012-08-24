@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<chapter version="5.0"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
+    xml:id="xlink.implementation" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:ns="http://docbook.org/ns/docbook">
+    
+    <title>XLink with OpenEngSB</title>
+    
+    <section xml:id="implementation.registration">
+        <title>XLink registration for Connectors</title>
+        <para>For the XLink-registration of connectors (e.g. the tools) the following functions in
+            the class <emphasis role="bold">ConnectorManager</emphasis> are provided.</para>
+        <xi:include href="../../../../../../target/docbook/snippets/ConnectorManager.xml"/>
+        <ns:para>Every connector announces it´s participation in XLinking when he calls the
+            "connect" function. After the registration a XLinkTemplate is returned to the connector.
+            When shutting down or going idle, the connector must call a "disconnect".</ns:para>
+    </section>
+    <section xml:id="implementation.xlinkemplate">
+        <title>Contents of a XLinkTemplate</title>
+        <ns:para>The management and the assignation of XLinkTemplates to connectors will be done by
+            the <link xlink:href="#contributor.ekb">engineering knowledge base</link>
+            (ekb).</ns:para>
+        <ns:para>The attributes of the XLinkTemplate, which is a simple DTO, are the
+            following. <anchor xml:id="implementation.xlinkemplate.attributes"/></ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkTemplate.xml"/>
+        <ns:para>The attributes of the class XLinkRegisteredTools are the following.</ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTool.xml"/>
+    </section>
+    <section xml:id="implementation.xlinkprepare">
+        <title>Preparation of a XLinkTemplate</title>        
+        <ns:para>How a XLinkTemplate is prepared, <emphasis role="bold">before</emphasis> it is sent
+            to the connector, is demonstrated with the follwing Functions and JUnitTests. <anchor
+                xml:id="implementation.xlinkemplate.prepareUseCase"/> The used Constants or
+            Configurations can be found <link xlink:href="#implementation.configs"
+            >here</link>.</ns:para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsPrepareTemplate.xml"/>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestPrepareTemplate.xml"/>-->
+    </section>
+    <section xml:id="implementation.xlinkcreate">
+        <title>Generation of a XLink</title>   
+        <ns:para>How a valid XLink is generated is demonstrated with the follwing Functions and
+                JUnitTests.<anchor xml:id="implementation.xlinkemplate.generateUsecase"/> The used
+            Constants or Configurations can be found <link xlink:href="#implementation.configs"
+                >here</link>. Note that this is no XLink for local switching but for simple
+            extraction by actor. XLinks for local switching are explainded <link
+                xlink:href="#implementation.localswitch.information">below</link>.</ns:para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>-->
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrl.xml"/>-->
+    </section>
+    <section xml:id="implementation.openxlink">
+        <ns:title>Open Potential Matches in Tools</ns:title>
+        <ns:para>Matches in Tools are opened via the following function in the <emphasis role="bold"
+            >LinkableDomain</emphasis> interface.</ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/LinkableDomainOpenLinks.xml"/>
+    </section>
+    <section xml:id="implementation.localswitch.information">
+        <title>Local Switching Information Support</title>
+        <ns:para>The list of local running tools, that are currently registered for XLink, is
+            transfered to the connector while it´s registration, see <link
+                xlink:href="#implementation.xlinkemplate">above</link>. If the list changes the
+            following function, defined in the interface <emphasis role="bold"
+                >LinkableDomain</emphasis>, transferes this UpdateInformation as an Event to the
+            Connector. In this way every connector holds a correct list of all running tools on his
+            local machine, that participate in XLinking.</ns:para>
+        <xi:include href="../../../../../../target/docbook/snippets/LinkableDomainUpdateEvent.xml"/>
+    </section>    
+    <section xml:id="implementation.localswitch.creation">
+        <title>XLinks for Local Switching</title>
+        <para>The creation of XLinks for Local Switching is the same as explained above with the
+            amendment that they contain two additional Parameters containing the ConnectorId and the
+            ViewId. See the following JUnitTests for demonstration. The used Constants or
+            Configurations can be found <link xlink:href="#implementation.configs">here</link>. </para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrlForLocalSwitching.xml"/>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsGenerateValidXLinkUrl.xml"/>
+        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching.xml"/>-->
+    </section>
+    <section xml:id="implementation.configs">
+        <title>Testconfigurations and Constants</title>
+        <ns:para>This are the Configurations that are used in the JUnitTests above.</ns:para>
+        <ns:para>This configurations must be provided by a OpenEngSB client.</ns:para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByClient.xml"/>-->
+        <ns:para>This configurations must be provided by the OpenEngSB</ns:para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>-->
+        <ns:para>This are the Constants that are used in the Functions above.</ns:para>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>-->
+    </section>   
+    <section xml:id="implementation.httpservlet">
+        <title>Http-Servlet</title>
+        <ns:para>The user-interface will be implemented as http-servlet, which will be set ontop of
+            a http-service. The http-servlet url will be a standard url, the modelobject identifier
+            and other nessecary metadata will be transportet via GET parameters.</ns:para>
+    </section> 
+    <section xml:id="implementation.futurematter">
+        <title>Future Matter</title>
+        <ns:para>The following issues and problems are not yet resoveld in this concept but are future
+            matter.</ns:para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>The part of the ekb that takes care of the transformation, referred as
+                        'mapper', which does the transformations between the model´s identifiers is
+                        yet to be implemented. <link
+                            xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2776">(see
+                            on Jira)</link></para>
+                    <ns:para>When completed, the mapper will be explainded <link
+                            xlink:href="#xlink.openengsb.model.transformation">here</link>.</ns:para>
+                </listitem>
+                <listitem>
+                    <para>The identification of a certain host during a call to the registry´s
+                        http-servlet is done via the IP of the http-request. This makes the use of
+                        proxies impossible. Therefore an alternative host identification technique
+                        must be provided <link
+                            xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2777">(see
+                            on Jira)</link>.</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </section>
+</chapter>

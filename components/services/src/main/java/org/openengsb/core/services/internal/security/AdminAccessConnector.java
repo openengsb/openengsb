@@ -18,6 +18,7 @@ package org.openengsb.core.services.internal.security;
 
 import java.util.Collection;
 
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
@@ -70,5 +71,6 @@ public class AdminAccessConnector extends AbstractOpenEngSBService implements Au
     public AliveState getAliveState() {
         return AliveState.ONLINE;
     }
+
 
 }

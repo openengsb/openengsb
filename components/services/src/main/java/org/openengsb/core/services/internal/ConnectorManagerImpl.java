@@ -36,6 +36,10 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
+import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
+import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -253,6 +257,26 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     public void setRegistrationManager(ConnectorRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
+    }
+
+    @Override
+    public void disconnectFromXLink(String id, String hostId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<RemoteToolRegistration> getXLinkRegistration(String hostId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public XLinkTemplate connectToXLink(
+            String id, 
+            String hostId, 
+            String toolName, 
+            ModelToViewsTuple[] modelsToViews) 
+        throws DomainNotLinkableException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

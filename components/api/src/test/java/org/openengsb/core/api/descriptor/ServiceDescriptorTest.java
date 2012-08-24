@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.descriptor;
 
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -108,6 +109,7 @@ public class ServiceDescriptorTest {
             return null;
         }
 
+
     }
 
     public class DomainImpl implements Domain {
@@ -120,6 +122,7 @@ public class ServiceDescriptorTest {
         public String getInstanceId() {
             return null;
         }
+
     }
 
 }
