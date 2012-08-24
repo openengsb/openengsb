@@ -57,7 +57,7 @@ public interface EngineeringDatabaseService {
     /**
      * Retrieve the history of an object with a specified OID between a specified range of timestamps (inclusive).
      */
-    List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException;
+    List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to) throws EDBException;
 
     /**
      * Get the Log for an object between two timestamps (inclusive).
@@ -73,12 +73,12 @@ public interface EngineeringDatabaseService {
     /**
      * Convenience function to query for a single key-value pair in the current state.
      */
-    List<EDBObject> query(String key, Object value) throws EDBException;
+    List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException;
 
     /**
      * More general query for an object in the current state with the provided key-value pairs.
      */
-    List<EDBObject> query(Map<String, Object> query) throws EDBException;
+    List<EDBObject> queryByMap(Map<String, Object> query) throws EDBException;
 
     /**
      * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
@@ -89,7 +89,7 @@ public interface EngineeringDatabaseService {
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
      */
-    List<EDBCommit> getCommits(String key, Object value) throws EDBException;
+    List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException;
 
     /**
      * More general query for a commit, with AND-connected key-value pairs to match.
@@ -105,7 +105,7 @@ public interface EngineeringDatabaseService {
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
      */
-    EDBCommit getLastCommit(String key, Object value) throws EDBException;
+    EDBCommit getLastCommitByKeyValue(String key, Object value) throws EDBException;
 
     /**
      * More general query for the last commit, with AND-connected key-value pairs to match.
@@ -130,7 +130,8 @@ public interface EngineeringDatabaseService {
     /**
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
-    List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
+    List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException;
+    
     /**
      * Tries to persist the changes given by the EDBObjects in one commit. Does also the conflict checking of the
      * objects.

@@ -41,20 +41,10 @@ public interface QueryInterface {
     <T> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to);
 
     /**
-     * Queries for models which have a OpenEngSBModelEntry with the given key and the given value saved
-     */
-    <T> List<T> queryForModels(Class<T> model, String key, Object value);
-
-    /**
-     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
-     */
-    <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap);
-
-    /**
      * Queries for models which have all key/value pairs given by the query saved in the OpenEngSBModelEntries for a
      * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
-    <T> List<T> queryForModels(Class<T> model, String query, String timestamp);
+    <T> List<T> queryForModelsAtTimestamp(Class<T> model, String query, String timestamp);
 
     /**
      * Queries for the most actual models which have all key/value pairs given by the query saved in the
@@ -66,13 +56,18 @@ public interface QueryInterface {
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a given
      * timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
-    <T> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+    <T> List<T> queryForModelsByQueryMapAtTimestamp(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+    
+    /**
+     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
+     */
+    <T> List<T> queryForModelsByQueryMap(Class<T> model, Map<String, Object> queryMap);
 
     /**
      * Queries for active models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries.
      * Active models mean models which are in the newest version.
      */
-    <T> List<T> queryForActiveModels(Class<T> model, Map<String, Object> queryMap);
+    <T> List<T> queryForActiveModelsByQueryMap(Class<T> model, Map<String, Object> queryMap);
 
     /**
      * Queries for active models of the given model type. Active models mean models which are in the newest version.

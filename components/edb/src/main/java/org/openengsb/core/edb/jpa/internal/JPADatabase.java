@@ -254,7 +254,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
+    public List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid {} from "
                 + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
         List<JPAObject> objects = dao.getJPAObjectHistory(oid, from, to);
@@ -265,7 +265,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     public List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading the log of JPAObject with the oid {} from "
                 + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
-        List<EDBObject> history = getHistory(oid, from, to);
+        List<EDBObject> history = getHistoryForTimeRange(oid, from, to);
         List<JPACommit> commits = dao.getJPACommit(oid, from, to);
         if (history.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
@@ -302,15 +302,15 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public List<EDBObject> query(String key, Object value) throws EDBException {
+    public List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException {
         LOGGER.debug("query for objects with key = {} and value = {}", key, value);
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
-        return query(queryMap);
+        return queryByMap(queryMap);
     }
 
     @Override
-    public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
+    public List<EDBObject> queryByMap(Map<String, Object> queryMap) throws EDBException {
         try {
             return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
         } catch (Exception ex) {
@@ -328,7 +328,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public List<EDBCommit> getCommits(String key, Object value) throws EDBException {
+    public List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException {
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
         return getCommits(queryMap);
@@ -341,7 +341,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public JPACommit getLastCommit(String key, Object value) throws EDBException {
+    public JPACommit getLastCommitByKeyValue(String key, Object value) throws EDBException {
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
         return getLastCommit(queryMap);
@@ -385,7 +385,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException {
+    public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException {
         Map<String, Object> query = new HashMap<String, Object>();
         query.put(key, value);
         return getStateOfLastCommitMatching(query);

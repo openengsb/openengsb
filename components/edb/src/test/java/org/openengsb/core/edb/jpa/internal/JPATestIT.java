@@ -105,8 +105,8 @@ public class JPATestIT {
 
         long time = db.commit(ci);
 
-        List<EDBCommit> commits1 = db.getCommits("context", "Testcontext");
-        List<EDBCommit> commits2 = db.getCommits("context", "DoesNotExist");
+        List<EDBCommit> commits1 = db.getCommitsByKeyValue("context", "Testcontext");
+        List<EDBCommit> commits2 = db.getCommitsByKeyValue("context", "DoesNotExist");
 
         assertThat(commits1.size(), is(1));
         assertThat(commits2.size(), is(0));
@@ -267,21 +267,21 @@ public class JPATestIT {
         ci.insert(v1);
         long time2 = db.commit(ci);
 
-        List<EDBObject> list1 = db.query("A", "B");
-        List<EDBObject> list2 = db.query(new HashMap<String, Object>() {
+        List<EDBObject> list1 = db.queryByKeyValue("A", "B");
+        List<EDBObject> list2 = db.queryByMap(new HashMap<String, Object>() {
             {
                 put("A", "B");
                 put("Dog", "Food");
             }
         });
 
-        List<EDBObject> list3 = db.query(new HashMap<String, Object>() {
+        List<EDBObject> list3 = db.queryByMap(new HashMap<String, Object>() {
             {
                 put("Cow", "Milk");
             }
         });
 
-        List<EDBObject> list4 = db.query(new HashMap<String, Object>() {
+        List<EDBObject> list4 = db.queryByMap(new HashMap<String, Object>() {
             {
                 put("A", "B");
                 put("Cow", "Milk");
