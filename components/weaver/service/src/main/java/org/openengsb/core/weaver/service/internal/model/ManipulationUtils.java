@@ -193,7 +193,7 @@ public final class ManipulationUtils {
         CtMethod method = new CtMethod(CtClass.voidType, "addOpenEngSBModelEntry", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called addOpenEngSBModelEntry"));
-        builder.append("if ($1 != null) { openEngSBModelTail.put($1.getKey(), $1);}");
+        builder.append("if ($1 != null) { ").append(TAIL_FIELD).append(".put($1.getKey(), $1);}");
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
@@ -207,7 +207,7 @@ public final class ManipulationUtils {
         CtMethod method = new CtMethod(CtClass.voidType, "removeOpenEngSBModelEntry", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called removeOpenEngSBModelEntry"));
-        builder.append("if ($1 != null) { openEngSBModelTail.remove($1);}");
+        builder.append("if ($1 != null) { ").append(TAIL_FIELD).append(".remove($1);}");
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
@@ -327,14 +327,14 @@ public final class ManipulationUtils {
         newFunc.setBody("{ " + setterName + "($1.returnFile());\n }");
         clazz.addMethod(newFunc);
     }
-    
+
     /**
      * Returns the string which represents a logger tracing call with the given message
      */
     private static String createTrace(String message) {
         return String.format("%s.trace(\"%s\");\n", LOGGER_FIELD, message);
     }
-    
+
     /**
      * Wraps a body string with a beginning and ending braces
      */
