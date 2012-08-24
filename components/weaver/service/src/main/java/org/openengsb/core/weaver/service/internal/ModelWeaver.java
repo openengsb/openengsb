@@ -53,6 +53,7 @@ public class ModelWeaver implements WeavingHook {
             byte[] result = doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader());
             if (result != null) {
                 wovenClass.getDynamicImports().add("org.openengsb.core.api.model");
+                wovenClass.getDynamicImports().add("org.slf4j");
                 wovenClass.setBytes(result);
             }
             LOGGER.trace("finished enhancing {}", className);
@@ -67,5 +68,4 @@ public class ModelWeaver implements WeavingHook {
         CannotCompileException {
         return ManipulationUtils.enhanceModel(wovenClass, loaders);
     }
-
 }
