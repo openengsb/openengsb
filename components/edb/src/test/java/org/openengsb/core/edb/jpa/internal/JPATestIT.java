@@ -37,6 +37,7 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -507,6 +508,7 @@ public class JPATestIT {
         List<EDBObject> result = db.query(map, System.currentTimeMillis());
         assertThat(result.size(), is(1));
     }
+
 
     @Test
     public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {

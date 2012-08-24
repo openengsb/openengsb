@@ -77,6 +77,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
+
     }
 
     @Test

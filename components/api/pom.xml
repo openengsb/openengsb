@@ -84,6 +84,23 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>
+              <targetPath>${project.basedir}/../../target/docbook/snippets</targetPath>
+            </configuration>
+          </execution>  
+        </executions>
+      </plugin>        
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -167,7 +184,7 @@
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
-   </dependencies>
+  </dependencies>
 
 </project>
 

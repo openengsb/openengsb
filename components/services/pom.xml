@@ -134,6 +134,64 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>                
+              <targetPath>${project.basedir}/../../target/docbook/snippets</targetPath>
+            </configuration>
+          </execution> 
+        </executions>          
+      </plugin>         
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.framework</groupId>
+                  <artifactId>org.openengsb.framework.weaver.service</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <classifier>agent</classifier>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>model-agent.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>
+            -javaagent:"${project.build.directory}/model-agent.jar"
+          </argLine>
+          <useSystemClassloader>true</useSystemClassloader>
+        </configuration>
+      </plugin>     
     </plugins>
   </build>
 
@@ -157,7 +215,11 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.api</artifactId>       
+    </dependency>
+    
     <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.usernamepassword</artifactId>

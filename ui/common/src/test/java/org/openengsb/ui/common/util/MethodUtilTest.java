@@ -85,10 +85,12 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
+
         @Override
         public void commitModel(DummyModel model) {
 
         }
+
     }
 
     public interface TestInterface2 extends Domain {
@@ -129,6 +131,7 @@ public class MethodUtilTest {
         public void commitModel(DummyModel model) {
 
         }
+
     }
 
     public static enum TestEnum {

@@ -19,6 +19,7 @@ package org.openengsb.connector.wicketacl.internal;
 
 import java.util.Collection;
 
+
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;

@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api;
 
+
 import org.openengsb.core.api.security.annotation.Authenticated;
 
 /**
@@ -26,7 +27,7 @@ public interface Domain extends OpenEngSBService {
 
     /**
      * return the current state of the service,
-     *
+     * 
      * @see org.openengsb.core.api.AliveState
      */
     @Authenticated

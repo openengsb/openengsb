@@ -100,6 +100,7 @@ public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrat
             });
         }
 
+
     }
 
     @Override

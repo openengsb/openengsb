@@ -17,6 +17,7 @@
 
 package test;
 
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.domain.example.ExampleDomain;
@@ -82,5 +83,6 @@ class ExampleConnector implements ExampleDomain, Connector {
         response.setResult("success");
         return response;
     }
+
 
 }
