@@ -19,8 +19,10 @@ package org.openengsb.core.api.model;
 
 import java.io.File;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * This model object purpose is a pre-defined possibility to send Files to domains/connectors. The id is optional and
@@ -28,6 +30,7 @@ import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
  * model get persisted and no id is set, the EDB use a generated one. See details about that in the manual.
  */
 @Model
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public class OpenEngSBFileModel {
     @OpenEngSBModelId
     private String id;

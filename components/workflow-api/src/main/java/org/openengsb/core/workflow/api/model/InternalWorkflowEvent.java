@@ -17,12 +17,17 @@
 
 package org.openengsb.core.workflow.api.model;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
 
 /**
  * This event is used for internal workflow control actions like the completion of a human task. It contains a workflows
  * ProcessBag.
  */
+@Model
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public class InternalWorkflowEvent extends Event {
     private ProcessBag processBag;
 
