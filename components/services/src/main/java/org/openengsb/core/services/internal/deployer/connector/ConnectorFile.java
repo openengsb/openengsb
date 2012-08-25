@@ -37,7 +37,6 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
@@ -142,22 +141,22 @@ public class ConnectorFile {
     }
 
     private ImmutableMap<String, String> readProperties(File file) {
-        Properties props = new Properties();
-        FileReader reader;
+        FileReader reader = null;
         try {
             reader = new FileReader(file);
+            Properties props = new Properties();
+            props.load(reader);
+            Map<String, String> map = Maps.fromProperties(props);
+            Map<String, String> transformedMap = Maps.transformValues(map, new TrimFunction<String, String>());
+            return ImmutableMap.copyOf(transformedMap);
+
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
-        }
-        try {
-            props.load(reader);
-            Collections2.transform(props.values(), new TrimFunction<Object, String>());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        return Maps.fromProperties(props);
     }
 
     private ImmutableMap<String, String> getFilteredEntries(Map<String, String> propertyMap, final String prefix) {
