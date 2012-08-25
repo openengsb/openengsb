@@ -73,7 +73,8 @@ public final class MethodUtil {
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 if (propertyDescriptor.getWriteMethod() == null
-                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
+                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers()) 
+                        || propertyDescriptor.getName().equals("openEngSBModelTail")) {
                     continue;
                 }
                 Builder builder =
