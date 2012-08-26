@@ -262,7 +262,7 @@ public final class ManipulationUtils {
     }
 
     /**
-     * Generates the list of OpenEngSBModelEntries which need to be added. Also adds the entries of the superclasses.
+     * Generates the list of OpenEngSBModelEntries which need to be added. Also adds the entries of the super classes.
      */
     private static String createModelEntryList(CtClass clazz) throws NotFoundException, CannotCompileException {
         StringBuilder builder = new StringBuilder();
@@ -308,7 +308,7 @@ public final class ManipulationUtils {
             String wrapperName = primitiveType.getWrapperName();
             builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
             builder.append(wrapperName).append(".valueOf(").append(getPropertyGetter(property, wrapperName));
-            builder.append("), ").append(primitiveType.getWrapperName()).append(".class));\n");
+            builder.append("), ").append(wrapperName).append(".class));\n");
         } else {
             builder.append(createTrace(String.format("Handle property %s", property)));
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
