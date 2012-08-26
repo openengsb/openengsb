@@ -29,6 +29,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.IgnoredModelField;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ import javassist.NotFoundException;
  */
 public final class ManipulationUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManipulationUtils.class);
-    private static final String TAIL_FIELD = "openEngSBModelTail";
+    private static final String TAIL_FIELD = ModelUtils.MODEL_TAIL_FIELD_NAME;
     private static final String LOGGER_FIELD = "_INTERNAL_LOGGER";
     private static ClassPool cp = ClassPool.getDefault();
     private static boolean initiated = false;

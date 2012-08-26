@@ -39,6 +39,7 @@ import com.google.common.collect.Lists;
  */
 public final class ModelUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtils.class);
+    public static final String MODEL_TAIL_FIELD_NAME = "openEngSBModelTail"; 
 
     private ModelUtils() {
     }

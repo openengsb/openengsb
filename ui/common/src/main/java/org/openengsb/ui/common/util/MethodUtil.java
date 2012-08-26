@@ -40,6 +40,7 @@ import java.util.Map;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public final class MethodUtil {
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 if (propertyDescriptor.getWriteMethod() == null
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers()) 
-                        || propertyDescriptor.getName().equals("openEngSBModelTail")) {
+                        || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
                     continue;
                 }
                 Builder builder =
