@@ -250,18 +250,31 @@ public final class ManipulationUtils {
         builder.append("List elements = new ArrayList();\n");
         builder.append("elements.addAll(").append(TAIL_FIELD).append(".values());\n");
         builder.append(createTrace("Add properties of the model"));
-        for (CtField field : clazz.getDeclaredFields()) {
-            String property = field.getName();
-            if (property.equals(TAIL_FIELD) || property.equals(LOGGER_FIELD)
-                    || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
-                builder.append(createTrace(String.format("Skip property %s of the model", property)));
-                continue;
-            }
-            builder.append(handleField(field, clazz));
-        }
+        builder.append(createModelEntryList(clazz));
         builder.append("return elements;");
         m.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(m);
+    }
+
+    /**
+     * Generates the list of OpenEngSBModelEntries which need to be added. Also adds the entries of the superclasses.
+     */
+    private static String createModelEntryList(CtClass clazz) throws NotFoundException, CannotCompileException {
+        StringBuilder builder = new StringBuilder();
+        CtClass tempClass = clazz;
+        while (tempClass != null) {
+            for (CtField field : tempClass.getDeclaredFields()) {
+                String property = field.getName();
+                if (property.equals(TAIL_FIELD) || property.equals(LOGGER_FIELD)
+                        || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
+                    builder.append(createTrace(String.format("Skip property %s of the model", property)));
+                    continue;
+                }
+                builder.append(handleField(field, clazz));
+            }
+            tempClass = tempClass.getSuperclass();
+        }
+        return builder.toString();
     }
 
     /**
@@ -289,15 +302,26 @@ public final class ManipulationUtils {
             CtPrimitiveType primitiveType = (CtPrimitiveType) fieldType;
             String wrapperName = primitiveType.getWrapperName();
             builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
-            builder.append(wrapperName).append(".valueOf(").append(property).append("), ");
-            builder.append(primitiveType.getWrapperName()).append(".class));\n");
+            builder.append(wrapperName).append(".valueOf(").append(getPropertyGetter(property, wrapperName));
+            builder.append("), ").append(primitiveType.getWrapperName()).append(".class));\n");
         } else {
             builder.append(createTrace(String.format("Handle property %s", property)));
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
-            builder.append(property).append("\", ").append(property).append(", ").append(fieldType.getName());
-            builder.append(".class));\n");
+            builder.append(property).append("\", ").append(getPropertyGetter(property, fieldType.getName()));
+            builder.append(", ").append(fieldType.getName()).append(".class));\n");
         }
         return builder.toString();
+    }
+
+    /**
+     * Returns the name of the corresponding getter to a properties name and type.
+     */
+    private static String getPropertyGetter(String property, String type) {
+        if (type.equals("java.lang.Boolean")) {
+            return String.format("is%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
+        } else {
+            return String.format("get%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
+        }
     }
 
     /**
