@@ -218,12 +218,16 @@ public final class ManipulationUtils {
      */
     private static void addRetrieveInternalModelId(CtClass clazz) throws NotFoundException,
         CannotCompileException {
-        String modelIdField = null;
-        for (CtField field : clazz.getDeclaredFields()) {
-            if (JavassistUtils.hasAnnotation(field, OpenEngSBModelId.class.getName())) {
-                modelIdField = field.getName();
-                break;
+        CtField modelIdField = null;
+        CtClass temp = clazz;
+        while (temp != null) {
+            for (CtField field : temp.getDeclaredFields()) {
+                if (JavassistUtils.hasAnnotation(field, OpenEngSBModelId.class.getName())) {
+                    modelIdField = field;
+                    break;
+                }
             }
+            temp = temp.getSuperclass();
         }
         CtClass[] params = generateClassField();
         CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
@@ -232,7 +236,8 @@ public final class ManipulationUtils {
         if (modelIdField == null) {
             builder.append("return null;");
         } else {
-            builder.append(String.format("return %s;", modelIdField));
+            builder.append(String.format("return %s;",
+                getPropertyGetter(modelIdField.getName(), modelIdField.getType().getName())));
         }
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);

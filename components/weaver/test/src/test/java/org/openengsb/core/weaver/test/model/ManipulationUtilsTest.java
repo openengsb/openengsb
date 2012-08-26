@@ -152,6 +152,7 @@ public class ManipulationUtilsTest {
         assertThat((String) getEntryByName(entries, "id"), is("testId"));
         assertThat((String) getEntryByName(entries, "name"), is("testName"));
         assertThat((String) getEntryByName(entries, "child"), is("testChild"));
+        assertThat((String) ModelUtils.getInternalModelId(model), is("testId"));
     }
 
     private Object getEntryByName(List<OpenEngSBModelEntry> entries, String property) {
