@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.services.internal.deployer.connector;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,10 +29,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.openengsb.core.services.internal.deployer.connector.ConnectorFile;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 
-public class ConfigFileTest {
+public class ConnectorFileTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -65,6 +64,19 @@ public class ConfigFileTest {
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
         String[] values = (String[]) fileObject.getProperties().get("foo");
         assertThat(Arrays.asList(values), hasItems("bar", "42"));
+    }
+
+    @Test
+    public void testInitialzeWithUntrimedProperties_shouldTrimProperties() throws Exception {
+        FileUtils.writeLines(connectorFile, Arrays.asList(
+            "domainType=d   ",
+            "connectorType=c   ",
+            "property.foo=   bar  ",
+            "attribute.test=  42  "));
+        ConnectorFile fileObject = new ConnectorFile(connectorFile);
+        assertThat(fileObject.getName().equals("d+c+my"), is(true));
+        assertThat((String) fileObject.getProperties().get("foo"), is("bar"));
+        assertThat(fileObject.getAttributes().get("test"), is("42"));
     }
 
     @Test
