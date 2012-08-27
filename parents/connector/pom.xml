@@ -19,10 +19,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-bundle-settings</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../bundle</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -52,6 +52,11 @@
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
+  <properties>
+    <manual.builder.resources.version>1.0.0</manual.builder.resources.version>
+    <assembly.builder.resources.version>1.0.0</assembly.builder.resources.version>
+  </properties>
+  
   <build>
     <resources>
       <resource>
@@ -131,10 +136,12 @@
                   <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-manual-builder-resources</artifactId>
                   <outputDirectory>${project.build.directory}/manual-resources</outputDirectory>
+                  <version>${manual.builder.resources.version}</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-assembly-builder-resources</artifactId>
+                  <version>${assembly.builder.resources.version}</version>
                   <outputDirectory>${project.build.directory}/assembly-resources</outputDirectory>
                 </artifactItem>
               </artifactItems>
