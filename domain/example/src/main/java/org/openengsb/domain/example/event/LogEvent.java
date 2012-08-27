@@ -17,8 +17,13 @@
 
 package org.openengsb.domain.example.event;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Model
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public class LogEvent extends Event {
 
     private String message;

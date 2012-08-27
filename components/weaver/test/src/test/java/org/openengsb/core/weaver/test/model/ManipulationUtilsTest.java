@@ -141,6 +141,19 @@ public class ManipulationUtilsTest {
         assertThat(model.getValue2(), is(42L));
         assertThat(model.isValue3(), is(true));
     }
+    
+    @Test
+    public void testIfSuperModelsSupportWork_shouldWork() throws Exception {
+        ChildModel model = new ChildModel();
+        model.setId("testId");
+        model.setName("testName");
+        model.setChild("testChild");
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        assertThat((String) getEntryByName(entries, "id"), is("testId"));
+        assertThat((String) getEntryByName(entries, "name"), is("testName"));
+        assertThat((String) getEntryByName(entries, "child"), is("testChild"));
+        assertThat((String) ModelUtils.getInternalModelId(model), is("testId"));
+    }
 
     private Object getEntryByName(List<OpenEngSBModelEntry> entries, String property) {
         for (OpenEngSBModelEntry entry : entries) {

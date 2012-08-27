@@ -15,11 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.weaver.test.model;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
-public class NullEvent extends Event {
+public class SuperModel {
+    @OpenEngSBModelId
+    private String id;
+    private String name;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

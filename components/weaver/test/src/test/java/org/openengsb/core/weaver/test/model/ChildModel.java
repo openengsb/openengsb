@@ -14,12 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.weaver.test.model;
 
-package org.openengsb.core.test;
-
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.model.annotation.Model;
 
 @Model
-public class NullEvent extends Event {
+public class ChildModel extends SuperModel {
+    private String child;
+
+    public String getChild() {
+        return child;
+    }
+
+    public void setChild(String child) {
+        this.child = child;
+    }
 }
