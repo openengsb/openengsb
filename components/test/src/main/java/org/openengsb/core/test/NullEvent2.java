@@ -18,7 +18,9 @@
 package org.openengsb.core.test;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.model.annotation.Model;
 
+@Model
 public class NullEvent2 extends Event {
     private Object testProperty;
 

@@ -25,7 +25,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
+
 @XmlRootElement
+@Model
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public class Event {
     private String name;
     private Long processId;

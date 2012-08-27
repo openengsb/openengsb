@@ -157,6 +157,12 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>0.1.0</version>
+      <scope>provided</scope>
+    </dependency>
     <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.drools</groupId>

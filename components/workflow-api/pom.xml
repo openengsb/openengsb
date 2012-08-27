@@ -82,6 +82,11 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Provide-Models>true</Provide-Models>
+          </instructions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.axis2</groupId>
@@ -142,6 +147,12 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>0.1.0</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>

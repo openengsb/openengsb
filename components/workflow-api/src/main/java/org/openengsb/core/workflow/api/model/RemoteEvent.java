@@ -22,9 +22,14 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
 
 @XmlRootElement
+@Model
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 public class RemoteEvent extends Event {
     private String className;
     private Map<String, String> nestedEventProperties = new HashMap<String, String>();
