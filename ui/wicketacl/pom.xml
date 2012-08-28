@@ -31,7 +31,8 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.wicketacl</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.wicketacl</bundle.namespace>
-
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
     <labs.delegation.version>0.1.0</labs.delegation.version>
   </properties>
 

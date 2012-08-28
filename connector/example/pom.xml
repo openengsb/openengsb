@@ -29,6 +29,8 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.example</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.example</bundle.namespace>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

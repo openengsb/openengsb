@@ -31,6 +31,8 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
   </properties>
 
   <groupId>org.openengsb.connector</groupId>

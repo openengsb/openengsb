@@ -31,6 +31,8 @@
     <bundle.symbolicName>org.openengsb.connector.usernamepassword</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.usernamepassword</bundle.namespace>
     <labs.delegation.version>0.1.0</labs.delegation.version>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
