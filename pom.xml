@@ -1300,8 +1300,6 @@
   </dependencyManagement>
 
   <modules>
-    <!-- OpenEngsB Parent Poms -->
-    <module>parents/connector</module>
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->

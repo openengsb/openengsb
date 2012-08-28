@@ -22,7 +22,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
@@ -31,6 +30,7 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.usernamepassword</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.usernamepassword</bundle.namespace>
+    <labs.delegation.version>0.1.0</labs.delegation.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -118,6 +118,7 @@
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>${labs.delegation.version}</version>
     </dependency>      
 
     <!-- OpenEngSB Domain References -->
