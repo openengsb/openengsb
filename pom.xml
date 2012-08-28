@@ -1301,7 +1301,6 @@
 
   <modules>
     <!-- OpenEngsB Parent Poms -->
-    <module>parents/domain</module>
     <module>parents/connector</module>
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
