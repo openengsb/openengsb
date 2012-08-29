@@ -73,6 +73,12 @@
     <openengsb.version.max>4</openengsb.version.max>
     <openengsb.version.range>[${openengsb.version.min},${openengsb.version.max})</openengsb.version.range>
 
+    <openengsb.api.version>3.0.0-SNAPSHOT</openengsb.api.version>
+    <openengsb.api.workflow.version>3.0.0-SNAPSHOT</openengsb.api.workflow.version>
+    <openengsb.api.edb.version>3.0.0-SNAPSHOT</openengsb.api.edb.version>
+    <openengsb.api.ekb.version>3.0.0-SNAPSHOT</openengsb.api.ekb.version>
+    <openengsb.api.ui.version>3.0.0-SNAPSHOT</openengsb.api.ui.version>
+
     <!-- Component Versions -->
     <osgi.compendium.version>4.2.0</osgi.compendium.version>
 
@@ -1163,27 +1169,22 @@
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.api</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.api.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework.workflow</groupId>
         <artifactId>org.openengsb.framework.workflow.api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.framework.workflow</groupId>
-        <artifactId>org.openengsb.framework.workflow.api</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.api.workflow.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework.edb</groupId>
         <artifactId>org.openengsb.framework.edb.api</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.api.edb.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework.ekb</groupId>
         <artifactId>org.openengsb.framework.ekb.api</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.api.ekb.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework.workflow</groupId>
@@ -1239,7 +1240,7 @@
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>org.openengsb.ui.api</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.api.ui.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
