@@ -1338,7 +1338,6 @@
     <!-- OpenEngSB Port Modules -->
     <module>ports/jms</module>
     <module>ports/ws</module>
-    <module>ui/api</module>
     <module>ui/common</module>
     <module>ui/admin</module>
     <module>ui/wicketacl</module>
