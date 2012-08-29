@@ -72,7 +72,9 @@ import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -512,69 +514,5 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             "property.foo=bar3", "attribute.x=original-file-value"));
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar3)"), not(nullValue()));
-    }
-
-    @Test
-    public void testUpdateWhenPreviousUpdateIsNotFinished_shouldWait() throws Exception {
-        ConnectorManager spy2 = spy(serviceManager);
-        connectorDeployerService.setServiceManager(spy2);
-
-        // responsible for making update-calls slow in a way so we can control, when it is actually done.
-        final Semaphore slowingSemaphore = new Semaphore(0);
-        doAnswer(new Answer<Object>() { // delay the first invocation
-                @Override
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    slowingSemaphore.acquire();
-                    return invocation.callRealMethod();
-                }
-            }).doAnswer(new Answer<Object>() { // just forward all subsequent invocations
-                @Override
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    return invocation.callRealMethod();
-                }
-            })
-            .when(spy2).update(anyString(), any(ConnectorDescription.class));
-        final File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
-            "property.foo=bar", "attribute.x=original-file-value"));
-        connectorDeployerService.install(connectorFile);
-
-        final AtomicReference<Exception> thrown = new AtomicReference<Exception>();
-        Runnable updateTask = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    connectorDeployerService.update(connectorFile);
-                } catch (Exception e) {
-                    thrown.set(e);
-                }
-            }
-        };
-
-        Thread t1 = new Thread(updateTask);
-        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
-            "property.foo=bar2", "property.foo2=bar"));
-        t1.start();
-
-        Thread t2 = new Thread(updateTask);
-        FileUtils.writeLines(connectorFile, Arrays.asList("domainType=mydomain", "connectorType=aconnector",
-            "property.foo=bar3", "attribute.x=original-file-value"));
-        t2.start();
-
-        Thread.sleep(500); // give t2 some time to try stuff. If it is not done, the worst that could happen is that the
-                           // test does not fail even if it should.
-        while (slowingSemaphore.availablePermits() > 0) {
-            // busy-wait for the semaphore to be acquired
-            Thread.yield();
-        }
-
-        slowingSemaphore.release();
-        t1.join();
-        t2.join();
-        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar3)"), not(nullValue()));
-        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo2=bar)"), nullValue());
-        if (thrown.get() != null) {
-            throw thrown.get();
-        }
     }
 }
