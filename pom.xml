@@ -1306,7 +1306,6 @@
     <!-- OpenEngSB Framework Modules -->
     <module>components/edb-api</module>
     <module>components/ekb/api</module>
-    <module>components/workflow-api</module>
     <module>components/test</module>
     <module>components/common</module>
     <module>components/weaver/service</module>
