@@ -27,18 +27,6 @@
     <version>34-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <bundle.symbolicName>org.openengsb.framework.api</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.api</bundle.namespace>
-    <guava.version>11.0.2</guava.version>
-    <org.osgi.core.version>3.0.0-SNAPSHOT</org.osgi.core.version>
-    <commons.lang.version>2.6</commons.lang.version>
-    <commons.io.version>2.1</commons.io.version>
-    <hamcrest.version>1.1</hamcrest.version>
-    <junit.version>4.8.2</junit.version>
-    <mockito.version>1.8.5</mockito.version>
-  </properties>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.api</artifactId>
