@@ -17,17 +17,17 @@
 package org.openengsb.core.services.internal.security.model;
 
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-
-import org.openengsb.core.common.AbstractDataRow;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
@@ -44,7 +44,11 @@ import com.google.common.collect.Maps;
 @SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class BeanData extends AbstractDataRow {
+public abstract class BeanData {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "type", nullable = false)
     private String type;
@@ -59,6 +63,14 @@ public abstract class BeanData extends AbstractDataRow {
     }
 
     public BeanData() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {
