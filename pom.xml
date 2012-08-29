@@ -78,6 +78,7 @@
     <openengsb.api.edb.version>3.0.0-SNAPSHOT</openengsb.api.edb.version>
     <openengsb.api.ekb.version>3.0.0-SNAPSHOT</openengsb.api.ekb.version>
     <openengsb.api.ui.version>3.0.0-SNAPSHOT</openengsb.api.ui.version>
+    <openengsb.test.version>3.0.0-SNAPSHOT</openengsb.test.version>
 
     <!-- Component Versions -->
     <osgi.compendium.version>4.2.0</osgi.compendium.version>
@@ -1224,7 +1225,7 @@
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.test</artifactId>
-        <version>${project.version}</version>
+        <version>${openengsb.test.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1304,7 +1305,6 @@
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->
-    <module>components/test</module>
     <module>components/common</module>
     <module>components/weaver/service</module>
     <module>components/weaver/test</module>
