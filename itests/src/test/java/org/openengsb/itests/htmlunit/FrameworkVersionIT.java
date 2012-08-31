@@ -18,7 +18,6 @@
 package org.openengsb.itests.htmlunit;
 
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.io.File;
@@ -40,16 +39,14 @@ import org.osgi.framework.Bundle;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper
-{
+public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper {
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
     private WebClient webClient;
     private String versionPageUrl;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         webClient = new WebClient();
         String httpport = getConfigProperty("org.ops4j.pax.web",
             "org.osgi.service.http.port");
@@ -59,23 +56,20 @@ public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         webClient.closeAllWindows();
         FileUtils.deleteDirectory(new File(getWorkingDirectory()));
     }
 
     @Test
-    public void testIfVersionReturnedByInfoPackageMatchesFrameworkVersion_shouldWork() throws Exception
-    {
+    public void testIfVersionReturnedByInfoPackageMatchesFrameworkVersion_shouldWork() throws Exception {
         String versionOfBundleReturnedOnPage = getVersionReturnedByWebpage();
         String versionOfBundleItself = getBundleVersion();
 
         assertThat(versionOfBundleReturnedOnPage, equalTo(versionOfBundleItself));
     }
 
-    private String getBundleVersion()
-    {
+    private String getBundleVersion() {
         Bundle[] bundles = getBundleContext().getBundles();
 
         for (int i = 0; i < bundles.length; i++)
@@ -88,11 +82,10 @@ public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper
 
         return null;
     }
-    
-    private String getVersionReturnedByWebpage() throws Exception
-    {
+
+    private String getVersionReturnedByWebpage() throws Exception {
         TextPage versionInfoPage = webClient.getPage(versionPageUrl);
-        
+
         return versionInfoPage.getContent().trim().replace("-", ".");
     }
 }
