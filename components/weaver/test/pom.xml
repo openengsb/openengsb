@@ -125,7 +125,6 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
