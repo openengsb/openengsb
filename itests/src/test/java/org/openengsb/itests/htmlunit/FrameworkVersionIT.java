@@ -17,8 +17,9 @@
 
 package org.openengsb.itests.htmlunit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.io.File;
 
@@ -43,17 +44,17 @@ public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper
 {
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
-    private WebClient            webClient;
-    private String               versionPageUrl;
+    private WebClient webClient;
+    private String versionPageUrl;
 
     @Before
     public void setUp() throws Exception
     {
         webClient = new WebClient();
         String httpport = getConfigProperty("org.ops4j.pax.web",
-                "org.osgi.service.http.port");
+            "org.osgi.service.http.port");
         versionPageUrl = String.format(
-                "http://localhost:%s/system/framework.version.info", httpport);
+            "http://localhost:%s/system/framework.version.info", httpport);
         waitForSiteToBeAvailable(versionPageUrl, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
@@ -65,23 +66,33 @@ public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @Test
-    public void testIfVersionsMatch_shouldWork() throws Exception
+    public void testIfVersionReturnedByInfoPackageMatchesFrameworkVersion_shouldWork() throws Exception
     {
-        final TextPage page = webClient.getPage(versionPageUrl);
-        String pageVersion = page.getContent().trim().replace("-", ".");
+        String versionOfBundleReturnedOnPage = getVersionReturnedByWebpage();
+        String versionOfBundleItself = getBundleVersion();
+
+        assertThat(versionOfBundleReturnedOnPage, equalTo(versionOfBundleItself));
+    }
+
+    private String getBundleVersion()
+    {
         Bundle[] bundles = getBundleContext().getBundles();
-        Bundle infoBundle = null;
 
         for (int i = 0; i < bundles.length; i++)
         {
             if (bundles[i].getSymbolicName().equals("org.openengsb.framework.info"))
             {
-                infoBundle = bundles[i];
-                break;
+                return bundles[i].getVersion().toString().trim();
             }
         }
+
+        return null;
+    }
+    
+    private String getVersionReturnedByWebpage() throws Exception
+    {
+        TextPage versionInfoPage = webClient.getPage(versionPageUrl);
         
-        assertNotNull(infoBundle);
-        assertEquals(pageVersion, infoBundle.getVersion().toString().trim());
+        return versionInfoPage.getContent().trim().replace("-", ".");
     }
 }
