@@ -38,8 +38,8 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.osgi.framework.Constants;
 
 import com.google.common.base.Preconditions;

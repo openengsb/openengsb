@@ -20,7 +20,7 @@ package org.openengsb.core.services.internal.security;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

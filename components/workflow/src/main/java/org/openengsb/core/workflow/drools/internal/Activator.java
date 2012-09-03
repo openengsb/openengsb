@@ -16,7 +16,7 @@
  */
 package org.openengsb.core.workflow.drools.internal;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.workflow.drools.OsgiHelper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -40,7 +40,7 @@ import java.util.Map;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

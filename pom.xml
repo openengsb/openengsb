@@ -1203,6 +1203,11 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.services</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1304,6 +1309,7 @@
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
     <!-- OpenEngSB Framework Modules -->
+    <module>components/util</module>
     <module>components/common</module>
     <module>components/weaver/service</module>
     <module>components/weaver/test</module>

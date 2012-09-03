@@ -17,7 +17,6 @@
 
 package org.openengsb.core.common.internal;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -27,8 +26,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(context);
         virtualConnectorManager = new VirtualConnectorManager(context);
         virtualConnectorManager.start();
     }
