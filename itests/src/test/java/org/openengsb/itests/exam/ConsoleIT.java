@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.core.util.OutputStreamFormater;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;

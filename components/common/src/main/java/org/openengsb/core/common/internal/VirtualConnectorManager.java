@@ -29,7 +29,7 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.VirtualConnectorProvider;
-import org.openengsb.core.common.util.FilterUtils;
+import org.openengsb.core.util.FilterUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;

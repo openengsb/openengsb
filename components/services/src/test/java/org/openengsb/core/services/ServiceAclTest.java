@@ -38,7 +38,6 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.security.AdminAccessConnector;
 import org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.services.internal.security.SecurityInterceptor;
@@ -49,6 +48,7 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.core.test.rules.DedicatedThread;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 

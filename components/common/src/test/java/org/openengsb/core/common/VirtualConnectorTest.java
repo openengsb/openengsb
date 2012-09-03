@@ -37,10 +37,10 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.common.internal.VirtualConnectorManager;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.FilterUtils;
 import org.osgi.framework.Filter;
 
 public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {

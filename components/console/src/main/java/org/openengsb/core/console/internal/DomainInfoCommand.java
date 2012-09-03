@@ -25,9 +25,9 @@ import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.util.Comparators;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.core.util.Comparators;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.OutputStreamFormater;
 
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
 public class DomainInfoCommand extends OsgiCommandSupport {

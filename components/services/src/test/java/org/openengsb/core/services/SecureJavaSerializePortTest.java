@@ -35,8 +35,8 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.services.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.util.CipherUtils;
 
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
