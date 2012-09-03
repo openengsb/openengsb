@@ -44,13 +44,13 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.internal.Activator;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.FilterUtils;
 import org.osgi.framework.Filter;
 
 public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest {

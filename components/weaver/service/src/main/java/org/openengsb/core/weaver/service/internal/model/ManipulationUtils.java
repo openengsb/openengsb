@@ -23,16 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.openengsb.core.api.model.FileWrapper;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.annotation.IgnoredModelField;
-import org.openengsb.core.api.model.annotation.Model;
-import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
-import org.openengsb.core.common.util.ModelUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -42,6 +32,16 @@ import javassist.CtPrimitiveType;
 import javassist.LoaderClassPath;
 import javassist.Modifier;
 import javassist.NotFoundException;
+
+import org.openengsb.core.api.model.FileWrapper;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.IgnoredModelField;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.core.util.ModelUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This util class does the byte code manipulation to enhance domain models. It uses Javassist as code manipulation

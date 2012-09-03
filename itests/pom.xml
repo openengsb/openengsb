@@ -149,6 +149,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework.workflow</groupId>
       <artifactId>org.openengsb.framework.workflow.drools</artifactId>
       <scope>test</scope>

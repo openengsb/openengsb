@@ -107,6 +107,10 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.services</artifactId>
       <scope>test</scope>
     </dependency>

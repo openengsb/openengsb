@@ -44,7 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;

@@ -39,11 +39,11 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.common.util.Comparators;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.console.internal.ServiceCommands;
 import org.openengsb.core.services.SecurityContext;
+import org.openengsb.core.util.Comparators;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.OutputStreamFormater;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

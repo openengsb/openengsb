@@ -52,8 +52,8 @@ import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 

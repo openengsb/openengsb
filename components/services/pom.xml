@@ -148,6 +148,10 @@
       <artifactId>org.openengsb.framework.common</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.authentication</artifactId>
     </dependency>

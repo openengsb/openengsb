@@ -19,6 +19,8 @@ package org.openengsb.core.weaver.service.internal;
 
 import java.io.IOException;
 
+import javassist.CannotCompileException;
+
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
@@ -27,8 +29,6 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javassist.CannotCompileException;
 
 /**
  * The model weaver is a weaving hook implementation, which initiate the model weaving of models.
