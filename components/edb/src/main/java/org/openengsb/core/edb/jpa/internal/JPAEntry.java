@@ -28,7 +28,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
  */
 @SuppressWarnings("serial")
 @Entity
-public class JPAEntry extends AbstractDataRow {
+public class JPAEntry extends VersionedEntity {
     @Column(name = "KEY")
     private String key;
     @Column(name = "VALUE")

@@ -31,7 +31,7 @@ import javax.persistence.OneToMany;
  * this defines a jpa object in the database. The correlation to the EDBObject is that
  * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
-public class JPAObject extends AbstractDataRow {
+public class JPAObject extends VersionedEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAEntry> entries;
     @Column(name = "TIME")

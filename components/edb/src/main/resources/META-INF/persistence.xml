@@ -24,7 +24,7 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
-    <class>org.openengsb.core.edb.jpa.internal.AbstractDataRow</class>
+    <class>org.openengsb.core.edb.jpa.internal.VersionedEntity</class>
     <class>org.openengsb.core.edb.jpa.internal.JPACommit</class>
     <class>org.openengsb.core.edb.jpa.internal.JPAObject</class>
     <class>org.openengsb.core.edb.jpa.internal.JPAEntry</class>

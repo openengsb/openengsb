@@ -32,7 +32,7 @@ import javax.persistence.Version;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class AbstractDataRow implements Serializable {
+public abstract class VersionedEntity implements Serializable {
 
     @Id
     //FIXME [OPENENGSB-1938] Change back, once Liquibase Synch is implemented. 
