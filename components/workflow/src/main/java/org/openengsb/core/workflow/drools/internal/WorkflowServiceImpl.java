@@ -59,6 +59,7 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.OsgiUtils;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.workflow.api.RemoteEventProcessor;
 import org.openengsb.core.workflow.api.RuleBaseException;
@@ -422,7 +423,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
             Filter filter =
-                utilsService.getFilterForLocation(globalClass, global.getKey(),
+                OsgiUtils.getFilterForLocation(globalClass, global.getKey(),
                     ContextHolder.get().getCurrentContextId());
             Object osgiServiceProxy = utilsService.getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);
