@@ -123,7 +123,7 @@
     </bean>
   </service>
 
-  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+  <bean class="org.openengsb.core.util.DefaultOsgiUtilsService" id="utilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
@@ -153,7 +153,7 @@
     </property>
   </bean>
 
-  <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+  <bean id="serviceUtils" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
