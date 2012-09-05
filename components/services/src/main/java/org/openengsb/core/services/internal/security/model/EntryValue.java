@@ -17,16 +17,16 @@
 package org.openengsb.core.services.internal.security.model;
 
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.openengsb.core.common.AbstractDataRow;
 
 import com.google.common.base.Objects;
 
@@ -37,7 +37,11 @@ import com.google.common.base.Objects;
 @SuppressWarnings("serial")
 @Table(name = "ENTRY_VALUE")
 @Entity
-public class EntryValue extends AbstractDataRow {
+public class EntryValue {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "KEY")
     private String key;
@@ -52,6 +56,14 @@ public class EntryValue extends AbstractDataRow {
     public EntryValue(String key, List<EntryElement> value) {
         this.key = key;
         this.value = value;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getKey() {

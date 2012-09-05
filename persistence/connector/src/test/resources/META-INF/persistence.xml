@@ -22,7 +22,6 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="connector-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>org.openengsb.core.common.AbstractDataRow</class>   
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorConfigurationJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertyJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertiesWrapperJPAEntity</class>

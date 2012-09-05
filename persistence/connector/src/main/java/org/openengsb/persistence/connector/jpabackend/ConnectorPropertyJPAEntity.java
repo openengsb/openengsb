@@ -21,11 +21,13 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.AbstractDataRow;
 
 /**
  * A simple JPA wrapper for a single Connector property. The wrapper saves the class and the value of toString() and
@@ -33,12 +35,24 @@ import org.openengsb.core.common.AbstractDataRow;
  */
 @SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTY")
-public class ConnectorPropertyJPAEntity extends AbstractDataRow {
+public class ConnectorPropertyJPAEntity {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "STRVALUE", nullable = false, length = 511)
     private String strValue;
     @Column(name = "CLASSNAME", nullable = false, length = 127)
     private String className;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getClassName() {
         return className;

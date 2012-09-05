@@ -18,24 +18,29 @@ package org.openengsb.core.services.internal.security.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.openengsb.core.common.AbstractDataRow;
 
 import com.google.common.base.Objects;
 
 /**
  * Holds a single value of a property. The type must be a class with a String-only-constructor that can be used to
  * instantiate the original instance with a previous result of the type's toString-method.
- * 
+ * <p/>
  * The value is saved as string.
- * 
+ * <p/>
  * To support multiple values (Collections, Arrays) {@link EntryValue} is used as a wrapper
  */
 @SuppressWarnings("serial")
 @Table(name = "ENTRY_VALUE_ELEMENT")
 @Entity
-public class EntryElement extends AbstractDataRow {
+public class EntryElement {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "TYPE", nullable = false)
     private String type;
@@ -48,6 +53,14 @@ public class EntryElement extends AbstractDataRow {
     }
 
     public EntryElement() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {
