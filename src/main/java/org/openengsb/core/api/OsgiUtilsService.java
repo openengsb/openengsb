@@ -151,40 +151,6 @@ public interface OsgiUtilsService {
         throws OsgiServiceNotAvailableException, IllegalArgumentException;
 
     /**
-     * returns a filter that matches services with the given class and location in both the given context and the
-     * root-context
-     *
-     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
-     *         compiling
-     */
-    Filter getFilterForLocation(Class<?> clazz, String location, String context) throws IllegalArgumentException;
-
-    /**
-     * returns a filter that matches services with the given class and location in both the current context and the
-     * root-context
-     *
-     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
-     *         compiling
-     */
-    Filter getFilterForLocation(Class<?> clazz, String location) throws IllegalArgumentException;
-
-    /**
-     * returns a filter that matches services with the given location in both the given context and the root-context
-     *
-     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
-     *         compiling
-     */
-    Filter getFilterForLocation(String location, String context) throws IllegalArgumentException;
-
-    /**
-     * returns a filter that matches services with the given location in both the current context and the root-context
-     *
-     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
-     *         compiling
-     */
-    Filter getFilterForLocation(String location) throws IllegalArgumentException;
-
-    /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in
      * this context), the service at the same location in the root-context is returned
      *
