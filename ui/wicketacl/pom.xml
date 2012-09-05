@@ -120,7 +120,11 @@
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
       <version>${labs.delegation.version}</version>
     </dependency>
-      
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
     <!-- OpenEngSB Domain References -->
     <dependency>
       <groupId>org.openengsb.domain</groupId>

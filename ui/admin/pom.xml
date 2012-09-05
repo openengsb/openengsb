@@ -211,6 +211,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
