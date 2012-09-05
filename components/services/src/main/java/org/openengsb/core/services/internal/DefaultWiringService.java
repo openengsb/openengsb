@@ -26,6 +26,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.OsgiUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -48,7 +49,7 @@ public class DefaultWiringService implements WiringService {
 
     @Override
     public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
-        Filter filter = getServiceUtils().getFilterForLocation(domainType, location);
+        Filter filter = OsgiUtils.getFilterForLocation(domainType, location);
         return getServiceUtils().getOsgiServiceProxy(filter, domainType);
     }
 
@@ -59,13 +60,13 @@ public class DefaultWiringService implements WiringService {
 
     @Override
     public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
-        Filter filter = getServiceUtils().getFilterForLocation(domainType, location, context);
+        Filter filter = OsgiUtils.getFilterForLocation(domainType, location, context);
         return getServiceUtils().getOsgiServiceProxy(filter, domainType);
     }
 
     @Override
     public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
-        Filter filterForLocation = getServiceUtils().getFilterForLocation(domainType, location);
+        Filter filterForLocation = OsgiUtils.getFilterForLocation(domainType, location);
         ServiceReference[] allServiceReferences;
         try {
             allServiceReferences =

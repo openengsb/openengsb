@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -42,6 +41,7 @@ import org.openengsb.core.ekb.persistence.edb.internal.EDBConverterUtils;
 import org.openengsb.core.ekb.persistence.edb.models.SubModel;
 import org.openengsb.core.ekb.persistence.edb.models.TestModel;
 import org.openengsb.core.ekb.persistence.edb.models.TestModel2.ENUM;
+import org.openengsb.core.util.ModelUtils;
 
 /**
  * The EDBConverter test file only tests the converting Model -> EDBObject since the other way round is tested by the

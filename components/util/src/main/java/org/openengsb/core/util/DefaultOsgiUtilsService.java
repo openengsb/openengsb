@@ -35,7 +35,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -230,52 +229,21 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @SuppressWarnings("unchecked")
     public <T> T getServiceForLocation(Class<T> clazz, String location, String context)
         throws OsgiServiceNotAvailableException, IllegalArgumentException {
-        Filter compiled = getFilterForLocation(clazz, location, context);
+        Filter compiled = OsgiUtils.getFilterForLocation(clazz, location, context);
         return (T) getService(compiled);
-    }
-
-    @Override
-    public Filter getFilterForLocation(Class<?> clazz, String location, String context)
-        throws IllegalArgumentException {
-        String filter = makeLocationFilterString(location, context);
-        return FilterUtils.makeFilter(clazz, filter);
-    }
-
-    @Override
-    public Filter getFilterForLocation(Class<?> clazz, String location) throws IllegalArgumentException {
-        return getFilterForLocation(clazz, location, ContextHolder.get().getCurrentContextId());
-    }
-
-    @Override
-    public Filter getFilterForLocation(String location, String context) throws IllegalArgumentException {
-        String filter = makeLocationFilterString(location, context);
-        try {
-            return FrameworkUtil.createFilter(filter);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException("location is invalid: " + location, e);
-        }
-    }
-
-    @Override
-    public Filter getFilterForLocation(String location) throws IllegalArgumentException {
-        return getFilterForLocation(location, ContextHolder.get().getCurrentContextId());
-    }
-
-    private String makeLocationFilterString(String location, String context) throws IllegalArgumentException {
-        return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
     }
 
     @Override
     public Object getServiceForLocation(String location, String context) throws OsgiServiceNotAvailableException,
         IllegalArgumentException {
-        return getService(getFilterForLocation(location, context));
+        return getService(OsgiUtils.getFilterForLocation(location, context));
     }
 
     @Override
     public Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException,
         IllegalArgumentException {
         LOGGER.debug("retrieve service for location: {}", location);
-        return getService(getFilterForLocation(location));
+        return getService(OsgiUtils.getFilterForLocation(location));
     }
 
     @Override
@@ -384,5 +352,4 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
-
 }

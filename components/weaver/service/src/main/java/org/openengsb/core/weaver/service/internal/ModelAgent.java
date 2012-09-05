@@ -25,11 +25,11 @@ import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
 
-import javassist.CannotCompileException;
-
 import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javassist.CannotCompileException;
 
 /**
  * The model agent is a java agent implementation, which initiate the model weaving of models.
