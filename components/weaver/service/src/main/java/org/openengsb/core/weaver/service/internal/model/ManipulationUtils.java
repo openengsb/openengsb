@@ -233,7 +233,7 @@ public final class ManipulationUtils {
         CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called retrieveInternalModelId"));
-        if (modelIdField == null) {
+        if (modelIdField == null || !isGetterExisting(modelIdField, clazz)) {
             builder.append("return null;");
         } else {
             builder.append(String.format("return %s;",
@@ -272,7 +272,7 @@ public final class ManipulationUtils {
                 String property = field.getName();
                 if (property.equals(TAIL_FIELD) || property.equals(LOGGER_FIELD)
                         || JavassistUtils.hasAnnotation(field, IgnoredModelField.class.getName())) {
-                    builder.append(createTrace(String.format("Skip property %s of the model", property)));
+                    builder.append(createTrace(String.format("Skip property '%s' of the model", property)));
                     continue;
                 }
                 builder.append(handleField(field, clazz));
@@ -291,7 +291,7 @@ public final class ManipulationUtils {
         String property = field.getName();
         if (fieldType.equals(cp.get(File.class.getName()))) {
             String wrapperName = property + "wrapper";
-            builder.append(createTrace(String.format("Handle File type property %s", property)));
+            builder.append(createTrace(String.format("Handle File type property '%s'", property)));
             builder.append("if(").append(property).append(" == null) {");
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
             builder.append(wrapperName).append("\", null, FileWrapper.class));}\n");
@@ -302,15 +302,17 @@ public final class ManipulationUtils {
             builder.append(wrapperName).append("\", ").append(wrapperName);
             builder.append(", ").append(wrapperName).append(".getClass()));}\n");
             addFileFunction(clazz, property);
+        } else if (!isGetterExisting(field, clazz)) {
+            LOGGER.warn(String.format("Ignoring property '%s' since there is no getter for it defined", property));
         } else if (fieldType.isPrimitive()) {
-            builder.append(createTrace(String.format("Handle primitive type property %s", property)));
+            builder.append(createTrace(String.format("Handle primitive type property '%s'", property)));
             CtPrimitiveType primitiveType = (CtPrimitiveType) fieldType;
             String wrapperName = primitiveType.getWrapperName();
             builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
             builder.append(wrapperName).append(".valueOf(").append(getPropertyGetter(property, wrapperName));
             builder.append("), ").append(wrapperName).append(".class));\n");
         } else {
-            builder.append(createTrace(String.format("Handle property %s", property)));
+            builder.append(createTrace(String.format("Handle property '%s'", property)));
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
             builder.append(property).append("\", ").append(getPropertyGetter(property, fieldType.getName()));
             builder.append(", ").append(fieldType.getName()).append(".class));\n");
@@ -319,10 +321,27 @@ public final class ManipulationUtils {
     }
 
     /**
+     * Returns true if the corresponding getter for the given field is existing, returns false if not
+     */
+    private static Boolean isGetterExisting(CtField field, CtClass clazz) throws NotFoundException {
+        CtMethod method = new CtMethod(field.getType(), "descCreateMethod", new CtClass[]{}, clazz);
+        String desc = method.getSignature();
+        String getter = getPropertyGetter(field.getName(), field.getType().getName());
+        getter = getter.substring(0, getter.length() - 2);
+        try {
+            clazz.getMethod(getter, desc);
+        } catch (NotFoundException e) {
+            LOGGER.debug(String.format("No getter with the name '%s' and the description '%s' found", getter, desc));
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns the name of the corresponding getter to a properties name and type.
      */
     private static String getPropertyGetter(String property, String type) {
-        if (type.equals("java.lang.Boolean")) {
+        if (type.equals("java.lang.Boolean") || type.equals("boolean")) {
             return String.format("is%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
         } else {
             return String.format("get%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
