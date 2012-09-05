@@ -423,7 +423,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
             Filter filter =
-                    OsgiUtils.getFilterForLocation(globalClass, global.getKey(),
+                OsgiUtils.getFilterForLocation(globalClass, global.getKey(),
                     ContextHolder.get().getCurrentContextId());
             Object osgiServiceProxy = utilsService.getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);
