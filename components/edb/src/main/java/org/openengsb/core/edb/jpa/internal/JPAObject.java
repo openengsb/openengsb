@@ -25,8 +25,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
-import org.openengsb.core.common.AbstractDataRow;
-
 @SuppressWarnings("serial")
 @Entity
 /**

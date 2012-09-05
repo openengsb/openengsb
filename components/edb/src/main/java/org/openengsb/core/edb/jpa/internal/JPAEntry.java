@@ -20,7 +20,6 @@ package org.openengsb.core.edb.jpa.internal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.openengsb.core.common.AbstractDataRow;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
 /**
