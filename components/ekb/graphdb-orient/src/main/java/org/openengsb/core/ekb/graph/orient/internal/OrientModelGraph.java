@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -130,6 +131,19 @@ public final class OrientModelGraph implements ModelGraph {
         setIdFieldValue(edge, description.getId());
         if (description.getFileName() != null) {
             setFilenameFieldValue(edge, description.getFileName());
+        }
+        Map<String, Set<String>> connections = description.getPropertyConnections();
+        if (connections != null) {
+            for (Map.Entry<String, Set<String>> entry : connections.entrySet()) {
+                StringBuilder builder = new StringBuilder();
+                for (String property : entry.getValue()) {
+                    if (builder.length() != 0) {
+                        builder.append(",");
+                    }
+                    builder.append(property);
+                }
+                edge.field(entry.getKey(), builder.toString());
+            }
         }
         edge.save();
         descriptions.put(description.getId(), description);
