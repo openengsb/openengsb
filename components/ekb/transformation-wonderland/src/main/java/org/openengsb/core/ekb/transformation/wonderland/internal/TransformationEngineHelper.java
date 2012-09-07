@@ -64,8 +64,11 @@ public class TransformationEngineHelper {
         Map<String, Set<String>> result = new LinkedHashMap<String, Set<String>>();
         try {
             Class<?> sourceModel = registry.loadModel(description);
-            for (Field field : sourceModel.getDeclaredFields()) {
-                result.put(field.getName(), new HashSet<String>());
+            while (sourceModel != null && !sourceModel.equals(Object.class)) {
+                for (Field field : sourceModel.getDeclaredFields()) {
+                    result.put(field.getName(), new HashSet<String>());
+                }
+                sourceModel = sourceModel.getSuperclass();
             }
         } catch (ClassNotFoundException e) {
             LOGGER.error("Unable to load model {}", description);
