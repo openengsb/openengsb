@@ -73,7 +73,7 @@ public interface RuleManager extends OpenEngSBService {
     /**
      * returns a list of all elements of the given type, from all packages
      */
-    Collection<RuleBaseElementId> list(RuleBaseElementType type);
+    Collection<RuleBaseElementId> listAll(RuleBaseElementType type);
 
     /**
      * returns a list of all elements of the given type, for a specific package

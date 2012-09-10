@@ -61,7 +61,7 @@ public interface WorkflowService extends OpenEngSBService {
      * @throws WorkflowException when there is a problem with obtaining the KnowledgeSession or the flow could not be
      *         started
      * */
-    long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException;
+    long startFlowWithParameters(String processId, Map<String, Object> parameterMap) throws WorkflowException;
 
     /**
      * wait for the process with the given processInstance-id to finish.
@@ -69,7 +69,7 @@ public interface WorkflowService extends OpenEngSBService {
      * @throws InterruptedException if the waiting is interrupted
      * @throws WorkflowException if the session could not be obtained
      */
-    void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException;
+    void waitForFlowToFinishIndefinitely(long id) throws InterruptedException, WorkflowException;
 
     /**
      * wait for the process with the given processInstance-id to finish, but only for a limited time. The timeout is
