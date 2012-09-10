@@ -56,10 +56,10 @@ public class RuleEditorTest extends AbstractUITest {
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
         Collection<RuleBaseElementId> rules = Arrays
             .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));
-        when(ruleManager.list(RuleBaseElementType.Rule)).thenReturn(rules);
+        when(ruleManager.listAll(RuleBaseElementType.Rule)).thenReturn(rules);
         when(ruleManager.get(ruleBaseElementId)).thenReturn("testsource");
         tester.startPage(RuleEditorPage.class);
-        verify(ruleManager).list(RuleBaseElementType.Rule);
+        verify(ruleManager).listAll(RuleBaseElementType.Rule);
     }
 
     @Test
@@ -124,8 +124,8 @@ public class RuleEditorTest extends AbstractUITest {
         assertFalse(textArea.isEnabled());
         assertNotNull(textArea.getModel());
         assertEquals(null, textArea.getModelObject());
-        verify(ruleManager).list(RuleBaseElementType.Rule);
-        verify(ruleManager).list(RuleBaseElementType.Function);
+        verify(ruleManager).listAll(RuleBaseElementType.Rule);
+        verify(ruleManager).listAll(RuleBaseElementType.Function);
     }
 
     @SuppressWarnings("unchecked")
@@ -236,7 +236,7 @@ public class RuleEditorTest extends AbstractUITest {
             .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice")).getDefaultModelObject());
         RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "rulename");
         verify(ruleManager).add(ruleBaseElementId, "new rule source");
-        verify(ruleManager, times(2)).list(RuleBaseElementType.Rule);
+        verify(ruleManager, times(2)).listAll(RuleBaseElementType.Rule);
         assertEquals(ruleBaseElementId,
             tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").getDefaultModelObject());
     }

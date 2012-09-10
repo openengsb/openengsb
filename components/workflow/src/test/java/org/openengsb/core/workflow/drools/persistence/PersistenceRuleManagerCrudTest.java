@@ -139,7 +139,7 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     public void testListRuleBaseElementsByType_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.add(id[2], code[2]);
-        Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType());
+        Collection<RuleBaseElementId> result = ruleManager.listAll(id[0].getType());
         assertThat(result, hasItem(id[0]));
         assertThat(result, hasItem(id[2]));
     }
