@@ -33,7 +33,6 @@ import com.google.common.base.Objects;
  * <p/>
  * To support multiple values (Collections, Arrays) {@link EntryValue} is used as a wrapper
  */
-@SuppressWarnings("serial")
 @Table(name = "ENTRY_VALUE_ELEMENT")
 @Entity
 public class EntryElement {

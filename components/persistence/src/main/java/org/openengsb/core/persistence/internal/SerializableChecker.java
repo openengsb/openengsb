@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * properly. If it doesn't, you should fall back to e.g. re-throwing/ printing the {@link NotSerializableException} you
  * probably got before using this class.
  * </p>
- *
+ * 
  * @author eelcohillenius
  * @author Al Maw
  */
@@ -271,7 +272,7 @@ public final class SerializableChecker extends ObjectOutputStream {
      * Gets whether we can execute the tests. If false, calling {@link #check(Object)} will just return and you are
      * advised to rely on the {@link NotSerializableException}. Clients are advised to call this method prior to calling
      * the check method.
-     *
+     * 
      * @return whether security settings and underlying API etc allow for accessing the serialization API using
      *         introspection
      */
@@ -307,9 +308,9 @@ public final class SerializableChecker extends ObjectOutputStream {
 
     /**
      * Construct.
-     *
+     * 
      * @param exception exception that should be set as the cause when throwing a new exception
-     *
+     * 
      * @throws IOException
      */
     public SerializableChecker(NotSerializableException exception) throws IOException {
@@ -463,14 +464,17 @@ public final class SerializableChecker extends ObjectOutputStream {
                         return streamObj;
                     }
                 }
+                InterceptingObjectOutputStream ioos = null;
                 try {
-                    InterceptingObjectOutputStream ioos = new InterceptingObjectOutputStream();
+                    ioos = new InterceptingObjectOutputStream();
                     ioos.writeObject(obj);
                 } catch (Exception e) {
                     if (e instanceof ObjectDbNotSerializableException) {
                         throw (ObjectDbNotSerializableException) e;
                     }
                     LOGGER.warn("error delegating to writeObject : " + e.getMessage() + ", path: " + currentPath());
+                } finally {
+                    IOUtils.closeQuietly(ioos);
                 }
             } else {
                 Object[] slots;
@@ -564,7 +568,7 @@ public final class SerializableChecker extends ObjectOutputStream {
 
     /**
      * Dump with indentation.
-     *
+     * 
      * @param type the type that couldn't be serialized
      * @return A very pretty dump
      */
