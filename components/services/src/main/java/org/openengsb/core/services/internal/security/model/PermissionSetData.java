@@ -44,7 +44,6 @@ import com.google.common.collect.Sets;
  * entity that represents a permission-set. Contains the associated permissions and other permission-sets along with
  * additional metadata
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "PERMISSIONSETDATA")
 @Inheritance(strategy = InheritanceType.JOINED)

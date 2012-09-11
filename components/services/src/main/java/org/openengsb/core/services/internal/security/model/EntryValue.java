@@ -35,7 +35,6 @@ import com.google.common.base.Objects;
  * represents the value of a property in a bean. Multiple values in the form of Arrays and Collections are supported. If
  * a property has a single value, it is saved as a singleton-list.
  */
-@SuppressWarnings("serial")
 @Table(name = "ENTRY_VALUE")
 @Entity
 public class EntryValue {

@@ -39,7 +39,6 @@ import org.openengsb.core.api.persistence.PersistenceException;
 /**
  * This is the JPA mapping class for the ConnectorConfiguration.
  */
-@SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_CONFIGURATION")
 public class ConnectorConfigurationJPAEntity {
 

@@ -22,7 +22,6 @@ import javax.persistence.Table;
 /**
  * Permission-set that is used to contain a users permissions and permission-sets
  */
-@SuppressWarnings("serial")
 @Table(name = "USER_PERMISSIONSETDATA")
 @Entity
 public class UserPermissionSetData extends PermissionSetData {

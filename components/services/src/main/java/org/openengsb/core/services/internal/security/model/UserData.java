@@ -40,7 +40,6 @@ import com.google.common.collect.Maps;
 /**
  * represents the data of a user (or other principal) identified with a unique username.
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "USERDATA")
 public class UserData {
