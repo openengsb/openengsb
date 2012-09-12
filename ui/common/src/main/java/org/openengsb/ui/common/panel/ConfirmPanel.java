@@ -16,86 +16,33 @@
  */
 package org.openengsb.ui.common.panel;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.openengsb.ui.common.modaldialog.YesNoModalDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ConfirmPanel<T> extends Panel {
+public abstract class ConfirmPanel<T> extends YesNoModalDialog {
 
     private static final long serialVersionUID = 7137438656270166861L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmPanel.class);
 
-    private WebMarkupContainer parent;
-    
     private String username;
 
-    public ConfirmPanel(String id, IModel<T> model, WebMarkupContainer parent) {
+    public ConfirmPanel(String id, IModel<T> model) {
         super(id, model);
-        this.parent = parent;
         initContent();
     }
     
-    public ConfirmPanel(String id, IModel<T> model, WebMarkupContainer parent, String username) {
+    public ConfirmPanel(String id, IModel<T> model, String username) {
         super(id, model);
-        this.parent = parent;
         initContent();
         this.username = username;
     }
 
-    public ConfirmPanel(String id, WebMarkupContainer parent) {
-        super(id);
-        this.parent = parent;
-        initContent();
-    }
-
+ 
     private void initContent() {
         setOutputMarkupId(true);
-        add(new Label("username",this.username));
-        add(new AjaxButton("yes") {
-            private static final long serialVersionUID = 1883099779596621667L;
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                onConfirm(ajaxRequestTarget, form);
-                hideSelf(ajaxRequestTarget);
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.warn("Form submit errors of yes button");
-            }
-        });
-        add(new AjaxButton("no") {
-            private static final long serialVersionUID = -2124017726733077652L;
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                onCancel(ajaxRequestTarget, form);
-                hideSelf(ajaxRequestTarget);
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.warn("Form submit errors of no button");
-            }
-        });
     }
-
-    protected void hideSelf(AjaxRequestTarget ajaxRequestTarget) {
-        replaceWith(new EmptyPanel(getId()));
-        ajaxRequestTarget.add(parent);
-    }
-
-    protected abstract void onConfirm(AjaxRequestTarget ajaxRequestTarget, Form<?> form);
-
-    protected abstract void onCancel(AjaxRequestTarget ajaxRequestTarget, Form<?> form);
-
+ 
 }

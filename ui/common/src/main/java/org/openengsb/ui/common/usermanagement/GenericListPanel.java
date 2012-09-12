@@ -51,6 +51,9 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
         add(listContainer);
         final Form<Object> form = new Form<Object>("form");
         listContainer.add(form);
+        final Panel confirm = new EmptyPanel("confirm");
+        confirm.setOutputMarkupId(true);
+        
 
         ListView<T> users = new ListView<T>("list", listModel) {
             private static final long serialVersionUID = 7628860457238288128L;
@@ -61,39 +64,34 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
             protected void populateItem(final ListItem<T> userListItem) {
                 userListItem.add(new Label("item.name", userListItem.getModelObject().toString()));
                 userListItem.setOutputMarkupId(true);
-                Panel confirm = new EmptyPanel("confirm");
-                confirm.setOutputMarkupId(true);
-                userListItem.add(confirm);
                 final AjaxLink<String> deleteLink = new AjaxLink<String>("item.delete") {
                     private static final long serialVersionUID = 2004369349622394213L;
                     
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                        if (activeConfirm != null) {
+                        
+                    	/*
+                    	if (activeConfirm != null) {
                             activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm").setOutputMarkupId(true));
                             ajaxRequestTarget.add(activeConfirm);
                             activeConfirm = null;
-                        }
-                        
-                        
+                        } */
+                    	
                         final Model<T> model = new Model<T>(userListItem.getModelObject());
-                        ConfirmPanel<T> confirmPanel = new ConfirmPanel<T>("confirm", model, userListItem,userListItem.get("item.name").toString()) {
+                        ConfirmPanel<T> confirmPanel = new ConfirmPanel<T>("confirm", model, userListItem.get("item.name").toString()) {
                             private static final long serialVersionUID = -1506781103470764246L;
 
-                            @Override
-                            protected void onConfirm(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                                onDeleteClick(ajaxRequestTarget, form, model.getObject());
-                                ajaxRequestTarget.add(listContainer);
-                            }
+							@Override
+							protected void onSuccess(AjaxRequestTarget target) {
+								onDeleteClick(target, form, model.getObject());
+                 			}
 
-                            @Override
-                            protected void onCancel(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                                ajaxRequestTarget.add(listContainer);
-                            }
+							@Override
+							protected void onFailure(AjaxRequestTarget target) {
+								target.add(listContainer);
+							}
                         };
-                        ajaxRequestTarget.appendJavaScript("showModalDialogue('" + userListItem.get("confirm").getMarkupId()+"','Delete user: " +userListItem.getModelObject().toString()+ "')");
-                        userListItem.get("confirm").replaceWith(confirmPanel);
-                        userListItem.get("confirm").setOutputMarkupId(true);
+                        confirm.replaceWith(confirmPanel);
                         activeConfirm = userListItem;
                         ajaxRequestTarget.add(confirmPanel);
                     }
