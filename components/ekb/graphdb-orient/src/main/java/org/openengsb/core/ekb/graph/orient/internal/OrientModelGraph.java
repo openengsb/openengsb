@@ -132,22 +132,49 @@ public final class OrientModelGraph implements ModelGraph {
         if (description.getFileName() != null) {
             setFilenameFieldValue(edge, description.getFileName());
         }
-        Map<String, Set<String>> connections = description.getPropertyConnections();
-        if (connections != null) {
-            for (Map.Entry<String, Set<String>> entry : connections.entrySet()) {
-                StringBuilder builder = new StringBuilder();
-                for (String property : entry.getValue()) {
-                    if (builder.length() != 0) {
-                        builder.append(",");
-                    }
-                    builder.append(property);
-                }
-                edge.field(entry.getKey(), builder.toString());
-            }
-        }
+        fillEdgeWithPropertyConnections(edge, description);
         edge.save();
         descriptions.put(description.getId(), description);
         LOGGER.debug("Added transformation description {} to the graph database", description);
+    }
+
+    /**
+     * Adds to the given map the property connection information which result from the given transformation description.
+     */
+    private void fillEdgeWithPropertyConnections(ODocument edge, TransformationDescription description) {
+        Map<String, String> connections = convertPropertyConnectionsToSimpleForm(description.getPropertyConnections());
+        for (Map.Entry<String, String> entry : connections.entrySet()) {
+            edge.field(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * Converts a complex property connection map (key:String, value:Set of Strings) to a simple property connection
+     * map, so that the connections can easily be saved to the edges in the model graph.
+     */
+    private Map<String, String> convertPropertyConnectionsToSimpleForm(Map<String, Set<String>> connections) {
+        Map<String, String> result = new HashMap<String, String>();
+        if (connections == null) {
+            return result;
+        }
+        for (Map.Entry<String, Set<String>> entry : connections.entrySet()) {
+            result.put(entry.getKey(), convertStringSetToString(entry.getValue()));
+        }
+        return result;
+    }
+
+    /**
+     * Converts a set of strings to a simple string, with a ',' char as separator char.
+     */
+    private String convertStringSetToString(Set<String> strings) {
+        StringBuilder builder = new StringBuilder();
+        for (String property : strings) {
+            if (builder.length() != 0) {
+                builder.append(",");
+            }
+            builder.append(property);
+        }
+        return builder.toString();
     }
 
     @Override
