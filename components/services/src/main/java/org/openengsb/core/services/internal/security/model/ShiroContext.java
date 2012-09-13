@@ -51,6 +51,7 @@ public class ShiroContext implements AuthenticationContext {
         return subject.getPrincipal();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Object> getAllAuthenticatedPrincipals() {
         Subject subject = ThreadContext.getSubject();

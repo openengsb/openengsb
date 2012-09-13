@@ -70,7 +70,7 @@ public class RegistrationServiceImpl extends AbstractOpenEngSBService implements
     }
 
     private String getUniqueRuleName(String name) {
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
+        Collection<RuleBaseElementId> list = ruleManager.listAll(RuleBaseElementType.Rule);
         while (list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, name))) {
             name = name + "_";
         }

@@ -43,7 +43,6 @@ import org.openengsb.core.api.persistence.PersistenceException;
  * Collections of those types.
  * 
  */
-@SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTIES_WRAPPER")
 public class ConnectorPropertiesWrapperJPAEntity {
 

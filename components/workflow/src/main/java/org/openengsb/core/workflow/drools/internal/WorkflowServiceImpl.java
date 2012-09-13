@@ -186,16 +186,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        return startFlow(processId, new HashMap<String, Object>());
+        return startFlowWithParameters(processId, new HashMap<String, Object>());
     }
 
     @Override
     public ProcessBag executeWorkflow(String processId, ProcessBag parameters) throws WorkflowException {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", parameters);
-        long id = startFlow(processId, parameterMap);
+        long id = startFlowWithParameters(processId, parameterMap);
         try {
-            waitForFlowToFinish(id);
+            waitForFlowToFinishIndefinitely(id);
         } catch (InterruptedException e) {
             throw new WorkflowException(e);
         }
@@ -203,7 +203,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
-    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
+    public long startFlowWithParameters(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         try {
             return startFlowInBackground(processId, parameterMap).get();
         } catch (InterruptedException e) {
@@ -287,7 +287,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
-    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
+    public void waitForFlowToFinishIndefinitely(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
             while (session.getProcessInstance(id) != null) {

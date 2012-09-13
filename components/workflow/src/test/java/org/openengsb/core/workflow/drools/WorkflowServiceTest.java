@@ -141,7 +141,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testStartProcess_shouldRunScriptNodes() throws Exception {
         long id = service.startFlow("flowtest");
-        service.waitForFlowToFinish(id);
+        service.waitForFlowToFinishIndefinitely(id);
         verify(logService).doSomething("context: " + ContextHolder.get().getCurrentContextId());
     }
 
@@ -156,7 +156,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         for (int i = 0; i < tryThreads; i++) {
             ContextHolder.get().setCurrentContextId(Integer.toString(i));
             long id = service.startFlow("flowtest");
-            service.waitForFlowToFinish(id);
+            service.waitForFlowToFinishIndefinitely(id);
             verify(services.get(i)).doSomething("context: " + ContextHolder.get().getCurrentContextId());
         }
     }
@@ -166,7 +166,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         long id = service.startFlow("floweventtest");
         service.processEvent(new Event());
         service.processEvent(new TestEvent());
-        service.waitForFlowToFinish(id);
+        service.waitForFlowToFinishIndefinitely(id);
         InOrder inOrder2 = inOrder(logService);
         inOrder2.verify(logService).doSomething("start testflow");
         inOrder2.verify(logService).doSomething("first event received");
@@ -179,7 +179,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
         service.processEvent(new Event("event", id1));
         service.processEvent(new TestEvent(id1));
-        service.waitForFlowToFinish(id1);
+        service.waitForFlowToFinishIndefinitely(id1);
 
         assertThat(service.getRunningFlows(), hasItem(id2));
         assertThat(service.getRunningFlows(), not(hasItem(id1)));
@@ -190,7 +190,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         long id = service.startFlow("ci");
         service.processEvent(new BuildSuccess());
         service.processEvent(new TestSuccess());
-        service.waitForFlowToFinish(id);
+        service.waitForFlowToFinishIndefinitely(id);
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
         verify((DummyDeploy) domains.get("deploy"), times(1)).deployProject();
@@ -260,7 +260,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
         service.processEvent(new Event("triggerEvent"));
         for (Long id : service.getRunningFlows()) {
-            service.waitForFlowToFinish(id);
+            service.waitForFlowToFinishIndefinitely(id);
         }
     }
 
@@ -278,8 +278,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         ProcessBag processBag = new ProcessBag();
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
-        long id = service.startFlow("propertybagtest", parameterMap);
-        service.waitForFlowToFinish(id);
+        long id = service.startFlowWithParameters("propertybagtest", parameterMap);
+        service.waitForFlowToFinishIndefinitely(id);
         assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 
@@ -445,7 +445,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("Start Tests"));
         service.processEvent(new TestSuccess());
         verify(auditingMock).onNodeStart(eq("ci"), eq(id), eq("deployProject"));
-        service.waitForFlowToFinish(id);
+        service.waitForFlowToFinishIndefinitely(id);
     }
 
     private static class BuildSuccess extends Event {

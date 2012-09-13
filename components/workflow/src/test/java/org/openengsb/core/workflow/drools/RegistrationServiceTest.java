@@ -124,9 +124,9 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
-        int oldCount = manager.list(RuleBaseElementType.Rule).size();
+        int oldCount = manager.listAll(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", "test://localhost");
-        assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
+        assertThat(manager.listAll(RuleBaseElementType.Rule).size(), is(oldCount + 1));
     }
 
     @Test

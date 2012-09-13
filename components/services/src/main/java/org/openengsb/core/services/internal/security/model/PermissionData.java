@@ -22,7 +22,6 @@ import javax.persistence.Table;
 /**
  * {@link BeanData} intended to save {@link org.openengsb.core.api.security.model.Permission}s
  */
-@SuppressWarnings("serial")
 @Table(name = "PERMISSIONDATA")
 @Entity
 public class PermissionData extends BeanData {

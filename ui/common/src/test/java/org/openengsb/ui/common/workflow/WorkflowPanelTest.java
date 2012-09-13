@@ -60,7 +60,7 @@ public class WorkflowPanelTest extends AbstractOpenEngSBTest {
         ruleManager = mock(RuleManager.class);
         Collection<RuleBaseElementId> value = new ArrayList<RuleBaseElementId>();
         value.add(new RuleBaseElementId(RuleBaseElementType.Process, "foo"));
-        when(ruleManager.list(RuleBaseElementType.Process)).thenReturn(value);
+        when(ruleManager.listAll(RuleBaseElementType.Process)).thenReturn(value);
         context.putBean("ruleManager", ruleManager);
 
         id = 0;

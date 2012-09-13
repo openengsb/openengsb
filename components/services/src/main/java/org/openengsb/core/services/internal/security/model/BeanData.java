@@ -42,7 +42,6 @@ import com.google.common.collect.Maps;
  * 
  * Arrays and Collections of such objects are also supported.
  */
-@SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class BeanData {

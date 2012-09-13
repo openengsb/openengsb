@@ -119,7 +119,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type) {
+    public Collection<RuleBaseElementId> listAll(RuleBaseElementType type) {
         RuleBaseElementId example = new RuleBaseElementId();
         example.setPackageName(null);
         example.setType(type);

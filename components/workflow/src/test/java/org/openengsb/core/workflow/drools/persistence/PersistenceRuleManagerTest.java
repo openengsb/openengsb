@@ -168,7 +168,7 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
         } catch (RuleBaseException e) {
             // expected
         }
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
+        Collection<RuleBaseElementId> list = ruleManager.listAll(RuleBaseElementType.Rule);
         assertThat(list, not(hasItem(id)));
     }
 
