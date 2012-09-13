@@ -156,4 +156,14 @@ public class TestModel2 implements OpenEngSBModel {
             tail.put(entry.getKey(), entry);
         }        
     }
+
+    @Override
+    public Long retrieveInternalModelTimestamp() {
+        return null;
+    }
+
+    @Override
+    public Integer retrieveInternalModelVersion() {
+        return null;
+    }
 }

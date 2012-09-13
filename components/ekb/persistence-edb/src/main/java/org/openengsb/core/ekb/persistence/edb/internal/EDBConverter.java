@@ -100,7 +100,7 @@ public class EDBConverter {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
-                    || propertyDescriptor.getName().equals("openEngSBModelTail")) {
+                    || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
                 continue;
             }
             Object value = getValueForProperty(propertyDescriptor, object);
