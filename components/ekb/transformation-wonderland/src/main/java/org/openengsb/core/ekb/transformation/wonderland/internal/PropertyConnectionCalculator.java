@@ -32,14 +32,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The TransformationEngineHelper class contains helper methods for the TransformationEngine so that the
- * TransformationEngine implementation isn't that bloated with methods.
+ * The PropertyConnectionCalculator class contains the logic to calculate the property connections based on
+ * transformation descriptions.
  */
-public class TransformationEngineHelper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineHelper.class);
+public class PropertyConnectionCalculator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyConnectionCalculator.class);
     private ModelRegistry registry;
 
-    public TransformationEngineHelper(ModelRegistry registry) {
+    public PropertyConnectionCalculator(ModelRegistry registry) {
         this.registry = registry;
     }
 

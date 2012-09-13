@@ -37,13 +37,13 @@ public class TransformationEngineService implements TransformationEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationEngineService.class);
     private ModelRegistry modelRegistry;
     private ModelGraph graphDb;
-    private TransformationEngineHelper helper;
+    private PropertyConnectionCalculator calculator;
 
     @Override
     public void saveDescription(TransformationDescription description) {
         LOGGER.debug("Added transformation description {} to transformation engine service", description);
         deleteDescription(description);
-        description.setPropertyConnections(helper.getPropertyConnections(description));
+        description.setPropertyConnections(calculator.getPropertyConnections(description));
         graphDb.addTransformation(description);
     }
 
@@ -112,7 +112,7 @@ public class TransformationEngineService implements TransformationEngine {
 
     public void setModelRegistry(ModelRegistry modelRegistry) {
         this.modelRegistry = modelRegistry;
-        helper = new TransformationEngineHelper(modelRegistry);
+        calculator = new PropertyConnectionCalculator(modelRegistry);
     }
 
     public void setGraphDb(ModelGraph graphDb) {

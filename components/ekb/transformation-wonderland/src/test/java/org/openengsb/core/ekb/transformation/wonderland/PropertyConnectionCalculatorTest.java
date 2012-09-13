@@ -27,14 +27,14 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
-import org.openengsb.core.ekb.transformation.wonderland.internal.TransformationEngineHelper;
+import org.openengsb.core.ekb.transformation.wonderland.internal.PropertyConnectionCalculator;
 
-public class TransformationEngineHelperTest extends TransformationEngineTests {
-    private static TransformationEngineHelper helper;
+public class PropertyConnectionCalculatorTest extends TransformationEngineTests {
+    private static PropertyConnectionCalculator calculator;
 
     @BeforeClass
     public static void initiate() {
-        helper = new TransformationEngineHelper(new TestModelRegistry());
+        calculator = new PropertyConnectionCalculator(new TestModelRegistry());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class TransformationEngineHelperTest extends TransformationEngineTests {
         description.forwardField("idA", "idB");
         description.forwardField("idA", "testB");
         description.forwardField("testA", "testB");
-        Map<String, Set<String>> result = helper.getPropertyConnections(description);
+        Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         assertThat(result.get("idA").contains("idB"), is(true));
         assertThat(result.get("idA").contains("testB"), is(true));
         assertThat(result.get("idA").size(), is(2));
@@ -60,7 +60,7 @@ public class TransformationEngineHelperTest extends TransformationEngineTests {
         description.mapField("idA", "idB", new HashMap<String, String>());
         description.valueField("blubB", "42");
         description.concatField("blubB", ".", "testA", "blubA");
-        Map<String, Set<String>> result = helper.getPropertyConnections(description);
+        Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         assertThat(result.get("idA").contains("idB"), is(true));
         assertThat(result.get("idA").contains("testB"), is(true));
         assertThat(result.get("idA").size(), is(2));
@@ -84,7 +84,7 @@ public class TransformationEngineHelperTest extends TransformationEngineTests {
         description.forwardField("temp.D", "temp.E");
         description.forwardField("temp.E", "temp.F");
         description.forwardField("temp.F", "idB");
-        Map<String, Set<String>> result = helper.getPropertyConnections(description);
+        Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         
         assertThat(result.get("idA").contains("idB"), is(true));
         assertThat(result.get("idA").size(), is(1));
@@ -102,7 +102,7 @@ public class TransformationEngineHelperTest extends TransformationEngineTests {
         description.mapField("idA", "idB", new HashMap<String, String>());
         description.valueField("blubB", "42");
         description.concatField("blubB", ".", "testA", "temp.blub");
-        Map<String, Set<String>> result = helper.getPropertyConnections(description);
+        Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         assertThat(result.get("idA").contains("idB"), is(true));
         assertThat(result.get("idA").contains("testB"), is(true));
         assertThat(result.get("idA").size(), is(2));
