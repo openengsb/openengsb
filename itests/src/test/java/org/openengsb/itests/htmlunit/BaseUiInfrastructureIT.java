@@ -72,7 +72,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         HtmlPage testClient = indexPage.getAnchorByText("Test Client").click();
         assertTrue(testClient.asText().contains("Current Project"));
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
@@ -85,7 +86,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
         assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
         HtmlPage wiringPage = testClient.getAnchorByText("Wiring").click();
-        assertTrue(wiringPage.asText().contains("Current Project"));
+        assertTrue(wiringPage.asText().contains("Name of the global variable"));
     }
 
     @Test
@@ -96,10 +97,12 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("user");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         assertFalse(indexPage.asText().contains("User Management"));
     }
 
+    // TODO: OPENENGSB-3286 analyze this test and get it working again.
     @Test
     @Ignore("cannot click button without form")
     public void testCreateAndLoginNewUser_shouldNotShowUserManagementTab() throws Exception {
@@ -112,14 +115,17 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
 
         HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
-        // Test is incorrect starting here!
+
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         form = usermanagementPage.getForms().get(1);
         assertNotNull(form);
 
+        // The create button can not be accessed this way, since it is no longer in the form. More information
+        // about the problem here can be read in JIRA.
         HtmlSubmitInput createButton = form.getInputByValue("Create");
         createButton.click();
 
@@ -142,7 +148,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("newUser");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage userIndexPage = loginButton.click();
-        assertTrue(userIndexPage.asText().contains("This page represents"));
+        assertTrue(userIndexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         assertFalse(userIndexPage.asText().contains("User Management"));
     }
 }

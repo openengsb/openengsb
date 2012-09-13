@@ -38,9 +38,9 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.LocalizableString;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 

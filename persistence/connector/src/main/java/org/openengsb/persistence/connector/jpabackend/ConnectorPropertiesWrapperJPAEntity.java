@@ -28,12 +28,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.AbstractDataRow;
 
 /**
  * This is a wrapper class around Connector properties to make them available for JPA persistence. Connector properties
@@ -41,15 +43,26 @@ import org.openengsb.core.common.AbstractDataRow;
  * Collections of those types.
  * 
  */
-@SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTIES_WRAPPER")
-public class ConnectorPropertiesWrapperJPAEntity extends AbstractDataRow {
+public class ConnectorPropertiesWrapperJPAEntity {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "COLLECTION_TYPE", length = 127)
     private String collectionType;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderColumn
     private List<ConnectorPropertyJPAEntity> properties;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCollectionType() {
         return collectionType;

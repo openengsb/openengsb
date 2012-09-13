@@ -29,10 +29,10 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.services.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.services.filter.JsonSecureRequestMarshallerFilter;
 import org.openengsb.core.services.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,6 +18,7 @@
 package org.openengsb.core.weaver.test.model;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 
 public class ManipulationUtilsTest {
 
@@ -140,6 +141,29 @@ public class ManipulationUtilsTest {
         assertThat(model.getValue1(), is(5));
         assertThat(model.getValue2(), is(42L));
         assertThat(model.isValue3(), is(true));
+    }
+    
+    @Test
+    public void testIfFieldWithNoGetterGetIgnored_shouldNotBePresentInTheEntries() throws Exception {
+        PrimitiveModel model = new PrimitiveModel();
+        model.setValue1(5);
+        model.setValue2(42L);
+        model.setValue3(true);
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        assertThat(getEntryByName(entries, "ignoredField"), nullValue());
+    }
+    
+    @Test
+    public void testIfSuperModelsSupportWork_shouldWork() throws Exception {
+        ChildModel model = new ChildModel();
+        model.setId("testId");
+        model.setName("testName");
+        model.setChild("testChild");
+        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        assertThat((String) getEntryByName(entries, "id"), is("testId"));
+        assertThat((String) getEntryByName(entries, "name"), is("testName"));
+        assertThat((String) getEntryByName(entries, "child"), is("testChild"));
+        assertThat((String) ModelUtils.getInternalModelId(model), is("testId"));
     }
 
     private Object getEntryByName(List<OpenEngSBModelEntry> entries, String property) {

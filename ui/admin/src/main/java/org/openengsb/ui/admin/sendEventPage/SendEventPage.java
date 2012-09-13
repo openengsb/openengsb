@@ -117,6 +117,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     //TODO: OPENENGSB-3272: Extract this into an own component
     private Component createProjectChoice() {
         DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            
+            private static final long serialVersionUID = -5776062054709043273L;
+
             @Override
             public String getObject() {
                 return getSessionContextId();

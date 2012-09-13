@@ -17,7 +17,9 @@
 
 package org.openengsb.itests.exam;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -38,7 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
@@ -48,6 +49,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelProvider;
@@ -142,7 +144,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
         edbService.commit(commit);
 
-        List<EDBObject> objects = edbService.query("newtestkey1", "newtestvalue1");
+        List<EDBObject> objects = edbService.queryByKeyValue("newtestkey1", "newtestvalue1");
         assertThat(objects, notNullValue());
         assertThat(objects.size(), not(0));
     }
@@ -424,7 +426,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     private void setProperty(Object model, String methodName, Object... params) throws Exception {
-        Class<?> classes[] = new Class<?>[params.length];
+        Class<?>[] classes = new Class<?>[params.length];
         for (int i = 0; i < params.length; i++) {
             classes[i] = params[i].getClass();
         }

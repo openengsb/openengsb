@@ -23,7 +23,6 @@
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
-	<class>org.openengsb.core.common.AbstractDataRow</class>
     <class>org.openengsb.core.services.internal.security.model.EntryElement</class>
     <class>org.openengsb.core.services.internal.security.model.EntryValue</class>
     <class>org.openengsb.core.services.internal.security.model.BeanData</class>

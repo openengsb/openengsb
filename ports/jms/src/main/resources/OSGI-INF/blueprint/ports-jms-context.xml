@@ -75,7 +75,7 @@
     <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
-  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+  <bean class="org.openengsb.core.util.DefaultOsgiUtilsService" id="utilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 

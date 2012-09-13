@@ -57,7 +57,8 @@ public class DomainInstallIT extends AbstractExamTestHelper {
         featuresService.installFeature("openengsb-domain-example");
         Class<?> loadClass =
             this.getClass().getClassLoader().loadClass("org.openengsb.domain.example.model.ExampleRequestModel");
-        assertTrue("ExampleRequestModel has not been woven correctly", OpenEngSBModel.class.isAssignableFrom(loadClass));
+        assertTrue("ExampleRequestModel has not been woven correctly", 
+                OpenEngSBModel.class.isAssignableFrom(loadClass));
     }
 
     @Test

@@ -72,7 +72,7 @@
     </bean>
   </service>
 
-  <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+  <bean id="osgiUtilsService" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 

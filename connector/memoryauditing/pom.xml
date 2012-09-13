@@ -23,7 +23,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
@@ -32,6 +31,8 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
   </properties>
 
   <groupId>org.openengsb.connector</groupId>
@@ -119,6 +120,19 @@
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
+  
+  <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
 

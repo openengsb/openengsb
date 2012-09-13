@@ -27,6 +27,10 @@ public class PrimitiveModel {
     private int value1;
     private long value2;
     private boolean value3;
+    
+    @SuppressWarnings("unused")
+    // this field is ignored in the toOpenEngSBModelEntries method since there is no getter declared.
+    private String ignoredField;
 
     public String getId() {
         return id;

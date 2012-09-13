@@ -80,7 +80,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
 
-        workflowService.startFlow("TaskDemoWorkflow", parameterMap);
+        workflowService.startFlowWithParameters("TaskDemoWorkflow", parameterMap);
         assertNotNull(processBag.getProcessId());
         assertThat(taskboxService.getOpenTasks().size(), is(1));
 
