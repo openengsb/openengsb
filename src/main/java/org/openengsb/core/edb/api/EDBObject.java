@@ -27,7 +27,6 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private static final String OID_CONST = "oid";
-    private static final String TIMESTAMP_CONST = "timestamp";
     private static final String DELETED_CONST = "isDeleted";
 
     /**
@@ -51,7 +50,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Retrieve the timestamp for this object.
      */
     public final Long getTimestamp() {
-        return getLong(TIMESTAMP_CONST);
+        return getLong(EDBConstants.MODEL_TIMESTAMP);
     }
 
     /**
@@ -59,7 +58,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * database. Should be set by the EnterpriseDatabaseService in the commit procedure.
      */
     public void updateTimestamp(Long timestamp) {
-        putEDBObjectEntry(TIMESTAMP_CONST, timestamp);
+        putEDBObjectEntry(EDBConstants.MODEL_TIMESTAMP, timestamp);
     }
 
     /**
