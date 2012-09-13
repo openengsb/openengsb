@@ -39,6 +39,18 @@ public interface OpenEngSBModel extends Serializable {
     Object retrieveInternalModelId();
 
     /**
+     * Returns the internal model timestamp. This timestamp tells the user when this model has been last saved in the
+     * EDB. If the model is not persisted, the returned value is null.
+     */
+    Long retrieveInternalModelTimestamp();
+
+    /**
+     * Returns the internal model version. This version tells the user which version this model in the EDB has. If the
+     * model is not persisted, the returned value is null.
+     */
+    Integer retrieveInternalModelVersion();
+
+    /**
      * Adds a OpenEngSBModelEntry to the model. Can be used to add information that is not in a domain model defined
      * ("tail").
      */
