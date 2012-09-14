@@ -45,8 +45,6 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
  */
 public final class OrientModelGraph implements ModelGraph {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrientModelGraph.class);
-    private static final String ACTIVE_FIELD = "isActive";
-    private static final String FILENAME = "filename";
     private OGraphDatabase graph;
     private Map<String, TransformationDescription> descriptions;
     private AtomicLong counter;
@@ -102,9 +100,9 @@ public final class OrientModelGraph implements ModelGraph {
         ODocument node = getModel(model.toString());
         if (node == null) {
             node = graph.createVertex("Models");
-            setIdFieldValue(node, model.toString());
+            OrientModelGraphUtils.setIdFieldValue(node, model.toString());
         }
-        setActiveFieldValue(node, true);
+        OrientModelGraphUtils.setActiveFieldValue(node, true);
         node.save();
         LOGGER.debug("Added model {} to the graph database", model);
     }
@@ -116,7 +114,7 @@ public final class OrientModelGraph implements ModelGraph {
             LOGGER.warn("Couldn't remove model {} since it wasn't present in the graph database", model);
             return;
         }
-        setActiveFieldValue(node, false);
+        OrientModelGraphUtils.setActiveFieldValue(node, false);
         node.save();
         LOGGER.debug("Removed model {} from the graph database", model);
     }
@@ -127,10 +125,11 @@ public final class OrientModelGraph implements ModelGraph {
         ODocument source = getOrCreateModel(description.getSourceModel().toString());
         ODocument target = getOrCreateModel(description.getTargetModel().toString());
         ODocument edge = graph.createEdge(source, target);
-        setIdFieldValue(edge, description.getId());
+        OrientModelGraphUtils.setIdFieldValue(edge, description.getId());
         if (description.getFileName() != null) {
-            setFilenameFieldValue(edge, description.getFileName());
+            OrientModelGraphUtils.setFilenameFieldValue(edge, description.getFileName());
         }
+        OrientModelGraphUtils.fillEdgeWithPropertyConnections(edge, description);
         edge.save();
         descriptions.put(description.getId(), description);
         LOGGER.debug("Added transformation description {} to the graph database", description);
@@ -141,7 +140,7 @@ public final class OrientModelGraph implements ModelGraph {
         String source = description.getSourceModel().toString();
         String target = description.getTargetModel().toString();
         for (ODocument edge : getEdgesBetweenModels(source, target)) {
-            String id = getIdFieldValue(edge);
+            String id = OrientModelGraphUtils.getIdFieldValue(edge);
             if (description.getId() == null && isInternalId(id)) {
                 edge.delete();
                 descriptions.remove(id);
@@ -157,11 +156,11 @@ public final class OrientModelGraph implements ModelGraph {
 
     @Override
     public List<TransformationDescription> getTransformationsPerFileName(String filename) {
-        String query = String.format("select from E where %s = ?", FILENAME);
+        String query = String.format("select from E where %s = ?", OrientModelGraphUtils.FILENAME);
         List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>(query), filename);
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         for (ODocument edge : edges) {
-            result.add(descriptions.get(getIdFieldValue(edge)));
+            result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
         }
         return result;
     }
@@ -176,7 +175,7 @@ public final class OrientModelGraph implements ModelGraph {
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         if (path != null) {
             for (ODocument edge : path) {
-                result.add(descriptions.get(getIdFieldValue(edge)));
+                result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
             }
             return result;
         }
@@ -235,8 +234,8 @@ public final class OrientModelGraph implements ModelGraph {
         ODocument node = getModel(model);
         if (node == null) {
             node = graph.createVertex("Models");
-            setIdFieldValue(node, model.toString());
-            setActiveFieldValue(node, false);
+            OrientModelGraphUtils.setIdFieldValue(node, model.toString());
+            OrientModelGraphUtils.setActiveFieldValue(node, false);
             node.save();
         }
         return node;
@@ -264,24 +263,24 @@ public final class OrientModelGraph implements ModelGraph {
     private List<ODocument> recursivePathSearch(String start, String end, List<String> ids, ODocument... steps) {
         List<ODocument> neighbors = getNeighborsOfModel(start);
         for (ODocument neighbor : neighbors) {
-            if (alreadyVisited(neighbor, steps) || !getActiveFieldValue(neighbor)) {
+            if (alreadyVisited(neighbor, steps) || !OrientModelGraphUtils.getActiveFieldValue(neighbor)) {
                 continue;
             }
-            ODocument nextStep = getEdgeWithPossibleId(start, getIdFieldValue(neighbor), ids);
+            ODocument nextStep = getEdgeWithPossibleId(start, OrientModelGraphUtils.getIdFieldValue(neighbor), ids);
             if (nextStep == null) {
                 continue;
             }
-            if (getIdFieldValue(neighbor).equals(end)) {
+            if (OrientModelGraphUtils.getIdFieldValue(neighbor).equals(end)) {
                 List<ODocument> result = new ArrayList<ODocument>();
                 List<String> copyIds = new ArrayList<String>(ids);
                 for (ODocument step : steps) {
-                    String id = getIdFieldValue(step);
+                    String id = OrientModelGraphUtils.getIdFieldValue(step);
                     if (id != null && copyIds.contains(id)) {
                         copyIds.remove(id);
                     }
                     result.add(step);
                 }
-                String id = getIdFieldValue(nextStep);
+                String id = OrientModelGraphUtils.getIdFieldValue(nextStep);
                 if (id != null && copyIds.contains(id)) {
                     copyIds.remove(id);
                 }
@@ -292,7 +291,8 @@ public final class OrientModelGraph implements ModelGraph {
             }
             ODocument[] path = Arrays.copyOf(steps, steps.length + 1);
             path[path.length - 1] = nextStep;
-            List<ODocument> check = recursivePathSearch(getIdFieldValue(neighbor), end, ids, path);
+            List<ODocument> check =
+                recursivePathSearch(OrientModelGraphUtils.getIdFieldValue(neighbor), end, ids, path);
             if (check != null) {
                 return check;
             }
@@ -307,7 +307,7 @@ public final class OrientModelGraph implements ModelGraph {
     private ODocument getEdgeWithPossibleId(String start, String end, List<String> ids) {
         List<ODocument> edges = getEdgesBetweenModels(start, end);
         for (ODocument edge : edges) {
-            if (ids.contains(getIdFieldValue(edge))) {
+            if (ids.contains(OrientModelGraphUtils.getIdFieldValue(edge))) {
                 return edge;
             }
         }
@@ -328,59 +328,10 @@ public final class OrientModelGraph implements ModelGraph {
     }
 
     /**
-     * Gets the value for the id field of a graph object.
-     */
-    private String getIdFieldValue(ODocument document) {
-        return getFieldValue(document, OGraphDatabase.LABEL);
-    }
-
-    /**
-     * Sets the value for the id field of a graph object.
-     */
-    private void setIdFieldValue(ODocument document, String value) {
-        setFieldValue(document, OGraphDatabase.LABEL, value);
-    }
-
-    /**
-     * Gets the value for the active field of a graph object.
-     */
-    private Boolean getActiveFieldValue(ODocument document) {
-        return Boolean.parseBoolean(getFieldValue(document, ACTIVE_FIELD));
-    }
-
-    /**
-     * Sets the value for the active field of a graph object.
-     */
-    private void setActiveFieldValue(ODocument document, Boolean active) {
-        setFieldValue(document, ACTIVE_FIELD, active.toString());
-    }
-
-    /**
-     * Sets the value for the filename field of a graph object.
-     */
-    private void setFilenameFieldValue(ODocument document, String value) {
-        setFieldValue(document, FILENAME, value);
-    }
-
-    /**
-     * Gets the value for the given field of a graph object.
-     */
-    private String getFieldValue(ODocument document, String fieldname) {
-        return (String) document.field(fieldname);
-    }
-
-    /**
-     * Sets the value for the given field of an graph object.
-     */
-    private void setFieldValue(ODocument document, String fieldname, String value) {
-        document.field(fieldname, value);
-    }
-
-    /**
      * Returns true if the model is currently active, returns false if not.
      */
     public boolean isModelActive(ModelDescription model) {
         ODocument node = getModel(model.toString());
-        return getActiveFieldValue(node);
+        return OrientModelGraphUtils.getActiveFieldValue(node);
     }
 }

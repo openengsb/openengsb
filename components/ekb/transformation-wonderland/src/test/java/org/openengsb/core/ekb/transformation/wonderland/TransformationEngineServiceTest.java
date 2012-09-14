@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.ModelGraph;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -39,10 +38,8 @@ import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.transformation.wonderland.internal.TransformationEngineService;
 import org.openengsb.core.ekb.transformation.wonderland.models.ModelA;
 import org.openengsb.core.ekb.transformation.wonderland.models.ModelB;
-import org.openengsb.core.ekb.transformation.wonderland.models.ModelC;
-import org.osgi.framework.Version;
 
-public class TransformationEngineServiceTest {
+public class TransformationEngineServiceTest extends TransformationEngineTests {
     private TransformationEngineService service;
     private ModelRegistry registry;
     private ModelGraph graph;
@@ -57,18 +54,6 @@ public class TransformationEngineServiceTest {
         graph.addModel(getModelADescription());
         graph.addModel(getModelBDescription());
         graph.addModel(getModelCDescription());
-    }
-
-    private ModelDescription getModelADescription() {
-        return new ModelDescription(ModelA.class, new Version(1, 0, 0));
-    }
-
-    private ModelDescription getModelBDescription() {
-        return new ModelDescription(ModelB.class, new Version(1, 0, 0));
-    }
-
-    private ModelDescription getModelCDescription() {
-        return new ModelDescription(ModelC.class, new Version(1, 0, 0));
     }
 
     private TransformationDescription getDescriptionForModelAToModelB() {
