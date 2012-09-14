@@ -20,6 +20,7 @@ package org.openengsb.core.ekb.api.transformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class TransformationDescription {
     private ModelDescription sourceModel;
     private ModelDescription targetModel;
     private List<TransformationStep> steps;
+    private Map<String, Set<String>> propertyConnections;
     private String fileName;
     private String id;
 
@@ -375,6 +377,14 @@ public class TransformationDescription {
     
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public Map<String, Set<String>> getPropertyConnections() {
+        return propertyConnections;
+    }
+    
+    public void setPropertyConnections(Map<String, Set<String>> propertyConnections) {
+        this.propertyConnections = propertyConnections;
     }
     
     @Override
