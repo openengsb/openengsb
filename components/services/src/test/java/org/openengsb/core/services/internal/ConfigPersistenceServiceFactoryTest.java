@@ -33,8 +33,6 @@ import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.persistence.internal.ConfigPersistenceServiceFactory;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
@@ -46,7 +44,6 @@ public class ConfigPersistenceServiceFactoryTest {
 
     private Dictionary<String, String> properties;
     private ConfigPersistenceServiceFactory serviceFactory;
-    private OsgiUtilsService serviceUtils;
     private BundleContext bundleContext;
     private ServiceRegistration serviceRegistration;
 
@@ -56,11 +53,6 @@ public class ConfigPersistenceServiceFactoryTest {
         properties = new Hashtable<String, String>();
         properties.put(Constants.BACKEND_ID, "backendService");
         properties.put(Constants.CONFIGURATION_ID, "configurationId");
-
-        ConfigPersistenceBackendService configPersistenceBackendServiceMock =
-            mock(ConfigPersistenceBackendService.class);
-
-        serviceUtils = mock(OsgiUtilsService.class);
 
         bundleContext = mock(BundleContext.class);
 

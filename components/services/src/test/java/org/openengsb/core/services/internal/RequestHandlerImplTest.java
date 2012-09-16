@@ -38,8 +38,8 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.osgi.framework.Constants;
 
 import com.google.common.base.Preconditions;
@@ -88,7 +88,6 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 });
         ObjectMapper objectMapper = new ObjectMapper();
         String writeValueAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCall);
-        System.out.println(writeValueAsString);
         MethodCall readValue = objectMapper.readValue(writeValueAsString, MethodCall.class);
         assertThat(readValue, is(methodCall));
     }
@@ -172,5 +171,4 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
             verifyZeroInteractions(mockService);
         }
     }
-
 }

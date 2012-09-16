@@ -40,9 +40,9 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.workflow.api.EventRegistrationService;
 import org.openengsb.core.workflow.api.model.RemoteEvent;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
@@ -104,7 +104,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testWrapRemoteEvent() throws Exception {
+    public void testWrapRemoteEvent_shouldWrapEvent() throws Exception {
         TestEvent event = new TestEvent(3L, "bla");
         RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
         Map<String, String> properties = wrapEvent.getNestedEventProperties();
@@ -113,7 +113,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
-    public void testRegisterEvent() throws Exception {
+    public void testRegisterEvent_shouldRegisterEvent() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
@@ -124,9 +124,9 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
-        int oldCount = manager.list(RuleBaseElementType.Rule).size();
+        int oldCount = manager.listAll(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", "test://localhost");
-        assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
+        assertThat(manager.listAll(RuleBaseElementType.Rule).size(), is(oldCount + 1));
     }
 
     @Test
@@ -176,5 +176,4 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
             }
         }).when(mock);
     }
-
 }

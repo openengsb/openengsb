@@ -32,10 +32,10 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -81,7 +81,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testSendEvent() throws Exception {
+    public void testSendEvent_shouldCallService() throws Exception {
         authenticateAsAdmin();
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);

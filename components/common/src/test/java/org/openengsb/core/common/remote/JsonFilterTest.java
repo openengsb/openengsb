@@ -73,7 +73,7 @@ public class JsonFilterTest {
             + "}";
 
     @Test
-    public void methodCallMarashalFilter() throws Exception {
+    public void testMethodCallMarashalFilter_shouldMarshalOutgoingMessage() throws Exception {
         JsonOutgoingMethodCallMarshalFilter jsonOutgoingMethodCallMarshalFilter =
             new JsonOutgoingMethodCallMarshalFilter();
         FilterAction mock = mock(FilterAction.class);
@@ -92,7 +92,7 @@ public class JsonFilterTest {
     }
 
     @Test
-    public void incomingMethodCallMarashalFilter() throws Exception {
+    public void testIncomingMethodCallMarashalFilter_shouldMarshalIngoingMessage() throws Exception {
         JsonMethodCallMarshalFilter jsonMethodCallMarshalFilter = new JsonMethodCallMarshalFilter();
         FilterAction mock = mock(FilterAction.class);
         TestModel testResult = new TestModel();

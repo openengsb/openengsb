@@ -80,7 +80,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @Test
-    public void testSingleMethodProxies() throws Exception {
+    public void testSingleMethodProxies_shouldProxyService() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -106,7 +106,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @Test
-    public void testListMethod() throws Exception {
+    public void testListMethod_shouldListMethods() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -139,7 +139,7 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
     }
 
     @Test
-    public void testServiceDoesExist() throws Exception {
+    public void testServiceDoesExist_shouldNotFindService() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");

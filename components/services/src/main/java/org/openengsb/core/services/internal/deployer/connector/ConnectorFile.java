@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
@@ -139,21 +141,22 @@ public class ConnectorFile {
     }
 
     private ImmutableMap<String, String> readProperties(File file) {
-        Properties props = new Properties();
-        FileReader reader;
+        FileReader reader = null;
         try {
             reader = new FileReader(file);
+            Properties props = new Properties();
+            props.load(reader);
+            Map<String, String> map = Maps.fromProperties(props);
+            Map<String, String> transformedMap = Maps.transformValues(map, new TrimFunction<String, String>());
+            return ImmutableMap.copyOf(transformedMap);
+
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
-        }
-        try {
-            props.load(reader);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        return Maps.fromProperties(props);
     }
 
     private ImmutableMap<String, String> getFilteredEntries(Map<String, String> propertyMap, final String prefix) {
@@ -222,4 +225,11 @@ public class ConnectorFile {
         return properties;
     }
 
+    private class TrimFunction<F, T> implements Function<F, T> {
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object apply(@Nullable Object input) {
+            return (input == null) ? null : ((String) input).trim();
+        }
+    }
 }

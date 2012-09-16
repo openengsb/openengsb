@@ -29,7 +29,6 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.l10n.BundleStrings;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 /**
  * Base class for {@code DomainProvider} implementations with the following functionality:
@@ -42,7 +41,7 @@ import org.springframework.osgi.context.BundleContextAware;
  * </ul>
  */
 public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEventType extends DomainEvents>
-        implements DomainProvider, BundleContextAware {
+        implements DomainProvider {
 
     private BundleContext bundleContext;
     private BundleStrings strings;
@@ -111,7 +110,6 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
         return domainInterface;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.strings = new BundleStrings(this.bundleContext.getBundle());

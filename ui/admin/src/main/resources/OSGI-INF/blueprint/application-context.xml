@@ -50,7 +50,7 @@
   <reference-list id="modelProviders" interface="org.openengsb.labs.delegation.service.ClassProvider"
     filter="(delegationContext=models)" availability="optional" />
 
-  <bean id="osgiUtilsService" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+  <bean id="osgiUtilsService" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 

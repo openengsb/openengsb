@@ -22,8 +22,7 @@
   <persistence-unit name="openengsb-connector" transaction-type="JTA">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
-    
-    <class>org.openengsb.core.common.AbstractDataRow</class>
+
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorConfigurationJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertyJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertiesWrapperJPAEntity</class>

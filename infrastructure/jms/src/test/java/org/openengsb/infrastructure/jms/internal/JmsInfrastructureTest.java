@@ -84,13 +84,13 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void startBroker_shouldCreateDataDirectories() throws Exception {
+    public void testStartBroker_shouldCreateDataDirectories() throws Exception {
         assertThat(new File(tempfolder.getRoot(), "activemq/openengsb").exists(), is(true));
         assertThat(new File(tempfolder.getRoot(), "activemq/openengsb/kahadb").exists(), is(true));
     }
 
     @Test
-    public void connectOpenWire_shouldConnect() throws Exception {
+    public void testConnectOpenWire_shouldConnect() throws Exception {
         ActiveMQConnectionFactory activeMQConnectionFactory =
             new ActiveMQConnectionFactory("tcp://localhost:" + OPENWIRE_PORT);
         Connection connection = activeMQConnectionFactory.createConnection();
@@ -102,7 +102,7 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void connectStomp_shouldConnect() throws Exception {
+    public void testConnectStomp_shouldConnect() throws Exception {
         StompConnection connection = new StompConnection();
         connection.open("localhost", STOMP_PORT);
         connection.close();

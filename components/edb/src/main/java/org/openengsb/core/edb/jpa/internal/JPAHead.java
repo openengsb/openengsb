@@ -17,10 +17,10 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 
 /**
  * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
@@ -30,11 +30,7 @@ public class JPAHead {
     private Long timestamp;
     
     public List<EDBObject> getEDBObjects() {
-        List<EDBObject> loaded = new ArrayList<EDBObject>();
-        for (JPAObject o : objects) {
-            loaded.add(o.getObject());
-        }
-        return loaded;
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
     
     public void setJPAObjects(List<JPAObject> objects) {

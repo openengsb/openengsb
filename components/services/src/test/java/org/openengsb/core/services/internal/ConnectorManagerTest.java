@@ -47,12 +47,12 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
@@ -261,7 +261,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void createConnectorWithSkipDomainType_shouldNotInvokeSetDomainType() throws Exception {
+    public void testCreateConnectorWithSkipDomainType_shouldNotInvokeSetDomainType() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(Constants.SKIP_SET_DOMAIN_TYPE, "true");
         Map<String, Object> properties = new Hashtable<String, Object>();

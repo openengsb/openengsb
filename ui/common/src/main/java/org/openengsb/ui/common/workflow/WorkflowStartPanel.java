@@ -63,7 +63,7 @@ public class WorkflowStartPanel extends Panel {
 
         @Override
         protected List<RuleBaseElementId> load() {
-            return Lists.newArrayList(ruleManager.list(RuleBaseElementType.Process));
+            return Lists.newArrayList(ruleManager.listAll(RuleBaseElementType.Process));
         }
     }
 

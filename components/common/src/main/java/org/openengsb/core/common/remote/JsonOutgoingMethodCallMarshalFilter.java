@@ -29,7 +29,7 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.core.util.JsonUtils;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next

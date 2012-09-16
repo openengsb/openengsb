@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.commands.InfoProvider;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.core.util.OutputStreamFormater;
 import org.osgi.framework.Bundle;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")

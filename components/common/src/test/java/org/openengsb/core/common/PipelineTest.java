@@ -72,7 +72,7 @@ public class PipelineTest {
     }
 
     @Test
-    public void testArchWithJson() throws Exception {
+    public void testArchWithJson_shouldWork() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
 
@@ -92,7 +92,7 @@ public class PipelineTest {
     }
 
     @Test
-    public void testArchWithXml() throws Exception {
+    public void testArchWithXml_shouldWork() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =
@@ -124,7 +124,7 @@ public class PipelineTest {
     }
 
     @Test
-    public void testFilterStorage() throws Exception {
+    public void testFilterStorage_shouldWork() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
 

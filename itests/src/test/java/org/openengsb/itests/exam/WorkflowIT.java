@@ -27,11 +27,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -78,7 +78,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCreateRuleAndTriggerDomain() throws Exception {
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         DummyLogDomain exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -143,14 +143,4 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(exampleMock.wasCalled, is(true));
     }
-
-    /**
-     * Ignored because security manager is commented in the moment.
-     */
-    @Test
-    /* (expected = Exception.class) */
-    public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
-        authenticate("user", "password");
-    }
-
 }

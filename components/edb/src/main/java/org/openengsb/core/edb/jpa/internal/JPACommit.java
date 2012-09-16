@@ -27,7 +27,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
 
-import org.openengsb.core.common.AbstractDataRow;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class JPACommit extends AbstractDataRow implements EDBCommit {
+public class JPACommit extends VersionedEntity implements EDBCommit {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPACommit.class);
 
     @Column(name = "COMMITER", length = 50)
@@ -129,11 +128,11 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
     @Override
     public void delete(String oid) throws EDBException {
         if (deletions.contains(oid)) {
-            LOGGER.debug("could not delete object " + oid + " because it was never added");
+            LOGGER.debug("could not delete object {} because it was never added", oid);
             return;
         }
         deletions.add(oid);
-        LOGGER.debug("deleted object " + oid + " from the commit");
+        LOGGER.debug("deleted object {} from the commit", oid);
     }
 
     private void fillOIDs() {
@@ -151,7 +150,7 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
     public void insert(EDBObject obj) throws EDBException {
         if (!inserts.contains(obj)) {
             inserts.add(obj);
-            LOGGER.debug("Added object " + obj.getOID() + " to the commit for inserting");
+            LOGGER.debug("Added object {} to the commit for inserting", obj.getOID());
         }
     }
 
@@ -159,7 +158,7 @@ public class JPACommit extends AbstractDataRow implements EDBCommit {
     public void update(EDBObject obj) throws EDBException {
         if (!updates.contains(obj)) {
             updates.add(obj);
-            LOGGER.debug("Added object " + obj.getOID() + " to the commit for updating");
+            LOGGER.debug("Added object {} to the commit for updating", obj.getOID());
         }
     }
 
