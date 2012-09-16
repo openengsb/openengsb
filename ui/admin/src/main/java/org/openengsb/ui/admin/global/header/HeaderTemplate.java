@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -64,6 +63,8 @@ public class HeaderTemplate extends Panel {
         homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
         add(homelink);
 
+        //TODO: Find a soultion where to display version information
+        /*
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
                 add(new Label("version", new StringResourceModel("unknown.version", this, null)));
@@ -74,6 +75,7 @@ public class HeaderTemplate extends Panel {
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }
+        */
     }
 
     private void initializeTopMenu() {
@@ -124,25 +126,6 @@ public class HeaderTemplate extends Panel {
             }
         };
         add(avaliableContexts);
-
-        // Adds the language choice list
-        final Label languageLabel = new Label("currentLanguage", new IModel<String>() {
-
-            @Override
-            public void detach() {
-            }
-
-            @Override
-            public String getObject() {
-                return getSession().getLocale().getDisplayLanguage();
-            }
-
-            @Override
-            public void setObject(String object) {
-            }
-        });
-        languageLabel.setOutputMarkupId(true);
-        add(languageLabel);
 
         add(new Link<Object>("lang.en") {
 

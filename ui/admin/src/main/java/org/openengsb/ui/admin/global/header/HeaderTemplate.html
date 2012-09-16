@@ -29,35 +29,34 @@
 	  </a>
     </div>
 	    <div id="topMenu" class="unit size1of3 lastUnit header">
-	      <span id="topVersionContainer">OpenEngSB version: <span wicket:id="version"/></span>
-	      <ul id="topMenuContainer">
-	        <li class="ddTrigger">
-	          <span class="topMenuLabel" wicket:id="currentProject">Project</span>
+	      <ul id="topMenuContainer" class="toolbar">
+	        <li class="ddTrigger toolbarIcon iconProject">
+	          <span class="label" wicket:id="currentProject">Project</span>
 	          <div class="dropDownContainer hidden">
 	            <div class="line boxArrow">&nbsp;</div>
 	            <ul id="availableContexts">
-	    		  <li class="dropdownContainerHeadline"><wicket:message key="context.select" /></li>
+	    		  <li class="dropDownContainerLabel"><wicket:message key="context.select" /></li>
 	    		  <li wicket:id="availableContexts">
-	    		    <a wicket:id="availableContext">
+	    		    <a wicket:id="availableContext" class="dropDownContainerLink">
 	    		      <span wicket:id="availableContextLabel">availableContext</span>
 	    		    </a>
 	    		  </li>
 	    		</ul>
 	          </div>
 	        </li>
-	        <li class="ddTrigger">
-	          <span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
+	        <li class="ddTrigger toolbarIcon iconLanguage">
+	          <span class="label"><wicket:message key="language" /></span>
 	          <div class="dropDownContainer hidden">
 	            <div class="line boxArrow">&nbsp;</div> 
 	            <ul id="availableLanguages">
-	    		  <li class="dropdownContainerHeadline"><wicket:message key="language.select" /></li>
-	    		  <li><a wicket:id="lang.en">English (EN)</a></li>
-	    		  <li><a wicket:id="lang.de">German (DE)</a></li>
+	    		  <li class="dropDownContainerLabel"><wicket:message key="language.select" /></li>
+	    		  <li class="dropDownContainerLink"><a wicket:id="lang.en" class="dropDownContainerLink">English (EN)</a></li>
+	    		  <li class="dropDownContainerLink"><a wicket:id="lang.de" class="dropDownContainerLink">German (DE)</a></li>
 	            </ul>
 	          </div> 
 	        </li>
-	        <li>
-			  <a href="BasePage.html#" class="topMenuLabel" wicket:id="logout" >Logout</a>
+	        <li class="toolbarIcon iconLogout" wicket:id="logout" >
+			  <a href="BasePage.html#" class="label" ><wicket:message key="logout" /></a>
 	    	</li>
 	      </ul>
 	    </div>

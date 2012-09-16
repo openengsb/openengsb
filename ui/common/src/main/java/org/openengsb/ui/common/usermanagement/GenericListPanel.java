@@ -53,12 +53,10 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
         listContainer.add(form);
         final Panel confirm = new EmptyPanel("confirm");
         confirm.setOutputMarkupId(true);
-        
+        listContainer.add(confirm);
 
         ListView<T> users = new ListView<T>("list", listModel) {
             private static final long serialVersionUID = 7628860457238288128L;
-
-            private ListItem<T> activeConfirm;
 
             @Override
             protected void populateItem(final ListItem<T> userListItem) {
@@ -70,13 +68,6 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         
-                    	/*
-                    	if (activeConfirm != null) {
-                            activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm").setOutputMarkupId(true));
-                            ajaxRequestTarget.add(activeConfirm);
-                            activeConfirm = null;
-                        } */
-                    	
                         final Model<T> model = new Model<T>(userListItem.getModelObject());
                         ConfirmPanel<T> confirmPanel = new ConfirmPanel<T>("confirm", model, userListItem.get("item.name").toString()) {
                             private static final long serialVersionUID = -1506781103470764246L;
@@ -91,9 +82,9 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
 								target.add(listContainer);
 							}
                         };
-                        confirm.replaceWith(confirmPanel);
-                        activeConfirm = userListItem;
-                        ajaxRequestTarget.add(confirmPanel);
+                        listContainer.get("confirm").replaceWith(confirmPanel);
+                        ajaxRequestTarget.add(listContainer);
+                        confirmPanel.showDialog();
                     }
                 };
                 deleteLink.setOutputMarkupId(true);

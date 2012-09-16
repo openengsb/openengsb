@@ -294,29 +294,27 @@ input[type=submit] {
   border-bottom: 1px solid #eeeeee;
 }
 
-#topMenuContainer{
-  position: absolute;
-  right: 15px;
-  top: 24px;
-}
-
 .dropDownContainer {
   background: none repeat scroll 0 0 #FFFFFF;
   border: 1px solid #4890BB;
   border-radius: 5px 5px 5px 5px;
-  margin: 15px 0 0 -58px;
-  padding: 15px 0 15px 20px;
+  margin: 45px 0 0 -70px;
+  padding: 10px 15px 17px 15px;
   min-width: 100px;
   overflow: visible;
   position: absolute;
 }
 
-.dropdownContainerHeadline{
+.dropDownContainer ul{
+  list-style: none;
+}
+
+.dropDownContainerLabel{
   color: #adadad;
   font-weight: bold;
 }
 
-.dropDownContainer a, .dropDownContainer a:visited{
+.dropDownContainerLink a, a:visited.dropDownContainerLink {
     color: #4890BB;
     float: left;
     font-family: Helvetica,Arial;
@@ -324,14 +322,6 @@ input[type=submit] {
     text-decoration: none;
 }
 
-
-#topMenuContainer li{
-	display: inline;
-	float: left;
-	list-style-type:none;
-	height: 24px;
-	line-height: 30px;
-}
 
 .greyButton{
     background: none repeat scroll 0 0 #eeeeee;
@@ -374,11 +364,40 @@ a.inlistButton {
   text-decoration: none;
 }
 
+.toolbar{
+  position: absolute;
+  right: 0;
+}
 
-.topMenuLabel{
+.toolbarIcon{
+	display:block;
+	float:left;
+	height:55px;
+	width: 65px;
+	margin: 0 0 0 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.toolbarIcon .label, .toolbarIcon a, .toolbarIcon a:visited{
 	color: #ffffff;
 	font-weight: bold;
-	cursor: pointer;
+	font-size: 1em;
+    position: relative;
+    top: 33px;
+	text-decoration: none;
+}
+
+.iconProject{
+	background: url("../org.openengsb.ui.admin.global.header.HeaderTemplate/iconProject.png") no-repeat scroll 0 4px transparent;
+}
+
+.iconLanguage{
+	background: url("../org.openengsb.ui.admin.global.header.HeaderTemplate/iconLanguage.png") no-repeat scroll 16px 6px transparent;
+}
+
+.iconLogout{
+	background: url("../org.openengsb.ui.admin.global.header.HeaderTemplate/iconLogout.png") no-repeat scroll 17px 4px transparent;
 }
 
 .sectionContainer {
@@ -443,7 +462,7 @@ li.activeSectionMenu {
 
 .boxArrow {
   background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/box_arrow.png") no-repeat scroll 0 0 transparent;
-  left: 77px;
+  right: 14px;
   position: absolute;
   top: -10px;
   width: 20px;
