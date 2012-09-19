@@ -46,7 +46,7 @@ public class ModelRegistryServiceTest {
 
     @Before
     public void init() {
-        registry = ModelRegistryService.getInstance(context);
+        registry = new ModelRegistryService(context);
         graph = mock(ModelGraph.class);
         registry.setEkbClassLoader(new EKBTestClassLoader());
         registry.setGraphDb(graph);

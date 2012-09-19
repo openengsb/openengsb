@@ -34,7 +34,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         ModelGraph graph = context.getService(context.getServiceReference(ModelGraph.class));
-        ModelRegistryService service = ModelRegistryService.getInstance(context);
+        ModelRegistryService service = new ModelRegistryService(context);
         service.setGraphDb(graph);
         service.setEkbClassLoader(new EKBClassLoaderService(context));
         tracker = service;
