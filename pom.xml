@@ -1187,6 +1187,11 @@
         <version>${openengsb.api.ekb.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.framework.ekb</groupId>
+        <artifactId>org.openengsb.framework.ekb.common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.framework.workflow</groupId>
         <artifactId>org.openengsb.framework.workflow.drools</artifactId>
         <version>${project.version}</version>
@@ -1315,10 +1320,12 @@
     <module>components/weaver/test</module>
     <module>components/console</module>
     <module>components/edb</module>
+    <module>components/ekb/common</module>
     <module>components/ekb/graphdb-orient</module>
     <module>components/ekb/modelregistry-tracker</module>
-    <module>components/ekb/persistence-edb</module>
+    <module>components/ekb/persistence-query-edb</module>
     <module>components/ekb/transformation-wonderland</module>
+    <module>components/ekb/persistence-persist-edb</module>
     <module>components/persistence</module>
     <module>components/services</module>
     <module>components/workflow</module>
