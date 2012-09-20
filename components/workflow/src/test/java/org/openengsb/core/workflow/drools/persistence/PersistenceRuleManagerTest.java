@@ -69,19 +69,19 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testGetRuleBase_shouldNotReturnNull() {
+    public void testGetRuleBase_shouldNotReturnNull() throws Exception {
         assertThat(rulebase, notNullValue());
     }
 
     @Test
-    public void testListImports_shouldContainAddedImport() {
+    public void testListImports_shouldContainAddedImport() throws Exception {
         ruleManager.addImport("java.util.Map");
         Collection<String> listImports = ruleManager.listImports();
         assertThat(listImports, hasItem("java.util.Map"));
     }
 
     @Test
-    public void testAddRule_shouldAddRule() {
+    public void testAddRule_shouldAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         ruleManager.add(id, "when\n" + "  e : Event()\n" + "then\n"
                 + "  example2.doSomethingWithMessage(\"this rule was added by the addrule-function\");\n");
@@ -90,21 +90,21 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testAddImport_shouldAddImport() {
+    public void testAddImport_shouldAddImport() throws Exception {
         assertThat(ruleManager.listImports(), not(hasItem("java.util.Currency")));
         ruleManager.addImport("java.util.Currency");
         assertThat(ruleManager.listImports(), hasItem("java.util.Currency"));
     }
 
     @Test
-    public void testRemoveImport_shouldRemoveImport() {
+    public void testRemoveImport_shouldRemoveImport() throws Exception {
         ruleManager.addImport("java.util.Currency");
         ruleManager.removeImport("java.util.Currency");
         assertThat(ruleManager.listImports(), not(hasItem("java.util.Currency")));
     }
 
     @Test
-    public void testRuleCallingFunctionUsingImport_shouldFireRules() {
+    public void testRuleCallingFunctionUsingImport_shouldFireRules() throws Exception {
         RuleBaseElementId testFunctionId = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test");
         ruleManager.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
@@ -116,7 +116,7 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testAddGlobal_shouldAddGlobal() {
+    public void testAddGlobal_shouldAddGlobal() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla");
         ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
             "when\n then example2.doSomethingWithMessage(\"\" + bla.nextInt());");
@@ -127,40 +127,40 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testAddGlobalIfNotPresentWhenIsPresent_shouldAddOnlyNotAddedGlobals() {
+    public void testAddGlobalIfNotPresentWhenIsPresent_shouldAddOnlyNotAddedGlobals() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla");
         ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
         assertThat(ruleManager.listGlobals().get("bla"), is("java.util.Random"));
     }
 
     @Test
-    public void testAddGlobalIfNotPresentWhenNotPresent_shouldAddOnlyNotAddedGlobals() {
+    public void testAddGlobalIfNotPresentWhenNotPresent_shouldAddOnlyNotAddedGlobals() throws Exception {
         ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
         assertThat(ruleManager.listGlobals().get("bla"), is("java.util.Random"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddGlobalIfNotPresentWithWrongType_shouldThrowException() {
+    public void testAddGlobalIfNotPresentWithWrongType_shouldThrowException() throws Exception {
         ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
         ruleManager.addGlobalIfNotPresent("java.util.List", "bla");
     }
 
     @Test
-    public void testGetAllGlobalsOfType_shouldReturnGlobalList() {
+    public void testGetAllGlobalsOfType_shouldReturnGlobalList() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla1");
         ruleManager.addGlobal("java.util.Random", "bla2");
         assertThat(ruleManager.getAllGlobalsOfType("java.util.Random"), hasItems("bla1", "bla2"));
     }
 
     @Test
-    public void testGetGlobalType_shouldReturnType() {
+    public void testGetGlobalType_shouldReturnType() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla1");
         String result = ruleManager.getGlobalType("bla1");
         assertThat(result, is("java.util.Random"));
     }
 
     @Test
-    public void testInvalidAddRule_shouldFail() {
+    public void testInvalidAddRule_shouldFail() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         try {
             ruleManager.add(id, "this_makes_no_sense_at_all");
@@ -168,19 +168,19 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
         } catch (RuleBaseException e) {
             // expected
         }
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
+        Collection<RuleBaseElementId> list = ruleManager.listAll(RuleBaseElementType.Rule);
         assertThat(list, not(hasItem(id)));
     }
 
     @Test(expected = RuleBaseException.class)
-    public void testAddExistingRule_shouldThrowException() {
+    public void testAddExistingRule_shouldThrowException() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello1");
         ruleManager.add(id, "when\nthen\nexample.doSomething(\"bla\");");
         ruleManager.add(id, "when\nthen\nexample.doSomething(\"bla\");");
     }
 
     @Test
-    public void testAddOtherPackages_shouldWork() {
+    public void testAddOtherPackages_shouldWork() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
         ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         executeTestSession();
@@ -188,7 +188,7 @@ public class PersistenceRuleManagerTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testRulesInDifferentPackages_shouldFireRules() {
+    public void testRulesInDifferentPackages_shouldFireRules() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
         ruleManager.add(id, "when\nthen\nexample2.doSomethingWithMessage(\"bla\");");
         id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello42");

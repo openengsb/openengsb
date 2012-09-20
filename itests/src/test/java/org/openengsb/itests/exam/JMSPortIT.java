@@ -47,11 +47,11 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.JsonUtils;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -105,7 +105,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void testJmsPortPresence_shouldBeExportedWithCorrectId() {
+    public void testJmsPortPresence_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
 

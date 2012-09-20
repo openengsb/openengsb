@@ -25,7 +25,7 @@
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../../parents/framework</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
   <properties>
@@ -62,11 +62,15 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
+      <artifactId>org.openengsb.framework.services</artifactId>
     </dependency>
   </dependencies>
   <build>

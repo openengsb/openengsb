@@ -26,7 +26,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -66,12 +65,12 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testWorkflowDeployerService_isAnArtifactListener() {
+    public void testWorkflowDeployerService_isAnArtifactListener() throws Exception {
         assertThat(workflowDeployer instanceof ArtifactInstaller, is(true));
     }
 
     @Test
-    public void testWorkflowDeployerService_shouldCanHandleWorkflowFiles() throws IOException {
+    public void testWorkflowDeployerService_shouldCanHandleWorkflowFiles() throws Exception {
         File processFile = temporaryFolder.newFile("process.rf");
         File ruleFile = temporaryFolder.newFile("rule.rule");
         File functionFile = temporaryFolder.newFile("function.function");
@@ -86,7 +85,7 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testWorkflowDeployerService_shouldNotHandleFiles() throws IOException {
+    public void testWorkflowDeployerService_shouldNotHandleFiles() throws Exception {
         File fileWithoutExtension = temporaryFolder.newFile("process");
         File dictionary = temporaryFolder.newFolder("dictionary.rf");
 
@@ -287,14 +286,14 @@ public class WorkflowDeployerServiceTest extends AbstractOpenEngSBTest {
         workflowDeployer.setRuleManager(ruleManager);
     }
 
-    private File readExampleProcessFile() throws IOException {
+    private File readExampleProcessFile() throws Exception {
         File target = temporaryFolder.newFile("process.rf");
         String process = RuleUtil.readFlow(PROCESS_EXAMPLE);
         FileUtils.writeStringToFile(target, process);
         return target;
     }
 
-    private File readExampleRuleFile() throws IOException {
+    private File readExampleRuleFile() throws Exception {
         File target = temporaryFolder.newFile("rule.rule");
         String rule = RuleUtil.readRule(RULE_EXAMPLE);
         FileUtils.writeStringToFile(target, rule);

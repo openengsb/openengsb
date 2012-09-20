@@ -56,15 +56,15 @@ public class RuleEditorTest extends AbstractUITest {
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
         Collection<RuleBaseElementId> rules = Arrays
             .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));
-        when(ruleManager.list(RuleBaseElementType.Rule)).thenReturn(rules);
+        when(ruleManager.listAll(RuleBaseElementType.Rule)).thenReturn(rules);
         when(ruleManager.get(ruleBaseElementId)).thenReturn("testsource");
         tester.startPage(RuleEditorPage.class);
-        verify(ruleManager).list(RuleBaseElementType.Rule);
+        verify(ruleManager).listAll(RuleBaseElementType.Rule);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testRenderEditorPage_shouldShowPage() {
+    public void testRenderEditorPage_shouldShowPage() throws Exception {
         tester.assertRenderedPage(RuleEditorPage.class);
         tester.assertComponent("ruleEditor", RuleEditorPanel.class);
         tester.assertComponent("ruleEditor:form", Form.class);
@@ -94,7 +94,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testChangeSelectedRule_shouldSelectRule() {
+    public void testChangeSelectedRule_shouldSelectRule() throws Exception {
         FormTester formTester = tester.newFormTester("ruleEditor:form");
         formTester.select("ruleChoice", 0);
         tester.executeAjaxEvent("ruleEditor:form:ruleChoice", "onchange");
@@ -105,7 +105,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testChangeSelectedRuleType_shouldChangeRuleType() {
+    public void testChangeSelectedRuleType_shouldChangeRuleType() throws Exception {
         FormTester formTester = tester.newFormTester("ruleEditor:form");
 
         formTester.select("typeChoice", 1);
@@ -124,8 +124,8 @@ public class RuleEditorTest extends AbstractUITest {
         assertFalse(textArea.isEnabled());
         assertNotNull(textArea.getModel());
         assertEquals(null, textArea.getModelObject());
-        verify(ruleManager).list(RuleBaseElementType.Rule);
-        verify(ruleManager).list(RuleBaseElementType.Function);
+        verify(ruleManager).listAll(RuleBaseElementType.Rule);
+        verify(ruleManager).listAll(RuleBaseElementType.Function);
     }
 
     @SuppressWarnings("unchecked")
@@ -145,7 +145,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitChanges_shouldSaveChanges() {
+    public void testSubmitChanges_shouldSaveChanges() throws Exception {
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
 
@@ -159,7 +159,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testClickCancelButton_shouldCancelAction() {
+    public void testClickCancelButton_shouldCancelAction() throws Exception {
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:cancel", "onclick");
 
@@ -173,7 +173,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitChangesWithErrors_shouldShowError() {
+    public void testSubmitChangesWithErrors_shouldShowError() throws Exception {
         doThrow(new RuleBaseException("error")).when(ruleManager).update((RuleBaseElementId) anyObject(), anyString());
 
         enterText();
@@ -194,7 +194,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testButtonStateOnSecondChange_shouldBeDisabled() {
+    public void testButtonStateOnSecondChange_shouldBeDisabled() throws Exception {
         enterText();
         FormTester formTester = tester.newFormTester("ruleEditor:form");
         formTester.select("ruleChoice", 0);
@@ -209,7 +209,7 @@ public class RuleEditorTest extends AbstractUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateNewRule_shouldAddRule() {
+    public void testCreateNewRule_shouldAddRule() throws Exception {
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = (TextField<String>) tester
             .getComponentFromLastRenderedPage("ruleEditor:form:ruleName");
@@ -236,14 +236,14 @@ public class RuleEditorTest extends AbstractUITest {
             .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice")).getDefaultModelObject());
         RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "rulename");
         verify(ruleManager).add(ruleBaseElementId, "new rule source");
-        verify(ruleManager, times(2)).list(RuleBaseElementType.Rule);
+        verify(ruleManager, times(2)).listAll(RuleBaseElementType.Rule);
         assertEquals(ruleBaseElementId,
             tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").getDefaultModelObject());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSubmitNewWithErrors_shouldShowError() {
+    public void testSubmitNewWithErrors_shouldShowError() throws Exception {
         doThrow(new RuleBaseException("error")).when(ruleManager).add((RuleBaseElementId) anyObject(), anyString());
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = (TextField<String>) tester

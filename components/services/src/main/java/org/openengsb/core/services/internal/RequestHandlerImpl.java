@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -185,7 +186,7 @@ public class RequestHandlerImpl implements RequestHandler {
         List<Class<?>> clazzes = new ArrayList<Class<?>>();
         for (String clazz : args.getClasses()) {
             try {
-                clazzes.add(this.getClass().getClassLoader().loadClass(clazz));
+                clazzes.add(ClassUtils.getClass(this.getClass().getClassLoader(), clazz));
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("The classes defined could not be found", e);
             }

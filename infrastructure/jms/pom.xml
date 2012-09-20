@@ -23,9 +23,10 @@
 >
 
   <parent>
-    <groupId>org.openengsb.infrastructure</groupId>
-    <artifactId>openengsb-infrastructure-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
 
   <properties>
@@ -87,6 +88,7 @@
             <!--
               The JMS infrastructure needs dynamic import for exporting the various cxf things.
             -->
+            <Import-Package>*</Import-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
@@ -108,6 +110,18 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
     </dependency>
   </dependencies>
 </project>

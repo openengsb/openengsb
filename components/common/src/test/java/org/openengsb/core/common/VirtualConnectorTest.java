@@ -37,10 +37,10 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.common.internal.VirtualConnectorManager;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.FilterUtils;
 import org.osgi.framework.Filter;
 
 public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
@@ -111,7 +111,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRegisterDomainProvider_shouldRegisterFactory() {
+    public void testRegisterDomainProvider_shouldRegisterFactory() throws Exception {
         pseudoConnectorManager.start();
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         createDomainProviderMock(NullDomain.class, "test");
@@ -122,7 +122,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testRegisterVirtualProvider_shouldRegisterFactory() {
+    public void testRegisterVirtualProvider_shouldRegisterFactory() throws Exception {
         pseudoConnectorManager.start();
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
@@ -133,7 +133,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() {
+    public void registerVirtualAndDomainProviderAndStartManagerLater_shouldRegisterFactory() throws Exception {
         createDomainProviderMock(NullDomain.class, "test");
         registerService(virtualConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         pseudoConnectorManager.start();
@@ -142,5 +142,4 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
                 "(&(domain=test)(connector=virtual-test-connector))");
         utilsService.getService(filter, 500);
     }
-
 }

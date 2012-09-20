@@ -28,6 +28,7 @@ import org.openengsb.core.edb.api.EDBEntry;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectDiff;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 
 import com.google.common.base.Preconditions;
 
@@ -88,11 +89,11 @@ public class ObjectDiff implements EDBObjectDiff {
      */
     private List<String> loadKeyList() {
         Set<String> keySet = new HashSet<String>();
-        for (Map.Entry<String, Object> e : startState.entrySet()) {
-            keySet.add(e.getKey());
+        for (EDBObjectEntry entry : startState.values()) {
+            keySet.add(entry.getKey());
         }
-        for (Map.Entry<String, Object> e : endState.entrySet()) {
-            keySet.add(e.getKey());
+        for (EDBObjectEntry entry : endState.values()) {
+            keySet.add(entry.getKey());
         }
         return new ArrayList<String>(keySet);
     }

@@ -114,20 +114,20 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testAddRuleBaseElement_shouldWork() {
+    public void testAddRuleBaseElement_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         assertEquals(code[0], ruleManager.get(id[0]));
     }
 
     @Test
-    public void testUpdateRuleBaseElement_shouldWork() {
+    public void testUpdateRuleBaseElement_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.update(id[1], code[1]);
         assertThat(ruleManager.get(id[0]), equalTo(code[1]));
     }
 
     @Test
-    public void testListRuleBaseElementsByTypeAndPackage_shouldWork() {
+    public void testListRuleBaseElementsByTypeAndPackage_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.add(id[2], code[2]);
         Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType(), id[0].getPackageName());
@@ -136,28 +136,28 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testListRuleBaseElementsByType_shouldWork() {
+    public void testListRuleBaseElementsByType_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.add(id[2], code[2]);
-        Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType());
+        Collection<RuleBaseElementId> result = ruleManager.listAll(id[0].getType());
         assertThat(result, hasItem(id[0]));
         assertThat(result, hasItem(id[2]));
     }
 
     @Test
-    public void testDeleteRuleBaseElement_shouldWork() {
+    public void testDeleteRuleBaseElement_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.delete(id[0]);
     }
 
     @Test
-    public void testAddOrUpdateOnNewRule_shouldWork() {
+    public void testAddOrUpdateOnNewRule_shouldWork() throws Exception {
         ruleManager.addOrUpdate(id[0], code[0]);
         assertThat(ruleManager.get(id[0]), is(code[0]));
     }
 
     @Test
-    public void testAddOrUpdateOnExistingRule_shouldWork() {
+    public void testAddOrUpdateOnExistingRule_shouldWork() throws Exception {
         ruleManager.add(id[0], code[0]);
         ruleManager.addOrUpdate(id[1], code[1]);
         assertThat(ruleManager.get(id[0]), is(code[1]));
@@ -172,5 +172,4 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
             this.code = code;
         }
     }
-
 }

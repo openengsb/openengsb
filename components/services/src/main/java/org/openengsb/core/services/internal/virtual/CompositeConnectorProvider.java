@@ -23,7 +23,7 @@ import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class CompositeConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
     

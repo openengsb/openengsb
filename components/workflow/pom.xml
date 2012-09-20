@@ -27,7 +27,7 @@
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../../parents/framework</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
   <properties>
@@ -87,11 +87,6 @@
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
               org.apache.felix.fileinstall;version="[3,4)",
               *
             </Import-Package>
@@ -144,6 +139,10 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.services</artifactId>
       <scope>test</scope>
     </dependency>
@@ -180,6 +179,15 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.auditing</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

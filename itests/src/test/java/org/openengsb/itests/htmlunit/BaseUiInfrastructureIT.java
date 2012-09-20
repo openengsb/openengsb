@@ -100,6 +100,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertFalse(indexPage.asText().contains("User Management"));
     }
 
+    // TODO: OPENENGSB-3286 analyze this test and get it working again.
     @Test
     @Ignore("cannot click button without form")
     public void testCreateAndLoginNewUser_shouldNotShowUserManagementTab() throws Exception {
@@ -115,11 +116,13 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertTrue(indexPage.asText().contains("This page represents"));
 
         HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
-        // Test is incorrect starting here!
+
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         form = usermanagementPage.getForms().get(1);
         assertNotNull(form);
 
+        // The create button can not be accessed this way, since it is no longer in the form. More information
+        // about the problem here can be read in JIRA.
         HtmlSubmitInput createButton = form.getInputByValue("Create");
         createButton.click();
 
@@ -145,5 +148,4 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertTrue(userIndexPage.asText().contains("This page represents"));
         assertFalse(userIndexPage.asText().contains("User Management"));
     }
-
 }

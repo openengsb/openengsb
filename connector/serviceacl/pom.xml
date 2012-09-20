@@ -22,7 +22,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
@@ -31,6 +30,9 @@
   <properties>
     <bundle.symbolicName>org.openengsb.connector.serviceacl</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.serviceacl</bundle.namespace>
+    <labs.delegation.version>0.1.0</labs.delegation.version>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -82,7 +84,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-              ${openengsb.imports},
+              org.openengsb.core.api.*;version="[${openengsb.version.min},${openengsb.version.max})",
               org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>
@@ -93,15 +95,19 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>openengsb-framework-parent</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
-    <!-- OpenEngSB Core References -->
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.api</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
@@ -111,13 +117,17 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>${labs.delegation.version}</version>
     </dependency>
 
     <!-- OpenEngSB Domain References -->
@@ -131,4 +141,18 @@
     <!-- Add other dependencies here -->
 
   </dependencies>
+  
+  <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

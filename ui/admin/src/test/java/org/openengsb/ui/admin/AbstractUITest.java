@@ -49,19 +49,20 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
-import org.openengsb.core.security.internal.AdminAccessConnector;
-import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
-import org.openengsb.core.security.internal.model.RootPermission;
+import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.security.AdminAccessConnector;
+import org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy;
+import org.openengsb.core.services.internal.security.model.RootPermission;
+import org.openengsb.core.services.internal.security.model.ShiroContext;
 import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -171,7 +172,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
-
+        context.putBean("authenticationContext", new ShiroContext());
         authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticator", authConnector);

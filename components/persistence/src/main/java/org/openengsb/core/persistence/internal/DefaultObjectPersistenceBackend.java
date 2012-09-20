@@ -29,7 +29,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,11 +124,7 @@ public class DefaultObjectPersistenceBackend implements ObjectPersistenceBackend
                     return super.resolveClass(desc);
                 }
             };
-            Object object = in.readObject();
-            if (object instanceof SpecialActionsAfterSerialisation) {
-                ((SpecialActionsAfterSerialisation) object).doSpecialActions();
-            }
-            return object;
+            return in.readObject();
         } catch (IOException e) {
             throw new PersistenceException(format("Could not read file %s", file.toString()), e);
         } catch (ClassNotFoundException e) {

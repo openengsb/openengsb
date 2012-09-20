@@ -117,13 +117,13 @@
     <interfaces>
       <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
-    <bean class="org.openengsb.core.common.virtual.CompositeConnectorProvider">
+    <bean class="org.openengsb.core.services.internal.virtual.CompositeConnectorProvider">
       <property name="id" value="composite-connector" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
 
-  <bean class="org.openengsb.core.common.util.DefaultOsgiUtilsService" id="utilsService">
+  <bean class="org.openengsb.core.util.DefaultOsgiUtilsService" id="utilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
@@ -131,7 +131,7 @@
     <service-properties>
       <entry key="composite.strategy.name" value="invoke-all-ignore-result" />
     </service-properties>
-    <bean class="org.openengsb.core.common.virtual.InvokeAllIgnoreResultStrategy">
+    <bean class="org.openengsb.core.services.internal.virtual.InvokeAllIgnoreResultStrategy">
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
@@ -153,15 +153,13 @@
     </property>
   </bean>
 
-  <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+  <bean id="serviceUtils" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.InfoProvider" />
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-  <reference id="securityInterceptor" availability="optional" interface="org.aopalliance.intercept.MethodInterceptor"
-    filter="(org.openengsb.interceptor=security)" />
 
   <bean class="org.openengsb.core.services.internal.DomainProviderManager" init-method="start"
     destroy-method="stop">

@@ -19,9 +19,7 @@ package org.openengsb.core.persistence.test.objects;
 
 import java.io.Serializable;
 
-import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
-
-public class A implements Z, Serializable, SpecialActionsAfterSerialisation {
+public class A implements Z, Serializable {
 
     private static final long serialVersionUID = 6358610617115942596L;
 
@@ -57,11 +55,6 @@ public class A implements Z, Serializable, SpecialActionsAfterSerialisation {
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    @Override
-    public void doSpecialActions() {
-        additionalValue = "lala";
     }
 
     public String getAdditionalValue() {

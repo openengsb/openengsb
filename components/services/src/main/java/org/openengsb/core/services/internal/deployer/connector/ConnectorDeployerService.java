@@ -38,10 +38,10 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.ConfigUtils;
-import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.security.SecurityContext;
+import org.openengsb.core.services.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
+import org.openengsb.core.util.ConfigUtils;
+import org.openengsb.core.util.MergeException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -80,12 +80,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private ConnectorManager serviceManager;
     private LoadingCache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
-        new CacheLoader<File, ConnectorFile>() {
-            @Override
-            public ConnectorFile load(File key) throws Exception {
-                return new ConnectorFile(key);
-            }
-        });
+            new CacheLoader<File, ConnectorFile>() {
+                @Override
+                public ConnectorFile load(File key) throws Exception {
+                    return new ConnectorFile(key);
+                }
+            });
 
     private LoadingCache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
         new CacheLoader<File, Semaphore>() {

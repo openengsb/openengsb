@@ -84,7 +84,7 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testStartBroker_shouldCreateDataDirectories() {
+    public void testStartBroker_shouldCreateDataDirectories() throws Exception {
         assertThat(new File(tempfolder.getRoot(), "activemq/openengsb").exists(), is(true));
         assertThat(new File(tempfolder.getRoot(), "activemq/openengsb/kahadb").exists(), is(true));
     }
