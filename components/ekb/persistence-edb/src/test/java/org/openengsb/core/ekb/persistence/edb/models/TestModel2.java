@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.osgi.framework.Version;
 
 /**
  * Little class to test if the querying of models also works with self implemented classes and not only with proxied
@@ -143,6 +144,16 @@ public class TestModel2 implements OpenEngSBModel {
     @Override
     public Object retrieveInternalModelId() {
         return edbId;
+    }
+    
+    @Override
+    public String retrieveModelName() {
+        return this.getClass().getName();
+    }
+    
+    @Override
+    public Version retrieveModelVersion() {
+        return new Version("1.0.0");
     }
 
     @Override
