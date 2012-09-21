@@ -20,15 +20,20 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.common.EDBConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The EngineeringObjectEnhancer enhance an EKBCommit object with additional models which need to be updated or enhance
  * inserted models based on the Engineering Object concept of the OpenEngSB.
  */
 public class EngineeringObjectEnhancer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EngineeringObjectEnhancer.class);
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
+    private TransformationEngine transformationEngine;
 
     /**
      * Does the Engineering Object enhancement of the EKBCommit object. In this step there may be some inserts updated
@@ -45,5 +50,9 @@ public class EngineeringObjectEnhancer {
 
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
+    }
+    
+    public void setTransformationEngine(TransformationEngine transformationEngine) {
+        this.transformationEngine = transformationEngine;
     }
 }

@@ -103,11 +103,13 @@ public class PersistInterfaceService implements PersistInterface {
 
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
-        enhancer.setEdbService(edbService);
     }
 
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
-        enhancer.setEdbConverter(edbConverter);
+    }
+    
+    public void setEngineeringObjectEnhancer(EngineeringObjectEnhancer enhancer) {
+        this.enhancer = enhancer;
     }
 }
