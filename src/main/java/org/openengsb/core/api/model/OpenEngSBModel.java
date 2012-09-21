@@ -20,6 +20,8 @@ package org.openengsb.core.api.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.osgi.framework.Version;
+
 /**
  * Represents a generic model which should be used by any model data in the domains. With this model it is possible to
  * use one model for all kinds of domain model data. Every domain model marked with the Model interface get this
@@ -73,4 +75,14 @@ public interface OpenEngSBModel extends Serializable {
      * model.
      */
     void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries);
+    
+    /**
+     * Returns the name of the instance model of this OpenEngSBModel object.
+     */
+    String retrieveModelName();
+    
+    /**
+     * Returns the version of the instance model of this OpenEngSBModel object.
+     */
+    Version retrieveModelVersion();
 }
