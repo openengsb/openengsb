@@ -38,6 +38,11 @@ public class PersistInterfaceService implements PersistInterface {
 
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
+    private EngineeringObjectEnhancer enhancer;
+    
+    public PersistInterfaceService() {
+        enhancer = new EngineeringObjectEnhancer();
+    }
 
     @Override
     public void commit(EKBCommit commit) throws SanityCheckException, EKBException {
@@ -67,6 +72,7 @@ public class PersistInterfaceService implements PersistInterface {
      */
     private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
         throws SanityCheckException, EKBException {
+        enhancer.enhanceEKBCommit(commit);
         if (check) {
             performSanityChecks(commit);
         }
@@ -97,9 +103,11 @@ public class PersistInterfaceService implements PersistInterface {
 
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
+        enhancer.setEdbService(edbService);
     }
 
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
+        enhancer.setEdbConverter(edbConverter);
     }
 }
