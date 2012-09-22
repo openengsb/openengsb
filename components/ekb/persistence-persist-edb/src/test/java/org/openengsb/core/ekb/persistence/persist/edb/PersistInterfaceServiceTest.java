@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
+import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.PersistInterfaceService;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel2;
 
@@ -34,10 +35,11 @@ public class PersistInterfaceServiceTest {
     public void setUp() {
         this.service = new PersistInterfaceService();
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
+        EngineeringObjectEnhancer enhancer = mock(EngineeringObjectEnhancer.class);
         
         service.setEdbService(edbService);
-        EDBConverter converter = new EDBConverter(edbService);
-        service.setEdbConverter(converter);
+        service.setEdbConverter(new EDBConverter(edbService));
+        service.setEngineeringObjectEnhancer(enhancer);
     }
     
     @Test

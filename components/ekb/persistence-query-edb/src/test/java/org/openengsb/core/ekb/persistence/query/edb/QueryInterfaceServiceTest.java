@@ -114,9 +114,7 @@ public class QueryInterfaceServiceTest {
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
 
         service.setEdbService(edbService);
-
-        EDBConverter edbConverter = new EDBConverter(edbService);
-        service.setEdbConverter(edbConverter);
+        service.setEdbConverter(new EDBConverter(edbService));
     }
 
     @Test
