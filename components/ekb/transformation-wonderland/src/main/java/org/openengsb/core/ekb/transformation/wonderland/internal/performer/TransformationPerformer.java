@@ -70,15 +70,28 @@ public class TransformationPerformer {
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException, ClassNotFoundException {
+        return transformObject(description, source, null);
+    }
+
+    /**
+     * Performs a transformation based merge of the given source object with the given target object based on the given
+     * TransformationDescription.
+     */
+    public Object transformObject(TransformationDescription description, Object source, Object target)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         checkNeededValues(description);
         sourceClass = modelRegistry.loadModel(description.getSourceModel());
         targetClass = modelRegistry.loadModel(description.getTargetModel());
         this.source = source;
-        target = targetClass.newInstance();
+        if (target == null) {
+            this.target = targetClass.newInstance();
+        } else {
+            this.target = target;
+        } 
         for (TransformationStep step : description.getTransformingSteps()) {
             performTransformationStep(step);
         }
-        return target;
+        return this.target;
     }
 
     /**

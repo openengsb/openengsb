@@ -25,6 +25,7 @@ public class ModelB {
     private String blubB;
     private List<String> elements;
     private Integer intValue;
+    private String unused;
 
     public String getIdB() {
         return idB;
@@ -64,5 +65,13 @@ public class ModelB {
     
     public void setIntValue(Integer intValue) {
         this.intValue = intValue;
+    }
+    
+    public String getUnused() {
+        return this.unused;
+    }
+    
+    public void setUnused(String unused) {
+        this.unused = unused;
     }
 }

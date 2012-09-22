@@ -398,6 +398,29 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
     }
 
     @Test
+    public void testIfMergeIsWorking_shouldNotChangeUnusedField() throws Exception {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.forwardField("idA", "idB");
+        desc.forwardField("testA", "testB");
+        desc.forwardField("blubA", "temp.test");
+        desc.forwardField("temp.test", "blubB");
+        installTransformation(desc);
+
+        ModelA model = new ModelA();
+        model.setIdA("test1");
+        model.setTestA("test2");
+        model.setBlubA("test3");
+
+        ModelB result = new ModelB();
+        result.setUnused("this is a test");
+
+        result = (ModelB) service.performTransformation(getModelADescription(), getModelBDescription(),
+            model, result);
+
+        assertThat(result.getUnused(), is("this is a test"));
+    }
+
+    @Test
     public void testReadTransformationMetaDataFromFile_shouldWork() throws Exception {
         File descriptionFile =
             new File(getClass().getClassLoader().getResource("testDescription.transformation").getFile());
@@ -447,7 +470,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
             new File(getClass().getClassLoader().getResource("testDescription2.transformation").getFile());
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLFile(descriptionFile);
         installTransformations(descriptions);
-        
+
         ModelB modelB = new ModelB();
         modelB.setIdB("TEST");
         modelB.setTestB("test2");
@@ -506,10 +529,10 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
 
     private void installTransformation(TransformationDescription description) {
         service.saveDescription(description);
-        when(graph.getTransformationPath(description.getSourceModel(), description.getTargetModel(), 
+        when(graph.getTransformationPath(description.getSourceModel(), description.getTargetModel(),
             new ArrayList<String>())).thenReturn(Arrays.asList(description));
     }
-    
+
     private void installTransformations(List<TransformationDescription> descriptions) {
         for (TransformationDescription description : descriptions) {
             installTransformation(description);
