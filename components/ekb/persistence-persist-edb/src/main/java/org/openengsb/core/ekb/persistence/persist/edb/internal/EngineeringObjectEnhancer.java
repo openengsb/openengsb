@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -69,13 +70,11 @@ public class EngineeringObjectEnhancer {
                 try {
                     OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
                     ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
-                    field.setAccessible(true);
-                    String modelKey = (String) field.get(model);
-                    field.setAccessible(false);
+                    String modelKey = (String) FieldUtils.readField(field, model, true);
                     Class<?> sourceClass = modelRegistry.loadModel(description);
                     Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
-                    System.out.println(target + "  " + description + "  " + modelKey);
-                    // TODO: call the transformation process
+                    model = (OpenEngSBModel) transformationEngine.performTransformation(description, target, instance,
+                        model);
                 } catch (SecurityException e) {
                     throw new EKBException(generateErrorMessage(model), e);
                 } catch (IllegalArgumentException e) {
@@ -112,7 +111,7 @@ public class EngineeringObjectEnhancer {
     private String generateErrorMessage(Object model) {
         return generateErrorMessage(model.getClass());
     }
-    
+
     /**
      * Generates an error message for the construction of EKBExceptions occurring during the enhancement
      */
