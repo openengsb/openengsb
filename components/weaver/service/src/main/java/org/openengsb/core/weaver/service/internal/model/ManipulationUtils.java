@@ -29,6 +29,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.IgnoredModelField;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +144,8 @@ public final class ManipulationUtils {
         addOpenEngSBModelEntryMethod(cc);
         addRemoveOpenEngSBModelEntryMethod(cc);
         addRetrieveInternalModelId(cc);
+        addRetrieveInternalModelTimestamp(cc);
+        addRetrieveInternalModelVersion(cc);
         addGetOpenEngSBModelEntries(cc);
         cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
     }
@@ -239,6 +242,36 @@ public final class ManipulationUtils {
             builder.append(String.format("return %s;",
                 getPropertyGetter(modelIdField.getName(), modelIdField.getType().getName())));
         }
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retrieveInternalModelTimestamp method to the class.
+     */
+    private static void addRetrieveInternalModelTimestamp(CtClass clazz) throws NotFoundException,
+        CannotCompileException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(Long.class.getName()), "retrieveInternalModelTimestamp", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveInternalModelTimestamp"));
+        builder.append(String.format("return (Long) ((OpenEngSBModelEntry)%s.get(\"%s\")).getValue();", TAIL_FIELD,
+            EDBConstants.MODEL_TIMESTAMP));
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retrieveInternalModelVersion method to the class.
+     */
+    private static void addRetrieveInternalModelVersion(CtClass clazz) throws NotFoundException,
+        CannotCompileException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(Integer.class.getName()), "retrieveInternalModelVersion", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveInternalModelVersion"));
+        builder.append(String.format("return (Integer) ((OpenEngSBModelEntry)%s.get(\"%s\")).getValue();", TAIL_FIELD,
+            EDBConstants.MODEL_VERSION));
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
