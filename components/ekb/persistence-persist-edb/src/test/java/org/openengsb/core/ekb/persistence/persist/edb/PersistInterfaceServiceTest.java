@@ -39,7 +39,7 @@ public class PersistInterfaceServiceTest {
         
         service.setEdbService(edbService);
         service.setEdbConverter(new EDBConverter(edbService));
-        service.setEngineeringObjectEnhancer(enhancer);
+        service.setEnhancer(enhancer);
     }
     
     @Test
