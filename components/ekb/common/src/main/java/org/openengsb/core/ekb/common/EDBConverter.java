@@ -101,6 +101,7 @@ public class EDBConverter {
         if (!checkEDBObjectModelType(object, model)) {
             return null;
         }
+        EDBConverterUtils.filterEngineeringObjectInformation(object, model);
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
@@ -308,6 +309,11 @@ public class EDBConverter {
     private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorInformation info) {
         String oid = EDBConverterUtils.createOID(model, info.getDomainId(), info.getConnectorId());
         EDBObject object = new EDBObject(oid);
+        try {
+            EDBConverterUtils.fillEDBObjectWithEngineeringObjectInformation(object, model);
+        } catch (IllegalAccessException e) {
+            LOGGER.warn("Unable to fill completely the EngineeringObjectInformation into the EDBObject", e);
+        }
         for (OpenEngSBModelEntry entry : model.toOpenEngSBModelEntries()) {
             if (entry.getValue() == null) {
                 continue;

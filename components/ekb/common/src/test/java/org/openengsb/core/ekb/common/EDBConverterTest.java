@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -32,12 +33,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.common.ConnectorInformation;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.EDBConverterUtils;
+import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.common.models.SubModel;
 import org.openengsb.core.ekb.common.models.TestModel;
 import org.openengsb.core.ekb.common.models.TestModel2.ENUM;
@@ -202,7 +205,41 @@ public class EDBConverterTest {
         }
         assertThat(version, notNullValue());
         assertThat(version, is(1));
+    }
 
+    @Test
+    public void testIfEngineeringObjectInformationIsAdded_shouldAddEOInformation() throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setModelAId("testReferenceToModelA");
+        model.setModelBId("testReferenceToModelB");
+
+        List<EDBObject> objects = converter.convertModelToEDBObject(model, getTestConnectorInformation());
+        assertThat(objects.size(), is(1));
+        EDBObject result = objects.get(0);
+        String key1 = getReferenceString(model.getClass(), "modelAId");
+        String key2 = getReferenceString(model.getClass(), "modelBId");
+        assertThat(result.getString(key1), is("testReferenceToModelA"));
+        assertThat(result.getString(key2), is("testReferenceToModelB"));
+    }
+
+    @Test
+    public void testIfEngineeringObjectInformationIsDeleted_shouldDeleteEOInformation() throws Exception {
+        EDBObject object = new EDBObject("test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_OID, "test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
+        String key1 = getReferenceString(EngineeringObjectModel.class, "modelAId");
+        String key2 = getReferenceString(EngineeringObjectModel.class, "modelBId");
+        object.putEDBObjectEntry(key1, "testReferenceA");
+        object.putEDBObjectEntry(key2, "testReferenceB");
+        converter.convertEDBObjectToModel(EngineeringObjectModel.class, object);
+        assertThat(object.get(key1), nullValue());
+        assertThat(object.get(key2), nullValue());
+    }
+
+    private String getReferenceString(Class<?> model, String field) throws Exception {
+        return EDBConverterUtils.getEOReferenceStringFromAnnotation(model.
+            getDeclaredField(field).getAnnotation(OpenEngSBForeignKey.class));
     }
 
     private ConnectorInformation getTestConnectorInformation() {

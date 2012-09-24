@@ -225,10 +225,18 @@ public final class ModelUtils {
      * is at least one OpenEngSBForeignKey field.
      */
     public static boolean isEngineeringObject(Object model) {
-        if (!isObjectModel(model)) {
+        return isEngineeringObjectClass(model.getClass());        
+    }
+    
+    /**
+     * Returns true if the given class is an OpenEngSBModel and is also an Engineering Object, which means that there
+     * is at least one OpenEngSBForeignKey field.
+     */
+    public static boolean isEngineeringObjectClass(Class<?> clazz) {
+        if (!isClassModel(clazz)) {
             return false;
         }
-        for (Field field : model.getClass().getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
                 return true;
             }

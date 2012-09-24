@@ -17,12 +17,21 @@
 
 package org.openengsb.core.ekb.common;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.util.ModelUtils;
 
 /**
  * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: EDBObjects
@@ -30,6 +39,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
  */
 public final class EDBConverterUtils {
     public static final String FILEWRAPPER_FILENAME_SUFFIX = ".filename";
+    public static final String REFERENCE_PREFIX = "refersTo_";
 
     private EDBConverterUtils() {
     }
@@ -127,5 +137,55 @@ public final class EDBConverterUtils {
      */
     public static String getEntryNameForList(String property, Integer index) {
         return String.format("%s.%d", property, index);
+    }
+
+    /**
+     * Adds to the EDBObject special entries which mark that a model is referring to other models through
+     * OpenEngSBForeignKey annotations
+     */
+    public static void fillEDBObjectWithEngineeringObjectInformation(EDBObject object, OpenEngSBModel model)
+        throws IllegalAccessException {
+        if (!ModelUtils.isEngineeringObject(model)) {
+            return;
+        }
+        for (Field field : model.getClass().getDeclaredFields()) {
+            OpenEngSBForeignKey annotation = field.getAnnotation(OpenEngSBForeignKey.class);
+            if (annotation == null) {
+                continue;
+            }
+            String value = (String) FieldUtils.readField(field, model, true);
+            if (value == null) {
+                continue;
+            }
+            String key = getEOReferenceStringFromAnnotation(annotation);
+            object.put(key, new EDBObjectEntry(key, value, String.class));
+        }
+    }
+    
+    /**
+     * Converts an OpenEngSBForeignKey annotation to the fitting format which will be added to an EDBObject.
+     */
+    public static String getEOReferenceStringFromAnnotation(OpenEngSBForeignKey key) {
+        return String.format("%s%s:%s", REFERENCE_PREFIX, key.modelType(),
+            key.modelVersion().toString());
+    }
+    
+    /**
+     * Filters the reference prefix values added in the model to EDBObject conversion out of the EDBObject
+     */
+    public static void filterEngineeringObjectInformation(EDBObject object, Class<?> model) {
+        if (!ModelUtils.isEngineeringObjectClass(model)) {
+            return;
+        }
+        Set<String> keySet = object.keySet();
+        List<String> deletes = new ArrayList<String>();
+        for (String key : keySet) {
+            if (key.startsWith(REFERENCE_PREFIX)) {
+                deletes.add(key);
+            }
+        }
+        for (String delete : deletes) {
+            object.remove(delete);
+        }
     }
 }

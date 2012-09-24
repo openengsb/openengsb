@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.persistence.persist.edb.models;
+package org.openengsb.core.ekb.common.models;
 
 import org.openengsb.core.api.model.annotation.Model;
 
