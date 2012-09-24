@@ -25,11 +25,11 @@ import com.google.common.base.Objects;
 @Model
 public class EngineeringObjectModel {
 
-    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA",
+    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.common.models.SourceModelA",
         modelVersion = "1.0.0")
     private String modelAId;
 
-    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB",
+    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.common.models.SourceModelB",
         modelVersion = "1.0.0")
     private String modelBId;
 

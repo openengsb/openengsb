@@ -54,7 +54,21 @@ public class EngineeringObjectEnhancer {
     public void enhanceEKBCommit(EKBCommit commit) throws EKBException {
         LOGGER.debug("Started to enhance the EKBCommit with Engineering Object information");
         enhanceCommitInserts(commit);
+        enhanceCommitUpdates(commit);
         LOGGER.debug("Finished EKBCommit enhancing");
+    }
+
+    /**
+     * Enhances the EKBCommit for the updates of EngineeringObjects.
+     */
+    private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
+        for (OpenEngSBModel model : commit.getUpdates()) {
+            if (ModelUtils.isEngineeringObject(model)) {
+                // TODO: run EO object update logic
+            } else {
+                // TODO: run not EO object update logic
+            }
+        }
     }
 
     /**
@@ -62,29 +76,43 @@ public class EngineeringObjectEnhancer {
      */
     private void enhanceCommitInserts(EKBCommit commit) throws EKBException {
         for (OpenEngSBModel model : commit.getInserts()) {
-            if (!ModelUtils.isEngineeringObject(model)) {
-                continue;
+            if (ModelUtils.isEngineeringObject(model)) {
+                performInsertEOLogic(model);
             }
+        }
+    }
+
+    /**
+     * Performs the logic for the enhancement needed to be performed to insert an Engineering Object into the EDB.
+     */
+    private void performInsertEOLogic(OpenEngSBModel model) {
+        for (Field field : getForeignKeyFields(model.getClass())) {
+            if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
+                performInsertEOFieldLogic(field, model);
+            }
+        }
+    }
+
+    /**
+     * Performs the logic for updating the Engineering Object based on the OpenEngSBForeignKey annotation.
+     */
+    private void performInsertEOFieldLogic(Field field, OpenEngSBModel model) {
+        try {
+            OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
+            ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
+            String modelKey = (String) FieldUtils.readField(field, model, true);
+            Class<?> sourceClass = modelRegistry.loadModel(description);
+            Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
             ModelDescription target = new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
-            for (Field field : getForeignKeyFields(model.getClass())) {
-                try {
-                    OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
-                    ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
-                    String modelKey = (String) FieldUtils.readField(field, model, true);
-                    Class<?> sourceClass = modelRegistry.loadModel(description);
-                    Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
-                    model = (OpenEngSBModel) transformationEngine.performTransformation(description, target, instance,
-                        model);
-                } catch (SecurityException e) {
-                    throw new EKBException(generateErrorMessage(model), e);
-                } catch (IllegalArgumentException e) {
-                    throw new EKBException(generateErrorMessage(model), e);
-                } catch (IllegalAccessException e) {
-                    throw new EKBException(generateErrorMessage(model), e);
-                } catch (ClassNotFoundException e) {
-                    throw new EKBException(generateErrorMessage(model), e);
-                }
-            }
+            model = (OpenEngSBModel) transformationEngine.performTransformation(description, target, instance, model);
+        } catch (SecurityException e) {
+            throw new EKBException(generateErrorMessage(model), e);
+        } catch (IllegalArgumentException e) {
+            throw new EKBException(generateErrorMessage(model), e);
+        } catch (IllegalAccessException e) {
+            throw new EKBException(generateErrorMessage(model), e);
+        } catch (ClassNotFoundException e) {
+            throw new EKBException(generateErrorMessage(model), e);
         }
     }
 
@@ -116,8 +144,8 @@ public class EngineeringObjectEnhancer {
      * Generates an error message for the construction of EKBExceptions occurring during the enhancement
      */
     private String generateErrorMessage(Class<?> model) {
-        return String.format("Unable to enhance the commit of the model %s with EngineeringObject information"
-            , model.getName());
+        return String.format("Unable to enhance the commit of the model %s with EngineeringObject information",
+            model.getName());
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
