@@ -45,4 +45,9 @@ public final class EDBConstants {
      * Defines the string which represents the key for the type of a model.
      */
     public static final String MODEL_TYPE = "modelType";
+    
+    /**
+     * Defines the string which represents the key for the version of the corresponding model type.
+     */
+    public static final String MODEL_TYPE_VERSION = "modelTypeVersion";
 }
