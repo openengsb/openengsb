@@ -17,6 +17,7 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,9 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
             return Arrays.asList(edbObject);
+        }
+        if (reference.equals("common/reference/1")) {
+            return new ArrayList<EDBObject>();
         }
         return null;
     }

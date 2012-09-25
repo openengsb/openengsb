@@ -67,16 +67,28 @@ public class EngineeringObjectEnhancer {
      * Enhances the EKBCommit for the updates of EngineeringObjects.
      */
     private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
-        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
         Map<Object, OpenEngSBModel> updated = new HashMap<Object, OpenEngSBModel>();
-        for (OpenEngSBModel model : commit.getUpdates()) {
+        commit.getUpdates().addAll(recursiveUpdateEnhancement(commit.getUpdates(), updated));
+    }
+
+    /**
+     * Recursive function for calculating all models which need to be updated due to the original updates of the
+     * EKBCommit.
+     */
+    private List<OpenEngSBModel> recursiveUpdateEnhancement(List<OpenEngSBModel> updates,
+            Map<Object, OpenEngSBModel> updated) {
+        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
+        for (OpenEngSBModel model : updates) {
             updated.put(model.retrieveInternalModelId(), model);
             if (ModelUtils.isEngineeringObject(model)) {
                 // TODO: run EO object update logic
             }
             additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated));
         }
-        commit.getUpdates().addAll(additionalUpdates);
+        if (!additionalUpdates.isEmpty()) {
+            additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated));
+        }
+        return additionalUpdates;
     }
 
     /**
@@ -90,7 +102,9 @@ public class EngineeringObjectEnhancer {
         List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
         for (EDBObject reference : references) {
             OpenEngSBModel ref = updateEOByUpdatedModel(reference, model, updated);
-            updates.add(ref);
+            if (!updated.containsKey(ref.retrieveInternalModelId())) {
+                updates.add(ref);
+            }
             updated.put(ref.retrieveInternalModelId(), ref);
         }
         return updates;

@@ -54,7 +54,7 @@ public class EngineeringObjectEnhancerTest {
         assertThat(model.getNameA(), is("firstObject"));
         assertThat(model.getNameB(), is("secondObject"));
     }
-    
+
     @Test
     public void testIfNormalObjectUpdateTriggersEOUpdate_shouldUpdateAlsoEO() throws Exception {
         SourceModelA model = new SourceModelA();
@@ -64,12 +64,12 @@ public class EngineeringObjectEnhancerTest {
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
-        Object inserted = commit.getUpdates().get(commit.getUpdates().size()-1);
+        Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
         assertThat(before < after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
     }
-    
+
     @Test
     public void testIfDoubleNormalObjectUpdateTriggersEOUpdate_shouldUpdateAlsoEO() throws Exception {
         SourceModelA modelA = new SourceModelA();
@@ -82,7 +82,7 @@ public class EngineeringObjectEnhancerTest {
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
-        Object inserted = commit.getUpdates().get(commit.getUpdates().size()-1);
+        Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
         assertThat(before < after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
