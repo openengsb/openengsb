@@ -27,6 +27,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.common.models.SourceModelA;
+import org.openengsb.core.ekb.common.models.SourceModelB;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 
 public class EngineeringObjectEnhancerTest {
@@ -67,6 +68,25 @@ public class EngineeringObjectEnhancerTest {
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
         assertThat(before < after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
+    }
+    
+    @Test
+    public void testIfDoubleNormalObjectUpdateTriggersEOUpdate_shouldUpdateAlsoEO() throws Exception {
+        SourceModelA modelA = new SourceModelA();
+        modelA.setNameA("updatedFirstObject");
+        modelA.setId("objectA/reference/1");
+        SourceModelB modelb = new SourceModelB();
+        modelb.setNameB("updatedSecondObject");
+        modelb.setId("objectB/reference/1");
+        EKBCommit commit = new EKBCommit().addUpdate(modelA).addUpdate(modelb);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        Object inserted = commit.getUpdates().get(commit.getUpdates().size()-1);
+        EngineeringObjectModel result = (EngineeringObjectModel) inserted;
+        assertThat(before < after, is(true));
+        assertThat(result.getNameA(), is("updatedFirstObject"));
+        assertThat(result.getNameB(), is("updatedSecondObject"));
     }
 
 }

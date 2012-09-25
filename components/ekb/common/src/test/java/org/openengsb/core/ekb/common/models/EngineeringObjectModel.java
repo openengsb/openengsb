@@ -19,11 +19,14 @@ package org.openengsb.core.ekb.common.models;
 
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 import com.google.common.base.Objects;
 
 @Model
 public class EngineeringObjectModel {
+    @OpenEngSBModelId
+    private String internalModelName;
 
     @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.common.models.SourceModelA",
         modelVersion = "1.0.0")
@@ -75,6 +78,14 @@ public class EngineeringObjectModel {
 
     public void setTest(String test) {
         this.test = test;
+    }
+    
+    public String getInternalModelName() {
+        return internalModelName;
+    }
+
+    public void setInternalModelName(String internalModelName) {
+        this.internalModelName = internalModelName;
     }
     
     @Override

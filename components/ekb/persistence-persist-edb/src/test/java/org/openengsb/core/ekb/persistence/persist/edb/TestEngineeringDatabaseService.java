@@ -43,13 +43,13 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public EDBObject getObject(String arg0) throws EDBException {
         if (arg0.equals("objectA/reference/1")) {
             EDBObject edbObject = new EDBObject("objectA/reference/1");
-            edbObject.putEDBObjectEntry("nameA", "firstObject", String.class);
+            edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelA.class.getName());
             return edbObject;
         }
         if (arg0.equals("objectB/reference/1")) {
             EDBObject edbObject = new EDBObject("objectB/reference/1");
-            edbObject.putEDBObjectEntry("nameB", "secondObject", String.class);
+            edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
             return edbObject;
         }
@@ -60,10 +60,11 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     @Override
     public List<EDBObject> query(Map<String, Object> arg0, Long arg1) throws EDBException {
         String reference = (String) arg0.get(EDBConverterUtils.REFERENCE_PREFIX + "%");
-        if (reference.equals("objectA/reference/1")) {
+        if (reference.equals("objectA/reference/1") || reference.equals("objectB/reference/1")) {
             EDBObject edbObject = new EDBObject("common/reference/1");
-            edbObject.putEDBObjectEntry("nameA", "firstObject", String.class);
-            edbObject.putEDBObjectEntry("nameB", "secondObject", String.class);
+            edbObject.putEDBObjectEntry("nameA", "firstObject");
+            edbObject.putEDBObjectEntry("nameB", "secondObject");
+            edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
             return Arrays.asList(edbObject);
         }

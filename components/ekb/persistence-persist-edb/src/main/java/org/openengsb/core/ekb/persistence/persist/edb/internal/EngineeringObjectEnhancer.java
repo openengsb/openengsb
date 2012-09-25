@@ -68,16 +68,22 @@ public class EngineeringObjectEnhancer {
      */
     private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
         List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
+        Map<Object, OpenEngSBModel> updated = new HashMap<Object, OpenEngSBModel>();
         for (OpenEngSBModel model : commit.getUpdates()) {
+            updated.put(model.retrieveInternalModelId(), model);
             if (ModelUtils.isEngineeringObject(model)) {
                 // TODO: run EO object update logic
             }
-            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model));
+            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated));
         }
         commit.getUpdates().addAll(additionalUpdates);
     }
 
-    private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model) {
+    /**
+     * Returns engineering objects to the commit, which are changed by a model which was committed in the EKBCommit
+     */
+    private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model,
+            Map<Object, OpenEngSBModel> updated) {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", model.retrieveInternalModelId());
@@ -88,10 +94,17 @@ public class EngineeringObjectEnhancer {
                 String modelType = reference.getString(EDBConstants.MODEL_TYPE);
                 String version = reference.getString(EDBConstants.MODEL_TYPE_VERSION);
                 ModelDescription description = new ModelDescription(modelType, version);
-                Class<?> modelClass = modelRegistry.loadModel(description);
-                Object ref = edbConverter.convertEDBObjectToModel(modelClass, reference);
+                Object ref = null;
+                if (updated.containsKey(reference.getOID())) {
+                    ref = updated.get(reference.getOID());
+                } else {
+                    Class<?> modelClass = modelRegistry.loadModel(description);
+                    ref = edbConverter.convertEDBObjectToModel(modelClass, reference);
+                }
                 ref = transformationEngine.performTransformation(source, description, model, ref);
-                updates.add((OpenEngSBModel) ref);
+                OpenEngSBModel tempModel = (OpenEngSBModel) ref;
+                updates.add(tempModel);
+                updated.put(tempModel.retrieveInternalModelId(), tempModel);
             } catch (ClassNotFoundException e) {
                 throw new EKBException(generateErrorMessage(model), e);
             }
