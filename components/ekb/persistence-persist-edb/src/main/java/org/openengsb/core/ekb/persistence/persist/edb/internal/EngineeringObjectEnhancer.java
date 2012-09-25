@@ -19,18 +19,23 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.common.EDBConverter;
+import org.openengsb.core.ekb.common.EDBConverterUtils;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,13 +67,36 @@ public class EngineeringObjectEnhancer {
      * Enhances the EKBCommit for the updates of EngineeringObjects.
      */
     private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
+        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
         for (OpenEngSBModel model : commit.getUpdates()) {
             if (ModelUtils.isEngineeringObject(model)) {
                 // TODO: run EO object update logic
-            } else {
-                // TODO: run not EO object update logic
+            }
+            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model));
+        }
+        commit.getUpdates().addAll(additionalUpdates);
+    }
+
+    private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model) {
+        List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", model.retrieveInternalModelId());
+        List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
+        ModelDescription source = new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
+        for (EDBObject reference : references) {
+            try {
+                String modelType = reference.getString(EDBConstants.MODEL_TYPE);
+                String version = reference.getString(EDBConstants.MODEL_TYPE_VERSION);
+                ModelDescription description = new ModelDescription(modelType, version);
+                Class<?> modelClass = modelRegistry.loadModel(description);
+                Object ref = edbConverter.convertEDBObjectToModel(modelClass, reference);
+                ref = transformationEngine.performTransformation(source, description, model, ref);
+                updates.add((OpenEngSBModel) ref);
+            } catch (ClassNotFoundException e) {
+                throw new EKBException(generateErrorMessage(model), e);
             }
         }
+        return updates;
     }
 
     /**

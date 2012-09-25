@@ -18,11 +18,22 @@
 package org.openengsb.core.ekb.common.models;
 
 import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
 public class SourceModelB {
-
+    
+    @OpenEngSBModelId
+    private String id;
     private String nameB;
+    
+    public String getId() {
+        return this.id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getNameB() {
         return this.nameB;

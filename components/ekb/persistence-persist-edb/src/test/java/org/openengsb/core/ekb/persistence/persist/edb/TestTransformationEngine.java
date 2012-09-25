@@ -75,6 +75,9 @@ public class TestTransformationEngine implements TransformationEngine {
                 }
                 Object value = FieldUtils.readDeclaredField(source, fieldName, true);
                 if (value != null) {
+                    if (FieldUtils.getDeclaredField(target.getClass(), fieldName, true) == null) {
+                        continue;
+                    }
                     FieldUtils.writeDeclaredField(target, fieldName, value, true);
                 }
             }
