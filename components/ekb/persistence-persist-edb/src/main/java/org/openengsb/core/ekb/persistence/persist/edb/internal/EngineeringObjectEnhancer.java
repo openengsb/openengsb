@@ -83,33 +83,55 @@ public class EngineeringObjectEnhancer {
      * Returns engineering objects to the commit, which are changed by a model which was committed in the EKBCommit
      */
     private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model,
-            Map<Object, OpenEngSBModel> updated) {
+            Map<Object, OpenEngSBModel> updated) throws EKBException {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", model.retrieveInternalModelId());
         List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
-        ModelDescription source = new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
         for (EDBObject reference : references) {
-            try {
-                String modelType = reference.getString(EDBConstants.MODEL_TYPE);
-                String version = reference.getString(EDBConstants.MODEL_TYPE_VERSION);
-                ModelDescription description = new ModelDescription(modelType, version);
-                Object ref = null;
-                if (updated.containsKey(reference.getOID())) {
-                    ref = updated.get(reference.getOID());
-                } else {
-                    Class<?> modelClass = modelRegistry.loadModel(description);
-                    ref = edbConverter.convertEDBObjectToModel(modelClass, reference);
-                }
-                ref = transformationEngine.performTransformation(source, description, model, ref);
-                OpenEngSBModel tempModel = (OpenEngSBModel) ref;
-                updates.add(tempModel);
-                updated.put(tempModel.retrieveInternalModelId(), tempModel);
-            } catch (ClassNotFoundException e) {
-                throw new EKBException(generateErrorMessage(model), e);
-            }
+            OpenEngSBModel ref = updateEOByUpdatedModel(reference, model, updated);
+            updates.add(ref);
+            updated.put(ref.retrieveInternalModelId(), ref);
         }
         return updates;
+    }
+
+    /**
+     * Updates an Engineering Object given as EDBObject based on the update on the given model which is referenced by
+     * the given Engineering Object.
+     */
+    private OpenEngSBModel updateEOByUpdatedModel(EDBObject reference, OpenEngSBModel model,
+            Map<Object, OpenEngSBModel> updated) {
+        ModelDescription source = ModelUtils.getModelDescription(model);
+        ModelDescription description = getModelDescriptionFromEDBObject(reference);
+        Object ref = updated.get(reference.getOID());
+        if (ref == null) {
+            ref = convertEDBObjectToModel(reference);
+        }
+        ref = transformationEngine.performTransformation(source, description, model, ref);
+        return (OpenEngSBModel) ref;
+    }
+
+    /**
+     * Converts an EDBObject into a model instance.
+     */
+    private OpenEngSBModel convertEDBObjectToModel(EDBObject object) throws EKBException {
+        ModelDescription description = getModelDescriptionFromEDBObject(object);
+        try {
+            Class<?> modelClass = modelRegistry.loadModel(description);
+            return (OpenEngSBModel) edbConverter.convertEDBObjectToModel(modelClass, object);
+        } catch (ClassNotFoundException e) {
+            throw new EKBException(String.format("Unable to load model of type %s", description), e);
+        }
+    }
+
+    /**
+     * Generates the model description of an EDBObject based on its values for the model type and model type version
+     */
+    private ModelDescription getModelDescriptionFromEDBObject(EDBObject object) {
+        String modelType = object.getString(EDBConstants.MODEL_TYPE);
+        String version = object.getString(EDBConstants.MODEL_TYPE_VERSION);
+        return new ModelDescription(modelType, version);
     }
 
     /**
@@ -144,7 +166,7 @@ public class EngineeringObjectEnhancer {
             String modelKey = (String) FieldUtils.readField(field, model, true);
             Class<?> sourceClass = modelRegistry.loadModel(description);
             Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
-            ModelDescription target = new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
+            ModelDescription target = ModelUtils.getModelDescription(model);
             model = (OpenEngSBModel) transformationEngine.performTransformation(description, target, instance, model);
         } catch (SecurityException e) {
             throw new EKBException(generateErrorMessage(model), e);

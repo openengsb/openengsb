@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -115,6 +116,24 @@ public final class ModelUtils {
     public static String retrieveModelVersion(Object model) {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveModelVersion();
+    }
+
+    /**
+     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelName(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelName();
+    }
+
+    /**
+     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static Version retrieveModelVersion(Object model) {
+        checkIfObjectIsModel(model);
+        return new Version(((OpenEngSBModel) model).retrieveModelVersion());
     }
 
     /**
@@ -225,12 +244,12 @@ public final class ModelUtils {
      * is at least one OpenEngSBForeignKey field.
      */
     public static boolean isEngineeringObject(Object model) {
-        return isEngineeringObjectClass(model.getClass());        
+        return isEngineeringObjectClass(model.getClass());
     }
-    
+
     /**
-     * Returns true if the given class is an OpenEngSBModel and is also an Engineering Object, which means that there
-     * is at least one OpenEngSBForeignKey field.
+     * Returns true if the given class is an OpenEngSBModel and is also an Engineering Object, which means that there is
+     * at least one OpenEngSBForeignKey field.
      */
     public static boolean isEngineeringObjectClass(Class<?> clazz) {
         if (!isClassModel(clazz)) {
@@ -242,6 +261,15 @@ public final class ModelUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the model description object of the given model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static ModelDescription getModelDescription(Object model) {
+        checkIfObjectIsModel(model);
+        return new ModelDescription(retrieveModelName(model), retrieveModelVersion(model));
     }
 
     /**
