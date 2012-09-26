@@ -81,6 +81,21 @@ public class EngineeringObjectEnhancer {
         for (OpenEngSBModel model : updates) {
             updated.put(model.retrieveInternalModelId(), model);
             if (ModelUtils.isEngineeringObject(model)) {
+                OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(),
+                    edbService.getObject(model.retrieveInternalModelId().toString()));
+                ModelDiff diff = ModelDiff.createModelDiff(old, model);
+                boolean referencesChanged = diff.isForeignKeyChanged();
+                boolean valuesChanged = diff.isValueChanged();
+                if (referencesChanged && valuesChanged) {
+                    throw new EKBException("Engineering Objects may be updated only at "
+                            + "references or at values not both in the same commit");
+                }
+                if (referencesChanged) {
+                    // TODO: reloadReferencesAndUpdateEO();
+                } else {
+                    // TODO: updateEOReferencedModels();
+                }
+
                 // TODO: run EO object update logic
             }
             additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated));

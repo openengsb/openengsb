@@ -17,15 +17,19 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.PersistInterfaceService;
+import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel2;
 
 public class PersistInterfaceServiceTest {
@@ -40,6 +44,13 @@ public class PersistInterfaceServiceTest {
         service.setEdbService(edbService);
         service.setEdbConverter(new EDBConverter(edbService));
         service.setEnhancer(enhancer);
+    }
+    
+    @Test
+    public void testIfModelAgentIsSet_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
+            model instanceof OpenEngSBModel, is(true));
     }
     
     @Test
