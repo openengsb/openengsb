@@ -32,9 +32,14 @@ public final class EDBConstants {
     public static final String MODEL_OID = "edbId";
     
     /**
-     * Defines the string which represents the key for the version a model.
+     * Defines the string which represents the key for a model version.
      */
     public static final String MODEL_VERSION = "edbVersion";
+    
+    /**
+     * Defines the string which represents the key for a model timestamp.
+     */
+    public static final String MODEL_TIMESTAMP = "edbTimestamp";
     
     /**
      * Defines the string which represents the key for the type of a model.
