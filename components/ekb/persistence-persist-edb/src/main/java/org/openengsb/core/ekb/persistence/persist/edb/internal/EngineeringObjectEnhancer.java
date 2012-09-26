@@ -90,11 +90,11 @@ public class EngineeringObjectEnhancer {
                     throw new EKBException("Engineering Objects may be updated only at "
                             + "references or at values not both in the same commit");
                 }
-                if (referencesChanged) {
-                    // TODO: reloadReferencesAndUpdateEO();
-                } else {
-                    // TODO: updateEOReferencedModels();
-                }
+                // if (referencesChanged) {
+                // // TODO: reloadReferencesAndUpdateEO();
+                // } else {
+                // // TODO: updateEOReferencedModels();
+                // }
 
                 // TODO: run EO object update logic
             }

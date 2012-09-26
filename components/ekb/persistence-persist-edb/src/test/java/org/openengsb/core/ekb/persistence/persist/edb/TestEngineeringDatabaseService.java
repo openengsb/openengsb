@@ -54,6 +54,15 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
             return edbObject;
         }
+        
+        if (arg0.equals("common/reference/1")) {
+            EDBObject edbObject = new EDBObject("common/reference/1");
+            edbObject.putEDBObjectEntry("nameA", "firstObject");
+            edbObject.putEDBObjectEntry("nameB", "secondObject");
+            edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
+            edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
+            return edbObject;
+        }
 
         return null;
     }

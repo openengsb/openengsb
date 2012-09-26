@@ -33,7 +33,7 @@ import com.google.common.base.Objects;
 /**
  * The ModelDiff class was introduced for the easier calculation and handling of the differences of two models.
  */
-public class ModelDiff {
+public final class ModelDiff {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelDiff.class);
     private OpenEngSBModel before;
     private OpenEngSBModel after;

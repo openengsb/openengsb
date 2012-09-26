@@ -69,8 +69,8 @@ public class TestTransformationEngine implements TransformationEngine {
             Class<?> clazz = registry.loadModel(sourceClass);
             for (Field field : clazz.getDeclaredFields()) {
                 String fieldName = field.getName();
-                if (fieldName.equals(ModelUtils.MODEL_TAIL_FIELD_NAME) ||
-                        fieldName.contains("LOGGER")) {
+                if (fieldName.equals(ModelUtils.MODEL_TAIL_FIELD_NAME)
+                        || fieldName.contains("LOGGER")) {
                     continue;
                 }
                 Object value = FieldUtils.readDeclaredField(source, fieldName, true);

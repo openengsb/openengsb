@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
-import org.openengsb.core.ekb.persistence.query.edb.models.SubModel;
 import org.openengsb.core.ekb.persistence.query.edb.models.TestModel2.ENUM;
 
 /**
