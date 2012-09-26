@@ -25,10 +25,10 @@ import org.junit.Test;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
-import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
-import org.openengsb.core.ekb.common.models.SourceModelA;
-import org.openengsb.core.ekb.common.models.SourceModelB;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
+import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
+import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA;
+import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 
 public class EngineeringObjectEnhancerTest {
     private EngineeringObjectEnhancer enhancer;

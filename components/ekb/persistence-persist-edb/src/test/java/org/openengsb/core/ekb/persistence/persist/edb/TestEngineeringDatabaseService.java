@@ -30,9 +30,9 @@ import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.common.EDBConverterUtils;
-import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
-import org.openengsb.core.ekb.common.models.SourceModelA;
-import org.openengsb.core.ekb.common.models.SourceModelB;
+import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
+import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA;
+import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 
 /**
  * The TestEngineeringDatabaseService is a simple implementation of the EngineeringDatabaseService for testing the
