@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
@@ -117,9 +118,9 @@ public class EngineeringObjectEnhancerTest {
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
         assertThat(before == after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
-        assertThat(result.getNameB(), is("secondObject"));        
+        assertThat(result.getNameB(), is("secondObject"));
     }
-    
+
     @Test
     public void testIfTheEngineeringObjectReferencesUpdateWorks_shouldLoadOtherModelAndMergeIt() throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
@@ -136,7 +137,33 @@ public class EngineeringObjectEnhancerTest {
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
         assertThat(before == after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
-        assertThat(result.getNameB(), is("updatedSecondObject"));        
+        assertThat(result.getNameB(), is("updatedSecondObject"));
     }
 
+    @Test
+    public void testIfEngineeringObjectUpdateAlsoUpdatesReferencedModels_shouldUpdateAllNeededModels() throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/1");
+        model.setModelAId("objectA/reference/1");
+        model.setModelBId("objectB/reference/1");
+        model.setNameA("updatedFirstObject");
+        model.setNameB("updatedSecondObject");
+        EKBCommit commit = new EKBCommit().addUpdate(model);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        assertThat(after - before == 2, is(true));
+        SourceModelA modelA = null;
+        SourceModelB modelB = null;
+        for (OpenEngSBModel update : commit.getUpdates()) {
+            if (update.retrieveModelName().equals(SourceModelA.class.getName())) {
+                modelA = (SourceModelA) update;
+            }
+            if (update.retrieveModelName().equals(SourceModelB.class.getName())) {
+                modelB = (SourceModelB) update;
+            }
+        }
+        assertThat(modelA.getNameA(), is("updatedFirstObject"));
+        assertThat(modelB.getNameB(), is("updatedSecondObject"));
+    }
 }

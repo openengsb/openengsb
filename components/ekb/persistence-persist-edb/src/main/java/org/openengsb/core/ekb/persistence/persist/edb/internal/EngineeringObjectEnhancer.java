@@ -79,7 +79,9 @@ public class EngineeringObjectEnhancer {
             Map<Object, OpenEngSBModel> updated) {
         List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
         for (OpenEngSBModel model : updates) {
-            updated.put(model.retrieveInternalModelId(), model);
+            if (updated.containsKey(model.retrieveInternalModelId())) {
+                continue; // this model was already updated in this commit
+            }
             if (ModelUtils.isEngineeringObject(model)) {
                 OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(),
                     edbService.getObject(model.retrieveInternalModelId().toString()));
@@ -92,18 +94,27 @@ public class EngineeringObjectEnhancer {
                 }
                 if (referencesChanged) {
                     reloadReferencesAndUpdateEO(diff, model);
-                } // else {
-                  // // TODO: updateEOReferencedModels();
-                  // }
-
-                // TODO: run EO object update logic
+                } else {
+                    additionalUpdates.addAll(updateReferencedModelsByEO(model));
+                }
             }
             additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated));
         }
         if (!additionalUpdates.isEmpty()) {
+            for (OpenEngSBModel model : additionalUpdates) {
+                updated.put(model.retrieveInternalModelId(), model);
+            }
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated));
         }
         return additionalUpdates;
+    }
+
+    private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
+        List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
+        for (Field field : getForeignKeyFields(model.getClass())) {
+            updates.add(performMerge(field, model, false));
+        }
+        return updates;
     }
 
     /**
@@ -194,10 +205,7 @@ public class EngineeringObjectEnhancer {
         }
     }
 
-    /**
-     * Merges the given EngineeringObject with the referenced model which is defined in the given field.
-     */
-    private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
+    private OpenEngSBModel performMerge(Field field, OpenEngSBModel model, boolean modelIsTarget) {
         try {
             OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
             ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
@@ -205,7 +213,13 @@ public class EngineeringObjectEnhancer {
             Class<?> sourceClass = modelRegistry.loadModel(description);
             Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
             ModelDescription target = ModelUtils.getModelDescription(model);
-            model = (OpenEngSBModel) transformationEngine.performTransformation(description, target, instance, model);
+            if (modelIsTarget) {
+                return (OpenEngSBModel) transformationEngine.performTransformation(description, target,
+                    instance, model);
+            } else {
+                return (OpenEngSBModel) transformationEngine.performTransformation(target, description, 
+                    model, instance);
+            }
         } catch (SecurityException e) {
             throw new EKBException(generateErrorMessage(model), e);
         } catch (IllegalArgumentException e) {
@@ -215,6 +229,13 @@ public class EngineeringObjectEnhancer {
         } catch (ClassNotFoundException e) {
             throw new EKBException(generateErrorMessage(model), e);
         }
+    }
+
+    /**
+     * Merges the given EngineeringObject with the referenced model which is defined in the given field.
+     */
+    private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
+        model = performMerge(field, model, true);
     }
 
     /**
