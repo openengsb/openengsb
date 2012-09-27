@@ -99,6 +99,24 @@ public final class ModelUtils {
     }
 
     /**
+     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelName(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelName();
+    }
+    
+    /**
+     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelVersion(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelVersion();
+    }
+
+    /**
      * Performs the getOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
