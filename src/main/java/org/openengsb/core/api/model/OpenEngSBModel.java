@@ -73,4 +73,14 @@ public interface OpenEngSBModel extends Serializable {
      * model.
      */
     void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries);
+    
+    /**
+     * Returns the name of the instance model of this OpenEngSBModel object.
+     */
+    String retrieveModelName();
+    
+    /**
+     * Returns the version of the instance model of this OpenEngSBModel object.
+     */
+    String retrieveModelVersion();
 }
