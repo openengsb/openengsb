@@ -71,7 +71,6 @@ public final class ManipulationUtils {
         cp.importPackage("java.lang.reflect");
         cp.importPackage("org.openengsb.core.api.model");
         cp.importPackage("org.slf4j");
-        cp.importPackage("org.osgi.framework");
         initiated = true;
     }
 
