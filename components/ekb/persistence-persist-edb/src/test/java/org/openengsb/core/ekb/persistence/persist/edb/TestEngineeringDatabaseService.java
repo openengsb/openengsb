@@ -48,15 +48,28 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelA.class.getName());
             return edbObject;
         }
+        if (arg0.equals("objectA/reference/2")) {
+            EDBObject edbObject = new EDBObject("objectA/reference/2");
+            edbObject.putEDBObjectEntry("nameA", "updatedFirstObject");
+            edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelA.class.getName());
+            return edbObject;
+        }
         if (arg0.equals("objectB/reference/1")) {
             EDBObject edbObject = new EDBObject("objectB/reference/1");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
             return edbObject;
         }
-        
+        if (arg0.equals("objectB/reference/2")) {
+            EDBObject edbObject = new EDBObject("objectB/reference/2");
+            edbObject.putEDBObjectEntry("nameB", "updatedSecondObject");
+            edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
+            return edbObject;
+        }
         if (arg0.equals("common/reference/1")) {
             EDBObject edbObject = new EDBObject("common/reference/1");
+            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
@@ -72,6 +85,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         String reference = (String) arg0.get(EDBConverterUtils.REFERENCE_PREFIX + "%");
         if (reference.equals("objectA/reference/1") || reference.equals("objectB/reference/1")) {
             EDBObject edbObject = new EDBObject("common/reference/1");
+            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
@@ -81,7 +96,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         if (reference.equals("common/reference/1")) {
             return new ArrayList<EDBObject>();
         }
-        return null;
+        return new ArrayList<EDBObject>();
     }
 
     @Override

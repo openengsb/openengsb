@@ -90,11 +90,11 @@ public class EngineeringObjectEnhancer {
                     throw new EKBException("Engineering Objects may be updated only at "
                             + "references or at values not both in the same commit");
                 }
-                // if (referencesChanged) {
-                // // TODO: reloadReferencesAndUpdateEO();
-                // } else {
-                // // TODO: updateEOReferencedModels();
-                // }
+                if (referencesChanged) {
+                    reloadReferencesAndUpdateEO(diff, model);
+                } // else {
+                  // // TODO: updateEOReferencedModels();
+                  // }
 
                 // TODO: run EO object update logic
             }
@@ -104,6 +104,15 @@ public class EngineeringObjectEnhancer {
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated));
         }
         return additionalUpdates;
+    }
+
+    /**
+     * Reload the references which have changed in the actual update and update the Engineering Object accordingly.
+     */
+    private void reloadReferencesAndUpdateEO(ModelDiff diff, OpenEngSBModel model) {
+        for (ModelDiffEntry entry : diff.getDifferences().values()) {
+            mergeEngineeringObjectWithReferencedModel(entry.getField(), model);
+        }
     }
 
     /**
@@ -180,15 +189,15 @@ public class EngineeringObjectEnhancer {
     private void performInsertEOLogic(OpenEngSBModel model) {
         for (Field field : getForeignKeyFields(model.getClass())) {
             if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
-                performInsertEOFieldLogic(field, model);
+                mergeEngineeringObjectWithReferencedModel(field, model);
             }
         }
     }
 
     /**
-     * Performs the logic for updating the Engineering Object based on the OpenEngSBForeignKey annotation.
+     * Merges the given EngineeringObject with the referenced model which is defined in the given field.
      */
-    private void performInsertEOFieldLogic(Field field, OpenEngSBModel model) {
+    private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
         try {
             OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
             ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());

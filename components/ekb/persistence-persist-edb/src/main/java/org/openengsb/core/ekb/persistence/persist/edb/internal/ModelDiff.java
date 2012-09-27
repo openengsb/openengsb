@@ -25,6 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,9 @@ public final class ModelDiff {
     private static void calculateDifferences(ModelDiff diff) {
         Class<?> modelClass = diff.getBefore().getClass();
         for (Field field : modelClass.getDeclaredFields()) {
+            if (field.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
+                continue;
+            }
             try {
                 Object before = FieldUtils.readField(field, diff.getBefore(), true);
                 Object after = FieldUtils.readField(field, diff.getAfter(), true);

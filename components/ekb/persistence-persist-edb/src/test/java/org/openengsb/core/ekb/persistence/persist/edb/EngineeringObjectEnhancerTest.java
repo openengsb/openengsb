@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
@@ -87,6 +88,55 @@ public class EngineeringObjectEnhancerTest {
         assertThat(before < after, is(true));
         assertThat(result.getNameA(), is("updatedFirstObject"));
         assertThat(result.getNameB(), is("updatedSecondObject"));
+    }
+
+    @Test(expected = EKBException.class)
+    public void testIfTheEngineeringObjectUpdateIsCheckedCorrectly_shouldNotAllowReferenceAndValueChange()
+        throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/1");
+        model.setModelAId("objectA/reference/2");
+        model.setNameA("teststring");
+        EKBCommit commit = new EKBCommit().addUpdate(model);
+        enhancer.enhanceEKBCommit(commit);
+    }
+
+    @Test
+    public void testIfTheEngineeringObjectReferenceUpdateWorks_shouldLoadOtherModelAndMergeIt() throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/1");
+        model.setModelAId("objectA/reference/2");
+        model.setModelBId("objectB/reference/1");
+        model.setNameA("firstObject");
+        model.setNameB("secondObject");
+        EKBCommit commit = new EKBCommit().addUpdate(model);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
+        EngineeringObjectModel result = (EngineeringObjectModel) inserted;
+        assertThat(before == after, is(true));
+        assertThat(result.getNameA(), is("updatedFirstObject"));
+        assertThat(result.getNameB(), is("secondObject"));        
+    }
+    
+    @Test
+    public void testIfTheEngineeringObjectReferencesUpdateWorks_shouldLoadOtherModelAndMergeIt() throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/1");
+        model.setModelAId("objectA/reference/2");
+        model.setModelBId("objectB/reference/2");
+        model.setNameA("firstObject");
+        model.setNameB("secondObject");
+        EKBCommit commit = new EKBCommit().addUpdate(model);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
+        EngineeringObjectModel result = (EngineeringObjectModel) inserted;
+        assertThat(before == after, is(true));
+        assertThat(result.getNameA(), is("updatedFirstObject"));
+        assertThat(result.getNameB(), is("updatedSecondObject"));        
     }
 
 }
