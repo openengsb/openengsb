@@ -152,8 +152,8 @@ public class TestModel2 implements OpenEngSBModel {
     }
     
     @Override
-    public Version retrieveModelVersion() {
-        return new Version("1.0.0");
+    public String retrieveModelVersion() {
+        return new Version("1.0.0").toString();
     }
 
     @Override

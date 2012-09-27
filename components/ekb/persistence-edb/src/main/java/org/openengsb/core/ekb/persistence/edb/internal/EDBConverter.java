@@ -371,7 +371,7 @@ public class EDBConverter {
             }
         }
         object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, model.retrieveModelName());
-        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE_VERSION, model.retrieveModelVersion().toString());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE_VERSION, model.retrieveModelVersion());
         object.putEDBObjectEntry("domainId", info.getDomainId());
         object.putEDBObjectEntry("connectorId", info.getConnectorId());
         object.putEDBObjectEntry("instanceId", info.getInstanceId());

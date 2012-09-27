@@ -222,10 +222,10 @@ public final class ManipulationUtils {
     private static void addRetrieveModelVersion(CtClass clazz, Version modelVersion) throws CannotCompileException,
         NotFoundException {
         CtClass[] params = generateClassField();
-        CtMethod method = new CtMethod(cp.get(Version.class.getName()), "retrieveModelVersion", params, clazz);
+        CtMethod method = new CtMethod(cp.get(String.class.getName()), "retrieveModelVersion", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called retrieveModelVersion"));
-        builder.append("return new Version(\"").append(modelVersion.toString()).append("\");");
+        builder.append("return \"").append(modelVersion.toString()).append("\";");
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }

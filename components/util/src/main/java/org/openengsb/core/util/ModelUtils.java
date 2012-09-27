@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +111,7 @@ public final class ModelUtils {
      * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
-    public static Version retrieveModelVersion(Object model) {
+    public static String retrieveModelVersion(Object model) {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveModelVersion();
     }
