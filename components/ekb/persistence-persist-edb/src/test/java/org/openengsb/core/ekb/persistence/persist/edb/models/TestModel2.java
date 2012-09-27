@@ -45,7 +45,7 @@ public class TestModel2 implements OpenEngSBModel {
     private Map<String, OpenEngSBModelEntry> tail = new HashMap<String, OpenEngSBModelEntry>();
 
     public enum ENUM {
-            A,
+        A,
             B,
             C
     }
@@ -155,7 +155,7 @@ public class TestModel2 implements OpenEngSBModel {
     public void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries) {
         for (OpenEngSBModelEntry entry : entries) {
             tail.put(entry.getKey(), entry);
-        }        
+        }
     }
 
     @Override
@@ -175,6 +175,6 @@ public class TestModel2 implements OpenEngSBModel {
 
     @Override
     public String retrieveModelVersion() {
-        return new Version(1,0,0).toString();
+        return new Version(1, 0, 0).toString();
     }
 }
