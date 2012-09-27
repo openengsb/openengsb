@@ -128,6 +128,8 @@ public class QueryInterfaceService implements QueryInterface {
         String[] elements = query.split(" and ");
         for (String element : elements) {
             String[] parts = StringUtils.split(element, ":", 2);
+            parts[0] = parts[0].replace("\\", "\\\\");
+            parts[1] = parts[1].replace("\\", "\\\\");
             map.put(parts[0], parts[1].substring(1, parts[1].length() - 1));
         }
         return map;

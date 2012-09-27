@@ -230,9 +230,23 @@ public class EDBIT extends AbstractExamTestHelper {
         setProperty(model, "setEdbId", "createevent/5");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
         persist.commit(commit);
-
+        
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        assertThat(result.isEmpty(), is(false));
+        assertThat(result.get(0), is(getTestModel()));
+    }
+    
+    @Test
+    public void testEKBInsertCommitAndQueryDataWithBackslashes_shouldReturnModelObject() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "C:\\\\test");
+        setProperty(model, "setEdbId", "createevent/6");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+        
+        @SuppressWarnings("unchecked")
+        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
@@ -421,7 +435,6 @@ public class EDBIT extends AbstractExamTestHelper {
                 versionPresent = true;
             }
         }
-
         assertThat(versionPresent, is(true));
     }
     
