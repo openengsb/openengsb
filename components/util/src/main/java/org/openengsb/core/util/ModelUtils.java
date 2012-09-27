@@ -31,6 +31,7 @@ import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,21 +100,12 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveInternalModelVersion();
     }
-
-    /**
-     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static String retrieveModelName(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelName();
-    }
     
     /**
      * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
-    public static String retrieveModelVersion(Object model) {
+    public static String retrieveModelVersionAsString(Object model) {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveModelVersion();
     }

@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.ekb.persistence.query.edb.models.SubModel;
+import org.osgi.framework.Version;
 
 /**
  * Little class to test if the querying of models also works with self implemented classes and not only with proxied
@@ -45,7 +45,7 @@ public class TestModel2 implements OpenEngSBModel {
     private Map<String, OpenEngSBModelEntry> tail = new HashMap<String, OpenEngSBModelEntry>();
 
     public enum ENUM {
-            A,
+        A,
             B,
             C
     }
@@ -155,6 +155,26 @@ public class TestModel2 implements OpenEngSBModel {
     public void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries) {
         for (OpenEngSBModelEntry entry : entries) {
             tail.put(entry.getKey(), entry);
-        }        
+        }
+    }
+
+    @Override
+    public Long retrieveInternalModelTimestamp() {
+        return null;
+    }
+
+    @Override
+    public Integer retrieveInternalModelVersion() {
+        return null;
+    }
+
+    @Override
+    public String retrieveModelName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public String retrieveModelVersion() {
+        return new Version(1, 0, 0).toString();
     }
 }
