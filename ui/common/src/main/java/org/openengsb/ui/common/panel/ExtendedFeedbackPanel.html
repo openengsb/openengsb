@@ -21,8 +21,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
   <body>
-    <wicket:extend>
-      <div wicket:id="userEditor"></div>
-    </wicket:extend>
+    <wicket:panel>
+      <ul wicket:id="errorFeedbackUl" class="feedbackPanel errorLevel">
+        <li wicket:id="messages" >
+          <span wicket:id="message" />
+        </li>
+      </ul>
+      <ul wicket:id="warningFeedbackUl" class="feedbackPanel warninLevel">
+        <li wicket:id="messages">
+          <span wicket:id="message" />
+        </li>
+      </ul>
+      <ul wicket:id="infoFeedbackUl" class="feedbackPanel infoLevel">
+        <li wicket:id="messages">
+          <span wicket:id="message" />
+        </li>
+      </ul>
+    </wicket:panel> 
   </body>
 </html>

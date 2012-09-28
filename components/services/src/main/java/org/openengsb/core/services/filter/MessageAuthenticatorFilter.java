@@ -81,8 +81,10 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
             throw new FilterException(e);
         }
 
+
         LOGGER.debug("authenticated");
         return (MethodResultMessage) next.filter(input, metaData);
+
     }
 
     @SuppressWarnings("unchecked")

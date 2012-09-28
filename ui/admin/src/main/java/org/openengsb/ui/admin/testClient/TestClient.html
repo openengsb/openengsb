@@ -26,25 +26,32 @@
       <h2>
         <wicket:message key="serviceList" />
       </h2>
+      
+      <div>
+        <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+          <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
+        </form>
+      </div>
+      
       <div wicket:id="serviceManagementContainer">
-        <ul wicket:id="domains">
-          <li>
-            <h3>
-              <span wicket:id="domain.name">[domain.name]</span>
-            </h3>           
-            <a href="TestClient.html#" wicket:id="proxy.create.new">
+      	
+      	<div class="line dataTable" wicket:id="domains">
+      		<div class="unit size1of6">
+      			<span wicket:id="domain.name">[domain.name]</span>
+      		</div>
+      		<div class="unit size 1of6">
+      			<span wicket:id="domain.class">[domain.class]</span>
+      		</div>
+      		<div class="unit size 4of6 lastUnit">
+      			<span wicket:id="domain.description">[domain.description]</span>
+      		</div>
+      		
+      		
+      		<a href="TestClient.html#" wicket:id="proxy.create.new">
               <wicket:message key="proxy.create.new">[proxy.create.new]</wicket:message>
             </a>
-
-            <p>
-              <span wicket:id="domain.class">[domain.class]</span>
-            </p>
-
-            <p>
-              <span wicket:id="domain.description">[domain.description]</span>
-            </p>
-
-            <ul wicket:id="services">
+      		
+      		 <ul wicket:id="services">
               <li>
                 <h3>
                   <span wicket:id="service.name">[service.name]</span>
@@ -55,11 +62,12 @@
                 </h3>
               </li>
             </ul>
-
-          </li>
-        </ul>
-      </div>
-
+            
+      	</div>
+      
+      
+       </div>
+      
       <form wicket:id="organizeForm">
         <input type="submit" wicket:id="globalsButton" wicket:message="value:organize.globals" />
         <input type="submit" wicket:id="importsButton" wicket:message="value:organize.imports" />

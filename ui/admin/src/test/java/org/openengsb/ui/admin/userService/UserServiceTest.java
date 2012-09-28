@@ -27,16 +27,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class UserServiceTest extends AbstractUITest {
@@ -48,6 +45,7 @@ public class UserServiceTest extends AbstractUITest {
         } else {
             return null;
         }
+
     }
 
     @Before
@@ -56,7 +54,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testLinkAppearsWithCaptionUserManagement_shouldContainUserManagementLink() throws Exception {
+    public void testLinkAppearsWithCaptionUserManagement() throws Exception {
         tester.startPage(Index.class);
         tester.assertContains("User Management");
     }
@@ -66,116 +64,104 @@ public class UserServiceTest extends AbstractUITest {
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
-    @Test
-    public void testCreateUserPageWithoutParams_shouldEnableUsernameField() throws Exception {
-        tester.startPage(UserEditPage.class);
-        tester.assertRenderedPage(UserEditPage.class);
+    @Test 
+    public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
+        tester.startPage(UserListPage.class); 
+        tester.assertRenderedPage(UserListPage.class);
+        tester.clickLink("lazy:userList:listContainer:form:list:0:item.update");
+        tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:item.update", "onclick");
         Component usernameField =
-            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
-        assertTrue(usernameField.isEnabled());
-    }
-
-    @Test
-    public void testCreateUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
-        PageParameters parameters = new PageParameters();
-        parameters.set("user", "admin");
-        tester.startPage(UserEditPage.class, parameters);
-        tester.assertRenderedPage(UserEditPage.class);
-        Component usernameField =
-            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
+            tester.getComponentFromLastRenderedPage("userDialogue:userEditorContainer:userForm:username");
         assertFalse(usernameField.isEnabled());
     }
-
-    @Test
-    public void testCreateUserLink_shouldCreateEmptyEditPage() throws Exception {
-        tester.startPage(UserListPage.class);
-        tester.debugComponentTrees();
-        AjaxLink<?> button =
-            (AjaxLink<?>) tester.getComponentFromLastRenderedPage("lazy:createButton");
-        tester.executeAjaxEvent(button, "onclick");
-        tester.assertRenderedPage(UserEditPage.class);
-        Component usernameField =
-            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
-        assertTrue(usernameField.isEnabled());
+     
+    @Test public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
+        tester.startPage(UserListPage.class); 
+        tester.assertRenderedPage(UserListPage.class); 
+        tester.clickLink("lazy:addUser");
+        tester.executeAjaxEvent("lazy:addUser", "onclick");
+        Component usernameField = 
+            tester.getComponentFromLastRenderedPage("userDialogue:userEditorContainer:userForm:username");
+        assertTrue(usernameField.isEnabled()); 
     }
-
-    @Test
-    public void testUserCreation_shouldWork() throws Exception {
-        tester.startPage(UserEditPage.class);
-
-        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
+     
+    @Test public void testUserCreation_ShouldWork() {
+        tester.startPage(UserListPage.class);
+        tester.assertRenderedPage(UserListPage.class); 
+        tester.clickLink("lazy:addUser");
+        tester.executeAjaxEvent("lazy:addUser", "onclick");
+        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-
         tester.assertNoErrorMessage();
-        assertThat(userManager.getUserList(), hasItem("user1"));
+        assertThat(userManager.getUserList(), hasItem("user1")); 
     }
-
+     
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void testCreatePermission_shouldAddPermission() {
-        tester.startPage(UserEditPage.class);
-        tester.debugComponentTrees();
-        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission",
+    public void testCreatePermission() {
+        tester.startPage(UserListPage.class);
+        tester.clickLink("lazy:addUser");
+        tester.executeAjaxEvent("lazy:addUser", "onclick");
+        tester.executeAjaxEvent("userDialogue:userEditorContainer:userForm:permissionListContainer:createPermission",
             "onclick");
-
         DropDownChoice<Class> dropdown = (DropDownChoice<Class>) tester.getComponentFromLastRenderedPage(
-            "userEditor:userEditorContainer:userForm:permissionListContainer:"
-                    + "createPermissionContainer:createPermissionContent:container:form:permissionTypeSelect");
-
-        List<Class> choices = (List<Class>) dropdown.getChoices();
-        assertThat(choices, hasItem((Class) WicketPermission.class));
-
+            "userDialogue:userEditorContainer:userForm:permissionListContainer:"
+            + "createPermissionContainer:createPermissionContent:container:form:permissionTypeSelect");
+        List<Class> choices = (List<Class>) dropdown.getChoices(); assertThat(choices, 
+            hasItem((Class) WicketPermission.class));
+      
         FormTester permissionFormTester = tester.newFormTester(
-            "userEditor:userEditorContainer:userForm:permissionListContainer:"
-                    + "createPermissionContainer:createPermissionContent:container:form");
+            "userDialogue:userEditorContainer:userForm:permissionListContainer:"
+            + "createPermissionContainer:createPermissionContent:container:form");
         permissionFormTester.select("permissionTypeSelect", 0);
-
         tester.debugComponentTrees();
     }
 
     @Test
-    public void testDeleteUser_shouldBeRemovedFromList() throws Exception {
+    public void deleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);
-        tester.debugComponentTrees();
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.delete");
         tester.debugComponentTrees();
         tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:confirm:yes", "onclick");
         assertThat(userManager.getUserList(), not(hasItem("test")));
     }
-
-    @Test
-    public void testErrorMessage_shouldReturnUserExists() throws Exception {
-        tester.startPage(UserEditPage.class);
+     
+    @Test public void testErrorMessage_shouldReturnUserExists() throws Exception {
+        tester.startPage(UserListPage.class);
         userManager.createUser("user1");
+        tester.clickLink("lazy:addUser");
+        tester.executeAjaxEvent("lazy:addUser", "onclick");
         tester.debugComponentTrees();
-        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
+        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "userExistError") });
+        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "userExistError")}); 
     }
-
+    
     @Test
-    public void testShowCreatedUser_shouldShowAdmin() throws Exception {
+    public void testShowCreatedUser_ShouldShowAdmin() {
         tester.startPage(UserListPage.class);
         tester.assertContains("admin");
     }
 
-    @Test
-    public void testErrorMessage_shouldReturnWrongSecondPassword() throws Exception {
+    
+    @Test public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
         userManager.createUser("user1");
-        PageParameters parameters = new PageParameters();
-        parameters.set("user", "user1");
-        tester.startPage(UserEditPage.class, parameters);
-        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
+        tester.startPage(UserListPage.class); 
+        tester.assertRenderedPage(UserListPage.class);
+        tester.clickLink("lazy:userList:listContainer:form:list:0:item.update");
+        tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:item.update", "onclick");
+        
+        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
+        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "passwordError")}); 
     }
 }

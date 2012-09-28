@@ -17,74 +17,54 @@
 
 package org.openengsb.ui.admin.global.header;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.ui.admin.edb.EdbClient;
-import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebSession;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.index.Index;
+import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
-import org.openengsb.ui.admin.sendEventPage.SendEventPage;
-import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
-import org.openengsb.ui.admin.taskOverview.TaskOverview;
-import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserListPage;
-import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.api.OpenEngSBVersionService;
+import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.openengsb.ui.common.resources.images.CommonPictureLocator;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
-    private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
-    private final ArrayList<String> avialableItems = new ArrayList<String>();
-
-    private static String menuIndex;
 
     @PaxWicketBean(name = "openengsbVersion")
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
-    @PaxWicketBean(name = "attributeStore")
-    private SecurityAttributeProviderImpl attributeStore;
+    @PaxWicketBean(name = "contextCurrentService")
+    private ContextCurrentService contextService;
 
-    public HeaderTemplate(String id, String menuIndex) {
+    public HeaderTemplate(String id) {
         super(id);
 
-        baseInitialization(menuIndex);
-        initializeMenu();
+        baseInitialization();
+        initializeTopMenu();
     }
 
-    private void baseInitialization(String menuIndex) {
-        add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                getSession().setLocale(Locale.GERMAN);
-            }
-        });
+    private void baseInitialization() {
 
-        HeaderTemplate.menuIndex = menuIndex;
+        BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
+        homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
+        add(homelink);
 
-        add(new BookmarkablePageLink<Index>("logo", Index.class));
+        //TODO: Find a soultion where to display version information
+        /*
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
                 add(new Label("version", new StringResourceModel("unknown.version", this, null)));
@@ -95,97 +75,74 @@ public class HeaderTemplate extends Panel {
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }
+        */
     }
 
-    private void initMainMenuItems() {
-        addHeaderMenuItem("Index", Index.class, "index.title");
-
-        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-        addHeaderMenuItem("EdbClient", EdbClient.class, "edbclient.title");
-        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
-        addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
-        addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
-        addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
-    }
-
-    private void initializeMenu() {
-        initMainMenuItems();
-
-        if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
-            // update menu item to index, because page index is not found!
-            HeaderTemplate.menuIndex = "Index";
-        }
-
-        // generate main navigation
-        ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", menuItems) {
+    private void initializeTopMenu() {
+        Link<Object> link = new Link<Object>("logout") {
             @Override
-            protected void populateItem(ListItem<HeaderMenuItem> item) {
-                HeaderMenuItem menuItem = item.getModelObject();
-                item.add(menuItem.getLink());
-
-                // set menu item to active
-                if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
-                    item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-                        @Override
-                        public String getObject() {
-                            return "active";
-                        }
-                    }));
+            public void onClick() {
+                boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
+                if (signedIn) {
+                    ((AuthenticatedWebSession) getSession()).signOut();
                 }
+                setResponsePage(LoginPage.class);
             }
         };
+        add(link);
 
-        add(headerMenuItems);
+        // Adds the context choice list
+        final Label projectLabel = new Label("currentProject", new IModel<String>() {
+
+            @Override
+            public void detach() {
+            }
+
+            @Override
+            public String getObject() {
+                return ContextHolder.get().getCurrentContextId();
+            }
+
+            @Override
+            public void setObject(String object) {
+            }
+        });
+        add(projectLabel);
+
+        ListView<String> avaliableContexts = new ListView<String>("availableContexts",
+            contextService.getAvailableContexts()) {
+
+            @Override
+            protected void populateItem(ListItem<String> item) {
+                item.add(new Link<String>("availableContext", item.getModel()) {
+
+                    @Override
+                    public void onClick() {
+                        String obj = getModelObject();
+                        ContextHolder.get().setCurrentContextId(obj);
+                        setResponsePage(this.getPage());
+                    }
+                }.add(new Label("availableContextLabel", item.getModelObject())));
+            }
+        };
+        add(avaliableContexts);
+
+        add(new Link<Object>("lang.en") {
+
+            @Override
+            public void onClick() {
+                getSession().setLocale(Locale.ENGLISH);
+                setResponsePage(this.getPage());
+            }
+        });
+
+        add(new Link<Object>("lang.de") {
+
+            @Override
+            public void onClick() {
+                getSession().setLocale(Locale.GERMAN);
+                setResponsePage(this.getPage());
+            }
+        });
     }
-
-    /**
-     * get the name of the current active menu item
-     */
-    public static String getActiveIndex() {
-        return HeaderTemplate.menuIndex;
-    }
-
-    /**
-     * Adds a new item to main header navigation where the index defines the name of the index, which should be the
-     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
-     * should be displayed and authority defines who is authorized to see the link
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey,
-            String... authority) {
-        StringResourceModel label = new StringResourceModel(langKey, this, null);
-        BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
-        addAuthorizationRoles(pageLabelLink, authority);
-        menuItems.add(new HeaderMenuItem(index, pageLabelLink));
-        avialableItems.add(index);
-    }
-
-    private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String... authority) {
-        if (authority == null) {
-            return;
-        }
-        for (String a : authority) {
-            attributeStore.putAttribute(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
-        }
-    }
-
-    private static class HeaderMenuItem implements Serializable {
-        private final String index;
-        private final BookmarkablePageLabelLink<? extends WebPage> link;
-
-        public HeaderMenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
-            this.index = index;
-            this.link = link;
-        }
-
-        public String getItemName() {
-            return index;
-        }
-
-        public BookmarkablePageLabelLink<? extends WebPage> getLink() {
-            return link;
-        }
-    }
-
 }

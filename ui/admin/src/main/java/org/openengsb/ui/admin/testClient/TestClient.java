@@ -37,6 +37,7 @@ import javax.swing.tree.TreeNode;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -69,6 +70,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -109,6 +111,9 @@ public class TestClient extends BasePage {
     private static final long serialVersionUID = 2993665629913347770L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
+
+    public static final String PAGE_NAME_KEY = "testClient.title";
+    public static final String PAGE_DESCRIPTION_KEY = "testClient.description";
 
     @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
@@ -156,7 +161,7 @@ public class TestClient extends BasePage {
     }
 
     public TestClient(PageParameters parameters) {
-        super(parameters);
+        super(parameters, PAGE_NAME_KEY);
         initContent();
     }
 
@@ -177,6 +182,45 @@ public class TestClient extends BasePage {
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+        
+        Form<?> pc = new Form<Object>("projectChoiceForm");
+        pc.add(createProjectChoice());
+        add(pc);
+    }
+    
+    private Component createProjectChoice() {
+        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            @Override
+            public String getObject() {
+                return getSessionContextId();
+            }
+
+            @Override
+            public void setObject(String object) {
+                ContextHolder.get().setCurrentContextId(object);
+            }
+
+            @Override
+            public void detach() {
+            }
+        }, getAvailableContexts()) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+            @Override
+            protected void onModelChanged() {
+                setResponsePage(TestClient.this.getClass());
+            }
+
+        };
+        return dropDownChoice;
     }
 
     @SuppressWarnings("serial")
@@ -860,5 +904,4 @@ public class TestClient extends BasePage {
             throw new IllegalArgumentException(e);
         }
     }
-
 }
