@@ -71,8 +71,7 @@ public class FrameworkVersionIT extends AbstractPreConfiguredExamTestHelper {
     private String getBundleVersion() {
         Bundle[] bundles = getBundleContext().getBundles();
 
-        for (int i = 0; i < bundles.length; i++)
-        {
+        for (int i = 0; i < bundles.length; i++) {
             if (bundles[i].getSymbolicName().equals("org.openengsb.framework.info"))
             {
                 return bundles[i].getVersion().toString().trim();

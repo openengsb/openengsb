@@ -22,6 +22,11 @@
   xml:lang="en" lang="en">
 <body>
 <wicket:extend>
+  <div>
+    <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+      <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
+    </form>
+  </div>
   <form wicket:id="form"><select wicket:id="dropdown" />
     <div wicket:id="fieldContainer">
     <table>

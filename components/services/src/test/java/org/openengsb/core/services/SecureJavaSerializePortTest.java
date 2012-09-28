@@ -38,7 +38,12 @@ import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.services.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.util.CipherUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureJavaSerializePortTest.class);
 
     @Override
     protected byte[] encodeAndEncrypt(MethodCallMessage secureRequest, SecretKey sessionKey) throws Exception {
@@ -73,6 +78,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
+                        LOGGER.info("running unpacker");
                         EncryptedMessage deserialize = (EncryptedMessage) SerializationUtils.deserialize(input);
                         byte[] result = (byte[]) next.filter(deserialize, metaData);
                         return result;
@@ -95,6 +101,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
                         MethodCallMessage deserialize;
+
                         try {
                             deserialize = (MethodCallMessage) SerializationUtils.deserialize(input);
                         } catch (SerializationException e) {

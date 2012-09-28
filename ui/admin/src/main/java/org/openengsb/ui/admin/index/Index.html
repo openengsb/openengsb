@@ -23,11 +23,41 @@
 
 <body>
   <wicket:extend>
-    <h1>Welcome to OpenEngSB</h1>
-    <hr />
-    <p>
-      <wicket:message key="index.welcome"></wicket:message>
-    </p>
+    <div class="unit size1of1 lastUnit">
+        <div class="lightbox">
+            <h1><wicket:message key="index.title" /></h1>
+            <p><wicket:message key="index.text" /></p>
+      </div>
+    </div>
+    <div class="line">
+        <div class="unit size1of2">
+        <div class="lightbox">
+        <h1><wicket:message key="hardware.title" /></h1>
+        <p>
+		    <strong><wicket:message key="hardware.architecture" />: </strong>abc4711<br />
+		    <strong><wicket:message key="hardware.os" />: </strong>abc4711<br />
+		    <strong><wicket:message key="hardware.memory" />: </strong>abc4711<br />
+		    <strong><wicket:message key="hardware.uptime" />: </strong>12:12:12<br />
+		  </p>
+		</div>
+        <div class="lightbox">
+            <h1><wicket:message key="log.title" /></h1>
+        </div>
+    </div>
+    <div class="unit size1of2 lastUnit">
+        <div class="lightbox">
+            <h1><wicket:message key="openengsb.title" /></h1>
+			<p>
+			  <strong><wicket:message key="openengsb.numcontexts" />: </strong>abc4711<br />
+			  <strong><wicket:message key="openengsb.version" />: </strong>abc4711<br />
+			  <strong><wicket:message key="openengsb.license" />: </strong>abc4711<br />
+			</p>
+          </div>
+	          <div class="lightbox">
+	           <h1><wicket:message key="help.title" /></h1>
+        </div>
+    </div>
+</div>
   </wicket:extend>
 </body>
 </html>

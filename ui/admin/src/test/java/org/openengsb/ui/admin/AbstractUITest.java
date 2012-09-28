@@ -139,9 +139,11 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         userManager.createUser("test");
         userManager.setUserCredentials("test", "password", "password");
         userManager.addPermissionToUser("test", new WicketPermission("USER"));
+        userManager.addPermissionToUser("test", new WicketPermission("INDEX"));
 
         userManager.createUser("user");
         userManager.setUserCredentials("user", "password", "password");
+        userManager.addPermissionToUser("user", new WicketPermission("INDEX"));
 
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");

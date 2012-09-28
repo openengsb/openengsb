@@ -23,30 +23,44 @@
 
 <body>
   <wicket:panel>
-    <div id="header">
-      <div id="banner">
-        <a class="pageLogo" href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="logo">
-          <img wicket:message="title:headerPage.title" alt="" title="" src="openengsb/images/openengsb.png">
-        </a>
-        <span class="languages">
-          <a href="HeaderTemplate.html#" wicket:id="lang.en">
-            <img wicket:message="title:headerPage.title" alt="English" title="English" src="openengsb/images/english_icon.png" />
-          </a>
-          <a href="HeaderTemplate.html#" wicket:id="lang.de">
-            <img wicket:message="title:headerPage.title" alt="Deutsch" title="Deutsch" src="openengsb/images/german_icon.png" />
-          </a>
-        </span>
-        <span class="version" wicket:id="version"></span>
-      </div>
-
-      <div id="mainMenu">
-        <ul>
-          <li wicket:id="headerMenuItems">
-            <a href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="link">linkTarget</a>
-          </li>
-        </ul>
-      </div>
+    <div class="unit size2of3 header">
+	  <a class="pageLogo" wicket:id="logo">
+	    <img wicket:id="topImage" wicket:message="title:headerPage.title" alt="OpenEngSB logo" id="headerLogo" title="OpenEngSB Logo"  />
+	  </a>
     </div>
+	    <div id="topMenu" class="unit size1of3 lastUnit header">
+	      <span id="topVersionContainer">OpenEngSB version: <span wicket:id="version"/></span>
+	      <ul id="topMenuContainer">
+	        <li class="ddTrigger">
+	          <span class="topMenuLabel" wicket:id="currentProject">Project</span>
+	          <div class="dropDownContainer hidden">
+	            <div class="line boxArrow">&nbsp;</div>
+	            <ul id="availableContexts">
+	    		  <li class="dropdownContainerHeadline"><wicket:message key="context.select" /></li>
+	    		  <li wicket:id="availableContexts">
+	    		    <a wicket:id="availableContext">
+	    		      <span wicket:id="availableContextLabel">availableContext</span>
+	    		    </a>
+	    		  </li>
+	    		</ul>
+	          </div>
+	        </li>
+	        <li class="ddTrigger">
+	          <span wicket:id="currentLanguage" class="topMenuLabel">Language</span>
+	          <div class="dropDownContainer hidden">
+	            <div class="line boxArrow">&nbsp;</div> 
+	            <ul id="availableLanguages">
+	    		  <li class="dropdownContainerHeadline"><wicket:message key="language.select" /></li>
+	    		  <li><a wicket:id="lang.en">English (EN)</a></li>
+	    		  <li><a wicket:id="lang.de">German (DE)</a></li>
+	            </ul>
+	          </div> 
+	        </li>
+	        <li>
+			  <a href="BasePage.html#" class="topMenuLabel" wicket:id="logout" >Logout</a>
+	    	</li>
+	      </ul>
+	    </div>
   </wicket:panel>
 </body>
 </html>
