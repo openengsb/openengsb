@@ -31,4 +31,3 @@ public interface TestInterface extends Connector {
     void update(Integer integer);
 
 }
-

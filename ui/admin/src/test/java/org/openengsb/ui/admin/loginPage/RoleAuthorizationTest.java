@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,55 +45,61 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
     }
 
     @Test
-    public void testHeaderComponentsForAdmin_shouldShowUserService() throws Exception {
+    public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "admin");
         formTester.setValue("password", "password");
         formTester.submit();
         BookmarkablePageLabelLink<?> userServiceLink =
-            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:6:link");
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:1:link");
         assertNotNull(userServiceLink);
         assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserListPage.class.getCanonicalName()));
     }
 
     @Test
-    public void testHeaderComponentsForNormalUser_shouldHideUserService() throws Exception {
+    public void testHeaderComponentsForNormalUser_UserServiceShouldNotBeVisible() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "user");
         formTester.setValue("password", "password");
         formTester.submit();
         BookmarkablePageLabelLink<?> userServiceLink =
-            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:6:link");
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:1:link");
         assertNull(userServiceLink);
     }
 
     @Test
-    public void testTestClientVisibleComponentsForAdmin_shouldShowAllComponents() throws Exception {
+    public void testTestClientVisibleComponentsForAdmin_EveryThingShouldBeVisible() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "admin");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("header:headerMenuItems:1:link");
+        tester.clickLink("menu:menuItems:2:link");
         tester.assertRenderedPage(TestClient.class);
         Component domains = tester.getComponentFromLastRenderedPage("serviceManagementContainer");
         assertNotNull(domains);
     }
 
     @Test
-    public void testTestClientVisibleComponentsForNormalUser_shouldHideServiceManagementContainer() throws Exception {
+    public void testTestClientVisibleComponentsForNormalUser_serviceManagementContainerShouldNotBeVisible() {
         tester.startPage(LoginPage.class);
         FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
         tester.debugComponentTrees();
-        assertThat(tester.getComponentFromLastRenderedPage("header"), notNullValue());
-        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems"), notNullValue());
-        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems:1:link"), notNullValue());
-        tester.clickLink("header:headerMenuItems:1:link");
+        assertThat(tester.getComponentFromLastRenderedPage("menu"), notNullValue());
+        assertThat(tester.getComponentFromLastRenderedPage("menu:menuItems"), notNullValue());
+        ListItem<?> componentFromLastRenderedPage =
+            (ListItem<?>) tester.getComponentFromLastRenderedPage("menu:menuItems:2");
+        System.out.println(componentFromLastRenderedPage);
+        Component component = componentFromLastRenderedPage.get(0);
+        System.out.println(component);
+
+        assertThat(tester.getComponentFromLastRenderedPage("menu:menuItems:2:link"), notNullValue());
+        tester.clickLink("menu:menuItems:2:link");
         tester.assertRenderedPage(TestClient.class);
         Component domains = tester.getComponentFromLastRenderedPage("serviceManagementContainer");
         assertNull(domains);

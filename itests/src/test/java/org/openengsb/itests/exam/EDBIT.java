@@ -441,7 +441,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     private void setProperty(Object model, String methodName, Object... params) throws Exception {
-        Class<?> classes[] = new Class<?>[params.length];
+        Class<?>[] classes = new Class<?>[params.length];
         for (int i = 0; i < params.length; i++) {
             classes[i] = params[i].getClass();
         }

@@ -20,9 +20,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
-  <body>
+   <body>
+
     <wicket:extend>
-      <div wicket:id="lazy"></div>
+      <div class="sectionContainer lightbox">
+        <ul class="sectionMenuSelector">
+          <li class="separator"><span class="activeSectionMenu"><wicket:message key="userList" /></span></li>
+          <li class="separator">test</li>
+        </ul>
+        <div wicket:id="lazy"></div>
+      </div>      
+      <div id="userDialogue" wicket:id="userDialogue" class="hidden"></div>
     </wicket:extend>
   </body>
 </html>

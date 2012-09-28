@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.global.header;
+package org.openengsb.ui.admin.global.menu;
 
 import static org.mockito.Mockito.mock;
 
@@ -25,7 +25,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.test.NullEvent;
@@ -35,13 +34,11 @@ import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
+import org.openengsb.ui.admin.userService.UserListPage;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
+import org.springframework.aop.framework.ProxyFactory;
 
-public class HeaderTemplateTest extends AbstractUITest {
-
-    @Before
-    public void setup() {
-    }
+public class MenuTemplateTest extends AbstractUITest {
 
     @Test
     public void testNavigationFieldForIndex_shouldNavigate() throws Exception {
@@ -67,19 +64,21 @@ public class HeaderTemplateTest extends AbstractUITest {
     public void testToNavigate_shouldForwardToTestClient() throws Exception {
         setUpSendEventPage();
         Assert.assertEquals(Index.class, tester.getLastRenderedPage().getClass());
-        tester.clickLink("header:headerMenuItems:0:link");
+        tester.clickLink("menu:menuItems:0:link");
+        tester.debugComponentTrees();
         tester.assertRenderedPage(Index.class);
-        tester.clickLink("header:headerMenuItems:1:link");
-        tester.assertRenderedPage(TestClient.class);
+        tester.clickLink("menu:menuItems:1:link");
+        tester.assertRenderedPage(UserListPage.class);
     }
 
     private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
         tester.startPage(page);
-        return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
+        return MenuTemplate.getActiveIndex().equals(expectedIndexName);
     }
 
     private void setupTestClientPage() {
         context.putBean(bundleContext);
+        context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
@@ -89,8 +88,8 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().getComponentInstantiationListeners()
-            .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().getComponentInstantiationListeners().add(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @SuppressWarnings("unchecked")

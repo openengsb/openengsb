@@ -17,34 +17,56 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
-import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.loginPage.LoginPage;
+import org.openengsb.ui.admin.global.menu.MenuTemplate;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.openengsb.ui.common.resources.css.CommonCssLocator;
+import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
-@SuppressWarnings("serial")
 public abstract class BasePage extends OpenEngSBPage {
+
+    private static final long serialVersionUID = 4189867438159317921L;
+
+    private String pageNameKey;
 
     public BasePage() {
         initCommonContent();
     }
 
+    public BasePage(String pageNameKey) {
+        this.pageNameKey = pageNameKey;
+        initCommonContent();
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        response.renderCSSReference(CommonCssLocator.getGridsCss());
+        response.renderCSSReference(CommonCssLocator.getCommonCss());
+        response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
+        response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
+    }
+
     private void initCommonContent() {
         initializeHeader();
-        initializeLoginLogoutTemplate();
+        initializeMenu();
         initializeFooter();
+
+        if (pageNameKey != null) {
+            Label sectionName = new Label("sectionName", new StringResourceModel(pageNameKey, this, null));
+            add(sectionName);
+        } else {
+            add(new EmptyPanel("sectionName"));
+        }
     }
 
     public BasePage(PageParameters parameters) {
@@ -52,82 +74,35 @@ public abstract class BasePage extends OpenEngSBPage {
         initCommonContent();
     }
 
+    public BasePage(PageParameters parameters, String pageNameKey) {
+        super(parameters);
+        initCommonContent();
+        this.pageNameKey = pageNameKey;
+    }
+
     private void initializeFooter() {
         add(new FooterTemplate("footer"));
     }
 
-    private void initializeLoginLogoutTemplate() {
-        Form<?> form = new Form<Object>("projectChoiceForm");
-        form.add(createProjectChoice());
-        add(form);
-        try {
-            form.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-
-        Link<Object> link = new Link<Object>("logout") {
-            @Override
-            public void onClick() {
-                boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
-                if (signedIn) {
-                    ((AuthenticatedWebSession) getSession()).signOut();
-                }
-                setResponsePage(signedIn ? Index.class : LoginPage.class);
-            }
-        };
-        add(link);
-
-        WebMarkupContainer container = new WebMarkupContainer("logintext");
-        link.add(container);
-        try {
-            container.setVisible(!((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-        container = new WebMarkupContainer("logouttext");
-        link.add(container);
-        try {
-            container.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-    }
-
     private void initializeHeader() {
-        add(new HeaderTemplate("header", getHeaderMenuItem()));
+        add(new HeaderTemplate("header"));
     }
 
-    private Component createProjectChoice() {
-        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
-            @Override
-            public String getObject() {
-                return getSessionContextId();
-            }
-
-            @Override
-            public void setObject(String object) {
-                ContextHolder.get().setCurrentContextId(object);
-            }
-
-            @Override
-            public void detach() {
-            }
-        }, getAvailableContexts()) {
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-                return true;
-            }
-
-            @Override
-            protected void onModelChanged() {
-                setResponsePage(BasePage.this.getClass());
-            }
-
-        };
-        return dropDownChoice;
+    private void initializeMenu() {
+        add(new MenuTemplate("menu", this.getMenuItem()));
     }
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
+     */
+    public String getMenuItem() {
+        return this.getClass().getSimpleName();
+    }
+
+    /**
+     * @return the class name, which should be the index in navigation bar
+     * 
      */
     @Override
     public String getHeaderMenuItem() {

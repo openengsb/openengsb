@@ -157,9 +157,11 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
                         + targetDescription
                         + "  ExampleResponseModel object = new ExampleResponseModel();"
                         + "  object.setResult(\"test-42\");"
-                        + "  ExampleRequestModel model = (ExampleRequestModel) ekbTransformationService.performTransformation(source, target, object);"
+                        + "  ExampleRequestModel model = "
+                        + "(ExampleRequestModel) "
+                        + "ekbTransformationService.performTransformation(source, target, object);"
                         + "  example2.doSomethingWithModel(model);\n"
-            );
+        );
 
         ContextHolder.get().setCurrentContextId("foo");
         WorkflowService workflowService = getOsgiService(WorkflowService.class);

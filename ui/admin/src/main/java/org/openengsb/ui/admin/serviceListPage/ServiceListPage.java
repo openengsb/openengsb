@@ -29,12 +29,15 @@ public class ServiceListPage extends BasePage {
 
     private static final long serialVersionUID = 252433504169343260L;
 
+    public static final String PAGE_NAME_KEY = "serviceListPage.title";
+    public static final String PAGE_DESCRIPTION_KEY = "serviceListPage.description";
+
     public ServiceListPage() {
         initContent();
     }
 
     public ServiceListPage(PageParameters parameters) {
-        super(parameters);
+        super(parameters, PAGE_NAME_KEY);
         initContent();
     }
 

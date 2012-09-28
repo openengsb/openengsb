@@ -72,7 +72,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         HtmlPage testClient = indexPage.getAnchorByText("Test Client").click();
         assertTrue(testClient.asText().contains("Current Project"));
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
@@ -85,7 +86,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
         assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
         HtmlPage wiringPage = testClient.getAnchorByText("Wiring").click();
-        assertTrue(wiringPage.asText().contains("Current Project"));
+        assertTrue(wiringPage.asText().contains("Name of the global variable"));
     }
 
     @Test
@@ -96,7 +97,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("user");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         assertFalse(indexPage.asText().contains("User Management"));
     }
 
@@ -113,7 +115,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
-        assertTrue(indexPage.asText().contains("This page represents"));
+        assertTrue(indexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
 
         HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
 
@@ -145,7 +148,8 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         form.getInputByName("username").setValueAttribute("newUser");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage userIndexPage = loginButton.click();
-        assertTrue(userIndexPage.asText().contains("This page represents"));
+        assertTrue(userIndexPage.asText().contains("Welcome to the web based administration of the"
+                + " open engineering service bus"));
         assertFalse(userIndexPage.asText().contains("User Management"));
     }
 }

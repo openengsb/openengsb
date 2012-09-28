@@ -18,20 +18,24 @@
 package org.openengsb.ui.admin.index;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "index")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "INDEX")
 public class Index extends BasePage {
 
     private static final long serialVersionUID = -445277092895685296L;
 
-    public Index() {
+    public static final String PAGE_NAME_KEY = "dashboard.title";
+    public static final String PAGE_DESCRIPTION_KEY = "dashboard.description";
 
+    public Index() {
+        super(PAGE_NAME_KEY);
     }
 
     public Index(PageParameters parameters) {
-        super(parameters);
+        super(parameters, PAGE_NAME_KEY);
     }
-
 }
