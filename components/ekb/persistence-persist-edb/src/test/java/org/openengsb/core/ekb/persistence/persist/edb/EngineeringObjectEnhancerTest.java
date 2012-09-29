@@ -122,7 +122,8 @@ public class EngineeringObjectEnhancerTest {
     }
 
     @Test
-    public void testIfTheEngineeringObjectReferencesUpdateWorks_shouldLoadOtherModelAndMergeIt() throws Exception {
+    public void testIfTheEngineeringObjectReferencesUpdateWorks_shouldLoadOtherModelAndMergeIt()
+        throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
         model.setModelAId("objectA/reference/2");
@@ -141,7 +142,8 @@ public class EngineeringObjectEnhancerTest {
     }
 
     @Test
-    public void testIfEngineeringObjectUpdateAlsoUpdatesReferencedModels_shouldUpdateAllNeededModels() throws Exception {
+    public void testIfEngineeringObjectUpdateAlsoUpdatesReferencedModels_shouldUpdateAllNeededModels()
+        throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
         model.setModelAId("objectA/reference/1");
