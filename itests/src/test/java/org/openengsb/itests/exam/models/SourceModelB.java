@@ -17,39 +17,29 @@
 
 package org.openengsb.itests.exam.models;
 
-import java.util.Hashtable;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+@Model
+public class SourceModelB {
+    @OpenEngSBModelId
+    private String edbId;
+    private String name;
 
-public class TestModelProvider implements BundleActivator {
-    
-    @Override
-    public void start(BundleContext context) throws Exception {
-        context.registerService(this.getClass().getName(), new TestModelProvider(), new Hashtable<String, Object>());
+    public String getEdbId() {
+        return edbId;
     }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
+    public void setEdbId(String edbId) {
+        this.edbId = edbId;
     }
-    
-    public Class<?> loadTestModel() {
-        return TestModel.class;
+
+    public String getName() {
+        return name;
     }
-    
-    public Class<?> loadSubModel() {
-        return SubModel.class;
+
+    public void setName(String name) {
+        this.name = name;
     }
-    
-    public Class<?> loadEOModel() {
-        return EOModel.class;
-    }
-    
-    public Class<?> loadSourceModelA() {
-        return SourceModelA.class;
-    }
-    
-    public Class<?> loadSourceModelB() {
-        return SourceModelB.class;
-    }
+
 }
