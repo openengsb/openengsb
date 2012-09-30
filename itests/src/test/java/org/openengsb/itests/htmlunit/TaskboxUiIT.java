@@ -141,13 +141,14 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         String rowTwoText = taskTwoRow.asText();
 
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
+        System.out.println(taskOverviewPage.asXml());
         waitForTextOnPage(taskOverviewPage, new ElementCondition() {
             @Override
             public boolean isPresent(HtmlPage page) {
-                return page.getForms().size() >= 3;
+                return page.getForms().size() == 2;
             }
         });
-        HtmlForm detailForm = taskOverviewPage.getForms().get(2);
+        HtmlForm detailForm = taskOverviewPage.getForms().get(1);
         HtmlSubmitInput finishButton = (HtmlSubmitInput) detailForm.getByXPath("input[@type=\"submit\"]").get(0);
         detailForm.getInputByName("taskname").setValueAttribute("taskname");
         detailForm.getTextAreaByName("taskdescription").setText("taskdescription");
@@ -180,10 +181,10 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         waitForTextOnPage(taskOverviewPage, new ElementCondition() {
             @Override
             public boolean isPresent(HtmlPage page) {
-                return page.getForms().size() >= 3;
+                return page.getForms().size() == 2;
             }
         });
-        detailForm = taskOverviewPage.getForms().get(2);
+        detailForm = taskOverviewPage.getForms().get(1);
         assertEquals("The taskname column is missing", "taskname", detailForm.getInputByName("taskname")
             .getValueAttribute());
         assertEquals("The taskdescription column is missing", "taskdescription",

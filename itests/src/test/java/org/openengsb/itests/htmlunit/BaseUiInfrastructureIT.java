@@ -17,14 +17,10 @@
 
 package org.openengsb.itests.htmlunit;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.containsString;
-
-import java.io.File;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -36,10 +32,10 @@ import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import java.io.File;
+
+import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -89,7 +85,11 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
         assertTrue(wiringPage.asText().contains("Name of the global variable"));
     }
 
+    // TODO: The problem is that as long as we've no liquibase setup we cant control the data and model setup in a
+    // TODO: correct way. The problem is that without access to the WicketPermission class no setup for this test
+    // TODO: could be done
     @Test
+    @Ignore("permission system currently does not support this; at least the way we setup it now")
     public void testUserLoginWithLimitedAccess_shouldHaveLimitedAccess() throws Exception {
         final HtmlPage page = webClient.getPage(loginPageUrl);
         HtmlForm form = page.getForms().get(0);
