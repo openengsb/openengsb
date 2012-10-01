@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Austrian Association for Software Tool Integration (AASTI)
@@ -24,22 +24,27 @@
     <wicket:panel>
       <div wicket:id="listContainer">
         <form wicket:id="form">
-          <fieldset>
-            <ol wicket:id="list">
-              <li>
-                <div class="formField">
-                  <span wicket:id="item.name">[service.name]</span>
-                  <a href="UserService.html#" wicket:id="item.delete">
-                    <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
-                  </a>
-                  <a href="UserService.html#" wicket:id="item.update">
-                    <img wicket:message="title:delete.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
-                  </a>
-                </div>
+          <table class="dataTable">
+            <tr>
+              <th class="size4of5"><wicket:message key="username.tableHead" /></th>
+              <th><wicket:message key="action.tableHead" /></th>
+            </tr>
+            <tr wicket:id="list">
+              <td>
+                <span wicket:id="item.name">[service.name]</span>
                 <div wicket:id="confirm" />
-              </li>
-            </ol>
-          </fieldset>
+              </td>
+              <td>
+              <a href="UserService.html#" wicket:id="item.delete">
+                <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
+              </a>
+              <a href="UserService.html#" wicket:id="item.update" class="showUserDialog">
+                <img wicket:message="title:update.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
+              </a>
+              </td>
+            </tr>
+          </table>
+          
         </form>
       </div>
     </wicket:panel>

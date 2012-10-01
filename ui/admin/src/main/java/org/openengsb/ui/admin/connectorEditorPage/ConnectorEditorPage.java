@@ -56,6 +56,9 @@ public class ConnectorEditorPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
+    public static final String PAGE_NAME_KEY = "connectorEditorPage.tile";
+    public static final String PAGE_DESCRIPTION_KEY = "connectorEditorPage.title";
+
     @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;

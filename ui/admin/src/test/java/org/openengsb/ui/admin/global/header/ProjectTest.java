@@ -24,15 +24,15 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.ui.admin.AbstractLoginTest;
+import org.openengsb.ui.admin.AbstractUITest;
+import org.openengsb.ui.admin.testClient.TestClient;
 
-public class ProjectTest extends AbstractLoginTest {
+public class ProjectTest extends AbstractUITest {
     private Page basePage;
 
     @Before
@@ -42,13 +42,8 @@ public class ProjectTest extends AbstractLoginTest {
          */
         ContextHolder.get().setCurrentContextId(null);
 
-        // Maybe there is a more elegant way to do this...
-        AuthenticatedWebSession session = AuthenticatedWebSession.get();
-        session.signIn("test", "password");
-
         when(contextCurrentService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
-
-        basePage = tester.startPage(new DummyPage());
+        basePage = tester.startPage(TestClient.class);
     }
 
     @Test
@@ -74,7 +69,7 @@ public class ProjectTest extends AbstractLoginTest {
         formTester.select("projectChoice", 1);
 
         // simulated page reload...
-        tester.startPage(new DummyPage());
+        tester.startPage(TestClient.class);
         assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
 }

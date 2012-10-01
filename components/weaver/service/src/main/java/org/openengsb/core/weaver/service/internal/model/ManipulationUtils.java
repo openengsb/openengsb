@@ -29,7 +29,9 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.IgnoredModelField;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.util.ModelUtils;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +76,21 @@ public final class ManipulationUtils {
 
     /**
      * Try to enhance the object defined by the given byte code. Returns the enhanced class or null, if the given class
-     * is no model, as byte array. There may be class loaders appended, if needed.
+     * is no model, as byte array. The version of the model will be set statical to 1.0.0. There may be class loaders
+     * appended, if needed.
      */
     public static byte[] enhanceModel(byte[] byteCode, ClassLoader... loaders) throws IOException,
         CannotCompileException {
-        CtClass cc = doModelModifications(byteCode, loaders);
+        return enhanceModel(byteCode, new Version("1.0.0"), loaders);
+    }
+
+    /**
+     * Try to enhance the object defined by the given byte code. Returns the enhanced class or null, if the given class
+     * is no model, as byte array. There may be class loaders appended, if needed.
+     */
+    public static byte[] enhanceModel(byte[] byteCode, Version modelVersion, ClassLoader... loaders)
+        throws IOException, CannotCompileException {
+        CtClass cc = doModelModifications(byteCode, modelVersion, loaders);
         if (cc == null) {
             return null;
         }
@@ -91,7 +103,7 @@ public final class ManipulationUtils {
     /**
      * Try to perform the actual model enhancing.
      */
-    private static CtClass doModelModifications(byte[] byteCode, ClassLoader... loaders) {
+    private static CtClass doModelModifications(byte[] byteCode, Version modelVersion, ClassLoader... loaders) {
         if (!initiated) {
             initiate();
         }
@@ -108,7 +120,7 @@ public final class ManipulationUtils {
                 classloaders[i] = new LoaderClassPath(loaders[i]);
                 cp.appendClassPath(classloaders[i]);
             }
-            doEnhancement(cc);
+            doEnhancement(cc, modelVersion);
             LOGGER.info("Finished model enhancing for class {}", cc.getName());
         } catch (IOException e) {
             LOGGER.error("IOException while trying to enhance model", e);
@@ -133,16 +145,20 @@ public final class ManipulationUtils {
     /**
      * Does the steps for the model enhancement.
      */
-    private static void doEnhancement(CtClass cc) throws CannotCompileException, NotFoundException,
-        ClassNotFoundException {
+    private static void doEnhancement(CtClass cc, Version modelVersion) throws CannotCompileException,
+        NotFoundException, ClassNotFoundException {
         CtClass inter = cp.get(OpenEngSBModel.class.getName());
         cc.addInterface(inter);
         addFields(cc);
         addGetOpenEngSBModelTail(cc);
         addSetOpenEngSBModelTail(cc);
+        addRetrieveModelName(cc);
+        addRetrieveModelVersion(cc, modelVersion);
         addOpenEngSBModelEntryMethod(cc);
         addRemoveOpenEngSBModelEntryMethod(cc);
         addRetrieveInternalModelId(cc);
+        addRetrieveInternalModelTimestamp(cc);
+        addRetrieveInternalModelVersion(cc);
         addGetOpenEngSBModelEntries(cc);
         cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
     }
@@ -182,6 +198,33 @@ public final class ManipulationUtils {
         builder.append("if($1 != null) {for(int i = 0; i < $1.size(); i++) {");
         builder.append("OpenEngSBModelEntry entry = (OpenEngSBModelEntry) $1.get(i);");
         builder.append(TAIL_FIELD).append(".put(entry.getKey(), entry); } }");
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retreiveModelName method to the class.
+     */
+    private static void addRetrieveModelName(CtClass clazz) throws CannotCompileException, NotFoundException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(String.class.getName()), "retrieveModelName", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveModelName"));
+        builder.append("return \"").append(clazz.getName()).append("\";");
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retreiveModelName method to the class.
+     */
+    private static void addRetrieveModelVersion(CtClass clazz, Version modelVersion) throws CannotCompileException,
+        NotFoundException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(String.class.getName()), "retrieveModelVersion", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveModelVersion"));
+        builder.append("return \"").append(modelVersion.toString()).append("\";");
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
@@ -239,6 +282,36 @@ public final class ManipulationUtils {
             builder.append(String.format("return %s;",
                 getPropertyGetter(modelIdField.getName(), modelIdField.getType().getName())));
         }
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retrieveInternalModelTimestamp method to the class.
+     */
+    private static void addRetrieveInternalModelTimestamp(CtClass clazz) throws NotFoundException,
+        CannotCompileException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(Long.class.getName()), "retrieveInternalModelTimestamp", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveInternalModelTimestamp"));
+        builder.append(String.format("return (Long) ((OpenEngSBModelEntry)%s.get(\"%s\")).getValue();", TAIL_FIELD,
+            EDBConstants.MODEL_TIMESTAMP));
+        method.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(method);
+    }
+
+    /**
+     * Adds the retrieveInternalModelVersion method to the class.
+     */
+    private static void addRetrieveInternalModelVersion(CtClass clazz) throws NotFoundException,
+        CannotCompileException {
+        CtClass[] params = generateClassField();
+        CtMethod method = new CtMethod(cp.get(Integer.class.getName()), "retrieveInternalModelVersion", params, clazz);
+        StringBuilder builder = new StringBuilder();
+        builder.append(createTrace("Called retrieveInternalModelVersion"));
+        builder.append(String.format("return (Integer) ((OpenEngSBModelEntry)%s.get(\"%s\")).getValue();", TAIL_FIELD,
+            EDBConstants.MODEL_VERSION));
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }

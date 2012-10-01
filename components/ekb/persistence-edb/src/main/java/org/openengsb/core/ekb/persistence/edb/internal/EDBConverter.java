@@ -100,7 +100,7 @@ public class EDBConverter {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
-                    || propertyDescriptor.getName().equals("openEngSBModelTail")) {
+                    || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
                 continue;
             }
             Object value = getValueForProperty(propertyDescriptor, object);
@@ -370,8 +370,8 @@ public class EDBConverter {
                 object.putEDBObjectEntry(entry.getKey(), entry.getValue(), entry.getClass());
             }
         }
-        Class<?> modelType = model.getClass();
-        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, modelType.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, model.retrieveModelName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE_VERSION, model.retrieveModelVersion());
         object.putEDBObjectEntry("domainId", info.getDomainId());
         object.putEDBObjectEntry("connectorId", info.getConnectorId());
         object.putEDBObjectEntry("instanceId", info.getInstanceId());

@@ -93,12 +93,12 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
         ruleManager.addGlobal(ExampleDomain.class.getName(), "example2");
 
-        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example-trigger"), "" +
-                "when\n" +
-                "    l : LogEvent()\n" +
-                "then\n" +
-                "    example2.doSomethingWithMessage(\"42\");\n"
-            );
+        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example-trigger"), ""
+                + "when\n"
+                + "    l : LogEvent()\n"
+                + "then\n"
+                + "    example2.doSomethingWithMessage(\"42\");\n"
+        );
 
         ContextHolder.get().setCurrentContextId("foo");
         WorkflowService workflowService = getOsgiService(WorkflowService.class);
@@ -132,7 +132,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
                 + "then\n"
                 + "   ExampleDomain origin = (ExampleDomain) OsgiHelper.getResponseProxy(l, ExampleDomain.class);"
                 + "   origin.doSomethingWithMessage(\"42\");"
-            );
+        );
 
         ContextHolder.get().setCurrentContextId("foo");
         WorkflowService workflowService = getOsgiService(WorkflowService.class);

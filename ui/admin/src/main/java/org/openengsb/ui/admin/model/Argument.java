@@ -72,14 +72,11 @@ public class Argument implements Serializable {
         if (value == null) {
             return null;
         }
-        try {
-            if (!isBean) {
-                return MethodUtil.convertToCorrectClass(type, value);
-            } else {
-                return MethodUtil.buildBean(type, (Map<String, String>) value);
-            }
-        } catch (RuntimeException e) {
-            throw new ArgumentConversionException("Error during converting an argument", e, this);
+
+        if (!isBean) {
+            return MethodUtil.convertToCorrectClass(type, value);
+        } else {
+            return MethodUtil.buildBean(type, (Map<String, String>) value);
         }
     }
 

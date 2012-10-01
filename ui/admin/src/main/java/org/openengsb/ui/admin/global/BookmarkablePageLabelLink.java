@@ -21,13 +21,12 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 @SuppressWarnings("serial")
 public class BookmarkablePageLabelLink<Type extends WebPage> extends BookmarkablePageLink<Type> {
 
-    private StringResourceModel label;
+    private String label;
 
     /**
      * @param id
@@ -35,7 +34,7 @@ public class BookmarkablePageLabelLink<Type extends WebPage> extends Bookmarkabl
      * @param parameters
      */
     public BookmarkablePageLabelLink(String id, Class<Type> pageClass, PageParameters parameters,
-            StringResourceModel label) {
+            String label) {
         super(id, pageClass, parameters);
         this.label = label;
     }
@@ -44,19 +43,19 @@ public class BookmarkablePageLabelLink<Type extends WebPage> extends Bookmarkabl
      * @param id
      * @param pageClass
      */
-    public BookmarkablePageLabelLink(String id, Class<Type> pageClass, StringResourceModel label) {
+    public BookmarkablePageLabelLink(String id, Class<Type> pageClass, String label) {
         super(id, pageClass);
         this.label = label;
     }
 
     /**
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.wicket.markup.html.link.AbstractLink#onComponentTagBody(org.apache.wicket.markup.MarkupStream,
      *      org.apache.wicket.markup.ComponentTag)
      */
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        replaceComponentTagBody(markupStream, openTag, label.getString());
+        replaceComponentTagBody(markupStream, openTag, this.label);
     }
 }

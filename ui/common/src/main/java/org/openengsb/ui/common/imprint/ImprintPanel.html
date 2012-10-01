@@ -21,8 +21,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
   <body>
-    <wicket:extend>
-      <div wicket:id="userEditor"></div>
-    </wicket:extend>
+    <wicket:panel>
+		<h2><wicket:message key="imprint.title"></wicket:message></h2>
+		<h4><wicket:message key="imprint.description"></wicket:message></h4>
+		<p>
+		  <strong>OpenEngSB Foundation</strong><br />
+		  <a wicket:id="openEngSBWebsiteLink"></a><br />
+		  <a wicket:id="openEngSBEmailLink"></a>
+		</p>
+		<h4><wicket:message key="imprint.copyright.title"></wicket:message></h4>
+		<p class="smalltext"><wicket:message key="imprint.copyright.text"></wicket:message></p>
+		<h4><wicket:message key="imprint.privacy.title"></wicket:message></h4>
+		<p class="smalltext"><wicket:message key="imprint.privacy.text"></wicket:message></p>
+    </wicket:panel>
   </body>
 </html>

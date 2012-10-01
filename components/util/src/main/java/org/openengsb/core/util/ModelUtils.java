@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
  */
 public final class ModelUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtils.class);
-    public static final String MODEL_TAIL_FIELD_NAME = "openEngSBModelTail"; 
+    public static final String MODEL_TAIL_FIELD_NAME = "openEngSBModelTail";
 
     private ModelUtils() {
     }
@@ -72,12 +72,48 @@ public final class ModelUtils {
     }
 
     /**
-     * Performs the getInternalModelId function on a model object. Throws an IllegalArgumentException if the passed
+     * Performs the retrieveInternalModelId function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
     public static Object getInternalModelId(Object model) {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveInternalModelId();
+    }
+    
+    /**
+     * Performs the retrieveInternalModelTimestamp function on a model object. Throws an IllegalArgumentException if the
+     * passed object is not an OpenEngSBModel instance.
+     */
+    public static Long retrieveInternalModelTimestamp(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveInternalModelTimestamp();
+    }
+    
+    /**
+     * Performs the retrieveInternalModelVersion function on a model object. Throws an IllegalArgumentException if the
+     * passed object is not an OpenEngSBModel instance.
+     */
+    public static Integer retrieveInternalModelVersion(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveInternalModelVersion();
+    }
+
+    /**
+     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelName(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelName();
+    }
+    
+    /**
+     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelVersion(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelVersion();
     }
 
     /**

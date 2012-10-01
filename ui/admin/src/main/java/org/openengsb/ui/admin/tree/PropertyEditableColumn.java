@@ -44,7 +44,7 @@ public class PropertyEditableColumn extends PropertyRenderableColumn<Void> {
 
     @PaxWicketBean
     private List<DomainProvider> domains;
-    
+
     @PaxWicketBean
     private WiringService wiringService;
 

@@ -424,9 +424,24 @@ public class EDBIT extends AbstractExamTestHelper {
 
         assertThat(versionPresent, is(true));
     }
+    
+    @Test
+    public void testIfModelMetaDataRetrievingWorks_shouldWork() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "blub");
+        setProperty(model, "setEdbId", "modelmetatest/1");
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+        Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modelmetatest/1");
+        assertThat(ModelUtils.getOpenEngSBModelEntries(result), notNullValue());
+        assertThat(ModelUtils.getInternalModelId(result), notNullValue());
+        assertThat(ModelUtils.retrieveInternalModelVersion(result), notNullValue());
+        assertThat(ModelUtils.retrieveInternalModelTimestamp(result), notNullValue());
+    }
 
     private void setProperty(Object model, String methodName, Object... params) throws Exception {
-        Class<?> classes[] = new Class<?>[params.length];
+        Class<?>[] classes = new Class<?>[params.length];
         for (int i = 0; i < params.length; i++) {
             classes[i] = params[i].getClass();
         }
