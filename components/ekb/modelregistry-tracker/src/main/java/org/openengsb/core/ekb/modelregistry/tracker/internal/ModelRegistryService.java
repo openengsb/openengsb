@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.api.ModelGraph;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.osgi.framework.Bundle;
@@ -132,7 +132,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
             LOGGER.debug("Exact error: ", e);
             return false;
         }
-        return clazz.isAnnotationPresent(Model.class);
+        return OpenEngSBModel.class.isAssignableFrom(clazz);
     }
 
     /**

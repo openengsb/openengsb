@@ -33,15 +33,20 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     private boolean providerInstalled = false;
+    private String providerVersion = "1.0.0";
 
     protected void registerModelProvider() throws Exception {
         if (providerInstalled) {
             return;
         }
+        String delegationHeader =
+            String.format("%s-%s", org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
+                org.openengsb.core.api.Constants.DELEGATION_CONTEXT_MODELS);
         TinyBundle providerTinyBundle =
             bundle()
                 .add(TestModel.class)
@@ -52,13 +57,12 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
                 .add(TestModelProvider.class)
                 .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
-                .set(Constants.BUNDLE_VERSION, "1.0.0")
+                .set(Constants.BUNDLE_VERSION, providerVersion)
                 .set(Constants.EXPORT_PACKAGE, "org.openengsb.itests.exam.models")
                 .set(Constants.IMPORT_PACKAGE,
                     "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
                             + "org.openengsb.labs.delegation.service")
-                .set(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
-                    "org.openengsb.itests.exam.models.*")
+                .set(delegationHeader, "org.openengsb.itests.exam.models.*")
                 .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
         Bundle providerBundle =
             getBundleContext().installBundle("test://testlocation/test.provider.jar", providerTinyBundle.build());
@@ -67,48 +71,43 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     }
 
     protected ModelDescription getTestModelDescription() {
-        return new ModelDescription("org.openengsb.itests.exam.models.TestModel", getBundleContext().getBundle()
-            .getVersion());
+        return new ModelDescription(TestModel.class.getName(), new Version(providerVersion));
     }
 
     protected Class<?> getTestModel() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadTestModel").invoke(provider);
     }
-    
+
     protected ModelDescription getSubModelDescription() {
-        return new ModelDescription("org.openengsb.itests.exam.models.SubModel", getBundleContext().getBundle()
-            .getVersion());
+        return new ModelDescription(SubModel.class.getName(), new Version(providerVersion));
     }
 
     protected Class<?> getSubModel() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadSubModel").invoke(provider);
     }
-    
+
     protected ModelDescription getSourceModelADescription() {
-        return new ModelDescription("org.openengsb.itests.exam.models.SourceModelA", getBundleContext().getBundle()
-            .getVersion());
+        return new ModelDescription(SourceModelA.class.getName(), new Version(providerVersion));
     }
 
     protected Class<?> getSourceModelA() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadSourceModelA").invoke(provider);
     }
-    
+
     protected ModelDescription getSourceModelBDescription() {
-        return new ModelDescription("org.openengsb.itests.exam.models.SourceModelB", getBundleContext().getBundle()
-            .getVersion());
+        return new ModelDescription(SourceModelB.class.getName(), new Version(providerVersion));
     }
 
     protected Class<?> getSourceModelB() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadSourceModelB").invoke(provider);
     }
-    
+
     protected ModelDescription getEOModelDescription() {
-        return new ModelDescription("org.openengsb.itests.exam.models.EOModel", getBundleContext().getBundle()
-            .getVersion());
+        return new ModelDescription(EOModel.class.getName(), new Version(providerVersion));
     }
 
     protected Class<?> getEOModel() throws Exception {
@@ -139,6 +138,16 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
                     break;
                 }
             }
+        }
+    }
+
+    protected Object getProperty(Object model, String methodName) throws Exception {
+        try {
+            Method method = model.getClass().getMethod(methodName);
+            return method.invoke(model);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("There is no method " + methodName
+                    + " for the class " + model.getClass().getName());
         }
     }
 }

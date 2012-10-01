@@ -17,6 +17,8 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
@@ -25,11 +27,15 @@ import java.util.List;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -39,6 +45,8 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     private QueryInterface query;
     private PersistInterface persist;
+    private ModelRegistry registry;
+    private boolean initialized = false;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
@@ -62,12 +70,17 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
     @Before
     public void setup() throws Exception {
+        if (initialized) {
+            return;
+        }
         query = getOsgiService(QueryInterface.class);
         persist = getOsgiService(PersistInterface.class);
+        registry = getOsgiService(ModelRegistry.class);
+        registerModelProvider();
         TransformationEngine engine = getOsgiService(TransformationEngine.class);
         List<TransformationDescription> descriptions = generateTransformationDescriptions();
         engine.saveDescriptions(descriptions);
-        registerModelProvider();
+        initialized = true;
     }
 
     private List<TransformationDescription> generateTransformationDescriptions() {
@@ -75,17 +88,59 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         TransformationDescription desc =
             new TransformationDescription(getSourceModelADescription(), getEOModelDescription());
         desc.forwardField("name", "nameA");
+        desc.setId("AtoEO");
         descriptions.add(desc);
         desc = new TransformationDescription(getSourceModelBDescription(), getEOModelDescription());
         desc.forwardField("name", "nameB");
+        desc.setId("BtoEO");
         descriptions.add(desc);
         desc = new TransformationDescription(getEOModelDescription(), getSourceModelADescription());
         desc.forwardField("nameA", "name");
+        desc.setId("EOtoA");
         descriptions.add(desc);
         desc = new TransformationDescription(getEOModelDescription(), getSourceModelBDescription());
         desc.forwardField("nameB", "name");
+        desc.setId("EOtoB");
         descriptions.add(desc);
         return descriptions;
     }
+    
+    @Test
+    public void testIfEOModelIsRecognizedAsEngineeringObject_shouldWork() throws Exception {
+        Class<?> eo = registry.loadModel(getEOModelDescription());
+        assertThat(ModelUtils.isEngineeringObjectClass(eo), is(true));
+    }
 
+    @Test
+    public void testIfEngineeringObjectsAreInsertedCorrectly_shouldInsertObjectAndLoadReferencedValues()
+        throws Exception {
+        Object sourceA = getSourceModelA().newInstance();
+        setProperty(sourceA, "setEdbId", "sourceA/1");
+        setProperty(sourceA, "setName", "sourceNameA");
+        Object sourceB = getSourceModelB().newInstance();
+        setProperty(sourceB, "setEdbId", "sourceB/1");
+        setProperty(sourceB, "setName", "sourceNameB");
+        EKBCommit commit = getTestEKBCommit().addInsert(sourceA).addInsert(sourceB);
+        persist.commit(commit);
+
+        Object eo = getEOModel().newInstance();
+        setProperty(eo, "setEdbId", "eo/1");
+        setProperty(eo, "setRefModelA", "testdomain/testconnector/sourceA/1");
+        setProperty(eo, "setRefModelB", "testdomain/testconnector/sourceB/1");
+        commit = getTestEKBCommit().addInsert(eo);
+        persist.commit(commit);
+
+        Object result = query.getModel(getEOModel(), "testdomain/testconnector/eo/1");
+        Object nameA = getProperty(result, "getNameA");
+        Object nameB = getProperty(result, "getNameB");
+
+        assertThat(nameA, is(getProperty(sourceA, "getName")));
+        assertThat(nameB, is(getProperty(sourceB, "getName")));
+    }
+
+    private EKBCommit getTestEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
+        commit.setInstanceId("testinstance");
+        return commit;
+    }
 }
