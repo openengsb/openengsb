@@ -48,9 +48,9 @@ public class EngineeringObjectEnhancerTest {
     @Test
     public void testIfEngineeringObjectModelInsertionWorks_shouldLoadTheValuesOfTheForeignKeys() throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
-        model.setModelAId("objectA/reference/1");
-        model.setModelBId("objectB/reference/1");
-        EKBCommit commit = new EKBCommit().addInsert(model);
+        model.setModelAId("test/test/objectA/reference/1");
+        model.setModelBId("test/test/objectB/reference/1");
+        EKBCommit commit = getTestCommit().addInsert(model);
         enhancer.enhanceEKBCommit(commit);
 
         assertThat(model.getNameA(), is("firstObject"));
@@ -62,7 +62,7 @@ public class EngineeringObjectEnhancerTest {
         SourceModelA model = new SourceModelA();
         model.setNameA("updatedFirstObject");
         model.setId("objectA/reference/1");
-        EKBCommit commit = new EKBCommit().addUpdate(model);
+        EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
@@ -80,7 +80,7 @@ public class EngineeringObjectEnhancerTest {
         SourceModelB modelb = new SourceModelB();
         modelb.setNameB("updatedSecondObject");
         modelb.setId("objectB/reference/1");
-        EKBCommit commit = new EKBCommit().addUpdate(modelA).addUpdate(modelb);
+        EKBCommit commit = getTestCommit().addUpdate(modelA).addUpdate(modelb);
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
@@ -96,9 +96,9 @@ public class EngineeringObjectEnhancerTest {
         throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
-        model.setModelAId("objectA/reference/2");
+        model.setModelAId("test/test/objectA/reference/2");
         model.setNameA("teststring");
-        EKBCommit commit = new EKBCommit().addUpdate(model);
+        EKBCommit commit = getTestCommit().addUpdate(model);
         enhancer.enhanceEKBCommit(commit);
     }
 
@@ -106,11 +106,11 @@ public class EngineeringObjectEnhancerTest {
     public void testIfTheEngineeringObjectReferenceUpdateWorks_shouldLoadOtherModelAndMergeIt() throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
-        model.setModelAId("objectA/reference/2");
-        model.setModelBId("objectB/reference/1");
+        model.setModelAId("test/test/objectA/reference/2");
+        model.setModelBId("test/test/objectB/reference/1");
         model.setNameA("firstObject");
         model.setNameB("secondObject");
-        EKBCommit commit = new EKBCommit().addUpdate(model);
+        EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
@@ -126,11 +126,11 @@ public class EngineeringObjectEnhancerTest {
         throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
-        model.setModelAId("objectA/reference/2");
-        model.setModelBId("objectB/reference/2");
+        model.setModelAId("test/test/objectA/reference/2");
+        model.setModelBId("test/test/objectB/reference/2");
         model.setNameA("firstObject");
         model.setNameB("secondObject");
-        EKBCommit commit = new EKBCommit().addUpdate(model);
+        EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
@@ -146,11 +146,11 @@ public class EngineeringObjectEnhancerTest {
         throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
         model.setInternalModelName("common/reference/1");
-        model.setModelAId("objectA/reference/1");
-        model.setModelBId("objectB/reference/1");
+        model.setModelAId("test/test/objectA/reference/1");
+        model.setModelBId("test/test/objectB/reference/1");
         model.setNameA("updatedFirstObject");
         model.setNameB("updatedSecondObject");
-        EKBCommit commit = new EKBCommit().addUpdate(model);
+        EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
         enhancer.enhanceEKBCommit(commit);
         int after = commit.getUpdates().size();
@@ -167,5 +167,9 @@ public class EngineeringObjectEnhancerTest {
         }
         assertThat(modelA.getNameA(), is("updatedFirstObject"));
         assertThat(modelB.getNameB(), is("updatedSecondObject"));
+    }
+    
+    private EKBCommit getTestCommit() {
+        return new EKBCommit().setDomainId("test").setConnectorId("test");
     }
 }

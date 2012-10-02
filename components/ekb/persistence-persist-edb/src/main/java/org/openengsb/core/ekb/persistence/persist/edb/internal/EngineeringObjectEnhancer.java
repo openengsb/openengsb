@@ -79,7 +79,7 @@ public class EngineeringObjectEnhancer {
             Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
         List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
         for (OpenEngSBModel model : updates) {
-            if (updated.containsKey(model.retrieveInternalModelId())) {
+            if (updated.containsKey(getCompleteModelOID(model, commit))) {
                 continue; // this model was already updated in this commit
             }
             if (ModelUtils.isEngineeringObject(model)) {
@@ -102,7 +102,7 @@ public class EngineeringObjectEnhancer {
         }
         if (!additionalUpdates.isEmpty()) {
             for (OpenEngSBModel model : additionalUpdates) {
-                updated.put(model.retrieveInternalModelId(), model);
+                updated.put(getCompleteModelOID(model, commit), model);
             }
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
@@ -137,10 +137,10 @@ public class EngineeringObjectEnhancer {
         List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
         for (EDBObject reference : references) {
             OpenEngSBModel ref = updateEOByUpdatedModel(reference, model, updated);
-            if (!updated.containsKey(ref.retrieveInternalModelId())) {
+            if (!updated.containsKey(getCompleteModelOID(ref, commit))) {
                 updates.add(ref);
             }
-            updated.put(ref.retrieveInternalModelId(), ref);
+            updated.put(getCompleteModelOID(ref, commit), ref);
         }
         return updates;
     }

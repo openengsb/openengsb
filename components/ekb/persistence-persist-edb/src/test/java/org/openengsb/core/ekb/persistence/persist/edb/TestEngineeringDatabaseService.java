@@ -42,34 +42,34 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public EDBObject getObject(String arg0) throws EDBException {
-        if (arg0.equals("objectA/reference/1")) {
-            EDBObject edbObject = new EDBObject("objectA/reference/1");
+        if (arg0.equals("test/test/objectA/reference/1")) {
+            EDBObject edbObject = new EDBObject("test/test/objectA/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelA.class.getName());
             return edbObject;
         }
-        if (arg0.equals("objectA/reference/2")) {
-            EDBObject edbObject = new EDBObject("objectA/reference/2");
+        if (arg0.equals("test/test/objectA/reference/2")) {
+            EDBObject edbObject = new EDBObject("test/test/objectA/reference/2");
             edbObject.putEDBObjectEntry("nameA", "updatedFirstObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelA.class.getName());
             return edbObject;
         }
-        if (arg0.equals("objectB/reference/1")) {
-            EDBObject edbObject = new EDBObject("objectB/reference/1");
+        if (arg0.equals("test/test/objectB/reference/1")) {
+            EDBObject edbObject = new EDBObject("test/test/objectB/reference/1");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
             return edbObject;
         }
-        if (arg0.equals("objectB/reference/2")) {
-            EDBObject edbObject = new EDBObject("objectB/reference/2");
+        if (arg0.equals("test/test/objectB/reference/2")) {
+            EDBObject edbObject = new EDBObject("test/test/objectB/reference/2");
             edbObject.putEDBObjectEntry("nameB", "updatedSecondObject");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SourceModelB.class.getName());
             return edbObject;
         }
-        if (arg0.equals("common/reference/1")) {
-            EDBObject edbObject = new EDBObject("common/reference/1");
-            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
-            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
+        if (arg0.equals("test/test/common/reference/1")) {
+            EDBObject edbObject = new EDBObject("test/test/common/reference/1");
+            edbObject.putEDBObjectEntry("modelAId", "test/test/objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "test/test/objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
@@ -83,17 +83,17 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     @Override
     public List<EDBObject> query(Map<String, Object> arg0, Long arg1) throws EDBException {
         String reference = (String) arg0.get(EDBConverterUtils.REFERENCE_PREFIX + "%");
-        if (reference.equals("objectA/reference/1") || reference.equals("objectB/reference/1")) {
-            EDBObject edbObject = new EDBObject("common/reference/1");
-            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
-            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
+        if (reference.equals("test/test/objectA/reference/1") || reference.equals("test/test/objectB/reference/1")) {
+            EDBObject edbObject = new EDBObject("test/test/common/reference/1");
+            edbObject.putEDBObjectEntry("modelAId", "test/test/objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "test/test/objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
             return Arrays.asList(edbObject);
         }
-        if (reference.equals("common/reference/1")) {
+        if (reference.equals("test/test/common/reference/1")) {
             return new ArrayList<EDBObject>();
         }
         return new ArrayList<EDBObject>();
