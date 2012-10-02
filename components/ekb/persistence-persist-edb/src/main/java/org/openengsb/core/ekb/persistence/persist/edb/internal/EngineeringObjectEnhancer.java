@@ -109,6 +109,9 @@ public class EngineeringObjectEnhancer {
         return additionalUpdates;
     }
 
+    /**
+     * Updates all models which are referenced by the given engineering object.
+     */
     private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
         for (Field field : getForeignKeyFields(model.getClass())) {
@@ -203,9 +206,13 @@ public class EngineeringObjectEnhancer {
         }
     }
 
+    /**
+     * Performs a merge based on the third parameter. If the third parameter is true, then the given model is the merge
+     * target. If the third parameter is false, then the through the given field referenced model is the merge target.
+     */
     private OpenEngSBModel performMerge(Field field, OpenEngSBModel model, boolean modelIsTarget) {
         try {
-            ModelDescription description = getModelDescriptionFromField(model, field);
+            ModelDescription description = getModelDescriptionFromField(field);
             String modelKey = (String) FieldUtils.readField(field, model, true);
             Class<?> sourceClass = modelRegistry.loadModel(description);
             Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
@@ -228,7 +235,10 @@ public class EngineeringObjectEnhancer {
         }
     }
 
-    private ModelDescription getModelDescriptionFromField(OpenEngSBModel parent, Field field) {
+    /**
+     * Generates the model description of a field which is annotated with the OpenEngSBForeignKey annotation.
+     */
+    private ModelDescription getModelDescriptionFromField(Field field) {
         OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
         ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
         return description;
@@ -273,6 +283,9 @@ public class EngineeringObjectEnhancer {
             model.getName());
     }
 
+    /**
+     * Calculates the complete model oid from the model and the commit object.
+     */
     private String getCompleteModelOID(OpenEngSBModel model, EKBCommit commit) {
         return String.format("%s/%s/%s", commit.getDomainId(), commit.getConnectorId(),
             model.retrieveInternalModelId());
