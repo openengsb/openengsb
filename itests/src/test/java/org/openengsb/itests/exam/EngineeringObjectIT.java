@@ -104,7 +104,7 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         descriptions.add(desc);
         return descriptions;
     }
-    
+
     @Test
     public void testIfEOModelIsRecognizedAsEngineeringObject_shouldWork() throws Exception {
         Class<?> eo = registry.loadModel(getEOModelDescription());
@@ -136,6 +136,60 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
         assertThat(nameA, is(getProperty(sourceA, "getName")));
         assertThat(nameB, is(getProperty(sourceB, "getName")));
+    }
+
+    @Test
+    public void testIfEOUpdateWorksCorrectly_shouldUpdateSourceModel() throws Exception {
+        Object sourceA = getSourceModelA().newInstance();
+        setProperty(sourceA, "setEdbId", "sourceA/2");
+        setProperty(sourceA, "setName", "sourceNameA");
+        Object sourceB = getSourceModelB().newInstance();
+        setProperty(sourceB, "setEdbId", "sourceB/2");
+        setProperty(sourceB, "setName", "sourceNameB");
+        EKBCommit commit = getTestEKBCommit().addInsert(sourceA).addInsert(sourceB);
+        persist.commit(commit);
+
+        Object eo = getEOModel().newInstance();
+        setProperty(eo, "setEdbId", "eo/2");
+        setProperty(eo, "setRefModelA", "testdomain/testconnector/sourceA/2");
+        setProperty(eo, "setRefModelB", "testdomain/testconnector/sourceB/2");
+        commit = getTestEKBCommit().addInsert(eo);
+        persist.commit(commit);
+
+        eo = query.getModel(getEOModel(), "testdomain/testconnector/eo/2");
+        setProperty(eo, "setNameA", "updatedNameA");
+        commit = getTestEKBCommit().addUpdate(eo);
+        persist.commit(commit);
+
+        Object result = query.getModel(getSourceModelA(), "testdomain/testconnector/sourceA/2");
+        assertThat((String) getProperty(result, "getName"), is("updatedNameA"));
+    }
+    
+    @Test
+    public void testIfSourceUpdateWorksCorrectly_shouldUpdateEngineeringObject() throws Exception {
+        Object sourceA = getSourceModelA().newInstance();
+        setProperty(sourceA, "setEdbId", "sourceA/3");
+        setProperty(sourceA, "setName", "sourceNameA");
+        Object sourceB = getSourceModelB().newInstance();
+        setProperty(sourceB, "setEdbId", "sourceB/3");
+        setProperty(sourceB, "setName", "sourceNameB");
+        EKBCommit commit = getTestEKBCommit().addInsert(sourceA).addInsert(sourceB);
+        persist.commit(commit);
+
+        Object eo = getEOModel().newInstance();
+        setProperty(eo, "setEdbId", "eo/3");
+        setProperty(eo, "setRefModelA", "testdomain/testconnector/sourceA/3");
+        setProperty(eo, "setRefModelB", "testdomain/testconnector/sourceB/3");
+        commit = getTestEKBCommit().addInsert(eo);
+        persist.commit(commit);
+        
+        Object source = query.getModel(getSourceModelA(), "testdomain/testconnector/sourceA/3");
+        setProperty(source, "setName", "updatedNameA");
+        commit = getTestEKBCommit().addUpdate(source);
+        persist.commit(commit);
+
+        eo = query.getModel(getEOModel(), "testdomain/testconnector/eo/3");        
+        assertThat((String) getProperty(eo, "getNameA"), is("updatedNameA"));
     }
 
     private EKBCommit getTestEKBCommit() {
