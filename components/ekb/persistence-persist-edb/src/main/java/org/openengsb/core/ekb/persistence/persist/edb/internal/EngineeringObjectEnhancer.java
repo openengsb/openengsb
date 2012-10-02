@@ -68,7 +68,7 @@ public class EngineeringObjectEnhancer {
      */
     private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
         Map<Object, OpenEngSBModel> updated = new HashMap<Object, OpenEngSBModel>();
-        commit.getUpdates().addAll(recursiveUpdateEnhancement(commit.getUpdates(), updated));
+        commit.getUpdates().addAll(recursiveUpdateEnhancement(commit.getUpdates(), updated, commit));
     }
 
     /**
@@ -76,15 +76,15 @@ public class EngineeringObjectEnhancer {
      * EKBCommit.
      */
     private List<OpenEngSBModel> recursiveUpdateEnhancement(List<OpenEngSBModel> updates,
-            Map<Object, OpenEngSBModel> updated) {
+            Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
         List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
         for (OpenEngSBModel model : updates) {
             if (updated.containsKey(model.retrieveInternalModelId())) {
                 continue; // this model was already updated in this commit
             }
             if (ModelUtils.isEngineeringObject(model)) {
-                OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(),
-                    edbService.getObject(model.retrieveInternalModelId().toString()));
+                EDBObject queryResult = edbService.getObject(getCompleteModelOID(model, commit));
+                OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(), queryResult);
                 ModelDiff diff = ModelDiff.createModelDiff(old, model);
                 boolean referencesChanged = diff.isForeignKeyChanged();
                 boolean valuesChanged = diff.isValueChanged();
@@ -98,13 +98,13 @@ public class EngineeringObjectEnhancer {
                     additionalUpdates.addAll(updateReferencedModelsByEO(model));
                 }
             }
-            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated));
+            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated, commit));
         }
         if (!additionalUpdates.isEmpty()) {
             for (OpenEngSBModel model : additionalUpdates) {
                 updated.put(model.retrieveInternalModelId(), model);
             }
-            additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated));
+            additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
         return additionalUpdates;
     }
@@ -130,10 +130,10 @@ public class EngineeringObjectEnhancer {
      * Returns engineering objects to the commit, which are changed by a model which was committed in the EKBCommit
      */
     private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model,
-            Map<Object, OpenEngSBModel> updated) throws EKBException {
+            Map<Object, OpenEngSBModel> updated, EKBCommit commit) throws EKBException {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", model.retrieveInternalModelId());
+        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(model, commit));
         List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
         for (EDBObject reference : references) {
             OpenEngSBModel ref = updateEOByUpdatedModel(reference, model, updated);
@@ -199,16 +199,13 @@ public class EngineeringObjectEnhancer {
      */
     private void performInsertEOLogic(OpenEngSBModel model) {
         for (Field field : getForeignKeyFields(model.getClass())) {
-            if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
-                mergeEngineeringObjectWithReferencedModel(field, model);
-            }
+            mergeEngineeringObjectWithReferencedModel(field, model);
         }
     }
 
     private OpenEngSBModel performMerge(Field field, OpenEngSBModel model, boolean modelIsTarget) {
         try {
-            OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
-            ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
+            ModelDescription description = getModelDescriptionFromField(model, field);
             String modelKey = (String) FieldUtils.readField(field, model, true);
             Class<?> sourceClass = modelRegistry.loadModel(description);
             Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
@@ -217,7 +214,7 @@ public class EngineeringObjectEnhancer {
                 return (OpenEngSBModel) transformationEngine.performTransformation(description, target,
                     instance, model);
             } else {
-                return (OpenEngSBModel) transformationEngine.performTransformation(target, description, 
+                return (OpenEngSBModel) transformationEngine.performTransformation(target, description,
                     model, instance);
             }
         } catch (SecurityException e) {
@@ -229,6 +226,12 @@ public class EngineeringObjectEnhancer {
         } catch (ClassNotFoundException e) {
             throw new EKBException(generateErrorMessage(model), e);
         }
+    }
+
+    private ModelDescription getModelDescriptionFromField(OpenEngSBModel parent, Field field) {
+        OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
+        ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
+        return description;
     }
 
     /**
@@ -268,6 +271,11 @@ public class EngineeringObjectEnhancer {
     private String generateErrorMessage(Class<?> model) {
         return String.format("Unable to enhance the commit of the model %s with EngineeringObject information",
             model.getName());
+    }
+
+    private String getCompleteModelOID(OpenEngSBModel model, EKBCommit commit) {
+        return String.format("%s/%s/%s", commit.getDomainId(), commit.getConnectorId(),
+            model.retrieveInternalModelId());
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
