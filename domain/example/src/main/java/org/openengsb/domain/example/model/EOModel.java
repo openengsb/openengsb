@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.exam.models;
+package org.openengsb.domain.example.model;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class EOModel {
     @OpenEngSBModelId
     private String edbId;
-    @OpenEngSBForeignKey(modelType = "org.openengsb.itests.exam.models.SourceModelA", modelVersion = "3.0.0.SNAPSHOT")
+    @OpenEngSBForeignKey(modelType = "org.openengsb.domain.example.model.SourceModelA", modelVersion = "3.0.0.SNAPSHOT")
     private String refModelA;
-    @OpenEngSBForeignKey(modelType = "org.openengsb.itests.exam.models.SourceModelB", modelVersion = "3.0.0.SNAPSHOT")
+    @OpenEngSBForeignKey(modelType = "org.openengsb.domain.example.model.SourceModelB", modelVersion = "3.0.0.SNAPSHOT")
     private String refModelB;
     private String nameA;
     private String nameB;

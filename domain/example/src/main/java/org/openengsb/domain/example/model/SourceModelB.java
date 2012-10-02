@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.exam.models;
+package org.openengsb.domain.example.model;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.labs.delegation.service.Provide;
 
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class SourceModelB {
     @OpenEngSBModelId

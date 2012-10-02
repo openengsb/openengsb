@@ -40,16 +40,4 @@ public class TestModelProvider implements BundleActivator {
     public Class<?> loadSubModel() {
         return SubModel.class;
     }
-    
-    public Class<?> loadEOModel() {
-        return EOModel.class;
-    }
-    
-    public Class<?> loadSourceModelA() {
-        return SourceModelA.class;
-    }
-    
-    public Class<?> loadSourceModelB() {
-        return SourceModelB.class;
-    }
 }

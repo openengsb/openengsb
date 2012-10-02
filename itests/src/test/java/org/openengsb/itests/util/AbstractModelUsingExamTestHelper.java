@@ -22,9 +22,6 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.itests.exam.models.EOModel;
-import org.openengsb.itests.exam.models.SourceModelA;
-import org.openengsb.itests.exam.models.SourceModelB;
 import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelProvider;
@@ -51,9 +48,6 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
             bundle()
                 .add(TestModel.class)
                 .add(SubModel.class)
-                .add(SourceModelA.class)
-                .add(SourceModelB.class)
-                .add(EOModel.class)
                 .add(TestModelProvider.class)
                 .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
@@ -86,33 +80,6 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     protected Class<?> getSubModel() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadSubModel").invoke(provider);
-    }
-
-    protected ModelDescription getSourceModelADescription() {
-        return new ModelDescription(SourceModelA.class.getName(), new Version(providerVersion));
-    }
-
-    protected Class<?> getSourceModelA() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadSourceModelA").invoke(provider);
-    }
-
-    protected ModelDescription getSourceModelBDescription() {
-        return new ModelDescription(SourceModelB.class.getName(), new Version(providerVersion));
-    }
-
-    protected Class<?> getSourceModelB() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadSourceModelB").invoke(provider);
-    }
-
-    protected ModelDescription getEOModelDescription() {
-        return new ModelDescription(EOModel.class.getName(), new Version(providerVersion));
-    }
-
-    protected Class<?> getEOModel() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadEOModel").invoke(provider);
     }
 
     private Object loadTestModelProvider() throws Exception {
