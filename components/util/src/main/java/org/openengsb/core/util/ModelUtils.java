@@ -219,16 +219,14 @@ public final class ModelUtils {
      * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
     public static void checkIfObjectIsModel(Object model) {
-        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            throw new IllegalArgumentException("The given object is no model");
-        }
+        checkIfClassIsModel(model.getClass());
     }
 
     /**
      * Returns true if the given object is an OpenEngSBModel, returns false if not.
      */
     public static boolean isObjectModel(Object model) {
-        return OpenEngSBModel.class.isAssignableFrom(model.getClass());
+        return isClassModel(model.getClass());
     }
 
     /**
