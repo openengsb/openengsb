@@ -44,18 +44,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class ModelRegistryService extends BundleTracker implements ModelRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelRegistryService.class);
-    private static ModelRegistryService instance;
     private EKBClassLoader ekbClassLoader;
     private ModelGraph graphDb;
 
-    public static ModelRegistryService getInstance(BundleContext context) {
-        if (instance == null) {
-            instance = new ModelRegistryService(context);
-        }
-        return instance;
-    }
-
-    private ModelRegistryService(BundleContext context) {
+    public ModelRegistryService(BundleContext context) {
         super(context, Bundle.ACTIVE, null);
     }
 

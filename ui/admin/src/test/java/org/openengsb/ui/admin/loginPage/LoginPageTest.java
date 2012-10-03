@@ -26,6 +26,7 @@ import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractLoginTest;
+import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.testClient.TestClient;
@@ -62,8 +63,10 @@ public class LoginPageTest extends AbstractLoginTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("logout");
         tester.assertRenderedPage(Index.class);
+        tester.debugComponentTrees();
+        tester.clickLink("header:logout");
+        tester.assertRenderedPage(LoginPage.class);
     }
 
     @Test
@@ -81,6 +84,12 @@ public class LoginPageTest extends AbstractLoginTest {
     @Test
     public void testIfHeaderAndFooterIsVisible_shouldShowElements() throws Exception {
         tester.startPage(LoginPage.class);
+        tester.startPage(LoginPage.class);
+        FormTester formTester = tester.newFormTester("loginForm");
+        formTester.setValue("username", "test");
+        formTester.setValue("password", "password");
+        formTester.submit();
         tester.assertComponent("header", HeaderTemplate.class);
+        tester.assertComponent("footer", FooterTemplate.class);
     }
 }

@@ -20,19 +20,57 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
       xml:lang="en">
+      
+<wicket:head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title><wicket:message key="title" /></title>
+</wicket:head>
 
 <body>
-  <wicket:extend>
-    <div class="loginForm">
-      <form wicket:id="loginForm">
-        <wicket:message key="username"></wicket:message>:
-          <input wicket:id="username" class="login" />
-          <wicket:message key="password"></wicket:message>:
-          <input type="password" wicket:id="password" class="login" />
-          <input type="submit" wicket:message="value:button.login,title:button.login" />
-        </form>
-      <span wicket:id="feedback" />
+  <div id="loginContainer" class="lightbox">
+
+    <div class="line ddTrigger languageSelectorButton">
+      <span class="dropDownArrow"><wicket:message key="language" /></span>
+      <div class="dropDownContainer hidden">
+        <div class="line boxArrow">&nbsp;</div>  
+        <ul class="languageSelector">          
+	      <li><a wicket:id="lang.en">English (EN)</a></li>
+	      <li><a wicket:id="lang.de">German (DE)</a></li>
+        </ul>
+      </div>
     </div>
-  </wicket:extend>
+    <div class="line logoContainer"><img wicket:id="topImage" alt="OpenEngSB Logo" class="inline" id="logo" /></div>
+    <div class="line"><h1><wicket:message key="adminConsole.title" /></h1></div>
+
+    <div class="line formContainer">
+      <span wicket:id="feedback" />
+      <form wicket:id="loginForm">
+        <div class="inputSet">
+          <label for="username" class="lightBlue"><wicket:message key="username"></wicket:message></label><br />
+          <input type="text" id="username" wicket:id="username" /> 
+        </div>
+        
+        <div class="inputSet">
+          <label for="password" class="lightBlue"><wicket:message key="password"></wicket:message></label><br />
+          <input type="password" id="password" wicket:id="password" />
+        </div>
+        
+        <div class="line">
+          <div class="unit size1of2">
+            <input type="submit" wicket:message="value:button.login,title:button.login" />
+          </div>
+          <div class="unit size1of2 lastUnit aboutLink">
+            <a href="../" wicket:id="imprint">
+              <wicket:message key="imprint"></wicket:message>
+            </a>
+          </div>
+        </div>
+      
+      </form>
+    </div>
+  </div>
+  <div wicket:id="imprintDialogue" class="hidden"></div>
+  
 </body>
+
 </html>

@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -44,6 +43,7 @@ import org.openengsb.core.ekb.persistence.edb.models.SubModel;
 import org.openengsb.core.ekb.persistence.edb.models.TestModel;
 import org.openengsb.core.ekb.persistence.edb.models.TestModel2;
 import org.openengsb.core.ekb.persistence.edb.models.TestModel2.ENUM;
+import org.openengsb.core.util.ModelUtils;
 
 public class QueryInterfaceServiceTest {
     private QueryInterfaceService service;
@@ -391,7 +391,7 @@ public class QueryInterfaceServiceTest {
 
     private boolean checkQuery(String query) {
         try {
-            service.queryForModels(TestModel.class, query, new Date().getTime() + "");
+            service.queryForModelsAtTimestamp(TestModel.class, query, new Date().getTime() + "");
             return true;
         } catch (IllegalArgumentException e) {
         }

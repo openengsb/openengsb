@@ -20,7 +20,6 @@ package org.openengsb.core.edb.jpa.internal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.openengsb.core.common.AbstractDataRow;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
 /**
@@ -29,7 +28,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
  */
 @SuppressWarnings("serial")
 @Entity
-public class JPAEntry extends AbstractDataRow {
+public class JPAEntry extends VersionedEntity {
     @Column(name = "KEY")
     private String key;
     @Column(name = "VALUE")

@@ -73,7 +73,7 @@ public class EdbClientTest extends AbstractUITest {
     @Test
     public void testShowIndex_shouldContainEDBClientPage() throws Exception {
         tester.startPage(Index.class);
-        tester.clickLink("header:headerMenuItems:2:link");
+        tester.clickLink("menu:menuItems:7:link");
         tester.assertRenderedPage(EdbClient.class);
     }
 

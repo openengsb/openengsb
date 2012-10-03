@@ -34,9 +34,9 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServiceTest {
 

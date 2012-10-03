@@ -39,7 +39,7 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.util.BeanUtilsExtended;
+import org.openengsb.core.util.BeanUtilsExtended;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
@@ -96,8 +96,9 @@ public abstract class UserEditPanel extends Panel {
 
             @Override
             protected void onSubmit() {
-                createUser();
-                afterSubmit();
+                if (createUser()) {
+                    afterSubmit();
+                }
             }
         };
         container.add(userForm);
@@ -211,26 +212,26 @@ public abstract class UserEditPanel extends Panel {
 
     }
 
-    private void createUser() {
+    private boolean createUser() {
         String username = input.getUsername();
         if (username == null) {
             error(new StringResourceModel("usernameError", this, null).getString());
-            return;
+            return false;
         }
         if (ObjectUtils.notEqual(input.getPassword(), input.getPasswordVerification())) {
             error(new StringResourceModel("passwordError", this, null).getString());
-            return;
+            return false;
         }
         if (createMode) {
             if (input.getPassword() == null) {
                 error(new StringResourceModel("passwordError", this, null).getString());
-                return;
+                return false;
             }
             try {
                 userManager.createUser(username);
             } catch (UserExistsException e1) {
                 error(new StringResourceModel("userExistError", this, null).getString());
-                return;
+                return false;
             }
         }
         if (input.getPassword() != null) {
@@ -238,7 +239,7 @@ public abstract class UserEditPanel extends Panel {
                 userManager.setUserCredentials(username, "password", input.getPassword());
             } catch (UserNotFoundException e) {
                 error(Throwables.getStackTraceAsString(e));
-                return;
+                return false;
             }
         }
         for (PermissionInput p : input.getPermissions()) {
@@ -255,9 +256,10 @@ public abstract class UserEditPanel extends Panel {
                 }
             } catch (UserNotFoundException e) {
                 error(Throwables.getStackTraceAsString(e));
-                return;
+                return false;
             }
         }
+        return true;
     }
 
     protected abstract void afterSubmit();

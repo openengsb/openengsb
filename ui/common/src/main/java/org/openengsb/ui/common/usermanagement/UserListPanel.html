@@ -22,7 +22,14 @@
   xml:lang="en" lang="en">
   <body>
     <wicket:panel>
-      <input type="button" wicket:id="createButton" wicket:message="value:user.create" />
+      <div class="line">
+        <div class="unit size2of3 sectionTitle">
+          <wicket:message key="user.create" />
+        </div>
+        <div class="unit size1of3 sectionControls">
+          <a id="addUser" class="greyButton" wicket:id="addUser"><wicket:message key="user.create" /></a>
+        </div>
+      </div>
       <div wicket:id="userList" />
     </wicket:panel>
   </body>

@@ -22,6 +22,10 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,6 +34,7 @@ import org.junit.Test;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.graph.orient.internal.OrientModelGraph;
+import org.openengsb.core.ekb.graph.orient.internal.OrientModelGraphUtils;
 import org.openengsb.core.ekb.graph.orient.models.ModelA;
 import org.openengsb.core.ekb.graph.orient.models.ModelB;
 import org.openengsb.core.ekb.graph.orient.models.ModelC;
@@ -178,5 +183,22 @@ public class OrientModelGraphTest {
         boolean possible2 = graph.isTransformationPossible(getModelADescription(), getModelBDescription(), null);
         assertThat(possible1, is(true));
         assertThat(possible2, is(false));
+    }
+    
+    @Test
+    public void testIfPropertyConnectionFlatteningWorks_shouldWork() throws Exception {
+        Map<String, Set<String>> connections = new TreeMap<String, Set<String>>();
+        Set<String> set = new TreeSet<String>();
+        set.add("B-1");
+        set.add("B-2");
+        set.add("B-3");
+        connections.put("A-1", set);
+        set = new TreeSet<String>();
+        set.add("B-1");
+        set.add("B-3");
+        connections.put("A-2", set);
+        Map<String, String> result = OrientModelGraphUtils.convertPropertyConnectionsToSimpleForm(connections);
+        assertThat(result.get("A-1"), is("B-1,B-2,B-3"));
+        assertThat(result.get("A-2"), is("B-1,B-3"));
     }
 }

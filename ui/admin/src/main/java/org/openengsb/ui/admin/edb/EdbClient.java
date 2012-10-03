@@ -74,6 +74,9 @@ public class EdbClient extends BasePage {
 
     private static final long serialVersionUID = 9004308842445884996L;
 
+    public static final String PAGE_NAME_KEY = "edbClient.title";
+    public static final String PAGE_DESCRIPTION_KEY = "edbClient.description";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(EdbClient.class);
 
     static class EkbQuery implements Serializable {

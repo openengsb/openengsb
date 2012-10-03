@@ -22,35 +22,26 @@
       xml:lang="en">
 
 <wicket:head>
-  <link rel="stylesheet" type="text/css" href="openengsb/style/style.css"/>
-  <link rel="icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
-  <link rel="shortcut icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
-  <script type="text/javascript" src="openengsb/js/jquery.js"></script>
-  <script type="text/javascript" src="openengsb/js/jquery.tools.js"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>OpenEngSB</title>
+  <!--[if lte IE 7]>
+  <style type="text/css">
+    #pageContainer{height:100%;}
+  </style>
+  <![endif]-->
 </wicket:head>
 
 <body>
-  <div wicket:id="header">[header]</div>
-
-  <div class="mainFrame">
-    <div class="menuRight">
-      <form wicket:id="projectChoiceForm" class="projectChoicePosition">
-        <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
-      </form>
-      <a class="logout" href="BasePage.html#" wicket:id="logout" >
-        <span wicket:id="logintext">
-          <wicket:message key="login">[login]</wicket:message>
-        </span>
-        <span wicket:id="logouttext">
-          <wicket:message key="logout">[logout]</wicket:message>
-        </span>
-      </a>
+  <div id="pageContainer">
+    <div class="line" id="headerContainer" wicket:id="header">[header]</div>
+    <div class="line" id="mainContainer">
+      <div wicket:id="menu" class="unit size1of6">[menu]</div>
+      <div class="mainArea unit size5of6 lastUnit">
+        <h1 class="sectionName" wicket:id="sectionName" />
+        <wicket:child>[children]</wicket:child>
+      </div>
     </div>
-    <div class="mainArea"><wicket:child>[children]</wicket:child></div>
+    <div class="line" id="footerContainer" wicket:id="footer">[footer]</div>
   </div>
-
-  <div wicket:id="footer">[footer]</div>
 </body>
 </html>

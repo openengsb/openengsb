@@ -1,0 +1,569 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+ /* Reset */
+html {margin:0;padding:0;border:0;}
+body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, hgroup, nav, section {margin:0;padding:0;border:0;font-size:100.1%;font:inherit;vertical-align:baseline;}
+article, aside, details, figcaption, figure, dialog, footer, header, hgroup, menu, nav, section {display:block;}
+body {line-height:1.5;background:white;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;float:none !important;}
+table, th, td {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:'';}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+:focus {outline:0;}
+ 
+ 
+body, html{
+	height:100%;
+}
+/* Typography */ 
+body {
+ 	font-family: Trebuchet MS,Tahoma, Helvetica, sans-serif,"Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,Verdana;
+ 	font-size: 100.1%;
+}
+
+p {
+  font-size: 0.75em;
+  padding-bottom: 2em;
+}
+ 	
+h1 {
+	font-size: 1.5em;
+	padding-bottom: 2em;
+}
+
+h2 {
+	font-size: 1.3em;
+	padding-bottom: 1.5em;
+}
+
+h3 {
+	font-size: 1.1em;
+	padding-bottom: 1em;
+}
+
+h4 {
+	font-size: 1.0em;
+	padding-bottom: 0.5em;
+} 
+.smalltext {
+    font-size: 0.7em;
+    line-height: 1.5em;
+}	
+ 	
+th {
+	background: url("../images/th_seperator.png");
+	}
+td {
+	font-color: #566672;
+	}
+	
+hr {
+	border-style: none none solid;
+}
+
+.hidden {
+	display:none;
+} 
+.inline {
+ 	display: inline;
+ 	}
+
+.tableHead {
+	font-size: 0.9em;
+	font-weight: bold;
+}
+.lightbox {
+	lightbox: background-color: #F6F6F6;
+	box-shadow: 0 0 10px #D2D2D2;
+	padding: 15px;
+	margin: 12px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #F9F9F9;
+	color: #a2a2a2;
+}
+
+.lightbox .separator {
+    height: 40px;
+}
+
+.lightbox .separator .separator-left{
+	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/lightbox_separator_left.png") repeat-x scroll 0 35px transparent;
+}
+
+.lightbox .separator .separator-center{
+	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/lightbox_separator_center.png") repeat-x scroll 0 35px transparent;
+}
+
+
+.lightbox h1 {
+	font-size: 1.0em;
+	padding: 0 0 15px;
+}
+
+.lightbox p {
+    font-size: 0.70em;
+}
+
+.lightbox strong {
+	font-weight: bold;
+}
+
+/* forms.css */
+label {
+	color: #808080;
+    font-size: 0.7em;
+    font-weight: 100;
+    float: left;
+    width: 100px;
+    padding: 11px 0 0 0px;
+    }
+fieldset {
+	padding:0 0 1.4em 1.4em;border: none;
+	}
+legend {    
+	font-size: 0.75em;
+    font-weight: bold;
+    margin-left: -15px;
+    padding-left: 4px;
+    padding-right: 4px;"
+}
+fieldset, #IE8#HACK {padding-top:1.4em;}
+legend, #IE8#HACK {margin-top:0;margin-bottom:0;}
+input[type=text], input[type=password], input[type=url], input[type=email], input[disabled], input.text, input.title, textarea {background-color:#fff;border:1px solid #bbb;color:#000;}
+input[type=text]:focus, input[type=password]:focus, input[type=url]:focus, input[type=email]:focus, input[disabled], input.text:focus, input.title:focus, textarea:focus {border-color:#666;}
+select {background-color:#fff;border-width:1px;border-style:solid;}
+input[type=text], input[type=password], input[type=url], input[type=email], input[disabled], input.text, input.title, textarea, select {margin: 0.5em 0 0;}
+input.text, input.title {width:300px;padding:5px;}
+input.title {font-size:1.5em;}
+textarea {width:390px;height:250px;padding:5px;}
+form.inline {line-height:3;}
+form.inline p {margin-bottom:0;}
+.error, .alert, .notice, .success, .info {padding:0.8em;margin-bottom:1em;border:2px solid #ddd;}
+.error, .alert {background:#fbe3e4;color:#8a1f11;border-color:#fbc2c4;}
+.notice {background:#fff6bf;color:#514721;border-color:#ffd324;}
+.success {background:#e6efc2;color:#264409;border-color:#c6d880;}
+.info {background:#d5edf8;color:#205791;border-color:#92cae4;}
+.error a, .alert a {color:#8a1f11;}
+.notice a {color:#514721;}
+.success a {color:#264409;}
+.info a {color:#205791;}
+
+input[type=submit] {
+ background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/button.png");
+ background-repeat:none;
+ height: 25px;
+ min-width:85px;
+ color: white;
+ padding-bottom: 3px;
+ border: 0 none;
+}
+
+#pageContainer{
+  min-height:100%;
+  position:relative;
+  background: url("../org.openengsb.ui.admin.global.menu.MenuTemplate/containerBackground.png") repeat-y;
+}
+
+#mainContainer {
+  padding-bottom: 25px;
+}
+
+.dropdownContainer {
+	backgound-color:#ffffff;
+}
+
+.contextDropdownContainer {
+ left: -33px;
+ position: absolute;
+ top: 37px;
+}
+
+.positionRelative {
+	position: relative;
+}
+
+.hiden {
+	display: hidden;
+	}
+
+    
+#headerLogo {
+    height: 34px;
+    padding: 10px 10px 10px 10px;
+}
+
+.menuContainer {
+	background-color: #eeeeee;
+    width: 250px;
+    min-height: 100%;
+}	
+
+.menuContainer ul {
+	list-style-type: none;
+}
+
+.menuContainer li{
+    border-right: 1px solid #DFDFDF;  /* ToDo: This is just a mock and not the final verision*/
+	height: 60px;
+    padding: 5px 0 5px 15px;
+    background: url("../org.openengsb.ui.admin.global.menu.MenuTemplate/menuSeparator.png") repeat-x scroll 0 68px transparent;
+}
+
+.menuContainer li:hover {
+    background: url("../org.openengsb.ui.admin.global.menu.MenuTemplate/menuHover.png") no-repeat scroll -138px 0 transparent;
+    border:none;
+    }
+
+.menuContainer li.lastElement {
+	border: none;
+	background: none;
+}
+.menuContainer li.activeElement,.menuContainer li.activeElement:hover {
+    background: url("../org.openengsb.ui.admin.global.menu.MenuTemplate/menuActive.png") no-repeat scroll -145px 0 transparent;
+    border:none;
+    }
+
+
+.menuContainer li a{
+    color: #b3b3b3;
+    font-family: Century Gothic,Tahoma,sans-serif,helvetica;
+    font-size: 1.15em;
+    font-weight: lighter;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+}
+
+.menuContainer li a:hover{
+	background-color: #FFFFFF
+   	}
+   	
+.menuContainer span{
+    font-size:0.7em;
+    color: #717171;
+}
+
+.menuIcon {
+    height: 25px;
+    padding-left: 10px;
+    width: 25px;
+    display: inline;
+}
+
+.header {
+  background-color: #626262;
+  border-bottom: 1px solid #D1D1D1;
+  height: 55px;
+  color: #ffffff;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 0.75em;
+}
+
+#topVersionContainer{
+  position: absolute;
+  right: 15px;
+  top: 6px;
+  color: #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+}
+
+#topMenuContainer{
+  position: absolute;
+  right: 15px;
+  top: 24px;
+}
+
+.dropDownContainer {
+  background: none repeat scroll 0 0 #FFFFFF;
+  border: 1px solid #4890BB;
+  border-radius: 5px 5px 5px 5px;
+  margin: 15px 0 0 -58px;
+  padding: 15px 0 15px 20px;
+  min-width: 100px;
+  overflow: visible;
+  position: absolute;
+}
+
+.dropdownContainerHeadline{
+  color: #adadad;
+  font-weight: bold;
+}
+
+.dropDownContainer a, .dropDownContainer a:visited{
+    color: #4890BB;
+    float: left;
+    font-family: Helvetica,Arial;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+
+#topMenuContainer li{
+	display: inline;
+	float: left;
+	list-style-type:none;
+	height: 24px;
+	line-height: 30px;
+}
+
+.greyButton{
+    background: none repeat scroll 0 0 #eeeeee;
+    border: 1px solid #999999;
+    border-radius: 5px 5px 5px 5px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 0.7em;
+    padding: 4px;
+}
+
+.greyButton a, .greyButton a:active, .greyButton a:hover {
+  color: #999999;
+  text-decoration: none;
+}
+
+.greyButton a:hover {
+  background: #4890bb;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+
+.topMenuLabel{
+	color: #ffffff;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.sectionMenuSelector {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_background.png") repeat-x scroll 0 0 transparent;
+    border-bottom: 2px solid #75A8CF;
+    border-radius: 5px 5px 0 0;
+    height: 35px;
+    margin: -15px -15px 25px;
+  }
+  
+.sectionMenuSelector li {
+    display: inline;
+    float: left;
+    font-family: "Helvetica Neue",Helvetica,sans-serif,arial;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 9px 14px;
+    width: 100px;
+    color: #75A8CF;
+    text-align: center;
+}
+
+.sectionMenuSelector li.separator {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_separator.png") no-repeat scroll 126px 0 transparent;
+}
+
+.activeSectionMenu {
+    background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/sectionMenu_arrow.png") no-repeat scroll 126px 0 transparent;
+}
+
+#topLogo{
+	position: relative;
+	top: 10px;
+	left: 20px;
+	height: *;
+}
+
+#topHeadline {
+    left: 220px;
+    position: absolute;
+    top: 20px;
+}
+
+.boxArrow {
+  background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/box_arrow.png") no-repeat scroll 0 0 transparent;
+  left: 77px;
+  position: absolute;
+  top: -10px;
+  width: 20px;
+}
+
+
+#menu{
+}
+
+.mainArea{
+	padding: 12px;
+	
+}
+
+.dataTable {
+	width:100%;
+	border: 1px solid #cacaca;
+	box-shadow: 0 0 10px #D2D2D2;
+    -moz-border-radius: 5px;
+}
+
+.dataTable th{
+	background: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/tableHead_background.png");
+    color: #9A9A9A;
+    font-size: 0.85em;
+    height: 40px;
+}
+
+.dataTable td{
+	background-color: #fbfbfb;
+    background-color: #FBFBFB;
+    color: #717171;
+    font-size: 0.8em;
+    height: 15px;
+}
+
+.mainArea h1.sectionName{
+    border-bottom: 1px solid #D4AC76;
+    color: #D4AC76;
+    font-family: "Helvetica Neue",Helvetica,sans-serif,Arial;
+    font-size: 1.4em;
+    margin: 19px 13px 15px 19px;
+    padding: 0 0 5px;
+}
+
+.dropdownTrigger, .dropdownTrigger ul li a{
+	cursor: pointer;
+}
+.dropdownTrigger ul{
+    cursor: default;
+}
+
+#footerContainer {
+	background-color: #adadad;
+	border-top: 1px solid #999999;
+	height: 25px;
+	bottom: 0;
+    position: absolute;
+    width: 100%;
+}
+
+#footerContainer span{
+	font-size: 0.7em;
+	color:white;
+}
+
+#footerContainer a{
+	color:white:
+}
+#footerContainer a:visited{
+    color:white:
+}
+#footerContainer a:hover{
+    text-decoraton:none;
+}
+
+/* To be removed
+
+
+
+
+#topMenuContainer a, #topMenuContainer span{
+    padding: 0px 8px 0px 8px;
+    text-decoration:none;
+}
+
+#topMenuContainer li.tmc-left {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_left.png");
+    width: 14px;
+}
+#topMenuContainer li.tmc-center {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_center.png");
+}
+#topMenuContainer li.tmc-right {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_right.png");
+    width: 14px;
+    margin: 0px; 0px; 5px; 0px;
+}
+#topMenuContainer li.tmc-seperator {
+    background-image: url("../org.openengsb.ui.common.resources.images.CommonPictureLocator/topmenu_background_seperator.png");
+    width: 2px;
+}
+
+#topMenuContainer ul.dropdownContainer {
+    background-color: white;
+    border-top: none;
+    border-left: 1px solid #6f6f6f;
+    border-right: 1px solid #6f6f6f;
+    border-bottom: 1px solid #6f6f6f;
+    margin-top: 6px;
+    position: absolute;
+    min-width: 150px;
+}
+
+
+#topMenuContainer ul.dropdownContainer li{
+    float: none;
+    display: block;
+    text-decoration: none;
+    font-color: black;
+    font-size: 0.75em;
+    height: 1.8em;
+    padding-bottom: 8px;
+    padding-top: 0px;
+    padding-left: 6px;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline{
+    border-bottom: 1px solid #EBEBEB;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-left: 8px;
+    padding-top: 0px;
+    padding-bottom: 8px;
+}
+
+#topMenuContainer ul.dropdownContainer li:hover{
+    background-color: #ebebeb;
+}
+
+#topMenuContainer ul.dropdownContainer li.dropdownContainerHeadline:hover{
+    background-color: #ffffff;
+}
+
+
+#topMenuContainer ul.dropdownContainer li a{
+    text-decoration:none;
+    color: #6f6f6f;
+}
+
+.dropdownIcon {
+ background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownIcon.png");
+ background-position: right center;
+ background-repeat: no-repeat;
+ position:relative;
+ padding-right: 3px;
+ padding-bottom: 7px;
+}
+
+.dropdown ul{
+ list-style:none;
+ border-left: 1px solid #56738C;
+ border-right: 1px solid #56738C;
+ border-bottom: 1px solid #56738C;
+ font-size: 1.2em;
+ line-height: 1.2em;
+ padding-top:20px;
+ background:url("../org.openengsb.ui.admin.global.header.HeaderTemplate/dropdownBackground.png");
+ 
+}
+
+
+*/

@@ -21,10 +21,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.shiro.concurrent.SubjectAwareExecutorService;
-import org.openengsb.core.common.util.ContextAwareCallable;
-import org.openengsb.core.common.util.ContextAwareRunnable;
-import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.services.internal.security.RootSubjectHolder;
+import org.openengsb.core.util.ContextAwareCallable;
+import org.openengsb.core.util.ContextAwareRunnable;
+import org.openengsb.core.util.ThreadLocalUtil;
 
 /**
  * provides util-methods for security purposes

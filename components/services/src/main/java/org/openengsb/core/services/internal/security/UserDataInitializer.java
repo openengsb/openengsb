@@ -21,8 +21,8 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.service.PermissionSetAlreadyExistsException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
-import org.openengsb.core.common.util.FilterUtils;
 import org.openengsb.core.services.internal.security.model.RootPermission;
+import org.openengsb.core.util.FilterUtils;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +61,7 @@ public class UserDataInitializer implements Runnable {
 
             userManager.createPermissionSet("ROLE_ROOT", new RootPermission());
             userManager.addPermissionSetToUser("admin", "ROLE_ROOT");
+            userManager.addPermissionSetToUser("user", "INDEX");
         } catch (PermissionSetAlreadyExistsException e) {
             LOGGER.error("this should not happen... I just checked whether the userbase is empty", e);
         }

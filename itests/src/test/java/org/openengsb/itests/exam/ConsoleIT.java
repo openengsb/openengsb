@@ -18,6 +18,7 @@
 package org.openengsb.itests.exam;
 
 import static junit.framework.Assert.assertFalse;
+
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
@@ -32,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.core.util.OutputStreamFormater;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -130,8 +131,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
         ConnectorDescription connectorDescription = new ConnectorDescription("authentication", "composite-connector");
         Map<String, String> attributes =
-            Maps.newHashMap(
-                ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
+            Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", 
+                "(foo=bar)"));
+
         connectorDescription.setAttributes(attributes);
 
         connectorManager.create(connectorDescription);

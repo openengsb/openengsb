@@ -71,6 +71,7 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 

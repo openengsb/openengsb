@@ -24,6 +24,9 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
@@ -31,18 +34,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.openengsb.core.common.AbstractDataRow;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
 /**
  * represents the data of a user (or other principal) identified with a unique username.
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "USERDATA")
-public class UserData extends AbstractDataRow {
+public class UserData {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "USERNAME", unique = true)
     private String username;
@@ -103,7 +107,7 @@ public class UserData extends AbstractDataRow {
     @Override
     public String toString() {
         return String.format("%s:%s:(%s permissions)", username, credentials.isEmpty() ? "none" : "****",
-            permissionSet == null ? "No" : permissionSet.getPermissions().size());
+                permissionSet == null ? "No" : permissionSet.getPermissions().size());
     }
 
     @Override
@@ -119,5 +123,13 @@ public class UserData extends AbstractDataRow {
         final UserData other = (UserData) obj;
         return Objects.equal(username, other.username) && Objects.equal(credentials, other.credentials)
                 && Objects.equal(permissionSet, other.permissionSet) && Objects.equal(attributes, other.attributes);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

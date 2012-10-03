@@ -165,7 +165,7 @@ public class TaskboxServiceTest {
         ProcessBag bag = new ProcessBag(task);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("processBag", bag);
-        workflowService.startFlow("TaskDemoWorkflow", map);
+        workflowService.startFlowWithParameters("TaskDemoWorkflow", map);
         service.finishTask(task);
 
         verify(persistenceService).delete(any(Task.class));

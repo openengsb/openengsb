@@ -36,7 +36,7 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.common.util.FilterUtils;
+import org.openengsb.core.util.FilterUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
@@ -55,6 +55,9 @@ public class ConnectorEditorPage extends BasePage {
     private static final long serialVersionUID = -8199301932270437500L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
+
+    public static final String PAGE_NAME_KEY = "connectorEditorPage.tile";
+    public static final String PAGE_DESCRIPTION_KEY = "connectorEditorPage.title";
 
     @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;

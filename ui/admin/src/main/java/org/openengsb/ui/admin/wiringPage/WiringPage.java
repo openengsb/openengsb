@@ -61,8 +61,8 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.common.util.Comparators;
-import org.openengsb.core.common.util.FilterUtils;
+import org.openengsb.core.util.Comparators;
+import org.openengsb.core.util.FilterUtils;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -78,6 +78,9 @@ public class WiringPage extends BasePage {
     private static final long serialVersionUID = 4196803215701011090L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
+
+    public static final String PAGE_NAME_KEY = "wiringPage.title";
+    public static final String PAGE_DESCRIPTION_KEY = "wiringPage.description";
 
     @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;

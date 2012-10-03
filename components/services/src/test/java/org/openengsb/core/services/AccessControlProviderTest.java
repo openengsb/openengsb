@@ -37,7 +37,6 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.security.AdminAccessConnector;
 import org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.services.internal.security.model.RootPermission;
@@ -45,6 +44,7 @@ import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.core.test.rules.DedicatedThread;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 

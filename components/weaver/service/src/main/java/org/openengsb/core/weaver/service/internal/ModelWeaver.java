@@ -23,6 +23,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.weaver.service.internal.model.ManipulationUtils;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
 import org.slf4j.Logger;
@@ -50,9 +51,12 @@ public class ModelWeaver implements WeavingHook {
         }
         try {
             LOGGER.trace("try to enhance {}", className);
-            byte[] result = doActualWeaving(wovenClass.getBytes(), wovenClass.getBundleWiring().getClassLoader());
+            Version bundleVersion = wovenClass.getBundleWiring().getBundle().getVersion();
+            byte[] result = doActualWeaving(wovenClass.getBytes(), bundleVersion,
+                wovenClass.getBundleWiring().getClassLoader());
             if (result != null) {
                 wovenClass.getDynamicImports().add("org.openengsb.core.api.model");
+                wovenClass.getDynamicImports().add("org.slf4j");
                 wovenClass.setBytes(result);
             }
             LOGGER.trace("finished enhancing {}", className);
@@ -63,9 +67,8 @@ public class ModelWeaver implements WeavingHook {
         }
     }
 
-    private byte[] doActualWeaving(byte[] wovenClass, ClassLoader... loaders) throws IOException,
-        CannotCompileException {
-        return ManipulationUtils.enhanceModel(wovenClass, loaders);
+    private byte[] doActualWeaving(byte[] wovenClass, Version bundleVersion, ClassLoader... loaders)
+        throws IOException, CannotCompileException {
+        return ManipulationUtils.enhanceModel(wovenClass, bundleVersion, loaders);
     }
-
 }

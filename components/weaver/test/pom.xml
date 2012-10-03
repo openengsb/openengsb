@@ -24,11 +24,12 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-bundle-settings</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../../parents/bundle</relativePath>
+    <relativePath>../../..</relativePath>
   </parent>
+
 
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.weaver.test</artifactId>
@@ -107,6 +108,13 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>once</forkMode>
@@ -124,7 +132,6 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
@@ -135,6 +142,10 @@
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>

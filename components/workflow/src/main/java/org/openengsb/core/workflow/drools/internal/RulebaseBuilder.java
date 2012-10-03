@@ -75,20 +75,20 @@ public class RulebaseBuilder {
         reloadDeclarations();
         packageStrings.clear();
 
-        for (RuleBaseElementId id : manager.list(RuleBaseElementType.Function)) {
+        for (RuleBaseElementId id : manager.listAll(RuleBaseElementType.Function)) {
             String packageName = id.getPackageName();
             StringBuffer packageString = getPackageString(packageName);
             String code = manager.get(id);
             packageString.append(code);
         }
-        for (RuleBaseElementId id : manager.list(RuleBaseElementType.Rule)) {
+        for (RuleBaseElementId id : manager.listAll(RuleBaseElementType.Rule)) {
             String packageName = id.getPackageName();
             StringBuffer packageString = getPackageString(packageName);
             String code = manager.get(id);
             String formattedRule = String.format(RULE_TEMPLATE, id.getName(), code);
             packageString.append(formattedRule);
         }
-        for (RuleBaseElementId id : manager.list(RuleBaseElementType.Process)) {
+        for (RuleBaseElementId id : manager.listAll(RuleBaseElementType.Process)) {
             getPackageString(id.getPackageName());
         }
         Collection<KnowledgePackage> compiledPackages = new HashSet<KnowledgePackage>();
@@ -112,7 +112,7 @@ public class RulebaseBuilder {
     }
 
     private Collection<String> queryFlows(final String packageName) {
-        Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Process);
+        Collection<RuleBaseElementId> list = manager.listAll(RuleBaseElementType.Process);
         Collection<RuleBaseElementId> filtered = Collections2.filter(list, new Predicate<RuleBaseElementId>() {
             @Override
             public boolean apply(RuleBaseElementId input) {

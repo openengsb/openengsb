@@ -34,12 +34,12 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +100,7 @@ public class EDBConverter {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
-                    || propertyDescriptor.getName().equals("openEngSBModelTail")) {
+                    || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
                 continue;
             }
             Object value = getValueForProperty(propertyDescriptor, object);
@@ -370,8 +370,8 @@ public class EDBConverter {
                 object.putEDBObjectEntry(entry.getKey(), entry.getValue(), entry.getClass());
             }
         }
-        Class<?> modelType = model.getClass();
-        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, modelType.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, model.retrieveModelName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE_VERSION, model.retrieveModelVersion());
         object.putEDBObjectEntry("domainId", info.getDomainId());
         object.putEDBObjectEntry("connectorId", info.getConnectorId());
         object.putEDBObjectEntry("instanceId", info.getInstanceId());

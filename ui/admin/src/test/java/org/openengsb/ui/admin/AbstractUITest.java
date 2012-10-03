@@ -49,7 +49,6 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
@@ -63,6 +62,7 @@ import org.openengsb.core.services.internal.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -139,9 +139,11 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         userManager.createUser("test");
         userManager.setUserCredentials("test", "password", "password");
         userManager.addPermissionToUser("test", new WicketPermission("USER"));
+        userManager.addPermissionToUser("test", new WicketPermission("INDEX"));
 
         userManager.createUser("user");
         userManager.setUserCredentials("user", "password", "password");
+        userManager.addPermissionToUser("user", new WicketPermission("INDEX"));
 
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");

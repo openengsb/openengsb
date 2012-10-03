@@ -80,7 +80,6 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Metho
         } catch (AuthenticationException e) {
             throw new FilterException(e);
         }
-
         LOGGER.debug("authenticated");
         return (MethodResultMessage) next.filter(input, metaData);
     }

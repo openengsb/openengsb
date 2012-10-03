@@ -130,7 +130,7 @@ public class RuleEditorPanel extends Panel {
                 if (newRuleMode) {
                     boolean error = false;
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
-                        newRuleTextField.getModelObject());
+                            newRuleTextField.getModelObject());
                     try {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
@@ -248,8 +248,8 @@ public class RuleEditorPanel extends Panel {
 
     private void loadRuleChoice() {
         RuleBaseElementType selectedType = typeChoice.getModelObject();
-        List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager().list(
-            selectedType));
+        List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager()
+                .listAll(selectedType));
         ruleChoice.setChoices(choices);
         ruleChoice.setModel(new Model<RuleBaseElementId>());
     }

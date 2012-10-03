@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,8 +58,9 @@ import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.OsgiUtils;
+import org.openengsb.core.util.ThreadLocalUtil;
 import org.openengsb.core.workflow.api.RemoteEventProcessor;
 import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.TaskboxService;
@@ -70,6 +72,7 @@ import org.openengsb.core.workflow.api.model.RemoteEvent;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.api.model.Task;
+import org.openengsb.core.workflow.drools.WorkflowHelper;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -183,16 +186,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        return startFlow(processId, new HashMap<String, Object>());
+        return startFlowWithParameters(processId, new HashMap<String, Object>());
     }
 
     @Override
     public ProcessBag executeWorkflow(String processId, ProcessBag parameters) throws WorkflowException {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", parameters);
-        long id = startFlow(processId, parameterMap);
+        long id = startFlowWithParameters(processId, parameterMap);
         try {
-            waitForFlowToFinish(id);
+            waitForFlowToFinishIndefinitely(id);
         } catch (InterruptedException e) {
             throw new WorkflowException(e);
         }
@@ -200,7 +203,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
-    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
+    public long startFlowWithParameters(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         try {
             return startFlowInBackground(processId, parameterMap).get();
         } catch (InterruptedException e) {
@@ -212,8 +215,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
         throws WorkflowException {
-        WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
-        return executor.submit(workflowStarter);
+        Callable<Long> call = WorkflowHelper.getCallable(getSessionForCurrentContext(), processId, paramterMap);
+        return executor.submit(call);
     }
 
     @Override
@@ -284,7 +287,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
-    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
+    public void waitForFlowToFinishIndefinitely(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
             while (session.getProcessInstance(id) != null) {
@@ -420,7 +423,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
             Filter filter =
-                utilsService.getFilterForLocation(globalClass, global.getKey(),
+                OsgiUtils.getFilterForLocation(globalClass, global.getKey(),
                     ContextHolder.get().getCurrentContextId());
             Object osgiServiceProxy = utilsService.getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);

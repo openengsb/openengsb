@@ -25,14 +25,15 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.openengsb.core.common.AbstractDataRow;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -43,11 +44,14 @@ import com.google.common.collect.Sets;
  * entity that represents a permission-set. Contains the associated permissions and other permission-sets along with
  * additional metadata
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "PERMISSIONSETDATA")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PermissionSetData extends AbstractDataRow {
+public class PermissionSetData {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
 
     @Column(name = "name", unique = true)
     private String name;
@@ -68,6 +72,14 @@ public class PermissionSetData extends AbstractDataRow {
 
     public PermissionSetData(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
