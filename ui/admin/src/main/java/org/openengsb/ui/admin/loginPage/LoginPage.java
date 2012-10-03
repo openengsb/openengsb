@@ -36,6 +36,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.ui.admin.model.UsernamePassword;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.imprint.ImprintPanel;
+import org.openengsb.ui.common.panel.ExtendedFeedbackPanel;
 import org.openengsb.ui.common.resources.css.CommonCssLocator;
 import org.openengsb.ui.common.resources.images.CommonPictureLocator;
 import org.openengsb.ui.common.resources.js.CommonJsLocator;
@@ -102,12 +103,15 @@ public class LoginPage extends OpenEngSBPage {
                 }
             }
         };
+        info("I am an info message"); //TODO REmove
+        warn("I am a warning message"); //TODO REmove
+        //error("Im an error massage"); //TODO REmove
         loginForm.setModel(new CompoundPropertyModel<UsernamePassword>(user));
         add(loginForm);
         loginForm.add(new RequiredTextField<String>("username"));
         loginForm.add(new PasswordTextField("password"));
 
-        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        ExtendedFeedbackPanel feedbackPanel = new ExtendedFeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
 
