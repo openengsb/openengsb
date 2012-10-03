@@ -686,11 +686,6 @@
         <version>${velocity.version}</version>
       </dependency>
       <dependency>
-        <groupId>aopalliance</groupId>
-        <artifactId>aopalliance</artifactId>
-        <version>${aopalliance.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.aspectj</groupId>
         <artifactId>com.springsource.org.aspectj.weaver</artifactId>
         <version>${aspectj.version}</version>
