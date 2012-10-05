@@ -89,6 +89,11 @@
     <xmlsec.version>1.4.5_1</xmlsec.version>
     <xmlschema.version>2.0.1</xmlschema.version>
     <cxf.version>2.6.1</cxf.version>
+    <protobuf.version>2.4.1</protobuf.version>
+    <protobuf.wrapped.version>2.4.1.w1</protobuf.wrapped.version>
+    <cdi-api.version>1.1-20120918</cdi-api.version>
+    <cdi-api.wrapped.version>1.1-20120918.w1</cdi-api.wrapped.version>
+    <javax.inject.version>1_2</javax.inject.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <saaj.impl.version>1.3.9_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
@@ -145,10 +150,10 @@
     <woodstox.version>4.1.2</woodstox.version>
     <neethi.version>3.0.1</neethi.version>
     <javax.mail.version>1.4.4</javax.mail.version>
-    <drools.version>5.3.0.Final</drools.version>
-    <jbpm.version>5.1.0.Final</jbpm.version>
+    <drools.version>5.5.0-SNAPSHOT</drools.version>
+    <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
     <jasypt.version>1.6_1</jasypt.version>
-    <mvel2.version>2.1.0.drools4</mvel2.version>
+    <mvel2.version>2.1.3.Final</mvel2.version>
     <fastinfoset.version>1.2.7_4</fastinfoset.version>
     <smx.specs.version>2.0.0</smx.specs.version>
     <xstream.version>1.3.1</xstream.version>
@@ -1599,6 +1604,17 @@
       <id>sonatype-snapshots</id>
       <name>Sonaype Snapsht Repository</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>snapshots.jboss.org</id>
+      <name>JBoss Snapshot Repository</name>
+      <url>http://snapshots.jboss.org/maven2</url>
       <releases>
         <enabled>false</enabled>
       </releases>

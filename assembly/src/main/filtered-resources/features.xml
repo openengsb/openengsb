@@ -113,8 +113,12 @@
     <bundle start-level='20'>mvn:org.drools/knowledge-api/${drools.version}</bundle>
     <bundle start-level='20'>mvn:org.drools/drools-core/${drools.version}</bundle>
     <bundle start-level='20'>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+    <bundle start-level='20'>mvn:org.drools/knowledge-internal-api/${drools.version}</bundle>
     <bundle start-level='20'>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
     <bundle start-level='20'>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.wrapped/com.google.protobuf/${protobuf.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.openengsb.wrapped/cdi-api/${cdi-api.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/${javax.inject.version}</bundle>
 
     <!-- OpenEngSB Commons Dependencies -->
     <bundle start-level='20'>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
