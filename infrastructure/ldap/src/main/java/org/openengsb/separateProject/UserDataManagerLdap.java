@@ -34,12 +34,11 @@ import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.util.CollectionUtilsExtended;
-import org.openengsb.core.security.internal.EntryUtils;
-import org.openengsb.core.security.internal.model.EntryElement;
-import org.openengsb.core.security.internal.model.EntryValue;
-import org.openengsb.core.security.internal.model.PermissionData;
-import org.openengsb.core.security.util.PermissionUtils;
+import org.openengsb.core.util.CollectionUtilsExtended;
+import org.openengsb.core.services.internal.security.EntryUtils;
+import org.openengsb.core.services.internal.security.model.EntryElement;
+import org.openengsb.core.services.internal.security.model.EntryValue;
+import org.openengsb.core.services.internal.security.model.PermissionData;
 import org.openengsb.infrastructure.ldap.internal.EntryAlreadyExistsException;
 import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.openengsb.infrastructure.ldap.internal.MissingParentException;
@@ -189,7 +188,7 @@ public class UserDataManagerLdap implements UserDataManager {
     @Override
     public void createPermissionSet(String permissionSet, Permission... permission)
         throws PermissionSetAlreadyExistsException {
-        List<Entry> permissionSetStructure = PermissionsUtils.globalPermissionSetStructure(permissionSet);
+        List<Entry> permissionSetStructure = PermissionUtils.globalPermissionSetStructure(permissionSet);
         try {
             dao.store(permissionSetStructure);
         } catch (EntryAlreadyExistsException e) {
@@ -207,7 +206,7 @@ public class UserDataManagerLdap implements UserDataManager {
             PermissionData data = PermissionUtils.convertPermissionToPermissionData(p);
             pd.add(data);
         }
-        List<Entry> permissionStructure = PermissionsUtils.permissionStructureFromPermissionData(pd, parent);
+        List<Entry> permissionStructure = PermissionUtils.permissionStructureFromPermissionData(pd, parent);
         dao.store(permissionStructure);
     }
 

@@ -21,22 +21,52 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.core.security.internal.model.EntryElement;
-import org.openengsb.core.security.internal.model.EntryValue;
-import org.openengsb.core.security.internal.model.PermissionData;
+
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.services.internal.security.EntryUtils;
+import org.openengsb.core.services.internal.security.model.EntryElement;
+import org.openengsb.core.services.internal.security.model.EntryValue;
+import org.openengsb.core.services.internal.security.model.PermissionData;
 import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
+
+import com.google.common.collect.Maps;
+
+
+
 
 /**
  * Creates subtrees representing permissions and permission sets.
  * */
-public final class PermissionsUtils {
+public final class PermissionUtils {
 
-    private PermissionsUtils() {
+    private PermissionUtils() {
     }
 
+    /** Converts a {@link Permission} into {@link PermissionData} to allow easier storing of the permission.
+    ---
+          * Returns a list of entries representing a list of {@link PermissionData}. The list should not be reordered since
+          * its order follows the tree structure of the DIT. It can be inserted into the DIT right away.
+    */
+         public static PermissionData convertPermissionToPermissionData(Permission permission) {
+             PermissionData permissionData = new PermissionData();
+             String type = permission.getClass().getName();
+             permissionData.setType(type);
+             Map<String, EntryValue> entryMap = EntryUtils.convertBeanToEntryMap(permission);
+     
+             // copy the map, because JPA does not like the transformed map for some reason
+             entryMap = Maps.newHashMap(entryMap);
+             permissionData.setAttributes(entryMap);
+             return permissionData;
+
+         }
+
+    
+    
+    
     /**
      * Returns a list of entries representing a permissionSet. The list should not be reordered since its order follows
      * the tree structure of the DIT. It can be inserted into the DIT right away.
