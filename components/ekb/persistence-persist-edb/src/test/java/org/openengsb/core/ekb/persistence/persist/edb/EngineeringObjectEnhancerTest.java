@@ -169,6 +169,38 @@ public class EngineeringObjectEnhancerTest {
         assertThat(modelB.getNameB(), is("updatedSecondObject"));
     }
     
+    @Test
+    public void testIfEOObjectWithNoReferenceCanBeCommitted_shouldWork() throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/1");
+        EKBCommit commit = getTestCommit().addInsert(model);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        assertThat(after, is(before));
+    }
+    
+    @Test
+    public void testIfEngineeringObjectUpdateAlsoUpdatesReferencedModel_shouldUpdateNeededModel()
+        throws Exception {
+        EngineeringObjectModel model = new EngineeringObjectModel();
+        model.setInternalModelName("common/reference/2");
+        model.setModelAId("test/test/objectA/reference/1");
+        model.setNameA("updatedFirstObject");
+        EKBCommit commit = getTestCommit().addUpdate(model);
+        int before = commit.getUpdates().size();
+        enhancer.enhanceEKBCommit(commit);
+        int after = commit.getUpdates().size();
+        assertThat(after - before == 1, is(true));
+        SourceModelA modelA = null;
+        for (OpenEngSBModel update : commit.getUpdates()) {
+            if (update.retrieveModelName().equals(SourceModelA.class.getName())) {
+                modelA = (SourceModelA) update;
+            }
+        }
+        assertThat(modelA.getNameA(), is("updatedFirstObject"));
+    }
+    
     private EKBCommit getTestCommit() {
         return new EKBCommit().setDomainId("test").setConnectorId("test");
     }

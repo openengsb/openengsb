@@ -214,6 +214,29 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         eo = query.getModel(EOModel.class, "testdomain/testconnector/eo/3");        
         assertThat(eo.getNameA(), is("updatedNameA"));
     }
+    
+    @Test
+    public void testIfEOUpdateWorksCorrectlyWithOnlyOneSource_shouldUpdateSourceModel() throws Exception {
+        SourceModelA sourceA = new SourceModelA();
+        sourceA.setEdbId("sourceA/4");
+        sourceA.setName("sourceNameA");
+        EKBCommit commit = getTestEKBCommit().addInsert(sourceA);
+        persist.commit(commit);
+        
+        EOModel eo = new EOModel();
+        eo.setEdbId("eo/4");
+        eo.setRefModelA("testdomain/testconnector/sourceA/4");
+        commit = getTestEKBCommit().addInsert(eo);
+        persist.commit(commit);
+
+        eo = query.getModel(EOModel.class, "testdomain/testconnector/eo/4");
+        eo.setNameA("updatedNameA");
+        commit = getTestEKBCommit().addUpdate(eo);
+        persist.commit(commit);
+
+        SourceModelA result = query.getModel(SourceModelA.class, "testdomain/testconnector/sourceA/4");
+        assertThat(result.getName(), is("updatedNameA"));
+    }
 
     private EKBCommit getTestEKBCommit() {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");

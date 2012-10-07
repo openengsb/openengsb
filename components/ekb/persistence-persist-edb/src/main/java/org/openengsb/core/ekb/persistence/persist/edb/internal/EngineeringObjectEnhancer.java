@@ -115,7 +115,10 @@ public class EngineeringObjectEnhancer {
     private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
         for (Field field : getForeignKeyFields(model.getClass())) {
-            updates.add(performMerge(field, model, false));
+            OpenEngSBModel result = performMerge(field, model, false);
+            if (result != null) {
+                updates.add(result);
+            }
         }
         return updates;
     }
@@ -214,6 +217,9 @@ public class EngineeringObjectEnhancer {
         try {
             ModelDescription description = getModelDescriptionFromField(field);
             String modelKey = (String) FieldUtils.readField(field, model, true);
+            if (modelKey == null) {
+                return null;
+            }
             Class<?> sourceClass = modelRegistry.loadModel(description);
             Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
             ModelDescription target = ModelUtils.getModelDescription(model);
@@ -248,7 +254,10 @@ public class EngineeringObjectEnhancer {
      * Merges the given EngineeringObject with the referenced model which is defined in the given field.
      */
     private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
-        model = performMerge(field, model, true);
+        OpenEngSBModel result = performMerge(field, model, true);
+        if (result != null) {
+            model = result;
+        }
     }
 
     /**
