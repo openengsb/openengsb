@@ -77,29 +77,7 @@ public class EngineeringObjectEnhancer {
      */
     private List<OpenEngSBModel> recursiveUpdateEnhancement(List<OpenEngSBModel> updates,
             Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
-        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
-        for (OpenEngSBModel model : updates) {
-            if (updated.containsKey(getCompleteModelOID(model, commit))) {
-                continue; // this model was already updated in this commit
-            }
-            if (ModelUtils.isEngineeringObject(model)) {
-                EDBObject queryResult = edbService.getObject(getCompleteModelOID(model, commit));
-                OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(), queryResult);
-                ModelDiff diff = ModelDiff.createModelDiff(old, model);
-                boolean referencesChanged = diff.isForeignKeyChanged();
-                boolean valuesChanged = diff.isValueChanged();
-                if (referencesChanged && valuesChanged) {
-                    throw new EKBException("Engineering Objects may be updated only at "
-                            + "references or at values not both in the same commit");
-                }
-                if (referencesChanged) {
-                    reloadReferencesAndUpdateEO(diff, model);
-                } else {
-                    additionalUpdates.addAll(updateReferencedModelsByEO(model));
-                }
-            }
-            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated, commit));
-        }
+        List<OpenEngSBModel> additionalUpdates = enhanceUpdates(updates, updated, commit);
         if (!additionalUpdates.isEmpty()) {
             for (OpenEngSBModel model : additionalUpdates) {
                 updated.put(getCompleteModelOID(model, commit), model);
@@ -107,6 +85,46 @@ public class EngineeringObjectEnhancer {
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
         return additionalUpdates;
+    }
+
+    /**
+     * Enhances the given list of updates and returns a list of models which need to be additionally updated.
+     */
+    private List<OpenEngSBModel> enhanceUpdates(List<OpenEngSBModel> updates,
+            Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
+        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
+        for (OpenEngSBModel model : updates) {
+            if (updated.containsKey(getCompleteModelOID(model, commit))) {
+                continue; // this model was already updated in this commit
+            }
+            if (ModelUtils.isEngineeringObject(model)) {
+                additionalUpdates.addAll(performEOModelUpdate(model, commit));
+            }
+            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated, commit));
+        }
+        return additionalUpdates;
+    }
+
+    /**
+     * Runs the logic of updating an Engineering Object model. Returns a list of models which need to be updated
+     * additionally.
+     */
+    private List<OpenEngSBModel> performEOModelUpdate(OpenEngSBModel model, EKBCommit commit) {
+        EDBObject queryResult = edbService.getObject(getCompleteModelOID(model, commit));
+        OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(), queryResult);
+        ModelDiff diff = ModelDiff.createModelDiff(old, model);
+        boolean referencesChanged = diff.isForeignKeyChanged();
+        boolean valuesChanged = diff.isValueChanged();
+        if (referencesChanged && valuesChanged) {
+            throw new EKBException("Engineering Objects may be updated only at "
+                    + "references or at values not both in the same commit");
+        }
+        if (referencesChanged) {
+            reloadReferencesAndUpdateEO(diff, model);
+        } else {
+            return updateReferencedModelsByEO(model);
+        }
+        return new ArrayList<OpenEngSBModel>();
     }
 
     /**
