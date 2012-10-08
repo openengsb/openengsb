@@ -72,6 +72,8 @@ public class PersistInterfaceService implements PersistInterface {
      */
     private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
         throws SanityCheckException, EKBException {
+        // TODO: OPENENGSB-3355, similar to the EDB it would be good to provide pre-commit hooks and post-commit hooks.
+        // in that case, the enhancer would be a pre-commit hook.
         enhancer.enhanceEKBCommit(commit);
         if (check) {
             performSanityChecks(commit);

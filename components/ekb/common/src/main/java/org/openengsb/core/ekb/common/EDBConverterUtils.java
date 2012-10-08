@@ -37,6 +37,8 @@ import org.openengsb.core.util.ModelUtils;
  * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: EDBObjects
  * <-> Models
  */
+// TODO: OPENENGSB-3361, there are many functions located here which would better fit in other models like to fit
+// into the object oriented programming design. This class should be minimized as much as possible. 
 public final class EDBConverterUtils {
     public static final String FILEWRAPPER_FILENAME_SUFFIX = ".filename";
     public static final String REFERENCE_PREFIX = "refersTo_";

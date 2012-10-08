@@ -37,6 +37,9 @@ import com.google.common.base.Strings;
 /**
  * The TransformationPerformer does the actual performing work between objects.
  */
+// TODO: OPENENGSB-3362, for now the functions are hard coded in this class. It would be much better and much more
+// dynamically if the functions would be provided as services, where a service property defines the operation name.
+// In that way it would be easy for the user to rename, adapt and extend the functions and also add its own functions.
 public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
@@ -87,7 +90,7 @@ public class TransformationPerformer {
             this.target = targetClass.newInstance();
         } else {
             this.target = target;
-        } 
+        }
         for (TransformationStep step : description.getTransformingSteps()) {
             performTransformationStep(step);
         }

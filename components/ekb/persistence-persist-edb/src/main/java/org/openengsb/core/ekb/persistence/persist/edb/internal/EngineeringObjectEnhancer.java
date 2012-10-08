@@ -40,8 +40,12 @@ import org.slf4j.LoggerFactory;
  * The EngineeringObjectEnhancer enhance an EKBCommit object with additional models which need to be updated or enhance
  * inserted models based on the Engineering Object concept of the OpenEngSB.
  */
+// TODO: OPENENGSB-3356, until now the automatic update propagation is done without asking. There should be a
+// possibility to alter this behavior, so that it is possible e.g. to have no automatic update propagation at
+// all or that only Engineering Objects receive automatic updates.
 public class EngineeringObjectEnhancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EngineeringObjectEnhancer.class);
+    // TODO: OPENENGSB-3359, replace edbService and edbConverter with queryInterface
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
     private TransformationEngine transformationEngine;
@@ -56,6 +60,7 @@ public class EngineeringObjectEnhancer {
         LOGGER.debug("Started to enhance the EKBCommit with Engineering Object information");
         enhanceCommitInserts(commit);
         enhanceCommitUpdates(commit);
+        // TODO: OPENENGSB-3357, consider also deletions in the enhancement
         LOGGER.debug("Finished EKBCommit enhancing");
     }
 
@@ -110,6 +115,9 @@ public class EngineeringObjectEnhancer {
             edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
+        // TODO: OPENENGSB-3358, Make it possible to change references and values at the same time. Should be
+        // no too big deal since we already know at this point which values of the model have been changed and
+        // what the old and the new value for the changed properties are
         if (referencesChanged && valuesChanged) {
             throw new EKBException("Engineering Objects may be updated only at "
                     + "references or at values not both in the same commit");
@@ -224,7 +232,7 @@ public class EngineeringObjectEnhancer {
             model = result;
         }
     }
-    
+
     /**
      * Creates an EOModel instance out of the given model and all class variables needed for the EOModel
      */
