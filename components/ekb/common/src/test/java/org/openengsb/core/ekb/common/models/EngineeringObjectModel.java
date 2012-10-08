@@ -28,12 +28,10 @@ public class EngineeringObjectModel {
     @OpenEngSBModelId
     private String internalModelName;
 
-    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.common.models.SourceModelA",
-        modelVersion = "1.0.0")
+    @OpenEngSBForeignKey(modelType = SourceModelA.class, modelVersion = "1.0.0")
     private String modelAId;
 
-    @OpenEngSBForeignKey(modelType = "org.openengsb.core.ekb.common.models.SourceModelB",
-        modelVersion = "1.0.0")
+    @OpenEngSBForeignKey(modelType = SourceModelB.class, modelVersion = "1.0.0")
     private String modelBId;
 
     private String test;

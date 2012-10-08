@@ -28,9 +28,9 @@ import org.openengsb.labs.delegation.service.Provide;
 public class EOModel {
     @OpenEngSBModelId
     private String edbId;
-    @OpenEngSBForeignKey(modelType = "org.openengsb.domain.example.model.SourceModelA", modelVersion = "3.0.0.SNAPSHOT")
+    @OpenEngSBForeignKey(modelType = SourceModelA.class, modelVersion = "3.0.0.SNAPSHOT")
     private String refModelA;
-    @OpenEngSBForeignKey(modelType = "org.openengsb.domain.example.model.SourceModelB", modelVersion = "3.0.0.SNAPSHOT")
+    @OpenEngSBForeignKey(modelType = SourceModelB.class, modelVersion = "3.0.0.SNAPSHOT")
     private String refModelB;
     private String nameA;
     private String nameB;
