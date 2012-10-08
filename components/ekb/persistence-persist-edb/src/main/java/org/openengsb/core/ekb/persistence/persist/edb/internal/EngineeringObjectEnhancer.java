@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -34,7 +32,6 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.common.EDBConverter;
-import org.openengsb.core.ekb.common.EDBConverterUtils;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +96,7 @@ public class EngineeringObjectEnhancer {
             if (ModelUtils.isEngineeringObject(model)) {
                 additionalUpdates.addAll(performEOModelUpdate(model, commit));
             }
-            additionalUpdates.addAll(getReferenceBasedAdditionalUpdates(model, updated, commit));
+            additionalUpdates.addAll(getReferenceBasedUpdates(model, updated, commit));
         }
         return additionalUpdates;
     }
@@ -130,8 +127,9 @@ public class EngineeringObjectEnhancer {
      */
     private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        for (Field field : getForeignKeyFields(model.getClass())) {
-            OpenEngSBModel result = performMerge(field, model, false);
+        EOModel eo = createEOModelInstance(model);
+        for (Field field : eo.getForeignKeyFields()) {
+            OpenEngSBModel result = performMerge(model, eo.loadReferencedModel(field));
             if (result != null) {
                 updates.add(result);
             }
@@ -151,12 +149,11 @@ public class EngineeringObjectEnhancer {
     /**
      * Returns engineering objects to the commit, which are changed by a model which was committed in the EKBCommit
      */
-    private List<OpenEngSBModel> getReferenceBasedAdditionalUpdates(OpenEngSBModel model,
+    private List<OpenEngSBModel> getReferenceBasedUpdates(OpenEngSBModel model,
             Map<Object, OpenEngSBModel> updated, EKBCommit commit) throws EKBException {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(model, commit));
-        List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
+        SimpleModel simple = new SimpleModel(model, edbService);
+        List<EDBObject> references = simple.getModelsReferringToThisModel(commit);
         for (EDBObject reference : references) {
             EDBModelObject modelReference = new EDBModelObject(reference, modelRegistry, edbConverter);
             OpenEngSBModel ref = updateEOByUpdatedModel(modelReference, model, updated);
@@ -190,7 +187,7 @@ public class EngineeringObjectEnhancer {
     private void enhanceCommitInserts(EKBCommit commit) throws EKBException {
         for (OpenEngSBModel model : commit.getInserts()) {
             if (ModelUtils.isEngineeringObject(model)) {
-                performInsertEOLogic(model);
+                performInsertEOLogic(createEOModelInstance(model));
             }
         }
     }
@@ -198,93 +195,41 @@ public class EngineeringObjectEnhancer {
     /**
      * Performs the logic for the enhancement needed to be performed to insert an Engineering Object into the EDB.
      */
-    private void performInsertEOLogic(OpenEngSBModel model) {
-        for (Field field : getForeignKeyFields(model.getClass())) {
-            mergeEngineeringObjectWithReferencedModel(field, model);
+    private void performInsertEOLogic(EOModel model) {
+        for (Field field : model.getForeignKeyFields()) {
+            mergeEngineeringObjectWithReferencedModel(field, model.getModel());
         }
     }
 
     /**
-     * Performs a merge based on the third parameter. If the third parameter is true, then the given model is the merge
-     * target. If the third parameter is false, then the through the given field referenced model is the merge target.
+     * Performs the merge from the source model to the target model and returns the result. Returns null if either the
+     * source or the target is null.
      */
-    private OpenEngSBModel performMerge(Field field, OpenEngSBModel model, boolean modelIsTarget) {
-        try {
-            ModelDescription description = getModelDescriptionFromField(field);
-            String modelKey = (String) FieldUtils.readField(field, model, true);
-            if (modelKey == null) {
-                return null;
-            }
-            Class<?> sourceClass = modelRegistry.loadModel(description);
-            Object instance = edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
-            ModelDescription target = ModelUtils.getModelDescription(model);
-            if (modelIsTarget) {
-                return (OpenEngSBModel) transformationEngine.performTransformation(description, target,
-                    instance, model);
-            } else {
-                return (OpenEngSBModel) transformationEngine.performTransformation(target, description,
-                    model, instance);
-            }
-        } catch (SecurityException e) {
-            throw new EKBException(generateErrorMessage(model), e);
-        } catch (IllegalArgumentException e) {
-            throw new EKBException(generateErrorMessage(model), e);
-        } catch (IllegalAccessException e) {
-            throw new EKBException(generateErrorMessage(model), e);
-        } catch (ClassNotFoundException e) {
-            throw new EKBException(generateErrorMessage(model), e);
+    private OpenEngSBModel performMerge(OpenEngSBModel source, OpenEngSBModel target) {
+        if (source == null || target == null) {
+            return null;
         }
-    }
-
-    /**
-     * Generates the model description of a field which is annotated with the OpenEngSBForeignKey annotation.
-     */
-    private ModelDescription getModelDescriptionFromField(Field field) {
-        OpenEngSBForeignKey key = field.getAnnotation(OpenEngSBForeignKey.class);
-        ModelDescription description = new ModelDescription(key.modelType(), key.modelVersion());
-        return description;
+        ModelDescription sourceDesc = ModelUtils.getModelDescription(source);
+        ModelDescription targetDesc = ModelUtils.getModelDescription(target);
+        return (OpenEngSBModel) transformationEngine.performTransformation(sourceDesc, targetDesc, source, target);
     }
 
     /**
      * Merges the given EngineeringObject with the referenced model which is defined in the given field.
      */
     private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
-        OpenEngSBModel result = performMerge(field, model, true);
+        EOModel eo = createEOModelInstance(model);
+        OpenEngSBModel result = performMerge(eo.loadReferencedModel(field), model);
         if (result != null) {
             model = result;
         }
     }
-
+    
     /**
-     * Returns the list of fields of the given class which are annotated with the annotation OpenEngSBForeignKey
+     * Creates an EOModel instance out of the given model and all class variables needed for the EOModel
      */
-    private List<Field> getForeignKeyFields(Class<?> modelClass) {
-        List<Field> fields = new ArrayList<Field>();
-        for (Field field : modelClass.getDeclaredFields()) {
-            try {
-                if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
-                    fields.add(field);
-                }
-            } catch (SecurityException e) {
-                throw new EKBException(generateErrorMessage(modelClass), e);
-            }
-        }
-        return fields;
-    }
-
-    /**
-     * Generates an error message for the construction of EKBExceptions occurring during the enhancement
-     */
-    private String generateErrorMessage(Object model) {
-        return generateErrorMessage(model.getClass());
-    }
-
-    /**
-     * Generates an error message for the construction of EKBExceptions occurring during the enhancement
-     */
-    private String generateErrorMessage(Class<?> model) {
-        return String.format("Unable to enhance the commit of the model %s with EngineeringObject information",
-            model.getName());
+    private EOModel createEOModelInstance(OpenEngSBModel model) {
+        return new EOModel(model, modelRegistry, edbService, edbConverter);
     }
 
     /**
