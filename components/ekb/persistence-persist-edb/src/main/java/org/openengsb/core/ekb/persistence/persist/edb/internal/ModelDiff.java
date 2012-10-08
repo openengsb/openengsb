@@ -25,6 +25,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +49,19 @@ public final class ModelDiff {
      */
     public static ModelDiff createModelDiff(OpenEngSBModel before, OpenEngSBModel after) {
         ModelDiff diff = new ModelDiff(before, after);
+        calculateDifferences(diff);
+        return diff;
+    }
+
+    /**
+     * Creates an instance of the ModelDiff class based on the given model. It loads the old status of the model and
+     * calculates the differences of this two models.
+     */
+    public static ModelDiff createModelDiff(OpenEngSBModel updated, String completeModelId,
+            EngineeringDatabaseService edbService, EDBConverter edbConverter) {
+        EDBObject queryResult = edbService.getObject(completeModelId);
+        OpenEngSBModel old = edbConverter.convertEDBObjectToModel(updated.getClass(), queryResult);
+        ModelDiff diff = new ModelDiff(old, updated);
         calculateDifferences(diff);
         return diff;
     }

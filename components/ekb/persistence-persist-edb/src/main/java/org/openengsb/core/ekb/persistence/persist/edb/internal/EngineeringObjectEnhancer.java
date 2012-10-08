@@ -109,9 +109,8 @@ public class EngineeringObjectEnhancer {
      * additionally.
      */
     private List<OpenEngSBModel> performEOModelUpdate(OpenEngSBModel model, EKBCommit commit) {
-        EDBObject queryResult = edbService.getObject(getCompleteModelOID(model, commit));
-        OpenEngSBModel old = edbConverter.convertEDBObjectToModel(model.getClass(), queryResult);
-        ModelDiff diff = ModelDiff.createModelDiff(old, model);
+        ModelDiff diff = ModelDiff.createModelDiff(model, getCompleteModelOID(model, commit),
+            edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
         if (referencesChanged && valuesChanged) {
