@@ -27,7 +27,6 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
-import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -160,7 +159,8 @@ public class EngineeringObjectEnhancer {
         params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(model, commit));
         List<EDBObject> references = edbService.query(params, System.currentTimeMillis());
         for (EDBObject reference : references) {
-            OpenEngSBModel ref = updateEOByUpdatedModel(reference, model, updated);
+            EDBModelObject modelReference = new EDBModelObject(reference, modelRegistry, edbConverter);
+            OpenEngSBModel ref = updateEOByUpdatedModel(modelReference, model, updated);
             if (!updated.containsKey(getCompleteModelOID(ref, commit))) {
                 updates.add(ref);
             }
@@ -173,38 +173,16 @@ public class EngineeringObjectEnhancer {
      * Updates an Engineering Object given as EDBObject based on the update on the given model which is referenced by
      * the given Engineering Object.
      */
-    private OpenEngSBModel updateEOByUpdatedModel(EDBObject reference, OpenEngSBModel model,
+    private OpenEngSBModel updateEOByUpdatedModel(EDBModelObject reference, OpenEngSBModel model,
             Map<Object, OpenEngSBModel> updated) {
         ModelDescription source = ModelUtils.getModelDescription(model);
-        ModelDescription description = getModelDescriptionFromEDBObject(reference);
+        ModelDescription description = reference.getModelDescription();
         Object ref = updated.get(reference.getOID());
         if (ref == null) {
-            ref = convertEDBObjectToModel(reference);
+            ref = reference.getCorrespondingModel();
         }
         ref = transformationEngine.performTransformation(source, description, model, ref);
         return (OpenEngSBModel) ref;
-    }
-
-    /**
-     * Converts an EDBObject into a model instance.
-     */
-    private OpenEngSBModel convertEDBObjectToModel(EDBObject object) throws EKBException {
-        ModelDescription description = getModelDescriptionFromEDBObject(object);
-        try {
-            Class<?> modelClass = modelRegistry.loadModel(description);
-            return (OpenEngSBModel) edbConverter.convertEDBObjectToModel(modelClass, object);
-        } catch (ClassNotFoundException e) {
-            throw new EKBException(String.format("Unable to load model of type %s", description), e);
-        }
-    }
-
-    /**
-     * Generates the model description of an EDBObject based on its values for the model type and model type version
-     */
-    private ModelDescription getModelDescriptionFromEDBObject(EDBObject object) {
-        String modelType = object.getString(EDBConstants.MODEL_TYPE);
-        String version = object.getString(EDBConstants.MODEL_TYPE_VERSION);
-        return new ModelDescription(modelType, version);
     }
 
     /**
