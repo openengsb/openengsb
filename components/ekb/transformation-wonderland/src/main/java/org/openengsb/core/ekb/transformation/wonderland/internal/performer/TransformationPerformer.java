@@ -86,58 +86,39 @@ public class TransformationPerformer {
      */
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
-            switch (step.getOperation()) {
-                case FORWARD:
-                    performForwardStep(step);
-                    break;
-                case CONCAT:
-                    performConcatStep(step);
-                    break;
-                case SPLIT:
-                    performSplitStep(step);
-                    break;
-                case SPLITREGEX:
-                    performSplitRegexStep(step);
-                    break;
-                case MAP:
-                    performMapStep(step);
-                    break;
-                case SUBSTRING:
-                    performSubStringStep(step);
-                    break;
-                case VALUE:
-                    performValueStep(step);
-                    break;
-                case LENGTH:
-                    performLengthStep(step);
-                    break;
-                case TRIM:
-                    performTrimStep(step);
-                    break;
-                case TOLOWER:
-                    performToLowerStep(step);
-                    break;
-                case TOUPPER:
-                    performToUpperStep(step);
-                    break;
-                case REPLACE:
-                    performReplaceStep(step);
-                    break;
-                case REVERSE:
-                    performReverseStep(step);
-                    break;
-                case PAD:
-                    performPadStep(step);
-                    break;
-                case REMOVELEADING:
-                    performRemoveLeadingStep(step);
-                    break;
-                case INSTANTIATE:
-                    performInstantiationStep(step);
-                    break;
-                case NONE:
-                default:
-                    LOGGER.error("Unsupported operation: " + step.getOperation());
+            String operation = step.getOperationName();
+            if (operation.equals("forward")) {
+                performForwardStep(step);
+            } else if (operation.equals("concat")) {
+                performConcatStep(step);
+            } else if (operation.equals("split")) {
+                performSplitStep(step);
+            } else if (operation.equals("splitRegex")) {
+                performSplitRegexStep(step);
+            } else if (operation.equals("map")) {
+                performMapStep(step);
+            } else if (operation.equals("substring")) {
+                performSubStringStep(step);
+            } else if (operation.equals("value")) {
+                performValueStep(step);
+            } else if (operation.equals("length")) {
+                performLengthStep(step);
+            } else if (operation.equals("trim")) {
+                performTrimStep(step);
+            } else if (operation.equals("toLower")) {
+                performToLowerStep(step);
+            } else if (operation.equals("toUpper")) {
+                performToUpperStep(step);
+            } else if (operation.equals("replace")) {
+                performReplaceStep(step);
+            } else if (operation.equals("reverse")) {
+                performReverseStep(step);
+            } else if (operation.equals("pad")) {
+                performPadStep(step);
+            } else if (operation.equals("removeleading")) {
+                performRemoveLeadingStep(step);
+            } else if (operation.equals("instantiate")) {
+                performInstantiationStep(step);
             }
         } catch (TransformationStepException e) {
             LOGGER.debug(e.getMessage(), e);
