@@ -20,7 +20,9 @@ package org.openengsb.core.ekb.transformation.wonderland.internal.performer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -28,6 +30,8 @@ import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperation;
+import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.api.transformation.TransformationStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +49,12 @@ public class TransformationPerformer {
     private Object source;
     private Object target;
     private ModelRegistry modelRegistry;
+    private TransformationOperationLoader operationLoader;
 
-    public TransformationPerformer(ModelRegistry modelRegistry) {
+    public TransformationPerformer(ModelRegistry modelRegistry, TransformationOperationLoader operationLoader) {
         temporaryFields = new HashMap<String, Object>();
         this.modelRegistry = modelRegistry;
+        this.operationLoader = operationLoader;
     }
 
     /**
@@ -131,27 +137,20 @@ public class TransformationPerformer {
      * Logic for a forward transformation step
      */
     private void performForwardStep(TransformationStep step) throws Exception {
-        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
-        setObjectToTargetField(step.getTargetField(), value);
+        performStep(step);
     }
 
     /**
      * Logic for a concat transformation step
      */
     private void performConcatStep(TransformationStep step) throws Exception {
-        StringBuilder builder = new StringBuilder();
-        String concatString = step.getOperationParamater(TransformationConstants.concatParam);
-        for (String field : step.getSourceFields()) {
-            if (builder.length() != 0) {
-                builder.append(concatString);
-            }
-            try {
-                builder.append(getObjectFromSourceField(field));
-            } catch (TransformationStepException e) {
-                // ignore
-            }
-        }
-        setObjectToTargetField(step.getTargetField(), builder.toString());
+        performStep(step);
+    }
+    
+    private void performStep(TransformationStep step) throws Exception {
+        TransformationOperation operation = operationLoader.loadTransformationOperationByName(step.getOperationName());
+        Object value = operation.performOperation(getSourceFieldValues(step), step.getOperationParams());
+        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
@@ -395,6 +394,17 @@ public class TransformationPerformer {
             throw new TransformationStepException(message, e);
         }
         setObjectToTargetField(step.getTargetField(), targetObject);
+    }
+    
+    /**
+     * Returns a list of actual field values from the sources of the given transformation step
+     */
+    private List<Object> getSourceFieldValues(TransformationStep step) throws Exception {
+        List<Object> sources = new ArrayList<Object>();
+        for (String sourceField : step.getSourceFields()) {
+            sources.add(getObjectFromSourceField(sourceField));
+        }
+        return sources;
     }
 
     /**
