@@ -24,6 +24,8 @@ import java.util.List;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple and generic {@link CompositeConnectorStrategy} that invokes all services that are passed to it sequentially.
@@ -31,6 +33,8 @@ import org.osgi.framework.ServiceReference;
  * are invoked.
  */
 public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(InvokeAllIgnoreResultStrategy.class);
 
     private BundleContext bundleContext;
 
@@ -41,7 +45,8 @@ public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy
             try {
                 method.invoke(service, args);
             } catch (InvocationTargetException e) {
-                throw e.getCause();
+                LOGGER.warn("connector in composition threw an Exception in methodcall %s", method.toString());
+                LOGGER.debug("ExceptionDetails: ", e);
             }
         }
         return null;
