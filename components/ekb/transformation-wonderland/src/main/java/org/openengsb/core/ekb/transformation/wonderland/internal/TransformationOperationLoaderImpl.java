@@ -46,7 +46,7 @@ public class TransformationOperationLoaderImpl implements TransformationOperatio
     public TransformationOperation loadTransformationOperationByName(String operationName)
         throws TransformationOperationException {
         return (TransformationOperation) service.getService(FilterUtils.makeFilter(TransformationOperation.class,
-            String.format("transformation.operation=%s", operationName)));
+            String.format("(transformation.operation=%s)", operationName)));
     }
 
 }
