@@ -32,7 +32,7 @@ public class TransformationStep {
     private String operationName;
     private Map<String, String> operationParams;
     private String[] sourceFields;
-    
+
     public TransformationStep() {
         operationParams = new HashMap<String, String>();
         sourceFields = new String[0];
@@ -80,10 +80,12 @@ public class TransformationStep {
 
     @Override
     public String toString() {
-        String sources = sourceFields != null ? Joiner.on(",").join(sourceFields).toString() : "";
+        String sources = sourceFields != null ? Joiner.on(",").join(sourceFields) : "";
+        String params = operationParams != null ? Joiner.on(",").withKeyValueSeparator(":").join(operationParams) : "";
         return Objects.toStringHelper(this.getClass())
                 .add("operation", operationName)
                 .add("sources", sources)
-                .add("target", targetField).toString();
+                .add("target", targetField)
+                .add("parameters", params).toString();
     }
 }
