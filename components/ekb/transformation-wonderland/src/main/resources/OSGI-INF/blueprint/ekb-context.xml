@@ -153,4 +153,21 @@
     </bean>
   </service>
   
+  <service id="replaceOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="replace" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReplaceOperation" >
+      <property name="operationName" value="replace" />  
+    </bean>
+  </service>
+  
+  <service id="reverseOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="reverse" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReverseOperation" >
+      <property name="operationName" value="reverse" />  
+    </bean>
+  </service>
 </blueprint>

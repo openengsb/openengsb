@@ -27,6 +27,8 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.Conca
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReplaceOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReverseOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SubStringOperation;
@@ -52,6 +54,8 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations.add(new SubStringOperation());
         operations.add(new ValueOperation());
         operations.add(new LengthOperation());
+        operations.add(new ReplaceOperation());
+        operations.add(new ReverseOperation());
     }
     
     @Override

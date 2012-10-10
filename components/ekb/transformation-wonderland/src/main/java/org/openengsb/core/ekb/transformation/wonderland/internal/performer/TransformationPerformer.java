@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
@@ -93,13 +92,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("replace")) {
-                performReplaceStep(step);
-                return;
-            } else if (function.equals("reverse")) {
-                performReverseStep(step);
-                return;
-            } else if (function.equals("pad")) {
+            if (function.equals("pad")) {
                 performPadStep(step);
                 return;
             } else if (function.equals("removeleading")) {
@@ -117,30 +110,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-
-    /**
-     * Logic for the replace step
-     */
-    private void performReplaceStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String oldString = step.getOperationParamater(TransformationConstants.replaceOld);
-        String newString = step.getOperationParamater(TransformationConstants.replaceNew);
-        if (oldString == null || newString == null) {
-            String message = "The replace step from %s to %s isn't complete defined. The step will be skipped.";
-            LOGGER.warn(String.format(message, step.getSourceFields()[0], step.getTargetField()));
-        }
-        value = StringUtils.replace(value, oldString, newString);
-        setObjectToTargetField(step.getTargetField(), value);
-    }
-
-    /**
-     * Logic for the reverse step
-     */
-    private void performReverseStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        value = StringUtils.reverse(value);
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
