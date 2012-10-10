@@ -36,6 +36,23 @@
     <property name="operationLoader" ref="operationLoader" />
   </bean>
   
+  <service interface="org.openengsb.core.ekb.api.TransformationEngine">
+    <service-properties>
+      <entry key="location.root" value="ekbTransformationService" />
+    </service-properties>
+    <ref component-id="transformationEngineService"/>
+  </service>
+  
+  <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.deployer.TransformationDeployerService">
+      <property name="engine" ref="transformationEngineService" />
+    </bean>
+  </service>
+  
+  <!-- References to other bundles -->
+  <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
+  <reference id="graphDb" interface="org.openengsb.core.ekb.api.ModelGraph" />
+  
   <!-- Transformation Operations -->
   <service id="forwardOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
@@ -118,21 +135,13 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.ekb.api.TransformationEngine">
+  <service id="valueOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
-      <entry key="location.root" value="ekbTransformationService" />
+      <entry key="transformation.operation" value="value" />
     </service-properties>
-    <ref component-id="transformationEngineService"/>
-  </service>
-  
-  <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
-    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.deployer.TransformationDeployerService">
-      <property name="engine" ref="transformationEngineService" />
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ValueOperation" >
+      <property name="operationName" value="value" />  
     </bean>
   </service>
-  
-  <!-- References to other bundles -->
-  <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
-  <reference id="graphDb" interface="org.openengsb.core.ekb.api.ModelGraph" />
   
 </blueprint>

@@ -93,10 +93,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("value")) {
-                performValueStep(step);
-                return;
-            } else if (function.equals("length")) {
+            if (function.equals("length")) {
                 performLengthStep(step);
                 return;
             } else if (function.equals("replace")) {
@@ -123,18 +120,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-
-    /**
-     * Logic for the value step
-     */
-    private void performValueStep(TransformationStep step) throws Exception {
-        Object value = step.getOperationParamater(TransformationConstants.value);
-        if (value == null) {
-            LOGGER.warn("There was no value set for the value step. This step will be skipped.");
-            return;
-        }
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**

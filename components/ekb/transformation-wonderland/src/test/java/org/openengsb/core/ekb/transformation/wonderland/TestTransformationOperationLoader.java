@@ -32,6 +32,7 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SubSt
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToLowerOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToUpperOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.TrimOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ValueOperation;
 
 public class TestTransformationOperationLoader implements TransformationOperationLoader {
 
@@ -48,6 +49,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations.add(new ToLowerOperation());
         operations.add(new ToUpperOperation());
         operations.add(new SubStringOperation());
+        operations.add(new ValueOperation());
     }
     
     @Override
