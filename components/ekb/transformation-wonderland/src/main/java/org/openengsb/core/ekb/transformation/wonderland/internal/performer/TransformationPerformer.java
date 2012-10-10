@@ -85,7 +85,8 @@ public class TransformationPerformer {
      */
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
-            TransformationOperation operation = operationLoader.loadTransformationOperationByName(step.getOperationName());
+            TransformationOperation operation =
+                operationLoader.loadTransformationOperationByName(step.getOperationName());
             Object value = operation.performOperation(getSourceFieldValues(step), step.getOperationParams());
             setObjectToTargetField(step.getTargetField(), value);
         } catch (TransformationStepException e) {
@@ -94,7 +95,7 @@ public class TransformationPerformer {
             LOGGER.error("Unable to perform transformation step {}.", step, e);
         }
     }
-    
+
     /**
      * Returns a list of actual field values from the sources of the given transformation step
      */

@@ -29,14 +29,14 @@ import org.slf4j.Logger;
  * OpenEngSB project.
  */
 public final class OperationUtils {
-    
+
     private OperationUtils() {
     }
 
     /**
      * Generates a matcher for the given valueString with the given regular expression.
      */
-    public static Matcher generateMatcher(String regex, String valueString, Logger LOGGER)
+    public static Matcher generateMatcher(String regex, String valueString, Logger logger)
         throws TransformationOperationException {
         if (regex == null) {
             throw new TransformationOperationException("No regex defined. The step will be skipped.");
@@ -47,7 +47,7 @@ public final class OperationUtils {
         } catch (PatternSyntaxException e) {
             String message =
                 String.format("Given regex string %s can't be compiled. The step will be skipped.", regex);
-            LOGGER.warn(message);
+            logger.warn(message);
             throw new TransformationOperationException(message);
         }
     }
@@ -56,11 +56,11 @@ public final class OperationUtils {
      * Parses a string to an integer object. AbortOnError defines if the function should throw an exception if an error
      * occurs during the parsing. If it doesn't abort, the given default value is given back as result on error.
      */
-    public static Integer parseIntString(String string, boolean abortOnError, int def, Logger LOGGER)
+    public static Integer parseIntString(String string, boolean abortOnError, int def, Logger logger)
         throws TransformationOperationException {
         Integer integer = def;
         if (string == null) {
-            LOGGER.debug("Given string is empty so the default value is taken.");
+            logger.debug("Given string is empty so the default value is taken.");
         }
         try {
             integer = Integer.parseInt(string);
@@ -73,7 +73,7 @@ public final class OperationUtils {
                 builder.append(def).append(" will be taken instead.");
             }
 
-            LOGGER.warn(builder.toString());
+            logger.warn(builder.toString());
             if (abortOnError) {
                 throw new TransformationOperationException(builder.toString());
             }

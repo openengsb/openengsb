@@ -48,9 +48,11 @@ public class ForwardOperation implements TransformationOperation {
     }
 
     @Override
-    public Object performOperation(List<Object> input, Map<String, String> parameters) throws TransformationOperationException {
+    public Object performOperation(List<Object> input, Map<String, String> parameters)
+        throws TransformationOperationException {
         if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException("The input values are not matching with the operation input count.");
+            throw new TransformationOperationException(
+                "The input values are not matching with the operation input count.");
         }
         return input.get(0);
     }

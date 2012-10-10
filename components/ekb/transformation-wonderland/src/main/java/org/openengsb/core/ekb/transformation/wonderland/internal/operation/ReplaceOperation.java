@@ -65,7 +65,8 @@ public class ReplaceOperation implements TransformationOperation {
         String oldString = parameters.get(oldStringParam);
         String newString = parameters.get(newStringParam);
         if (oldString == null || newString == null) {
-            throw new TransformationOperationException("The old string and/or the new string parameter is not defined.");
+            throw new TransformationOperationException(
+                "The old string and/or the new string parameter is not defined.");
         }
         return StringUtils.replace(input.get(0).toString(), oldString, newString);
     }
