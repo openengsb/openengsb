@@ -18,7 +18,9 @@
 package org.openengsb.core.ekb.transformation.wonderland;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
@@ -27,6 +29,7 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.Conca
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.RemoveLeadingOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReplaceOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReverseOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
@@ -39,39 +42,39 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.Value
 
 public class TestTransformationOperationLoader implements TransformationOperationLoader {
 
-    private List<TransformationOperation> operations;
+    private Map<String, TransformationOperation> operations;
     
     public TestTransformationOperationLoader() {
-        operations = new ArrayList<TransformationOperation>();
-        operations.add(new ForwardOperation());
-        operations.add(new ConcatOperation());
-        operations.add(new SplitOperation());
-        operations.add(new SplitRegexOperation());
-        operations.add(new MapOperation());
-        operations.add(new TrimOperation());
-        operations.add(new ToLowerOperation());
-        operations.add(new ToUpperOperation());
-        operations.add(new SubStringOperation());
-        operations.add(new ValueOperation());
-        operations.add(new LengthOperation());
-        operations.add(new ReplaceOperation());
-        operations.add(new ReverseOperation());
+        operations = new HashMap<String, TransformationOperation>();
+        addOperation(new ForwardOperation());
+        addOperation(new ConcatOperation());
+        addOperation(new SplitOperation());
+        addOperation(new SplitRegexOperation());
+        addOperation(new MapOperation());
+        addOperation(new TrimOperation());
+        addOperation(new ToLowerOperation());
+        addOperation(new ToUpperOperation());
+        addOperation(new SubStringOperation());
+        addOperation(new ValueOperation());
+        addOperation(new LengthOperation());
+        addOperation(new ReplaceOperation());
+        addOperation(new ReverseOperation());
+        addOperation(new RemoveLeadingOperation());
+    }
+    
+    private void addOperation(TransformationOperation operation) {
+        operations.put(operation.getOperationName(), operation);
     }
     
     @Override
     public List<TransformationOperation> loadActiveTransformationOperations() {
-        return operations;
+        return new ArrayList<TransformationOperation>(operations.values());
     }
 
     @Override
     public TransformationOperation loadTransformationOperationByName(String operationName)
         throws TransformationOperationException {
-        for (TransformationOperation operation : operations) {
-            if (operation.getOperationName().equals(operationName)) {
-                return operation;
-            }
-        }
-        return null;
+        return operations.get(operationName);
     }
 
 }

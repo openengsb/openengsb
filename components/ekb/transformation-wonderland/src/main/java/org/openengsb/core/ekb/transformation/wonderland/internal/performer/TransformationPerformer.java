@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
@@ -95,9 +94,6 @@ public class TransformationPerformer {
             if (function.equals("pad")) {
                 performPadStep(step);
                 return;
-            } else if (function.equals("removeleading")) {
-                performRemoveLeadingStep(step);
-                return;
             } else if (function.equals("instantiate")) {
                 performInstantiationStep(step);
                 return;
@@ -108,7 +104,7 @@ public class TransformationPerformer {
         } catch (TransformationStepException e) {
             LOGGER.debug(e.getMessage(), e);
         } catch (Exception e) {
-            LOGGER.error("Unable to perform transformation step." + step, e);
+            LOGGER.error("Unable to perform transformation step {}.", step, e);
         }
     }
 
@@ -139,25 +135,6 @@ public class TransformationPerformer {
             value = Strings.padStart(value, length, character);
         } else {
             value = Strings.padEnd(value, length, character);
-        }
-        setObjectToTargetField(step.getTargetField(), value);
-    }
-
-    /**
-     * Logic for the remove leading step
-     */
-    private void performRemoveLeadingStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String regex = step.getOperationParamater(TransformationConstants.regexParam);
-        String lengthString = step.getOperationParamater(TransformationConstants.removeLeadingLength);
-        Integer length = TransformationPerformUtils.parseIntString(lengthString, false, 0);
-        Matcher matcher = TransformationPerformUtils.generateMatcher(regex, value);
-        if (length != null && length != 0) {
-            matcher.region(0, length);
-        }
-        if (matcher.find()) {
-            String matched = matcher.group();
-            value = value.substring(matched.length());
         }
         setObjectToTargetField(step.getTargetField(), value);
     }

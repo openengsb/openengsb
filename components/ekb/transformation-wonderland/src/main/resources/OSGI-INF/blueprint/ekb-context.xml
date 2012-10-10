@@ -170,4 +170,13 @@
       <property name="operationName" value="reverse" />  
     </bean>
   </service>
+  
+  <service id="removeLeadingOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="removeleading" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.RemoveLeadingOperation" >
+      <property name="operationName" value="removeleading" />  
+    </bean>
+  </service>
 </blueprint>

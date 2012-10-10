@@ -28,21 +28,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The split operation splits the given value of the source field based on the given regular expression split string
- * parameter and returns the value for the given index.
+ * The remove leading operation is a string operation. It takes the string from the source field and removes all
+ * elements at the start which match a regular expression until a maximum length.
  */
-public class SplitRegexOperation implements TransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SplitRegexOperation.class);
-    private String operationName = "splitRegex";
+public class RemoveLeadingOperation implements TransformationOperation {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoveLeadingOperation.class);
+    private String operationName = "removeleading";
     private String regexStringParam = "regexString";
-    private String resultIndexParam = "resultIndex";
+    private String lengthParam = "length";
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation splits the given value of the source field ");
-        builder.append("based on the regular expression split string parameter and returns the value for the given ");
-        builder.append("index.");
+        builder.append("The ").append(operationName).append(" is a string operation. It takes the string ");
+        builder.append("from the source field and removes all elements at the start which match a regular ");
+        builder.append("expression until a maximum length.");
         return builder.toString();
     }
 
@@ -55,8 +55,8 @@ public class SplitRegexOperation implements TransformationOperation {
     public Map<String, String> getOperationParameterDescriptions() {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(regexStringParam,
-            "The regular expression split string parameter is used for the split operation.");
-        parameters.put(resultIndexParam, "The result index defines which result of the split operation is returned.");
+            "The regular expression which is used to recognise which elements should be removed.");
+        parameters.put(lengthParam, "The length parameter defines how long the removal will be done at maximum.");
         return parameters;
     }
 
@@ -67,27 +67,19 @@ public class SplitRegexOperation implements TransformationOperation {
             throw new TransformationOperationException(
                 "The input values are not matching with the operation input count.");
         }
-        Object value = null;
-        String splitString = parameters.containsKey(regexStringParam) ? parameters.get(regexStringParam) : "";
-        String indexString = parameters.get(resultIndexParam);
-        try {
-            Integer index = OperationUtils.parseIntString(indexString, false, 0, LOGGER);
-            Matcher matcher = OperationUtils.generateMatcher(splitString, input.get(0).toString(), LOGGER);
-            for (int i = 0; i <= index; i++) {
-                matcher.find();
-            }
-            value = matcher.group();
-            if (value == null) {
-                LOGGER.warn("No result for given regex and index. The empty string will be taken instead.");
-                value = "";
-            }
-            return value;
-        } catch (NumberFormatException e) {
-            throw new TransformationOperationException("The given result index parameter is not a number");
-        } catch (IndexOutOfBoundsException e) {
-            throw new TransformationOperationException(
-                "The split result does not have that much results for the index parameter");
+        String value = input.get(0).toString();
+        String regex = parameters.get(regexStringParam);
+        String lengthString = parameters.get(lengthParam);
+        Integer length = OperationUtils.parseIntString(lengthString, false, 0, LOGGER);
+        Matcher matcher = OperationUtils.generateMatcher(regex, value, LOGGER);
+        if (length != null && length != 0) {
+            matcher.region(0, length);
         }
+        if (matcher.find()) {
+            String matched = matcher.group();
+            value = value.substring(matched.length());
+        }
+        return value;
     }
 
     @Override
