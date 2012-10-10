@@ -48,4 +48,10 @@ public interface TransformationOperation {
      * higher.
      */
     public Integer getOperationInputCount();
+    
+    /**
+     * Returns the name of the operation
+     * @return
+     */
+    public String getOperationName();
 }
