@@ -27,6 +27,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ConcatOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.InstantiateOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.PadOperation;
@@ -62,6 +63,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         addOperation(new ReverseOperation());
         addOperation(new RemoveLeadingOperation());
         addOperation(new PadOperation());
+        addOperation(new InstantiateOperation());
     }
     
     private void addOperation(TransformationOperation operation) {

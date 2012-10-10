@@ -188,4 +188,13 @@
       <property name="operationName" value="pad" />  
     </bean>
   </service>
+  
+  <service id="instantiateOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="instantiate" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.InstantiateOperation" >
+      <property name="operationName" value="instantiate" />  
+    </bean>
+  </service>
 </blueprint>
