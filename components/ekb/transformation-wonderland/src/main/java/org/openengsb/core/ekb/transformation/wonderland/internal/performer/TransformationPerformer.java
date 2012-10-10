@@ -92,59 +92,52 @@ public class TransformationPerformer {
      */
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
-            String operation = step.getOperationName();
-            if (operation.equals("splitRegex")) {
-                performSplitRegexStep(step);
-                return;
-            } else if (operation.equals("map")) {
+            String function = step.getOperationName();
+            if (function.equals("map")) {
                 performMapStep(step);
                 return;
-            } else if (operation.equals("substring")) {
+            } else if (function.equals("substring")) {
                 performSubStringStep(step);
                 return;
-            } else if (operation.equals("value")) {
+            } else if (function.equals("value")) {
                 performValueStep(step);
                 return;
-            } else if (operation.equals("length")) {
+            } else if (function.equals("length")) {
                 performLengthStep(step);
                 return;
-            } else if (operation.equals("trim")) {
+            } else if (function.equals("trim")) {
                 performTrimStep(step);
                 return;
-            } else if (operation.equals("toLower")) {
+            } else if (function.equals("toLower")) {
                 performToLowerStep(step);
                 return;
-            } else if (operation.equals("toUpper")) {
+            } else if (function.equals("toUpper")) {
                 performToUpperStep(step);
                 return;
-            } else if (operation.equals("replace")) {
+            } else if (function.equals("replace")) {
                 performReplaceStep(step);
                 return;
-            } else if (operation.equals("reverse")) {
+            } else if (function.equals("reverse")) {
                 performReverseStep(step);
                 return;
-            } else if (operation.equals("pad")) {
+            } else if (function.equals("pad")) {
                 performPadStep(step);
                 return;
-            } else if (operation.equals("removeleading")) {
+            } else if (function.equals("removeleading")) {
                 performRemoveLeadingStep(step);
                 return;
-            } else if (operation.equals("instantiate")) {
+            } else if (function.equals("instantiate")) {
                 performInstantiationStep(step);
                 return;
             }
-            performStep(step);
+            TransformationOperation operation = operationLoader.loadTransformationOperationByName(step.getOperationName());
+            Object value = operation.performOperation(getSourceFieldValues(step), step.getOperationParams());
+            setObjectToTargetField(step.getTargetField(), value);
         } catch (TransformationStepException e) {
             LOGGER.debug(e.getMessage(), e);
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-    
-    private void performStep(TransformationStep step) throws Exception {
-        TransformationOperation operation = operationLoader.loadTransformationOperationByName(step.getOperationName());
-        Object value = operation.performOperation(getSourceFieldValues(step), step.getOperationParams());
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**

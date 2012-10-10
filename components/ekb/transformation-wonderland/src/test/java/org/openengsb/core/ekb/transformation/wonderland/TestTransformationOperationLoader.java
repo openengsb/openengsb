@@ -26,6 +26,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ConcatOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation;
 
 public class TestTransformationOperationLoader implements TransformationOperationLoader {
 
@@ -36,6 +37,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations.add(new ForwardOperation());
         operations.add(new ConcatOperation());
         operations.add(new SplitOperation());
+        operations.add(new SplitRegexOperation());
     }
     
     @Override

@@ -64,6 +64,15 @@
     </bean>
   </service>
   
+  <service id="splitRegexOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="splitRegex" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation" >
+      <property name="operationName" value="splitRegex" />  
+    </bean>
+  </service>
+  
   <service interface="org.openengsb.core.ekb.api.TransformationEngine">
     <service-properties>
       <entry key="location.root" value="ekbTransformationService" />
