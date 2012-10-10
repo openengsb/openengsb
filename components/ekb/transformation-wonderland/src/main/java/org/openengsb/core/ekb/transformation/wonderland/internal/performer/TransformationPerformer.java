@@ -93,10 +93,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("length")) {
-                performLengthStep(step);
-                return;
-            } else if (function.equals("replace")) {
+            if (function.equals("replace")) {
                 performReplaceStep(step);
                 return;
             } else if (function.equals("reverse")) {
@@ -120,26 +117,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-
-    /**
-     * Logic for the length step
-     */
-    private void performLengthStep(TransformationStep step) throws Exception {
-        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
-        String length = "0";
-        String function = step.getOperationParamater(TransformationConstants.lengthFunction);
-        try {
-            function = function != null ? function : "length";
-            Method method = value.getClass().getMethod(function);
-            length = method.invoke(value).toString();
-        } catch (NoSuchMethodException e) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("The type of the given field for the length step doesn't support ");
-            builder.append(function).append(" method. So 0 will be used as standard value.");
-            LOGGER.warn(builder.toString());
-        }
-        setObjectToTargetField(step.getTargetField(), length);
     }
 
     /**

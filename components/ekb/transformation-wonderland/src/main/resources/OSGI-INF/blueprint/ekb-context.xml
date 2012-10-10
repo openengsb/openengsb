@@ -143,5 +143,14 @@
       <property name="operationName" value="value" />  
     </bean>
   </service>
+
+  <service id="lengthOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="length" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation" >
+      <property name="operationName" value="length" />  
+    </bean>
+  </service>
   
 </blueprint>

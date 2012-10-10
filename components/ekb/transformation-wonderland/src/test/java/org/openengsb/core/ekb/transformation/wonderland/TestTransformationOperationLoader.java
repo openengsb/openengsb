@@ -25,6 +25,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ConcatOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation;
@@ -50,6 +51,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations.add(new ToUpperOperation());
         operations.add(new SubStringOperation());
         operations.add(new ValueOperation());
+        operations.add(new LengthOperation());
     }
     
     @Override
