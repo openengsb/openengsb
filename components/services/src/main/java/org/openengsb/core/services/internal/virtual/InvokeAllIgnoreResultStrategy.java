@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(InvokeAllIgnoreResultStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvokeAllIgnoreResultStrategy.class);
 
     private BundleContext bundleContext;
 
