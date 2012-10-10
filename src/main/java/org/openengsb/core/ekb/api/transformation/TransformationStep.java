@@ -20,6 +20,9 @@ package org.openengsb.core.ekb.api.transformation;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+
 /**
  * Describes a transforming step in the transformation progress. Contains all informations to perform a transformation
  * operation on source fields and target fields.
@@ -32,6 +35,7 @@ public class TransformationStep {
     
     public TransformationStep() {
         operationParams = new HashMap<String, String>();
+        sourceFields = new String[0];
     }
 
     public String getTargetField() {
@@ -76,20 +80,10 @@ public class TransformationStep {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{ ").append(operationName);
-        builder.append(" sources: {");
-        boolean firstSource = true;
-        for (String source : sourceFields) {
-            if (!firstSource) {
-                builder.append(", ");
-            }
-            builder.append(source);
-            firstSource = false;
-        }
-        builder.append("} ");
-        builder.append(" target: {");
-        builder.append(targetField).append("}}");
-        return builder.toString();
+        String sources = sourceFields != null ? Joiner.on(",").join(sourceFields).toString() : "";
+        return Objects.toStringHelper(this.getClass())
+                .add("operation", operationName)
+                .add("sources", sources)
+                .add("target", targetField).toString();
     }
 }
