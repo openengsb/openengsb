@@ -102,15 +102,6 @@ public class TransformationPerformer {
             } else if (function.equals("length")) {
                 performLengthStep(step);
                 return;
-            } else if (function.equals("trim")) {
-                performTrimStep(step);
-                return;
-            } else if (function.equals("toLower")) {
-                performToLowerStep(step);
-                return;
-            } else if (function.equals("toUpper")) {
-                performToUpperStep(step);
-                return;
             } else if (function.equals("replace")) {
                 performReplaceStep(step);
                 return;
@@ -187,33 +178,6 @@ public class TransformationPerformer {
             LOGGER.warn(builder.toString());
         }
         setObjectToTargetField(step.getTargetField(), length);
-    }
-
-    /**
-     * Logic for the trim step
-     */
-    private void performTrimStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        value = value.trim();
-        setObjectToTargetField(step.getTargetField(), value);
-    }
-
-    /**
-     * Logic for the toUpper step
-     */
-    private void performToUpperStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        value = value.toUpperCase();
-        setObjectToTargetField(step.getTargetField(), value);
-    }
-
-    /**
-     * Logic for the toLower step
-     */
-    private void performToLowerStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        value = value.toLowerCase();
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**

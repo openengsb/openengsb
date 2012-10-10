@@ -81,7 +81,34 @@
       <property name="operationName" value="map" />  
     </bean>
   </service>
+
+  <service id="trimOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="trim" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.TrimOperation" >
+      <property name="operationName" value="trim" />  
+    </bean>
+  </service>
   
+  <service id="toLowerOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="toLower" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToLowerOperation" >
+      <property name="operationName" value="toLower" />  
+    </bean>
+  </service>
+
+  <service id="toUpperOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="toUpper" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToUpperOperation" >
+      <property name="operationName" value="toUpper" />  
+    </bean>
+  </service>
+
   <service interface="org.openengsb.core.ekb.api.TransformationEngine">
     <service-properties>
       <entry key="location.root" value="ekbTransformationService" />

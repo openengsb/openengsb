@@ -28,6 +28,9 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.Forwa
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToLowerOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToUpperOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.TrimOperation;
 
 public class TestTransformationOperationLoader implements TransformationOperationLoader {
 
@@ -40,6 +43,9 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations.add(new SplitOperation());
         operations.add(new SplitRegexOperation());
         operations.add(new MapOperation());
+        operations.add(new TrimOperation());
+        operations.add(new ToLowerOperation());
+        operations.add(new ToUpperOperation());
     }
     
     @Override
