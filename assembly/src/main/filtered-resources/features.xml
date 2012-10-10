@@ -118,6 +118,7 @@
     <bundle start-level='20'>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.wrapped/com.google.protobuf/${protobuf.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.wrapped/cdi-api/${cdi-api.wrapped.version}</bundle>
+    <bundle start-level='20'>mvn:joda-time/joda-time/${joda.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/${javax.inject.version}</bundle>
 
     <!-- OpenEngSB Commons Dependencies -->
@@ -239,7 +240,6 @@
     <bundle>mvn:org.apache.abdera/abdera-i18n/${abdera.version}</bundle>
     <bundle>mvn:org.apache.abdera/abdera-parser/${abdera.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlsec/${xmlsec.version}</bundle>
-    <bundle>mvn:joda-time/joda-time/${joda.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.version}</bundle>
     <bundle>mvn:org.apache.ws.security/wss4j/${wss4j.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.saaj-impl/${saaj.impl.version}</bundle>
