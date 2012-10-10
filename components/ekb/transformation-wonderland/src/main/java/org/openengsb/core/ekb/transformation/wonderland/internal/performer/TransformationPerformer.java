@@ -93,10 +93,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("map")) {
-                performMapStep(step);
-                return;
-            } else if (function.equals("substring")) {
+            if (function.equals("substring")) {
                 performSubStringStep(step);
                 return;
             } else if (function.equals("value")) {
@@ -138,40 +135,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-
-    /**
-     * Logic for a split regex transformation step
-     */
-    private void performSplitRegexStep(TransformationStep step) throws Exception {
-        String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String splitString = step.getOperationParamater(TransformationConstants.regexParam);
-        String indexString = step.getOperationParamater(TransformationConstants.index);
-        Integer index = TransformationPerformUtils.parseIntString(indexString, false, 0);
-        Matcher matcher = TransformationPerformUtils.generateMatcher(splitString, split);
-        for (int i = 0; i <= index; i++) {
-            matcher.find();
-        }
-        String result = matcher.group();
-        if (result == null) {
-            LOGGER.warn("No result for given regex and index. The empty string will be taken instead.");
-            result = "";
-        }
-        setObjectToTargetField(step.getTargetField(), result);
-    }
-
-    /**
-     * Logic for a map step
-     */
-    private void performMapStep(TransformationStep step) throws Exception {
-        Object value = getObjectFromSourceField(step.getSourceFields()[0]);
-        for (Map.Entry<String, String> entry : step.getOperationParams().entrySet()) {
-            if (value.toString().equals(entry.getKey())) {
-                value = entry.getValue();
-                break;
-            }
-        }
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
