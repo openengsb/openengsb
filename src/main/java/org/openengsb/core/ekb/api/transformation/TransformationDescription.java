@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
 
@@ -32,7 +30,6 @@ import com.google.common.base.Objects;
  * Describes all steps to transform an object of the source class into an object of the target class.
  */
 public class TransformationDescription {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationDescription.class);
     private ModelDescription sourceModel;
     private ModelDescription targetModel;
     private List<TransformationStep> steps;
@@ -51,83 +48,17 @@ public class TransformationDescription {
         steps = new ArrayList<TransformationStep>();
     }
 
-    public void addStep(TransformationOperation operation, List<String> sourceFields, String targetField,
+    /**
+     * Adds a transformation step to this description
+     */
+    public void addStep(String operationName, List<String> sourceFields, String targetField,
             Map<String, String> parameters) {
-        String param1 = "";
-        String param2 = "";
-        String param3 = "";
-        switch (operation) {
-            case FORWARD:
-                forwardField(sourceFields.get(0), targetField);
-                break;
-            case CONCAT:
-                param1 = parameters.get(TransformationConstants.concatParam);
-                concatField(targetField, param1, sourceFields.toArray(new String[0]));
-                break;
-            case LENGTH:
-                param1 = parameters.get(TransformationConstants.lengthFunction);
-                lengthField(sourceFields.get(0), targetField, param1);
-                break;
-            case MAP:
-                mapField(sourceFields.get(0), targetField, parameters);
-                break;
-            case SUBSTRING:
-                param1 = parameters.get(TransformationConstants.substringFrom);
-                param2 = parameters.get(TransformationConstants.substringTo);
-                substringField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case SPLIT:
-                param1 = parameters.get(TransformationConstants.splitParam);
-                param2 = parameters.get(TransformationConstants.index);
-                splitField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case SPLITREGEX:
-                param1 = parameters.get(TransformationConstants.regexParam);
-                param2 = parameters.get(TransformationConstants.index);
-                splitRegexField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case TOLOWER:
-                toLowerField(sourceFields.get(0), targetField);
-                break;
-            case TOUPPER:
-                toUpperField(sourceFields.get(0), targetField);
-                break;
-            case TRIM:
-                trimField(sourceFields.get(0), targetField);
-                break;
-            case VALUE:
-                param1 = parameters.get(TransformationConstants.value);
-                valueField(targetField, param1);
-                break;
-            case REPLACE:
-                param1 = parameters.get(TransformationConstants.replaceOld);
-                param2 = parameters.get(TransformationConstants.replaceNew);
-                replaceField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case REVERSE:
-                reverseField(sourceFields.get(0), targetField);
-                break;
-            case PAD:
-                param1 = parameters.get(TransformationConstants.padLength);
-                param2 = parameters.get(TransformationConstants.padCharacter);
-                param3 = parameters.get(TransformationConstants.padDirection);
-                padField(sourceFields.get(0), targetField, param1, param2, param3);
-                break;
-            case REMOVELEADING:
-                param1 = parameters.get(TransformationConstants.regexParam);
-                param2 = parameters.get(TransformationConstants.removeLeadingLength);
-                removeLeadingField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case INSTANTIATE:
-                param1 = parameters.get(TransformationConstants.instantiateTargetType);
-                param2 = parameters.get(TransformationConstants.instantiateInitMethod);
-                instantiateField(sourceFields.get(0), targetField, param1, param2);
-                break;
-            case NONE:
-            default:
-                LOGGER.warn("Not supported operation received: " + operation);
-                break;
-        }
+        TransformationStep step = new TransformationStep();
+        step.setOperationName(operationName);
+        step.setSourceFields(sourceFields.toArray(new String[sourceFields.size()]));
+        step.setTargetField(targetField);
+        step.setOperationParams(parameters);
+        steps.add(step);
     }
 
     /**
@@ -138,7 +69,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
-        step.setOperation(TransformationOperation.FORWARD);
+        step.setOperationName("forward");
         steps.add(step);
     }
 
@@ -152,7 +83,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setSourceFields(sourceFields);
         step.setOperationParameter(TransformationConstants.concatParam, concatString);
-        step.setOperation(TransformationOperation.CONCAT);
+        step.setOperationName("concat");
         steps.add(step);
     }
 
@@ -167,7 +98,7 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setOperationParameter(TransformationConstants.splitParam, splitString);
         step.setOperationParameter(TransformationConstants.index, index);
-        step.setOperation(TransformationOperation.SPLIT);
+        step.setOperationName("split");
         steps.add(step);
     }
 
@@ -182,7 +113,7 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setOperationParameter(TransformationConstants.regexParam, regexString);
         step.setOperationParameter(TransformationConstants.index, index);
-        step.setOperation(TransformationOperation.SPLITREGEX);
+        step.setOperationName("splitRegex");
         steps.add(step);
     }
 
@@ -196,7 +127,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
         step.setOperationParams(mapping);
-        step.setOperation(TransformationOperation.MAP);
+        step.setOperationName("map");
         steps.add(step);
     }
 
@@ -211,7 +142,7 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setOperationParameter(TransformationConstants.substringFrom, from);
         step.setOperationParameter(TransformationConstants.substringTo, to);
-        step.setOperation(TransformationOperation.SUBSTRING);
+        step.setOperationName("substring");
         steps.add(step);
     }
 
@@ -222,7 +153,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.value, value);
-        step.setOperation(TransformationOperation.VALUE);
+        step.setOperationName("value");
         steps.add(step);
     }
 
@@ -236,7 +167,7 @@ public class TransformationDescription {
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.lengthFunction, function);
-        step.setOperation(TransformationOperation.LENGTH);
+        step.setOperationName("length");
         steps.add(step);
     }
 
@@ -249,7 +180,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperation(TransformationOperation.TRIM);
+        step.setOperationName("trim");
         steps.add(step);
     }
 
@@ -261,7 +192,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperation(TransformationOperation.TOLOWER);
+        step.setOperationName("toLower");
         steps.add(step);
     }
 
@@ -273,7 +204,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperation(TransformationOperation.TOUPPER);
+        step.setOperationName("toUpper");
         steps.add(step);
     }
 
@@ -287,7 +218,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.replaceOld, oldString);
         step.setOperationParameter(TransformationConstants.replaceNew, newString);
-        step.setOperation(TransformationOperation.REPLACE);
+        step.setOperationName("replace");
         steps.add(step);
     }
 
@@ -299,7 +230,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperation(TransformationOperation.REVERSE);
+        step.setOperationName("reverse");
         steps.add(step);
     }
 
@@ -317,7 +248,7 @@ public class TransformationDescription {
         step.setOperationParameter(TransformationConstants.padLength, length);
         step.setOperationParameter(TransformationConstants.padCharacter, character);
         step.setOperationParameter(TransformationConstants.padDirection, direction);
-        step.setOperation(TransformationOperation.PAD);
+        step.setOperationName("pad");
         steps.add(step);
     }
 
@@ -332,7 +263,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.removeLeadingLength, length);
         step.setOperationParameter(TransformationConstants.regexParam, regexString);
-        step.setOperation(TransformationOperation.REMOVELEADING);
+        step.setOperationName("removeleading");
         steps.add(step);
     }
 
@@ -347,7 +278,7 @@ public class TransformationDescription {
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.instantiateTargetType, targetType);
         step.setOperationParameter(TransformationConstants.instantiateInitMethod, targetTypeInit);
-        step.setOperation(TransformationOperation.INSTANTIATE);
+        step.setOperationName("instantiate");
         steps.add(step);
     }
 

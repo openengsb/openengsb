@@ -17,10 +17,35 @@
 
 package org.openengsb.core.ekb.api.transformation;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * The TransformOperation enum describes all possible transformation operations during model transformations
+ * The TransformOperation interface defines the functions for operations which can be used for the wonderland
+ * transformation description language. Every operation which want to be supported, need to be exported with this
+ * interface in the OSGi environment.
  */
-public enum TransformationOperation {
-    FORWARD, SPLIT, SPLITREGEX, CONCAT, MAP, SUBSTRING, VALUE, LENGTH, TRIM,
-        TOLOWER, TOUPPER, REPLACE, REVERSE, PAD, REMOVELEADING, INSTANTIATE, NONE
+public interface TransformationOperation {
+
+    /**
+     * Performs the operation which is defined with this transformation operation on the elements in the input list. The
+     * result of the operation is returned. Throws a TransformationOperationException if something went wrong in the operation.
+     */
+    public Object performOperation(List<Object> input, Map<String, String> parameters) throws TransformationOperationException;
+
+    /**
+     * Returns a description for the operation this transformation operation is implementing.
+     */
+    public String getOperationDescription();
+
+    /**
+     * Returns a map where the key is a parameter for this operation and the value is a description for this parameter.
+     */
+    public Map<String, String> getOperationParameterDescriptions();
+
+    /**
+     * Returns the number of input objects this operation takes. Returns -1 if the amount of input objects is 1 or
+     * higher.
+     */
+    public Integer getOperationInputCount();
 }

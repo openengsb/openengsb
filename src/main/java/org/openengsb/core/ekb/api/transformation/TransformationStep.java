@@ -26,9 +26,13 @@ import java.util.Map;
  */
 public class TransformationStep {
     private String targetField;
-    private TransformationOperation operation;
+    private String operationName;
     private Map<String, String> operationParams;
     private String[] sourceFields;
+    
+    public TransformationStep() {
+        operationParams = new HashMap<String, String>();
+    }
 
     public String getTargetField() {
         return targetField;
@@ -38,12 +42,12 @@ public class TransformationStep {
         this.targetField = targetField;
     }
 
-    public TransformationOperation getOperation() {
-        return operation;
+    public String getOperationName() {
+        return operationName;
     }
 
-    public void setOperation(TransformationOperation operation) {
-        this.operation = operation;
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
     }
 
     public Map<String, String> getOperationParams() {
@@ -55,16 +59,10 @@ public class TransformationStep {
     }
 
     public String getOperationParamater(String key) {
-        if (operationParams == null) {
-            return null;
-        }
         return operationParams.get(key);
     }
 
     public void setOperationParameter(String key, String value) {
-        if (operationParams == null) {
-            operationParams = new HashMap<String, String>();
-        }
         operationParams.put(key, value);
     }
 
@@ -79,7 +77,7 @@ public class TransformationStep {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("{ ").append(operation);
+        builder.append("{ ").append(operationName);
         builder.append(" sources: {");
         boolean firstSource = true;
         for (String source : sourceFields) {
