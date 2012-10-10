@@ -64,4 +64,9 @@ public class ConcatOperation implements TransformationOperation {
     public void setOperationName(String operationName) {
         this.operationName = operationName;
     }
+
+    @Override
+    public String getOperationName() {
+        return operationName;
+    }
 }

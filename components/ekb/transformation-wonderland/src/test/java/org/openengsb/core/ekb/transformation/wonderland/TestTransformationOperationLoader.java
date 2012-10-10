@@ -25,6 +25,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ConcatOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation;
 
 public class TestTransformationOperationLoader implements TransformationOperationLoader {
 
@@ -34,6 +35,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         operations = new ArrayList<TransformationOperation>();
         operations.add(new ForwardOperation());
         operations.add(new ConcatOperation());
+        operations.add(new SplitOperation());
     }
     
     @Override
@@ -44,10 +46,10 @@ public class TestTransformationOperationLoader implements TransformationOperatio
     @Override
     public TransformationOperation loadTransformationOperationByName(String operationName)
         throws TransformationOperationException {
-        if (operationName.equals("forward")) {
-            return operations.get(0);
-        } else if (operationName.equals("concat")) {
-            return operations.get(1);
+        for (TransformationOperation operation : operations) {
+            if (operation.getOperationName().equals(operationName)) {
+                return operation;
+            }
         }
         return null;
     }

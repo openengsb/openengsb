@@ -93,82 +93,58 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String operation = step.getOperationName();
-            if (operation.equals("forward")) {
-                performForwardStep(step);
-            } else if (operation.equals("concat")) {
-                performConcatStep(step);
-            } else if (operation.equals("split")) {
-                performSplitStep(step);
-            } else if (operation.equals("splitRegex")) {
+            if (operation.equals("splitRegex")) {
                 performSplitRegexStep(step);
+                return;
             } else if (operation.equals("map")) {
                 performMapStep(step);
+                return;
             } else if (operation.equals("substring")) {
                 performSubStringStep(step);
+                return;
             } else if (operation.equals("value")) {
                 performValueStep(step);
+                return;
             } else if (operation.equals("length")) {
                 performLengthStep(step);
+                return;
             } else if (operation.equals("trim")) {
                 performTrimStep(step);
+                return;
             } else if (operation.equals("toLower")) {
                 performToLowerStep(step);
+                return;
             } else if (operation.equals("toUpper")) {
                 performToUpperStep(step);
+                return;
             } else if (operation.equals("replace")) {
                 performReplaceStep(step);
+                return;
             } else if (operation.equals("reverse")) {
                 performReverseStep(step);
+                return;
             } else if (operation.equals("pad")) {
                 performPadStep(step);
+                return;
             } else if (operation.equals("removeleading")) {
                 performRemoveLeadingStep(step);
+                return;
             } else if (operation.equals("instantiate")) {
                 performInstantiationStep(step);
+                return;
             }
+            performStep(step);
         } catch (TransformationStepException e) {
             LOGGER.debug(e.getMessage(), e);
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
     }
-
-    /**
-     * Logic for a forward transformation step
-     */
-    private void performForwardStep(TransformationStep step) throws Exception {
-        performStep(step);
-    }
-
-    /**
-     * Logic for a concat transformation step
-     */
-    private void performConcatStep(TransformationStep step) throws Exception {
-        performStep(step);
-    }
     
     private void performStep(TransformationStep step) throws Exception {
         TransformationOperation operation = operationLoader.loadTransformationOperationByName(step.getOperationName());
         Object value = operation.performOperation(getSourceFieldValues(step), step.getOperationParams());
         setObjectToTargetField(step.getTargetField(), value);
-    }
-
-    /**
-     * Logic for a split transformation step
-     */
-    private void performSplitStep(TransformationStep step) throws Exception {
-        String split = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String splitString = step.getOperationParamater(TransformationConstants.splitParam);
-        String indexString = step.getOperationParamater(TransformationConstants.index);
-        Integer index = TransformationPerformUtils.parseIntString(indexString, false, 0);
-        String[] splits = split.split(splitString);
-        String result = "";
-        try {
-            result = splits[index];
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.warn("Split havn't enough results for the given index. The empty string will be taken instead.");
-        }
-        setObjectToTargetField(step.getTargetField(), result);
     }
 
     /**
