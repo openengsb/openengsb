@@ -93,10 +93,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("substring")) {
-                performSubStringStep(step);
-                return;
-            } else if (function.equals("value")) {
+            if (function.equals("value")) {
                 performValueStep(step);
                 return;
             } else if (function.equals("length")) {
@@ -126,26 +123,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step." + step, e);
         }
-    }
-
-    /**
-     * Logic for a substring step
-     */
-    private void performSubStringStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String fromString = step.getOperationParamater(TransformationConstants.substringFrom);
-        String toString = step.getOperationParamater(TransformationConstants.substringTo);
-        int from = TransformationPerformUtils.parseIntString(fromString, false, 0);
-        int to = TransformationPerformUtils.parseIntString(toString, false, value.length());
-        if (to > value.length()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("The end index is bigger than the length of the input string. ");
-            builder.append("The length of the input string will be taken instead.");
-            LOGGER.warn(builder.toString());
-            to = value.length();
-        }
-        value = value.substring(from, to);
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**

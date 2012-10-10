@@ -108,6 +108,15 @@
       <property name="operationName" value="toUpper" />  
     </bean>
   </service>
+  
+  <service id="substringOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="substring" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.SubStringOperation" >
+      <property name="operationName" value="substring" />  
+    </bean>
+  </service>
 
   <service interface="org.openengsb.core.ekb.api.TransformationEngine">
     <service-properties>
