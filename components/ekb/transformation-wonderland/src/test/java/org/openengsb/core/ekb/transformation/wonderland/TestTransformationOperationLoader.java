@@ -29,6 +29,7 @@ import org.openengsb.core.ekb.transformation.wonderland.internal.operation.Conca
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation;
+import org.openengsb.core.ekb.transformation.wonderland.internal.operation.PadOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.RemoveLeadingOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReplaceOperation;
 import org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReverseOperation;
@@ -60,6 +61,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         addOperation(new ReplaceOperation());
         addOperation(new ReverseOperation());
         addOperation(new RemoveLeadingOperation());
+        addOperation(new PadOperation());
     }
     
     private void addOperation(TransformationOperation operation) {

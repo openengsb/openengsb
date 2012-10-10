@@ -34,8 +34,6 @@ import org.openengsb.core.ekb.api.transformation.TransformationStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
-
 /**
  * The TransformationPerformer does the actual performing work between objects.
  */
@@ -91,10 +89,7 @@ public class TransformationPerformer {
     private void performTransformationStep(TransformationStep step) throws IllegalAccessException {
         try {
             String function = step.getOperationName();
-            if (function.equals("pad")) {
-                performPadStep(step);
-                return;
-            } else if (function.equals("instantiate")) {
+            if (function.equals("instantiate")) {
                 performInstantiationStep(step);
                 return;
             }
@@ -106,37 +101,6 @@ public class TransformationPerformer {
         } catch (Exception e) {
             LOGGER.error("Unable to perform transformation step {}.", step, e);
         }
-    }
-
-    /**
-     * Logic for the pad step
-     */
-    private void performPadStep(TransformationStep step) throws Exception {
-        String value = getTypedObjectFromSourceField(step.getSourceFields()[0], String.class);
-        String lengthString = step.getOperationParamater(TransformationConstants.padLength);
-        String characterString = step.getOperationParamater(TransformationConstants.padCharacter);
-        String directionString = step.getOperationParamater(TransformationConstants.padDirection);
-        Integer length = TransformationPerformUtils.parseIntString(lengthString, true, 0);
-        if (characterString == null || characterString.isEmpty()) {
-            String message = "The given character string for the pad is empty. Step will be skipped.";
-            LOGGER.error(message);
-            throw new TransformationStepException(message);
-        }
-        char character = characterString.charAt(0);
-        if (characterString.length() > 0) {
-            LOGGER.debug("The given character string is longer than one element. The first character is used.");
-        }
-        if (directionString == null || !(directionString.equals("Start") || directionString.equals("End"))) {
-            LOGGER.debug("Unrecognized direction string. The standard value 'Start' will be used.");
-            directionString = "Start";
-        }
-
-        if (directionString.equals("Start")) {
-            value = Strings.padStart(value, length, character);
-        } else {
-            value = Strings.padEnd(value, length, character);
-        }
-        setObjectToTargetField(step.getTargetField(), value);
     }
 
     /**
@@ -247,18 +211,4 @@ public class TransformationPerformer {
             return result;
         }
     }
-
-    /**
-     * Gets the value of the field with the field name of the source object and try to type it.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T getTypedObjectFromSourceField(String fieldname, Class<T> type) throws Exception {
-        Object result = getObjectFromSourceField(fieldname);
-        if (result.getClass().equals(type)) {
-            return (T) result;
-        }
-        String message = String.format("The field %s hasn't the type %s.", fieldname, type.getName());
-        throw new TransformationStepException(message);
-    }
-
 }

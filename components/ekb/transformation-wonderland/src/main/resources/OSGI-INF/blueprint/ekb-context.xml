@@ -179,4 +179,13 @@
       <property name="operationName" value="removeleading" />  
     </bean>
   </service>
+  
+  <service id="padOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+    <service-properties>
+      <entry key="transformation.operation" value="pad" />
+    </service-properties>
+    <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.PadOperation" >
+      <property name="operationName" value="pad" />  
+    </bean>
+  </service>
 </blueprint>
