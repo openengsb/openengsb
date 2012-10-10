@@ -45,7 +45,7 @@ public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy
             try {
                 method.invoke(service, args);
             } catch (InvocationTargetException e) {
-                LOGGER.warn("connector in composition threw an Exception in methodcall %s", method.toString());
+                LOGGER.warn("connector in composition threw an Exception in method call %s", method.toString());
                 LOGGER.debug("ExceptionDetails: ", e);
             }
         }
