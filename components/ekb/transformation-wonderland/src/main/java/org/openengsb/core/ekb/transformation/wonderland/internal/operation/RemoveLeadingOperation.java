@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RemoveLeadingOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveLeadingOperation.class);
-    private String regexStringParam = "regexString";
-    private String lengthParam = "length";
+    private String regexStringParam = TransformationConstants.REGEX_PARAM;
+    private String lengthParam = TransformationConstants.REMOVELEADING_LENGTH_PARAM;
     
     public RemoveLeadingOperation(String operationName) {
         super(operationName);

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
@@ -29,8 +30,8 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
  * field with another string.
  */
 public class ReplaceOperation extends AbstractStandardTransformationOperation {
-    private String oldStringParam = "oldString";
-    private String newStringParam = "newString";
+    private String oldStringParam = TransformationConstants.REPLACE_OLD_PARAM;
+    private String newStringParam = TransformationConstants.REPLACE_NEW_PARAM;
     
     public ReplaceOperation(String operationName) {
         super(operationName);

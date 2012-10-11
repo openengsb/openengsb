@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SplitRegexOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(SplitRegexOperation.class);
-    private String regexStringParam = "regexString";
-    private String resultIndexParam = "resultIndex";
+    private String regexStringParam = TransformationConstants.REGEX_PARAM;
+    private String resultIndexParam = TransformationConstants.INDEX_PARAM;
     
     public SplitRegexOperation(String operationName) {
         super(operationName);

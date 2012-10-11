@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 import com.google.common.base.Joiner;
@@ -30,7 +31,7 @@ import com.google.common.base.Joiner;
  * string which is put between the field values.
  */
 public class ConcatOperation extends AbstractStandardTransformationOperation {
-    private String concatStringParam = "concatString";
+    private String concatStringParam = TransformationConstants.CONCAT_PARAM;
     
     public ConcatOperation(String operationName) {
         super(operationName);

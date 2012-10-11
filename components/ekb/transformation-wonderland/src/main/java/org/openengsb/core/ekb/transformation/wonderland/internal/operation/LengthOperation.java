@@ -23,13 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The length operation can calculate the length of an element in the source field and return it.
  */
 public class LengthOperation extends AbstractStandardTransformationOperation {
-    private String lengthFuncParam = "function";
+    private String lengthFuncParam = TransformationConstants.LENGTH_FUNCTION_PARAM;
 
     public LengthOperation(String operationName) {
         super(operationName);

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +34,9 @@ import com.google.common.base.Strings;
  */
 public class PadOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(PadOperation.class);
-    private String lengthParam = "length";
-    private String charParam = "char";
-    private String directionParam = "direction";
+    private String lengthParam = TransformationConstants.PAD_LENGTH_PARAM;
+    private String charParam = TransformationConstants.PAD_CHARACTER_PARAM;
+    private String directionParam = TransformationConstants.PAD_DIRECTION_PARAM;
 
     public PadOperation(String operationName) {
         super(operationName);

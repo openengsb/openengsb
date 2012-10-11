@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SubStringOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubStringOperation.class);
-    private String fromParam = "from";
-    private String toParam = "to";
+    private String fromParam = TransformationConstants.SUBSTRING_FROM_PARAM;
+    private String toParam = TransformationConstants.SUBSTRING_TO_PARAM;
     
     public SubStringOperation(String operationName) {
         super(operationName);

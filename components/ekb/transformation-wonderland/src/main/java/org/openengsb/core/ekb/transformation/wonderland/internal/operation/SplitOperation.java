@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
@@ -28,8 +29,8 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
  * value for the given index.
  */
 public class SplitOperation extends AbstractStandardTransformationOperation {
-    private String splitStringParam = "splitString";
-    private String resultIndexParam = "resultIndex";
+    private String splitStringParam = TransformationConstants.SPLIT_PARAM;
+    private String resultIndexParam = TransformationConstants.INDEX_PARAM;
     
     public SplitOperation(String operationName) {
         super(operationName);

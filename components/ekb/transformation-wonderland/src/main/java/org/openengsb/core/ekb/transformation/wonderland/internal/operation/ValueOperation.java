@@ -21,13 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The value operation returns a constant value.
  */
 public class ValueOperation extends AbstractStandardTransformationOperation {
-    private String valueParam = "value";
+    private String valueParam = TransformationConstants.VALUE_PARAM;
     
     public ValueOperation(String operationName) {
         super(operationName);

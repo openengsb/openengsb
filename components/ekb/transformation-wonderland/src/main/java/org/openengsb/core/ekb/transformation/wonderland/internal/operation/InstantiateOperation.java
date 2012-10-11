@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public class InstantiateOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstantiateOperation.class);
-    private String typeParam = "targetType";
-    private String initFuncParam = "targetTypeInit";
+    private String typeParam = TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM;
+    private String initFuncParam = TransformationConstants.INSTANTIATE_INITMETHOD_PARAM;
     
     public InstantiateOperation(String operationName) {
         super(operationName);
