@@ -41,7 +41,7 @@ public class PadOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("which takes the string of the source, pad it based on the ")
+        return theOperation().does("which takes the string of the source, pad it based on the ")
             .cnt("parameters and returns the result.").toString();
     }
 

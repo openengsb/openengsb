@@ -34,7 +34,7 @@ public class ForwardOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("just returns the given input value.").toString();
+        return theOperation().does("just returns the given input value.").toString();
     }
 
     @Override

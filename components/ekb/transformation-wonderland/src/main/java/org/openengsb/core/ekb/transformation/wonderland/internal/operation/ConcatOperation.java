@@ -39,7 +39,7 @@ public class ConcatOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("concatenates all source fields with the given concatenation string.")
+        return theOperation().does("concatenates all source fields with the given concatenation string.")
             .toString();
     }
 

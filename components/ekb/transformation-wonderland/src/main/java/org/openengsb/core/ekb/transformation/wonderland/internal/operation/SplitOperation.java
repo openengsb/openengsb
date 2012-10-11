@@ -38,7 +38,7 @@ public class SplitOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("splits the given value of the source field based on the split ")
+        return theOperation().does("splits the given value of the source field based on the split ")
             .cnt("string parameter and returns the value for the given index.").toString();
     }
 

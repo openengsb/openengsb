@@ -39,7 +39,7 @@ public class SplitRegexOperation extends AbstractStandardTransformationOperation
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("splits the given value of the source field based on the regular ")
+        return theOperation().does("splits the given value of the source field based on the regular ")
             .cnt("expression split string parameter and returns the value for the given index.").toString();
     }
 

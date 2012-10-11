@@ -34,7 +34,7 @@ public class ToUpperOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("takes the given string and converts all characters to upper case.")
+        return theOperation().does("takes the given string and converts all characters to upper case.")
                 .toString();
     }
 

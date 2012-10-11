@@ -38,7 +38,7 @@ public class LengthOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("can calculate the length of an element in the source field ")
+        return theOperation().does("can calculate the length of an element in the source field ")
             .cnt("and return the amount as string.").toString();
     }
 

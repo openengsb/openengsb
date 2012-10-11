@@ -39,7 +39,7 @@ public class ReplaceOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("is a string operation. It can be used to replace a certain part of ")
+        return theOperation().does("is a string operation. It can be used to replace a certain part of ")
             .cnt("the string in the source field with another string.").toString();
     }
 

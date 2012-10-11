@@ -34,7 +34,7 @@ public class TrimOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("removes the leading and the following blanks of a string value.")
+        return theOperation().does("removes the leading and the following blanks of a string value.")
             .toString();
     }
 

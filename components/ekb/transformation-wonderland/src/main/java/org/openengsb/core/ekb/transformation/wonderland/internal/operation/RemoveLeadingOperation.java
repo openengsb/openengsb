@@ -39,7 +39,7 @@ public class RemoveLeadingOperation extends AbstractStandardTransformationOperat
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("is a string operation.  It takes the string from the source field ")
+        return theOperation().does("is a string operation.  It takes the string from the source field ")
             .cnt("and removes all elements at the start which match a regular expression until a maximum length.")
             .toString();
     }

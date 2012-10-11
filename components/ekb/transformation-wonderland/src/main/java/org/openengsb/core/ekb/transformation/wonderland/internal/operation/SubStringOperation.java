@@ -37,7 +37,7 @@ public class SubStringOperation extends AbstractStandardTransformationOperation 
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("creates a substring of the given string based on the given ")
+        return theOperation().does("creates a substring of the given string based on the given ")
             .cnt("range parameters from and to.").toString();
     }
 

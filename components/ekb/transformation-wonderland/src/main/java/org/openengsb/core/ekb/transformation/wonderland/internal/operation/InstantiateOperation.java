@@ -41,7 +41,7 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("is used to support other field types than only strings. It instantiates")
+        return theOperation().does("is used to support other field types than only strings. It instantiates")
             .cnt(" an object of the given type with the given parameter for the construction.").toString();
     }
 

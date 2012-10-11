@@ -34,7 +34,7 @@ public class ToLowerOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("takes the given string and converts all characters to lower case.")
+        return theOperation().does("takes the given string and converts all characters to lower case.")
             .toString();
     }
 

@@ -57,7 +57,7 @@ public abstract class AbstractStandardTransformationOperation implements Transfo
      * Returns the pre defined DescriptionStringBuilder with the operation name of this operation. This object need to
      * be filled with the actual content.
      */
-    protected DescriptionStringBuilder getOperationDescriptor() {
+    protected DescriptionStringBuilder theOperation() {
         return new DescriptionStringBuilder(operationName);
     }
 

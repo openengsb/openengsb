@@ -36,7 +36,7 @@ public class MapOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        return getOperationDescriptor().does("maps keys to values. Every key is a key in the parameter map and ")
+        return theOperation().does("maps keys to values. Every key is a key in the parameter map and ")
             .cnt("the value to this key defines the mapped value.").toString();
     }
 
