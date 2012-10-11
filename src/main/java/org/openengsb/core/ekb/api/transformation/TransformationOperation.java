@@ -51,7 +51,6 @@ public interface TransformationOperation {
     
     /**
      * Returns the name of the operation
-     * @return
      */
     public String getOperationName();
 }
