@@ -54,6 +54,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         graph.addModel(getModelADescription());
         graph.addModel(getModelBDescription());
         graph.addModel(getModelCDescription());
+        service.setOperationLoader(new TestTransformationOperationLoader());
     }
 
     private TransformationDescription getDescriptionForModelAToModelB() {
