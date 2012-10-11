@@ -25,6 +25,7 @@ import org.openengsb.core.ekb.api.ModelGraph;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.performer.TransformationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TransformationEngineService implements TransformationEngine {
     private ModelRegistry modelRegistry;
     private ModelGraph graphDb;
     private PropertyConnectionCalculator calculator;
+    private TransformationOperationLoader operationLoader;
 
     @Override
     public void saveDescription(TransformationDescription description) {
@@ -84,7 +86,7 @@ public class TransformationEngineService implements TransformationEngine {
             List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
             if (result != null && !result.isEmpty()) {
                 for (TransformationDescription step : result) {
-                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
                     source = performer.transformObject(step, source);
                 }
             }
@@ -119,4 +121,7 @@ public class TransformationEngineService implements TransformationEngine {
         this.graphDb = graphDb;
     }
 
+    public void setOperationLoader(TransformationOperationLoader operationLoader) {
+        this.operationLoader = operationLoader;
+    }
 }
