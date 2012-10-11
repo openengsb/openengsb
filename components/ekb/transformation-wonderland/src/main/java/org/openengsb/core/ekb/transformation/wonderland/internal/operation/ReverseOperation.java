@@ -36,10 +36,8 @@ public class ReverseOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation is a string operation. It takes ");
-        builder.append("the string from the source field, reverses it returns the result.");
-        return builder.toString();
+        return getOperationDescriptor().does("is a string operation. It takes the string from the source field, ")
+                .cnt("reverses it returns the result.").toString();
     }
 
     @Override

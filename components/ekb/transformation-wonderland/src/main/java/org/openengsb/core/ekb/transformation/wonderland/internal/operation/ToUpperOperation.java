@@ -34,10 +34,8 @@ public class ToUpperOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" takes the given string and converts all ");
-        builder.append("characters to upper case.");
-        return builder.toString();
+        return getOperationDescriptor().does("takes the given string and converts all characters to upper case.")
+                .toString();
     }
 
     @Override

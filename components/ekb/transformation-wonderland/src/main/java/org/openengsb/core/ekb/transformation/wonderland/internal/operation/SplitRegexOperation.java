@@ -39,11 +39,8 @@ public class SplitRegexOperation extends AbstractStandardTransformationOperation
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation splits the given value of the source ");
-        builder.append("field based on the regular expression split string parameter and returns the value for the ");
-        builder.append("given index.");
-        return builder.toString();
+        return getOperationDescriptor().does("splits the given value of the source field based on the regular ")
+            .cnt("expression split string parameter and returns the value for the given index.").toString();
     }
 
     @Override
@@ -76,23 +73,16 @@ public class SplitRegexOperation extends AbstractStandardTransformationOperation
      */
     private String performSplitting(String source, String splitString, String indexString)
         throws TransformationOperationException {
-        try {
-            Integer index = parseIntString(indexString, false, 0);
-            Matcher matcher = generateMatcher(splitString, source);
-            for (int i = 0; i <= index; i++) {
-                matcher.find();
-            }
-            String value = matcher.group();
-            if (value == null) {
-                getLogger().warn("No result for given regex and index. The empty string will be taken instead.");
-                value = "";
-            }
-            return value;
-        } catch (NumberFormatException e) {
-            throw new TransformationOperationException("The given result index parameter is not a number");
-        } catch (IndexOutOfBoundsException e) {
-            throw new TransformationOperationException(
-                "The split result does not have that much results for the index parameter");
+        Integer index = parseIntString(indexString, false, 0);
+        Matcher matcher = generateMatcher(splitString, source);
+        for (int i = 0; i <= index; i++) {
+            matcher.find();
         }
+        String value = matcher.group();
+        if (value == null) {
+            getLogger().warn("No result for given regex and index. The empty string will be taken instead.");
+            value = "";
+        }
+        return value;
     }
 }

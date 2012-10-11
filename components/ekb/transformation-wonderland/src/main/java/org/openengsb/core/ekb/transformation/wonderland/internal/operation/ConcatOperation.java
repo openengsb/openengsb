@@ -32,17 +32,15 @@ import com.google.common.base.Joiner;
  */
 public class ConcatOperation extends AbstractStandardTransformationOperation {
     private String concatStringParam = TransformationConstants.CONCAT_PARAM;
-    
+
     public ConcatOperation(String operationName) {
         super(operationName, ConcatOperation.class);
     }
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation concatenates all source fields ");
-        builder.append("with the given concatenation string.");
-        return builder.toString();
+        return getOperationDescriptor().does("concatenates all source fields with the given concatenation string.")
+            .toString();
     }
 
     @Override

@@ -54,6 +54,14 @@ public abstract class AbstractStandardTransformationOperation implements Transfo
     }
 
     /**
+     * Returns the pre defined DescriptionStringBuilder with the operation name of this operation. This object need to
+     * be filled with the actual content.
+     */
+    protected DescriptionStringBuilder getOperationDescriptor() {
+        return new DescriptionStringBuilder(operationName);
+    }
+
+    /**
      * Checks if the input size is matching with the operation defined input count. If not, a
      * TransformationOperationException is thrown.
      */

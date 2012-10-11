@@ -32,18 +32,16 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class RemoveLeadingOperation extends AbstractStandardTransformationOperation {
     private String regexStringParam = TransformationConstants.REGEX_PARAM;
     private String lengthParam = TransformationConstants.REMOVELEADING_LENGTH_PARAM;
-    
+
     public RemoveLeadingOperation(String operationName) {
         super(operationName, RemoveLeadingOperation.class);
     }
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" is a string operation. It takes the string ");
-        builder.append("from the source field and removes all elements at the start which match a regular ");
-        builder.append("expression until a maximum length.");
-        return builder.toString();
+        return getOperationDescriptor().does("is a string operation.  It takes the string from the source field ")
+            .cnt("and removes all elements at the start which match a regular expression until a maximum length.")
+            .toString();
     }
 
     @Override
@@ -64,13 +62,13 @@ public class RemoveLeadingOperation extends AbstractStandardTransformationOperat
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
         checkInputSize(input);
-        
+
         String value = input.get(0).toString();
         Integer length = parseIntString(parameters.get(lengthParam), false, 0);
         Matcher matcher = generateMatcher(parameters.get(regexStringParam), value);
         return performRemoveLeading(value, length, matcher);
     }
-    
+
     /**
      * Perform the remove leading operation. Returns the original string if the matcher does not match with the string
      */

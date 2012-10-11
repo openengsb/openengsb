@@ -36,9 +36,7 @@ public class ValueOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation returns a constant value.");
-        return builder.toString();
+        return getOperationDescriptor().does("returns a constant value.").toString();
     }
 
     @Override

@@ -32,17 +32,15 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class ReplaceOperation extends AbstractStandardTransformationOperation {
     private String oldStringParam = TransformationConstants.REPLACE_OLD_PARAM;
     private String newStringParam = TransformationConstants.REPLACE_NEW_PARAM;
-    
+
     public ReplaceOperation(String operationName) {
         super(operationName, ReplaceOperation.class);
     }
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation is a string operation. It can be used");
-        builder.append(" to replace a certain part of the string in the source field with another string.");
-        return builder.toString();
+        return getOperationDescriptor().does("is a string operation. It can be used to replace a certain part of ")
+            .cnt("the string in the source field with another string.").toString();
     }
 
     @Override

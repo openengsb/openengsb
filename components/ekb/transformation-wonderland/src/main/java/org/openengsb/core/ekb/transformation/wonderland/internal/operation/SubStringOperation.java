@@ -37,10 +37,8 @@ public class SubStringOperation extends AbstractStandardTransformationOperation 
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation creates a substring of the given");
-        builder.append(" string based on the given range parameters from and to.");
-        return builder.toString();
+        return getOperationDescriptor().does("creates a substring of the given string based on the given ")
+            .cnt("range parameters from and to.").toString();
     }
 
     @Override
@@ -68,12 +66,12 @@ public class SubStringOperation extends AbstractStandardTransformationOperation 
         String source = input.get(0).toString();
         Integer from = getFromParameter(parameters);
         Integer to = getToParameter(parameters, source.length());
-        
+
         checkBounds(source, from, to);
 
         return source.substring(from, to);
     }
-    
+
     /**
      * Checks if the from and the to parameters are valid for the given source
      */
@@ -81,15 +79,15 @@ public class SubStringOperation extends AbstractStandardTransformationOperation 
         Integer length = source.length();
         if (from > to) {
             throw new TransformationOperationException(
-                    "The from parameter is bigger than the to parameter");
+                "The from parameter is bigger than the to parameter");
         }
         if (from < 0 || from > length) {
             throw new TransformationOperationException(
-                    "The from parameter is not fitting to the size of the source");
+                "The from parameter is not fitting to the size of the source");
         }
         if (to < 0 || to > length) {
             throw new TransformationOperationException(
-                    "The to parameter is not fitting to the size of the source");
+                "The to parameter is not fitting to the size of the source");
         }
     }
 

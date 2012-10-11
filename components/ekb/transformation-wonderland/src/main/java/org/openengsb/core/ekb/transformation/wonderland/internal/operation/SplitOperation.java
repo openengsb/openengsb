@@ -38,10 +38,8 @@ public class SplitOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation splits the given value of the source ");
-        builder.append("field based on the split string parameter and returns the value for the given index.");
-        return builder.toString();
+        return getOperationDescriptor().does("splits the given value of the source field based on the split ")
+            .cnt("string parameter and returns the value for the given index.").toString();
     }
 
     @Override

@@ -27,17 +27,15 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
  * The to lower operation takes the given string and converts all characters to lower case.
  */
 public class ToLowerOperation extends AbstractStandardTransformationOperation {
-    
+
     public ToLowerOperation(String operationName) {
         super(operationName, ToLowerOperation.class);
     }
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" takes the given string and converts all ");
-        builder.append("characters to lower case.");
-        return builder.toString();
+        return getOperationDescriptor().does("takes the given string and converts all characters to lower case.")
+            .toString();
     }
 
     @Override

@@ -27,7 +27,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
- * The length operation can calculate the length of an element in the source field and return it.
+ * The length operation can calculate the length of an element in the source field and return the amount as string.
  */
 public class LengthOperation extends AbstractStandardTransformationOperation {
     private String lengthFuncParam = TransformationConstants.LENGTH_FUNCTION_PARAM;
@@ -38,10 +38,8 @@ public class LengthOperation extends AbstractStandardTransformationOperation {
 
     @Override
     public String getOperationDescription() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(getOperationName()).append(" operation can calculate the length ");
-        builder.append("of an element in the source field and return it.");
-        return builder.toString();
+        return getOperationDescriptor().does("can calculate the length of an element in the source field ")
+            .cnt("and return the amount as string.").toString();
     }
 
     @Override
@@ -64,7 +62,7 @@ public class LengthOperation extends AbstractStandardTransformationOperation {
         String function = getParameterOrDefault(parameters, lengthFuncParam, "length");
         return "" + getLengthOfObject(input.get(0), function);
     }
-    
+
     /**
      * Returns the length of the given object got through the method of the given function name
      */
