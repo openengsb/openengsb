@@ -39,6 +39,7 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -313,6 +314,7 @@ public class EDBConverter {
             EDBConverterUtils.fillEDBObjectWithEngineeringObjectInformation(object, model);
         } catch (IllegalAccessException e) {
             LOGGER.warn("Unable to fill completely the EngineeringObjectInformation into the EDBObject", e);
+            throw new EKBException("Unable to fill completely the EngineeringObjectInformation into the EDBObject", e);
         }
         for (OpenEngSBModelEntry entry : model.toOpenEngSBModelEntries()) {
             if (entry.getValue() == null) {

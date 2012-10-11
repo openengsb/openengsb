@@ -17,6 +17,9 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
+import static org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiff.createModelDiff;
+import static org.openengsb.core.api.model.ModelDescription.getModelDescriptionFromModel;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +114,7 @@ public class EngineeringObjectEnhancer {
      * additionally.
      */
     private List<OpenEngSBModel> performEOModelUpdate(OpenEngSBModel model, EKBCommit commit) {
-        ModelDiff diff = ModelDiff.createModelDiff(model, getCompleteModelOID(model, commit),
+        ModelDiff diff = createModelDiff(model, getCompleteModelOID(model, commit),
             edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
@@ -179,7 +182,7 @@ public class EngineeringObjectEnhancer {
      */
     private OpenEngSBModel updateEOByUpdatedModel(EDBModelObject reference, OpenEngSBModel model,
             Map<Object, OpenEngSBModel> updated) {
-        ModelDescription source = ModelUtils.getModelDescription(model);
+        ModelDescription source = getModelDescriptionFromModel(model);
         ModelDescription description = reference.getModelDescription();
         Object ref = updated.get(reference.getOID());
         if (ref == null) {
@@ -217,8 +220,8 @@ public class EngineeringObjectEnhancer {
         if (source == null || target == null) {
             return null;
         }
-        ModelDescription sourceDesc = ModelUtils.getModelDescription(source);
-        ModelDescription targetDesc = ModelUtils.getModelDescription(target);
+        ModelDescription sourceDesc = getModelDescriptionFromModel(source);
+        ModelDescription targetDesc = getModelDescriptionFromModel(target);
         return (OpenEngSBModel) transformationEngine.performTransformation(sourceDesc, targetDesc, source, target);
     }
 

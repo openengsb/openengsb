@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -251,15 +250,6 @@ public final class ModelUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Gets the model description object of the given model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static ModelDescription getModelDescription(Object model) {
-        checkIfObjectIsModel(model);
-        return new ModelDescription(retrieveModelName(model), retrieveModelVersion(model));
     }
 
     /**
