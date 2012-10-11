@@ -82,7 +82,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceFields);
-        step.setOperationParameter(TransformationConstants.concatParam, concatString);
+        step.setOperationParameter(TransformationConstants.CONCAT_PARAM, concatString);
         step.setOperationName("concat");
         steps.add(step);
     }
@@ -96,8 +96,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
-        step.setOperationParameter(TransformationConstants.splitParam, splitString);
-        step.setOperationParameter(TransformationConstants.index, index);
+        step.setOperationParameter(TransformationConstants.SPLIT_PARAM, splitString);
+        step.setOperationParameter(TransformationConstants.INDEX_PARAM, index);
         step.setOperationName("split");
         steps.add(step);
     }
@@ -111,8 +111,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
-        step.setOperationParameter(TransformationConstants.regexParam, regexString);
-        step.setOperationParameter(TransformationConstants.index, index);
+        step.setOperationParameter(TransformationConstants.REGEX_PARAM, regexString);
+        step.setOperationParameter(TransformationConstants.INDEX_PARAM, index);
         step.setOperationName("splitRegex");
         steps.add(step);
     }
@@ -140,8 +140,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
         step.setSourceFields(sourceField);
-        step.setOperationParameter(TransformationConstants.substringFrom, from);
-        step.setOperationParameter(TransformationConstants.substringTo, to);
+        step.setOperationParameter(TransformationConstants.SUBSTRING_FROM_PARAM, from);
+        step.setOperationParameter(TransformationConstants.SUBSTRING_TO_PARAM, to);
         step.setOperationName("substring");
         steps.add(step);
     }
@@ -152,7 +152,7 @@ public class TransformationDescription {
     public void valueField(String targetField, String value) {
         TransformationStep step = new TransformationStep();
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.value, value);
+        step.setOperationParameter(TransformationConstants.VALUE_PARAM, value);
         step.setOperationName("value");
         steps.add(step);
     }
@@ -166,7 +166,7 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.lengthFunction, function);
+        step.setOperationParameter(TransformationConstants.LENGTH_FUNCTION_PARAM, function);
         step.setOperationName("length");
         steps.add(step);
     }
@@ -216,8 +216,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.replaceOld, oldString);
-        step.setOperationParameter(TransformationConstants.replaceNew, newString);
+        step.setOperationParameter(TransformationConstants.REPLACE_OLD_PARAM, oldString);
+        step.setOperationParameter(TransformationConstants.REPLACE_NEW_PARAM, newString);
         step.setOperationName("replace");
         steps.add(step);
     }
@@ -245,9 +245,9 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.padLength, length);
-        step.setOperationParameter(TransformationConstants.padCharacter, character);
-        step.setOperationParameter(TransformationConstants.padDirection, direction);
+        step.setOperationParameter(TransformationConstants.PAD_LENGTH_PARAM, length);
+        step.setOperationParameter(TransformationConstants.PAD_CHARACTER_PARAM, character);
+        step.setOperationParameter(TransformationConstants.PAD_DIRECTION_PARAM, direction);
         step.setOperationName("pad");
         steps.add(step);
     }
@@ -261,8 +261,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.removeLeadingLength, length);
-        step.setOperationParameter(TransformationConstants.regexParam, regexString);
+        step.setOperationParameter(TransformationConstants.REMOVELEADING_LENGTH_PARAM, length);
+        step.setOperationParameter(TransformationConstants.REGEX_PARAM, regexString);
         step.setOperationName("removeleading");
         steps.add(step);
     }
@@ -276,8 +276,8 @@ public class TransformationDescription {
         TransformationStep step = new TransformationStep();
         step.setSourceFields(sourceField);
         step.setTargetField(targetField);
-        step.setOperationParameter(TransformationConstants.instantiateTargetType, targetType);
-        step.setOperationParameter(TransformationConstants.instantiateInitMethod, targetTypeInit);
+        step.setOperationParameter(TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM, targetType);
+        step.setOperationParameter(TransformationConstants.INSTANTIATE_INITMETHOD_PARAM, targetTypeInit);
         step.setOperationName("instantiate");
         steps.add(step);
     }
