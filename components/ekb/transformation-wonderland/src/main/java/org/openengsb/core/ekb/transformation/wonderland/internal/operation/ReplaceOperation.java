@@ -22,23 +22,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The replace operation is a string operation. It can be used to replace a certain part of the string in the source
  * field with another string.
  */
-public class ReplaceOperation implements TransformationOperation {
-    private String operationName = "replace";
+public class ReplaceOperation extends AbstractStandardTransformationOperation {
     private String oldStringParam = "oldString";
     private String newStringParam = "newString";
+    
+    public ReplaceOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation is a string operation. It can be used to ");
-        builder.append("replace a certain part of the string in the source field with another string.");
+        builder.append("The ").append(getOperationName()).append(" operation is a string operation. It can be used");
+        builder.append(" to replace a certain part of the string in the source field with another string.");
         return builder.toString();
     }
 
@@ -70,14 +72,4 @@ public class ReplaceOperation implements TransformationOperation {
         }
         return StringUtils.replace(input.get(0).toString(), oldString, newString);
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

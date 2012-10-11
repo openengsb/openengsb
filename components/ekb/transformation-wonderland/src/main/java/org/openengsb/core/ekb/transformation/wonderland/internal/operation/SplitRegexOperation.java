@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +30,21 @@ import org.slf4j.LoggerFactory;
  * The split operation splits the given value of the source field based on the given regular expression split string
  * parameter and returns the value for the given index.
  */
-public class SplitRegexOperation implements TransformationOperation {
+public class SplitRegexOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(SplitRegexOperation.class);
-    private String operationName = "splitRegex";
     private String regexStringParam = "regexString";
     private String resultIndexParam = "resultIndex";
+    
+    public SplitRegexOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation splits the given value of the source field ");
-        builder.append("based on the regular expression split string parameter and returns the value for the given ");
-        builder.append("index.");
+        builder.append("The ").append(getOperationName()).append(" operation splits the given value of the source ");
+        builder.append("field based on the regular expression split string parameter and returns the value for the ");
+        builder.append("given index.");
         return builder.toString();
     }
 
@@ -89,14 +91,4 @@ public class SplitRegexOperation implements TransformationOperation {
                 "The split result does not have that much results for the index parameter");
         }
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

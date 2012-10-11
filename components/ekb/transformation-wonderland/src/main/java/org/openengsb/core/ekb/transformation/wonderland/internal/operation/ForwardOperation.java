@@ -21,19 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The forward operation just copies the given input object and returns it.
  */
-public class ForwardOperation implements TransformationOperation {
-    private String operationName = "forward";
+public class ForwardOperation extends AbstractStandardTransformationOperation {
+    
+    public ForwardOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation just returns the given input value.");
+        builder.append("The ").append(getOperationName()).append(" operation just returns the given input value.");
         return builder.toString();
     }
 
@@ -55,14 +57,5 @@ public class ForwardOperation implements TransformationOperation {
                 "The input values are not matching with the operation input count.");
         }
         return input.get(0);
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

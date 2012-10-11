@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,20 +28,23 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 
 /**
- * The pad operation is a string operation which takes the string of the source, pad it based on the parameters
- * and returns the result.
+ * The pad operation is a string operation which takes the string of the source, pad it based on the parameters and
+ * returns the result.
  */
-public class PadOperation implements TransformationOperation {
+public class PadOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(PadOperation.class);
-    private String operationName = "pad";
     private String lengthParam = "length";
     private String charParam = "char";
     private String directionParam = "direction";
 
+    public PadOperation(String operationName) {
+        super(operationName);
+    }
+
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation which takes the string of the source, ");
+        builder.append("The ").append(getOperationName()).append(" operation which takes the string of the source, ");
         builder.append("pad it based on the parameters and returns the result.");
         return builder.toString();
     }
@@ -58,7 +60,7 @@ public class PadOperation implements TransformationOperation {
         parameters.put(lengthParam, "The length param defines how long the resulting string should be.");
         parameters.put(charParam, "Defines which character should be used to fill the missing characters.");
         parameters.put(directionParam, "Define if the padding should be done at the start of the string or "
-            + "at the end. The value for padding at the start is 'Start' and for the end it is 'End'");
+                + "at the end. The value for padding at the start is 'Start' and for the end it is 'End'");
         return parameters;
     }
 
@@ -69,7 +71,7 @@ public class PadOperation implements TransformationOperation {
             throw new TransformationOperationException(
                 "The input values are not matching with the operation input count.");
         }
-        
+
         String value = input.get(0).toString();
         String lengthString = parameters.get(lengthParam);
         String characterString = parameters.get(charParam);
@@ -96,14 +98,4 @@ public class PadOperation implements TransformationOperation {
         }
         return value;
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

@@ -21,19 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The trim operation removes the leading and the following blanks of a string value.
  */
-public class TrimOperation implements TransformationOperation {
-    private String operationName = "trim";
+public class TrimOperation extends AbstractStandardTransformationOperation {
+
+    public TrimOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" removes the leading and the ");
+        builder.append("The ").append(getOperationName()).append(" removes the leading and the ");
         builder.append("following blanks of a string value");
         return builder.toString();
     }
@@ -56,14 +58,5 @@ public class TrimOperation implements TransformationOperation {
                 "The input values are not matching with the operation input count.");
         }
         return input.get(0).toString().trim();
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

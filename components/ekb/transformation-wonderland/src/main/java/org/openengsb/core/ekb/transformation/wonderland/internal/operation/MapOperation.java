@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
@@ -29,13 +28,16 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
  * value to this key defines the mapped value. If there is no mapping defined for the given value, a
  * TransformationOperationException is thrown.
  */
-public class MapOperation implements TransformationOperation {
-    private String operationName = "map";
+public class MapOperation extends AbstractStandardTransformationOperation {
+
+    public MapOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation maps keys to values. Every key ");
+        builder.append("The ").append(getOperationName()).append(" operation maps keys to values. Every key ");
         builder.append("is a key in the parameter map and the value to this key defines the mapped value.");
         return builder.toString();
     }
@@ -65,14 +67,4 @@ public class MapOperation implements TransformationOperation {
         }
         return value;
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

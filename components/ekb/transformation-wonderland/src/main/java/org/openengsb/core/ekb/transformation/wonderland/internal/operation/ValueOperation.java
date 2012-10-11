@@ -21,20 +21,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The value operation returns a constant value.
  */
-public class ValueOperation implements TransformationOperation {
+public class ValueOperation extends AbstractStandardTransformationOperation {
     private String valueParam = "value";
-    private String operationName = "value";
+    
+    public ValueOperation(String operationName) {
+        super(operationName);
+    }    
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation returns a constant value.");
+        builder.append("The ").append(getOperationName()).append(" operation returns a constant value.");
         return builder.toString();
     }
 
@@ -56,14 +58,5 @@ public class ValueOperation implements TransformationOperation {
         throws TransformationOperationException {
         String value = parameters.containsKey(valueParam) ? parameters.get(valueParam) : "";
         return value;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

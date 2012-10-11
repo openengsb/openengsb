@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +28,20 @@ import org.slf4j.LoggerFactory;
 /**
  * The substring operation creates a substring of the given string based on the given range parameters from and to.
  */
-public class SubStringOperation implements TransformationOperation {
+public class SubStringOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubStringOperation.class);
-    private String operationName = "substring";
     private String fromParam = "from";
     private String toParam = "to";
+    
+    public SubStringOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation creates a substring of the given string based");
-        builder.append(" on the given range parameters from and to.");
+        builder.append("The ").append(getOperationName()).append(" operation creates a substring of the given");
+        builder.append(" string based on the given range parameters from and to.");
         return builder.toString();
     }
 
@@ -88,14 +90,4 @@ public class SubStringOperation implements TransformationOperation {
         }
         return value;
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

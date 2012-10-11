@@ -21,19 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The to upper operation takes the given string and converts all characters to upper case.
  */
-public class ToUpperOperation implements TransformationOperation {
-    private String operationName = "toUpper";
+public class ToUpperOperation extends AbstractStandardTransformationOperation {
+
+    public ToUpperOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" takes the given string and converts all ");
+        builder.append("The ").append(getOperationName()).append(" takes the given string and converts all ");
         builder.append("characters to upper case.");
         return builder.toString();
     }
@@ -56,14 +58,5 @@ public class ToUpperOperation implements TransformationOperation {
                 "The input values are not matching with the operation input count.");
         }
         return input.get(0).toString().toUpperCase();
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

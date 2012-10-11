@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 import com.google.common.base.Joiner;
@@ -30,14 +29,17 @@ import com.google.common.base.Joiner;
  * The concat operation concatenates all source field values of the operation and use the concat string parameter as
  * string which is put between the field values.
  */
-public class ConcatOperation implements TransformationOperation {
+public class ConcatOperation extends AbstractStandardTransformationOperation {
     private String concatStringParam = "concatString";
-    private String operationName = "concat";
+    
+    public ConcatOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation concatenates all source fields ");
+        builder.append("The ").append(getOperationName()).append(" operation concatenates all source fields ");
         builder.append("with the given concatenation string.");
         return builder.toString();
     }
@@ -59,14 +61,5 @@ public class ConcatOperation implements TransformationOperation {
         throws TransformationOperationException {
         String concatString = parameters.containsKey(concatStringParam) ? parameters.get(concatStringParam) : "";
         return Joiner.on(concatString).join(inputs);
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

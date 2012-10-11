@@ -22,21 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The reverse operation is a string operation. It takes the string from the source field, reverses it returns the
  * result.
  */
-public class ReverseOperation implements TransformationOperation {
-    private String operationName = "reverse";
+public class ReverseOperation extends AbstractStandardTransformationOperation {
+    
+    public ReverseOperation(String operationName) {
+        super(operationName);
+    } 
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation is a string operation. It takes the string");
-        builder.append(" from the source field, reverses it returns the result.");
+        builder.append("The ").append(getOperationName()).append(" operation is a string operation. It takes ");
+        builder.append("the string from the source field, reverses it returns the result.");
         return builder.toString();
     }
 
@@ -58,14 +60,5 @@ public class ReverseOperation implements TransformationOperation {
                 "The input values are not matching with the operation input count.");
         }
         return StringUtils.reverse(input.get(0).toString());
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

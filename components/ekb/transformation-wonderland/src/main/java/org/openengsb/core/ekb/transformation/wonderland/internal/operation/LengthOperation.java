@@ -23,20 +23,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The length operation can calculate the length of an element in the source field and return it.
  */
-public class LengthOperation implements TransformationOperation {
+public class LengthOperation extends AbstractStandardTransformationOperation {
     private String lengthFuncParam = "function";
-    private String operationName = "length";
+
+    public LengthOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation can calculate the length ");
+        builder.append("The ").append(getOperationName()).append(" operation can calculate the length ");
         builder.append("of an element in the source field and return it.");
         return builder.toString();
     }
@@ -78,14 +80,5 @@ public class LengthOperation implements TransformationOperation {
         } catch (InvocationTargetException e) {
             throw new TransformationOperationException("Can't get length of the source field", e);
         }
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

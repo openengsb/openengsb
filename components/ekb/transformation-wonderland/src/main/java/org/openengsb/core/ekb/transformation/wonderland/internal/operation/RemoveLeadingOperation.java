@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +30,19 @@ import org.slf4j.LoggerFactory;
  * The remove leading operation is a string operation. It takes the string from the source field and removes all
  * elements at the start which match a regular expression until a maximum length.
  */
-public class RemoveLeadingOperation implements TransformationOperation {
+public class RemoveLeadingOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveLeadingOperation.class);
-    private String operationName = "removeleading";
     private String regexStringParam = "regexString";
     private String lengthParam = "length";
+    
+    public RemoveLeadingOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" is a string operation. It takes the string ");
+        builder.append("The ").append(getOperationName()).append(" is a string operation. It takes the string ");
         builder.append("from the source field and removes all elements at the start which match a regular ");
         builder.append("expression until a maximum length.");
         return builder.toString();
@@ -81,14 +83,4 @@ public class RemoveLeadingOperation implements TransformationOperation {
         }
         return value;
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }

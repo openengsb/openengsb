@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +32,21 @@ import org.slf4j.LoggerFactory;
  * The instantiate operation is used to support other field types than only strings. It instantiates an object of the
  * given type with the given parameter for the construction.
  */
-public class InstantiateOperation implements TransformationOperation {
+public class InstantiateOperation extends AbstractStandardTransformationOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstantiateOperation.class);
-    private String operationName = "instantiate";
     private String typeParam = "targetType";
     private String initFuncParam = "targetTypeInit";
+    
+    public InstantiateOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation is used to support other field types than ");
-        builder.append("only strings. It instantiates an object of the given type with the given parameter ");
-        builder.append("for the construction.");
+        builder.append("The ").append(getOperationName()).append(" operation is used to support other ");
+        builder.append("field types than only strings. It instantiates an object of the given type with ");
+        builder.append("the given parameter for the construction.");
         return builder.toString();
     }
 
@@ -104,14 +106,5 @@ public class InstantiateOperation implements TransformationOperation {
             throw new TransformationOperationException(message, e);
         }
         return targetObject;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

@@ -48,22 +48,22 @@ public class TestTransformationOperationLoader implements TransformationOperatio
     
     public TestTransformationOperationLoader() {
         operations = new HashMap<String, TransformationOperation>();
-        addOperation(new ForwardOperation());
-        addOperation(new ConcatOperation());
-        addOperation(new SplitOperation());
-        addOperation(new SplitRegexOperation());
-        addOperation(new MapOperation());
-        addOperation(new TrimOperation());
-        addOperation(new ToLowerOperation());
-        addOperation(new ToUpperOperation());
-        addOperation(new SubStringOperation());
-        addOperation(new ValueOperation());
-        addOperation(new LengthOperation());
-        addOperation(new ReplaceOperation());
-        addOperation(new ReverseOperation());
-        addOperation(new RemoveLeadingOperation());
-        addOperation(new PadOperation());
-        addOperation(new InstantiateOperation());
+        addOperation(new ForwardOperation("forward"));
+        addOperation(new ConcatOperation("concat"));
+        addOperation(new SplitOperation("split"));
+        addOperation(new SplitRegexOperation("splitRegex"));
+        addOperation(new MapOperation("map"));
+        addOperation(new TrimOperation("trim"));
+        addOperation(new ToLowerOperation("toLower"));
+        addOperation(new ToUpperOperation("toUpper"));
+        addOperation(new SubStringOperation("substring"));
+        addOperation(new ValueOperation("value"));
+        addOperation(new LengthOperation("length"));
+        addOperation(new ReplaceOperation("replace"));
+        addOperation(new ReverseOperation("reverse"));
+        addOperation(new RemoveLeadingOperation("removeleading"));
+        addOperation(new PadOperation("pad"));
+        addOperation(new InstantiateOperation("instantiate"));
     }
     
     private void addOperation(TransformationOperation operation) {

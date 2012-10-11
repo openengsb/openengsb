@@ -21,19 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The to lower operation takes the given string and converts all characters to lower case.
  */
-public class ToLowerOperation implements TransformationOperation {
-    private String operationName = "toLower";
+public class ToLowerOperation extends AbstractStandardTransformationOperation {
+    
+    public ToLowerOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" takes the given string and converts all ");
+        builder.append("The ").append(getOperationName()).append(" takes the given string and converts all ");
         builder.append("characters to lower case.");
         return builder.toString();
     }
@@ -56,14 +58,5 @@ public class ToLowerOperation implements TransformationOperation {
                 "The input values are not matching with the operation input count.");
         }
         return input.get(0).toString().toLowerCase();
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 }

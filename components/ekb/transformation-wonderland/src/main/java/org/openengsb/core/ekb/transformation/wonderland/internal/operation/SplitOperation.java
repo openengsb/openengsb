@@ -21,23 +21,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
 /**
  * The split operation splits the given value of the source field based on the split string parameter and returns the
  * value for the given index.
  */
-public class SplitOperation implements TransformationOperation {
-    private String operationName = "split";
+public class SplitOperation extends AbstractStandardTransformationOperation {
     private String splitStringParam = "splitString";
     private String resultIndexParam = "resultIndex";
+    
+    public SplitOperation(String operationName) {
+        super(operationName);
+    }
 
     @Override
     public String getOperationDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("The ").append(operationName).append(" operation splits the given value of the source field ");
-        builder.append("based on the split string parameter and returns the value for the given index.");
+        builder.append("The ").append(getOperationName()).append(" operation splits the given value of the source ");
+        builder.append("field based on the split string parameter and returns the value for the given index.");
         return builder.toString();
     }
 
@@ -75,14 +77,4 @@ public class SplitOperation implements TransformationOperation {
         }
         return value;
     }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
-    }
-
 }
