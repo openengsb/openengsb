@@ -79,7 +79,7 @@ public class ModelDescription {
         this.versionString = checkVersionString(versionString);
     }
 
-    private static String checkVersionString(String versionString) {
+    private String checkVersionString(String versionString) {
         try {
             return Version.parseVersion(versionString).toString();
         } catch (IllegalArgumentException e) {
@@ -87,6 +87,18 @@ public class ModelDescription {
                 String.format("%s is not a valid version string for a model description", versionString);
             throw new IllegalArgumentException(errorMessage, e);
         }
+    }
+    
+    /**
+     * Gets the model description object of the given model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static ModelDescription getModelDescriptionFromModel(Object object) throws IllegalArgumentException {
+        if (!OpenEngSBModel.class.isAssignableFrom(object.getClass())) {
+            throw new IllegalArgumentException("The given object is not a model");
+        }
+        OpenEngSBModel model = (OpenEngSBModel) object;
+        return new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
     }
 
     @Override
