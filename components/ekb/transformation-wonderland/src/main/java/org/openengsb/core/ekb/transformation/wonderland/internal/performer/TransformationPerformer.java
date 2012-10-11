@@ -17,12 +17,12 @@
 
 package org.openengsb.core.ekb.transformation.wonderland.internal.performer;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationOperation;
@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory;
 public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
-    private Class<?> sourceClass;
-    private Class<?> targetClass;
     private Object source;
     private Object target;
     private ModelRegistry modelRegistry;
@@ -70,8 +68,11 @@ public class TransformationPerformer {
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException, ClassNotFoundException {
         checkNeededValues(description);
-        sourceClass = modelRegistry.loadModel(description.getSourceModel());
-        targetClass = modelRegistry.loadModel(description.getTargetModel());
+        Class<?> sourceClass = modelRegistry.loadModel(description.getSourceModel());
+        Class<?> targetClass = modelRegistry.loadModel(description.getTargetModel());
+        if (!sourceClass.isAssignableFrom(source.getClass())) {
+            throw new IllegalArgumentException("The given source object does not match the given description");
+        }
         this.source = source;
         target = targetClass.newInstance();
         for (TransformationStep step : description.getTransformingSteps()) {
@@ -112,44 +113,18 @@ public class TransformationPerformer {
      * fields.
      */
     private void setObjectToTargetField(String fieldname, Object value) throws Exception {
-        if (TransformationPerformUtils.isTemporaryField(fieldname)) {
+        if (isTemporaryField(fieldname)) {
             temporaryFields.put(fieldname, value);
         } else {
-            Method setter = getSetterForField(fieldname, value);
-            if (setter == null) {
-                String message = "There is no setter for the field %s at the target model found. Step will be skipped";
-                LOGGER.error(String.format(message, fieldname));
-                return;
-            }
-            setter.invoke(target, value);
+            FieldUtils.writeField(target, fieldname, value, true);
         }
-    }
-
-    /**
-     * Tries to get the setter for the given field name. May need a search for the method in all methods the target
-     * model has.
-     */
-    private Method getSetterForField(String fieldname, Object value) throws Exception {
-        String methodName = TransformationPerformUtils.getSetterName(fieldname);
-        Method setter = null;
-        if (value == null) {
-            for (Method method : targetClass.getMethods()) {
-                if (method.getName().equals(methodName)) {
-                    setter = method;
-                    break;
-                }
-            }
-        } else {
-            setter = targetClass.getMethod(methodName, value.getClass());
-        }
-        return setter;
     }
 
     /**
      * Gets the value of the field with the field name of the source object. Is also aware of temporary fields.
      */
     private Object getObjectFromSourceField(String fieldname) throws Exception {
-        if (TransformationPerformUtils.isTemporaryField(fieldname)) {
+        if (isTemporaryField(fieldname)) {
             if (!temporaryFields.containsKey(fieldname)) {
                 String message = String.format("The temporary field %s doesn't exist.", fieldname);
                 throw new TransformationStepException(message);
@@ -157,13 +132,19 @@ public class TransformationPerformer {
             Object temp = temporaryFields.get(fieldname);
             return temp;
         } else {
-            Method getter = sourceClass.getMethod(TransformationPerformUtils.getGetterName(fieldname));
-            Object result = getter.invoke(source);
+            Object result = FieldUtils.readField(source, fieldname, true);
             if (result == null) {
                 String message = String.format("The source field %s is null and can be ignored", fieldname);
                 throw new TransformationStepException(message);
             }
             return result;
         }
+    }
+    
+    /**
+     * Returns true if the given field name points to a temporary field. Returns false if not.
+     */
+    private boolean isTemporaryField(String fieldname) {
+        return fieldname.startsWith("temp.");
     }
 }
