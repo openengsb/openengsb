@@ -38,6 +38,7 @@ import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.common.SimpleModelWrapper;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.domain.example.model.EOModel;
 import org.openengsb.domain.example.model.SourceModelA;
@@ -131,7 +132,14 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testIfEOModelIsRecognizedAsEngineeringObject_shouldWork() throws Exception {
         Class<?> eo = registry.loadModel(getEOModelDescription());
-        assertThat(ModelUtils.isEngineeringObjectClass(eo), is(true));
+        assertThat(SimpleModelWrapper.isEngineeringObjectClass(eo), is(true));
+    }
+    
+    @Test
+    public void testIfModelsAreRecognizedAsModels_shouldWork() throws Exception {
+        Class<?> eo = registry.loadModel(getSourceModelADescription());
+        assertThat(ModelUtils.isClassModel(eo), is(true));
+        assertThat(ModelUtils.isClassModel(SourceModelA.class), is(true));        
     }
     
     @Test

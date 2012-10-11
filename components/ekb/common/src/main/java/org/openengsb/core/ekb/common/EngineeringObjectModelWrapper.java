@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.persistence.persist.edb.internal;
+package org.openengsb.core.ekb.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,21 +28,15 @@ import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
-import org.openengsb.core.ekb.common.EDBConverter;
 
 /**
  * The EOModel class is a helper class which encapsulates functions for models which are Engineering Objects.
  */
 @SuppressWarnings("serial")
-public class EOModel extends SimpleModel {
-    private ModelRegistry modelRegistry;
-    private EDBConverter edbConverter;
+public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
 
-    public EOModel(OpenEngSBModel model, ModelRegistry modelRegistry, EngineeringDatabaseService edbService,
-            EDBConverter edbConverter) {
-        super(model, edbService);
-        this.modelRegistry = modelRegistry;
-        this.edbConverter = edbConverter;
+    public EngineeringObjectModelWrapper(OpenEngSBModel model) {
+        super(model);
     }
 
     /**
@@ -62,7 +56,8 @@ public class EOModel extends SimpleModel {
      * Loads the model referenced by the given field for the given model instance. Returns null if the field has no
      * value set.
      */
-    public OpenEngSBModel loadReferencedModel(Field field) {
+    public OpenEngSBModel loadReferencedModel(Field field, ModelRegistry modelRegistry,
+            EngineeringDatabaseService edbService, EDBConverter edbConverter) {
         try {
             ModelDescription description = getModelDescriptionFromField(field);
             String modelKey = (String) FieldUtils.readField(field, model, true);

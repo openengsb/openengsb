@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,30 +225,6 @@ public final class ModelUtils {
      */
     public static boolean isObjectModel(Object model) {
         return isClassModel(model.getClass());
-    }
-
-    /**
-     * Returns true if the given object is an OpenEngSBModel and is also an Engineering Object, which means that there
-     * is at least one OpenEngSBForeignKey field.
-     */
-    public static boolean isEngineeringObject(Object model) {
-        return isEngineeringObjectClass(model.getClass());
-    }
-
-    /**
-     * Returns true if the given class is an OpenEngSBModel and is also an Engineering Object, which means that there is
-     * at least one OpenEngSBForeignKey field.
-     */
-    public static boolean isEngineeringObjectClass(Class<?> clazz) {
-        if (!isClassModel(clazz)) {
-            return false;
-        }
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

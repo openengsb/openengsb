@@ -15,38 +15,42 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.persistence.persist.edb.internal;
+package org.openengsb.core.ekb.common;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
-import org.openengsb.core.ekb.common.EDBConverterUtils;
 import org.openengsb.core.util.ModelUtils;
 
 /**
- * The EOModel class is a helper class which encapsulates functions for models which are not part of the standard
- * function set.
+ * The SimpleModelWrapper class is a helper class which encapsulates functions for models which are not part of the
+ * standard function set.
  */
 @SuppressWarnings("serial")
-public class SimpleModel implements OpenEngSBModel {
+public class SimpleModelWrapper implements OpenEngSBModel {
     protected OpenEngSBModel model;
-    protected EngineeringDatabaseService edbService;
 
-    public SimpleModel(OpenEngSBModel model, EngineeringDatabaseService edbService) {
+    public SimpleModelWrapper(OpenEngSBModel model) {
         this.model = model;
-        this.edbService = edbService;
+    }
+
+    public SimpleModelWrapper(Object model) {
+        ModelUtils.checkIfObjectIsModel(model);
+        this.model = (OpenEngSBModel) model;
     }
 
     /**
      * Returns a list of EDBObjects which are referring to this model.
      */
-    public List<EDBObject> getModelsReferringToThisModel(EKBCommit commit) {
+    public List<EDBObject> getModelsReferringToThisModel(EKBCommit commit, EngineeringDatabaseService edbService) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(model, commit));
         return edbService.query(params, System.currentTimeMillis());
@@ -64,9 +68,31 @@ public class SimpleModel implements OpenEngSBModel {
      * Returns true if the model is an engineering object, returns false if not.
      */
     public Boolean isEngineeringObject() {
-        return ModelUtils.isEngineeringObject(model);
+        return isEngineeringObjectClass(model.getClass());
     }
     
+    /**
+     * Returns true if the class is the class of an engineering object, returns false if not.
+     */
+    public static Boolean isEngineeringObjectClass(Class<?> clazz) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(OpenEngSBForeignKey.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the corresponding engineering object model wrapper to the simple model this wrapper is wrapping.
+     */
+    public EngineeringObjectModelWrapper toEngineeringObject() throws IllegalArgumentException {
+        if (!isEngineeringObject()) {
+            throw new IllegalArgumentException("The model of the SimpleModelWrapper is no EngineeringObject");
+        }
+        return new EngineeringObjectModelWrapper(model);
+    }
+
     /**
      * Returns the underlying OpenEngSBModel instance object
      */

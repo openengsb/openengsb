@@ -31,7 +31,6 @@ import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.ekb.api.EKBCommit;
-import org.openengsb.core.util.ModelUtils;
 
 /**
  * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: EDBObjects
@@ -147,7 +146,7 @@ public final class EDBConverterUtils {
      */
     public static void fillEDBObjectWithEngineeringObjectInformation(EDBObject object, OpenEngSBModel model)
         throws IllegalAccessException {
-        if (!ModelUtils.isEngineeringObject(model)) {
+        if (!new SimpleModelWrapper(model).isEngineeringObject()) {
             return;
         }
         for (Field field : model.getClass().getDeclaredFields()) {
@@ -176,7 +175,7 @@ public final class EDBConverterUtils {
      * Filters the reference prefix values added in the model to EDBObject conversion out of the EDBObject
      */
     public static void filterEngineeringObjectInformation(EDBObject object, Class<?> model) {
-        if (!ModelUtils.isEngineeringObjectClass(model)) {
+        if (!SimpleModelWrapper.isEngineeringObjectClass(model)) {
             return;
         }
         Set<String> keySet = object.keySet();

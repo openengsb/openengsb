@@ -17,8 +17,8 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
-import static org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiff.createModelDiff;
 import static org.openengsb.core.api.model.ModelDescription.getModelDescriptionFromModel;
+import static org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiff.createModelDiff;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -35,7 +35,8 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.common.EDBConverter;
-import org.openengsb.core.util.ModelUtils;
+import org.openengsb.core.ekb.common.EngineeringObjectModelWrapper;
+import org.openengsb.core.ekb.common.SimpleModelWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +102,7 @@ public class EngineeringObjectEnhancer {
             if (updated.containsKey(getCompleteModelOID(model, commit))) {
                 continue; // this model was already updated in this commit
             }
-            if (ModelUtils.isEngineeringObject(model)) {
+            if (new SimpleModelWrapper(model).isEngineeringObject()) {
                 additionalUpdates.addAll(performEOModelUpdate(model, commit));
             }
             additionalUpdates.addAll(getReferenceBasedUpdates(model, updated, commit));
@@ -138,9 +139,9 @@ public class EngineeringObjectEnhancer {
      */
     private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        EOModel eo = createEOModelInstance(model);
+        EngineeringObjectModelWrapper eo = new EngineeringObjectModelWrapper(model);
         for (Field field : eo.getForeignKeyFields()) {
-            OpenEngSBModel result = performMerge(model, eo.loadReferencedModel(field));
+            OpenEngSBModel result = performMerge(model, loadReferencedModel(eo, field));
             if (result != null) {
                 updates.add(result);
             }
@@ -163,8 +164,8 @@ public class EngineeringObjectEnhancer {
     private List<OpenEngSBModel> getReferenceBasedUpdates(OpenEngSBModel model,
             Map<Object, OpenEngSBModel> updated, EKBCommit commit) throws EKBException {
         List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        SimpleModel simple = new SimpleModel(model, edbService);
-        List<EDBObject> references = simple.getModelsReferringToThisModel(commit);
+        SimpleModelWrapper simple = new SimpleModelWrapper(model);
+        List<EDBObject> references = simple.getModelsReferringToThisModel(commit, edbService);
         for (EDBObject reference : references) {
             EDBModelObject modelReference = new EDBModelObject(reference, modelRegistry, edbConverter);
             OpenEngSBModel ref = updateEOByUpdatedModel(modelReference, model, updated);
@@ -197,8 +198,9 @@ public class EngineeringObjectEnhancer {
      */
     private void enhanceCommitInserts(EKBCommit commit) throws EKBException {
         for (OpenEngSBModel model : commit.getInserts()) {
-            if (ModelUtils.isEngineeringObject(model)) {
-                performInsertEOLogic(createEOModelInstance(model));
+            SimpleModelWrapper simple = new SimpleModelWrapper(model);
+            if (simple.isEngineeringObject()) {
+                performInsertEOLogic(simple.toEngineeringObject());
             }
         }
     }
@@ -206,7 +208,7 @@ public class EngineeringObjectEnhancer {
     /**
      * Performs the logic for the enhancement needed to be performed to insert an Engineering Object into the EDB.
      */
-    private void performInsertEOLogic(EOModel model) {
+    private void performInsertEOLogic(EngineeringObjectModelWrapper model) {
         for (Field field : model.getForeignKeyFields()) {
             mergeEngineeringObjectWithReferencedModel(field, model.getModel());
         }
@@ -229,18 +231,15 @@ public class EngineeringObjectEnhancer {
      * Merges the given EngineeringObject with the referenced model which is defined in the given field.
      */
     private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
-        EOModel eo = createEOModelInstance(model);
-        OpenEngSBModel result = performMerge(eo.loadReferencedModel(field), model);
+        EngineeringObjectModelWrapper eo = new EngineeringObjectModelWrapper(model);
+        OpenEngSBModel result = performMerge(loadReferencedModel(eo, field), model);
         if (result != null) {
             model = result;
         }
     }
-
-    /**
-     * Creates an EOModel instance out of the given model and all class variables needed for the EOModel
-     */
-    private EOModel createEOModelInstance(OpenEngSBModel model) {
-        return new EOModel(model, modelRegistry, edbService, edbConverter);
+    
+    private OpenEngSBModel loadReferencedModel(EngineeringObjectModelWrapper eo, Field field) {
+        return eo.loadReferencedModel(field, modelRegistry, edbService, edbConverter);
     }
 
     /**
