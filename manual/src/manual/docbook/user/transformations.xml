@@ -82,7 +82,10 @@
         <title>The transformation steps</title>
         <para>
             There are a list of transformation steps (or transformation operations) you can use for your transformation
-            definition. This operations are introduced in the following paragraphs.
+            definition which are delivered with the OpenEngSB. This operations are introduced in the following paragraphs.
+            However, there is also the possibility of defining and adding of own transformation operations. More details
+            about that can be read in the <link linkend="howto.addTransformationOperation"> How to add a transformation operation</link>
+            section.
         </para>
         <para>
             The forward operation is the simplest operation. It just forwards a field value from a source field to a 
