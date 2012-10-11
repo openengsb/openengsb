@@ -31,7 +31,7 @@ public class ValueOperation extends AbstractStandardTransformationOperation {
     private String valueParam = TransformationConstants.VALUE_PARAM;
     
     public ValueOperation(String operationName) {
-        super(operationName);
+        super(operationName, ValueOperation.class);
     }    
 
     @Override
@@ -55,9 +55,10 @@ public class ValueOperation extends AbstractStandardTransformationOperation {
     }
 
     @Override
-    public Object performOperation(List<Object> inputs, Map<String, String> parameters)
+    public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        String value = parameters.containsKey(valueParam) ? parameters.get(valueParam) : "";
+        checkInputSize(input);
+        String value = getParameterOrDefault(parameters, valueParam, "");
         return value;
     }
 }

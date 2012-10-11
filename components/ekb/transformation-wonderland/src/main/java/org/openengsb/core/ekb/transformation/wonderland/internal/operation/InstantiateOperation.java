@@ -26,20 +26,17 @@ import java.util.Map;
 
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The instantiate operation is used to support other field types than only strings. It instantiates an object of the
  * given type with the given parameter for the construction.
  */
 public class InstantiateOperation extends AbstractStandardTransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstantiateOperation.class);
     private String typeParam = TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM;
     private String initFuncParam = TransformationConstants.INSTANTIATE_INITMETHOD_PARAM;
-    
+
     public InstantiateOperation(String operationName) {
-        super(operationName);
+        super(operationName, InstantiateOperation.class);
     }
 
     @Override
@@ -61,51 +58,74 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
         Map<String, String> params = new HashMap<String, String>();
         params.put(typeParam, "The fully qualified name of the class which shall be instantiated.");
         params.put(initFuncParam, "Defines which (static) function should be used to instantiate "
-            + "the object. The source field value will be taken as argument for this function. If"
-            + " this parameter is not set, the constructor of the class is used with the source "
-            + "field value as parameter");
+                + "the object. The source field value will be taken as argument for this function. If"
+                + " this parameter is not set, the constructor of the class is used with the source "
+                + "field value as parameter");
         return params;
     }
 
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
-        
-        Object sourceObject = input.get(0);
-        String targetType = parameters.get(typeParam);
-        String targetTypeInit = parameters.get(initFuncParam);
-        Object targetObject = null;
-        Class<?> targetClass = null;
+        checkInputSize(input);
+        String targetType = getParameterOrException(parameters, typeParam);
+        String initMethodName = getParameterOrDefault(parameters, initFuncParam, null);
+        return tryInitiatingObject(targetType, initMethodName, input.get(0));
+    }
+
+    /**
+     * Try to perform the actual initiating of the target class object. Returns the target class object or throws a
+     * TransformationOperationException if something went wrong.
+     */
+    private Object tryInitiatingObject(String targetType, String initMethodName, Object fieldObject)
+        throws TransformationOperationException {
+        Class<?> targetClass = loadClassByName(targetType);
         try {
-            targetClass = this.getClass().getClassLoader().loadClass(targetType);
-        } catch (Exception e) {
-            String message = "The class %s can't be found. The instantiate operation will be ignored.";
-            message = String.format(message, targetType);
-            LOGGER.error(message);
-            throw new TransformationOperationException(message, e);
-        }
-        try {
-            if (targetTypeInit == null) {
-                Constructor<?> constr = targetClass.getConstructor(sourceObject.getClass());
-                targetObject = constr.newInstance(sourceObject);
+            if (initMethodName == null) {
+                return initiateByConstructor(targetClass, fieldObject);
             } else {
-                Method method = targetClass.getMethod(targetTypeInit, sourceObject.getClass());
-                if (Modifier.isStatic(method.getModifiers())) {
-                    targetObject = method.invoke(null, sourceObject);
-                } else {
-                    targetObject = method.invoke(targetClass.newInstance(), sourceObject);
-                }
+                return initiateByMethodName(targetClass, initMethodName, fieldObject);
             }
         } catch (Exception e) {
             String message = "Unable to create the desired object. The instantiate operation will be ignored.";
             message = String.format(message, targetType);
-            LOGGER.error(message);
+            getLogger().error(message);
             throw new TransformationOperationException(message, e);
         }
-        return targetObject;
+    }
+
+    /**
+     * Tries to initiate an object of the target class through the given init method name with the given object as
+     * parameter.
+     */
+    private Object initiateByMethodName(Class<?> targetClass, String initMethodName, Object object) throws Exception {
+        Method method = targetClass.getMethod(initMethodName, object.getClass());
+        if (Modifier.isStatic(method.getModifiers())) {
+            return method.invoke(null, object);
+        } else {
+            return method.invoke(targetClass.newInstance(), object);
+        }
+    }
+
+    /**
+     * Tries to initiate an object of the target class through a constructor with the given object as parameter.
+     */
+    private Object initiateByConstructor(Class<?> targetClass, Object object) throws Exception {
+        Constructor<?> constr = targetClass.getConstructor(object.getClass());
+        return constr.newInstance(object);
+    }
+
+    /**
+     * Tries to load the class with the given name. Throws a TransformationOperationException if this is not possible.
+     */
+    private Class<?> loadClassByName(String className) throws TransformationOperationException {
+        try {
+            return this.getClass().getClassLoader().loadClass(className);
+        } catch (Exception e) {
+            String message = "The class %s can't be found. The instantiate operation will be ignored.";
+            message = String.format(message, className);
+            getLogger().error(message);
+            throw new TransformationOperationException(message, e);
+        }
     }
 }

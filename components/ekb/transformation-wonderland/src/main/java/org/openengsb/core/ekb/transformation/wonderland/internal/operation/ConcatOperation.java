@@ -34,7 +34,7 @@ public class ConcatOperation extends AbstractStandardTransformationOperation {
     private String concatStringParam = TransformationConstants.CONCAT_PARAM;
     
     public ConcatOperation(String operationName) {
-        super(operationName);
+        super(operationName, ConcatOperation.class);
     }
 
     @Override
@@ -58,9 +58,10 @@ public class ConcatOperation extends AbstractStandardTransformationOperation {
     }
 
     @Override
-    public Object performOperation(List<Object> inputs, Map<String, String> parameters)
+    public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        String concatString = parameters.containsKey(concatStringParam) ? parameters.get(concatStringParam) : "";
-        return Joiner.on(concatString).join(inputs);
+        checkInputSize(input);
+        String concatString = getParameterOrDefault(parameters, concatStringParam, "");
+        return Joiner.on(concatString).join(input);
     }
 }

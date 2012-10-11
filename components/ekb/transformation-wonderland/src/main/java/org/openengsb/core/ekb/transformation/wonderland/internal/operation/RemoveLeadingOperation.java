@@ -24,20 +24,17 @@ import java.util.regex.Matcher;
 
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The remove leading operation is a string operation. It takes the string from the source field and removes all
  * elements at the start which match a regular expression until a maximum length.
  */
 public class RemoveLeadingOperation extends AbstractStandardTransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RemoveLeadingOperation.class);
     private String regexStringParam = TransformationConstants.REGEX_PARAM;
     private String lengthParam = TransformationConstants.REMOVELEADING_LENGTH_PARAM;
     
     public RemoveLeadingOperation(String operationName) {
-        super(operationName);
+        super(operationName, RemoveLeadingOperation.class);
     }
 
     @Override
@@ -66,22 +63,25 @@ public class RemoveLeadingOperation extends AbstractStandardTransformationOperat
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
+        checkInputSize(input);
+        
         String value = input.get(0).toString();
-        String regex = parameters.get(regexStringParam);
-        String lengthString = parameters.get(lengthParam);
-        Integer length = OperationUtils.parseIntString(lengthString, false, 0, LOGGER);
-        Matcher matcher = OperationUtils.generateMatcher(regex, value, LOGGER);
+        Integer length = parseIntString(parameters.get(lengthParam), false, 0);
+        Matcher matcher = generateMatcher(parameters.get(regexStringParam), value);
+        return performRemoveLeading(value, length, matcher);
+    }
+    
+    /**
+     * Perform the remove leading operation. Returns the original string if the matcher does not match with the string
+     */
+    private String performRemoveLeading(String source, Integer length, Matcher matcher) {
         if (length != null && length != 0) {
             matcher.region(0, length);
         }
         if (matcher.find()) {
             String matched = matcher.group();
-            value = value.substring(matched.length());
+            return source.substring(matched.length());
         }
-        return value;
+        return source;
     }
 }

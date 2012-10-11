@@ -23,8 +23,6 @@ import java.util.Map;
 
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
@@ -33,13 +31,12 @@ import com.google.common.base.Strings;
  * returns the result.
  */
 public class PadOperation extends AbstractStandardTransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PadOperation.class);
     private String lengthParam = TransformationConstants.PAD_LENGTH_PARAM;
     private String charParam = TransformationConstants.PAD_CHARACTER_PARAM;
     private String directionParam = TransformationConstants.PAD_DIRECTION_PARAM;
 
     public PadOperation(String operationName) {
-        super(operationName);
+        super(operationName, PadOperation.class);
     }
 
     @Override
@@ -68,35 +65,47 @@ public class PadOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
+        checkInputSize(input);
 
         String value = input.get(0).toString();
-        String lengthString = parameters.get(lengthParam);
-        String characterString = parameters.get(charParam);
-        String directionString = parameters.get(directionParam);
-        Integer length = OperationUtils.parseIntString(lengthString, true, 0, LOGGER);
-        if (characterString == null || characterString.isEmpty()) {
-            String message = "The given character string for the pad is empty. Step will be skipped.";
-            LOGGER.error(message);
-            throw new TransformationOperationException(message);
-        }
-        char character = characterString.charAt(0);
-        if (characterString.length() > 0) {
-            LOGGER.debug("The given character string is longer than one element. The first character is used.");
-        }
-        if (directionString == null || !(directionString.equals("Start") || directionString.equals("End"))) {
-            LOGGER.debug("Unrecognized direction string. The standard value 'Start' will be used.");
-            directionString = "Start";
-        }
+        Integer length = parseIntString(parameters.get(lengthParam), true, 0);
+        Character padChar = getPadCharacter(getParameterOrException(parameters, charParam));
+        String directionString = getDirectionString(parameters.get(directionParam));
 
-        if (directionString.equals("Start")) {
-            value = Strings.padStart(value, length, character);
-        } else {
-            value = Strings.padEnd(value, length, character);
+        return performPadOperation(value, length, padChar, directionString);
+    }
+
+    /**
+     * Returns the character which is used for the padding. If the character string is longer than one char, the first
+     * char will be used.
+     */
+    private Character getPadCharacter(String characterString) {
+        if (characterString.length() > 0) {
+            getLogger().debug("The given character string is longer than one element. The first character is used.");
         }
-        return value;
+        return characterString.charAt(0);
+    }
+
+    /**
+     * Returns the direction in which the padding will be done. If the direction string is null or invalid, 'Start' will
+     * be taken instead.
+     */
+    private String getDirectionString(String direction) {
+        if (direction == null || !(direction.equals("Start") || direction.equals("End"))) {
+            getLogger().debug("Unrecognized direction string. The standard value 'Start' will be used.");
+            return "Start";
+        }
+        return direction;
+    }
+
+    /**
+     * Perform the pad operation itself and returns the result
+     */
+    private String performPadOperation(String source, Integer length, Character padChar, String direction) {
+        if (direction.equals("Start")) {
+            return Strings.padStart(source, length, padChar);
+        } else {
+            return Strings.padEnd(source, length, padChar);
+        }
     }
 }

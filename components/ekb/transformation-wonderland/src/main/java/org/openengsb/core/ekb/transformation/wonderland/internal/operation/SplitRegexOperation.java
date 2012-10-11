@@ -24,20 +24,17 @@ import java.util.regex.Matcher;
 
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The split operation splits the given value of the source field based on the given regular expression split string
  * parameter and returns the value for the given index.
  */
 public class SplitRegexOperation extends AbstractStandardTransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SplitRegexOperation.class);
     private String regexStringParam = TransformationConstants.REGEX_PARAM;
     private String resultIndexParam = TransformationConstants.INDEX_PARAM;
-    
+
     public SplitRegexOperation(String operationName) {
-        super(operationName);
+        super(operationName, SplitRegexOperation.class);
     }
 
     @Override
@@ -66,22 +63,28 @@ public class SplitRegexOperation extends AbstractStandardTransformationOperation
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
-        Object value = null;
-        String splitString = parameters.containsKey(regexStringParam) ? parameters.get(regexStringParam) : "";
+        checkInputSize(input);
+
+        String splitString = getParameterOrDefault(parameters, regexStringParam, "");
         String indexString = parameters.get(resultIndexParam);
+        return performSplitting(input.get(0).toString(), splitString, indexString);
+    }
+
+    /**
+     * Performs the actual splitting operation. Throws a TransformationOperationException if the index string is not a
+     * number or causes an IndexOutOfBoundsException.
+     */
+    private String performSplitting(String source, String splitString, String indexString)
+        throws TransformationOperationException {
         try {
-            Integer index = OperationUtils.parseIntString(indexString, false, 0, LOGGER);
-            Matcher matcher = OperationUtils.generateMatcher(splitString, input.get(0).toString(), LOGGER);
+            Integer index = parseIntString(indexString, false, 0);
+            Matcher matcher = generateMatcher(splitString, source);
             for (int i = 0; i <= index; i++) {
                 matcher.find();
             }
-            value = matcher.group();
+            String value = matcher.group();
             if (value == null) {
-                LOGGER.warn("No result for given regex and index. The empty string will be taken instead.");
+                getLogger().warn("No result for given regex and index. The empty string will be taken instead.");
                 value = "";
             }
             return value;

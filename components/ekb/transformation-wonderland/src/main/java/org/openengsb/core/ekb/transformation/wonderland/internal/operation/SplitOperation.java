@@ -31,9 +31,9 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class SplitOperation extends AbstractStandardTransformationOperation {
     private String splitStringParam = TransformationConstants.SPLIT_PARAM;
     private String resultIndexParam = TransformationConstants.INDEX_PARAM;
-    
+
     public SplitOperation(String operationName) {
-        super(operationName);
+        super(operationName, SplitOperation.class);
     }
 
     @Override
@@ -60,22 +60,26 @@ public class SplitOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
-        String splitString = parameters.containsKey(splitStringParam) ? parameters.get(splitStringParam) : "";
-        String indexString = parameters.containsKey(resultIndexParam) ? parameters.get(resultIndexParam) : "0";
-        Object value = null;
+        checkInputSize(input);
+        String splitString = getParameterOrDefault(parameters, splitStringParam, "");
+        String indexString = getParameterOrDefault(parameters, resultIndexParam, "0");
+        return performSplitting(input.get(0).toString(), splitString, indexString);
+    }
+
+    /**
+     * Performs the actual splitting operation. Throws a TransformationOperationException if the index string is not a
+     * number or causes an IndexOutOfBoundsException.
+     */
+    private String performSplitting(String source, String splitString, String indexString)
+        throws TransformationOperationException {
         try {
             Integer index = Integer.parseInt(indexString);
-            value = input.get(0).toString().split(splitString)[index];
+            return source.split(splitString)[index];
         } catch (NumberFormatException e) {
             throw new TransformationOperationException("The given result index parameter is not a number");
         } catch (IndexOutOfBoundsException e) {
             throw new TransformationOperationException(
                 "The split result does not have that much results for the index parameter");
         }
-        return value;
     }
 }

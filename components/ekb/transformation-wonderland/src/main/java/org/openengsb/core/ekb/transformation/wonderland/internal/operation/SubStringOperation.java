@@ -23,19 +23,16 @@ import java.util.Map;
 
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The substring operation creates a substring of the given string based on the given range parameters from and to.
  */
 public class SubStringOperation extends AbstractStandardTransformationOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubStringOperation.class);
     private String fromParam = TransformationConstants.SUBSTRING_FROM_PARAM;
     private String toParam = TransformationConstants.SUBSTRING_TO_PARAM;
-    
+
     public SubStringOperation(String operationName) {
-        super(operationName);
+        super(operationName, SubStringOperation.class);
     }
 
     @Override
@@ -69,26 +66,64 @@ public class SubStringOperation extends AbstractStandardTransformationOperation 
                 "The input values are not matching with the operation input count.");
         }
         String source = input.get(0).toString();
-        String fromString = parameters.containsKey(fromParam) ? parameters.get(fromParam) : "0";
-        String toString = parameters.containsKey(toParam) ? parameters.get(toParam) : "" + source.length();
-        if (!parameters.containsKey(fromParam)) {
-            LOGGER.debug("The from parameter is not set, so the default value 0 is taken.");
-        }
-        if (!parameters.containsKey(toParam)) {
-            LOGGER.debug("The from parameter is not set, so the default value {} is taken.", source.length());
-        }
+        Integer from = getFromParameter(parameters);
+        Integer to = getToParameter(parameters, source.length());
+        
+        checkBounds(source, from, to);
 
-        Object value = null;
-        try {
-            Integer from = Integer.parseInt(fromString);
-            Integer to = Integer.parseInt(toString);
-            value = source.substring(from, to);
-        } catch (NumberFormatException e) {
-            throw new TransformationOperationException("The from and/or the to parameter is not a number");
-        } catch (IndexOutOfBoundsException e) {
+        return source.substring(from, to);
+    }
+    
+    /**
+     * Checks if the from and the to parameters are valid for the given source
+     */
+    private void checkBounds(String source, Integer from, Integer to) throws TransformationOperationException {
+        Integer length = source.length();
+        if (from > to) {
             throw new TransformationOperationException(
-                "The from and/or the to parameter is not fitting because of the size of the source");
+                    "The from parameter is bigger than the to parameter");
         }
-        return value;
+        if (from < 0 || from > length) {
+            throw new TransformationOperationException(
+                    "The from parameter is not fitting to the size of the source");
+        }
+        if (to < 0 || to > length) {
+            throw new TransformationOperationException(
+                    "The to parameter is not fitting to the size of the source");
+        }
+    }
+
+    /**
+     * Get the 'from' parameter from the parameters. If the parameter is not set 0 is taken instead.
+     */
+    private Integer getFromParameter(Map<String, String> parameters) throws TransformationOperationException {
+        return getSubStringParameter(parameters, fromParam, 0);
+    }
+
+    /**
+     * Get the 'to' parameter from the parameters. If the parameter is not set the defaultValue is taken instead.
+     */
+    private Integer getToParameter(Map<String, String> parameters, Integer defaultValue)
+        throws TransformationOperationException {
+        return getSubStringParameter(parameters, toParam, defaultValue);
+    }
+
+    /**
+     * Returns the substring parameter with the given parameter or the given default value if the parameter name is not
+     * set.
+     */
+    private Integer getSubStringParameter(Map<String, String> parameters, String parameterName, Integer defaultValue)
+        throws TransformationOperationException {
+        String parameter = parameters.get(parameterName);
+        if (parameter == null) {
+            getLogger().debug("The {} parameter is not set, so the default value {} is taken.", parameterName,
+                defaultValue);
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(parameter);
+        } catch (NumberFormatException e) {
+            throw new TransformationOperationException("The " + parameterName + " parameter is not a number");
+        }
     }
 }

@@ -34,7 +34,7 @@ public class ReplaceOperation extends AbstractStandardTransformationOperation {
     private String newStringParam = TransformationConstants.REPLACE_NEW_PARAM;
     
     public ReplaceOperation(String operationName) {
-        super(operationName);
+        super(operationName, ReplaceOperation.class);
     }
 
     @Override
@@ -61,16 +61,9 @@ public class ReplaceOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
-        String oldString = parameters.get(oldStringParam);
-        String newString = parameters.get(newStringParam);
-        if (oldString == null || newString == null) {
-            throw new TransformationOperationException(
-                "The old string and/or the new string parameter is not defined.");
-        }
+        checkInputSize(input);
+        String oldString = getParameterOrException(parameters, oldStringParam);
+        String newString = getParameterOrException(parameters, newStringParam);
         return StringUtils.replace(input.get(0).toString(), oldString, newString);
     }
 }

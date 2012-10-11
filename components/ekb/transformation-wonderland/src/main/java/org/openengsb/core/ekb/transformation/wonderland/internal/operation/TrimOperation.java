@@ -29,7 +29,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class TrimOperation extends AbstractStandardTransformationOperation {
 
     public TrimOperation(String operationName) {
-        super(operationName);
+        super(operationName, TrimOperation.class);
     }
 
     @Override
@@ -53,10 +53,7 @@ public class TrimOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
+        checkInputSize(input);
         return input.get(0).toString().trim();
     }
 }

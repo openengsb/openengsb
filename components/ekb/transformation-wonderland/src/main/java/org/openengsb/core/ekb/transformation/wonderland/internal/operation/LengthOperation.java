@@ -33,7 +33,7 @@ public class LengthOperation extends AbstractStandardTransformationOperation {
     private String lengthFuncParam = TransformationConstants.LENGTH_FUNCTION_PARAM;
 
     public LengthOperation(String operationName) {
-        super(operationName);
+        super(operationName, LengthOperation.class);
     }
 
     @Override
@@ -60,19 +60,22 @@ public class LengthOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
-        String function = parameters.get(lengthFuncParam);
+        checkInputSize(input);
+        String function = getParameterOrDefault(parameters, lengthFuncParam, "length");
+        return "" + getLengthOfObject(input.get(0), function);
+    }
+    
+    /**
+     * Returns the length of the given object got through the method of the given function name
+     */
+    private Object getLengthOfObject(Object object, String functionName) throws TransformationOperationException {
         try {
-            function = function != null ? function : "length";
-            Method method = input.get(0).getClass().getMethod(function);
-            return "" + method.invoke(input.get(0));
+            Method method = object.getClass().getMethod(functionName);
+            return method.invoke(object);
         } catch (NoSuchMethodException e) {
             StringBuilder builder = new StringBuilder();
             builder.append("The type of the given field for the length step doesn't support ");
-            builder.append(function).append(" method. So 0 will be used as standard value.");
+            builder.append(functionName).append(" method. So 0 will be used as standard value.");
             throw new TransformationOperationException(builder.toString(), e);
         } catch (IllegalArgumentException e) {
             throw new TransformationOperationException("Can't get length of the source field", e);

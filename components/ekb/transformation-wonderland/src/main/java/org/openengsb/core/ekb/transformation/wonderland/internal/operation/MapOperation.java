@@ -31,7 +31,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class MapOperation extends AbstractStandardTransformationOperation {
 
     public MapOperation(String operationName) {
-        super(operationName);
+        super(operationName, MapOperation.class);
     }
 
     @Override
@@ -57,10 +57,7 @@ public class MapOperation extends AbstractStandardTransformationOperation {
     @Override
     public Object performOperation(List<Object> input, Map<String, String> parameters)
         throws TransformationOperationException {
-        if (input.size() != getOperationInputCount()) {
-            throw new TransformationOperationException(
-                "The input values are not matching with the operation input count.");
-        }
+        checkInputSize(input);
         Object value = parameters.get(input.get(0));
         if (value == null) {
             throw new TransformationOperationException("For the given key is no mapping defined");
