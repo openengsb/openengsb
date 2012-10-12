@@ -62,12 +62,29 @@ public interface TransformationEngine {
     Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source);
 
     /**
+     * Transforms the source object of the source model type to the target model type. The given target model object
+     * will be used as base, so this operation can be seen as a merge operation. Throws an IllegalArgumentException if
+     * no transformation descriptions for this transformation are available.
+     */
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target);
+
+    /**
      * Transforms the source object of the source model type to the target model type with a path where transformations
      * with all given ids are used. Throws an IllegalArgumentException if no transformation descriptions for this
      * transformation are available.
      */
     Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
             List<String> ids);
+
+    /**
+     * Transforms the source object of the source model type to the target model type with a path where transformations
+     * with all given ids are used. The given target model object will be used as base, so this operation can be seen as
+     * a merge operation. Throws an IllegalArgumentException if no transformation descriptions for this transformation
+     * are available.
+     */
+    Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target, List<String> ids);
 
     /**
      * Returns true if there is a transformation possible from source to target model. Returns false if not.
