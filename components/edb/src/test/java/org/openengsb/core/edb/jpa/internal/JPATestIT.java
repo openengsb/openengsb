@@ -795,4 +795,17 @@ public class JPATestIT {
         assertThat(value.getClass().getName(), is(Date.class.getName()));
         assertThat((Date) value, is(date));
     }
+    
+    @Test
+    public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        Utils.putValue("bla_kdjer", "test", data1);
+        EDBObject v1 = new EDBObject("/test/query/8", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.insert(v1);
+        db.commit(ci);
+        List<EDBObject> result = db.queryByKeyValue("bla%", "test");
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/8"));
+    }
 }

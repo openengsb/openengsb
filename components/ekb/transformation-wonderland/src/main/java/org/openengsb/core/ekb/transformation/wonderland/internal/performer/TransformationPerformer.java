@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 /**
  * The TransformationPerformer does the actual performing work between objects.
  */
+// TODO: OPENENGSB-3362, for now the functions are hard coded in this class. It would be much better and much more
+// dynamically if the functions would be provided as services, where a service property defines the operation name.
+// In that way it would be easy for the user to rename, adapt and extend the functions and also add its own functions.
 public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
@@ -67,6 +70,15 @@ public class TransformationPerformer {
      */
     public Object transformObject(TransformationDescription description, Object source) throws InstantiationException,
         IllegalAccessException, ClassNotFoundException {
+        return transformObject(description, source, null);
+    }
+
+    /**
+     * Performs a transformation based merge of the given source object with the given target object based on the given
+     * TransformationDescription.
+     */
+    public Object transformObject(TransformationDescription description, Object source, Object target)
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         checkNeededValues(description);
         Class<?> sourceClass = modelRegistry.loadModel(description.getSourceModel());
         Class<?> targetClass = modelRegistry.loadModel(description.getTargetModel());
@@ -74,11 +86,15 @@ public class TransformationPerformer {
             throw new IllegalArgumentException("The given source object does not match the given description");
         }
         this.source = source;
-        target = targetClass.newInstance();
+        if (target == null) {
+            this.target = targetClass.newInstance();
+        } else {
+            this.target = target;
+        }
         for (TransformationStep step : description.getTransformingSteps()) {
             performTransformationStep(step);
         }
-        return target;
+        return this.target;
     }
 
     /**
