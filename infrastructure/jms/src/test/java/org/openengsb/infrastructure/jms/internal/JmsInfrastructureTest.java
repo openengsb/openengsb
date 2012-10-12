@@ -22,8 +22,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.Session;
@@ -60,7 +60,7 @@ public class JmsInfrastructureTest extends AbstractOsgiMockServiceTest {
         ConfigurationAdmin configAdmin = mock(ConfigurationAdmin.class);
         Configuration configuration = mock(Configuration.class);
         when(configAdmin.getConfiguration("org.openengsb.infrastructure.jms")).thenReturn(configuration);
-        Properties configProperties = new Properties();
+        Dictionary<String,Object> configProperties = new Hashtable<String, Object>();
         configProperties.put("openwire", OPENWIRE_PORT);
         configProperties.put("stomp", STOMP_PORT);
         when(configuration.getProperties()).thenReturn(configProperties);
