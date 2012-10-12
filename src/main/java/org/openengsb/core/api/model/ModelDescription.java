@@ -88,18 +88,6 @@ public class ModelDescription {
             throw new IllegalArgumentException(errorMessage, e);
         }
     }
-    
-    /**
-     * Gets the model description object of the given model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static ModelDescription getModelDescriptionFromModel(Object object) throws IllegalArgumentException {
-        if (!OpenEngSBModel.class.isAssignableFrom(object.getClass())) {
-            throw new IllegalArgumentException("The given object is not a model");
-        }
-        OpenEngSBModel model = (OpenEngSBModel) object;
-        return new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
-    }
 
     @Override
     public String toString() {
