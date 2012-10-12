@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -52,16 +53,23 @@ public class SimpleModelWrapper implements OpenEngSBModel {
      */
     public List<EDBObject> getModelsReferringToThisModel(EKBCommit commit, EngineeringDatabaseService edbService) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(model, commit));
+        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(commit));
         return edbService.query(params, System.currentTimeMillis());
     }
 
     /**
      * Calculates the complete model oid from the model and the commit object.
      */
-    private String getCompleteModelOID(OpenEngSBModel model, EKBCommit commit) {
+    public String getCompleteModelOID(EKBCommit commit) {
         return String.format("%s/%s/%s", commit.getDomainId(), commit.getConnectorId(),
             model.retrieveInternalModelId());
+    }
+    
+    /**
+     * Returns the model description of the wrapped model
+     */
+    public ModelDescription getModelDescription() {
+        return new ModelDescription(model.retrieveModelName(), model.retrieveModelVersion());
     }
 
     /**

@@ -17,7 +17,6 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
-import static org.openengsb.core.api.model.ModelDescription.getModelDescriptionFromModel;
 import static org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiff.createModelDiff;
 
 import java.lang.reflect.Field;
@@ -72,20 +71,45 @@ public class EngineeringObjectEnhancer {
      * Enhances the EKBCommit for the updates of EngineeringObjects.
      */
     private void enhanceCommitUpdates(EKBCommit commit) throws EKBException {
-        Map<Object, OpenEngSBModel> updated = new HashMap<Object, OpenEngSBModel>();
-        commit.getUpdates().addAll(recursiveUpdateEnhancement(commit.getUpdates(), updated, commit));
+        Map<Object, SimpleModelWrapper> updated = new HashMap<Object, SimpleModelWrapper>();
+        List<SimpleModelWrapper> result = recursiveUpdateEnhancement(
+            convertOpenEngSBModelList(commit.getUpdates()), updated, commit);
+        commit.getUpdates().addAll(convertSimpleModelWrapperList(result));
+
+    }
+
+    /**
+     * Converts a list of OpenEngSBModel objects to a list of SimpleModelWrapper objects
+     */
+    private List<SimpleModelWrapper> convertOpenEngSBModelList(List<OpenEngSBModel> models) {
+        List<SimpleModelWrapper> wrappers = new ArrayList<SimpleModelWrapper>();
+        for (OpenEngSBModel model : models) {
+            wrappers.add(new SimpleModelWrapper(model));
+        }
+        return wrappers;
+    }
+
+    /**
+     * Converts a list of SimpleModelWrapper objects to a list of OpenEngSBModel objects
+     */
+    private List<OpenEngSBModel> convertSimpleModelWrapperList(List<SimpleModelWrapper> wrappers) {
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        for (SimpleModelWrapper wrapper : wrappers) {
+            models.add(wrapper.getModel());
+        }
+        return models;
     }
 
     /**
      * Recursive function for calculating all models which need to be updated due to the original updates of the
      * EKBCommit.
      */
-    private List<OpenEngSBModel> recursiveUpdateEnhancement(List<OpenEngSBModel> updates,
-            Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
-        List<OpenEngSBModel> additionalUpdates = enhanceUpdates(updates, updated, commit);
+    private List<SimpleModelWrapper> recursiveUpdateEnhancement(List<SimpleModelWrapper> updates,
+            Map<Object, SimpleModelWrapper> updated, EKBCommit commit) {
+        List<SimpleModelWrapper> additionalUpdates = enhanceUpdates(updates, updated, commit);
         if (!additionalUpdates.isEmpty()) {
-            for (OpenEngSBModel model : additionalUpdates) {
-                updated.put(getCompleteModelOID(model, commit), model);
+            for (SimpleModelWrapper model : additionalUpdates) {
+                updated.put(model.getCompleteModelOID(commit), model);
             }
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
@@ -95,15 +119,15 @@ public class EngineeringObjectEnhancer {
     /**
      * Enhances the given list of updates and returns a list of models which need to be additionally updated.
      */
-    private List<OpenEngSBModel> enhanceUpdates(List<OpenEngSBModel> updates,
-            Map<Object, OpenEngSBModel> updated, EKBCommit commit) {
-        List<OpenEngSBModel> additionalUpdates = new ArrayList<OpenEngSBModel>();
-        for (OpenEngSBModel model : updates) {
-            if (updated.containsKey(getCompleteModelOID(model, commit))) {
+    private List<SimpleModelWrapper> enhanceUpdates(List<SimpleModelWrapper> updates,
+            Map<Object, SimpleModelWrapper> updated, EKBCommit commit) {
+        List<SimpleModelWrapper> additionalUpdates = new ArrayList<SimpleModelWrapper>();
+        for (SimpleModelWrapper model : updates) {
+            if (updated.containsKey(model.getCompleteModelOID(commit))) {
                 continue; // this model was already updated in this commit
             }
-            if (new SimpleModelWrapper(model).isEngineeringObject()) {
-                additionalUpdates.addAll(performEOModelUpdate(model, commit));
+            if (model.isEngineeringObject()) {
+                additionalUpdates.addAll(performEOModelUpdate(model.toEngineeringObject(), commit));
             }
             additionalUpdates.addAll(getReferenceBasedUpdates(model, updated, commit));
         }
@@ -114,8 +138,8 @@ public class EngineeringObjectEnhancer {
      * Runs the logic of updating an Engineering Object model. Returns a list of models which need to be updated
      * additionally.
      */
-    private List<OpenEngSBModel> performEOModelUpdate(OpenEngSBModel model, EKBCommit commit) {
-        ModelDiff diff = createModelDiff(model, getCompleteModelOID(model, commit),
+    private List<SimpleModelWrapper> performEOModelUpdate(EngineeringObjectModelWrapper model, EKBCommit commit) {
+        ModelDiff diff = createModelDiff(model.getModel(), model.getCompleteModelOID(commit),
             edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
@@ -131,17 +155,16 @@ public class EngineeringObjectEnhancer {
         } else {
             return updateReferencedModelsByEO(model);
         }
-        return new ArrayList<OpenEngSBModel>();
+        return new ArrayList<SimpleModelWrapper>();
     }
 
     /**
      * Updates all models which are referenced by the given engineering object.
      */
-    private List<OpenEngSBModel> updateReferencedModelsByEO(OpenEngSBModel model) {
-        List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        EngineeringObjectModelWrapper eo = new EngineeringObjectModelWrapper(model);
-        for (Field field : eo.getForeignKeyFields()) {
-            OpenEngSBModel result = performMerge(model, loadReferencedModel(eo, field));
+    private List<SimpleModelWrapper> updateReferencedModelsByEO(EngineeringObjectModelWrapper model) {
+        List<SimpleModelWrapper> updates = new ArrayList<SimpleModelWrapper>();
+        for (Field field : model.getForeignKeyFields()) {
+            SimpleModelWrapper result = performMerge(model, loadReferencedModel(model, field));
             if (result != null) {
                 updates.add(result);
             }
@@ -152,7 +175,7 @@ public class EngineeringObjectEnhancer {
     /**
      * Reload the references which have changed in the actual update and update the Engineering Object accordingly.
      */
-    private void reloadReferencesAndUpdateEO(ModelDiff diff, OpenEngSBModel model) {
+    private void reloadReferencesAndUpdateEO(ModelDiff diff, EngineeringObjectModelWrapper model) {
         for (ModelDiffEntry entry : diff.getDifferences().values()) {
             mergeEngineeringObjectWithReferencedModel(entry.getField(), model);
         }
@@ -161,18 +184,17 @@ public class EngineeringObjectEnhancer {
     /**
      * Returns engineering objects to the commit, which are changed by a model which was committed in the EKBCommit
      */
-    private List<OpenEngSBModel> getReferenceBasedUpdates(OpenEngSBModel model,
-            Map<Object, OpenEngSBModel> updated, EKBCommit commit) throws EKBException {
-        List<OpenEngSBModel> updates = new ArrayList<OpenEngSBModel>();
-        SimpleModelWrapper simple = new SimpleModelWrapper(model);
-        List<EDBObject> references = simple.getModelsReferringToThisModel(commit, edbService);
+    private List<SimpleModelWrapper> getReferenceBasedUpdates(SimpleModelWrapper model,
+            Map<Object, SimpleModelWrapper> updated, EKBCommit commit) throws EKBException {
+        List<SimpleModelWrapper> updates = new ArrayList<SimpleModelWrapper>();
+        List<EDBObject> references = model.getModelsReferringToThisModel(commit, edbService);
         for (EDBObject reference : references) {
             EDBModelObject modelReference = new EDBModelObject(reference, modelRegistry, edbConverter);
-            OpenEngSBModel ref = updateEOByUpdatedModel(modelReference, model, updated);
-            if (!updated.containsKey(getCompleteModelOID(ref, commit))) {
+            SimpleModelWrapper ref = updateEOByUpdatedModel(modelReference, model, updated);
+            if (!updated.containsKey(ref.getCompleteModelOID(commit))) {
                 updates.add(ref);
             }
-            updated.put(getCompleteModelOID(ref, commit), ref);
+            updated.put(ref.getCompleteModelOID(commit), ref);
         }
         return updates;
     }
@@ -181,16 +203,19 @@ public class EngineeringObjectEnhancer {
      * Updates an Engineering Object given as EDBObject based on the update on the given model which is referenced by
      * the given Engineering Object.
      */
-    private OpenEngSBModel updateEOByUpdatedModel(EDBModelObject reference, OpenEngSBModel model,
-            Map<Object, OpenEngSBModel> updated) {
-        ModelDescription source = getModelDescriptionFromModel(model);
+    private SimpleModelWrapper updateEOByUpdatedModel(EDBModelObject reference, SimpleModelWrapper model,
+            Map<Object, SimpleModelWrapper> updated) {
+        ModelDescription source = model.getModelDescription();
         ModelDescription description = reference.getModelDescription();
-        Object ref = updated.get(reference.getOID());
-        if (ref == null) {
+        SimpleModelWrapper wrapper = updated.get(reference.getOID());
+        Object ref = null;
+        if (wrapper == null) {
             ref = reference.getCorrespondingModel();
+        } else {
+            ref = wrapper.getModel();
         }
-        ref = transformationEngine.performTransformation(source, description, model, ref);
-        return (OpenEngSBModel) ref;
+        return new SimpleModelWrapper(transformationEngine.performTransformation(source, description,
+            model.getModel(), ref));
     }
 
     /**
@@ -210,7 +235,7 @@ public class EngineeringObjectEnhancer {
      */
     private void performInsertEOLogic(EngineeringObjectModelWrapper model) {
         for (Field field : model.getForeignKeyFields()) {
-            mergeEngineeringObjectWithReferencedModel(field, model.getModel());
+            mergeEngineeringObjectWithReferencedModel(field, model);
         }
     }
 
@@ -218,36 +243,28 @@ public class EngineeringObjectEnhancer {
      * Performs the merge from the source model to the target model and returns the result. Returns null if either the
      * source or the target is null.
      */
-    private OpenEngSBModel performMerge(OpenEngSBModel source, OpenEngSBModel target) {
+    private SimpleModelWrapper performMerge(SimpleModelWrapper source, SimpleModelWrapper target) {
         if (source == null || target == null) {
             return null;
         }
-        ModelDescription sourceDesc = getModelDescriptionFromModel(source);
-        ModelDescription targetDesc = getModelDescriptionFromModel(target);
-        return (OpenEngSBModel) transformationEngine.performTransformation(sourceDesc, targetDesc, source, target);
+        ModelDescription sourceDesc = source.getModelDescription();
+        ModelDescription targetDesc = target.getModelDescription();
+        return new SimpleModelWrapper(transformationEngine.performTransformation(sourceDesc, targetDesc,
+            source.getModel(), target.getModel()));
     }
 
     /**
      * Merges the given EngineeringObject with the referenced model which is defined in the given field.
      */
-    private void mergeEngineeringObjectWithReferencedModel(Field field, OpenEngSBModel model) {
-        EngineeringObjectModelWrapper eo = new EngineeringObjectModelWrapper(model);
-        OpenEngSBModel result = performMerge(loadReferencedModel(eo, field), model);
+    private void mergeEngineeringObjectWithReferencedModel(Field field, EngineeringObjectModelWrapper model) {
+        SimpleModelWrapper result = performMerge(loadReferencedModel(model, field), model);
         if (result != null) {
-            model = result;
+            model = result.toEngineeringObject();
         }
     }
-    
-    private OpenEngSBModel loadReferencedModel(EngineeringObjectModelWrapper eo, Field field) {
-        return eo.loadReferencedModel(field, modelRegistry, edbService, edbConverter);
-    }
 
-    /**
-     * Calculates the complete model oid from the model and the commit object.
-     */
-    private String getCompleteModelOID(OpenEngSBModel model, EKBCommit commit) {
-        return String.format("%s/%s/%s", commit.getDomainId(), commit.getConnectorId(),
-            model.retrieveInternalModelId());
+    private SimpleModelWrapper loadReferencedModel(EngineeringObjectModelWrapper eo, Field field) {
+        return eo.loadReferencedModel(field, modelRegistry, edbService, edbConverter);
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {

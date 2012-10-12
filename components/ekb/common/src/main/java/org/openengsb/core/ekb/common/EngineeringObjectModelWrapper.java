@@ -56,7 +56,7 @@ public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
      * Loads the model referenced by the given field for the given model instance. Returns null if the field has no
      * value set.
      */
-    public OpenEngSBModel loadReferencedModel(Field field, ModelRegistry modelRegistry,
+    public SimpleModelWrapper loadReferencedModel(Field field, ModelRegistry modelRegistry,
             EngineeringDatabaseService edbService, EDBConverter edbConverter) {
         try {
             ModelDescription description = getModelDescriptionFromField(field);
@@ -65,7 +65,8 @@ public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
                 return null;
             }
             Class<?> sourceClass = modelRegistry.loadModel(description);
-            return (OpenEngSBModel) edbConverter.convertEDBObjectToModel(sourceClass, edbService.getObject(modelKey));
+            return new SimpleModelWrapper(edbConverter.convertEDBObjectToModel(sourceClass,
+                edbService.getObject(modelKey)));
         } catch (SecurityException e) {
             throw new EKBException(generateErrorMessage(field), e);
         } catch (IllegalArgumentException e) {
