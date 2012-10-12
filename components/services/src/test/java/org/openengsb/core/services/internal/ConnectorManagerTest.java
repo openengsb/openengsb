@@ -64,7 +64,7 @@ import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;

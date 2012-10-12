@@ -34,7 +34,7 @@
         <title>Registration</title>
         <para>For the XLink-registration of connectors (e.g. the tools) the following functions in
             the class <emphasis role="bold">ConnectorManager</emphasis> are provided.</para>
-        <xi:include href="../../../../../../target/docbook/snippets/ConnectorManager.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/ConnectorManager.xml"/>-->
         <ns:para>Every connector announces it´s participation in XLinking when he calls the
             "connect" function. After the registration a XLinkTemplate is returned to the connector.
             When shutting down or going idle, the connector must call a "disconnect".</ns:para>
@@ -44,9 +44,9 @@
         <ns:para>After the registration, the tools receive an XLinkTemplate.</ns:para>
         <ns:para>The attributes of the XLinkTemplate, which is a simple DTO, are the
             following. <anchor xml:id="implementation.xlinkemplate.attributes"/></ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkTemplate.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkTemplate.xml"/>-->
         <ns:para>The attributes of the class XLinkRegisteredTools are the following.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTool.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTool.xml"/>-->
     </section>
     <section xml:id="implementation.xlinkprepare">
         <title>Preparation of a XLinkTemplate</title>        
@@ -73,7 +73,7 @@
         <ns:title>Open Potential Matches in Tools</ns:title>
         <ns:para>Matches in Tools are opened via the following function in the <emphasis role="bold"
             >LinkableDomain</emphasis> interface.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/LinkableDomainOpenLinks.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/LinkableDomainOpenLinks.xml"/>-->
     </section>
     <section xml:id="implementation.localswitch.information">
         <title>Local Switching Information Support</title>
@@ -84,7 +84,7 @@
                 >LinkableDomain</emphasis>, transferes this UpdateInformation as an Event to the
             Connector. In this way every connector holds a correct list of all running tools on his
             local machine, that participate in XLinking.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/LinkableDomainUpdateEvent.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/LinkableDomainUpdateEvent.xml"/>-->
     </section>    
     <section xml:id="implementation.localswitch.creation">
         <title>XLinks for Local Switching</title>

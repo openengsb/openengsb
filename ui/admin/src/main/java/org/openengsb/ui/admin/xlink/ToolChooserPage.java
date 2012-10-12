@@ -52,7 +52,7 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.RemoteTool;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
 import org.openengsb.ui.admin.xlink.mocking.XLinkMock;

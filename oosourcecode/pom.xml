@@ -33,6 +33,11 @@
     <bundle.symbolicName>org.openengsb.domain.OOSourceCode</bundle.symbolicName>
     <bundle.namespace>org.openengsb.domain.OOSourceCode</bundle.namespace>
     <domain.name>OOSourceCodeDomain</domain.name>
+    <openengsb.api.version>3.0.0-SNAPSHOT</openengsb.api.version>
+        <openengsb.version.range>[3,4)</openengsb.version.range>
+    <openengsb.common.version>3.0.0-SNAPSHOT</openengsb.common.version>
+        <openengsb.version.range>[3,4)</openengsb.version.range>        
+    <labs.delegation.version>0.1.0</labs.delegation.version>    
   </properties>
 
   <groupId>org.openengsb.domain</groupId>
@@ -146,16 +151,18 @@
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
       <scope>provided</scope>
+      <version>${openengsb.api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <scope>provided</scope>
-    </dependency>
+      <version>${openengsb.common.version}</version>
+    </dependency>    
     <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
       <scope>provided</scope>
+      <version>${labs.delegation.version}</version>
     </dependency>     
   </dependencies>
 

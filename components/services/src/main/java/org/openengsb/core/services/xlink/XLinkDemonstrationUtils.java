@@ -31,7 +31,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 
 /**
  * Static util class for xlink, defining DemonstrationMethods. 

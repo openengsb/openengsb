@@ -40,7 +40,7 @@ import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
 import org.openengsb.core.api.xlink.model.RemoteToolView;
 import org.openengsb.core.api.xlink.model.XLinkTemplate;
 import org.openengsb.core.api.xlink.model.XLinkTemplateKeyNames;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.osgi.framework.Version;
 

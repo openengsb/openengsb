@@ -24,10 +24,11 @@ import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.LinkableDomain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.OOSourceCode.model.OOClass;
 import org.openengsb.domain.SQLCode.model.SQLCreate;
@@ -154,7 +155,6 @@ public class XLinkMock {
         Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         List<String> identifierKeyNames = new ArrayList<String>();
-        
         //########### MOCK start ###########
         
         if (modelId.equals(XLinkMock.OOMODEL)) {
