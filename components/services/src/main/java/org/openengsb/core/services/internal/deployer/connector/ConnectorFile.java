@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
@@ -228,7 +226,7 @@ public class ConnectorFile {
     private class TrimFunction<F, T> implements Function<F, T> {
         @SuppressWarnings("unchecked")
         @Override
-        public Object apply(@Nullable Object input) {
+        public Object apply(Object input) {
             return (input == null) ? null : ((String) input).trim();
         }
     }
