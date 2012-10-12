@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
-import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
@@ -37,7 +36,7 @@ import org.xml.sax.ext.DefaultHandler2;
 public class TransformationDescriptionXMLReader extends DefaultHandler2 {
     private List<TransformationDescription> descriptions;
     private TransformationDescription activeDescription;
-    private TransformationOperation activeMode;
+    private String activeMode;
     private List<String> sourceFields;
     private String targetField;
     private Map<String, String> operationParams;
@@ -96,7 +95,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
             String value = attributes.getValue("value");
             operationParams.put(key, value);
         } else {
-            activeMode = Enum.valueOf(TransformationOperation.class, localName.toUpperCase());
+            activeMode = localName;
         }
     }
 
@@ -123,7 +122,7 @@ public class TransformationDescriptionXMLReader extends DefaultHandler2 {
         } else {
             Map<String, String> copy = new HashMap<String, String>(operationParams);
             activeDescription.addStep(activeMode, sourceFields, targetField, copy);
-            activeMode = TransformationOperation.NONE;
+            activeMode = null;
             sourceFields.clear();
             operationParams.clear();
         }

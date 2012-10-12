@@ -25,6 +25,7 @@ import org.openengsb.core.ekb.api.ModelGraph;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.performer.TransformationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TransformationEngineService implements TransformationEngine {
     private ModelRegistry modelRegistry;
     private ModelGraph graphDb;
     private PropertyConnectionCalculator calculator;
+    private TransformationOperationLoader operationLoader;
 
     @Override
     public void saveDescription(TransformationDescription description) {
@@ -100,10 +102,10 @@ public class TransformationEngineService implements TransformationEngine {
             for (int i = 0; i < result.size(); i++) {
                 TransformationDescription step = result.get(i);
                 if (i != result.size() - 1) {
-                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
                     source = performer.transformObject(step, source);
                 } else {
-                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
                     source = performer.transformObject(step, source, target);
                 }
             }
@@ -136,5 +138,9 @@ public class TransformationEngineService implements TransformationEngine {
 
     public void setGraphDb(ModelGraph graphDb) {
         this.graphDb = graphDb;
+    }
+
+    public void setOperationLoader(TransformationOperationLoader operationLoader) {
+        this.operationLoader = operationLoader;
     }
 }

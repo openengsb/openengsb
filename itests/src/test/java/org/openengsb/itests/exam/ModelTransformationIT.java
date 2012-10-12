@@ -22,9 +22,12 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +40,8 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperation;
+import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowService;
@@ -49,6 +54,7 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 @RunWith(JUnit4TestRunner.class)
@@ -110,7 +116,28 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
         ExampleRequestModel modelB = transformResponseToRequest(modelA);
 
+        transformationEngine.deleteDescriptionsByFile("testDescription.transformation");
         assertThat(modelB.getName(), is("test"));
+    }
+
+    @Test
+    public void testIfCustomTransformationsWork_shouldWork() throws Exception {
+        BundleContext context = getBundleContext();
+        Dictionary<String, String> dictionary = new Hashtable<String, String>();
+        dictionary.put("transformation.operation", "dummy");
+        context.registerService(TransformationOperation.class, new DummyTransformationOperation(), dictionary);
+
+        TransformationDescription description =
+            new TransformationDescription(getExampleResponseDescription(), getExampleRequestDescription());
+        description.addStep("dummy", Arrays.asList("result"), "name", new HashMap<String, String>());
+        transformationEngine.saveDescription(description);
+        
+        ExampleResponseModel modelA = new ExampleResponseModel();
+        modelA.setResult("teststring");
+        
+        ExampleRequestModel modelB = transformResponseToRequest(modelA);
+
+        assertThat(modelB.getName(), is("DUMMYteststringDUMMY"));
     }
 
     @Test
@@ -159,7 +186,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
                         + "(ExampleRequestModel) "
                         + "ekbTransformationService.performTransformation(source, target, object);"
                         + "  example2.doSomethingWithModel(model);\n"
-        );
+            );
 
         ContextHolder.get().setCurrentContextId("foo");
         WorkflowService workflowService = getOsgiService(WorkflowService.class);
@@ -167,6 +194,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         authenticate("admin", "password");
         workflowService.processEvent(new LogEvent());
 
+        transformationEngine.deleteDescriptionsByFile("testDescription.transformation");
         ExampleRequestModel result = exampleMock.getModel();
         assertThat(result.getName(), is("test"));
     }
@@ -213,6 +241,36 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         public ExampleRequestModel getModel() {
             return model;
         }
+    }
+
+    public static class DummyTransformationOperation implements TransformationOperation {
+
+        @Override
+        public String getOperationDescription() {
+            return "";
+        }
+
+        @Override
+        public Integer getOperationInputCount() {
+            return 1;
+        }
+
+        @Override
+        public String getOperationName() {
+            return "dummy";
+        }
+
+        @Override
+        public Map<String, String> getOperationParameterDescriptions() {
+            return new HashMap<String, String>();
+        }
+
+        @Override
+        public Object performOperation(List<Object> arg0, Map<String, String> arg1)
+            throws TransformationOperationException {
+            return String.format("DUMMY%sDUMMY", arg0.get(0).toString());
+        }
+
     }
 
 }
