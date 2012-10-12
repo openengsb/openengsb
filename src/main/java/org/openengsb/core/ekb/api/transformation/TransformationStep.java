@@ -20,15 +20,23 @@ package org.openengsb.core.ekb.api.transformation;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+
 /**
  * Describes a transforming step in the transformation progress. Contains all informations to perform a transformation
  * operation on source fields and target fields.
  */
 public class TransformationStep {
     private String targetField;
-    private TransformationOperation operation;
+    private String operationName;
     private Map<String, String> operationParams;
     private String[] sourceFields;
+
+    public TransformationStep() {
+        operationParams = new HashMap<String, String>();
+        sourceFields = new String[0];
+    }
 
     public String getTargetField() {
         return targetField;
@@ -38,12 +46,12 @@ public class TransformationStep {
         this.targetField = targetField;
     }
 
-    public TransformationOperation getOperation() {
-        return operation;
+    public String getOperationName() {
+        return operationName;
     }
 
-    public void setOperation(TransformationOperation operation) {
-        this.operation = operation;
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
     }
 
     public Map<String, String> getOperationParams() {
@@ -55,16 +63,10 @@ public class TransformationStep {
     }
 
     public String getOperationParamater(String key) {
-        if (operationParams == null) {
-            return null;
-        }
         return operationParams.get(key);
     }
 
     public void setOperationParameter(String key, String value) {
-        if (operationParams == null) {
-            operationParams = new HashMap<String, String>();
-        }
         operationParams.put(key, value);
     }
 
@@ -78,20 +80,12 @@ public class TransformationStep {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{ ").append(operation);
-        builder.append(" sources: {");
-        boolean firstSource = true;
-        for (String source : sourceFields) {
-            if (!firstSource) {
-                builder.append(", ");
-            }
-            builder.append(source);
-            firstSource = false;
-        }
-        builder.append("} ");
-        builder.append(" target: {");
-        builder.append(targetField).append("}}");
-        return builder.toString();
+        String sources = sourceFields != null ? Joiner.on(",").join(sourceFields) : "";
+        String params = operationParams != null ? Joiner.on(",").withKeyValueSeparator(":").join(operationParams) : "";
+        return Objects.toStringHelper(this.getClass())
+                .add("operation", operationName)
+                .add("sources", sources)
+                .add("target", targetField)
+                .add("parameters", params).toString();
     }
 }

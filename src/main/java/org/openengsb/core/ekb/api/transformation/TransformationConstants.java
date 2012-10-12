@@ -29,85 +29,85 @@ public final class TransformationConstants {
     /**
      * The parameter for the concat operation.
      */
-    public static String concatParam = "concatString";
+    public static final String CONCAT_PARAM = "concatString";
 
     /**
      * The parameter for the split operation.
      */
-    public static String splitParam = "splitString";
+    public static final String SPLIT_PARAM = "splitString";
     
     /**
      * The parameter for all operations that take a regular expression parameter.
      */
-    public static String regexParam = "regexString";
+    public static final String REGEX_PARAM = "regexString";
 
     /**
      * The parameter for all operations where more than one result happens during the transformation (e.g. split). The
      * user than has to define which of the results should be forwarded to the target field.
      */
-    public static String index = "resultIndex";
+    public static final String INDEX_PARAM = "resultIndex";
 
     /**
      * The parameter for the substring operation which defines from which index the substring starts.
      */
-    public static String substringFrom = "from";
+    public static final String SUBSTRING_FROM_PARAM = "from";
 
     /**
      * The parameter for the substring operation which defines to which index the substring goes.
      */
-    public static String substringTo = "to";
+    public static final String SUBSTRING_TO_PARAM = "to";
 
     /**
      * The parameter for the value operation.
      */
-    public static String value = "value";
+    public static final String VALUE_PARAM = "value";
 
     /**
      * The parameter for the function which returns the length of the object on the source side for the length step.
      */
-    public static String lengthFunction = "function";
+    public static final String LENGTH_FUNCTION_PARAM = "function";
 
     /**
      * The parameter for the function which replaces some substring of a string with another string. This parameter
      * defines the string that shall be replaced.
      */
-    public static String replaceOld = "oldString";
+    public static final String REPLACE_OLD_PARAM = "oldString";
 
     /**
      * The parameter for the function which replaces some substring of a string with another string. This parameter
      * defines the string that shall replace the old.
      */
-    public static String replaceNew = "newString";
+    public static final String REPLACE_NEW_PARAM = "newString";
 
     /**
      * The parameter for the pad function which specifies how far the padding should be done.
      */
-    public static String padLength = "length";
+    public static final String PAD_LENGTH_PARAM = "length";
 
     /**
      * The parameter for the pad function which specifies which character should be used for the padding.
      */
-    public static String padCharacter = "char";
+    public static final String PAD_CHARACTER_PARAM = "char";
 
     /**
      * The parameter for the pad function which specifies if the padding should be done at the beginning or the end of
      * the string.
      */
-    public static String padDirection = "direction";
+    public static final String PAD_DIRECTION_PARAM = "direction";
 
     /**
      * The parameter for the remove leading operation which defines how long at maximum the deletion should be done.
      */
-    public static String removeLeadingLength = "length";
+    public static final String REMOVELEADING_LENGTH_PARAM = "length";
     
     /**
      * This parameter for the instantiate operation defines which object type should be instantiated.
      */
-    public static String instantiateTargetType = "targetType";
+    public static final String INSTANTIATE_TARGETTYPE_PARAM = "targetType";
     
     /**
      * This parameter for the instantiate operation defines which method should be used initiate the object. If empty
      * the constructor will be used.
      */
-    public static String instantiateInitMethod = "targetTypeInit";
+    public static final String INSTANTIATE_INITMETHOD_PARAM = "targetTypeInit";
 }
