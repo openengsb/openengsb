@@ -352,5 +352,13 @@
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.example/${project.version}</bundle>
   </feature>
 
+  <feature name="openengsb-connector-filewatcher" version="${project.version}" description="OpenEngSB Generic Filewatcher Connector">
+    <details>
+      Connector implementing a filewatcher for any domain.
+    </details>
+    <feature version="${project.version}">openengsb-framework</feature>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.virtual.filewatcher/${project.version}</bundle>
+  </feature>
+
 </features>
 
