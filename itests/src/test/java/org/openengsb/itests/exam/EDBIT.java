@@ -23,7 +23,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,29 +48,18 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.ModelUtils;
-import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.SubModelDecorator;
-import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelDecorator;
-import org.openengsb.itests.exam.models.TestModelProvider;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.tinybundles.core.TinyBundle;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
 @RunWith(JUnit4TestRunner.class)
-public class EDBIT extends AbstractExamTestHelper {
-
+public class EDBIT extends AbstractModelUsingExamTestHelper {
     private EngineeringDatabaseService edbService;
     private QueryInterface query;
     private PersistInterface persist;
-    private boolean providerInstalled = false;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
@@ -231,9 +219,23 @@ public class EDBIT extends AbstractExamTestHelper {
         model.setEdbId("createevent/5");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-
+        
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        assertThat(result.isEmpty(), is(false));
+        assertThat(result.get(0), is(getTestModel()));
+    }
+    
+    @Test
+    public void testEKBInsertCommitAndQueryDataWithBackslashes_shouldReturnModelObject() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "C:\\\\test");
+        setProperty(model, "setEdbId", "createevent/6");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+        
+        @SuppressWarnings("unchecked")
+        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
@@ -422,7 +424,6 @@ public class EDBIT extends AbstractExamTestHelper {
                 versionPresent = true;
             }
         }
-
         assertThat(versionPresent, is(true));
     }
 
@@ -618,6 +619,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(subModel2.isDeleted(), is(true));
     }
 
+
     private EKBCommit getTestEKBCommit() {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
         commit.setInstanceId("testinstance");
@@ -630,48 +632,5 @@ public class EDBIT extends AbstractExamTestHelper {
 
     private SubModelDecorator getSubModelDecorator() throws Exception {
         return new SubModelDecorator(getSubModel().newInstance());
-    }
-
-    private void registerModelProvider() throws Exception {
-        if (providerInstalled) {
-            return;
-        }
-        TinyBundle providerTinyBundle =
-            bundle()
-                .add(TestModel.class)
-                .add(SubModel.class)
-                .add(TestModelProvider.class)
-                .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
-                .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
-                .set(Constants.BUNDLE_VERSION, "1.0.0")
-                .set(Constants.EXPORT_PACKAGE, "org.openengsb.itests.exam.models")
-                .set(Constants.IMPORT_PACKAGE,
-                    "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
-                            + "org.openengsb.labs.delegation.service")
-                .set(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
-                    "org.openengsb.itests.exam.models.*")
-                .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
-        Bundle providerBundle =
-            getBundleContext().installBundle("test://testlocation/test.provider.jar", providerTinyBundle.build());
-        providerBundle.start();
-        providerInstalled = true;
-    }
-
-    private Class<?> getTestModel() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadTestModel").invoke(provider);
-    }
-
-    private Class<?> getSubModel() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadSubModel").invoke(provider);
-    }
-
-    private Object loadTestModelProvider() throws Exception {
-        String filter = String.format("(%s=%s)", Constants.OBJECTCLASS, TestModelProvider.class.getName());
-        Filter osgiFilter = FrameworkUtil.createFilter(filter);
-        ServiceTracker tracker = new ServiceTracker(getBundleContext(), osgiFilter, null);
-        tracker.open(true);
-        return tracker.waitForService(4000);
     }
 }

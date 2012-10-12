@@ -176,7 +176,7 @@ public class ManipulationUtilsTest {
     @Test
     public void testIfRetrieveModelVersionWork_shouldReturnModelVersion() throws Exception {
         TestModel model = new TestModel();
-        assertThat(ModelUtils.retrieveModelVersion(model), is(new Version("1.0.0").toString()));
+        assertThat(ModelUtils.retrieveModelVersion(model), is(new Version("1.0.0")));
     }
 
     private Object getEntryByName(List<OpenEngSBModelEntry> entries, String property) {

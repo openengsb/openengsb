@@ -84,14 +84,12 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
     private ExampleResponseModel transformRequestToResponse(ExampleRequestModel model) {
         return (ExampleResponseModel) transformationEngine.performTransformation(getExampleRequestDescription(),
-            getExampleResponseDescription(),
-            model);
+            getExampleResponseDescription(), model);
     }
 
     private ExampleRequestModel transformResponseToRequest(ExampleResponseModel model) {
         return (ExampleRequestModel) transformationEngine.performTransformation(getExampleResponseDescription(),
-            getExampleRequestDescription(),
-            model);
+            getExampleRequestDescription(), model);
     }
 
     @Test
