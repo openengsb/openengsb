@@ -80,9 +80,6 @@
     <openengsb.api.ui.version>3.0.0-SNAPSHOT</openengsb.api.ui.version>
     <openengsb.test.version>3.0.0-SNAPSHOT</openengsb.test.version>
 
-    <!-- Component Versions -->
-    <osgi.compendium.version>4.2.0</osgi.compendium.version>
-
     <!-- Library Versions -->
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
     <jaxb.version>2.2.4</jaxb.version>
@@ -993,9 +990,9 @@
         <version>${karaf.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.osgi</groupId>
+        <groupId>org.apache.karaf</groupId>
         <artifactId>org.osgi.compendium</artifactId>
-        <version>${osgi.compendium.version}</version>
+        <version>${karaf.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
