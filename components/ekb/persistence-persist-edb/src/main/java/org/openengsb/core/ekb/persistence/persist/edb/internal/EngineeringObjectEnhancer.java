@@ -33,6 +33,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
+import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.EngineeringObjectModelWrapper;
 import org.openengsb.core.ekb.common.SimpleModelWrapper;
@@ -46,13 +47,18 @@ import org.slf4j.LoggerFactory;
 // TODO: OPENENGSB-3356, until now the automatic update propagation is done without asking. There should be a
 // possibility to alter this behavior, so that it is possible e.g. to have no automatic update propagation at
 // all or that only Engineering Objects receive automatic updates.
-public class EngineeringObjectEnhancer {
+public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(EngineeringObjectEnhancer.class);
     // TODO: OPENENGSB-3359, replace edbService and edbConverter with queryInterface
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
     private TransformationEngine transformationEngine;
     private ModelRegistry modelRegistry;
+    
+    @Override
+    public void onPreCommit(EKBCommit commit) throws EKBException {
+        enhanceEKBCommit(commit);
+    }
 
     /**
      * Does the Engineering Object enhancement of the EKBCommit object. In this step there may be some inserts updated
