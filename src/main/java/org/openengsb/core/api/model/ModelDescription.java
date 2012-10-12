@@ -79,7 +79,7 @@ public class ModelDescription {
         this.versionString = checkVersionString(versionString);
     }
 
-    private static String checkVersionString(String versionString) {
+    private String checkVersionString(String versionString) {
         try {
             return Version.parseVersion(versionString).toString();
         } catch (IllegalArgumentException e) {
