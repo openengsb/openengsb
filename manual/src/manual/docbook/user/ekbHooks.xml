@@ -79,7 +79,8 @@
         <title>Usage</title>
         <para>
             Each hook type is described as an java interface. To add a hook to the OpenEngSB environment, you have to implement
-            a class implementing such an interface and provide this implementation as service of your bundle.
+            a class implementing such an interface and provide this implementation as service of your bundle. This service does
+            not need any special service properties, but it is no problem adding properties.
         </para>
         <para>
             The EKB persistence persist bundle have a dynamic list of each hook type which grows and shrinks whenever such 
