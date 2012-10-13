@@ -27,7 +27,8 @@ import org.openengsb.core.ekb.api.EKBCommit;
 public interface EKBPostCommitHook {
 
     /**
-     * This function will be called after a successful commit through the EKB.
+     * This function will be called after a successful commit through the EKB. Every Exception which is thrown in a post
+     * commit hook will be caught, logged and ignored.
      */
     void onPostCommit(EKBCommit commit);
 }
