@@ -54,7 +54,15 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private EDBConverter edbConverter;
     private TransformationEngine transformationEngine;
     private ModelRegistry modelRegistry;
-    
+
+    public EngineeringObjectEnhancer(EngineeringDatabaseService edbService, EDBConverter edbConverter,
+            TransformationEngine transformationEngine, ModelRegistry modelRegistry) {
+        this.edbService = edbService;
+        this.edbConverter = edbConverter;
+        this.transformationEngine = transformationEngine;
+        this.modelRegistry = modelRegistry;
+    }
+
     @Override
     public void onPreCommit(EKBCommit commit) throws EKBException {
         enhanceEKBCommit(commit);
@@ -271,21 +279,5 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
 
     private SimpleModelWrapper loadReferencedModel(EngineeringObjectModelWrapper eo, Field field) {
         return eo.loadReferencedModel(field, modelRegistry, edbService, edbConverter);
-    }
-
-    public void setEdbService(EngineeringDatabaseService edbService) {
-        this.edbService = edbService;
-    }
-
-    public void setEdbConverter(EDBConverter edbConverter) {
-        this.edbConverter = edbConverter;
-    }
-
-    public void setTransformationEngine(TransformationEngine transformationEngine) {
-        this.transformationEngine = transformationEngine;
-    }
-
-    public void setModelRegistry(ModelRegistry modelRegistry) {
-        this.modelRegistry = modelRegistry;
     }
 }
