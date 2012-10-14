@@ -76,18 +76,37 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
-        return performTransformation(sourceModel, targetModel, source, new ArrayList<String>());
+        return performTransformation(sourceModel, targetModel, source, null, new ArrayList<String>());
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target) {
+        return performTransformation(sourceModel, targetModel, source, target, new ArrayList<String>());
     }
 
     @Override
     public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
             List<String> ids) {
+        return performTransformation(sourceModel, targetModel, source, null, ids);
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target, List<String> ids) {
         try {
             List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
-            if (result != null && !result.isEmpty()) {
-                for (TransformationDescription step : result) {
+            if (result == null || result.isEmpty()) {
+                return source;
+            }
+            for (int i = 0; i < result.size(); i++) {
+                TransformationDescription step = result.get(i);
+                if (i != result.size() - 1) {
                     TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
                     source = performer.transformObject(step, source);
+                } else {
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
+                    source = performer.transformObject(step, source, target);
                 }
             }
             return source;

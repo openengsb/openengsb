@@ -139,6 +139,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.ekb</groupId>
+      <artifactId>org.openengsb.framework.ekb.common</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework.workflow</groupId>
       <artifactId>org.openengsb.framework.workflow.api</artifactId>
       <scope>test</scope>

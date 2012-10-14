@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +98,15 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveInternalModelVersion();
     }
+    
+    /**
+     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
+     * object is not an OpenEngSBModel instance.
+     */
+    public static String retrieveModelVersionAsString(Object model) {
+        checkIfObjectIsModel(model);
+        return ((OpenEngSBModel) model).retrieveModelVersion();
+    }
 
     /**
      * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
@@ -106,14 +116,14 @@ public final class ModelUtils {
         checkIfObjectIsModel(model);
         return ((OpenEngSBModel) model).retrieveModelName();
     }
-    
+
     /**
      * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
      * object is not an OpenEngSBModel instance.
      */
-    public static String retrieveModelVersion(Object model) {
+    public static Version retrieveModelVersion(Object model) {
         checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelVersion();
+        return new Version(((OpenEngSBModel) model).retrieveModelVersion());
     }
 
     /**
@@ -207,16 +217,14 @@ public final class ModelUtils {
      * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
     public static void checkIfObjectIsModel(Object model) {
-        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            throw new IllegalArgumentException("The given object is no model");
-        }
+        checkIfClassIsModel(model.getClass());
     }
 
     /**
      * Returns true if the given object is an OpenEngSBModel, returns false if not.
      */
     public static boolean isObjectModel(Object model) {
-        return OpenEngSBModel.class.isAssignableFrom(model.getClass());
+        return isClassModel(model.getClass());
     }
 
     /**
