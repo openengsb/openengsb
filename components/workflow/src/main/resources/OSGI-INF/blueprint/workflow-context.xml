@@ -113,6 +113,9 @@
     destroy-method="stop">
     <property name="workflowService" ref="workflowService" />
     <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="transformer" ref="transformer" />
   </bean>
+
+  <reference id="transformer" interface="org.openengsb.core.ekb.api.TransformationEngine" />
 
 </blueprint>

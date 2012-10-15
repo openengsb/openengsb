@@ -22,6 +22,7 @@ import java.util.Hashtable;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.DomainEvents;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -45,6 +46,7 @@ public class DomainEventsServicesManager {
 
     private BundleContext bundleContext;
     private WorkflowService workflowService;
+    private TransformationEngine transformer;
 
     private BundleTracker bundleTracker;
 
@@ -109,7 +111,7 @@ public class DomainEventsServicesManager {
         Class<?> interfaceClass = bundle.loadClass(interfacename);
         ClassLoader classLoader = interfaceClass.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ DomainEvents.class, interfaceClass };
-        ForwardHandler forwardHandler = new ForwardHandler(workflowService);
+        ForwardHandler forwardHandler = new ForwardHandler(workflowService, transformer);
         return Proxy.newProxyInstance(classLoader, classes, forwardHandler);
     }
 
@@ -121,4 +123,7 @@ public class DomainEventsServicesManager {
         this.workflowService = workflowService;
     }
 
+    public void setTransformer(TransformationEngine transformer) {
+        this.transformer = transformer;
+    }
 }
