@@ -1333,6 +1333,7 @@
     <!-- OpenEngSB Infrastructure Modules -->
     <module>infrastructure/jpa</module>
     <module>infrastructure/jms</module>
+    <module>infrastructure/ldap</module>
     <!-- OpenEngSB Port Modules -->
     <module>ports/jms</module>
     <module>ports/ws</module>
