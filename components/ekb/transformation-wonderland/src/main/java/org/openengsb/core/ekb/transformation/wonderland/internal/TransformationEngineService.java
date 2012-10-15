@@ -25,6 +25,7 @@ import org.openengsb.core.ekb.api.ModelGraph;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.transformation.wonderland.internal.performer.TransformationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TransformationEngineService implements TransformationEngine {
     private ModelRegistry modelRegistry;
     private ModelGraph graphDb;
     private PropertyConnectionCalculator calculator;
+    private TransformationOperationLoader operationLoader;
 
     @Override
     public void saveDescription(TransformationDescription description) {
@@ -74,18 +76,37 @@ public class TransformationEngineService implements TransformationEngine {
 
     @Override
     public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source) {
-        return performTransformation(sourceModel, targetModel, source, new ArrayList<String>());
+        return performTransformation(sourceModel, targetModel, source, null, new ArrayList<String>());
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target) {
+        return performTransformation(sourceModel, targetModel, source, target, new ArrayList<String>());
     }
 
     @Override
     public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
             List<String> ids) {
+        return performTransformation(sourceModel, targetModel, source, null, ids);
+    }
+
+    @Override
+    public Object performTransformation(ModelDescription sourceModel, ModelDescription targetModel, Object source,
+            Object target, List<String> ids) {
         try {
             List<TransformationDescription> result = graphDb.getTransformationPath(sourceModel, targetModel, ids);
-            if (result != null && !result.isEmpty()) {
-                for (TransformationDescription step : result) {
-                    TransformationPerformer performer = new TransformationPerformer(modelRegistry);
+            if (result == null || result.isEmpty()) {
+                return source;
+            }
+            for (int i = 0; i < result.size(); i++) {
+                TransformationDescription step = result.get(i);
+                if (i != result.size() - 1) {
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
                     source = performer.transformObject(step, source);
+                } else {
+                    TransformationPerformer performer = new TransformationPerformer(modelRegistry, operationLoader);
+                    source = performer.transformObject(step, source, target);
                 }
             }
             return source;
@@ -119,4 +140,7 @@ public class TransformationEngineService implements TransformationEngine {
         this.graphDb = graphDb;
     }
 
+    public void setOperationLoader(TransformationOperationLoader operationLoader) {
+        this.operationLoader = operationLoader;
+    }
 }

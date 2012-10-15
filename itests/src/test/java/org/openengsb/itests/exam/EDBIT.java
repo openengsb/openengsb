@@ -23,15 +23,13 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
@@ -50,27 +48,18 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.ModelUtils;
-import org.openengsb.itests.exam.models.SubModel;
-import org.openengsb.itests.exam.models.TestModel;
-import org.openengsb.itests.exam.models.TestModelProvider;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.exam.models.SubModelDecorator;
+import org.openengsb.itests.exam.models.TestModelDecorator;
+import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.tinybundles.core.TinyBundle;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
 @RunWith(JUnit4TestRunner.class)
-public class EDBIT extends AbstractExamTestHelper {
-
+public class EDBIT extends AbstractModelUsingExamTestHelper {
     private EngineeringDatabaseService edbService;
     private QueryInterface query;
     private PersistInterface persist;
-    private boolean providerInstalled = false;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
@@ -198,9 +187,9 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EKBException.class)
     public void testDoubleModelCommit_shouldThrowException() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setEdbId", "createevent/1");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("createevent/1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
 
         persist.commit(commit);
         persist.commit(commit);
@@ -208,10 +197,10 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBInsertCommit_shouldSaveModel() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test");
-        setProperty(model, "setEdbId", "createevent/2");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test");
+        model.setEdbId("createevent/2");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
@@ -225,24 +214,38 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBInsertCommitAndQueryData_shouldReturnModelObject() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "C:\\test");
-        setProperty(model, "setEdbId", "createevent/5");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("C:\\test");
+        model.setEdbId("createevent/5");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-
+        
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        assertThat(result.isEmpty(), is(false));
+        assertThat(result.get(0), is(getTestModel()));
+    }
+    
+    @Test
+    public void testEKBInsertCommitAndQueryDataWithBackslashes_shouldReturnModelObject() throws Exception {
+        Object model = getTestModel().newInstance();
+        setProperty(model, "setName", "C:\\\\test");
+        setProperty(model, "setEdbId", "createevent/6");
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+        
+        @SuppressWarnings("unchecked")
+        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
 
     @Test
     public void testEKBUpdateCommit_shouldWork() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test1");
-        setProperty(model, "setEdbId", "batchevent/1");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test1");
+        model.setEdbId("batchevent/1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/batchevent/1");
@@ -250,13 +253,13 @@ public class EDBIT extends AbstractExamTestHelper {
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
-        setProperty(model, "setName", "test2");
-        commit = getTestEKBCommit().addUpdate(model);
+        model.setName("test2");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
 
-        Object model2 = getTestModel().newInstance();
-        setProperty(model2, "setName", "test3");
-        setProperty(model2, "setEdbId", "batchevent/2");
-        commit.addInsert(model2);
+        TestModelDecorator model2 = getTestModelDecorator();
+        model2.setName("test3");
+        model2.setEdbId("batchevent/2");
+        commit.addInsert(model2.getModel());
         persist.commit(commit);
 
         obj = edbService.getObject("testdomain/testconnector/batchevent/1");
@@ -279,18 +282,18 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EKBException.class)
     public void testEKBDeleteCommitWithNonExistingOid_shouldThrowError() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setEdbId", "deleteevent/1");
-        EKBCommit commit = getTestEKBCommit().addDelete(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("deleteevent/1");
+        EKBCommit commit = getTestEKBCommit().addDelete(model.getModel());
         persist.commit(commit);
     }
 
     @Test
     public void testEKBUpdateCommit_shouldUpdateModel() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test1");
-        setProperty(model, "setEdbId", "updateevent/2");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test1");
+        model.setEdbId("updateevent/2");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/2");
@@ -298,9 +301,9 @@ public class EDBIT extends AbstractExamTestHelper {
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
-        setProperty(model, "setName", "test2");
+        model.setName("test2");
 
-        commit = getTestEKBCommit().addUpdate(model);
+        commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
         obj = edbService.getObject("testdomain/testconnector/updateevent/2");
@@ -316,17 +319,17 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testEKBConflictCommitEvent_shouldResolveInNoConflict() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test");
-        setProperty(model, "setEdbId", "updateevent/3");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test");
+        model.setEdbId("updateevent/3");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelUtils.addOpenEngSBModelEntry(model, entry);
-        commit = getTestEKBCommit().addUpdate(model);
+        ModelUtils.addOpenEngSBModelEntry(model.getModel(), entry);
+        commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
         // results in no conflict because the values are the same even if the version is different
@@ -339,33 +342,32 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test(expected = EKBException.class)
     public void testEKBConflictCommitEvent_shouldResolveInConflict() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test1");
-        setProperty(model, "setEdbId", "updateevent/4");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test1");
+        model.setEdbId("updateevent/4");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        setProperty(model, "setName", "test2");
+        model.setName("test2");
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelUtils.addOpenEngSBModelEntry(model, entry);
+        ModelUtils.addOpenEngSBModelEntry(model.getModel(), entry);
 
-        commit = getTestEKBCommit().addUpdate(model);
+        commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
     }
 
     @Test
     public void testSupportOfSimpleSubModels_shouldWork() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test");
-        setProperty(model, "setEdbId", "testSub/1");
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test");
+        model.setEdbId("testSub/1");
 
-        Object sub = getSubModel().newInstance();
-        setProperty(sub, "setName", "sub");
-        setProperty(sub, "setEdbId", "testSub/2");
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("sub");
+        sub.setEdbId("testSub/2");
+        model.setSubModel(sub.getModel());
 
-        setProperty(model, "setSubModel", sub);
-
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/1");
@@ -377,22 +379,23 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testSupportOfListOfSubModels_shouldWork() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "test");
-        setProperty(model, "setEdbId", "testSub/3");
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("test");
+        model.setEdbId("testSub/3");
+        
+        SubModelDecorator sub1 = getSubModelDecorator();
+        sub1.setName("sub1");
+        sub1.setEdbId("testSub/4");
+        SubModelDecorator sub2 = getSubModelDecorator();
+        sub2.setName("sub2");
+        sub2.setEdbId("testSub/5");
 
-        Object sub1 = getSubModel().newInstance();
-        setProperty(sub1, "setName", "sub1");
-        setProperty(sub1, "setEdbId", "testSub/4");
-        Object sub2 = getSubModel().newInstance();
-        setProperty(sub2, "setName", "sub2");
-        setProperty(sub2, "setEdbId", "testSub/5");
+        List<Object> subs = new ArrayList<Object>();
+        subs.add(sub1.getModel());
+        subs.add(sub2.getModel());
+        model.setSubs(subs);
 
-        List<?> subs = Arrays.asList(sub1, sub2);
-
-        setProperty(model, "setSubs", subs);
-
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/3");
@@ -407,11 +410,11 @@ public class EDBIT extends AbstractExamTestHelper {
 
     @Test
     public void testModelTailIsLoaded_shouldLoadModelTail() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "blub");
-        setProperty(model, "setEdbId", "modeltailtest/1");
-
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("modeltailtest/1");
+        model.setName("blub");
+        
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modeltailtest/1");
@@ -421,17 +424,16 @@ public class EDBIT extends AbstractExamTestHelper {
                 versionPresent = true;
             }
         }
-
         assertThat(versionPresent, is(true));
     }
-    
+
     @Test
     public void testIfModelMetaDataRetrievingWorks_shouldWork() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "blub");
-        setProperty(model, "setEdbId", "modelmetatest/1");
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("blub");
+        model.setEdbId("modelmetatest/1");
 
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
         Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modelmetatest/1");
         assertThat(ModelUtils.getOpenEngSBModelEntries(result), notNullValue());
@@ -440,23 +442,183 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(ModelUtils.retrieveInternalModelTimestamp(result), notNullValue());
     }
 
-    private void setProperty(Object model, String methodName, Object... params) throws Exception {
-        Class<?>[] classes = new Class<?>[params.length];
-        for (int i = 0; i < params.length; i++) {
-            classes[i] = params[i].getClass();
-        }
-        try {
-            Method method = model.getClass().getMethod(methodName, classes);
-            method.invoke(model, params);
-        } catch (Exception e) {
-            for (Method method : model.getClass().getMethods()) {
-                if (method.getName().equals(methodName)) {
-                    method.invoke(model, params);
-                    break;
-                }
-            }
-        }
+    @Test
+    public void testIfSubModelIsPersistedAlso_shouldPersistParentAndSubModel() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/1");
+
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test");
+        sub.setEdbId("submodeltest/1/1");
+        model.setSubModel(sub.getModel());
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/1"));
+        assertThat(model.getModel(), notNullValue());
+        sub = new SubModelDecorator(model.getSubModel());
+        assertThat(sub.getModel(), notNullValue());
+        assertThat(sub.getName(), is("test"));
     }
+
+    @Test
+    public void testIfSubModelsArePersistedAlso_shouldPersistParentAndSubModels() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/2");
+        List<Object> subs = new ArrayList<Object>();
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test1");
+        sub.setEdbId("submodeltest/2/1");
+        subs.add(sub.getModel());
+        sub = getSubModelDecorator();
+        sub.setName("test2");
+        sub.setEdbId("submodeltest/2/2");
+        subs.add(sub.getModel());
+        model.setSubs(subs);
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/2"));
+        assertThat(model.getModel(), notNullValue());
+        assertThat(model.getSubs(), notNullValue());
+        assertThat(model.getSubs().get(0), notNullValue());
+        assertThat(model.getSubs().get(1), notNullValue());
+        sub = new SubModelDecorator(model.getSubs().get(0));
+        assertThat(sub.getName(), is("test1"));
+        sub = new SubModelDecorator(model.getSubs().get(1));
+        assertThat(sub.getName(), is("test2"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/2/1"));
+        assertThat(sub.getName(), is("test1"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/2/2"));
+        assertThat(sub.getName(), is("test2"));
+    }
+
+    @Test
+    public void testIfSubModelIsUpdatedAlso_shouldUpdateParentAndSubModel() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/3");
+
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test");
+        sub.setEdbId("submodeltest/3/1");
+        model.setSubModel(sub.getModel());
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+
+        sub.setName("updated");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
+        persist.commit(commit);
+
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/3/1"));
+        assertThat(sub.getModel(), notNullValue());
+        assertThat(sub.getName(), is("updated"));
+    }
+
+    @Test
+    public void testIfSubModelsAreUpdatedAlso_shouldUpdateParentAndSubModels() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/4");
+        List<Object> subs = new ArrayList<Object>();
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test1");
+        sub.setEdbId("submodeltest/4/1");
+        subs.add(sub.getModel());
+        sub = getSubModelDecorator();
+        sub.setName("test2");
+        sub.setEdbId("submodeltest/4/2");
+        subs.add(sub.getModel());
+        model.setSubs(subs);
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+
+        subs.clear();
+        sub = getSubModelDecorator();
+        sub.setName("updatedtest1");
+        sub.setEdbId("submodeltest/4/1");
+        subs.add(sub.getModel());
+        sub = getSubModelDecorator();
+        sub.setName("updatedtest2");
+        sub.setEdbId("submodeltest/4/2");
+        subs.add(sub.getModel());
+        sub = getSubModelDecorator();
+        sub.setName("insertedtest3");
+        sub.setEdbId("submodeltest/4/3");
+        subs.add(sub.getModel());
+        model.setSubs(subs);
+        commit = getTestEKBCommit().addUpdate(model.getModel());
+        persist.commit(commit);
+
+        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/4"));
+        assertThat(model.getModel(), notNullValue());
+        assertThat(model.getSubs(), notNullValue());
+        assertThat(model.getSubs().get(0), notNullValue());
+        assertThat(model.getSubs().get(1), notNullValue());
+        assertThat(model.getSubs().get(2), notNullValue());
+        sub = new SubModelDecorator(model.getSubs().get(0));
+        assertThat(sub.getName(), is("updatedtest1"));
+        sub = new SubModelDecorator(model.getSubs().get(1));
+        assertThat(sub.getName(), is("updatedtest2"));
+        sub = new SubModelDecorator(model.getSubs().get(2));
+        assertThat(sub.getName(), is("insertedtest3"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/1"));
+        assertThat(sub.getName(), is("updatedtest1"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/2"));
+        assertThat(sub.getName(), is("updatedtest2"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/3"));
+        assertThat(sub.getName(), is("insertedtest3"));
+    }
+
+    @Test
+    public void testIfSubModelIsDeletedAlso_shouldDeleteParentAndSubModel() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/5");
+
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test");
+        sub.setEdbId("submodeltest/5/1");
+        model.setSubModel(sub.getModel());
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        commit = getTestEKBCommit().addDelete(model.getModel());
+        persist.commit(commit);
+
+        EDBObject testModel = edbService.getObject("testdomain/testconnector/submodeltest/5");
+        EDBObject subModel = edbService.getObject("testdomain/testconnector/submodeltest/5/1");
+        assertThat(testModel.isDeleted(), is(true));
+        assertThat(subModel.isDeleted(), is(true));
+    }
+
+    @Test
+    public void testIfSubModelsAreDeletedAlso_shouldDeleteParentAndSubModels() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/6");
+        List<Object> subs = new ArrayList<Object>();
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test1");
+        sub.setEdbId("submodeltest/6/1");
+        subs.add(sub.getModel());
+        sub = getSubModelDecorator();
+        sub.setName("test2");
+        sub.setEdbId("submodeltest/6/2");
+        subs.add(sub.getModel());
+        model.setSubs(subs);
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        commit = getTestEKBCommit().addDelete(model.getModel());
+        persist.commit(commit);
+        
+        EDBObject testModel = edbService.getObject("testdomain/testconnector/submodeltest/6");
+        EDBObject subModel1 = edbService.getObject("testdomain/testconnector/submodeltest/6/1");
+        EDBObject subModel2 = edbService.getObject("testdomain/testconnector/submodeltest/6/2");
+        assertThat(testModel.isDeleted(), is(true));
+        assertThat(subModel1.isDeleted(), is(true));
+        assertThat(subModel2.isDeleted(), is(true));
+    }
+
 
     private EKBCommit getTestEKBCommit() {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
@@ -464,46 +626,11 @@ public class EDBIT extends AbstractExamTestHelper {
         return commit;
     }
 
-    private void registerModelProvider() throws Exception {
-        if (providerInstalled) {
-            return;
-        }
-        TinyBundle providerTinyBundle =
-            bundle()
-                .add(TestModel.class)
-                .add(SubModel.class)
-                .add(TestModelProvider.class)
-                .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
-                .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
-                .set(Constants.BUNDLE_VERSION, "1.0.0")
-                .set(Constants.EXPORT_PACKAGE, "org.openengsb.itests.exam.models")
-                .set(Constants.IMPORT_PACKAGE,
-                    "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
-                            + "org.openengsb.labs.delegation.service")
-                .set(org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
-                    "org.openengsb.itests.exam.models.*")
-                .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
-        Bundle providerBundle =
-            getBundleContext().installBundle("test://testlocation/test.provider.jar", providerTinyBundle.build());
-        providerBundle.start();
-        providerInstalled = true;
+    private TestModelDecorator getTestModelDecorator() throws Exception {
+        return new TestModelDecorator(getTestModel().newInstance());
     }
 
-    private Class<?> getTestModel() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadTestModel").invoke(provider);
-    }
-
-    private Class<?> getSubModel() throws Exception {
-        Object provider = loadTestModelProvider();
-        return (Class<?>) provider.getClass().getMethod("loadSubModel").invoke(provider);
-    }
-
-    private Object loadTestModelProvider() throws Exception {
-        String filter = String.format("(%s=%s)", Constants.OBJECTCLASS, TestModelProvider.class.getName());
-        Filter osgiFilter = FrameworkUtil.createFilter(filter);
-        ServiceTracker tracker = new ServiceTracker(getBundleContext(), osgiFilter, null);
-        tracker.open(true);
-        return tracker.waitForService(4000);
+    private SubModelDecorator getSubModelDecorator() throws Exception {
+        return new SubModelDecorator(getSubModel().newInstance());
     }
 }

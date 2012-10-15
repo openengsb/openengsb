@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.addTransformationOperation" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>How to add a transformation operation</title>
+    
+    <section>
+        <title>Goal</title>
+        <para>
+            This tutorial explains how to add a custom transformation operation for the transformation solution of the
+            OpenEngSB. What this operations are and which operations are part of the standard set of the OpenEngSB can
+            be read in the section <xref linkend="contributor.transformations"/>.
+        </para>
+    </section>
+    <section>
+        <title>Time to complete</title>
+        <para>
+            If you are already familiar with the OpenEngSB about 20 minutes. If you are not familiar with the OpenEngSB 
+            please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage</link> 
+            for further information.
+        </para>
+    </section>
+    <section>
+        <title>Prerequisites</title>
+        <para>
+            For information about how to get started as contributor to the OpenEngSB project and how to
+            get the current OpenEngSB source please read the contributor section of the manual: 
+            <xref linkend="contributor.manual" />.
+        </para>
+    </section>
+    <section>
+        <title>Step 1 - Think about how what the custom operation should do</title>
+        <para>
+            First thing to do is to think what the custom operation should do when it is implemented. Important here to
+            note is, what a custom operation can do: A custom function get as input a list of objects and a list of parameters
+            realized as a map where keys and values are strings.
+        </para>
+    </section>
+    <section>
+        <title>Step 2 - Write the custom operation</title>
+        <para>
+            Writing a custom operation starts with creating a Java class which implements the interface TransformationOperation.
+            This interface contains 5 methods:
+        </para>
+        <para>
+            The getOperationName method should return the name of the custom operation. E.g. 'testoperation'
+        </para>
+        <para>
+            The getOperationDescription method should return a short description of the operation and what it is supposed to do.
+        </para>
+        <para>
+            The getOperationInputCount method should return how many input values this operation expects. If the amount can be
+            theoretically infinite, this method should return -1.
+        </para>
+        <para>
+            The getOperationParameterDescriptions method should return a map where the keys are names for operation parameters
+            and the values should be explanations for the parameters.
+        </para>
+        <para>
+            And finally the performOperation method should perform your operation based on the list of input values and the map
+            of parameters. Finally it should return the value which should be written in the target field.
+        </para>
+    </section>
+    <section>
+        <title>Step 3 - Export the custom operation</title>
+        <para>
+            Now after the operation has been written, the operation need to be exported in the OSGi environment so that the
+            transformation solution of the OpenEngSB is able to use it. This can be done ether manually through the BundleContext
+            object or through a helper library, e.g. blueprint which is used by the OpenEngSB developers. An example how to export
+            your operation via blueprint is printed here:
+        </para>
+        <programlisting><![CDATA[
+          <service id="forwardOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
+            <service-properties>
+              <entry key="transformation.operation" value="forward" />
+            </service-properties>
+            <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation" >
+              <argument value="forward" />
+            </bean>
+          </service>]]>
+        </programlisting>
+        <para>
+            The example shows how the standard forward operation is exported. The standard implementations of the operations take
+            a string as argument which is used as operation name. So if the user want to rename the forward operation to copy for
+            example, he only have to replace the both strings here from 'forward' to 'copy' and thats it. The most important thing
+            here is the service property. The service property with the key 'transformation.operation' need to be set to the name
+            of the operation. Only then, the operation can be seen by the transformation solution.
+        </para>
+    </section>
+    <section>
+        <title>Step 4 - Use your custom operation</title>
+        <para>
+            After the operation has been written and correctly exported, the operation can be used. This can be done by simply
+            set the operation name in a TransformationStep object to the operation name. Or alternately use the name of the operation
+            in a .transformation file. Here you just have to use the operation name as root element of the operation and thats it.
+        </para>
+    </section>
+
+</chapter>
