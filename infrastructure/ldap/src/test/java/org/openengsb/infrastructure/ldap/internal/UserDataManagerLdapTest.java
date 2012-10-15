@@ -24,10 +24,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -35,38 +31,15 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Persistence;
-
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.directory.ldap.client.api.NetworkSchemaLoader;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-//
-//import org.openengsb.core.api.security.model.Permission;
-//import org.openengsb.core.api.security.service.UserDataManager;
-//import org.openengsb.core.api.security.service.UserNotFoundException;
-//import org.openengsb.core.services.internal.security.EntryUtils;
-//import org.openengsb.core.services.internal.security.UserDataManagerImpl;
-//import org.openengsb.core.services.internal.security.model.UserData;
-//import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-//import org.openengsb.core.util.DefaultOsgiUtilsService;
-//import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-//import org.openengsb.labs.delegation.service.ClassProvider;
-//import org.openengsb.labs.delegation.service.Constants;
-//import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
-//
-//
-
-//import org.openengsb.core.api.AbstractPermissionProvider;
-import org.openengsb.core.api.OsgiUtilsService;
-//import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.NoSuchAttributeException;
 import org.openengsb.core.api.security.service.NoSuchCredentialsException;
@@ -74,12 +47,7 @@ import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.services.internal.UserDataManagerImplTest.TestPermission;
 import org.openengsb.core.services.internal.security.EntryUtils;
-import org.openengsb.core.services.internal.security.UserDataManagerImpl;
-import org.openengsb.core.services.internal.security.model.UserData;
-//import org.openengsb.core.common.OpenEngSBCoreServices;
-//import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
@@ -88,21 +56,20 @@ import org.openengsb.labs.delegation.service.Constants;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 import org.openengsb.separateProject.SchemaConstants;
 import org.openengsb.separateProject.UserDataManagerLdap;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 
-public class LdapUnitTest extends AbstractOsgiMockServiceTest {
+public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LdapUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerLdapTest.class);
 
-    private static UserDataManager userManager;
-    private static LdapConnection connection;
-    private static String testUser1 = "testUser";
-    private static Dn dnTestUser1;
+    private UserDataManager userManager;
+    private LdapConnection connection;
+    private String testUser1 = "testUser";
+    private Dn dnTestUser1;
 
     public static class TestPermission implements Permission {
         private String desiredResult;
@@ -140,101 +107,61 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof LdapUnitTest.TestPermission)) {
+            if (!(obj instanceof UserDataManagerLdapTest.TestPermission)) {
                 return false;
             }
-            final LdapUnitTest.TestPermission other = (LdapUnitTest.TestPermission) obj;
+            final UserDataManagerLdapTest.TestPermission other = (UserDataManagerLdapTest.TestPermission) obj;
             return Objects.equal(desiredResult, other.desiredResult);
         }
 
     }
 
-    
-    @Before
-    public void setUp() throws Exception {
-        EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
-        setupUserManager();
-
+    private void setupUserManager() {
+        userManager = new UserDataManagerLdap();
+        ((UserDataManagerLdap)userManager).setLdapDao(new LdapDao(connection));
     }
 
-    private void setupUserManager1() {
-        final UserDataManagerLdap userManager = new UserDataManagerLdap();
-        userManager.setEntityManager(entityManager);
-        InvocationHandler invocationHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                entityManager.getTransaction().begin();
-                Object result;
-                try {
-                    result = method.invoke(userManager, args);
-                } catch (InvocationTargetException e) {
-                    entityManager.getTransaction().rollback();
-                    throw e.getCause();
-                }
-                entityManager.getTransaction().commit();
-                return result;
-            }
-        };
-        this.userManager =
-            (UserDataManager) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ UserDataManager.class }, invocationHandler);
+    private void setupConnection() throws Exception {
+        connection = new LdapNetworkConnection("localhost", 10389);
+        connection.setTimeOut(0);
+        connection.connect();
+        LOGGER.info(connection.toString());
+        BindRequest bindRequest = new BindRequestImpl();
+        bindRequest.setName(new Dn("uid=admin,ou=system"));
+        bindRequest.setCredentials("secret");
+        connection.bind(bindRequest);
+        NetworkSchemaLoader nsl = new NetworkSchemaLoader(connection);
+        ((LdapNetworkConnection)(connection)).loadSchema(nsl);
+    }
 
+    private void setupTests() throws Exception {
+        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
+    }
+    
+    private void providePermissions(){
+        EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.PROVIDED_CLASSES_KEY, TestPermission.class.getName());
         props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_PERMISSIONS);
         ClassProvider permissionProvider =
             new ClassProviderImpl(bundle, Sets.newHashSet(TestPermission.class.getName()));
         registerService(permissionProvider, props, ClassProvider.class);
-
-    }
-    
-    
-    private static UserDataManager setupUserManager() {
-        UserDataManagerLdap m = new UserDataManagerLdap();
-        m.setLdapDao(new LdapDao(connection));
-        return m;
-    }
-
-    private static LdapNetworkConnection setupNetworkConnection() throws Exception {
-        LdapNetworkConnection c = new LdapNetworkConnection("localhost", 10389);
-        c.setTimeOut(0);
-        c.connect();
-        LOGGER.info(c.toString());
-        BindRequest bindRequest = new BindRequestImpl();
-        bindRequest.setName(new Dn("uid=admin,ou=system"));
-        bindRequest.setCredentials("secret");
-        c.bind(bindRequest);
-        NetworkSchemaLoader nsl = new NetworkSchemaLoader(c);
-        c.loadSchema(nsl);
-        return c;
-    }
-
-    private static void setupTests() throws Exception {
-        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
-    }
-
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//        
-//        connection = setupNetworkConnection();
-//        userManager = setupUserManager();
-//        setupTests();
-//    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        connection.unBind();
-        connection.close();
     }
 
     @Before
     // TODO make some resetServer() method or even better applyLdifs
     public void doBefore() throws Exception {
-        EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
-        connection = setupNetworkConnection();
-        userManager = setupUserManager();
+        setupConnection();
+        setupUserManager();
         setupTests();
+        providePermissions();        
+    }
+    
+    @After
+    public void tearDown() throws Exception {
         clearDIT();
+        connection.unBind();
+        connection.close();
     }
 
     private void clearDIT() {
@@ -543,18 +470,5 @@ public class LdapUnitTest extends AbstractOsgiMockServiceTest {
         userManager.createPermissionSet(permissionSet);
         userManager.getPermissionSetAttribute(permissionSet, "random name");
     }
-
-//    @Override
-//    protected void setBundleContext(BundleContext bundleContext) {
-//        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-//        properties.put("permissionClass", TestPermission.class.getName());
-//        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
-//        };
-//        registerService(permissionProvider, properties, PermissionProvider.class);
-//        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-//        osgiServiceUtils.setBundleContext(bundleContext);
-//        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-//        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-//    }
 
 }
