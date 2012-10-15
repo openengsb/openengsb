@@ -92,7 +92,7 @@
     <protobuf.version>2.4.1</protobuf.version>
     <protobuf.wrapped.version>2.4.1.w1</protobuf.wrapped.version>
     <cdi-api.version>1.1-20120918</cdi-api.version>
-    <cdi-api.wrapped.version>1.1-20120918.w1</cdi-api.wrapped.version>
+    <cdi-api.wrapped.version>1.1.20120918.w1</cdi-api.wrapped.version>
     <javax.inject.version>1_2</javax.inject.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <saaj.impl.version>1.3.9_2</saaj.impl.version>
