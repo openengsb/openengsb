@@ -21,38 +21,40 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
+import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.EDBConverter;
-import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.PersistInterfaceService;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel2;
 
 public class PersistInterfaceServiceTest {
     private PersistInterfaceService service;
-    
+
     @Before
     public void setUp() {
-        this.service = new PersistInterfaceService();
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
-        EngineeringObjectEnhancer enhancer = mock(EngineeringObjectEnhancer.class);
-        
-        service.setEdbService(edbService);
-        service.setEdbConverter(new EDBConverter(edbService));
-        service.setEnhancer(enhancer);
+        EDBConverter converter = new EDBConverter(edbService);
+        List<EKBPreCommitHook> preHooks = new ArrayList<EKBPreCommitHook>();
+        List<EKBPostCommitHook> postHooks = new ArrayList<EKBPostCommitHook>();
+        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks);
     }
-    
+
     @Test
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
             model instanceof OpenEngSBModel, is(true));
     }
-    
+
     @Test
     public void testIfRealModelsCanBeCommited_shouldWork() throws Exception {
         EKBCommit commit = new EKBCommit();

@@ -26,18 +26,23 @@
     <argument ref="edbService"/>
   </bean>
   
-  <bean id="enhancer" class="org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer">
-    <property name="edbService" ref="edbService"/>
-    <property name="edbConverter" ref="edbConverter"/>
-    <property name="transformationEngine" ref="transformationEngine"/>
-    <property name="modelRegistry" ref="modelRegistry"/>
+  <bean id="eoEnhancer" class="org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer">
+    <argument ref="edbService"/>
+    <argument ref="edbConverter"/>
+    <argument ref="transformationEngine"/>
+    <argument ref="modelRegistry"/>
   </bean>
+  
+  <service interface="org.openengsb.core.ekb.api.hooks.EKBPreCommitHook">
+    <ref component-id="eoEnhancer" /> 
+  </service>
   
   <!-- Persist Interface -->
   <bean id="persistInterfaceService" class="org.openengsb.core.ekb.persistence.persist.edb.internal.PersistInterfaceService">
-    <property name="edbService" ref="edbService"/>
-    <property name="edbConverter" ref="edbConverter"/>
-    <property name="enhancer" ref="enhancer"/>
+    <argument ref="edbService"/>
+    <argument ref="edbConverter"/>
+    <argument ref="preCommitHooks"/>
+    <argument ref="postCommitHooks"/>
   </bean>
   
   <service interface="org.openengsb.core.ekb.api.PersistInterface">
@@ -51,5 +56,7 @@
   <reference id="edbService" interface="org.openengsb.core.edb.api.EngineeringDatabaseService" />
   <reference id="transformationEngine" interface="org.openengsb.core.ekb.api.TransformationEngine" />
   <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
+  <reference-list id="preCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPreCommitHook" availability="optional"/>
+  <reference-list id="postCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPostCommitHook" availability="optional"/>
   
 </blueprint>
