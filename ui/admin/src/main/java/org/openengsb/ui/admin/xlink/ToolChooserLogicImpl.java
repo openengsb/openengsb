@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.internal.ui.ToolChooserLogic;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
@@ -29,27 +30,21 @@ import org.openengsb.core.services.xlink.XLinkUtils;
 /**
  * This class supplies the logic to process a call from an XLink URL.
  */
-public class ToolChooserLogic {
+public class ToolChooserLogicImpl implements ToolChooserLogic {
     
     private XLinkConnectorManager serviceManager;
-    //private OsgiUtilsService osgiService;
 
-    public ToolChooserLogic(XLinkConnectorManager serviceManager) {
+    public ToolChooserLogicImpl(XLinkConnectorManager serviceManager) {
         this.serviceManager = serviceManager;
     }
     
-    /**
-     * Returns the Tools of a given HostId, which are registered for XLink.
-     */
+    @Override
     public List<XLinkConnector> getRegisteredToolsFromHost(String hostId) {
         return XLinkUtils.getLocalToolFromRegistrations(
                 serviceManager.getXLinkRegistration(hostId));
     } 
     
-    /**
-     * Returns the ModelDescription to a given XLinkRegistration and ViewId.
-     * Returns null, if the XLinkRegistration or the ViewId could not be found.
-     */
+    @Override
     public ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId) {
         if (getRegistration(hostId, connectorId) != null) {
             XLinkUrlBlueprint template = getRegistration(hostId, connectorId).getxLinkTemplate();
@@ -71,10 +66,7 @@ public class ToolChooserLogic {
         return null;
     }
     
-    /**
-     * Returns true, if the given Connector is registered for XLink on the given 
-     * HostId.
-     */
+    @Override
     public boolean isConnectorRegistrated(String hostId, String connectorId) {
         for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
@@ -84,9 +76,7 @@ public class ToolChooserLogic {
         return false;
     }
     
-    /**
-     * Returns true, if the given View exists for the defined XLinkRegistration.
-     */
+    @Override
     public boolean isViewExisting(String hostId, String connectorId, String viewId) {
         for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {

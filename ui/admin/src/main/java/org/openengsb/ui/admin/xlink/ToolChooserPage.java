@@ -47,16 +47,15 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.exceptions.OpenXLinkException;
+import org.openengsb.core.api.xlink.internal.ui.ToolChooserLogic;
+import org.openengsb.core.api.xlink.internal.ui.XLinkMock;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
-import org.openengsb.ui.admin.xlink.mocking.XLinkMock;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
@@ -68,16 +67,13 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
     
-    @PaxWicketBean(name = "serviceManager")
-    private XLinkConnectorManager serviceManager;
-    
     @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
     
-    @PaxWicketBean(name = "authenticationContext")
-    private AuthenticationContext authenticationContext;
+    @PaxWicketBean(name = "toolChooserLogic")
+    private ToolChooserLogic toolChooserLogic;
     
-    private ToolChooserLogic chooserLogic;
+    @PaxWicketBean(name = "xLinkMock")
     private XLinkMock xLinkMock;
     
     private String contextId;
@@ -104,10 +100,7 @@ public class ToolChooserPage extends WebPage {
     /**
      * Validates the incoming request and manages the further processing of the XLink.
      */
-    private void processPage() {
-        chooserLogic = new ToolChooserLogic(serviceManager);
-        xLinkMock = new XLinkMock(serviceUtils, authenticationContext);
-        
+    private void processPage() {      
         requestParameters = getRequestParametersAsAMap();
         HttpServletRequest req = (HttpServletRequest) getRequest().getContainerRequest();
         HttpServletResponse resp = (HttpServletResponse) getResponse().getContainerResponse();
@@ -118,7 +111,7 @@ public class ToolChooserPage extends WebPage {
             handleErrorResponse(ex.getMessage());
         }
         if (checkForLocalSwitchingParameters()) {           
-            ModelDescription destinationModelClass = chooserLogic.getModelClassOfView(hostId, connectorId, viewId);
+            ModelDescription destinationModelClass = toolChooserLogic.getModelClassOfView(hostId, connectorId, viewId);
             triggerXLinkProcessing(destinationModelClass, connectorId, viewId);
             handleSuccessResponse(resp);
             return;
@@ -230,10 +223,10 @@ public class ToolChooserPage extends WebPage {
             = new StringResourceModel("error.connectorNotRegistrated", this, null).getString();
         String errorViewNotExisting 
             = new StringResourceModel("error.viewNotExisting", this, null).getString();
-        if (!chooserLogic.isConnectorRegistrated(hostId, connectorId)) {
+        if (!toolChooserLogic.isConnectorRegistrated(hostId, connectorId)) {
             throw new OpenXLinkException(errorConnectorNotRegistered);
         }
-        if (!chooserLogic.isViewExisting(hostId, connectorId, viewId)) {
+        if (!toolChooserLogic.isViewExisting(hostId, connectorId, viewId)) {
             throw new OpenXLinkException(errorViewNotExisting);
         }
     }
@@ -320,7 +313,7 @@ public class ToolChooserPage extends WebPage {
         String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
         hostIdMsg = String.format(hostIdMsg, hostId);
         add(new Label("hostId", hostIdMsg));
-        List<XLinkConnector> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
+        List<XLinkConnector> tools = toolChooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
                 final XLinkConnector tool = (XLinkConnector) item.getModelObject();
@@ -333,7 +326,7 @@ public class ToolChooserPage extends WebPage {
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              
                         final ModelDescription destModelInfo 
-                            = chooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
+                            = toolChooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
                             public void onClick() {
                                 triggerXLinkProcessing(destModelInfo, tool.getId(), view.getViewId());

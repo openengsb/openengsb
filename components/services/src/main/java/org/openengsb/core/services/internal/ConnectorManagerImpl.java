@@ -276,6 +276,14 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     public void setUtilsService(OsgiUtilsService utilsService) {
         this.utilsService = utilsService;
     }
+    
+    public void setxLinkBaseUrl(String xLinkBaseUrl) {
+        this.xLinkBaseUrl = xLinkBaseUrl;
+    }
+
+    public void setxLinkExpiresIn(int xLinkExpiresIn) {
+        this.xLinkExpiresIn = xLinkExpiresIn;
+    }
 
     @Override
     public void disconnectFromXLink(String id, String hostId) {
@@ -288,7 +296,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
             }
         }  
         if (foundReg != null) {
-            notifyAboutDeRegistration(foundReg);
+            notifyAllConnectorsRegisteredOnSameHostAboutDeregistration(foundReg);
         }
     }
 
@@ -297,7 +305,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         List<XLinkConnectorRegistration> registrationsOfHostId = new ArrayList<XLinkConnectorRegistration>();
         synchronized (xlinkRegistrations) {
             for (XLinkRegistrationKey key : xlinkRegistrations.keySet()) {
-                if (key.getHostId().equals(hostId)) {
+                if (key.getRemoteHostIp().equals(hostId)) {
                     registrationsOfHostId.add(xlinkRegistrations.get(key));
                 }
             }
@@ -316,41 +324,40 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     }
     
     @Override
-    public XLinkUrlBlueprint connectToXLink(
-            String id, 
-            String hostId, 
-            String toolName, 
-            ModelToViewsTuple[] modelsToViewsArray) 
+    public XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
+            String toolName, ModelToViewsTuple[] modelsToViewsArray) 
         throws DomainNotLinkableException {
-        isConnectorLinkable(id);
+        checkForConnectorLinkable(connectorIpToLink);
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, List<XLinkConnectorView>> convertedModelsToViews 
             = convertToMapWithModelDescriptionAsKey(modelsToViews);
-        List<XLinkConnectorRegistration> registrations = getXLinkRegistration(hostId);
+        List<XLinkConnectorRegistration> registrations = getXLinkRegistration(remoteHostIp);
         XLinkUrlBlueprint template = XLinkUtils.prepareXLinkTemplate(
                 xLinkBaseUrl, 
-                id, 
+                connectorIpToLink, 
                 convertedModelsToViews, 
                 xLinkExpiresIn, 
                 XLinkUtils.getLocalToolFromRegistrations(registrations));
         XLinkConnectorRegistration newRegistration;
-        XLinkRegistrationKey key = new XLinkRegistrationKey(id, hostId);
+        XLinkRegistrationKey key = new XLinkRegistrationKey(connectorIpToLink, remoteHostIp);
         synchronized (xlinkRegistrations) {
             newRegistration
-                = new XLinkConnectorRegistration(hostId, id, toolName, convertedModelsToViews, template);
+                = new XLinkConnectorRegistration(remoteHostIp, connectorIpToLink, toolName, 
+                        convertedModelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
-        notifyAboutRegistration(key, newRegistration);
+        notifyAllConnectorsRegisteredOnSameHostAboutRegistration(key, newRegistration);
         return template;
     }
     
-    private void notifyAboutRegistration(XLinkRegistrationKey filterKey, XLinkConnectorRegistration newRegistration) {
+    private void notifyAllConnectorsRegisteredOnSameHostAboutRegistration(
+            XLinkRegistrationKey filterKey, XLinkConnectorRegistration newRegistration) {
         List<XLinkConnectorRegistration> hostRegistrations
             = getXLinkRegistration(newRegistration.getHostId());
         for (XLinkConnectorRegistration currentRegistration : hostRegistrations) {
-            if (!currentRegistration.getConnectorId().equals(filterKey.getConnectorId())) {
+            if (!currentRegistration.getConnectorId().equals(filterKey.getConnectorIpToLink())) {
                 currentRegistration.getxLinkTemplate()
-                    .getRegisteredTools().add(convertRegisteredToolToRemoteTool(newRegistration));
+                    .getRegisteredTools().add(readXLinkConnectorsFromRegistry(newRegistration));
                 XLinkConnector[] registeredTools = currentRegistration
                     .getxLinkTemplate().getRegisteredTools().toArray(new XLinkConnector[0]);
                 Object serviceObject 
@@ -371,7 +378,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     /**
      * Checks if the given ConnectorId is registered and is an instance of a linkable domain.
      */
-    private void isConnectorLinkable(String connectorId) throws DomainNotLinkableException {
+    private void checkForConnectorLinkable(String connectorId) throws DomainNotLinkableException {
         Object serviceObject 
             = utilsService.getService("(service.pid=" + connectorId + ")", 100L);
         if (serviceObject == null) {
@@ -384,12 +391,13 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         }        
     }
     
-    private void notifyAboutDeRegistration(XLinkConnectorRegistration oldRegistration) {
+    private void notifyAllConnectorsRegisteredOnSameHostAboutDeregistration(
+            XLinkConnectorRegistration oldRegistration) {
         List<XLinkConnectorRegistration> hostRegistrations
             = getXLinkRegistration(oldRegistration.getHostId());
         for (XLinkConnectorRegistration currentRegistration : hostRegistrations) {
             currentRegistration.getxLinkTemplate()
-                .getRegisteredTools().remove(convertRegisteredToolToRemoteTool(oldRegistration));
+                .getRegisteredTools().remove(readXLinkConnectorsFromRegistry(oldRegistration));
             XLinkConnector[] registeredTools = currentRegistration
                 .getxLinkTemplate().getRegisteredTools().toArray(new XLinkConnector[0]);
             Object serviceObject 
@@ -406,27 +414,19 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         }
     }
     
-    private XLinkConnector convertRegisteredToolToRemoteTool(XLinkConnectorRegistration registration) {
+    private XLinkConnector readXLinkConnectorsFromRegistry(XLinkConnectorRegistration registration) {
         List<XLinkConnectorRegistration> regList = new ArrayList<XLinkConnectorRegistration>();
         regList.add(registration);
         return XLinkUtils.getLocalToolFromRegistrations(regList).get(0);
     }
-
-    public void setxLinkBaseUrl(String xLinkBaseUrl) {
-        this.xLinkBaseUrl = xLinkBaseUrl;
-    }
-
-    public void setxLinkExpiresIn(int xLinkExpiresIn) {
-        this.xLinkExpiresIn = xLinkExpiresIn;
-    }
     
     private class XLinkRegistrationKey {
-        private String connectorId;
-        private String hostId;
+        private String connectorIpToLink;
+        private String remoteHostIp;
 
-        public XLinkRegistrationKey(String connectorId, String hostId) {
-            this.connectorId = connectorId;
-            this.hostId = hostId;
+        public XLinkRegistrationKey(String connectorIpToLink, String remoteHostIp) {
+            this.connectorIpToLink = connectorIpToLink;
+            this.remoteHostIp = remoteHostIp;
         }
 
         @Override
@@ -438,11 +438,11 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                 return false;
             }
             final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
-            if ((this.connectorId == null) 
-                    ? (other.connectorId != null) : !this.connectorId.equals(other.connectorId)) {
+            if ((this.connectorIpToLink == null) 
+                    ? (other.connectorIpToLink != null) : !this.connectorIpToLink.equals(other.connectorIpToLink)) {
                 return false;
             }
-            if ((this.hostId == null) ? (other.hostId != null) : !this.hostId.equals(other.hostId)) {
+            if ((this.remoteHostIp == null) ? (other.remoteHostIp != null) : !this.remoteHostIp.equals(other.remoteHostIp)) {
                 return false;
             }
             return true;
@@ -451,25 +451,25 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         @Override
         public int hashCode() {
             int hash = 5;
-            hash = 59 * hash + (this.connectorId != null ? this.connectorId.hashCode() : 0);
-            hash = 59 * hash + (this.hostId != null ? this.hostId.hashCode() : 0);
+            hash = 59 * hash + (this.connectorIpToLink != null ? this.connectorIpToLink.hashCode() : 0);
+            hash = 59 * hash + (this.remoteHostIp != null ? this.remoteHostIp.hashCode() : 0);
             return hash;
         }
-        
-        public String getConnectorId() {
-            return connectorId;
+
+        public String getConnectorIpToLink() {
+            return connectorIpToLink;
         }
 
-        public void setConnectorId(String connectorId) {
-            this.connectorId = connectorId;
+        public void setConnectorIpToLink(String connectorIpToLink) {
+            this.connectorIpToLink = connectorIpToLink;
         }
 
-        public String getHostId() {
-            return hostId;
+        public String getRemoteHostIp() {
+            return remoteHostIp;
         }
 
-        public void setHostId(String hostId) {
-            this.hostId = hostId;
+        public void setRemoteHostIp(String remoteHostIp) {
+            this.remoteHostIp = remoteHostIp;
         }
         
     }

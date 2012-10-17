@@ -54,6 +54,15 @@
   <bean id="osgiUtilsService" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
+  
+  <bean id="toolChooserLogic" class="org.openengsb.ui.admin.xlink.ToolChooserLogicImpl">
+    <property name="serviceManager" ref="serviceManager" />
+  </bean>  
+  
+  <bean id="xLinkMock" class="org.openengsb.ui.admin.xlink.mocking.XLinkMockImpl">
+    <property name="osgiService" ref="osgiUtilsService" />
+    <property name="authenticationContext" ref="authenticationContext" />
+  </bean>    
 
   <wicket:application id="openengsbApplication" mountPoint="openengsb" applicationName="openengsb"
     class="org.openengsb.ui.admin.WicketApplication">

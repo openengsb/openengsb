@@ -56,6 +56,8 @@ import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
+import org.openengsb.core.api.xlink.internal.ui.ToolChooserLogic;
+import org.openengsb.core.api.xlink.internal.ui.XLinkMock;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkConstants;
@@ -67,6 +69,7 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.xlink.mocking.ExampleObjectOrientedModel;
+import org.openengsb.ui.admin.xlink.mocking.XLinkMockImpl;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -74,6 +77,8 @@ public class ToolChooserTest extends AbstractUITest {
     
     private OsgiUtilsService mockedServiceUtils;
     private ApplicationContextMock customContext;
+    private ToolChooserLogic toolChooserLogic;
+    private XLinkMock xLinkMock;
     private SQLCodeDomain connector;
     
     @Before
@@ -88,7 +93,8 @@ public class ToolChooserTest extends AbstractUITest {
     
     @After
     public void cleanupShiro() {
-        // although a new thread should be spawned because of the DedicatedThread @Rule, but we want to be really sure
+        // although a new thread should be spawned because of the 
+        // DedicatedThread @Rule, but we want to be really sure
         ThreadContext.unbindSecurityManager();
         ThreadContext.unbindSubject();
     }
@@ -124,10 +130,12 @@ public class ToolChooserTest extends AbstractUITest {
     
     private void customMockContext() throws UserExistsException {
         ((ConnectorManagerImpl) serviceManager).setUtilsService(mockedServiceUtils);
+        xLinkMock = new XLinkMockImpl(mockedServiceUtils, new ShiroContext());
+        toolChooserLogic = new ToolChooserLogicImpl((ConnectorManagerImpl)serviceManager);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
-        customContext.putBean("serviceManager", serviceManager);     
-        customContext.putBean("authenticationContext", new ShiroContext());
+        customContext.putBean("toolChooserLogic", toolChooserLogic);     
+        customContext.putBean("xLinkMock", xLinkMock);
     }
 
     private void setupTesterWithSpringMockContext() {
@@ -216,7 +224,7 @@ public class ToolChooserTest extends AbstractUITest {
     }    
     
     @Test
-    public void openToolChooserPage_isRenderedWithSuccessfullLink() {
+    public void testOpenToolChooserPage_withValidLink_isRenderedSuccessfull() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -229,7 +237,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     @Test   
-    public void openToolChooserPage_missingGetParam_Version() {
+    public void testOpenToolChooserPage_LinkMissingVersionParam_toUserErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -243,7 +251,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
   
     @Test    
-    public void openToolChooserPage_missingGetParam_Date() {
+    public void testOpenToolChooserPage_LinkMissingDateParam_toUserErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -257,7 +265,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     @Test
-    public void openToolChooserPage_missingGetParam_ModelClass() {
+    public void testOpenToolChooserPage_LinkMissingModelParam_toUserErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -271,7 +279,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     @Test   
-    public void openToolChooserPage_missingGetParam_Context() {
+    public void testOpenToolChooserPage_LinkMissingContextParam_toUserErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -285,7 +293,7 @@ public class ToolChooserTest extends AbstractUITest {
     }      
     
     @Test    
-    public void openToolChooserPage_missingIdentifier() {
+    public void testOpenToolChooserPage_LinkMissingIdentifierParam_toUserErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -299,7 +307,7 @@ public class ToolChooserTest extends AbstractUITest {
     }   
     
     @Test
-    public void openLocalSwitchPage_isRenderedWithSuccessfullLink() {
+    public void testOpenLocalSwitchPage_withValidLink_isRenderedSuccessfull() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -313,7 +321,7 @@ public class ToolChooserTest extends AbstractUITest {
     }    
     
     @Test
-    public void openLocalSwitchPage_WrongConnectorId() {
+    public void testOpenLocalSwitchPage_LinkHasWrongConnectorId_toMachineErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
@@ -330,7 +338,7 @@ public class ToolChooserTest extends AbstractUITest {
     }
     
     @Test
-    public void openLocalSwitchPage_WrongViewId() {
+    public void testOpenLocalSwitchPage_LinkHasWrongViewId_toMachineErrorPage() {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
