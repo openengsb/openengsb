@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink.internal.ui;
+package org.openengsb.core.api.xlink.service.ui;
 
 import java.util.List;
 
