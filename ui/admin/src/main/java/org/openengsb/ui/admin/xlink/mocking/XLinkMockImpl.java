@@ -28,7 +28,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.exceptions.OpenXLinkException;
-import org.openengsb.core.api.xlink.internal.ui.XLinkMock;
+import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.OOSourceCode.model.OOClass;

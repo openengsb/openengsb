@@ -41,7 +41,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;

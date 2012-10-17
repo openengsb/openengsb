@@ -20,8 +20,8 @@ package org.openengsb.ui.admin.xlink;
 import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
-import org.openengsb.core.api.xlink.internal.ui.ToolChooserLogic;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
