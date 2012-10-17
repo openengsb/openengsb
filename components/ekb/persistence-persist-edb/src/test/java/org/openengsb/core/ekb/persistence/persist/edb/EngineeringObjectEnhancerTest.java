@@ -26,6 +26,8 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.ModelRegistry;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
 import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
@@ -37,12 +39,11 @@ public class EngineeringObjectEnhancerTest {
 
     @Before
     public void setup() {
-        enhancer = new EngineeringObjectEnhancer();
-        enhancer.setModelRegistry(new TestModelRegistry());
-        enhancer.setTransformationEngine(new TestTransformationEngine());
         EngineeringDatabaseService edbService = new TestEngineeringDatabaseService();
-        enhancer.setEdbService(edbService);
-        enhancer.setEdbConverter(new EDBConverter(edbService));
+        EDBConverter edbConverter = new EDBConverter(edbService);
+        TransformationEngine transformationEngine = new TestTransformationEngine();
+        ModelRegistry modelRegistry = new TestModelRegistry();
+        enhancer = new EngineeringObjectEnhancer(edbService, edbConverter, transformationEngine, modelRegistry);
     }
 
     @Test
@@ -168,7 +169,7 @@ public class EngineeringObjectEnhancerTest {
         assertThat(modelA.getNameA(), is("updatedFirstObject"));
         assertThat(modelB.getNameB(), is("updatedSecondObject"));
     }
-    
+
     @Test
     public void testIfEOObjectWithNoReferenceCanBeCommitted_shouldWork() throws Exception {
         EngineeringObjectModel model = new EngineeringObjectModel();
@@ -179,7 +180,7 @@ public class EngineeringObjectEnhancerTest {
         int after = commit.getUpdates().size();
         assertThat(after, is(before));
     }
-    
+
     @Test
     public void testIfEngineeringObjectUpdateAlsoUpdatesReferencedModel_shouldUpdateNeededModel()
         throws Exception {
@@ -200,7 +201,7 @@ public class EngineeringObjectEnhancerTest {
         }
         assertThat(modelA.getNameA(), is("updatedFirstObject"));
     }
-    
+
     private EKBCommit getTestCommit() {
         return new EKBCommit().setDomainId("test").setConnectorId("test");
     }

@@ -71,6 +71,7 @@
     <xi:include href="docbook/user/clients.xml"/>
     <xi:include href="docbook/user/platform.xml"/>
     <xi:include href="docbook/user/edbHooks.xml"/>
+    <xi:include href="docbook/user/ekbHooks.xml"/>
     <xi:include href="docbook/user/transformations.xml"/>
     <xi:include href="docbook/user/howto/howtoSetup.xml"/>
     <xi:include href="docbook/user/howto/howtoSimpleUsecase.xml"/>

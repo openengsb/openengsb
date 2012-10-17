@@ -17,6 +17,8 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
+import java.util.List;
+
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -24,6 +26,8 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.SanityCheckException;
 import org.openengsb.core.ekb.api.SanityCheckReport;
+import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
+import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.ConvertedCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.slf4j.Logger;
@@ -38,10 +42,15 @@ public class PersistInterfaceService implements PersistInterface {
 
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
-    private EngineeringObjectEnhancer enhancer;
-    
-    public PersistInterfaceService() {
-        enhancer = new EngineeringObjectEnhancer();
+    private List<EKBPreCommitHook> preCommitHooks;
+    private List<EKBPostCommitHook> postCommitHooks;
+
+    public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
+            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks) {
+        this.edbService = edbService;
+        this.edbConverter = edbConverter;
+        this.preCommitHooks = preCommitHooks;
+        this.postCommitHooks = postCommitHooks;
     }
 
     @Override
@@ -72,15 +81,28 @@ public class PersistInterfaceService implements PersistInterface {
      */
     private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
         throws SanityCheckException, EKBException {
-        // TODO: OPENENGSB-3355, similar to the EDB it would be good to provide pre-commit hooks and post-commit hooks.
-        // in that case, the enhancer would be a pre-commit hook.
-        enhancer.enhanceEKBCommit(commit);
+        for (EKBPreCommitHook hook : preCommitHooks) {
+            try {
+                hook.onPreCommit(commit);
+            } catch (EKBException e) {
+                throw new EKBException("EDBException is thrown in a pre commit hook.", e);
+            } catch (Exception e) {
+                LOGGER.warn("An exception is thrown in a EKB pre commit hook.", e);
+            }
+        }
         if (check) {
             performSanityChecks(commit);
         }
         if (persist) {
             ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
             performPersisting(converted);
+        }
+        for (EKBPostCommitHook hook : postCommitHooks) {
+            try {
+                hook.onPostCommit(commit);
+            } catch (Exception e) {
+                LOGGER.warn("An exception is thrown in a EKB post commit hook.", e);
+            }
         }
     }
 
@@ -99,19 +121,7 @@ public class PersistInterfaceService implements PersistInterface {
         try {
             edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
         } catch (EDBException e) {
-            throw new EKBException("Error while commiting EKBCommit", e); 
+            throw new EKBException("Error while commiting EKBCommit", e);
         }
-    }
-
-    public void setEdbService(EngineeringDatabaseService edbService) {
-        this.edbService = edbService;
-    }
-
-    public void setEdbConverter(EDBConverter edbConverter) {
-        this.edbConverter = edbConverter;
-    }
-    
-    public void setEnhancer(EngineeringObjectEnhancer enhancer) {
-        this.enhancer = enhancer;
     }
 }
