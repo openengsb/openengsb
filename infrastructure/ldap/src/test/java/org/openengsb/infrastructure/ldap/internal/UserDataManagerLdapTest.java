@@ -33,10 +33,11 @@ import java.util.List;
 
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
-import org.apache.directory.ldap.client.api.NetworkSchemaLoader;
+import org.apache.directory.ldap.client.api.DefaultSchemaLoader;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,11 +128,11 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         connection.connect();
         LOGGER.info(connection.toString());
         BindRequest bindRequest = new BindRequestImpl();
-        bindRequest.setName(new Dn("uid=admin,ou=system"));
+        bindRequest.setDn(new Dn("uid=admin,ou=system"));
         bindRequest.setCredentials("secret");
         connection.bind(bindRequest);
-        NetworkSchemaLoader nsl = new NetworkSchemaLoader(connection);
-        ((LdapNetworkConnection)(connection)).loadSchema(nsl);
+        SchemaLoader schemaLoader = new DefaultSchemaLoader(connection);
+        ((LdapNetworkConnection)(connection)).loadSchema(schemaLoader);
     }
 
     private void setupTests() throws Exception {
