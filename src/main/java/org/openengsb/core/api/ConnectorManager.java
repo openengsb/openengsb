@@ -135,8 +135,8 @@ public interface ConnectorManager {
      * @see org.openengsb.core.services.xlink.XLinkDemonstrationUtils
      */    
     XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
-            String toolName, 
-            ModelToViewsTuple[] modelsToViews) throws DomainNotLinkableException;
+            String toolName, ModelToViewsTuple[] modelsToViews) 
+            throws DomainNotLinkableException;
     
     /**
      * Unregisters the given Connector from XLink.

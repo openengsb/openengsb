@@ -14,24 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openengsb.core.api.xlink.internal;
-
-import java.util.List;
-
-import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
+package org.openengsb.core.api.xlink.exceptions;
 
 /**
- * This interface provides additional internal functionality to the ConnectorManager 
- * which is used for XLink by other bundles of the Server
+ * This Exception is thrown if an Error occurs during the validation of an incoming XLink-Request.
  */
-public interface XLinkConnectorManager extends ConnectorManager {
-    
+public class OpenXLinkException extends Exception {
+
     /**
-     * Returns a list of XLinkConnectorRegistration to a given remoteHostIp. 
-     * If the remoteHostIp is unknown, returns an empty list.
+     * Creates a new instance of <code>OpenXLinkException</code> without detail message.
      */
-    List<XLinkConnectorRegistration> getXLinkRegistration(String remoteHostIp);
-    
+    public OpenXLinkException() {
+    }
+
+    /**
+     * Constructs an instance of <code>OpenXLinkException</code> with the specified detail message.
+     * @param msg the detail message.
+     */
+    public OpenXLinkException(String msg) {
+        super(msg);
+    }
 }
