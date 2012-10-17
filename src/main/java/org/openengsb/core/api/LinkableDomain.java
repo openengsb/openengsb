@@ -17,9 +17,7 @@
 
 package org.openengsb.core.api;
 
-
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
 
 /**
  * Every Domain that wants to offer XLinking to itÂ´s Connectors, must implement this interface. Connectors can choose
@@ -38,10 +36,12 @@ public interface LinkableDomain extends Domain {
 
     // @extract-start LinkableDomainUpdateEvent
     /**
-     * During the registration each Connector receives a List of all other currently registered tools from the same
-     * host. This function is called every time this list changes.
+     * During the registration each connector receives an array of all other currently 
+     * registered tools from the same host. This function is called every time this array changes.
+     * Via this method, the array is kept uptodate. 
+     * This information is used to support local switching between tools.
      */
-    void onRegisteredToolsUpdateEvent(RegisteredToolsUpdateEvent event);
+    void onRegisteredToolsChanged(XLinkConnector[] registeredTools);
 
     // @extract-end
 

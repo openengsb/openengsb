@@ -23,12 +23,13 @@ import java.util.List;
 
 
 /**
- * Modelclass to transfere information about remote tools, registered for XLink.
+ * Modelclass to transfere information about local XLink registrations
+ * to other remote connectors.
  * <br/><br/>
  * Carries the ToolName, the ConnectorId of a tool and the views it offers for XLink.
- * A remote Host should only receive information about it´s local tools.
+ * A remote connector should only receive information about it´s local tools.
  */
-public class RemoteTool implements Serializable {
+public class XLinkConnector implements Serializable {
     
     // @extract-start XLinkRegisteredTool
     /**
@@ -44,14 +45,14 @@ public class RemoteTool implements Serializable {
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
-    private List<RemoteToolView> availableViews;
+    private List<XLinkConnectorView> availableViews;
     
     // @extract-end
 
-    public RemoteTool() {
+    public XLinkConnector() {
     }
 
-    public RemoteTool(String id, String toolName, List<RemoteToolView> availableViews) {
+    public XLinkConnector(String id, String toolName, List<XLinkConnectorView> availableViews) {
         this.id = id;
         this.toolName = toolName;
         this.availableViews = availableViews;
@@ -60,11 +61,11 @@ public class RemoteTool implements Serializable {
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */    
-    public List<RemoteToolView> getAvailableViews() {
+    public List<XLinkConnectorView> getAvailableViews() {
         return availableViews;
     }
 
-    public void setAvailableViews(List<RemoteToolView> availableViews) {
+    public void setAvailableViews(List<XLinkConnectorView> availableViews) {
         this.availableViews = availableViews;
     }
 
@@ -98,7 +99,7 @@ public class RemoteTool implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RemoteTool other = (RemoteTool) obj;
+        final XLinkConnector other = (XLinkConnector) obj;
         if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }

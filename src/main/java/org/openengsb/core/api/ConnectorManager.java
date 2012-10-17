@@ -23,8 +23,8 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
-import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 
 /**
  * Manages connector instances.
@@ -109,42 +109,39 @@ public interface ConnectorManager {
         // @extract-start ConnectorManager
     
     /**
-     * Registers the given Connector for XLinking. 
-     * Throws an Exception if, the supplied Connector was not found or does not 
+     * Registers the given connector for XLink. 
+     * Throws an exception if, the supplied connector was not found or does not 
      * belong to a linkable domain.
      * <br/><br/>
-     * The remote connector must provide a list of OpenEngSBModel/View pairs, it accepts for XLink. 
-     * A Toolname must be provided to display a human readable Name of the Tool in the 
-     * XLink http-servlet.<br/>
-     * The parameter named 'hostId' must containing the remote Host-IP. This Id is used to identify the Host when 
-     * the user calls the XLink HTTP-Servlet. Therefore the Host must not reach the HTTP-Servlet via a proxy. 
+     * The connector must provide an array of 'OpenEngSBModel/View' tuples, which define
+     * the models it accepts for a given view. 
+     * A toolname must be provided to display a human readable name in the 
+     * XLink tool-chooser website.<br/>
+     * The parameter named 'remoteHostIp' must containing the callers host-IP. This IP is used to identify 
+     * the host when the user calls the XLink tool-chooser website. Therefore the host must not reach 
+     * the website via a proxy. 
      * <br/><br/>
-     * A XLinkTemplate is returned, it contains instructions about which OpenEngSBModel is to be used for which View.
-     * With the baseUrl and the keyNames, the remote tool is able to construct valid XLink-URLs for 
-     * one of the defined model. 
+     * A XLinkUrlBluePrint is returned, it contains instructions about which OpenEngSBModel is to be used for which view 
+     * and additional information. With the baseUrl and the keyNames, the caller is able to construct valid 
+     * XLink-URLs for one of it's defined model. 
      * <br/><br/>
-     * The classes 'XLinkUtils' and 'XLinkUtilsTest' in the services package provide examples of how to 
+     * The classes 'XLinkDemonstrationUtils' and 'XLinkUtilsTest' in the services package provide examples of how to 
      * create XLink-URLs. 
      * <br/><br/>
      * Note that this function does not create a Connector, 
      * it must be called with an already registered Connector. 
      * 
-     * @see org.openengsb.core.api.xlink.XLinkTemplate
+     * @see org.openengsb.core.api.xlink.model.XLinkUrlBlueprint
+     * @see org.openengsb.core.services.xlink.XLinkDemonstrationUtils
      */    
-    XLinkTemplate connectToXLink(String id, String hostId, 
+    XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
             String toolName, 
             ModelToViewsTuple[] modelsToViews) throws DomainNotLinkableException;
     
     /**
      * Unregisters the given Connector from XLink.
      */
-    void disconnectFromXLink(String id, String hostId);
+    void disconnectFromXLink(String connectorIpToLink, String remoteHostIp);
 
     // @extract-end
-    
-    /**
-     * Returns a list of ToolRegistrations to a given hostId. 
-     * If the hostId is unknown, returns an empty list.
-     */
-    List<RemoteToolRegistration> getXLinkRegistration(String hostId);
 }

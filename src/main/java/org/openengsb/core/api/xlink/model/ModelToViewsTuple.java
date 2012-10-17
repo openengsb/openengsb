@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.xlink.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -25,7 +26,7 @@ import org.openengsb.core.api.model.ModelDescription;
  * Modelclass to transfere XLink Model/View associations from a remote tool
  * during the XLink registration.
  */
-public class ModelToViewsTuple {
+public class ModelToViewsTuple implements Serializable {
     
     /**
      * Identifier of an OpenEngSBModel
@@ -35,13 +36,13 @@ public class ModelToViewsTuple {
     /**
      * List of Views, offered by the remote tool
      */
-    private List<RemoteToolView> views;
+    private List<XLinkConnectorView> views;
 
     public ModelToViewsTuple() {
         
     }
     
-    public ModelToViewsTuple(ModelDescription description, List<RemoteToolView> views) {
+    public ModelToViewsTuple(ModelDescription description, List<XLinkConnectorView> views) {
         this.description = description;
         this.views = views;
     }
@@ -60,11 +61,11 @@ public class ModelToViewsTuple {
     /**
      * List of Views, offered by the remote tool
      */
-    public List<RemoteToolView> getViews() {
+    public List<XLinkConnectorView> getViews() {
         return views;
     }
 
-    public void setViews(List<RemoteToolView> views) {
+    public void setViews(List<XLinkConnectorView> views) {
         this.views = views;
     }
     

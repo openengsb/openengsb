@@ -17,18 +17,20 @@
 
 package org.openengsb.core.api.xlink.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ModelDescription;
 
 /**
- * Modelclass to store a registration, of a remote tool, to XLink.
+ * Modelclass to store a XLink registration, of a connector, to XLink.
  */
-public class RemoteToolRegistration {
+public class XLinkConnectorRegistration implements Serializable {
     
     /**
      * HostId of the client, provided during registration.
+     * This is currently the IP of the host.
      */
     private String hostId;
     
@@ -45,15 +47,15 @@ public class RemoteToolRegistration {
     /**
      * Model/View associations, provided by the client during registration
      */
-    private Map<ModelDescription, List<RemoteToolView>> modelsToViews;
+    private Map<ModelDescription, List<XLinkConnectorView>> modelsToViews;
     
     /**
-     * Template that was generated and returned to the client during registration
+     * BluePrint that was generated and returned to the client during registration
      */
-    private XLinkTemplate xLinkTemplate;
+    private XLinkUrlBlueprint xLinkTemplate;
 
-    public RemoteToolRegistration(String hostId, String connectorId, String toolName, 
-            Map<ModelDescription, List<RemoteToolView>> modelsToViews, XLinkTemplate xLinkTemplate) {
+    public XLinkConnectorRegistration(String hostId, String connectorId, String toolName, 
+            Map<ModelDescription, List<XLinkConnectorView>> modelsToViews, XLinkUrlBlueprint xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;
@@ -74,6 +76,7 @@ public class RemoteToolRegistration {
     
     /**
      * HostId of the client, provided during registration.
+     * This is currently the IP of the host.
      */
     public String getHostId() {
         return hostId;
@@ -86,11 +89,11 @@ public class RemoteToolRegistration {
     /**
      * Model/View associations, provided by the client during registration
      */
-    public Map<ModelDescription, List<RemoteToolView>> getModelsToViews() {
+    public Map<ModelDescription, List<XLinkConnectorView>> getModelsToViews() {
         return modelsToViews;
     }
 
-    public void setModelsToViews(Map<ModelDescription, List<RemoteToolView>> modelsToViews) {
+    public void setModelsToViews(Map<ModelDescription, List<XLinkConnectorView>> modelsToViews) {
         this.modelsToViews = modelsToViews;
     }
     
@@ -106,13 +109,13 @@ public class RemoteToolRegistration {
     }
     
     /**
-     * Template that was generated and returned to the client during registration
+     * BluePrint that was generated and returned to the client during registration
      */
-    public XLinkTemplate getxLinkTemplate() {
+    public XLinkUrlBlueprint getxLinkTemplate() {
         return xLinkTemplate;
     }
 
-    public void setxLinkTemplate(XLinkTemplate xLinkTemplate) {
+    public void setxLinkTemplate(XLinkUrlBlueprint xLinkTemplate) {
         this.xLinkTemplate = xLinkTemplate;
     }
     

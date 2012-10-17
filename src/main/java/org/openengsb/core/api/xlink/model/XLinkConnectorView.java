@@ -22,12 +22,12 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Modelclass of a xlink view, of a remote tool. 
- * Viewinformation is sent by a remote tool during a XLink registration. 
+ * Modelclass of a XLink view, of a remote tool. 
+ * Viewinformation is sent by a remote connector during a XLink registration. 
  * Must provide an unique viewId, a human readable name and descriptions 
  * in different languages.
  */
-public class RemoteToolView  implements Serializable {
+public class XLinkConnectorView  implements Serializable {
     
     /**
      * Unique Id of the View
@@ -56,7 +56,7 @@ public class RemoteToolView  implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RemoteToolView other = (RemoteToolView) obj;
+        final XLinkConnectorView other = (XLinkConnectorView) obj;
         if ((this.viewId == null) ? (other.viewId != null) : !this.viewId.equals(other.viewId)) {
             return false;
         }
@@ -79,11 +79,11 @@ public class RemoteToolView  implements Serializable {
         return hash;
     }
     
-    public RemoteToolView() {
+    public XLinkConnectorView() {
         
     }
 
-    public RemoteToolView(String viewId, String name, Map<String, String> descriptions) {
+    public XLinkConnectorView(String viewId, String name, Map<String, String> descriptions) {
         this.viewId = viewId;
         this.name = name;
         this.descriptions = descriptions;

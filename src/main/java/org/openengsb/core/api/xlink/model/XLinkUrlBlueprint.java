@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.xlink.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -24,15 +25,15 @@ import org.openengsb.core.api.model.ModelDescription;
 
 
 /**
- * Modelclass of a XLinkTemplate. <br/>
- * Created and transfered to each remote Client that participates in XLinking. Contains the
- * necessary Information to create valid XLink-URLs. Defines the BaseURL to the XLink 
- * HTTP-Servlet, required keynames, view/model associations and a List of all other currently 
- * registered tools from the same host.
+ * Modelclass of a XLinkUrlBlueprint. <br/>
+ * Created and transfered to each remote connector that participates in XLink. Contains the
+ * necessary information to create valid XLink-URLs. Defines the BaseURL to the XLink 
+ * tool-chooser page, required keynames, view/model associations and an array of all other currently 
+ * registered connectors from the same host.
  * <br/><br/>
- * The list of registered tools can be used to support 'local-switching' between local tools. 
+ * The list of locally registered connectors can be used to support 'local-switching' between local tools. 
  */
-public class XLinkTemplate {
+public class XLinkUrlBlueprint implements Serializable {
     
     // @extract-start XLinkTemplate
     /**
@@ -55,7 +56,7 @@ public class XLinkTemplate {
      * This list of registered tools can be used to support 
      * 'local-switching' between local tools.
      */
-    private List<RemoteTool> registeredTools; 
+    private List<XLinkConnector> registeredTools; 
     
     /**
      * Key/value combination of the connectorId in HTTP GET paramater syntax.
@@ -68,16 +69,16 @@ public class XLinkTemplate {
      * Contains a set of Keynames, which are to be used for
      * constructing valid XLinkURLs.
      */
-    private XLinkTemplateKeyNames keyNames;
+    private XLinkUrlKeyNames keyNames;
     
     // @extract-end
 
-    public XLinkTemplate() {
+    public XLinkUrlBlueprint() {
     }
 
-    public XLinkTemplate(String baseUrl, Map<String, ModelDescription> viewToModels, 
-            List<RemoteTool> registeredTools, String connectorId, 
-            XLinkTemplateKeyNames keyNames) {
+    public XLinkUrlBlueprint(String baseUrl, Map<String, ModelDescription> viewToModels, 
+            List<XLinkConnector> registeredTools, String connectorId, 
+            XLinkUrlKeyNames keyNames) {
         this.baseUrl = baseUrl;
         this.viewToModels = viewToModels;
         this.registeredTools = registeredTools;
@@ -118,11 +119,11 @@ public class XLinkTemplate {
      * This list of registered tools can be used to support 
      * 'local-switching' between local tools.
      */  
-    public List<RemoteTool> getRegisteredTools() {
+    public List<XLinkConnector> getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<RemoteTool> registeredTools) {
+    public void setRegisteredTools(List<XLinkConnector> registeredTools) {
         this.registeredTools = registeredTools;
     }
 
@@ -142,11 +143,11 @@ public class XLinkTemplate {
      * Contains a set of Keynames, which are to be used for
      * constructing valid XLinkURLs.
      */
-    public XLinkTemplateKeyNames getKeyNames() {
+    public XLinkUrlKeyNames getKeyNames() {
         return keyNames;
     }
 
-    public void setKeyNames(XLinkTemplateKeyNames keyNames) {
+    public void setKeyNames(XLinkUrlKeyNames keyNames) {
         this.keyNames = keyNames;
     }
 
