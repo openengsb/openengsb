@@ -149,8 +149,13 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         registerService(permissionProvider, props, ClassProvider.class);
     }
 
+    private void clearDIT() {
+        ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouUsers());
+        ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(
+            SchemaConstants.ouGlobalPermissionSets());
+    }
+    
     @Before
-    // TODO make some resetServer() method or even better applyLdifs
     public void doBefore() throws Exception {
         setupConnection();
         setupUserManager();
@@ -163,12 +168,6 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         clearDIT();
         connection.unBind();
         connection.close();
-    }
-
-    private void clearDIT() {
-        ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouUsers());
-        ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(
-            SchemaConstants.ouGlobalPermissionSets());
     }
 
     /*--------------- users -----------------*/
