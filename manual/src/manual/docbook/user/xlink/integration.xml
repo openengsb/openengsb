@@ -103,7 +103,7 @@
         <ns:para>This configurations must be provided by the OpenEngSB</ns:para>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>
         <ns:para>This are the Constants that are used in the Functions above.</ns:para>
-        <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>
+        <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>-->
     </section>   
     <section xml:id="implementation.httpservlet">
         <title>ToolChooserPage</title>

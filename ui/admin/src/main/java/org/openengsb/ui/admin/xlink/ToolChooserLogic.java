@@ -19,11 +19,11 @@ package org.openengsb.ui.admin.xlink;
 
 import java.util.List;
 
-import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
+import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.services.xlink.XLinkUtils;
 
 /**
@@ -31,17 +31,17 @@ import org.openengsb.core.services.xlink.XLinkUtils;
  */
 public class ToolChooserLogic {
     
-    private ConnectorManager serviceManager;
+    private XLinkConnectorManager serviceManager;
     //private OsgiUtilsService osgiService;
 
-    public ToolChooserLogic(ConnectorManager serviceManager) {
+    public ToolChooserLogic(XLinkConnectorManager serviceManager) {
         this.serviceManager = serviceManager;
     }
     
     /**
      * Returns the Tools of a given HostId, which are registered for XLink.
      */
-    public List<RemoteTool> getRegisteredToolsFromHost(String hostId) {
+    public List<XLinkConnector> getRegisteredToolsFromHost(String hostId) {
         return XLinkUtils.getLocalToolFromRegistrations(
                 serviceManager.getXLinkRegistration(hostId));
     } 
@@ -52,7 +52,7 @@ public class ToolChooserLogic {
      */
     public ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId) {
         if (getRegistration(hostId, connectorId) != null) {
-            XLinkTemplate template = getRegistration(hostId, connectorId).getxLinkTemplate();
+            XLinkUrlBlueprint template = getRegistration(hostId, connectorId).getxLinkTemplate();
             return template.getViewToModels().get(viewId);            
         }
         return null;
@@ -62,8 +62,8 @@ public class ToolChooserLogic {
      * Returns the Registrationdata to a given HostId and ConnectorId.
      * Returns null, if no XLinkRegistration was found.
      */
-    private RemoteToolRegistration getRegistration(String hostId, String connectorId) {
-        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+    private XLinkConnectorRegistration getRegistration(String hostId, String connectorId) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration;
             }
@@ -76,7 +76,7 @@ public class ToolChooserLogic {
      * HostId.
      */
     public boolean isConnectorRegistrated(String hostId, String connectorId) {
-        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return true;
             }
@@ -88,7 +88,7 @@ public class ToolChooserLogic {
      * Returns true, if the given View exists for the defined XLinkRegistration.
      */
     public boolean isViewExisting(String hostId, String connectorId, String viewId) {
-        for (RemoteToolRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration.getxLinkTemplate().getViewToModels().containsKey(viewId);
             }

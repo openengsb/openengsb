@@ -57,11 +57,11 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
-import org.openengsb.core.api.xlink.model.RemoteToolView;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.security.model.ShiroContext;
-import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.domain.SQLCode.SQLCodeDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
@@ -162,9 +162,9 @@ public class ToolChooserTest extends AbstractUITest {
         descriptions.put("en", "This is an ExampleObjectOrientedModel view.");
         descriptions.put("de", "Das ist eine ExampleObjectOrientedModel view.");
         
-        List<RemoteToolView> views = new ArrayList<RemoteToolView>();
-        views.add(new RemoteToolView(viewIdExampleObjectOrientedModel1, "View 1", descriptions));
-        views.add(new RemoteToolView(viewIdExampleObjectOrientedModel2, "View 2", descriptions));          
+        List<XLinkConnectorView> views = new ArrayList<XLinkConnectorView>();
+        views.add(new XLinkConnectorView(viewIdExampleObjectOrientedModel1, "View 1", descriptions));
+        views.add(new XLinkConnectorView(viewIdExampleObjectOrientedModel2, "View 2", descriptions));          
         
         modelsToViews[0] = 
                 new ModelToViewsTuple(
@@ -177,15 +177,15 @@ public class ToolChooserTest extends AbstractUITest {
     }      
     
     private void setupCommonXLinkParams(PageParameters params) {
-        params.add(XLinkUtils.XLINK_EXPIRATIONDATE_KEY, getExpirationDate(3));
-        params.add(XLinkUtils.XLINK_MODELCLASS_KEY, ExampleObjectOrientedModel.class.getName());
-        params.add(XLinkUtils.XLINK_VERSION_KEY, "3.0.0.SNAPSHOT");
-        params.add(XLinkUtils.XLINK_CONTEXTID_KEY, "ExampleContext");         
+        params.add(XLinkConstants.XLINK_EXPIRATIONDATE_KEY, getExpirationDate(3));
+        params.add(XLinkConstants.XLINK_MODELCLASS_KEY, ExampleObjectOrientedModel.class.getName());
+        params.add(XLinkConstants.XLINK_VERSION_KEY, "3.0.0.SNAPSHOT");
+        params.add(XLinkConstants.XLINK_CONTEXTID_KEY, "ExampleContext");         
     }
     
     private void setupLocalSwitchXLinkParams(PageParameters params) {
-        params.add(XLinkUtils.XLINK_CONNECTORID_KEY, "test2+test2+test2");
-        params.add(XLinkUtils.XLINK_VIEW_KEY, "viewId_ExampleObjectOrientedModel_2");        
+        params.add(XLinkConstants.XLINK_CONNECTORID_KEY, "test2+test2+test2");
+        params.add(XLinkConstants.XLINK_VIEW_KEY, "viewId_ExampleObjectOrientedModel_2");        
     }    
     
     private void setupIdentfierParamsForExampleOOModel(PageParameters params) {
@@ -201,17 +201,17 @@ public class ToolChooserTest extends AbstractUITest {
             Logger.getLogger(ToolChooserTest.class.getName()).log(Level.SEVERE, null, ex);
         } 
         
-        params.add(XLinkUtils.XLINK_IDENTIFIER_KEY, identifyingString);    
+        params.add(XLinkConstants.XLINK_IDENTIFIER_KEY, identifyingString);    
     }    
     
     private void setupNessecaryHeader() {
-        tester.addRequestHeader(XLinkUtils.XLINK_HOST_HEADERNAME, "localhost");
+        tester.addRequestHeader(XLinkConstants.XLINK_HOST_HEADERNAME, "localhost");
     }
     
     private String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
-        Format formatter = new SimpleDateFormat(XLinkUtils.DATEFORMAT);
+        Format formatter = new SimpleDateFormat(XLinkConstants.DATEFORMAT);
         return formatter.format(calendar.getTime());
     }    
     
@@ -235,11 +235,11 @@ public class ToolChooserTest extends AbstractUITest {
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_VERSION_KEY);
+        params.remove(XLinkConstants.XLINK_VERSION_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains(XLinkUtils.XLINK_VERSION_KEY);
+        tester.assertContains(XLinkConstants.XLINK_VERSION_KEY);
     }
   
     @Test    
@@ -249,11 +249,11 @@ public class ToolChooserTest extends AbstractUITest {
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_EXPIRATIONDATE_KEY);
+        params.remove(XLinkConstants.XLINK_EXPIRATIONDATE_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains(XLinkUtils.XLINK_EXPIRATIONDATE_KEY);
+        tester.assertContains(XLinkConstants.XLINK_EXPIRATIONDATE_KEY);
     }
     
     @Test
@@ -263,11 +263,11 @@ public class ToolChooserTest extends AbstractUITest {
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_MODELCLASS_KEY);
+        params.remove(XLinkConstants.XLINK_MODELCLASS_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains(XLinkUtils.XLINK_MODELCLASS_KEY);
+        tester.assertContains(XLinkConstants.XLINK_MODELCLASS_KEY);
     }
     
     @Test   
@@ -277,11 +277,11 @@ public class ToolChooserTest extends AbstractUITest {
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_CONTEXTID_KEY);
+        params.remove(XLinkConstants.XLINK_CONTEXTID_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains(XLinkUtils.XLINK_CONTEXTID_KEY);
+        tester.assertContains(XLinkConstants.XLINK_CONTEXTID_KEY);
     }      
     
     @Test    
@@ -291,11 +291,11 @@ public class ToolChooserTest extends AbstractUITest {
         setupIdentfierParamsForExampleOOModel(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_IDENTIFIER_KEY);
+        params.remove(XLinkConstants.XLINK_IDENTIFIER_KEY);
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(UserResponsePage.class);
-        tester.assertContains(XLinkUtils.XLINK_IDENTIFIER_KEY);
+        tester.assertContains(XLinkConstants.XLINK_IDENTIFIER_KEY);
     }   
     
     @Test
@@ -320,8 +320,8 @@ public class ToolChooserTest extends AbstractUITest {
         setupLocalSwitchXLinkParams(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_CONNECTORID_KEY);
-        params.add(XLinkUtils.XLINK_CONNECTORID_KEY, "test3+test3+test3");
+        params.remove(XLinkConstants.XLINK_CONNECTORID_KEY);
+        params.add(XLinkConstants.XLINK_CONNECTORID_KEY, "test3+test3+test3");
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
@@ -337,8 +337,8 @@ public class ToolChooserTest extends AbstractUITest {
         setupLocalSwitchXLinkParams(params);
         setupNessecaryHeader();
         
-        params.remove(XLinkUtils.XLINK_VIEW_KEY);
-        params.add(XLinkUtils.XLINK_VIEW_KEY, "exampleViewId_wrong");   
+        params.remove(XLinkConstants.XLINK_VIEW_KEY);
+        params.add(XLinkConstants.XLINK_VIEW_KEY, "exampleViewId_wrong");   
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);

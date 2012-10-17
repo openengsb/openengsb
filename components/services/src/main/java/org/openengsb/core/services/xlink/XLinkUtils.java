@@ -35,11 +35,12 @@ import java.util.logging.Logger;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.RemoteToolRegistration;
-import org.openengsb.core.api.xlink.model.RemoteToolView;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
-import org.openengsb.core.api.xlink.model.XLinkTemplateKeyNames;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
+import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
+import org.openengsb.core.api.xlink.model.XLinkUrlKeyNames;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.osgi.framework.Version;
@@ -54,37 +55,6 @@ public final class XLinkUtils {
     private XLinkUtils() {
     }
 
-    // @extract-start XLinkUtilsKeyDefs
-
-    /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
-    public static final String XLINK_CONTEXTID_KEY = "contextId";
-
-    /** Keyname of the ModelClass, mandatoryGET-Parameter in XLinks */
-    public static final String XLINK_MODELCLASS_KEY = "modelClass";
-
-    /** Keyname of the Version, mandatory GET-Parameter in XLinks */
-    public static final String XLINK_VERSION_KEY = "versionId";
-
-    /** Keyname of the ExpirationDate, mandatory GET-Parameter in XLinks */
-    public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
-    
-    /** Keyname of the IdentifierString, mandatory GET-Parameter in XLinks */
-    public static final String XLINK_IDENTIFIER_KEY = "identifier";    
-
-    /** Keyname of the ConnectorId, GET-Parameter in XLinks, only mandatory in local switching */
-    public static final String XLINK_CONNECTORID_KEY = "connectorId";
-
-    /** Keyname of the ViewId, GET-Parameter in XLinks, only mandatory in local switching */
-    public static final String XLINK_VIEW_KEY = "viewId";
-
-    /** Headername of the HostId (e.g. the IP), used during the registration for XLink. */
-    public static final String XLINK_HOST_HEADERNAME = "Host";
-    
-    /**Format of the ExpirationDate*/
-    public static final String DATEFORMAT = "yyyyMMddkkmmss";
-
-    // @extract-end
-
     // @extract-start XLinkUtilsPrepareTemplate
 
     /**
@@ -95,26 +65,21 @@ public final class XLinkUtils {
      * The ConnectorId/value combination and the ViewId-Key are also added to the Template to enable 
      * Local Switching.
      */
-    public static XLinkTemplate prepareXLinkTemplate(String baseUrl,
+    public static XLinkUrlBlueprint prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            Map<ModelDescription, List<RemoteToolView>> modelsToViews, 
+            Map<ModelDescription, List<XLinkConnectorView>> modelsToViews, 
             int expirationDays, 
-            List<RemoteTool> registeredTools) {
+            List<XLinkConnector> registeredTools) {
         baseUrl +=
-            "?" + XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
-        String connectorIdParam = XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
+            "?" + XLinkConstants.XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
+        String connectorIdParam = XLinkConstants.XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
         Map<String, ModelDescription> viewToModels = assigneModelsToViews(modelsToViews);
         return 
-            new XLinkTemplate(baseUrl, 
+            new XLinkUrlBlueprint(baseUrl, 
                 viewToModels, 
                 registeredTools,        
                 connectorIdParam, 
-            new XLinkTemplateKeyNames(
-                XLINK_MODELCLASS_KEY, 
-                XLINK_VERSION_KEY, 
-                XLINK_IDENTIFIER_KEY, 
-                XLINK_CONTEXTID_KEY, 
-                XLINK_VIEW_KEY)
+            new XLinkUrlKeyNames()
         );
     }
     
@@ -123,11 +88,11 @@ public final class XLinkUtils {
      * The current model is choosen for the first occurence of the view.
      */
     private static Map<String, ModelDescription> assigneModelsToViews(Map<ModelDescription, 
-            List<RemoteToolView>> modelsToViews) {
+            List<XLinkConnectorView>> modelsToViews) {
         HashMap<String, ModelDescription> viewsToModels = new HashMap<String, ModelDescription>();
         for (ModelDescription modelInfo : modelsToViews.keySet()) {
-            List<RemoteToolView> currentViewList = modelsToViews.get(modelInfo);
-            for (RemoteToolView view : currentViewList) {
+            List<XLinkConnectorView> currentViewList = modelsToViews.get(modelInfo);
+            for (XLinkConnectorView view : currentViewList) {
                 if (!viewsToModels.containsKey(view.getViewId())) {
                     viewsToModels.put(view.getViewId(), modelInfo);
                 }
@@ -142,7 +107,7 @@ public final class XLinkUtils {
     private static String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
-        Format formatter = new SimpleDateFormat(DATEFORMAT);
+        Format formatter = new SimpleDateFormat(XLinkConstants.DATEFORMAT);
         return formatter.format(calendar.getTime());
     }
 
@@ -201,7 +166,7 @@ public final class XLinkUtils {
      */
     public static Calendar dateStringToCalendar(String dateString) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat(DATEFORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(XLinkConstants.DATEFORMAT);
         try {
             calendar.setTime(formatter.parse(dateString));
         } catch (Exception ex) {
@@ -227,11 +192,11 @@ public final class XLinkUtils {
      * @see RemoteToolView
      * @see RemoteToolRegistration
      */
-    public static List<RemoteToolView> getViewsOfRegistration(RemoteToolRegistration registration) {
-        List<RemoteToolView> viewsOfRegistration = new ArrayList<RemoteToolView>();
-        Map<ModelDescription, List<RemoteToolView>> modelsToViews = registration.getModelsToViews();
-        for (List<RemoteToolView> views : modelsToViews.values()) {
-            for (RemoteToolView view : views) {
+    public static List<XLinkConnectorView> getViewsOfRegistration(XLinkConnectorRegistration registration) {
+        List<XLinkConnectorView> viewsOfRegistration = new ArrayList<XLinkConnectorView>();
+        Map<ModelDescription, List<XLinkConnectorView>> modelsToViews = registration.getModelsToViews();
+        for (List<XLinkConnectorView> views : modelsToViews.values()) {
+            for (XLinkConnectorView view : views) {
                 if (!viewsOfRegistration.contains(view)) {
                     viewsOfRegistration.add(view);
                 }
@@ -247,11 +212,11 @@ public final class XLinkUtils {
      * @see RemoteToolRegistration
      * @see RemoteTool
      */
-    public static List<RemoteTool> getLocalToolFromRegistrations(List<RemoteToolRegistration> registrations) {
-        List<RemoteTool> tools = new ArrayList<RemoteTool>();
-        for (RemoteToolRegistration registration : registrations) {
-            RemoteTool newLocalTools 
-                = new RemoteTool(
+    public static List<XLinkConnector> getLocalToolFromRegistrations(List<XLinkConnectorRegistration> registrations) {
+        List<XLinkConnector> tools = new ArrayList<XLinkConnector>();
+        for (XLinkConnectorRegistration registration : registrations) {
+            XLinkConnector newLocalTools 
+                = new XLinkConnector(
                         registration.getConnectorId(), 
                         registration.getToolName(), 
                         getViewsOfRegistration(registration));

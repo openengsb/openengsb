@@ -30,7 +30,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.util.ModelUtils;
 
 /**
@@ -49,7 +49,7 @@ public final class XLinkDemonstrationUtils {
      * a ModelDescription and an Identifying Object, serialized with JSON.
      * This Method does not prepare the url for local switching.
      */
-    public static String generateValidXLinkUrl(XLinkTemplate template, 
+    public static String generateValidXLinkUrl(XLinkUrlBlueprint template, 
             ModelDescription modelInformation, 
             String contextId,
             String objectAsJsonString) {
@@ -102,7 +102,7 @@ public final class XLinkDemonstrationUtils {
      * a ModelDescription and an Identifying Object, serialized with JSON.
      * The connectorId and viewId parameters are added, to mark the url for Local Switching
      */
-    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template,
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkUrlBlueprint template,
             ModelDescription modelInformation, 
             String contextId, 
             String viewIdValue,

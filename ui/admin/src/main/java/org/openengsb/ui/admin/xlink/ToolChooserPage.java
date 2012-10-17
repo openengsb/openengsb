@@ -42,7 +42,6 @@ import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -50,8 +49,10 @@ import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.RemoteToolView;
+import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.ui.admin.xlink.exceptions.OpenXLinkException;
@@ -68,15 +69,16 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 public class ToolChooserPage extends WebPage {
     
     @PaxWicketBean(name = "serviceManager")
-    private ConnectorManager serviceManager;
+    private XLinkConnectorManager serviceManager;
     
     @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
     
-    private ToolChooserLogic chooserLogic;
-    private XLinkMock xLinkMock;
     @PaxWicketBean(name = "authenticationContext")
     private AuthenticationContext authenticationContext;
+    
+    private ToolChooserLogic chooserLogic;
+    private XLinkMock xLinkMock;
     
     private String contextId;
     private String modelId;
@@ -85,7 +87,6 @@ public class ToolChooserPage extends WebPage {
     private String hostId;
     private String identifier;
     private Object identifierObject;
-    
     private String connectorId;
     private String viewId;
     
@@ -176,17 +177,17 @@ public class ToolChooserPage extends WebPage {
      * Fetches the mandatory parameters for XLink from the calling request.
      */
     private void fetchXLinkParameters(HttpServletRequest req) {
-        contextId = getParameterFromMap(XLinkUtils.XLINK_CONTEXTID_KEY);
-        modelId = getParameterFromMap(XLinkUtils.XLINK_MODELCLASS_KEY);
-        versionId = getParameterFromMap(XLinkUtils.XLINK_VERSION_KEY);
-        expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkUtils.XLINK_EXPIRATIONDATE_KEY));
-        hostId = req.getHeader(XLinkUtils.XLINK_HOST_HEADERNAME); 
+        contextId = getParameterFromMap(XLinkConstants.XLINK_CONTEXTID_KEY);
+        modelId = getParameterFromMap(XLinkConstants.XLINK_MODELCLASS_KEY);
+        versionId = getParameterFromMap(XLinkConstants.XLINK_VERSION_KEY);
+        viewId = getParameterFromMap(XLinkConstants.XLINK_VIEW_KEY);
+        identifier = getParameterFromMap(XLinkConstants.XLINK_IDENTIFIER_KEY);
+        expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkConstants.XLINK_EXPIRATIONDATE_KEY));
+        hostId = req.getHeader(XLinkConstants.XLINK_HOST_HEADERNAME); 
         if (hostId.contains(":")) {
             hostId = hostId.substring(0, hostId.indexOf(":"));
         }
-        connectorId = getParameterFromMap(XLinkUtils.XLINK_CONNECTORID_KEY);
-        viewId = getParameterFromMap(XLinkUtils.XLINK_VIEW_KEY);
-        identifier = getParameterFromMap(XLinkUtils.XLINK_IDENTIFIER_KEY);
+        connectorId = getParameterFromMap(XLinkConstants.XLINK_CONNECTORID_KEY);
     }    
 
     /**
@@ -194,12 +195,12 @@ public class ToolChooserPage extends WebPage {
      */
     private void checkMandatoryXLinkParameters() throws OpenXLinkException {
         String errorMsg = new StringResourceModel("error.missingMandatoryGetParam", this, null).getString();
-        if (contextId == null) { errorMsg += " " + XLinkUtils.XLINK_CONTEXTID_KEY; }
-        if (modelId == null) { errorMsg += ", " + XLinkUtils.XLINK_MODELCLASS_KEY; }
-        if (versionId == null) { errorMsg += ", " + XLinkUtils.XLINK_VERSION_KEY; }
-        if (expirationDate == null) { errorMsg += ", " + XLinkUtils.XLINK_EXPIRATIONDATE_KEY; }
-        if (hostId == null) { errorMsg += ", " + XLinkUtils.XLINK_HOST_HEADERNAME; }
-        if (identifier == null) { errorMsg += ", " + XLinkUtils.XLINK_IDENTIFIER_KEY; }
+        if (contextId == null) { errorMsg += " " + XLinkConstants.XLINK_CONTEXTID_KEY; }
+        if (modelId == null) { errorMsg += ", " + XLinkConstants.XLINK_MODELCLASS_KEY; }
+        if (versionId == null) { errorMsg += ", " + XLinkConstants.XLINK_VERSION_KEY; }
+        if (expirationDate == null) { errorMsg += ", " + XLinkConstants.XLINK_EXPIRATIONDATE_KEY; }
+        if (hostId == null) { errorMsg += ", " + XLinkConstants.XLINK_HOST_HEADERNAME; }
+        if (identifier == null) { errorMsg += ", " + XLinkConstants.XLINK_IDENTIFIER_KEY; }
         if ((contextId == null) 
                 || (modelId == null) 
                 || (versionId == null) 
@@ -319,15 +320,15 @@ public class ToolChooserPage extends WebPage {
         String hostIdMsg = new StringResourceModel("hostId.info", this, null).getString();
         hostIdMsg = String.format(hostIdMsg, hostId);
         add(new Label("hostId", hostIdMsg));
-        List<RemoteTool> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
+        List<XLinkConnector> tools = chooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
             protected void populateItem(ListItem item) {
-                final RemoteTool tool = (RemoteTool) item.getModelObject();
+                final XLinkConnector tool = (XLinkConnector) item.getModelObject();
                 item.add(new Label("toolName", tool.getToolName()));
                 ListView viewList = new ListView("viewList", tool.getAvailableViews()) {
                     @Override
                     protected void populateItem(ListItem li) {
-                        final RemoteToolView view = (RemoteToolView) li.getModelObject();
+                        final XLinkConnectorView view = (XLinkConnectorView) li.getModelObject();
                         li.add(new Label("viewName", view.getName()));
                         li.add(new Label("viewDescription", 
                                 returnLocalizedDescription(view.getDescriptions())));                              

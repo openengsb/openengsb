@@ -35,7 +35,7 @@
 
   <reference-list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService"
     availability="optional" />
-  <reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
+  <reference id="serviceManager" interface="org.openengsb.core.api.xlink.internal.XLinkConnectorManager" />
   <reference id="eventService" interface="org.openengsb.core.workflow.api.WorkflowService" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="ruleManager" interface="org.openengsb.core.workflow.api.RuleManager" />

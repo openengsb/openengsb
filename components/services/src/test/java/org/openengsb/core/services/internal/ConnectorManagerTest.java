@@ -32,6 +32,7 @@ import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,9 +45,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
@@ -59,11 +60,12 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.xlink.events.RegisteredToolsUpdateEvent;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
+import org.openengsb.core.api.xlink.internal.XLinkConnectorManager;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
-import org.openengsb.core.api.xlink.model.RemoteToolView;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
@@ -81,7 +83,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
-    private LinableTestConnector testConnector;
+    private LinkableDomain testConnector;
+    private ArgumentCaptor<XLinkConnector[]> eventArgument;
 
     @Before
     public void setUp() throws Exception {
@@ -92,13 +95,15 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
-        testConnector = new LinableTestConnector();
-        LinableTestConnector testConnector2 = new LinableTestConnector();
-        NormalTestConnector testConnector3 = new NormalTestConnector();
+        mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
+        testConnector = mock(LinkableDomain.class);
+        LinkableDomain testConnector2 = mock(LinkableDomain.class);
+        Domain testConnector3 = mock(Domain.class);
         when(mockedServiceUtils.getService("(service.pid=test+test+test)", 100L)).thenReturn(testConnector);
         when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(testConnector2);
         when(mockedServiceUtils.getService("(service.pid=test3+test3+test3)", 100L)).thenReturn(null);
         when(mockedServiceUtils.getService("(service.pid=test4+test4+test4)", 100L)).thenReturn(testConnector3);
+        eventArgument = ArgumentCaptor.forClass(XLinkConnector[].class);
         createServiceManager();
     }
 
@@ -299,7 +304,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String toolName = "myTool";
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
-        XLinkTemplate template 
+        XLinkUrlBlueprint template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertNotNull(template);
     }
@@ -311,7 +316,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String toolName = "myTool";
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
-        XLinkTemplate template 
+        XLinkUrlBlueprint template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId)));
     }    
@@ -333,7 +338,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String viewId2 = "exampleViewId_2";
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
-        XLinkTemplate template 
+        XLinkUrlBlueprint template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertNotNull(template.getViewToModels().get(viewId1));
         assertNotNull(template.getViewToModels().get(viewId2));
@@ -342,7 +347,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testGetXLinkRegistration_isEmptyOnInitial() {
         String hostId = "127.0.0.1";
-        assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
+        assertTrue(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
     } 
    
     @Test
@@ -353,7 +358,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertFalse(serviceManager.getXLinkRegistration(hostId).isEmpty());
+        assertFalse(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
     }     
     
     @Test
@@ -364,9 +369,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
-        assertThat(serviceManager.getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
+        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
+        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
+        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
     }     
     
     @Test
@@ -378,7 +383,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String viewId2 = "exampleViewId_2";
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
-        XLinkTemplate template 
+        XLinkUrlBlueprint template 
             = serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         assertTrue(template.getConnectorId().contains(urlEncodeParameter(connectorId)));
         assertNotNull(template.getViewToModels().get(viewId1));
@@ -401,7 +406,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
-        assertTrue(serviceManager.getXLinkRegistration(hostId).isEmpty());
+        assertTrue(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
     }      
     
     @Test
@@ -417,8 +422,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName2);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.connectToXLink(connectorId2, hostId, toolName2, modelsToViews2);
-        assertThat(testConnector.getEvent().getRegisteredTools().length, is(1));
-        assertThat(testConnector.getEvent().getRegisteredTools()[0].getToolName(), is(toolName2));
+        verify(testConnector).onRegisteredToolsChanged(eventArgument.capture());
+        assertThat(eventArgument.getValue().length, is(1));
+        assertThat(eventArgument.getValue()[0].getToolName(), is(toolName2));
     }
 
     @Test
@@ -435,11 +441,11 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName2);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.connectToXLink(connectorId2, hostId2, toolName2, modelsToViews2);
-        assertNull(testConnector.getEvent());
+        verify(testConnector,times(0)).onRegisteredToolsChanged(any(XLinkConnector[].class));
     }
 
     @Test
-    public void connectorIsNotfiedAfterDeRegistrationTest() throws DomainNotLinkableException {
+    public void connectorIsNotfiedAfterDeRegistrationTest() throws DomainNotLinkableException {        
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -451,15 +457,17 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName2);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.connectToXLink(connectorId2, hostId, toolName2, modelsToViews2);
-        assertThat(testConnector.getEvent().getRegisteredTools().length, is(1));
-        assertThat(testConnector.getEvent().getRegisteredTools()[0].getToolName(), is(toolName2));
-        serviceManager.disconnectFromXLink(connectorId2, hostId);
-        assertThat(testConnector.getEvent().getRegisteredTools().length, is(0));
+        verify(testConnector).onRegisteredToolsChanged(eventArgument.capture());           
+        assertThat(eventArgument.getValue().length, is(1));
+        assertThat(eventArgument.getValue()[0].getToolName(), is(toolName2));         
+        serviceManager.disconnectFromXLink(connectorId2, hostId);  
+        verify(testConnector, times(2)).onRegisteredToolsChanged(eventArgument.capture());  
+        assertThat(eventArgument.getValue().length, is(0));
     }
 
 
     @Test
-    public void deRegistrationIsFromDifferentHostNoNotificationTest() throws DomainNotLinkableException {
+    public void deRegistrationIsFromDifferentHostNoNotificationTest() throws DomainNotLinkableException {        
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -472,9 +480,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName2);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.connectToXLink(connectorId2, hostId2, toolName2, modelsToViews2);
-        assertNull(testConnector.getEvent());
+        verify(testConnector, times(0)).onRegisteredToolsChanged(any(XLinkConnector[].class));  
         serviceManager.disconnectFromXLink(connectorId2, hostId);
-        assertNull(testConnector.getEvent());
+        verify(testConnector, times(0)).onRegisteredToolsChanged(any(XLinkConnector[].class));   
     }   
     
     @Test(expected = DomainNotLinkableException.class)
@@ -503,13 +511,13 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelToViewsTuple[] modelsToViews 
             = new ModelToViewsTuple[1];  
         HashMap<String, String> descriptions  = new HashMap<String, String>();
-        List<RemoteToolView> views = new ArrayList<RemoteToolView>();
+        List<XLinkConnectorView> views = new ArrayList<XLinkConnectorView>();
         
         descriptions.put("en", "This is a demo view.");
         descriptions.put("de", "Das ist eine demonstration view.");
         views = new ArrayList();
-        views.add(new RemoteToolView(viewId1, toolName, descriptions));
-        views.add(new RemoteToolView(viewId2, toolName, descriptions));        
+        views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
+        views.add(new XLinkConnectorView(viewId2, toolName, descriptions));        
         
         modelsToViews[0] = 
                 new ModelToViewsTuple(
@@ -556,61 +564,4 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerService(domainProvider, domainProviderProps, DomainProvider.class);
     }
     
-    private interface LinkableTestDomain extends LinkableDomain {
-    }
-    
-    private interface TestDomain extends Domain {
-    }
-    
-    private class LinableTestConnector implements LinkableTestDomain {
-        
-        private RegisteredToolsUpdateEvent event;
-        
-        public LinableTestConnector() {
-            event = null;
-        }
-
-        @Override
-        public void openXLinks(Object[] modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void onRegisteredToolsUpdateEvent(RegisteredToolsUpdateEvent event) {
-            this.event = event;
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String getInstanceId() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public RegisteredToolsUpdateEvent getEvent() {
-            return event;
-        }
-
-        public void setEvent(RegisteredToolsUpdateEvent event) {
-            this.event = event;
-        }
-        
-    }
-    
-    private class NormalTestConnector implements TestDomain {
-
-        @Override
-        public AliveState getAliveState() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public String getInstanceId() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-        
-    }
 }

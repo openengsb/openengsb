@@ -33,9 +33,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.model.RemoteTool;
-import org.openengsb.core.api.xlink.model.RemoteToolView;
-import org.openengsb.core.api.xlink.model.XLinkTemplate;
+import org.openengsb.core.api.xlink.model.XLinkConnector;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.xlink.XLinkDemonstrationUtils;
 import org.openengsb.core.services.xlink.XLinkUtils;
@@ -45,8 +46,8 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<ModelDescription, List<RemoteToolView>> modelsToViews 
-        = new HashMap<ModelDescription, List<RemoteToolView>>();  
+    private static HashMap<ModelDescription, List<XLinkConnectorView>> modelsToViews 
+        = new HashMap<ModelDescription, List<XLinkConnectorView>>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
@@ -58,7 +59,7 @@ public class XLinkUtilsTest {
     /**Descriptions in different languages for a view*/    
     private static HashMap<String, String> descriptions  = new HashMap<String, String>();
     /**Composed viewdata as a list.*/
-    private static List<RemoteToolView> views = new ArrayList<RemoteToolView>();
+    private static List<XLinkConnectorView> views = new ArrayList<XLinkConnectorView>();
     /**Id of the Testcontext at the OpenEngSB*/
     private String contextId = "ExampleContext";
     /**Modelclass to use for Testing*/
@@ -73,8 +74,8 @@ public class XLinkUtilsTest {
         descriptions.put("en", "This is a demo view.");
         descriptions.put("de", "Das ist eine demonstration view.");
         views = new ArrayList();
-        views.add(new RemoteToolView(viewId1, toolName, descriptions));
-        views.add(new RemoteToolView(viewId2, toolName, descriptions));
+        views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
+        views.add(new XLinkConnectorView(viewId2, toolName, descriptions));
         modelsToViews.put(new ModelDescription(exampleModelClass.getName(), exampleModelClassVersion), views);
     
         serviceFinder = mock(OsgiUtilsService.class);
@@ -92,13 +93,13 @@ public class XLinkUtilsTest {
     /**Days until the XLink expires*/
     private int expiresInDays = 3;
     /**List with already registered tools*/
-    private List<RemoteTool> registeredTools = null;
+    private List<XLinkConnector> registeredTools = null;
     // @extract-end
 
     // @extract-start XLinkUtilsTestPrepareTemplate
     @Test
     public void testPrepareXLinkTemplate() {
-        XLinkTemplate xLinkTemplate =
+        XLinkUrlBlueprint xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);    
 
         //xLinkTemplate.getBaseUrl() = 
@@ -116,7 +117,7 @@ public class XLinkUtilsTest {
     public void testGenerateValidXLinkUrl() throws ClassNotFoundException, 
         IOException, NoSuchFieldException, IllegalArgumentException, 
         IllegalAccessException {
-        XLinkTemplate xLinkTemplate =
+        XLinkUrlBlueprint xLinkTemplate =
                 XLinkUtils.prepareXLinkTemplate(servletUrl, 
                 connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
@@ -153,7 +154,7 @@ public class XLinkUtilsTest {
     public void testGenerateValidXLinkUrlForLocalSwitching() throws ClassNotFoundException, 
         IOException, NoSuchFieldException, 
         IllegalArgumentException, IllegalAccessException {
-        XLinkTemplate xLinkTemplate =
+        XLinkUrlBlueprint xLinkTemplate =
             XLinkUtils.prepareXLinkTemplate(servletUrl, connectorId, modelsToViews, expiresInDays, registeredTools);  
         List<Object> values = new ArrayList<Object>(Arrays.asList("testMethod", "testClass", "testPackage"));
         ModelDescription modelInformation = xLinkTemplate.getViewToModels().get(viewId1);
@@ -176,8 +177,8 @@ public class XLinkUtilsTest {
         //&connectorId=exampleConnectorId&viewId=exampleViewId_1
 
 
-        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_CONNECTORID_KEY + "=" + connectorId));
-        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId1));
+        assertTrue(xLinkUrl.contains(XLinkConstants.XLINK_CONNECTORID_KEY + "=" + connectorId));
+        assertTrue(xLinkUrl.contains(XLinkConstants.XLINK_VIEW_KEY + "=" + viewId1));
 
     }
     // @extract-end
