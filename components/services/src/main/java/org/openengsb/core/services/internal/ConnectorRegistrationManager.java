@@ -179,13 +179,13 @@ public class ConnectorRegistrationManager {
             // @extract-end
             attributeStore.replaceAttributes(serviceInstance, new SecurityAttributeEntry("name", id));
         }
-
-        if(!(serviceInstance.getClass().isAssignableFrom(domainProvider.getDomainInterface()))) {
+        Object transformingInstance = serviceInstance;
+        if(!(domainProvider.getDomainInterface().isAssignableFrom(serviceInstance.getClass()))) {
             LOGGER.info("creating transforming proxy for connector-service", id);
-            serviceInstance = (Connector) Proxy.newProxyInstance(domainProvider.getDomainInterface().getClassLoader(),
+            transformingInstance = (Connector) Proxy.newProxyInstance(domainProvider.getDomainInterface().getClassLoader(),
                     clazzes, new TransformingConnectorHandler(transformationEngine, serviceInstance));
         }
-        pfactory.setTarget(serviceInstance);
+        pfactory.setTarget(transformingInstance);
         Object secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
 
         Map<String, Object> properties =
