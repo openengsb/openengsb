@@ -19,15 +19,12 @@ package org.openengsb.core.edb.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Defines the connection to the engineering database.
  */
 public interface EngineeringDatabaseService {
-    /**
-     * Create a commit which is ready to be filled with updates.
-     */
-    EDBCommit createCommit(String committer, String context);
 
     /**
      * Commit the provided commit object and returns the corresponding time stamp for the commit.
@@ -133,9 +130,13 @@ public interface EngineeringDatabaseService {
     List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException;
     
     /**
-     * Tries to persist the changes given by the EDBObjects in one commit. Does also the conflict checking of the
-     * objects.
+     * Creates an EDBCommit object out of the given EDBObject lists 
      */
-    void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+    EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException;
+    
+    /**
+     * Returns the revision of the current state of the EDB.
+     */
+    UUID getCurrentRevisionNumber() throws EDBException;
 }
