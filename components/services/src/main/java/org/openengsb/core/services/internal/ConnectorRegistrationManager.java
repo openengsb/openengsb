@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.util.FilterUtils;
 import org.openengsb.core.util.MapAsDictionary;
@@ -75,6 +77,7 @@ public class ConnectorRegistrationManager {
     private Map<String, Connector> instances = Maps.newHashMap();
 
     private MethodInterceptor securityInterceptor;
+    private TransformationEngine transformationEngine;
 
     public void updateRegistration(String id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
@@ -152,6 +155,7 @@ public class ConnectorRegistrationManager {
 
         Class<?>[] clazzes = new Class<?>[]{
             OpenEngSBService.class,
+            Connector.class,
             Domain.class,
             domainProvider.getDomainInterface(),
         };
@@ -161,23 +165,28 @@ public class ConnectorRegistrationManager {
             clazznames[i] = clazzes[i].getName();
         }
 
-        Object secureInstance;
+        ProxyFactory pfactory = new ProxyFactory();
+        pfactory.setInterfaces(clazzes);
+
+
         if (INTERCEPTOR_BLACKLIST.contains(description.getDomainType())) {
             LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
-            secureInstance = serviceInstance;
         } else if (securityInterceptor == null) {
             LOGGER.warn("security interceptor is not available yet");
-            secureInstance = serviceInstance;
         } else {
             // @extract-start register-secure-service-code
-            ProxyFactory pfactory = new ProxyFactory();
-            pfactory.setInterfaces(clazzes);
-            pfactory.setTarget(serviceInstance);
             pfactory.addAdvice(securityInterceptor);
-            secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
             // @extract-end
             attributeStore.replaceAttributes(serviceInstance, new SecurityAttributeEntry("name", id));
         }
+
+        if(!(serviceInstance.getClass().isAssignableFrom(domainProvider.getDomainInterface()))) {
+            LOGGER.info("creating transforming proxy for connector-service", id);
+            serviceInstance = (Connector) Proxy.newProxyInstance(domainProvider.getDomainInterface().getClassLoader(),
+                    clazzes, new TransformingConnectorHandler(transformationEngine, serviceInstance));
+        }
+        pfactory.setTarget(serviceInstance);
+        Object secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
 
         Map<String, Object> properties =
             populatePropertiesWithRequiredAttributes(description.getProperties(), id, description);
@@ -258,5 +267,9 @@ public class ConnectorRegistrationManager {
 
     public void setAttributeStore(SecurityAttributeProviderImpl attributeStore) {
         this.attributeStore = attributeStore;
+    }
+
+    public void setTransformationEngine(TransformationEngine transformationEngine) {
+        this.transformationEngine = transformationEngine;
     }
 }

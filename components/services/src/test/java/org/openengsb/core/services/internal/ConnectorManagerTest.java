@@ -46,6 +46,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -272,6 +274,60 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.create(connectorDescription);
         verify(mock2, never()).setDomainId(anyString());
         verify(mock2, never()).setConnectorId(anyString());
+    }
+
+
+
+    public static interface NullConnector extends Connector {
+
+        void nullMethod();
+
+        Object nullMethod(Object o);
+
+        Object nullMethod(Object o, String b);
+
+        void commitModel(NullModel model);
+    }
+
+    @Model
+    public static class NullModel{
+        @OpenEngSBModelId
+        private Integer id;
+        private String value;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    @Test
+    public void testCreateConnectorWithToolModel_shouldCreateTransformingProxy() throws Exception {
+        NullConnector mockedConnector = mock(NullConnector.class);
+        when(factory.createNewInstance(anyString())).thenReturn(mockedConnector);
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+
+        serviceManager.create(connectorDescription);
+
+        NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
+        service.nullMethod();
+        verify(mockedConnector).nullMethod();
     }
 
     private void registerMockedFactory() throws Exception {
