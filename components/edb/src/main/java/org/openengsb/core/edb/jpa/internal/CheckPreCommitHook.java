@@ -44,12 +44,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPreCommitHook.class);
     private JPADao dao;
 
-    public CheckPreCommitHook() {
-
-    }
-
     public CheckPreCommitHook(EntityManager entityManager) {
-        setEntityManager(entityManager);
+        dao = new DefaultJPADao(entityManager);
     }
 
     @Override
@@ -219,9 +215,5 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      */
     private Integer getVersionOfOid(String oid) throws EDBException {
         return dao.getVersionOfOid(oid);
-    }
-
-    public void setEntityManager(EntityManager entityManager) {
-        dao = new DefaultJPADao(entityManager);
     }
 }

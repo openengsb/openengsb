@@ -21,20 +21,20 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
   xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
-  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0">
+  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.1.0">
 
   <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
-    <property name="authenticationContext" ref="authenticationContext" />
-    <property name="errorHooks" ref="errorHooks" />
-    <property name="postCommitHooks" ref="postCommitHooks" />
-    <property name="preCommitHooks" ref="preCommitHooks" />
-    <property name="beginCommitHooks" ref="beginCommitHooks" />
+    <argument ref="authenticationContext" />
+    <argument ref="beginCommitHooks" />
+    <argument ref="preCommitHooks" />
+    <argument ref="postCommitHooks" />
+    <argument ref="errorHooks" />
   </bean>
   
   <bean id="preCommitHook" class="org.openengsb.core.edb.jpa.internal.CheckPreCommitHook">
-    <jpa:context property="entityManager" unitname="edb" /> 
+    <jpa:context unitname="edb" /> 
   </bean>
   
   <service interface="org.openengsb.core.edb.api.hooks.EDBPreCommitHook">

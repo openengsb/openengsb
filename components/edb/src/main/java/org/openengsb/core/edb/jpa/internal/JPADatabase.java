@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -55,12 +56,21 @@ public class JPADatabase implements EngineeringDatabaseService {
     private List<EDBPreCommitHook> preCommitHooks;
     private List<EDBBeginCommitHook> beginCommitHooks;
 
+    public JPADatabase(AuthenticationContext authenticationContext,
+            List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
+            List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks) {
+        this.authenticationContext = authenticationContext;
+        this.beginCommitHooks = beginCommitHooks;
+        this.preCommitHooks = preCommitHooks;
+        this.postCommitHooks = postCommitHooks;
+        this.errorHooks = errorHooks;
+    }
+
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
      */
-    public void open(EntityManager entityManager) throws EDBException {
+    public void open() throws EDBException {
         LOGGER.debug("starting to open EDB for testing via JPA");
-        setEntityManager(entityManager);
         utx = entityManager.getTransaction();
         LOGGER.debug("starting of EDB successful");
     }
@@ -75,15 +85,13 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
-    public JPACommit createCommit(String committer, String contextId) {
-        LOGGER.debug("creating commit for committer {} with contextId {}", committer, contextId);
-        return new JPACommit(committer, contextId);
-    }
-
-    @Override
     public Long commit(EDBCommit commit) throws EDBException {
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit is already commitet.");
+        }
+        if (commit.getParentRevisionNumber() != null
+                && !commit.getParentRevisionNumber().equals(getCurrentRevisionNumber())) {
+            throw new EDBException("EDBCommit do not have the correct head revision number.");
         }
         runBeginCommitHooks(commit);
         EDBException exception = runPreCommitHooks(commit);
@@ -103,43 +111,82 @@ public class JPADatabase implements EngineeringDatabaseService {
     private Long performCommit(EDBCommit commit) throws EDBException {
         synchronized (entityManager) {
             long timestamp = System.currentTimeMillis();
-            commit.setTimestamp(timestamp);
-            for (EDBObject update : commit.getObjects()) {
-                update.updateTimestamp(timestamp);
-                entityManager.persist(EDBUtils.convertEDBObjectToJPAObject(update));
-            }
-
             try {
-                if (utx != null) {
-                    utx.begin();
-                }
-                commit.setCommitted(true);
-                LOGGER.debug("persisting JPACommit");
-                entityManager.persist(commit);
-
-                LOGGER.debug("setting the deleted elements as deleted");
-                for (String id : commit.getDeletions()) {
-                    EDBObject o = new EDBObject(id);
-                    o.updateTimestamp(timestamp);
-                    o.setDeleted(true);
-                    JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
-                    entityManager.persist(j);
-                }
-
-                if (utx != null) {
-                    utx.commit();
-                }
+                beginTransaction();
+                persistCommitChanges(commit, timestamp);
+                commitTransaction();
             } catch (Exception ex) {
                 try {
-                    if (utx != null) {
-                        utx.rollback();
-                    }
+                    rollbackTransaction();
                 } catch (Exception e) {
-                    throw new EDBException("Failed to rollback transaction to DB", e);
+                    throw new EDBException("Failed to rollback transaction to EDB", e);
                 }
-                throw new EDBException("Failed to commit transaction to DB", ex);
+                throw new EDBException("Failed to commit transaction to EDB", ex);
             }
             return timestamp;
+        }
+    }
+
+    /**
+     * Add all the changes which are done through the given commit object to the entity manager.
+     */
+    private void persistCommitChanges(EDBCommit commit, Long timestamp) {
+        commit.setTimestamp(timestamp);
+        addModifiedObjectsToEntityManager(commit.getObjects(), timestamp);
+        commit.setCommitted(true);
+        LOGGER.debug("persisting JPACommit");
+        entityManager.persist(commit);
+        LOGGER.debug("mark the deleted elements as deleted");
+        updateDeletedObjectsThroughEntityManager(commit.getDeletions(), timestamp);
+    }
+
+    /**
+     * Updates all modified EDBObjects with the timestamp and persist them through the entity manager.
+     */
+    private void addModifiedObjectsToEntityManager(List<EDBObject> modified, Long timestamp) {
+        for (EDBObject update : modified) {
+            update.updateTimestamp(timestamp);
+            entityManager.persist(EDBUtils.convertEDBObjectToJPAObject(update));
+        }
+    }
+
+    /**
+     * Updates all deleted objects with the timestamp, mark them as deleted and persist them through the entity manager.
+     */
+    private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp) {
+        for (String id : oids) {
+            EDBObject o = new EDBObject(id);
+            o.updateTimestamp(timestamp);
+            o.setDeleted(true);
+            JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
+            entityManager.persist(j);
+        }
+    }
+
+    /**
+     * If the user transaction object is not null, a transaction get started.
+     */
+    private void beginTransaction() {
+        if (utx != null) {
+            utx.begin();
+        }
+    }
+
+    /**
+     * If the user transaction object is not null, a transaction get committed.
+     */
+    private void commitTransaction() {
+        if (utx != null) {
+            utx.commit();
+        }
+    }
+
+    /**
+     * If the user transaction object is not null, a transaction get rolled back.
+     */
+    private void rollbackTransaction() {
+        if (utx != null) {
+            utx.rollback();
         }
     }
 
@@ -149,17 +196,18 @@ public class JPADatabase implements EngineeringDatabaseService {
      * the calling instance.
      */
     private void runBeginCommitHooks(EDBCommit commit) throws EDBException {
-        if (beginCommitHooks != null) {
-            for (EDBBeginCommitHook hook : beginCommitHooks) {
-                try {
-                    hook.onStartCommit(commit);
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                } catch (EDBException e) {
-                    throw e;
-                } catch (Exception e) {
-                    LOGGER.error("Error while performing EDBBeginCommitHook", e);
-                }
+        if (beginCommitHooks == null) {
+            return;
+        }
+        for (EDBBeginCommitHook hook : beginCommitHooks) {
+            try {
+                hook.onStartCommit(commit);
+            } catch (ServiceUnavailableException e) {
+                // Ignore
+            } catch (EDBException e) {
+                throw e;
+            } catch (Exception e) {
+                LOGGER.error("Error while performing EDBBeginCommitHook", e);
             }
         }
     }
@@ -171,18 +219,19 @@ public class JPADatabase implements EngineeringDatabaseService {
      */
     private EDBException runPreCommitHooks(EDBCommit commit) {
         EDBException exception = null;
-        if (preCommitHooks != null) {
-            for (EDBPreCommitHook hook : preCommitHooks) {
-                try {
-                    hook.onPreCommit(commit);
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                } catch (EDBException e) {
-                    exception = e;
-                    break;
-                } catch (Exception e) {
-                    LOGGER.error("Error while performing EDBPreCommitHook", e);
-                }
+        if (preCommitHooks == null) {
+            return null;
+        }
+        for (EDBPreCommitHook hook : preCommitHooks) {
+            try {
+                hook.onPreCommit(commit);
+            } catch (ServiceUnavailableException e) {
+                // Ignore
+            } catch (EDBException e) {
+                exception = e;
+                break;
+            } catch (Exception e) {
+                LOGGER.error("Error while performing EDBPreCommitHook", e);
             }
         }
         return exception;
@@ -195,21 +244,22 @@ public class JPADatabase implements EngineeringDatabaseService {
      * instead.
      */
     private Long runErrorHooks(EDBCommit commit, EDBException exception) throws EDBException {
-        if (errorHooks != null) {
-            for (EDBErrorHook hook : errorHooks) {
-                try {
-                    EDBCommit newCommit = hook.onError(commit, exception);
-                    if (newCommit != null) {
-                        return commit(newCommit);
-                    }
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                } catch (EDBException e) {
-                    exception = e;
-                    break;
-                } catch (Exception e) {
-                    LOGGER.error("Error while performing EDBErrorHook", e);
+        if (errorHooks == null) {
+            throw exception;
+        }
+        for (EDBErrorHook hook : errorHooks) {
+            try {
+                EDBCommit newCommit = hook.onError(commit, exception);
+                if (newCommit != null) {
+                    return commit(newCommit);
                 }
+            } catch (ServiceUnavailableException e) {
+                // Ignore
+            } catch (EDBException e) {
+                exception = e;
+                break;
+            } catch (Exception e) {
+                LOGGER.error("Error while performing EDBErrorHook", e);
             }
         }
         throw exception;
@@ -220,15 +270,16 @@ public class JPADatabase implements EngineeringDatabaseService {
      * for ServiceUnavailableExceptions.
      */
     private void runEDBPostHooks(EDBCommit commit) {
-        if (postCommitHooks != null) {
-            for (EDBPostCommitHook hook : postCommitHooks) {
-                try {
-                    hook.onPostCommit(commit);
-                } catch (ServiceUnavailableException e) {
-                    // Ignore
-                } catch (Exception e) {
-                    LOGGER.error("Error while performing EDBPostCommitHook", e);
-                }
+        if (postCommitHooks == null) {
+            return;
+        }
+        for (EDBPostCommitHook hook : postCommitHooks) {
+            try {
+                hook.onPostCommit(commit);
+            } catch (ServiceUnavailableException e) {
+                // Ignore
+            } catch (Exception e) {
+                LOGGER.error("Error while performing EDBPostCommitHook", e);
             }
         }
     }
@@ -354,6 +405,16 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     @Override
+    public UUID getCurrentRevisionNumber() throws EDBException {
+        try {
+            return getCommit(System.currentTimeMillis()).getRevisionNumber();
+        } catch (EDBException e) {
+            LOGGER.debug("There was no commit so far, so the current revision number is null");
+            return null;
+        }
+    }
+
+    @Override
     public JPACommit getCommit(Long from) throws EDBException {
         List<JPACommit> commits = dao.getJPACommit(from);
         if (commits == null || commits.size() == 0) {
@@ -391,69 +452,36 @@ public class JPADatabase implements EngineeringDatabaseService {
         return getStateOfLastCommitMatching(query);
     }
 
+    @Override
+    public EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException {
+        String committer = getAuthenticatedUser();
+        String contextId = getActualContextId();
+        JPACommit commit = new JPACommit(committer, contextId);
+        LOGGER.debug("creating commit for committer {} with contextId {}", committer, contextId);
+        commit.insertAll(inserts);
+        commit.updateAll(updates);
+        commit.deleteAll(deletes);
+        commit.setHeadRevisionNumber(getCurrentRevisionNumber());
+        return commit;
+    }
+
     /**
-     * Returns the actual authenticated user. If this class is called from JUnit, the string "testuser" is returned.
+     * Returns the actual authenticated user.
      */
     private String getAuthenticatedUser() {
-        // if JPADatabase is called via integration tests username is null so testuser is returned
-        String username = (String) authenticationContext.getAuthenticatedPrincipal();
-        return username != null ? username : "testuser";
+        return (String) authenticationContext.getAuthenticatedPrincipal();
     }
 
     /**
-     * Returns the actual context id. If this class is called from JUnit, the string "testcontext" is returned.
+     * Returns the actual context id.
      */
     private String getActualContextId() {
-        // if JPADatabase is called via integration tests, holder is null so testcontext is returned
-        ContextHolder holder = ContextHolder.get();
-        return holder != null ? holder.getCurrentContextId() : "testcontext";
+        return ContextHolder.get().getCurrentContextId();
     }
-
-    @Override
-    public void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
-        throws EDBException {
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-
-        if (inserts != null) {
-            for (EDBObject insert : inserts) {
-                commit.insert(insert);
-            }
-        }
-        if (updates != null) {
-            for (EDBObject update : updates) {
-                commit.update(update);
-            }
-        }
-        if (deletes != null) {
-            for (EDBObject delete : deletes) {
-                commit.delete(delete.getOID());
-            }
-        }
-        commit(commit);
-    }
-
+    
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
-        dao = new DefaultJPADao(entityManager);
-    }
-
-    public void setErrorHooks(List<EDBErrorHook> errorHooks) {
-        this.errorHooks = errorHooks;
-    }
-
-    public void setPostCommitHooks(List<EDBPostCommitHook> postCommitHooks) {
-        this.postCommitHooks = postCommitHooks;
-    }
-
-    public void setPreCommitHooks(List<EDBPreCommitHook> preCommitHooks) {
-        this.preCommitHooks = preCommitHooks;
-    }
-
-    public void setBeginCommitHooks(List<EDBBeginCommitHook> beginCommitHooks) {
-        this.beginCommitHooks = beginCommitHooks;
-    }
-
-    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
-        this.authenticationContext = authenticationContext;
+        this.dao = new DefaultJPADao(entityManager);
     }
 }
