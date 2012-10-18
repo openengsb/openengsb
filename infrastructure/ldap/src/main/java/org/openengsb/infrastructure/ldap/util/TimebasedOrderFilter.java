@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
-import org.openengsb.separateProject.SchemaConstants;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;

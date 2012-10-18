@@ -192,6 +192,53 @@
       <artifactId>hamcrest-all</artifactId>
       <scope>test</scope>
     </dependency>
+
+
+
+    <dependency>
+      <groupId>org.openengsb.infrastructure</groupId>
+      <artifactId>org.openengsb.infrastructure.ldap</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-all</artifactId>
+      <version>2.0.0-M8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-integ</artifactId>
+      <version>2.0.0-M8</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.apache.felix.framework</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-core-integ</artifactId>
+      <version>2.0.0-M8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>ldap-client-test</artifactId>
+      <version>2.0.0-M8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.shared</groupId>
+      <artifactId>shared-ldap-model</artifactId>
+      <version>1.0.0-M13</version>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
 </project>

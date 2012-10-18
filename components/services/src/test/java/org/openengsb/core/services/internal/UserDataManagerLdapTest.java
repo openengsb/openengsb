@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.internal;
+package org.openengsb.core.services.internal;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
@@ -55,8 +55,9 @@ import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.Constants;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
-import org.openengsb.separateProject.SchemaConstants;
-import org.openengsb.separateProject.UserDataManagerLdap;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
+import org.openengsb.core.services.internal.security.UserDataManagerLdap;
+import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

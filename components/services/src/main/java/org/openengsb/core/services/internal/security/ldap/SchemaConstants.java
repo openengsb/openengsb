@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.separateProject;
+package org.openengsb.core.services.internal.security.ldap;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;

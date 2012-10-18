@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.separateProject;
+package org.openengsb.core.services.internal.security;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,10 +35,11 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.util.CollectionUtilsExtended;
-import org.openengsb.core.services.internal.security.EntryUtils;
 import org.openengsb.core.services.internal.security.model.EntryElement;
 import org.openengsb.core.services.internal.security.model.EntryValue;
 import org.openengsb.core.services.internal.security.model.PermissionData;
+import org.openengsb.core.services.internal.security.ldap.EntryFactory;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 import org.openengsb.infrastructure.ldap.internal.EntryAlreadyExistsException;
 import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.openengsb.infrastructure.ldap.internal.MissingParentException;

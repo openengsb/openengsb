@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
 import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
-import org.openengsb.separateProject.SchemaConstants;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
 /**
  * Utility class offering common operations on {@link Entry} and {@link Dn}

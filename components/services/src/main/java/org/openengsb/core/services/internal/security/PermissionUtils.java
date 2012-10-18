@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.separateProject;
+package org.openengsb.core.services.internal.security;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,10 +27,11 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.services.internal.security.EntryUtils;
 import org.openengsb.core.services.internal.security.model.EntryElement;
 import org.openengsb.core.services.internal.security.model.EntryValue;
 import org.openengsb.core.services.internal.security.model.PermissionData;
+import org.openengsb.core.services.internal.security.ldap.EntryFactory;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 
 import com.google.common.collect.Maps;
