@@ -19,7 +19,9 @@ package org.openengsb.core.ekb.persistence.persist.edb;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
@@ -45,6 +49,9 @@ public class PersistInterfaceServiceTest {
         EDBConverter converter = new EDBConverter(edbService);
         List<EKBPreCommitHook> preHooks = new ArrayList<EKBPreCommitHook>();
         List<EKBPostCommitHook> postHooks = new ArrayList<EKBPostCommitHook>();
+        EDBCommit result = mock(EDBCommit.class);
+        when(edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
+            anyListOf(EDBObject.class))).thenReturn(result);
         this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks);
     }
 
