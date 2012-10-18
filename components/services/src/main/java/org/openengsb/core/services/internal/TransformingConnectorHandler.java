@@ -77,6 +77,9 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
 
     private String getClassVersion(Class<?> type) {
         Bundle bundle = FrameworkUtil.getBundle(type);
+        if(bundle == null) { // it was the bootstrap-classloader
+            return "0.0.0";
+        }
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         List<BundleCapability> capabilities = wiring.getCapabilities(BundleRevision.PACKAGE_NAMESPACE);
         for (BundleCapability capability : capabilities) {
