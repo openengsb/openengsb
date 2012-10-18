@@ -18,6 +18,7 @@
 package org.openengsb.core.edb.api;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A Commit object represents a change to the data source. It can either reflect a change that already happened in the
@@ -97,4 +98,19 @@ public interface EDBCommit {
      * this setter should be called by the EnterpriseDatabaseService at the commit procedure
      */
     void setTimestamp(Long timestamp);
+    
+    /**
+     * Returns the revision number for the EDBCommit object.
+     */
+    UUID getRevisionNumber();
+    
+    /**
+     * Returns the revision number of the parent of the EDBCommit object.
+     */
+    UUID getParentRevisionNumber();
+    
+    /**
+     * Sets the revision number of the parent of the EDBCommit object.
+     */
+    void setHeadRevisionNumber(UUID revisionNumber);
 }
