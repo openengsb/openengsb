@@ -34,8 +34,8 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
     
     private XLinkConnectorManager serviceManager;
 
-    public ToolChooserLogicImpl(XLinkConnectorManager serviceManager) {
-        this.serviceManager = serviceManager;
+    public ToolChooserLogicImpl(XLinkConnectorManager xlinkServiceManager) {
+        this.serviceManager = xlinkServiceManager;
     }
     
     @Override

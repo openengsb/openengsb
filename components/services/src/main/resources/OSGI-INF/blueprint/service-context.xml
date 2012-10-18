@@ -47,6 +47,7 @@
   <service>
     <interfaces>
       <value>org.openengsb.core.api.ConnectorManager</value>
+      <value>org.openengsb.core.api.xlink.service.XLinkConnectorManager</value>
     </interfaces>
     <service-properties>
       <entry key="service.pid" value="connectorManager" />
