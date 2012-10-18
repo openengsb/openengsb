@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * The query interface provides the functions to access the data stored in the EDB.
@@ -73,4 +74,9 @@ public interface QueryInterface {
      * Queries for active models of the given model type. Active models mean models which are in the newest version.
      */
     <T> List<T> queryForActiveModels(Class<T> model);
+    
+    /**
+     * Returns the most recent revision number of the EDB
+     */
+    UUID getCurrentRevisionNumber();
 }
