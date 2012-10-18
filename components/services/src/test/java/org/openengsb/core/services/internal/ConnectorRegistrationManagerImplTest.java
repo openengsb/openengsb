@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -35,53 +36,43 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServiceTest {
 
-    @Test
-    public void testRegisterConnectorWithSameNameAfterRemoved_shouldNotFail() throws Exception {
+    private ConnectorRegistrationManager connectorRegistrationManager;
+    private ConnectorInstanceFactory connectorInstanceFactory;
+
+    @Before
+    public void setUp() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
         defaultOsgiUtilsService.setBundleContext(bundleContext);
-        ConnectorRegistrationManager connectorRegistrationManagerImpl = new ConnectorRegistrationManager();
-        connectorRegistrationManagerImpl.setBundleContext(bundleContext);
-        ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
-        Connector connectorMock = mock(Connector.class);
-        when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(connectorMock);
+        connectorRegistrationManager = new ConnectorRegistrationManager();
+        connectorRegistrationManager.setBundleContext(bundleContext);
+        connectorInstanceFactory = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
         props.put("domain", "a");
-        registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
-        DomainProvider domainProviderMock = mock(DomainProvider.class);
-        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-            @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
-                return NullDomainImpl.class;
-            }
-        });
-        Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
-        propsDomainProvider.put("domain", "a");
-        registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
+        registerService(connectorInstanceFactory, props, ConnectorInstanceFactory.class);
+    }
+
+    @Test
+    public void testRegisterConnectorWithSameNameAfterRemoved_shouldNotFail() throws Exception {
+        createDomainProviderMock(NullDomain.class, "a");
+        Connector connectorMock = mock(Connector.class);
+        when(connectorInstanceFactory.createNewInstance(anyString())).thenReturn(connectorMock);
         String connectorId = UUID.randomUUID().toString();
-        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription("a", "a",
-            new HashMap<String, String>(), new HashMap<String, Object>()));
-        connectorRegistrationManagerImpl.remove(connectorId);
-        connectorRegistrationManagerImpl.updateRegistration(connectorId,
-            new ConnectorDescription("a", "a", new HashMap<String, String>(), new HashMap<String, Object>()));
+        connectorRegistrationManager.updateRegistration(connectorId, new ConnectorDescription("a", "a",
+                new HashMap<String, String>(), new HashMap<String, Object>()));
+        connectorRegistrationManager.remove(connectorId);
+        connectorRegistrationManager.updateRegistration(connectorId,
+                new ConnectorDescription("a", "a", new HashMap<String, String>(), new HashMap<String, Object>()));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNoDomainProviderAvailableForType_shouldThrowIllegalArgumentException() throws Exception {
-        DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
-        defaultOsgiUtilsService.setBundleContext(bundleContext);
-        ConnectorRegistrationManager connectorRegistrationManagerImpl = new ConnectorRegistrationManager();
-        connectorRegistrationManagerImpl.setBundleContext(bundleContext);
-        ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", "a");
-        props.put("domain", "a");
-        registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
@@ -89,11 +80,8 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
                 return NullDomainImpl.class;
             }
         });
-        Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
-        propsDomainProvider.put("domain", "a");
-        registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
         String connectorId = UUID.randomUUID().toString();
-        connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription("a", "a",
-            new HashMap<String, String>(), new HashMap<String, Object>()));
+        connectorRegistrationManager.updateRegistration(connectorId, new ConnectorDescription("a", "a",
+                new HashMap<String, String>(), new HashMap<String, Object>()));
     }
 }
