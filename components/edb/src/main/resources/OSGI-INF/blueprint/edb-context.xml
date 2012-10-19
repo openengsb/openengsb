@@ -23,9 +23,14 @@
   xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
   xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.1.0">
 
+  <bean id="jpaDao" class="org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao">
+    <jpa:context unitname="edb" /> 
+  </bean>
+
   <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
+    <argument ref="jpaDao" />
     <argument ref="authenticationContext" />
     <argument ref="beginCommitHooks" />
     <argument ref="preCommitHooks" />
@@ -34,7 +39,7 @@
   </bean>
   
   <bean id="preCommitHook" class="org.openengsb.core.edb.jpa.internal.CheckPreCommitHook">
-    <jpa:context unitname="edb" /> 
+    <argument ref="jpaDao" /> 
   </bean>
   
   <service interface="org.openengsb.core.edb.api.hooks.EDBPreCommitHook">

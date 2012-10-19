@@ -20,8 +20,6 @@ package org.openengsb.core.edb.jpa.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.openengsb.core.edb.api.EDBCheckException;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
@@ -29,7 +27,6 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
-import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 import org.slf4j.Logger;
@@ -44,8 +41,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPreCommitHook.class);
     private JPADao dao;
 
-    public CheckPreCommitHook(EntityManager entityManager) {
-        dao = new DefaultJPADao(entityManager);
+    public CheckPreCommitHook(JPADao dao) {
+        this.dao = dao;
     }
 
     @Override

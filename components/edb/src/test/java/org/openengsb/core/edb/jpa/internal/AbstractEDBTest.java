@@ -40,9 +40,12 @@ import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
+import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
+import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 
 public class AbstractEDBTest {
     protected JPADatabase db;
+    
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
     };
@@ -54,10 +57,11 @@ public class AbstractEDBTest {
         Properties props = new Properties();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("edb-test", props);
         EntityManager em = emf.createEntityManager();
-        EDBPreCommitHook preCommitHook = new CheckPreCommitHook(em);
+        JPADao dao = new DefaultJPADao(em);
+        EDBPreCommitHook preCommitHook = new CheckPreCommitHook(dao);
         ContextHolder.get().setCurrentContextId("testcontext");
-        
-        db = new JPADatabase(authenticationContext, null, Arrays.asList(preCommitHook), null, null);
+
+        db = new JPADatabase(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null);
         db.setEntityManager(em);
         db.open();
     }
@@ -66,14 +70,14 @@ public class AbstractEDBTest {
     public void closeDB() {
         db.close();
     }
-    
+
     /**
      * Returns an EDBCommit object.
      */
     protected EDBCommit getEDBCommit() {
         return db.createEDBCommit(null, null, null);
     }
-    
+
     /**
      * Creates a new commit object, adds the given inserts, updates and deletes and commit it.
      */
@@ -81,14 +85,14 @@ public class AbstractEDBTest {
         EDBCommit ci = db.createEDBCommit(inserts, updates, deletes);
         return db.commit(ci);
     }
-    
+
     /**
      * Adds an EDBObjectEntry based on the given key and value to the given map
      */
     protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
         map.put(key, new EDBObjectEntry(key, value, value.getClass()));
     }
-    
+
     /**
      * Returns a random test EDBObject
      */
@@ -104,7 +108,7 @@ public class AbstractEDBTest {
         }
         return new EDBObject(oid);
     }
-    
+
     /**
      * Iterates through the list of timestamps and checks if every timestamp is bigger than 0
      */
@@ -113,7 +117,7 @@ public class AbstractEDBTest {
             assertThat(timestamp, greaterThan((long) 0));
         }
     }
-    
+
     /**
      * Returns the EDBObject of the given list with the given oid.
      */
@@ -125,5 +129,5 @@ public class AbstractEDBTest {
         }
         return null;
     }
-    
+
 }

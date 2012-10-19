@@ -37,7 +37,6 @@ import org.openengsb.core.edb.api.hooks.EDBBeginCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBErrorHook;
 import org.openengsb.core.edb.api.hooks.EDBPostCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
-import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 import org.osgi.service.blueprint.container.ServiceUnavailableException;
@@ -56,9 +55,10 @@ public class JPADatabase implements EngineeringDatabaseService {
     private List<EDBPreCommitHook> preCommitHooks;
     private List<EDBBeginCommitHook> beginCommitHooks;
 
-    public JPADatabase(AuthenticationContext authenticationContext,
+    public JPADatabase(JPADao dao, AuthenticationContext authenticationContext,
             List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
             List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks) {
+        this.dao = dao;
         this.authenticationContext = authenticationContext;
         this.beginCommitHooks = beginCommitHooks;
         this.preCommitHooks = preCommitHooks;
@@ -482,6 +482,5 @@ public class JPADatabase implements EngineeringDatabaseService {
     
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.dao = new DefaultJPADao(entityManager);
     }
 }
