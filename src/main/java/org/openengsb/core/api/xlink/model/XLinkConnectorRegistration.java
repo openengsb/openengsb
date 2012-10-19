@@ -18,7 +18,6 @@
 package org.openengsb.core.api.xlink.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -47,7 +46,7 @@ public class XLinkConnectorRegistration implements Serializable {
     /**
      * Model/View associations, provided by the client during registration
      */
-    private Map<ModelDescription, List<XLinkConnectorView>> modelsToViews;
+    private Map<ModelDescription, XLinkConnectorView[]> modelsToViews;
     
     /**
      * BluePrint that was generated and returned to the client during registration
@@ -55,7 +54,7 @@ public class XLinkConnectorRegistration implements Serializable {
     private XLinkUrlBlueprint xLinkTemplate;
 
     public XLinkConnectorRegistration(String hostId, String connectorId, String toolName, 
-            Map<ModelDescription, List<XLinkConnectorView>> modelsToViews, XLinkUrlBlueprint xLinkTemplate) {
+            Map<ModelDescription, XLinkConnectorView[]> modelsToViews, XLinkUrlBlueprint xLinkTemplate) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;
@@ -89,11 +88,11 @@ public class XLinkConnectorRegistration implements Serializable {
     /**
      * Model/View associations, provided by the client during registration
      */
-    public Map<ModelDescription, List<XLinkConnectorView>> getModelsToViews() {
+    public Map<ModelDescription, XLinkConnectorView[]> getModelsToViews() {
         return modelsToViews;
     }
 
-    public void setModelsToViews(Map<ModelDescription, List<XLinkConnectorView>> modelsToViews) {
+    public void setModelsToViews(Map<ModelDescription, XLinkConnectorView[]> modelsToViews) {
         this.modelsToViews = modelsToViews;
     }
     

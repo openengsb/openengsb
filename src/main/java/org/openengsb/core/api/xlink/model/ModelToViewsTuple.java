@@ -18,7 +18,6 @@
 package org.openengsb.core.api.xlink.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
 
@@ -34,15 +33,15 @@ public class ModelToViewsTuple implements Serializable {
     private ModelDescription description;
     
     /**
-     * List of Views, offered by the remote tool
+     * Array of Views, offered by the remote tool
      */
-    private List<XLinkConnectorView> views;
+    private XLinkConnectorView[] views;
 
     public ModelToViewsTuple() {
         
     }
     
-    public ModelToViewsTuple(ModelDescription description, List<XLinkConnectorView> views) {
+    public ModelToViewsTuple(ModelDescription description, XLinkConnectorView[] views) {
         this.description = description;
         this.views = views;
     }
@@ -59,13 +58,13 @@ public class ModelToViewsTuple implements Serializable {
     }
     
     /**
-     * List of Views, offered by the remote tool
+     * Array of Views, offered by the remote tool
      */
-    public List<XLinkConnectorView> getViews() {
+    public XLinkConnectorView[] getViews() {
         return views;
     }
 
-    public void setViews(List<XLinkConnectorView> views) {
+    public void setViews(XLinkConnectorView[] views) {
         this.views = views;
     }
     

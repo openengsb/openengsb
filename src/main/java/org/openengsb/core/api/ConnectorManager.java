@@ -17,13 +17,10 @@
 
 package org.openengsb.core.api;
 
-import java.util.List;
-
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
-import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 
 /**

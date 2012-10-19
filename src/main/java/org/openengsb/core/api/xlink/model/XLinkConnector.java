@@ -19,7 +19,7 @@ package org.openengsb.core.api.xlink.model;
 
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Arrays;
 
 
 /**
@@ -45,27 +45,27 @@ public class XLinkConnector implements Serializable {
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
-    private List<XLinkConnectorView> availableViews;
+    private XLinkConnectorView[] availableViews;
     
     // @extract-end
 
     public XLinkConnector() {
     }
 
-    public XLinkConnector(String id, String toolName, List<XLinkConnectorView> availableViews) {
+    public XLinkConnector(String id, String toolName, XLinkConnectorView[] availableViews) {
         this.id = id;
         this.toolName = toolName;
         this.availableViews = availableViews;
     }
-
+   
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
-     */    
-    public List<XLinkConnectorView> getAvailableViews() {
+     */  
+    public XLinkConnectorView[] getAvailableViews() {
         return availableViews;
     }
 
-    public void setAvailableViews(List<XLinkConnectorView> availableViews) {
+    public void setAvailableViews(XLinkConnectorView[] availableViews) {
         this.availableViews = availableViews;
     }
 
@@ -106,8 +106,7 @@ public class XLinkConnector implements Serializable {
         if ((this.toolName == null) ? (other.toolName != null) : !this.toolName.equals(other.toolName)) {
             return false;
         }
-        if (this.availableViews != other.availableViews 
-            && (this.availableViews == null || !this.availableViews.equals(other.availableViews))) {
+        if (!Arrays.deepEquals(this.availableViews, other.availableViews)) {
             return false;
         }
         return true;
@@ -115,10 +114,10 @@ public class XLinkConnector implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 29 * hash + (this.toolName != null ? this.toolName.hashCode() : 0);
-        hash = 29 * hash + (this.availableViews != null ? this.availableViews.hashCode() : 0);
+        int hash = 5;
+        hash = 83 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 83 * hash + (this.toolName != null ? this.toolName.hashCode() : 0);
+        hash = 83 * hash + Arrays.deepHashCode(this.availableViews);
         return hash;
     }
     

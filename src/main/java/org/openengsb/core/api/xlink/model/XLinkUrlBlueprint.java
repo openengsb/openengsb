@@ -18,7 +18,6 @@
 package org.openengsb.core.api.xlink.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -31,7 +30,7 @@ import org.openengsb.core.api.model.ModelDescription;
  * tool-chooser page, required keynames, view/model associations and an array of all other currently 
  * registered connectors from the same host.
  * <br/><br/>
- * The list of locally registered connectors can be used to support 'local-switching' between local tools. 
+ * The Array of locally registered connectors can be used to support 'local-switching' between local tools. 
  */
 public class XLinkUrlBlueprint implements Serializable {
     
@@ -51,12 +50,12 @@ public class XLinkUrlBlueprint implements Serializable {
     private Map<String, ModelDescription> viewToModels;
      
     /**
-     * List of all other currently registered tools from the same host. 
+     * Array of all other currently registered tools from the same host. 
      * <br/><br/>
-     * This list of registered tools can be used to support 
+     * This array of registered tools can be used to support 
      * 'local-switching' between local tools.
      */
-    private List<XLinkConnector> registeredTools; 
+    private XLinkConnector[] registeredTools; 
     
     /**
      * Key/value combination of the connectorId in HTTP GET paramater syntax.
@@ -77,7 +76,7 @@ public class XLinkUrlBlueprint implements Serializable {
     }
 
     public XLinkUrlBlueprint(String baseUrl, Map<String, ModelDescription> viewToModels, 
-            List<XLinkConnector> registeredTools, String connectorId, 
+            XLinkConnector[] registeredTools, String connectorId, 
             XLinkUrlKeyNames keyNames) {
         this.baseUrl = baseUrl;
         this.viewToModels = viewToModels;
@@ -114,16 +113,16 @@ public class XLinkUrlBlueprint implements Serializable {
     }
 
     /**
-     * List of all other currently registered tools from the same host. 
+     * Array of all other currently registered tools from the same host. 
      * <br/><br/>
-     * This list of registered tools can be used to support 
+     * This array of registered tools can be used to support 
      * 'local-switching' between local tools.
      */  
-    public List<XLinkConnector> getRegisteredTools() {
+    public XLinkConnector[] getRegisteredTools() {
         return registeredTools;
     }
 
-    public void setRegisteredTools(List<XLinkConnector> registeredTools) {
+    public void setRegisteredTools(XLinkConnector[] registeredTools) {
         this.registeredTools = registeredTools;
     }
 

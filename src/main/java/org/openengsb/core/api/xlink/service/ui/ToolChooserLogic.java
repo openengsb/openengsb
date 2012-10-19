@@ -18,7 +18,6 @@
 package org.openengsb.core.api.xlink.service.ui;
 
 import java.util.List;
-
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 
