@@ -26,10 +26,13 @@ import java.util.Map;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.VirtualConnector;
+import org.openengsb.core.common.transformations.TransformationUtils;
+import org.openengsb.core.ekb.api.TransformationEngine;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
@@ -46,6 +49,9 @@ public class ProxyConnector extends VirtualConnector {
     private OutgoingPortUtilService portUtil;
     private ProxyRegistration registration;
 
+    private TransformationEngine transformationEngine;
+    private Class<?> connectorInterface;
+
     public ProxyConnector(String instanceId, OutgoingPortUtilService portUtil, ProxyRegistration registration) {
         super(instanceId);
         this.portUtil = portUtil;
@@ -54,19 +60,25 @@ public class ProxyConnector extends VirtualConnector {
 
     @Override
     public Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-        List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
+        if (method.getDeclaringClass().equals(Connector.class)) {
+            return this.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(this, args);
+        }
+        Method targetMethod = method;
+        Object[] targetArgs = args;
+        if (connectorInterface != null) {
+            targetMethod = TransformationUtils.findTargetMethod(method, connectorInterface);
+            targetArgs = transformArguments(args, targetMethod.getParameterTypes());
+        }
+        List<Class<?>> paramList = Arrays.asList(targetMethod.getParameterTypes());
         List<String> paramTypeNames = new ArrayList<String>();
         for (Class<?> paramType : paramList) {
             paramTypeNames.add(paramType.getName());
         }
 
-        MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
-        if (method.getDeclaringClass().equals(Connector.class)) {
-            return this.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(this, args);
-        }
+        MethodCall methodCall = new MethodCall(targetMethod.getName(), targetArgs, metadata, paramTypeNames);
 
         if (!registration.isRegistered()) {
-            if (method.getName().equals("getAliveState")) {
+            if (targetMethod.getName().equals("getAliveState")) {
                 return AliveState.OFFLINE;
             }
             throw new IllegalArgumentException("not registered");
@@ -76,7 +88,11 @@ public class ProxyConnector extends VirtualConnector {
             portUtil.sendMethodCallWithResult(registration.getPortId(), registration.getDestination(), methodCall);
         switch (callResult.getType()) {
             case Object:
-                return callResult.getArg();
+                Object result = callResult.getArg();
+                if(connectorInterface == null){
+                    return result;
+                }
+                return transformArgument(result, method.getReturnType());
             case Void:
                 return null;
             case Exception:
@@ -84,6 +100,25 @@ public class ProxyConnector extends VirtualConnector {
             default:
                 throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
+    }
+
+    private Object[] transformArguments(Object[] args, Class<?>[] parameterTypes) {
+        if (args == null) {
+            return null;
+        }
+        Object[] transformed = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            transformed[i] = transformArgument(args[i], parameterTypes[i]);
+        }
+        return transformed;
+    }
+
+    private Object transformArgument(Object arg, Class<?> targetType) {
+        if (!(OpenEngSBModel.class.isInstance(arg) && OpenEngSBModel.class.isAssignableFrom(targetType))) {
+            return arg;
+        }
+        return transformationEngine.performTransformation(TransformationUtils.toModelDescription(arg.getClass()),
+                TransformationUtils.toModelDescription(targetType), arg);
     }
 
     public final void setPortId(String id) {
@@ -130,4 +165,11 @@ public class ProxyConnector extends VirtualConnector {
         this.connectorId = connectorId;
     }
 
+    public void setConnectorInterface(Class<?> connectorInterface) {
+        this.connectorInterface = connectorInterface;
+    }
+
+    public void setTransformationEngine(TransformationEngine transformationEngine) {
+        this.transformationEngine = transformationEngine;
+    }
 }
