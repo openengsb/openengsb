@@ -528,7 +528,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
                         new ModelDescription(
                                 ExampleObjectOrientedModel.class.getName(),
                                 "3.0.0.SNAPSHOT")
-                        , views);
+                        , views.toArray(new XLinkConnectorView[0]));
         return modelsToViews;
     }
 

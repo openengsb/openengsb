@@ -179,7 +179,7 @@ public class ToolChooserTest extends AbstractUITest {
                         new ModelDescription(
                                 ExampleObjectOrientedModel.class.getName(),
                                 "3.0.0.SNAPSHOT")
-                        , views);
+                        , views.toArray(new XLinkConnectorView[0]));
 
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);       
     }      

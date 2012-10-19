@@ -46,8 +46,8 @@ public class XLinkUtilsTest {
     // @extract-start XLinkUtilsTestConfigsProvidedByClient
     
     /**Models supported by the tool, together with possible views*/
-    private static HashMap<ModelDescription, List<XLinkConnectorView>> modelsToViews 
-        = new HashMap<ModelDescription, List<XLinkConnectorView>>();  
+    private static HashMap<ModelDescription, XLinkConnectorView[]> modelsToViews 
+        = new HashMap<ModelDescription, XLinkConnectorView[]>();  
     /**Id of the Tool´s connector*/
     private static String connectorId = "exampleConnectorId";
     /**Human readable Name of the demo Tool*/
@@ -76,7 +76,8 @@ public class XLinkUtilsTest {
         views = new ArrayList();
         views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
         views.add(new XLinkConnectorView(viewId2, toolName, descriptions));
-        modelsToViews.put(new ModelDescription(exampleModelClass.getName(), exampleModelClassVersion), views);
+        modelsToViews.put(new ModelDescription(exampleModelClass.getName(), exampleModelClassVersion), 
+                views.toArray(new XLinkConnectorView[0]));
     
         serviceFinder = mock(OsgiUtilsService.class);
         ModelRegistry registry = mock(ModelRegistry.class);
@@ -93,7 +94,7 @@ public class XLinkUtilsTest {
     /**Days until the XLink expires*/
     private int expiresInDays = 3;
     /**List with already registered tools*/
-    private List<XLinkConnector> registeredTools = null;
+    private XLinkConnector[] registeredTools = null;
     // @extract-end
 
     // @extract-start XLinkUtilsTestPrepareTemplate

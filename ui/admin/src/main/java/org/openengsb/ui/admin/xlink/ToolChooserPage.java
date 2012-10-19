@@ -20,6 +20,7 @@ package org.openengsb.ui.admin.xlink;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -318,7 +319,7 @@ public class ToolChooserPage extends WebPage {
             protected void populateItem(ListItem item) {
                 final XLinkConnector tool = (XLinkConnector) item.getModelObject();
                 item.add(new Label("toolName", tool.getToolName()));
-                ListView viewList = new ListView("viewList", tool.getAvailableViews()) {
+                ListView viewList = new ListView("viewList", Arrays.asList(tool.getAvailableViews())) {
                     @Override
                     protected void populateItem(ListItem li) {
                         final XLinkConnectorView view = (XLinkConnectorView) li.getModelObject();

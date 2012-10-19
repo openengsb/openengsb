@@ -23,7 +23,9 @@ import java.net.URLEncoder;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,9 +69,9 @@ public final class XLinkUtils {
      */
     public static XLinkUrlBlueprint prepareXLinkTemplate(String baseUrl,
             String connectorId,
-            Map<ModelDescription, List<XLinkConnectorView>> modelsToViews, 
+            Map<ModelDescription, XLinkConnectorView[]> modelsToViews, 
             int expirationDays, 
-            List<XLinkConnector> registeredTools) {
+            XLinkConnector[] registeredTools) {
         baseUrl +=
             "?" + XLinkConstants.XLINK_EXPIRATIONDATE_KEY + "=" + urlEncodeParameter(getExpirationDate(expirationDays));
         String connectorIdParam = XLinkConstants.XLINK_CONNECTORID_KEY + "=" + urlEncodeParameter(connectorId);
@@ -88,10 +90,10 @@ public final class XLinkUtils {
      * The current model is choosen for the first occurence of the view.
      */
     private static Map<String, ModelDescription> assigneModelsToViews(Map<ModelDescription, 
-            List<XLinkConnectorView>> modelsToViews) {
+            XLinkConnectorView[]> modelsToViews) {
         HashMap<String, ModelDescription> viewsToModels = new HashMap<String, ModelDescription>();
         for (ModelDescription modelInfo : modelsToViews.keySet()) {
-            List<XLinkConnectorView> currentViewList = modelsToViews.get(modelInfo);
+            List<XLinkConnectorView> currentViewList = Arrays.asList(modelsToViews.get(modelInfo));
             for (XLinkConnectorView view : currentViewList) {
                 if (!viewsToModels.containsKey(view.getViewId())) {
                     viewsToModels.put(view.getViewId(), modelInfo);
@@ -192,17 +194,18 @@ public final class XLinkUtils {
      * @see RemoteToolView
      * @see RemoteToolRegistration
      */
-    public static List<XLinkConnectorView> getViewsOfRegistration(XLinkConnectorRegistration registration) {
+    public static XLinkConnectorView[] getViewsOfRegistration(XLinkConnectorRegistration registration) {
         List<XLinkConnectorView> viewsOfRegistration = new ArrayList<XLinkConnectorView>();
-        Map<ModelDescription, List<XLinkConnectorView>> modelsToViews = registration.getModelsToViews();
-        for (List<XLinkConnectorView> views : modelsToViews.values()) {
-            for (XLinkConnectorView view : views) {
+        Map<ModelDescription, XLinkConnectorView[]> modelsToViews = registration.getModelsToViews();
+        for (XLinkConnectorView[] views : modelsToViews.values()) {
+            for (int i = 0; i < views.length; i++) {
+                XLinkConnectorView view = views[i];
                 if (!viewsOfRegistration.contains(view)) {
                     viewsOfRegistration.add(view);
                 }
-            }
+            }                
         }
-        return viewsOfRegistration;
+        return viewsOfRegistration.toArray(new XLinkConnectorView[0]);
     }
     
     /**
@@ -212,7 +215,7 @@ public final class XLinkUtils {
      * @see RemoteToolRegistration
      * @see RemoteTool
      */
-    public static List<XLinkConnector> getLocalToolFromRegistrations(List<XLinkConnectorRegistration> registrations) {
+    public static XLinkConnector[] getLocalToolFromRegistrations(List<XLinkConnectorRegistration> registrations) {
         List<XLinkConnector> tools = new ArrayList<XLinkConnector>();
         for (XLinkConnectorRegistration registration : registrations) {
             XLinkConnector newLocalTools 
@@ -222,7 +225,7 @@ public final class XLinkUtils {
                         getViewsOfRegistration(registration));
             tools.add(newLocalTools);
         }
-        return tools;
+        return tools.toArray(new XLinkConnector[0]);
     }    
 
 }

@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.xlink;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
@@ -40,8 +41,8 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
     
     @Override
     public List<XLinkConnector> getRegisteredToolsFromHost(String hostId) {
-        return XLinkUtils.getLocalToolFromRegistrations(
-                serviceManager.getXLinkRegistration(hostId));
+        return Arrays.asList(XLinkUtils.getLocalToolFromRegistrations(
+                serviceManager.getXLinkRegistration(hostId)));
     } 
     
     @Override
