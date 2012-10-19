@@ -18,21 +18,10 @@ package org.openengsb.core.services.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 
-import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.TransformationEngine;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleCapability;
-import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.BundleWiring;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 public class TransformingConnectorHandler<ConnectorType> implements InvocationHandler {
 
@@ -47,7 +36,7 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Method targetMethod = findTargetMethod(method);
+        Method targetMethod = TransformationUtils.findTargetMethod(method, target.getClass());
         Class<?>[] targetTypes = targetMethod.getParameterTypes();
         Object[] transformed = null;
         if(args != null){
@@ -67,42 +56,8 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
         if (!(OpenEngSBModel.class.isInstance(arg) && OpenEngSBModel.class.isAssignableFrom(targetType))) {
             return arg;
         }
-        return transformationEngine.performTransformation(getModelDescription(arg.getClass()),
-                getModelDescription(targetType), arg);
+        return transformationEngine.performTransformation(TransformationUtils.toModelDescription(arg.getClass()),
+                TransformationUtils.toModelDescription(targetType), arg);
     }
 
-    private ModelDescription getModelDescription(Class<?> type) {
-        return new ModelDescription(type, getClassVersion(type));
-    }
-
-    private String getClassVersion(Class<?> type) {
-        Bundle bundle = FrameworkUtil.getBundle(type);
-        if(bundle == null) { // it was the bootstrap-classloader
-            return "0.0.0";
-        }
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleCapability> capabilities = wiring.getCapabilities(BundleRevision.PACKAGE_NAMESPACE);
-        for (BundleCapability capability : capabilities) {
-            if (capability.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE).equals(type.getPackage().getName())) {
-                return (String) capability.getAttributes().get(Constants.VERSION_ATTRIBUTE);
-            }
-        }
-        // just fallback, this shouldn't happen
-        return bundle.getVersion().toString();
-    }
-
-    private Method findTargetMethod(final Method sourceMethod) {
-        return Iterables.find(Arrays.asList(target.getClass().getMethods()), new Predicate<Method>() {
-            @Override
-            public boolean apply(Method element) {
-                if (!sourceMethod.getName().equals(element.getName())) {
-                    return false;
-                }
-                if (sourceMethod.getParameterTypes().length != element.getParameterTypes().length) {
-                    return false;
-                }
-                return true;
-            }
-        });
-    }
 }

@@ -19,15 +19,29 @@ package org.openengsb.core.common.transformations;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Provides some utility methods in the area of model transformations.
@@ -69,12 +83,62 @@ public final class TransformationUtils {
      * Does the actual parsing.
      */
     private static List<TransformationDescription> loadDescrtipionsFromXMLInputSource(InputSource source,
-            String fileName)
-        throws Exception {
+                                                                                      String fileName)
+            throws Exception {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader(fileName);
         xr.setContentHandler(reader);
         xr.parse(source);
         return reader.getResult();
+    }
+
+    /**
+     * creates a {@link ModelDescription} of the given type using the name of the class and the version of the exported package
+     * this class originates from (as returned by {@link TransformationUtils#getClassVersion(Class)})
+     */
+    public static ModelDescription toModelDescription(Class<?> type) {
+        return new ModelDescription(type, getClassVersion(type));
+    }
+
+    /**
+     * determines the version of the given class. It does so by determining the Bundle the class was loaded and then
+     * looking at the export-package-headers of the corresponding package in that bundle.
+     */
+    public static String getClassVersion(Class<?> type) {
+        Bundle bundle = FrameworkUtil.getBundle(type);
+        if (bundle == null) { // it was the bootstrap-classloader
+            return Version.emptyVersion.toString();
+        }
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        List<BundleCapability> capabilities = wiring.getCapabilities(BundleRevision.PACKAGE_NAMESPACE);
+        for (BundleCapability capability : capabilities) {
+            if (capability.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE).equals(type.getPackage().getName())) {
+                return (String) capability.getAttributes().get(Constants.VERSION_ATTRIBUTE);
+            }
+        }
+        // just fallback, this shouldn't happen
+        return bundle.getVersion().toString();
+    }
+
+    /**
+     * tries to find a method that method in the class {@code target} with the same name and the same number of
+     * arguments. It's assumed that the arguments can then be transformed.
+     *
+     * @throws java.util.NoSuchElementException
+     *          if no matching method can be found
+     */
+    public static Method findTargetMethod(final Method sourceMethod, Class<?> target) throws NoSuchElementException {
+        return Iterables.find(Arrays.asList(target.getMethods()), new Predicate<Method>() {
+            @Override
+            public boolean apply(Method element) {
+                if (!sourceMethod.getName().equals(element.getName())) {
+                    return false;
+                }
+                if (sourceMethod.getParameterTypes().length != element.getParameterTypes().length) {
+                    return false;
+                }
+                return true;
+            }
+        });
     }
 }
