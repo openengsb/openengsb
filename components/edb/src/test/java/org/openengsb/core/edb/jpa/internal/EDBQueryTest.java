@@ -80,15 +80,6 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(list4.size(), is(0));
 
         checkTimeStamps(Arrays.asList(time1, time2));
-
-        // removed because of the by jpa not supported regex command
-        // list = db.query(new HashMap<String, Object>() {
-        // {
-        // put("Cat", "Dog");
-        // put("Lock", Pattern.compile("Smith|Key"));
-        // }
-        // });
-        // assertTrue("There's one object in HEAD with Cat:Dog,Lock:/Smith|Key/", list.size() == 1);
     }
     
     @Test
