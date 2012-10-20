@@ -73,7 +73,7 @@ public class LdapDao {
      * Inserts an entry into the DIT. Throws {@link EntryAlreadyExistsException} if an entry with given Dn already
      * exists. Throws {@link MissingParentException} if an ancestor of the entry is missing.
      */
-    public void store(Entry entry) throws EntryAlreadyExistsException, MissingParentException {
+    public void store(Entry entry) throws EntryAlreadyExistsException, MissingParentException, LdapDaoException {
         AddRequest addRequest = new AddRequestImpl().setEntry(entry);
         LdapResult result;
         try {
@@ -94,7 +94,7 @@ public class LdapDao {
      * Inserts an entry into the DIT. If the entry exists, nothing is done. Throws {@link MissingParentException} if an
      * ancestor of the entry is missing.
      */
-    public void storeSkipExisting(Entry entry) throws MissingParentException {
+    public void storeSkipExisting(Entry entry) throws MissingParentException, LdapDaoException {
         try {
             store(entry);
         } catch (EntryAlreadyExistsException e) {
@@ -107,12 +107,14 @@ public class LdapDao {
      * Overwriting inner nodes will first delete the node's entire subtree, then overwrite the node. Throws
      * {@link MissingParentException} if an ancestor of the entry is missing.
      */
-    public void storeOverwriteExisting(Entry entry) throws MissingParentException {
+    public void storeOverwriteExisting(Entry entry) throws MissingParentException, LdapDaoException {
         try {
             deleteSubtreeIncludingRoot(entry.getDn());
+            store(entry);
         } catch (NoSuchNodeException e) {
+        } catch (EntryAlreadyExistsException e) {
         }
-        store(entry);
+        
     }
 
     /**
@@ -121,7 +123,7 @@ public class LdapDao {
      * particular this will happen if the list is not ordered properly. If one of the entries already exists, an
      * {@link EntryAlreadyExistsException} is thrown. Note that this action is not atomic.
      */
-    public void store(List<Entry> entries) throws EntryAlreadyExistsException, MissingParentException {
+    public void store(List<Entry> entries) throws EntryAlreadyExistsException, MissingParentException, LdapDaoException {
         for (Entry e : entries) {
             store(e);
         }
@@ -131,7 +133,7 @@ public class LdapDao {
      * Behaves like {@link #store(List)} except that duplicates do not throw an exception but are collected in a list
      * which will be returned at success. Note that this action is not atomic.
      */
-    public List<Entry> storeSkipExisting(List<Entry> entries) throws MissingParentException {
+    public List<Entry> storeSkipExisting(List<Entry> entries) throws MissingParentException, LdapDaoException {
         List<Entry> skippedEntries = new LinkedList<Entry>();
         for (Entry e : entries) {
             try {
@@ -147,13 +149,16 @@ public class LdapDao {
      * Behaves like {@link #store(List)} except that duplicates do not throw an exception but are overwritten as
      * described in {@link #storeOverwriteExisting(Entry)}. Note that this action is not atomic.
      * */
-    public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException {
+    public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException, NoSuchNodeException, LdapDaoException {
         for (Entry entry : entries) {
             try {
                 store(entry);
             } catch (EntryAlreadyExistsException e) {
                 deleteSubtreeIncludingRoot(e.getEntry().getDn());
-                store(entry);
+                try {
+                    store(entry);
+                } catch (EntryAlreadyExistsException e1) {
+                }
             }
         }
     }
@@ -162,14 +167,14 @@ public class LdapDao {
      * Returns all entries found exactly one level below parent. Throws {@link NoSuchNodeException} if resolving the
      * argument Dn fails at its leaf. Throws {@link MissingParentException} if resolving fails earlier.
      * */
-    public List<Entry> getDirectChildren(Dn parent) throws NoSuchNodeException, MissingParentException {
+    public List<Entry> getDirectChildren(Dn parent) throws NoSuchNodeException, MissingParentException, LdapDaoException {
         return extractEntriesFromCursor(searchOneLevel(parent));
     }
 
     /**
      * Returns a list of {@link Node}s representing the subtrees of the argument Dn.
      * */
-    public List<Node> searchSubtree(Dn parent) throws NoSuchNodeException, MissingParentException {
+    public List<Node> searchSubtree(Dn parent) throws NoSuchNodeException, MissingParentException, LdapDaoException {
         SearchCursor cursor = searchOneLevel(parent);
         return extractNodesFromCursor(cursor);
     }
@@ -178,7 +183,7 @@ public class LdapDao {
      * Deletes root and its entire subtree. Throws NoSuchNodeException if root does not exist. Throws
      * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeIncludingRoot(Dn root) throws MissingParentException, NoSuchNodeException {
+    public void deleteSubtreeIncludingRoot(Dn root) throws MissingParentException, NoSuchNodeException, LdapDaoException {
         deleteSubtreeExcludingRoot(root);
         deleteLeaf(root);
     }
@@ -187,7 +192,7 @@ public class LdapDao {
      * Deletes the entire subtree of root but not root itself. Throws NoSuchNodeException if root does not exist. Throws
      * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeExcludingRoot(Dn root) throws MissingParentException, NoSuchNodeException {
+    public void deleteSubtreeExcludingRoot(Dn root) throws MissingParentException, NoSuchNodeException, LdapDaoException {
         existsCheck(root);
         try {
             EntryCursor entryCursor = connection.search(root, "(objectclass=*)", SearchScope.ONELEVEL);
@@ -202,7 +207,7 @@ public class LdapDao {
     /**
      * Returns true if dn exists, false otherwise.
      * */
-    public boolean exists(Dn dn) {
+    public boolean exists(Dn dn) throws LdapDaoException {
         try {
             return connection.exists(dn);
         } catch (LdapException e) {
@@ -215,7 +220,7 @@ public class LdapDao {
      * {@link NoSuchNodeException} is thrown. If one of dn's ancestors does not exist, a {@link MissingParentException}
      * is thrown.
      */
-    public Entry lookup(Dn dn) throws NoSuchNodeException, MissingParentException {
+    public Entry lookup(Dn dn) throws NoSuchNodeException, MissingParentException, LdapDaoException {
         existsCheck(dn);
         try {
             return connection.lookup(dn);
@@ -227,7 +232,7 @@ public class LdapDao {
     /**
      * Throws appropriate exceptions for connection.exists(dn).
      * */
-    private void existsCheck(Dn dn) {
+    private void existsCheck(Dn dn) throws MissingParentException, NoSuchNodeException, LdapDaoException {
         try {
             if (!connection.exists(dn.getParent())) {
                 throw new MissingParentException(lastMatch(dn));
@@ -243,7 +248,7 @@ public class LdapDao {
      * Returns a SearchCursor over the direct children of Dn parent. Throws {@link NoSuchNodeException} if resolving the
      * argument Dn fails at its leaf. Throws {@link MissingParentException} if resolving fails earlier.
      * */
-    private SearchCursor searchOneLevel(Dn parent) throws NoSuchNodeException, MissingParentException {
+    private SearchCursor searchOneLevel(Dn parent) throws NoSuchNodeException, MissingParentException, LdapDaoException {
         try {
             if (!connection.exists(parent.getParent())) {
                 throw new MissingParentException(lastMatch(parent));
@@ -264,7 +269,7 @@ public class LdapDao {
         }
     }
 
-    private List<Entry> extractEntriesFromCursor(SearchCursor cursor) {
+    private List<Entry> extractEntriesFromCursor(SearchCursor cursor) throws LdapDaoException {
         List<Entry> result = new LinkedList<Entry>();
         try {
             while (cursor.next()) {
@@ -276,7 +281,7 @@ public class LdapDao {
         return result;
     }
 
-    private List<Node> extractNodesFromCursor(SearchCursor cursor) {
+    private List<Node> extractNodesFromCursor(SearchCursor cursor) throws LdapDaoException {
         LinkedList<Node> result = new LinkedList<Node>();
         try {
             while (cursor.next()) {
@@ -293,7 +298,7 @@ public class LdapDao {
         return result;
     }
 
-    private void deleteLeaf(Dn dn) {
+    private void deleteLeaf(Dn dn) throws LdapDaoException {
         DeleteRequest deleteRequest = new DeleteRequestImpl();
         deleteRequest.setName(dn);
         LdapResult result;
@@ -307,10 +312,7 @@ public class LdapDao {
         }
     }
 
-    /**
-     * Iterates over the Dn from leaf to root and returns the first Dn that exists.
-     * */
-    private Dn lastMatch(final Dn dn) {
+    private Dn lastMatch(final Dn dn) throws MissingParentException, LdapDaoException {
         if (dn == null) {
             throw new MissingParentException((Dn) null);
         }

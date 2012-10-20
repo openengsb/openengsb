@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
  * Thrown upon attempting to access an {@link Attribute} not defined for a given
  * {@link Entry}.
  * */
-public class ObjectClassViolationException extends RuntimeException {
+public class ObjectClassViolationException extends SchemaViolationException {
 
     private static final long serialVersionUID = 3329558001005307519L;
 

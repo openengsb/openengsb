@@ -23,7 +23,7 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
  * Since Ldap does not allow duplicate Dns, create or update methods can throw this exception to communicate a negative
  * server response related to the prevention of such inconsistencies.
  * */
-public class EntryAlreadyExistsException extends RuntimeException {
+public class EntryAlreadyExistsException extends InconsistentDITException {
 
     private static final long serialVersionUID = -3355338506299992562L;
 

@@ -23,7 +23,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  * Thrown upon trying to access a non-existing {@link Dn}. Unlike {@link NoSuchNodeException}, this exception indicates
  * that resolving the Dn failed at a level above its leaf.
  * */
-public class MissingParentException extends RuntimeException {
+public class MissingParentException extends InconsistentDITException {
 
     private static final long serialVersionUID = 8263832471990241311L;
 

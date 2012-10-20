@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  * the immediate ancestor of its leaf. If resolving a Dn already fails at a level above its leaf, a
  * {@link MissingParentException} should be thrown.
  * */
-public class NoSuchNodeException extends RuntimeException {
+public class NoSuchNodeException extends InconsistentDITException {
 
     private static final long serialVersionUID = 4929321966265341536L;
 
