@@ -38,3 +38,7 @@ objectClass: organizationalUnit
 objectClass: top
 ou: permissionSets
 
+dn: ou=test,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: test

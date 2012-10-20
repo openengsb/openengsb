@@ -25,7 +25,7 @@ import java.util.UUID;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
+import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
 import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
@@ -59,7 +59,7 @@ public final class TimebasedOrderFilter {
             entry.add(SchemaConstants.objectClassAttribute, UNIQUE_OBJECT_OC);
             entry.add(ID_ATTRIBUTE, uuid);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         if (updateRdn) {
             Dn newDn = LdapUtils.concatDn(ID_ATTRIBUTE, uuid, entry.getDn().getParent());

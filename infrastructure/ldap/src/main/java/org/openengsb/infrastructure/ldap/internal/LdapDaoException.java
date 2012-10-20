@@ -23,22 +23,22 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
  * Indicates that the dao communicating with the Ldap server ran into a general error or an error it can not recover.
  * Most of the time this exception will wrap a {@link LdapException}.
  * */
-public class LdapGeneralException extends RuntimeException {
+public class LdapDaoException extends RuntimeException {
 
     private static final long serialVersionUID = -5589147032700131423L;
 
-    public LdapGeneralException() {
+    public LdapDaoException() {
     }
 
-    public LdapGeneralException(String message) {
+    public LdapDaoException(String message) {
         super(message);
     }
 
-    public LdapGeneralException(Throwable cause) {
+    public LdapDaoException(Throwable cause) {
         super(cause);
     }
 
-    public LdapGeneralException(String message, Throwable cause) {
+    public LdapDaoException(String message, Throwable cause) {
         super(message, cause);
     }
 

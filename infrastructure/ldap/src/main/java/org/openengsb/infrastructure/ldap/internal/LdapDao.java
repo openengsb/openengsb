@@ -79,14 +79,14 @@ public class LdapDao {
         try {
             result = connection.add(addRequest).getLdapResult();
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         if (result.getResultCode() == ResultCodeEnum.ENTRY_ALREADY_EXISTS) {
             throw new EntryAlreadyExistsException(entry);
         } else if (result.getResultCode() == ResultCodeEnum.NO_SUCH_OBJECT) {
             throw new MissingParentException(lastMatch(entry.getDn()));
         } else if (result.getResultCode() != ResultCodeEnum.SUCCESS) {
-            throw new LdapGeneralException(result.getDiagnosticMessage());
+            throw new LdapDaoException(result.getDiagnosticMessage());
         }
     }
 
@@ -195,7 +195,7 @@ public class LdapDao {
                 deleteSubtreeIncludingRoot(entryCursor.get().getDn());
             }
         } catch (Exception e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -206,7 +206,7 @@ public class LdapDao {
         try {
             return connection.exists(dn);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -220,7 +220,7 @@ public class LdapDao {
         try {
             return connection.lookup(dn);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -235,7 +235,7 @@ public class LdapDao {
                 throw new NoSuchNodeException(dn);
             }
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -251,7 +251,7 @@ public class LdapDao {
                 throw new NoSuchNodeException(parent);
             }
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         SearchRequest searchRequest = new SearchRequestImpl();
         searchRequest.setBase(parent);
@@ -260,7 +260,7 @@ public class LdapDao {
             searchRequest.setFilter("(objectclass=*)");
             return connection.search(searchRequest);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -271,7 +271,7 @@ public class LdapDao {
                 result.add(cursor.getEntry());
             }
         } catch (Exception e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         return result;
     }
@@ -288,7 +288,7 @@ public class LdapDao {
                 }
             }
         } catch (Exception e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         return result;
     }
@@ -300,10 +300,10 @@ public class LdapDao {
         try {
             result = connection.delete(deleteRequest).getLdapResult();
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         if (result.getResultCode() != ResultCodeEnum.SUCCESS) {
-            throw new LdapGeneralException(result.getDiagnosticMessage());
+            throw new LdapDaoException(result.getDiagnosticMessage());
         }
     }
 
@@ -321,7 +321,7 @@ public class LdapDao {
                 return lastMatch(dn.getParent());
             }
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 

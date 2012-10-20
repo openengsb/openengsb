@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValu
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
+import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
 import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
@@ -49,7 +49,7 @@ public final class LdapUtils {
             Rdn rdn = new Rdn(rdnAttribute, rdnValue);
             return basedn.add(rdn);
         } catch (LdapInvalidDnException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -64,7 +64,7 @@ public final class LdapUtils {
         try {
             return attribute.getString();
         } catch (LdapInvalidAttributeValueException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
     }
 
@@ -120,7 +120,7 @@ public final class LdapUtils {
                 result.add(extractFirstValueOfAttribute(entry, attributeType));
             }
         } catch (Exception e) {
-            throw new LdapGeneralException(e);
+            throw new LdapDaoException(e);
         }
         return result;
     }
