@@ -1,4 +1,4 @@
-package org.openengsb.infrastructure.ldap.internal.test;
+package org.openengsb.core.services.internal.ldap;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
@@ -15,9 +15,9 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.junit.Test;
+import org.openengsb.core.services.internal.security.ldap.TimebasedOrderFilter;
 import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
-import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

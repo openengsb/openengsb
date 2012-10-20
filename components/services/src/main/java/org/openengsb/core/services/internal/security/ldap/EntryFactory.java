@@ -17,12 +17,19 @@
 
 package org.openengsb.core.services.internal.security.ldap;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.openengsb.core.services.internal.security.model.EntryElement;
+import org.openengsb.core.services.internal.security.model.EntryValue;
+import org.openengsb.core.services.internal.security.model.PermissionData;
 import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
-import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 /**
  * Builds entries for various nodes in the DIT. The returned entries have a valid Dn and all provided attributes.
@@ -97,6 +104,57 @@ public final class EntryFactory {
         }
         return entry;
     }
+    
+  
+    
+    /**
+     * Returns a list of entries representing a permissionSet. The list should not be reordered since its order follows
+     * the tree structure of the DIT. It can be inserted into the DIT right away.
+     */
+    public static List<Entry> globalPermissionSetStructure(String permissionSet) {
+        Entry permissionSetEntry = namedObject(permissionSet, SchemaConstants.ouGlobalPermissionSets());
+        Entry ouDirect = organizationalUnit("direct", permissionSetEntry.getDn());
+        Entry ouChildrenSets = organizationalUnit("childrenSets", permissionSetEntry.getDn());
+        Entry ouAttributes = organizationalUnit("attributes", permissionSetEntry.getDn());
+        return Arrays.asList(permissionSetEntry, ouAttributes, ouDirect, ouChildrenSets);
+    }
+
+    /**
+     * Returns a list of entries representing a list of {@link PermissionData}. The list should not be reordered since
+     * its order follows the tree structure of the DIT. It can be inserted into the DIT right away.
+     */
+    public static List<Entry> permissionStructureFromPermissionData(Collection<PermissionData> data, Dn baseDn) {
+
+        List<Entry> permissions = new LinkedList<Entry>();
+        List<Entry> properties = new LinkedList<Entry>();
+        List<Entry> propertyValues = new LinkedList<Entry>();
+        List<Entry> result = new LinkedList<Entry>();
+
+        for (PermissionData p : data) {
+            String permissionType = p.getType();
+            Entry permissionEntry = javaObject(permissionType, null, baseDn);
+            TimebasedOrderFilter.addId(permissionEntry, true);
+            permissions.add(permissionEntry);
+
+            for (EntryValue entryValue : p.getAttributes().values()) {
+                String propertyKey = entryValue.getKey();
+                Entry propertyEntry = namedObject(propertyKey, permissionEntry.getDn());
+                properties.add(propertyEntry);
+
+                for (EntryElement entryElement : entryValue.getValue()) {
+                    String type = entryElement.getType();
+                    String value = entryElement.getValue();
+                    Entry propertyValueEntry = javaObject(type, value, propertyEntry.getDn());
+                    TimebasedOrderFilter.addId(propertyValueEntry, true);
+                    propertyValues.add(propertyValueEntry);
+                }
+            }
+        }
+        result.addAll(permissions);
+        result.addAll(properties);
+        result.addAll(propertyValues);
+        return result;
+    }
 
     /**
      * 3 possibilities:<br>
@@ -108,10 +166,8 @@ public final class EntryFactory {
         entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.descriptiveObjectOc);
         if (description == null) {
             entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(false)); // case 1
-
         } else if (description.isEmpty()) {
             entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(true)); // case 2
-
         } else {
             entry.add(SchemaConstants.stringAttribute, description); // case 3
         }

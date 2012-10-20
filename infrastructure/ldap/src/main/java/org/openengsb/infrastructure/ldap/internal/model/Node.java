@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.internal.model;
+package org.openengsb.infrastructure.ldap.internal.model;//TODO: this should not be in internal package
 
 import java.util.List;
 

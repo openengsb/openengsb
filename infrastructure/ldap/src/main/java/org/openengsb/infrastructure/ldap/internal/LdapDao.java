@@ -20,13 +20,17 @@ package org.openengsb.infrastructure.ldap.internal;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.ldap.client.api.DefaultSchemaLoader;
 import org.apache.directory.ldap.client.api.LdapConnection;
+import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
@@ -49,6 +53,13 @@ public class LdapDao {
     private LdapConnection connection;
 
     /**
+     * Creates a new LdapDao. Its connection will use the given parameters.
+     * */
+    public LdapDao(String host, int port) {
+        this.connection = new LdapNetworkConnection(host, port);
+    }
+
+    /**
      * Constructs a new LdapDao communicating with an Ldap server over given connection.
      * */
     public LdapDao(LdapConnection connection) {
@@ -67,6 +78,36 @@ public class LdapDao {
      * */
     public LdapConnection getConnection() {
         return connection;
+    }
+
+    /**
+     * Opens the dao's connection. Dn and credentials are used for authentication. Throws an
+     * {@link LdapDaoException} in case of IO error or invalid dn.
+     * */
+    public void connect(String dn, String credentials) throws LdapDaoException {
+        BindRequest bindRequest = new BindRequestImpl();
+        bindRequest.setCredentials(credentials);
+        connection.setTimeOut(0);
+        try {
+            bindRequest.setDn(new Dn(dn));
+            connection.connect();
+            connection.bind(bindRequest);
+            ((LdapNetworkConnection) (connection)).loadSchema(new DefaultSchemaLoader(connection));
+        } catch (Exception e) {
+            throw new LdapDaoException(e);
+        }
+    }
+
+    /**
+     * Closes the dao's connection. {@link LdapDaoException} is thrown in case of IO error.
+     * */
+    public void disconnect() throws LdapDaoException {
+        try {
+            connection.unBind();
+            connection.close();
+        } catch (Exception e) {
+            throw new LdapDaoException(e);
+        }
     }
 
     /**
@@ -111,10 +152,10 @@ public class LdapDao {
         try {
             deleteSubtreeIncludingRoot(entry.getDn());
             store(entry);
-        } catch (NoSuchNodeException e) {
-        } catch (EntryAlreadyExistsException e) {
+        } catch (InconsistentDITException e) {
+            LOGGER.debug("this should never happen");
         }
-        
+
     }
 
     /**
@@ -149,7 +190,8 @@ public class LdapDao {
      * Behaves like {@link #store(List)} except that duplicates do not throw an exception but are overwritten as
      * described in {@link #storeOverwriteExisting(Entry)}. Note that this action is not atomic.
      * */
-    public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException, NoSuchNodeException, LdapDaoException {
+    public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException, NoSuchNodeException,
+        LdapDaoException {
         for (Entry entry : entries) {
             try {
                 store(entry);
@@ -158,6 +200,7 @@ public class LdapDao {
                 try {
                     store(entry);
                 } catch (EntryAlreadyExistsException e1) {
+                    LOGGER.debug("this should never happen");
                 }
             }
         }
@@ -167,7 +210,8 @@ public class LdapDao {
      * Returns all entries found exactly one level below parent. Throws {@link NoSuchNodeException} if resolving the
      * argument Dn fails at its leaf. Throws {@link MissingParentException} if resolving fails earlier.
      * */
-    public List<Entry> getDirectChildren(Dn parent) throws NoSuchNodeException, MissingParentException, LdapDaoException {
+    public List<Entry> getDirectChildren(Dn parent) throws NoSuchNodeException, MissingParentException,
+        LdapDaoException {
         return extractEntriesFromCursor(searchOneLevel(parent));
     }
 
@@ -183,7 +227,8 @@ public class LdapDao {
      * Deletes root and its entire subtree. Throws NoSuchNodeException if root does not exist. Throws
      * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeIncludingRoot(Dn root) throws MissingParentException, NoSuchNodeException, LdapDaoException {
+    public void deleteSubtreeIncludingRoot(Dn root) throws MissingParentException, NoSuchNodeException,
+        LdapDaoException {
         deleteSubtreeExcludingRoot(root);
         deleteLeaf(root);
     }
@@ -192,7 +237,8 @@ public class LdapDao {
      * Deletes the entire subtree of root but not root itself. Throws NoSuchNodeException if root does not exist. Throws
      * MissingParentException if some node above root does not exist.
      * */
-    public void deleteSubtreeExcludingRoot(Dn root) throws MissingParentException, NoSuchNodeException, LdapDaoException {
+    public void deleteSubtreeExcludingRoot(Dn root) throws MissingParentException, NoSuchNodeException,
+        LdapDaoException {
         existsCheck(root);
         try {
             EntryCursor entryCursor = connection.search(root, "(objectclass=*)", SearchScope.ONELEVEL);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.util;
+package org.openengsb.core.services.internal.security.ldap;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
-import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
 /**
  * Utility class offering common operations on {@link Entry} and {@link Dn} objects.

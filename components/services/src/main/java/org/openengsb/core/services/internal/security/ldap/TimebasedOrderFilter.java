@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.util;
+package org.openengsb.core.services.internal.security.ldap;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
-import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
 
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
