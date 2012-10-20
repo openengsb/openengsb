@@ -15,7 +15,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.junit.Test;
-import org.openengsb.infrastructure.ldap.util.LdapUtils;
+import org.openengsb.infrastructure.ldap.internal.model.Node;
 import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,14 +75,14 @@ public class TimebasedOrderFilterTest {
         TimebasedOrderFilter.addId(e, true);
         Rdn rdn = e.getDn().getRdn();
         assertThat(rdn.getType(), is(TimebasedOrderFilter.ID_ATTRIBUTE));
-        assertThat(rdn.getValue().getString(), is(e.get(TimebasedOrderFilter.ID_ATTRIBUTE).getString()));
+        assertThat(rdn.getValue().getString(), is(TimebasedOrderFilter.extractIdAttribute(e)));
     }
 
     @Test
     public void testAddIdUpdateExistingRdn_expectReplaceRdn() throws LdapInvalidDnException,
         LdapInvalidAttributeValueException {
         Rdn rdnUnchanged = new Rdn("ou", "parent");
-        // give a dn of depth 2 to the entry
+        // give a dn of dept 2 to the entry
         Entry e = new DefaultEntry(new Dn(new Rdn("ou", "child"), rdnUnchanged));
         // add id with update flag set
         TimebasedOrderFilter.addId(e, true);
@@ -91,7 +91,7 @@ public class TimebasedOrderFilterTest {
         // make sure that the child part has been updated
         Rdn rdnUpdated = e.getDn().getRdn();
         assertThat(rdnUpdated.getType(), is(TimebasedOrderFilter.ID_ATTRIBUTE));
-        assertThat(rdnUpdated.getValue().getString(), is(LdapUtils.extractAttributeNoEmptyCheck(e, TimebasedOrderFilter.ID_ATTRIBUTE)));
+        assertThat(rdnUpdated.getValue().getString(), is(TimebasedOrderFilter.extractIdAttribute(e)));
     }
 
     @Test
@@ -109,6 +109,21 @@ public class TimebasedOrderFilterTest {
         // sort the second list
         TimebasedOrderFilter.sortById(reversed);
         // now both lists must have the same order
+        assertThat(reversed.get(0), is(original.get(0)));
+        assertThat(reversed.get(1), is(original.get(1)));
+    }
+
+    @Test
+    public void testSortByIdNode_expectSorted() {
+        List<Node> original = new LinkedList<Node>();
+        List<Node> reversed = new LinkedList<Node>();
+        original.add(new Node(new DefaultEntry()));
+        original.add(new Node(new DefaultEntry()));
+        TimebasedOrderFilter.addId(original.get(0).getEntry(), false);
+        TimebasedOrderFilter.addId(original.get(1).getEntry(), false);
+        reversed.add(original.get(1));
+        reversed.add(original.get(0));
+        TimebasedOrderFilter.sortByIdNode(reversed);
         assertThat(reversed.get(0), is(original.get(0)));
         assertThat(reversed.get(1), is(original.get(1)));
     }

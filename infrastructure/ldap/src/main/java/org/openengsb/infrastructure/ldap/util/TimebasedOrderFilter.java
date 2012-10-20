@@ -95,7 +95,10 @@ public final class TimebasedOrderFilter {
         Collections.sort(nodes, new IdComparatorNode());
     }
 
-    private static String extractIdAttribute(Entry entry) {
+    /**
+     * Returns the String value of the id attribute.
+     * */
+    public static String extractIdAttribute(Entry entry) {
         return LdapUtils.extractAttributeNoEmptyCheck(entry, TimebasedOrderFilter.ID_ATTRIBUTE);
     }
 
