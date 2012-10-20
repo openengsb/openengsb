@@ -121,7 +121,7 @@
     <opensaml.version>2.5.1_1</opensaml.version>
     <wss4j.version>1.6.3</wss4j.version>
     <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
-    <servicemix.dbcp.version>1.4_2</servicemix.dbcp.version>
+    <servicemix.dbcp.version>1.4_3</servicemix.dbcp.version>
     <slf4j.version>1.6.4</slf4j.version>
     <xerces.version>2.9.1_5</xerces.version>
     <bcel.version>5.2_4</bcel.version>
