@@ -19,8 +19,6 @@ package org.openengsb.core.services.internal.security.ldap;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
-import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 /**
  * This class contains the attribute types for the Entries as String constants.
@@ -50,7 +48,7 @@ public final class SchemaConstants {
         try {
             return new Dn("dc=openengsb,dc=org");
         } catch (LdapInvalidDnException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapRuntimeException(e);
         }
     }
 

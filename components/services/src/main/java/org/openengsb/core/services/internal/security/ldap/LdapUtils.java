@@ -27,8 +27,6 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValu
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
-import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
 
 /**
  * Utility class offering common operations on {@link Entry} and {@link Dn} objects.
@@ -41,19 +39,19 @@ public final class LdapUtils {
     /**
      * Returns a {@link Dn} consisting of baseDn extended by an Rdn of type rdnAttribute and value rdnValue.
      * */
-    public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn) throws LdapDaoException {
+    public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn) {
         try {
             Rdn rdn = new Rdn(rdnAttribute, rdnValue);
             return basedn.add(rdn);
         } catch (LdapInvalidDnException e) {
-            throw new LdapDaoException(e);
+            throw new LdapRuntimeException(e);
         }
     }
 
     /**
      * Returns the value of attributeType from entry.
      * */
-    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye) throws LdapDaoException {
+    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye) {
         //TODO: Nullpointerex ???!!!
         //merge this with extractfirstValueOfAttribute!!!
         Attribute attribute = entry.get(attributeTye);
@@ -63,7 +61,7 @@ public final class LdapUtils {
         try {
             return attribute.getString();
         } catch (LdapInvalidAttributeValueException e) {
-            throw new LdapDaoException(e);
+            throw new LdapRuntimeException(e);
         }
     }
 
@@ -73,8 +71,7 @@ public final class LdapUtils {
     /**
      * Returns the value of the first occurence of attributeType from entry.
      * */
-    public static String extractFirstValueOfAttribute(Entry entry, String attributeTye)
-        throws ObjectClassViolationException {
+    public static String extractFirstValueOfAttribute(Entry entry, String attributeTye) {
 
         if (entry == null) {
             return null;
@@ -97,7 +94,7 @@ public final class LdapUtils {
     }
 
     /**
-     * Returns the value of the first occurence of attributeType from each entry following the ordering of the list.
+     * Returns the value of the first occurence of attributeType from each entry.
      * */
     public static List<String> extractFirstValueOfAttribute(List<Entry> entries, String attributeType)
         throws ObjectClassViolationException {
@@ -109,10 +106,9 @@ public final class LdapUtils {
     }
 
     /**
-     * Returns the value of the first occurence of attributeType from each entry following the ordering of the cursor.
+     * Returns the value of the first occurence of attributeType from each entry in the cursor.
      * */
-    public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType)
-        throws LdapDaoException {
+    public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType) {
         List<String> result = new LinkedList<String>();
         try {
             while (cursor.next()) {
@@ -120,7 +116,7 @@ public final class LdapUtils {
                 result.add(extractFirstValueOfAttribute(entry, attributeType));
             }
         } catch (Exception e) {
-            throw new LdapDaoException(e);
+            throw new LdapRuntimeException(e);
         }
         return result;
     }

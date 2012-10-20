@@ -31,9 +31,9 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.ldap.client.api.DefaultSchemaLoader;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
-import org.apache.directory.ldap.client.api.DefaultSchemaLoader;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -49,15 +49,15 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.services.internal.security.EntryUtils;
+import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
+import org.openengsb.core.services.internal.security.ldap.UserDataManagerLdap;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.Constants;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
-import org.openengsb.core.services.internal.security.ldap.SchemaConstants;
-import org.openengsb.core.services.internal.security.ldap.UserDataManagerLdap;
-import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +115,6 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
             final UserDataManagerLdapTest.TestPermission other = (UserDataManagerLdapTest.TestPermission) obj;
             return Objects.equal(desiredResult, other.desiredResult);
         }
-
     }
 
     private void setupUserManager() {
@@ -150,7 +149,7 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         registerService(permissionProvider, props, ClassProvider.class);
     }
 
-    private void clearDIT() {
+    private void clearDIT() throws Exception {
         ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouUsers());
         ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(
             SchemaConstants.ouGlobalPermissionSets());

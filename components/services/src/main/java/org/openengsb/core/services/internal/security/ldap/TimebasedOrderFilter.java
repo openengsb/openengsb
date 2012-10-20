@@ -25,7 +25,6 @@ import java.util.UUID;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.LdapDaoException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
 
 import com.fasterxml.uuid.EthernetAddress;
@@ -52,13 +51,13 @@ public final class TimebasedOrderFilter {
     /**
      * Adds a timebased uuid to entry. If updateRdn is true, the uuid becomes the rdn. Use this to handle duplicates.
      */
-    public static void addId(Entry entry, boolean updateRdn) throws LdapDaoException {
+    public static void addId(Entry entry, boolean updateRdn) {
         String uuid = newUUID().toString();
         try {
             entry.add(SchemaConstants.objectClassAttribute, UNIQUE_OBJECT_OC);
             entry.add(ID_ATTRIBUTE, uuid);
         } catch (LdapException e) {
-            throw new LdapDaoException(e);
+            throw new LdapRuntimeException(e);
         }
         if (updateRdn) {
             Dn newDn = LdapUtils.concatDn(ID_ATTRIBUTE, uuid, entry.getDn().getParent());
@@ -70,7 +69,7 @@ public final class TimebasedOrderFilter {
      * Iterates over entries and adds a timebased uuid to each entry. If updateRdn is true, the uuid becomes the rdn.
      * Use this to handle duplicates.
      */
-    public static void addIds(List<Entry> entries, boolean updateRdn) throws LdapDaoException {
+    public static void addIds(List<Entry> entries, boolean updateRdn) {
         for (Entry entry : entries) {
             addId(entry, updateRdn);
         }
@@ -97,7 +96,7 @@ public final class TimebasedOrderFilter {
     /**
      * Returns the String value of the id attribute.
      * */
-    public static String extractIdAttribute(Entry entry) throws LdapDaoException {
+    public static String extractIdAttribute(Entry entry) {
         return LdapUtils.extractAttributeNoEmptyCheck(entry, TimebasedOrderFilter.ID_ATTRIBUTE);
     }
 
@@ -109,15 +108,8 @@ public final class TimebasedOrderFilter {
     private static class IdComparator implements Comparator<Entry> {
         @Override
         public int compare(Entry e1, Entry e2) {
-            String id1 = null;
-            String id2 = null;
-            try {
-                id1 = extractIdAttribute(e1);
-                id2 = extractIdAttribute(e2);
-            } catch (LdapDaoException e) {
-                throw new RuntimeException();//TODO: replace runtime with more specific. see ldaputils.
-            }
-            
+            String id1 = extractIdAttribute(e1);
+            String id2 = extractIdAttribute(e2);
             if (id1 == null && id2 == null) {
                 return 0;
             }

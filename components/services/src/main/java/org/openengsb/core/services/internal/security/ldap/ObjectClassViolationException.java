@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.infrastructure.ldap.internal;
+package org.openengsb.core.services.internal.security.ldap;
 
 import org.apache.directory.shared.ldap.model.entry.Attribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
  * Thrown upon attempting to access an {@link Attribute} not defined for a given
  * {@link Entry}.
  * */
-public class ObjectClassViolationException extends SchemaViolationException {
+public class ObjectClassViolationException extends LdapRuntimeException {
 
     private static final long serialVersionUID = 3329558001005307519L;
 

@@ -41,13 +41,11 @@ import org.openengsb.core.services.internal.security.model.EntryElement;
 import org.openengsb.core.services.internal.security.model.EntryValue;
 import org.openengsb.core.services.internal.security.model.PermissionData;
 import org.openengsb.infrastructure.ldap.internal.EntryAlreadyExistsException;
-import org.openengsb.infrastructure.ldap.internal.EntryFactory;
+import org.openengsb.infrastructure.ldap.internal.InconsistentDITException;
 import org.openengsb.infrastructure.ldap.internal.LdapDao;
 import org.openengsb.infrastructure.ldap.internal.MissingParentException;
 import org.openengsb.infrastructure.ldap.internal.NoSuchNodeException;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
-import org.openengsb.infrastructure.ldap.util.LdapUtils;
-import org.openengsb.infrastructure.ldap.util.TimebasedOrderFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +95,12 @@ public class UserDataManagerLdap implements UserDataManager {
     @Override
     public Collection<String> getPermissionSetList() {
         Dn parent = SchemaConstants.ouGlobalPermissionSets();
-        List<Entry> entries = dao.getDirectChildren(parent);
+        List<Entry> entries;
+        try {
+            entries = dao.getDirectChildren(parent);
+        } catch (InconsistentDITException e) {
+            throw new LdapRuntimeException(e);
+        }
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
@@ -110,6 +113,8 @@ public class UserDataManagerLdap implements UserDataManager {
             entries = dao.getDirectChildren(parent);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
         TimebasedOrderFilter.sortById(entries);
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
@@ -123,6 +128,8 @@ public class UserDataManagerLdap implements UserDataManager {
             entries = dao.getDirectChildren(parent);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
         TimebasedOrderFilter.sortById(entries);
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
@@ -173,6 +180,8 @@ public class UserDataManagerLdap implements UserDataManager {
             storePermissions(parent, permissions);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
+        } catch (EntryAlreadyExistsException e) {
+            throw new LdapRuntimeException(e); //TODO also here duplicates should be allowed but this looks like not
         }
     }
 
@@ -184,22 +193,26 @@ public class UserDataManagerLdap implements UserDataManager {
             storePermissions(parent, permissions);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
+        } catch (EntryAlreadyExistsException e) {
+            throw new LdapRuntimeException(e);//TODO here is it possible to store duplicates? think not..
         }
     }
 
     @Override
     public void createPermissionSet(String permissionSet, Permission... permission)
         throws PermissionSetAlreadyExistsException {
-        List<Entry> permissionSetStructure = PermissionUtils.globalPermissionSetStructure(permissionSet);
+        List<Entry> permissionSetStructure = EntryFactory.globalPermissionSetStructure(permissionSet);
         try {
             dao.store(permissionSetStructure);
+            storePermissions(SchemaConstants.ouGlobalPermissionsDirect(permissionSet), permission);
         } catch (EntryAlreadyExistsException e) {
             throw new PermissionSetAlreadyExistsException();
+        } catch (MissingParentException e) {
+            throw new LdapRuntimeException(e);
         }
-        storePermissions(SchemaConstants.ouGlobalPermissionsDirect(permissionSet), permission);
     }
 
-    private void storePermissions(Dn parent, Permission... permission) {
+    private void storePermissions(Dn parent, Permission... permission) throws EntryAlreadyExistsException, MissingParentException {
         if (permission == null) {
             return;
         }
@@ -208,7 +221,7 @@ public class UserDataManagerLdap implements UserDataManager {
             PermissionData data = PermissionUtils.convertPermissionToPermissionData(p);
             pd.add(data);
         }
-        List<Entry> permissionStructure = PermissionUtils.permissionStructureFromPermissionData(pd, parent);
+        List<Entry> permissionStructure = EntryFactory.permissionStructureFromPermissionData(pd, parent);
         dao.store(permissionStructure);
     }
 
@@ -220,6 +233,8 @@ public class UserDataManagerLdap implements UserDataManager {
             deletePermission(parent, permission);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
     }
 
@@ -230,16 +245,23 @@ public class UserDataManagerLdap implements UserDataManager {
             deletePermission(parent, permission);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
     }
 
-    private void deletePermission(Dn parent, Permission... permission) {
+    private void deletePermission(Dn parent, Permission... permission) throws MissingParentException, NoSuchNodeException {
         List<Node> nodes = dao.searchSubtree(parent);
         Collection<Permission> permissions = extractPermissionsFromNodes(nodes);
         boolean b = permissions.removeAll(Arrays.asList(permission));
         if (b) {
             dao.deleteSubtreeExcludingRoot(parent);
-            storePermissions(parent, permissions.toArray(new Permission[0]));
+            try {
+                storePermissions(parent, permissions.toArray(new Permission[0]));
+            } catch (EntryAlreadyExistsException e) {
+                LOGGER.debug("should never reach here");
+                throw new LdapRuntimeException(e);
+            }
         }
     }
 
@@ -279,6 +301,8 @@ public class UserDataManagerLdap implements UserDataManager {
             nodes = dao.searchSubtree(SchemaConstants.ouUserPermissionsDirect(username));
         } catch (MissingParentException e) {
             throw new UserNotFoundException();
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
         return extractPermissionsFromNodes(nodes);
     }
@@ -329,6 +353,8 @@ public class UserDataManagerLdap implements UserDataManager {
             nodes = dao.searchSubtree(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
         }
         return extractPermissionsFromNodes(nodes);
     }
@@ -375,7 +401,14 @@ public class UserDataManagerLdap implements UserDataManager {
 
     @Override
     public Collection<String> getUserList() {
-        List<Entry> entries = dao.getDirectChildren(SchemaConstants.ouUsers());
+        List<Entry> entries;
+        try {
+            entries = dao.getDirectChildren(SchemaConstants.ouUsers());
+        } catch (NoSuchNodeException e) {
+            throw new LdapRuntimeException(e);
+        } catch (MissingParentException e) {
+            throw new LdapRuntimeException(e);
+        }
         return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
     }
 
@@ -386,6 +419,8 @@ public class UserDataManagerLdap implements UserDataManager {
             dao.store(userStructure);
         } catch (EntryAlreadyExistsException e) {
             throw new UserExistsException();
+        } catch (MissingParentException e) {
+            throw new LdapRuntimeException(e);
         }
     }
 
@@ -395,6 +430,8 @@ public class UserDataManagerLdap implements UserDataManager {
             dao.deleteSubtreeIncludingRoot(SchemaConstants.user(username));
         } catch (NoSuchNodeException e) {
             LOGGER.warn("user {} was to be deleted, but not found", username);
+        } catch (MissingParentException e) {
+            throw new LdapRuntimeException(e);
         }
     }
 

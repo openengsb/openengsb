@@ -29,7 +29,6 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.services.internal.security.model.EntryElement;
 import org.openengsb.core.services.internal.security.model.EntryValue;
 import org.openengsb.core.services.internal.security.model.PermissionData;
-import org.openengsb.infrastructure.ldap.internal.LdapGeneralException;
 
 /**
  * Builds entries for various nodes in the DIT. The returned entries have a valid Dn and all provided attributes.
@@ -50,7 +49,7 @@ public final class EntryFactory {
             entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.organizationalUnitOc);
             entry.add(SchemaConstants.ouAttribute, ou);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapRuntimeException(e);
         }
         return entry;
     }
@@ -66,7 +65,7 @@ public final class EntryFactory {
             entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.namedObjectOc);
             entry.add(SchemaConstants.cnAttribute, name);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapRuntimeException(e);
         }
         return entry;
     }
@@ -77,13 +76,9 @@ public final class EntryFactory {
      * this distinction, i.e. storing an empty string will also retrieve an empty string and storing null will also
      * retrieve null.
      * */
-    public static Entry namedDescriptiveObject(String name, String description, Dn baseDn) {
+    public static Entry namedDescriptiveObject(String name, String description, Dn baseDn) throws LdapRuntimeException {
         Entry entry = namedObject(name, baseDn);
-        try {
-            addDescription(entry, description);
-        } catch (LdapException e) {
-            throw new LdapGeneralException(e);
-        }
+        addDescription(entry, description);
         return entry;
     }
 
@@ -100,7 +95,7 @@ public final class EntryFactory {
             entry.add(SchemaConstants.javaClassNameAttribute, classname);
             addDescription(entry, constructorArgument);
         } catch (LdapException e) {
-            throw new LdapGeneralException(e);
+            throw new LdapRuntimeException(e);
         }
         return entry;
     }
@@ -162,14 +157,18 @@ public final class EntryFactory {
      * 2) description is empty -> emptyFlag = true, no description attribute <br>
      * 3) description exists -> no emptyFlag, description attribute exists and has a value
      * */
-    private static void addDescription(Entry entry, String description) throws LdapException {
-        entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.descriptiveObjectOc);
-        if (description == null) {
-            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(false)); // case 1
-        } else if (description.isEmpty()) {
-            entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(true)); // case 2
-        } else {
-            entry.add(SchemaConstants.stringAttribute, description); // case 3
+    private static void addDescription(Entry entry, String description) {
+        try {
+            entry.add(SchemaConstants.objectClassAttribute, SchemaConstants.descriptiveObjectOc);
+            if (description == null) {
+                entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(false)); // case 1
+            } else if (description.isEmpty()) {
+                entry.add(SchemaConstants.emptyFlagAttribute, String.valueOf(true)); // case 2
+            } else {
+                entry.add(SchemaConstants.stringAttribute, description); // case 3
+            }
+        } catch (LdapException e) {
+            throw new LdapRuntimeException(e);
         }
     }
 
