@@ -26,15 +26,15 @@ public class TimebasedOrderFilterTest {
     private String idAttribute = "org-openengsb-uuid";
     private String uniqueOc = "org-openengsb-uniqueObject";
 
-    //TODO use this for injection
-    public void setIdAttribute(String idAttribute){
+    // TODO use this for injection
+    public void setIdAttribute(String idAttribute) {
         this.idAttribute = idAttribute;
     }
-    
+
     public void setUniqueOc(String uniqueOc) {
         this.uniqueOc = uniqueOc;
     }
-    
+
     @Test
     public void testAddId_expectIdAttributeAndOC() throws Exception {
         Entry e = new DefaultEntry();
@@ -114,6 +114,13 @@ public class TimebasedOrderFilterTest {
         TimebasedOrderFilter.sortByIdNode(reversed);
         assertThat(reversed.get(0), is(first));
         assertThat(reversed.get(1), is(second));
+    }
+
+    @Test
+    public void testExtractId_expectId() throws Exception {
+        String id = TimebasedOrderFilter.extractId(newEntryWithId());
+        assertThat(id, notNullValue());
+        assertThat(UUID.fromString(id), is(UUID.class));
     }
 
     private Entry newEntryWithId() throws Exception {

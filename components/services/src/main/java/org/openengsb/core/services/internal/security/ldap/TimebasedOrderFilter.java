@@ -96,7 +96,7 @@ public final class TimebasedOrderFilter {
     /**
      * Returns the String value of the id attribute.
      * */
-    public static String extractIdAttribute(Entry entry) {
+    public static String extractId(Entry entry) {
         return LdapUtils.extractAttributeNoEmptyCheck(entry, TimebasedOrderFilter.ID_ATTRIBUTE);
     }
 
@@ -108,8 +108,8 @@ public final class TimebasedOrderFilter {
     private static class IdComparator implements Comparator<Entry> {
         @Override
         public int compare(Entry e1, Entry e2) {
-            String id1 = extractIdAttribute(e1);
-            String id2 = extractIdAttribute(e2);
+            String id1 = extractId(e1);
+            String id2 = extractId(e2);
             if (id1 == null && id2 == null) {
                 return 0;
             }
