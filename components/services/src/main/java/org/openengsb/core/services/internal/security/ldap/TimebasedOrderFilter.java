@@ -26,6 +26,8 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.infrastructure.ldap.internal.model.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
@@ -42,6 +44,7 @@ import com.fasterxml.uuid.impl.TimeBasedGenerator;
  * */
 public final class TimebasedOrderFilter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimebasedOrderFilter.class);
     public static final String ID_ATTRIBUTE = "org-openengsb-uuid";
     public static final String UNIQUE_OBJECT_OC = "org-openengsb-uniqueObject";
 
@@ -112,14 +115,16 @@ public final class TimebasedOrderFilter {
             String id2 = extractId(e2);
             if (id1 == null && id2 == null) {
                 return 0;
-            }
-            if (id1 == null && id2 != null) {
+            } else if (id1 == null && id2 != null) {
+                LOGGER.warn("id2 = emptyString? {}", id2.isEmpty());
                 return -1;
-            }
-            if (id1 != null && id2 == null) {
+            } else if (id1 != null && id2 == null) {
+                LOGGER.warn("id1 = emptyString? {}", id1.isEmpty());
                 return 1;
+            } else {
+                return UUIDComparator.staticCompare(UUID.fromString(id1), UUID.fromString(id2));
             }
-            return UUIDComparator.staticCompare(UUID.fromString(id1), UUID.fromString(id2));
+
         }
     }
 
@@ -130,14 +135,14 @@ public final class TimebasedOrderFilter {
             Entry e2 = n2.getEntry();
             if (e1 == null && e2 == null) {
                 return 0;
-            }
-            if (e1 == null && e2 != null) {
+            } else if (e1 == null && e2 != null) {
                 return -1;
-            }
-            if (e1 != null && e2 == null) {
+            } else if (e1 != null && e2 == null) {
                 return 1;
+            } else {
+                return new IdComparator().compare(e1, e2);
             }
-            return new IdComparator().compare(e1, e2);
+
         }
     }
 
