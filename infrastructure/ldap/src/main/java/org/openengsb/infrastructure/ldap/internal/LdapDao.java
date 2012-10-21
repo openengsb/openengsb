@@ -153,9 +153,9 @@ public class LdapDao {
                 deleteSubtreeIncludingRoot(entry.getDn());
                 store(entry);
             } catch (NoSuchNodeException e) {
-                throw new LdapDaoException(e);
+                //throw new LdapDaoException(e);
             } catch (EntryAlreadyExistsException e) {
-                throw new LdapDaoException(e);
+                //throw new LdapDaoException(e);
             }
             
 

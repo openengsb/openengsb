@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.junit.Test;
@@ -21,11 +20,15 @@ import org.openengsb.infrastructure.ldap.internal.model.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.uuid.EthernetAddress;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.impl.TimeBasedGenerator;
+
 public class TimebasedOrderFilterTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimebasedOrderFilterTest.class);
 
     @Test
-    public void testAddId_expectIdAttribute() throws LdapDaoException {
+    public void testAddId_expectIdAttribute() throws Exception {
         Entry e = new DefaultEntry();
         assertThat(e.containsAttribute(TimebasedOrderFilter.ID_ATTRIBUTE), is(false));
         TimebasedOrderFilter.addId(e, false);
@@ -33,7 +36,7 @@ public class TimebasedOrderFilterTest {
     }
 
     @Test
-    public void testAddIdsSeparately_expectIncreasingOrder() throws LdapInvalidAttributeValueException, LdapDaoException {
+    public void testAddIdsSeparately_expectIncreasingOrder() throws Exception {
         Entry e1 = new DefaultEntry();
         Entry e2 = new DefaultEntry();
         TimebasedOrderFilter.addId(e1, false);
@@ -46,7 +49,7 @@ public class TimebasedOrderFilterTest {
     }
 
     @Test
-    public void testAddIdsOnList_expectIncreasingOrder() throws LdapInvalidAttributeValueException, LdapDaoException {
+    public void testAddIdsOnList_expectIncreasingOrder() throws Exception {
         List<Entry> entries = new LinkedList<Entry>();
         Entry e1;
         Entry e2;
@@ -70,7 +73,7 @@ public class TimebasedOrderFilterTest {
     }
 
     @Test
-    public void testAddIdUpdateRdnOnEmptyDn_expectCreateRdn() throws LdapInvalidAttributeValueException, LdapDaoException {
+    public void testAddIdUpdateRdnOnEmptyDn_expectCreateRdn() throws Exception, LdapDaoException {
         Entry e = new DefaultEntry();
         assertThat(e.getDn(), is(Dn.EMPTY_DN));
         TimebasedOrderFilter.addId(e, true);
@@ -80,8 +83,8 @@ public class TimebasedOrderFilterTest {
     }
 
     @Test
-    public void testAddIdUpdateExistingRdn_expectReplaceRdn() throws LdapInvalidDnException,
-        LdapInvalidAttributeValueException, LdapDaoException {
+    public void testAddIdUpdateExistingRdn_expectReplaceRdn() throws Exception, LdapInvalidAttributeValueException,
+        LdapDaoException {
         Rdn rdnUnchanged = new Rdn("ou", "parent");
         // give a dn of dept 2 to the entry
         Entry e = new DefaultEntry(new Dn(new Rdn("ou", "child"), rdnUnchanged));
@@ -96,37 +99,38 @@ public class TimebasedOrderFilterTest {
     }
 
     @Test
-    public void testSortById_expectSorted() throws LdapDaoException {
-        List<Entry> original = new LinkedList<Entry>();
+    public void testSortById_expectSorted() throws Exception {
+        Entry first = newEntryWithId();
+        Entry second = newEntryWithId();
         List<Entry> reversed = new LinkedList<Entry>();
-        // add 2 entries to first list
-        original.add(new DefaultEntry());
-        original.add(new DefaultEntry());
-        // mark both entries with an id
-        TimebasedOrderFilter.addIds(original, false);
-        // add the same entries to second list but in reversed order
-        reversed.add(original.get(1));
-        reversed.add(original.get(0));
-        // sort the second list
+        // add the entries in reversed order
+        reversed.add(second);
+        reversed.add(first);
+        // sort them
         TimebasedOrderFilter.sortById(reversed);
-        // now both lists must have the same order
-        assertThat(reversed.get(0), is(original.get(0)));
-        assertThat(reversed.get(1), is(original.get(1)));
+        assertThat(reversed.get(0), is(first));
+        assertThat(reversed.get(1), is(second));
     }
 
     @Test
-    public void testSortByIdNode_expectSorted() throws LdapDaoException {
-        List<Node> original = new LinkedList<Node>();
+    public void testSortByIdNode_expectSorted() throws Exception {
+        Node first = new Node(newEntryWithId());
+        Node second = new Node(newEntryWithId());
         List<Node> reversed = new LinkedList<Node>();
-        original.add(new Node(new DefaultEntry()));
-        original.add(new Node(new DefaultEntry()));
-        TimebasedOrderFilter.addId(original.get(0).getEntry(), false);
-        TimebasedOrderFilter.addId(original.get(1).getEntry(), false);
-        reversed.add(original.get(1));
-        reversed.add(original.get(0));
+        // add the nodes in reversed order
+        reversed.add(second);
+        reversed.add(first);
+        // sort them
         TimebasedOrderFilter.sortByIdNode(reversed);
-        assertThat(reversed.get(0), is(original.get(0)));
-        assertThat(reversed.get(1), is(original.get(1)));
+        assertThat(reversed.get(0), is(first));
+        assertThat(reversed.get(1), is(second));
+    }
+
+    private Entry newEntryWithId() throws Exception {
+        TimeBasedGenerator uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
+        Entry e = new DefaultEntry();
+        e.add(TimebasedOrderFilter.ID_ATTRIBUTE, uuidGenerator.generate().toString());
+        return e;
     }
 
 }

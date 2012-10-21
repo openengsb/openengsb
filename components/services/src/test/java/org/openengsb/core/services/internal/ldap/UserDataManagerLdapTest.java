@@ -31,15 +31,11 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.directory.ldap.client.api.DefaultSchemaLoader;
-import org.apache.directory.ldap.client.api.LdapConnection;
-import org.apache.directory.ldap.client.api.LdapNetworkConnection;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.NoSuchAttributeException;
@@ -64,12 +60,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 
-public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
+public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerLdapTest.class);
 
     private UserDataManager userManager;
-    private LdapConnection connection;
+    private static LdapDao dao;
     private String testUser1 = "testUser";
     private Dn dnTestUser1;
 
@@ -117,35 +113,18 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         }
     }
 
-    private void setupUserManager() {
-        userManager = new UserDataManagerLdap();
-        ((UserDataManagerLdap)userManager).setLdapDao(new LdapDao(connection));
+    private static void setupDao() {
+        dao = new LdapDao("localhost", 10389);
+        dao.connect("uid=admin,ou=system", "secret");
     }
 
-    private void setupConnection() throws Exception {
-        connection = new LdapNetworkConnection("localhost", 10389);
-        connection.setTimeOut(0);
-        connection.connect();
-        LOGGER.info(connection.toString());
-        BindRequest bindRequest = new BindRequestImpl();
-        bindRequest.setDn(new Dn("uid=admin,ou=system"));
-        bindRequest.setCredentials("secret");
-        connection.bind(bindRequest);
-        SchemaLoader schemaLoader = new DefaultSchemaLoader(connection);
-        ((LdapNetworkConnection)(connection)).loadSchema(schemaLoader);
-    }
-
-    private void setupTests() throws Exception {
-        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
-    }
-    
-    private void providePermissions(){
+    private void providePermissions() {
         EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.PROVIDED_CLASSES_KEY, TestPermission.class.getName());
         props.put(Constants.DELEGATION_CONTEXT_KEY, org.openengsb.core.api.Constants.DELEGATION_CONTEXT_PERMISSIONS);
-        ClassProvider permissionProvider =
-            new ClassProviderImpl(bundle, Sets.newHashSet(TestPermission.class.getName()));
+        ClassProvider permissionProvider = new ClassProviderImpl(bundle,
+            Sets.newHashSet(TestPermission.class.getName()));
         registerService(permissionProvider, props, ClassProvider.class);
     }
 
@@ -154,34 +133,42 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         ((UserDataManagerLdap) userManager).getDao().deleteSubtreeExcludingRoot(
             SchemaConstants.ouGlobalPermissionSets());
     }
-    
-    @Before
-    public void doBefore() throws Exception {
-        setupConnection();
-        setupUserManager();
-        setupTests();
-        providePermissions();        
+
+    @BeforeClass
+    public static void doBefore() throws Exception {
+        setupDao();
     }
-    
+
+    @Before
+    public void beforeTest() throws Exception {
+        userManager = new UserDataManagerLdap();
+        ((UserDataManagerLdap) userManager).setLdapDao(dao);
+        dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
+        providePermissions();
+    }
+
     @After
-    public void tearDown() throws Exception {
+    public void afterTest() throws Exception {
         clearDIT();
-        connection.unBind();
-        connection.close();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        dao.disconnect();
     }
 
     /*--------------- users -----------------*/
 
     @Test
     public void testDeleteNonExistingUser_shouldDoNothing() throws Exception {
-        assertThat(connection.exists(dnTestUser1), is(false));
+        assertThat(dao.exists(dnTestUser1), is(false));
         userManager.deleteUser(testUser1);
     }
 
     @Test(expected = UserExistsException.class)
     public void testCreateExistingUser_shouldThrowUserExistsException() throws Exception {
         userManager.createUser(testUser1);
-        assertThat(connection.exists(dnTestUser1), is(true));
+        assertThat(dao.exists(dnTestUser1), is(true));
         userManager.createUser(testUser1);
     }
 
@@ -245,26 +232,26 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
 
     @Test(expected = UserNotFoundException.class)
     public void testSetCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception {
-        assertThat(connection.exists(dnTestUser1), is(false));
+        assertThat(dao.exists(dnTestUser1), is(false));
         userManager.setUserCredentials(testUser1, "randomName", "randomValue");
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testGetCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception {
-        assertThat(connection.exists(dnTestUser1), is(false));
+        assertThat(dao.exists(dnTestUser1), is(false));
         userManager.getUserCredentials(testUser1, "randomName");
     }
 
     @Test(expected = NoSuchCredentialsException.class)
     public void testGetNonexistingCredentialsForExistingUser_shouldThrowNoSuchCredentialsException() throws Exception {
         userManager.createUser(testUser1);
-        assertThat(connection.exists(dnTestUser1), is(true));
+        assertThat(dao.exists(dnTestUser1), is(true));
         userManager.getUserCredentials(testUser1, "nonexistingname");
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testRemoveCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception {
-        assertThat(connection.exists(dnTestUser1), is(false));
+        assertThat(dao.exists(dnTestUser1), is(false));
         userManager.removeUserCredentials(testUser1, "nonexistingname");
     }
 
@@ -274,9 +261,9 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest{
         String testCredentials = "testCredentials";
         Dn dnTestCredentials = SchemaConstants.userCredentials(testUser1, testCredentials);
         userManager.setUserCredentials(testUser1, testCredentials, "randomValue");
-        assertThat(connection.exists(dnTestCredentials), is(true));
+        assertThat(dao.exists(dnTestCredentials), is(true));
         userManager.removeUserCredentials(testUser1, testCredentials);
-        assertThat(connection.exists(dnTestCredentials), is(false));
+        assertThat(dao.exists(dnTestCredentials), is(false));
     }
 
     /*--------------- attributes -----------------*/
