@@ -84,7 +84,7 @@ public final class TransformationUtils {
      */
     private static List<TransformationDescription> loadDescrtipionsFromXMLInputSource(InputSource source,
                                                                                       String fileName)
-            throws Exception {
+        throws Exception {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader(fileName);
         xr.setContentHandler(reader);
@@ -93,8 +93,8 @@ public final class TransformationUtils {
     }
 
     /**
-     * creates a {@link ModelDescription} of the given type using the name of the class and the version of the exported package
-     * this class originates from (as returned by {@link TransformationUtils#getClassVersion(Class)})
+     * creates a {@link ModelDescription} of the given type using the name of the class and the version of the exported
+     * package this class originates from (as returned by {@link TransformationUtils#getClassVersion(Class)})
      */
     public static ModelDescription toModelDescription(Class<?> type) {
         return new ModelDescription(type, getClassVersion(type));

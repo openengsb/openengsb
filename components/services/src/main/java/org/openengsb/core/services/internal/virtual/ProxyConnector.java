@@ -89,7 +89,7 @@ public class ProxyConnector extends VirtualConnector {
         switch (callResult.getType()) {
             case Object:
                 Object result = callResult.getArg();
-                if(connectorInterface == null){
+                if (connectorInterface == null) {
                     return result;
                 }
                 return transformArgument(result, method.getReturnType());

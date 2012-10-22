@@ -39,14 +39,14 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
         Method targetMethod = TransformationUtils.findTargetMethod(method, target.getClass());
         Class<?>[] targetTypes = targetMethod.getParameterTypes();
         Object[] transformed = null;
-        if(args != null){
+        if (args != null) {
             transformed = new Object[args.length];
             for (int i = 0; i < args.length; i++) {
                 transformed[i] = transformArgument(args[i], targetTypes[i]);
             }
         }
         Object result = targetMethod.invoke(target, transformed);
-        if(result != null){
+        if (result != null) {
             return transformArgument(result, method.getReturnType());
         }
         return null;
