@@ -20,11 +20,11 @@
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
-  
+
   <bean id="operationLoader" class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationOperationLoaderImpl">
     <argument ref="blueprintBundleContext"/>
   </bean>
-  
+
   <service interface="org.openengsb.core.ekb.api.transformation.TransformationOperationLoader">
     <ref component-id="operationLoader"/>
   </service>
@@ -35,67 +35,67 @@
     <property name="graphDb" ref="graphDb" />
     <property name="operationLoader" ref="operationLoader" />
   </bean>
-  
+
   <service interface="org.openengsb.core.ekb.api.TransformationEngine">
     <service-properties>
       <entry key="location.root" value="ekbTransformationService" />
     </service-properties>
     <ref component-id="transformationEngineService"/>
   </service>
-  
+
   <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.deployer.TransformationDeployerService">
       <property name="engine" ref="transformationEngineService" />
     </bean>
   </service>
-  
+
   <!-- References to other bundles -->
   <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
   <reference id="graphDb" interface="org.openengsb.core.ekb.api.ModelGraph" />
-  
+
   <!-- Transformation Operations -->
   <service id="forwardOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="forward" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ForwardOperation" >
-      <argument value="forward" />  
+      <argument value="forward" />
     </bean>
   </service>
-  
+
   <service id="concatOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="concat" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ConcatOperation" >
-      <argument value="concat" />  
+      <argument value="concat" />
     </bean>
   </service>
-  
+
   <service id="splitOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="split" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitOperation" >
-      <argument value="split" />  
+      <argument value="split" />
     </bean>
   </service>
-  
+
   <service id="splitRegexOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="splitRegex" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.SplitRegexOperation" >
-      <argument value="splitRegex" />  
+      <argument value="splitRegex" />
     </bean>
   </service>
-  
+
   <service id="mapOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="map" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.MapOperation" >
-      <argument value="map" />  
+      <argument value="map" />
     </bean>
   </service>
 
@@ -104,16 +104,16 @@
       <entry key="transformation.operation" value="trim" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.TrimOperation" >
-      <argument value="trim" />  
+      <argument value="trim" />
     </bean>
   </service>
-  
+
   <service id="toLowerOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="toLower" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToLowerOperation" >
-      <argument value="toLower" />  
+      <argument value="toLower" />
     </bean>
   </service>
 
@@ -122,16 +122,16 @@
       <entry key="transformation.operation" value="toUpper" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ToUpperOperation" >
-      <argument value="toUpper" />  
+      <argument value="toUpper" />
     </bean>
   </service>
-  
+
   <service id="substringOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="substring" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.SubStringOperation" >
-      <argument value="substring" />  
+      <argument value="substring" />
     </bean>
   </service>
 
@@ -140,7 +140,7 @@
       <entry key="transformation.operation" value="value" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ValueOperation" >
-      <argument value="value" />  
+      <argument value="value" />
     </bean>
   </service>
 
@@ -149,52 +149,62 @@
       <entry key="transformation.operation" value="length" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.LengthOperation" >
-      <argument value="length" />  
+      <argument value="length" />
     </bean>
   </service>
-  
+
   <service id="replaceOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="replace" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReplaceOperation" >
-      <argument value="replace" />  
+      <argument value="replace" />
     </bean>
   </service>
-  
+
   <service id="reverseOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="reverse" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.ReverseOperation" >
-      <argument value="reverse" />  
+      <argument value="reverse" />
     </bean>
   </service>
-  
+
   <service id="removeLeadingOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="removeleading" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.RemoveLeadingOperation" >
-      <argument value="removeleading" />  
+      <argument value="removeleading" />
     </bean>
   </service>
-  
+
   <service id="padOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="pad" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.PadOperation" >
-      <argument value="pad" />  
+      <argument value="pad" />
     </bean>
   </service>
-  
+
   <service id="instantiateOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
     <service-properties>
       <entry key="transformation.operation" value="instantiate" />
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.InstantiateOperation" >
-      <argument value="instantiate" />  
+      <argument value="instantiate" />
     </bean>
   </service>
+
+  <bean class="org.osgi.util.tracker.BundleTracker" init-method="open" destroy-method="close">
+    <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
+    <argument type="int" value="32" />
+    <argument type="org.osgi.util.tracker.BundleTrackerCustomizer">
+      <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationBundleTrackerCustomizer">
+        <property name="transformationEngine" ref="transformationEngineService" />
+      </bean>
+    </argument>
+  </bean>
 </blueprint>

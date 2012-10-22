@@ -20,8 +20,8 @@
 
 <transformations>
    <!-- id="testId" optional meta data to do identify transformation descriptions -->
-  <transformation source="org.openengsb.domain.example.model.ExampleResponseModel;3.0.0" 
-                  target="org.openengsb.domain.example.model.ExampleRequestModel;3.0.0"                
+  <transformation source="org.openengsb.domain.example.model.ExampleResponseModel;3.0.0.SNAPSHOT"
+                  target="org.openengsb.domain.example.model.ExampleRequestModel;3.0.0.SNAPSHOT"
                   >
     <split>
       <source-field>result</source-field>

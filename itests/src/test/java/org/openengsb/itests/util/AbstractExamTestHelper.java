@@ -35,6 +35,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -72,6 +73,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+
 public abstract class AbstractExamTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
@@ -90,7 +93,7 @@ public abstract class AbstractExamTestHelper {
     @Inject
     private BundleContext bundleContext;
 
-    @Inject
+    // @Inject
     private AuthenticationContext applicationContext;
 
     @Before
@@ -100,7 +103,7 @@ public abstract class AbstractExamTestHelper {
         int count = 0;
         while (rm.getGlobalType("auditing") == null) {
             LOGGER.warn("waiting for auditing to finish init");
-            Thread.sleep(1000);
+            waitasec();
             if (count++ > 100) {
                 throw new IllegalStateException("auditing-config did not finish in time");
             }
@@ -108,7 +111,7 @@ public abstract class AbstractExamTestHelper {
         count = 0;
         while (!rm.listImports().contains(OsgiHelper.class.getName())) {
             LOGGER.warn("waiting for auditing to finish init");
-            Thread.sleep(1000);
+            waitasec();
             if (count++ > 100) {
                 throw new IllegalStateException("auditing-config did not finish in time");
             }
@@ -116,11 +119,24 @@ public abstract class AbstractExamTestHelper {
         count = 0;
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
             LOGGER.warn("waiting for taskboxConfig to finish init");
-            Thread.sleep(1000);
+            waitasec();
             if (count++ > 100) {
                 throw new IllegalStateException("taskbox-config did not finish in time");
             }
         }
+        applicationContext = getOsgiService(AuthenticationContext.class);
+    }
+
+    private static final Map<Integer, String> STATES = ImmutableMap.of(1,"UNINSTALLED", 2, "INSTALLED", 4, "RESOLVED", 8, "STARTING", 32, "ACTIVE");
+
+    private void waitasec() throws InterruptedException {
+        for(Bundle b : bundleContext.getBundles()){
+            if(b.getState()==Bundle.ACTIVE){
+                continue;
+            }
+            LOGGER.info(String.format("[%s]-[%s] - %s", b.getBundleId(), STATES.get(b.getState()), b.getSymbolicName()));
+        }
+        Thread.sleep(1000);
     }
 
     protected <T> T getOsgiService(Class<T> type, long timeout) {
@@ -146,7 +162,7 @@ public abstract class AbstractExamTestHelper {
             if (isUrlReachable(urlToWatchFor)) {
                 return;
             }
-            Thread.sleep(1000);
+            waitasec();
             localCounter--;
         }
         throw new IllegalStateException(String.format("Couldn't reach page %s within %s seconds", urlToWatchFor,
@@ -271,7 +287,7 @@ public abstract class AbstractExamTestHelper {
                 sm = SecurityUtils.getSecurityManager();
             } catch (UnavailableSecurityManagerException e) {
                 LOGGER.warn("waiting for security-manager to be set");
-                Thread.sleep(1000);
+                waitasec();
             }
             if (count++ > 100) {
                 throw new IllegalStateException("security-manager was not set in time");
@@ -281,7 +297,7 @@ public abstract class AbstractExamTestHelper {
         count = 0;
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
-            Thread.sleep(1000);
+            waitasec();
             if (count++ > 100) {
                 throw new IllegalStateException("user-data-initializer did not finish in time");
             }
