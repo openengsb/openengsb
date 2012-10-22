@@ -61,7 +61,7 @@ public class TransformationBundleTrackerCustomizer implements BundleTrackerCusto
 
     @Override
     public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<TransformationDescription> transformationDescriptions) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override

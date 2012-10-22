@@ -96,5 +96,19 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
         );
     }
 
+    @Test
+    public void testModifyBundleWithTransformations_shouldUnregisterTransformations() throws Exception {
+        Bundle providerBundle =
+                getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
+        providerBundle.start();
+        providerTinyBundle.removeResource("test.transformation");
+        providerBundle.update(providerTinyBundle.build());
+        providerBundle.start();
+        assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
+                new ModelDescription(ExampleResponseModel.class.getName(), "3.0.0.SNAPSHOT"),
+                new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
+        );
+    }
+
 
 }
