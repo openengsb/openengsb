@@ -18,10 +18,9 @@ package org.openengsb.core.ekb.transformation.wonderland.internal;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.TransformationEngine;
@@ -32,16 +31,16 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TransformationBundleTrackerCustomizer implements BundleTrackerCustomizer<Map<URL, List<TransformationDescription>>> {
+public class TransformationBundleTrackerCustomizer implements BundleTrackerCustomizer<List<TransformationDescription>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationBundleTrackerCustomizer.class);
 
     private TransformationEngine transformationEngine;
 
     @Override
-    public Map<URL, List<TransformationDescription>> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
+    public List<TransformationDescription> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
         Enumeration<URL> entries = bundle.findEntries("/", "*.transformation", true);
-        Map<URL, List<TransformationDescription>> result = new HashMap<URL, List<TransformationDescription>>();
+        List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         if(entries == null){
             return null;
         }
@@ -54,20 +53,22 @@ public class TransformationBundleTrackerCustomizer implements BundleTrackerCusto
                 LOGGER.error("error reading transformation descriptions from {}", entry, e);
                 continue;
             }
-            result.put(entry, descriptionList);
+            result.addAll(descriptionList);
             transformationEngine.saveDescriptions(descriptionList);
         }
         return result;
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, Map<URL, List<TransformationDescription>> urlTransformationDescriptionMap) {
+    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<TransformationDescription> transformationDescriptions) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, Map<URL, List<TransformationDescription>> urlTransformationDescriptionMap) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, List<TransformationDescription> transformationDescriptions) {
+        for(TransformationDescription desc : transformationDescriptions){
+            transformationEngine.deleteDescription(desc);
+        }
     }
 
     public void setTransformationEngine(TransformationEngine transformationEngine) {

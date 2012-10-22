@@ -18,6 +18,7 @@
 package org.openengsb.itests.exam;
 
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -81,4 +82,19 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
                 new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
         );
     }
+
+    @Test
+    public void testRemoveBundleWithTransformations_shouldUnregisterTransformations() throws Exception {
+        Bundle providerBundle =
+                getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
+        providerBundle.start();
+        providerBundle.stop();
+        providerBundle.uninstall();
+        assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
+                new ModelDescription(ExampleResponseModel.class.getName(), "3.0.0.SNAPSHOT"),
+                new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
+        );
+    }
+
+
 }
