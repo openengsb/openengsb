@@ -96,7 +96,7 @@ public final class TransformationUtils {
      * creates a {@link ModelDescription} of the given type using the name of the class and the version of the exported
      * package this class originates from (as returned by {@link TransformationUtils#getClassVersion(Class)})
      */
-    public static ModelDescription toModelDescription(Class<?> type) {
+    public static ModelDescription retrieveModelDescriptionOf(Class<?> type) {
         return new ModelDescription(type, getClassVersion(type));
     }
 

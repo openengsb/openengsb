@@ -117,8 +117,8 @@ public class ProxyConnector extends VirtualConnector {
         if (!(OpenEngSBModel.class.isInstance(arg) && OpenEngSBModel.class.isAssignableFrom(targetType))) {
             return arg;
         }
-        return transformationEngine.performTransformation(TransformationUtils.toModelDescription(arg.getClass()),
-                TransformationUtils.toModelDescription(targetType), arg);
+        return transformationEngine.performTransformation(TransformationUtils.retrieveModelDescriptionOf(arg.getClass()),
+                TransformationUtils.retrieveModelDescriptionOf(targetType), arg);
     }
 
     public final void setPortId(String id) {

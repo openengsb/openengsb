@@ -62,8 +62,8 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
         if (!(isModel(arg) && isModel(targetType))) {
             return arg;
         }
-        ModelDescription sourceModel = TransformationUtils.toModelDescription(arg.getClass());
-        ModelDescription targetModel = TransformationUtils.toModelDescription(targetType);
+        ModelDescription sourceModel = TransformationUtils.retrieveModelDescriptionOf(arg.getClass());
+        ModelDescription targetModel = TransformationUtils.retrieveModelDescriptionOf(targetType);
         return transformationEngine.performTransformation(sourceModel, targetModel, arg);
     }
 
