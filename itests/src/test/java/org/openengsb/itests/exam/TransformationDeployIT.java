@@ -78,8 +78,8 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
                 getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
         providerBundle.start();
         assertTrue("transformation is not possible", transformationEngine.isTransformationPossible(
-                new ModelDescription(ExampleResponseModel.class.getName(), "3.0.0.SNAPSHOT"),
-                new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
+                new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
+                new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
         );
     }
 
@@ -91,8 +91,8 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
         providerBundle.stop();
         providerBundle.uninstall();
         assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
-                new ModelDescription(ExampleResponseModel.class.getName(), "3.0.0.SNAPSHOT"),
-                new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
+                new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
+                new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
         );
     }
 
@@ -105,8 +105,8 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
         providerBundle.update(providerTinyBundle.build());
         providerBundle.start();
         assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
-                new ModelDescription(ExampleResponseModel.class.getName(), "3.0.0.SNAPSHOT"),
-                new ModelDescription(ExampleRequestModel.class.getName(), "3.0.0.SNAPSHOT"))
+                new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
+                new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
         );
     }
 

@@ -96,6 +96,8 @@ public abstract class AbstractExamTestHelper {
     // @Inject
     private AuthenticationContext applicationContext;
 
+    private static String projectVersion;
+
     @Before
     public void waitForRequiredTasks() throws Exception {
         waitForUserDataInitializer();
@@ -306,6 +308,10 @@ public abstract class AbstractExamTestHelper {
     }
 
     public static Option[] baseConfiguration() throws Exception {
+        InputStream stream = ClassLoader.getSystemResourceAsStream("META-INF/maven/dependencies.properties");
+        Properties depProperties = new Properties();
+        depProperties.load(stream);
+        projectVersion = (String) depProperties.get("org.openengsb.domain/org.openengsb.domain.example/version");
         String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
         boolean hold = true;
@@ -374,5 +380,9 @@ public abstract class AbstractExamTestHelper {
             return LogLevel.TRACE;
         }
         return LogLevel.WARN;
+    }
+
+    protected String getProjectVersion() throws IOException {
+        return projectVersion;
     }
 }
