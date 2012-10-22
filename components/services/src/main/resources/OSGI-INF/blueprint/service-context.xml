@@ -46,17 +46,19 @@
     <ref component-id="connectorManager" />
   </service>
 
-  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl"
-    init-method="init">
+  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
     <property name="registrationManager">
       <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManager">
-        <property name="bundleContext" ref="blueprintBundleContext" />
-        <property name="securityInterceptor" ref="securityInterceptor" />
-        <property name="attributeStore" ref="attributeProvider" />
+        <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext" />
+        <argument type="org.openengsb.core.ekb.api.TransformationEngine" ref="transformationEngine" />
+        <argument type="org.aopalliance.intercept.MethodInterceptor" ref="securityInterceptor" />
+        <argument type="org.openengsb.core.common.SecurityAttributeProviderImpl" ref="attributeProvider" />
       </bean>
     </property>
     <property name="configPersistence" ref="connectorConfigPersistence" />
   </bean>
+
+  <reference id="transformationEngine" interface="org.openengsb.core.ekb.api.TransformationEngine" />
 
   <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=CONNECTOR)" />

@@ -80,6 +80,16 @@ public class ConnectorRegistrationManager {
     private MethodInterceptor securityInterceptor;
     private TransformationEngine transformationEngine;
 
+
+    public ConnectorRegistrationManager(BundleContext bundleContext, TransformationEngine transformationEngine,
+            MethodInterceptor securityInterceptor, SecurityAttributeProviderImpl attributeStore) {
+        this.bundleContext = bundleContext;
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
+        this.transformationEngine = transformationEngine;
+        this.securityInterceptor = securityInterceptor;
+        this.attributeStore = attributeStore;
+    }
+
     public void updateRegistration(String id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
         if (!instances.containsKey(id)) {
@@ -272,22 +282,5 @@ public class ConnectorRegistrationManager {
             FilterUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domain));
         DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
         return domainProvider;
-    }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
-    }
-
-    public void setSecurityInterceptor(MethodInterceptor securityInterceptor) {
-        this.securityInterceptor = securityInterceptor;
-    }
-
-    public void setAttributeStore(SecurityAttributeProviderImpl attributeStore) {
-        this.attributeStore = attributeStore;
-    }
-
-    public void setTransformationEngine(TransformationEngine transformationEngine) {
-        this.transformationEngine = transformationEngine;
     }
 }

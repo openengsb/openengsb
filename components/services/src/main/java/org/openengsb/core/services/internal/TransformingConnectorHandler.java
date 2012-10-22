@@ -16,12 +16,12 @@
  */
 package org.openengsb.core.services.internal;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
 import org.openengsb.core.ekb.api.TransformationEngine;
 
-public class TransformingConnectorHandler<ConnectorType> implements InvocationHandler {
+public class TransformingConnectorHandler<ConnectorType> extends AbstractOpenEngSBInvocationHandler {
 
     private TransformationEngine transformationEngine;
 
@@ -33,7 +33,7 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    protected Object handleInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         TransformationHandler transformationHandler = TransformationHandler
                 .newTransformationHandler(transformationEngine, method, target.getClass());
         Object[] transformedArgs = transformationHandler.transformArguments(args);

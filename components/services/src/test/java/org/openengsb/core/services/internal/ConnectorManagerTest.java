@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -49,6 +50,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.model.NullConnector;
@@ -74,10 +76,18 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerMockedDomainProvider();
         registerMockedFactory();
         registerConfigPersistence();
-        serviceRegistrationManagerImpl = new ConnectorRegistrationManager();
-        serviceRegistrationManagerImpl.setBundleContext(bundleContext);
         transformationEngine = mock(TransformationEngine.class);
-        serviceRegistrationManagerImpl.setTransformationEngine(transformationEngine);
+        when(transformationEngine
+                .performTransformation(any(ModelDescription.class), any(ModelDescription.class), any()))
+                .thenAnswer(new Answer<Object>() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        return invocation.getArguments()[2];
+                    }
+                });
+        MethodInterceptor securityInterceptor = new ForwardMethodInterceptor();
+        serviceRegistrationManagerImpl = new ConnectorRegistrationManager(bundleContext, transformationEngine,
+                securityInterceptor, new SecurityAttributeProviderImpl());
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         createServiceManager();
     }

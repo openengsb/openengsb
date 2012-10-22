@@ -35,6 +35,8 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
@@ -49,8 +51,8 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
     public void setUp() throws Exception {
         DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
         defaultOsgiUtilsService.setBundleContext(bundleContext);
-        connectorRegistrationManager = new ConnectorRegistrationManager();
-        connectorRegistrationManager.setBundleContext(bundleContext);
+        connectorRegistrationManager = new ConnectorRegistrationManager(bundleContext,
+                mock(TransformationEngine.class), new ForwardMethodInterceptor(), new SecurityAttributeProviderImpl());
         connectorInstanceFactory = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
