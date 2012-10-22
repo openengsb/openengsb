@@ -27,7 +27,7 @@
 <!-- Property place holder -->
   <cm:property-placeholder persistent-id="org.openengsb.edb">
     <cm:default-properties>
-      <cm:property name="revisionCheckEnabled" value="false" />
+      <cm:property name="revisionCheckEnabled" value="true" />
     </cm:default-properties>
   </cm:property-placeholder>
 
