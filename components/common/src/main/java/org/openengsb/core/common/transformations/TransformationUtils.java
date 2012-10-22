@@ -69,8 +69,7 @@ public final class TransformationUtils {
      * Does the actual parsing.
      */
     private static List<TransformationDescription> loadDescrtipionsFromXMLInputSource(InputSource source,
-                                                                                      String fileName)
-        throws Exception {
+            String fileName) throws Exception {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         TransformationDescriptionXMLReader reader = new TransformationDescriptionXMLReader(fileName);
         xr.setContentHandler(reader);
