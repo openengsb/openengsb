@@ -77,7 +77,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (NoSuchNodeException e) {
             throw new NoSuchAttributeException(attributename);
         }
-        return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+        return LdapUtils.extractAttributeEmptyCheck(entry, SchemaConstants.stringAttribute);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (InconsistentDITException e) {
             throw new LdapRuntimeException(e);
         }
-        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
+        return LdapUtils.extractAttributeEmptyCheck(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class UserDataManagerLdap implements UserDataManager {
             throw new LdapRuntimeException(e);
         }
         TimebasedOrderFilter.sortById(entries);
-        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
+        return LdapUtils.extractAttributeEmptyCheck(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class UserDataManagerLdap implements UserDataManager {
             throw new LdapRuntimeException(e);
         }
         TimebasedOrderFilter.sortById(entries);
-        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
+        return LdapUtils.extractAttributeEmptyCheck(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
@@ -318,17 +318,17 @@ public class UserDataManagerLdap implements UserDataManager {
                 TimebasedOrderFilter.sortByIdNode(property.getChildren());
                 for (Node propertyValue : property.getChildren()) {
                     EntryElement entryElement = new EntryElement();
-                    entryElement.setType(LdapUtils.extractFirstValueOfAttribute(propertyValue.getEntry(),
+                    entryElement.setType(LdapUtils.extractAttributeEmptyCheck(propertyValue.getEntry(),
                         SchemaConstants.javaClassNameAttribute));
-                    entryElement.setValue(LdapUtils.extractFirstValueOfAttribute(propertyValue.getEntry(),
+                    entryElement.setValue(LdapUtils.extractAttributeEmptyCheck(propertyValue.getEntry(),
                         SchemaConstants.stringAttribute));
                     entryElements.add(entryElement);
                 }
-                String key = LdapUtils.extractFirstValueOfAttribute(property.getEntry(), SchemaConstants.cnAttribute);
+                String key = LdapUtils.extractAttributeEmptyCheck(property.getEntry(), SchemaConstants.cnAttribute);
                 EntryValue entryValue = new EntryValue(key, entryElements);
                 attributes.put(key, entryValue); // TODO why need key 2x?
             }
-            String type = LdapUtils.extractFirstValueOfAttribute(permission.getEntry(),
+            String type = LdapUtils.extractAttributeEmptyCheck(permission.getEntry(),
                 SchemaConstants.javaClassNameAttribute);
             PermissionData data = new PermissionData();
             data.setType(type);
@@ -409,7 +409,7 @@ public class UserDataManagerLdap implements UserDataManager {
         } catch (MissingParentException e) {
             throw new LdapRuntimeException(e);
         }
-        return LdapUtils.extractFirstValueOfAttribute(entries, SchemaConstants.cnAttribute);
+        return LdapUtils.extractAttributeEmptyCheck(entries, SchemaConstants.cnAttribute);
     }
 
     @Override
@@ -453,8 +453,8 @@ public class UserDataManagerLdap implements UserDataManager {
     private List<Object> extractUserAttributeValues(List<Entry> entries) {
         List<EntryElement> entryElements = new LinkedList<EntryElement>();
         for (Entry entry : entries) {
-            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
-            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+            String type = LdapUtils.extractAttributeEmptyCheck(entry, SchemaConstants.javaClassNameAttribute);
+            String value = LdapUtils.extractAttributeEmptyCheck(entry, SchemaConstants.stringAttribute);
             entryElements.add(new EntryElement(type, value));
         }
         return EntryUtils.convertAllEntryElementsToObject(entryElements);
@@ -521,7 +521,7 @@ public class UserDataManagerLdap implements UserDataManager {
         NoSuchCredentialsException {
         try {
             Entry entry = dao.lookup(SchemaConstants.userCredentials(username, credentials));
-            return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+            return LdapUtils.extractAttributeEmptyCheck(entry, SchemaConstants.stringAttribute);
         } catch (MissingParentException e) {
             throw new UserNotFoundException();
         } catch (NoSuchNodeException e) {

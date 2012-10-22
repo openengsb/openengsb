@@ -51,10 +51,9 @@ public final class LdapUtils {
     /**
      * Returns the value of attributeType from entry.
      * */
-    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye) {
-        //TODO: Nullpointerex ???!!!
-        //merge this with extractfirstValueOfAttribute!!!
-        Attribute attribute = entry.get(attributeTye);
+    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeType) {
+        //TODO maybe merge this with extractfirstValueOfAttribute?
+        Attribute attribute = entry.get(attributeType);
         if (attribute == null) {
             return null;
         }
@@ -65,21 +64,12 @@ public final class LdapUtils {
         }
     }
 
-    // TODO make more general method where it is optional if empty flag should
-    // be checked or not. so far this method always checks it although it may
-    // also be used for attributes where empty flag is not allowed.
     /**
      * Returns the value of the first occurence of attributeType from entry.
      * */
-    public static String extractFirstValueOfAttribute(Entry entry, String attributeTye) {
-
-        if (entry == null) {
-            return null;
-        }
-
-        Attribute attribute = entry.get(attributeTye);
+    public static String extractAttributeEmptyCheck(Entry entry, String attributeType) {
+        Attribute attribute = entry.get(attributeType);
         Attribute emptyFlagAttribute = entry.get(SchemaConstants.emptyFlagAttribute);
-
         boolean empty = false;
         try {
             if (attribute != null) {
@@ -96,11 +86,10 @@ public final class LdapUtils {
     /**
      * Returns the value of the first occurence of attributeType from each entry.
      * */
-    public static List<String> extractFirstValueOfAttribute(List<Entry> entries, String attributeType)
-        throws ObjectClassViolationException {
+    public static List<String> extractAttributeEmptyCheck(List<Entry> entries, String attributeType) {
         List<String> result = new LinkedList<String>();
         for (Entry e : entries) {
-            result.add(extractFirstValueOfAttribute(e, attributeType));
+            result.add(extractAttributeEmptyCheck(e, attributeType));
         }
         return result;
     }
@@ -108,12 +97,12 @@ public final class LdapUtils {
     /**
      * Returns the value of the first occurence of attributeType from each entry in the cursor.
      * */
-    public static List<String> extractFirstValueOfAttribute(SearchCursor cursor, String attributeType) {
+    public static List<String> extractAttributeEmptyCheck(SearchCursor cursor, String attributeType) {
         List<String> result = new LinkedList<String>();
         try {
             while (cursor.next()) {
                 Entry entry = cursor.getEntry();
-                result.add(extractFirstValueOfAttribute(entry, attributeType));
+                result.add(extractAttributeEmptyCheck(entry, attributeType));
             }
         } catch (Exception e) {
             throw new LdapRuntimeException(e);

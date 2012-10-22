@@ -65,7 +65,7 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerLdapTest.class);
 
     private UserDataManager userManager;
-    private static LdapDao dao;
+    private LdapDao dao;
     private String testUser1 = "testUser";
     private Dn dnTestUser1;
 
@@ -113,7 +113,7 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest {
         }
     }
 
-    private static void setupDao() {
+    private void setupDao() {
         dao = new LdapDao("localhost", 10389);
         dao.connect("uid=admin,ou=system", "secret");
     }
@@ -134,13 +134,9 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest {
             SchemaConstants.ouGlobalPermissionSets());
     }
 
-    @BeforeClass
-    public static void doBefore() throws Exception {
-        setupDao();
-    }
-
     @Before
     public void beforeTest() throws Exception {
+        setupDao();
         userManager = new UserDataManagerLdap();
         ((UserDataManagerLdap) userManager).setLdapDao(dao);
         dnTestUser1 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUser1));
@@ -150,10 +146,6 @@ public class UserDataManagerLdapTest extends AbstractOsgiMockServiceTest {
     @After
     public void afterTest() throws Exception {
         clearDIT();
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
         dao.disconnect();
     }
 
