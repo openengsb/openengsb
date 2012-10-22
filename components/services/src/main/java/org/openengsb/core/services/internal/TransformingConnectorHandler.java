@@ -19,9 +19,6 @@ package org.openengsb.core.services.internal;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.TransformationEngine;
 
 public class TransformingConnectorHandler<ConnectorType> implements InvocationHandler {
@@ -37,42 +34,11 @@ public class TransformingConnectorHandler<ConnectorType> implements InvocationHa
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Method targetMethod = TransformationUtils.findTargetMethod(method, target.getClass());
-        Class<?>[] targetTypes = targetMethod.getParameterTypes();
-        Object[] transformed = transformArguments(args, targetTypes);
-        Object result = targetMethod.invoke(target, transformed);
-        return transformObject(result, method.getReturnType());
-    }
-
-    private Object[] transformArguments(Object[] args, Class<?>[] targetTypes) {
-        if(args == null){
-            return null;
-        }
-        Object[] transformedArguments = new Object[args.length];
-        for (int i = 0; i < args.length; i++) {
-            transformedArguments[i] = transformObject(args[i], targetTypes[i]);
-        }
-        return transformedArguments;
-    }
-
-    private Object transformObject(Object arg, Class<?> targetType) {
-        if(arg == null){
-            return null;
-        }
-        if (!(isModel(arg) && isModel(targetType))) {
-            return arg;
-        }
-        ModelDescription sourceModel = TransformationUtils.retrieveModelDescriptionOf(arg.getClass());
-        ModelDescription targetModel = TransformationUtils.retrieveModelDescriptionOf(targetType);
-        return transformationEngine.performTransformation(sourceModel, targetModel, arg);
-    }
-
-    private boolean isModel(Class<?> targetType) {
-        return OpenEngSBModel.class.isAssignableFrom(targetType);
-    }
-
-    private boolean isModel(Object arg) {
-        return OpenEngSBModel.class.isInstance(arg);
+        TransformationHandler transformationHandler = TransformationHandler
+                .newTransformationHandler(transformationEngine, method, target.getClass());
+        Object[] transformedArgs = transformationHandler.transformArguments(args);
+        Object result = transformationHandler.getTargetMethod().invoke(target, transformedArgs);
+        return transformationHandler.transformResult(result);
     }
 
 }

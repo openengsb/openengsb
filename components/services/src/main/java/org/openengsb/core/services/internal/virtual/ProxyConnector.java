@@ -26,13 +26,14 @@ import java.util.Map;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.VirtualConnector;
-import org.openengsb.core.common.transformations.TransformationUtils;
 import org.openengsb.core.ekb.api.TransformationEngine;
+import org.openengsb.core.services.internal.TransformationHandler;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
@@ -63,18 +64,12 @@ public class ProxyConnector extends VirtualConnector {
         if (method.getDeclaringClass().equals(Connector.class)) {
             return this.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(this, args);
         }
-        Method targetMethod = method;
-        Object[] targetArgs = args;
-        if (connectorInterface != null) {
-            targetMethod = TransformationUtils.findTargetMethod(method, connectorInterface);
-            targetArgs = transformArguments(args, targetMethod.getParameterTypes());
-        }
-        List<Class<?>> paramList = Arrays.asList(targetMethod.getParameterTypes());
-        List<String> paramTypeNames = new ArrayList<String>();
-        for (Class<?> paramType : paramList) {
-            paramTypeNames.add(paramType.getName());
-        }
-
+        TransformationHandler transformationHandler = TransformationHandler
+                .newTransformationHandler(transformationEngine, method, connectorInterface);
+        transformationHandler.getTargetMethod();
+        Method targetMethod = transformationHandler.getTargetMethod();
+        Object[] targetArgs = transformationHandler.transformArguments(args);
+        List<String> paramTypeNames = getParameterTypenames(targetMethod);
         MethodCall methodCall = new MethodCall(targetMethod.getName(), targetArgs, metadata, paramTypeNames);
 
         if (!registration.isRegistered()) {
@@ -85,14 +80,11 @@ public class ProxyConnector extends VirtualConnector {
         }
 
         MethodResult callResult =
-            portUtil.sendMethodCallWithResult(registration.getPortId(), registration.getDestination(), methodCall);
+                portUtil.sendMethodCallWithResult(registration.getPortId(), registration.getDestination(), methodCall);
         switch (callResult.getType()) {
             case Object:
                 Object result = callResult.getArg();
-                if (connectorInterface == null) {
-                    return result;
-                }
-                return transformArgument(result, method.getReturnType());
+                return transformationHandler.transformResult(result);
             case Void:
                 return null;
             case Exception:
@@ -100,6 +92,15 @@ public class ProxyConnector extends VirtualConnector {
             default:
                 throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
+    }
+
+    private List<String> getParameterTypenames(Method targetMethod) {
+        List<Class<?>> paramList = Arrays.asList(targetMethod.getParameterTypes());
+        List<String> paramTypeNames = new ArrayList<String>();
+        for (Class<?> paramType : paramList) {
+            paramTypeNames.add(paramType.getName());
+        }
+        return paramTypeNames;
     }
 
     private Object[] transformArguments(Object[] args, Class<?>[] parameterTypes) {
@@ -117,8 +118,8 @@ public class ProxyConnector extends VirtualConnector {
         if (!(OpenEngSBModel.class.isInstance(arg) && OpenEngSBModel.class.isAssignableFrom(targetType))) {
             return arg;
         }
-        return transformationEngine.performTransformation(TransformationUtils.retrieveModelDescriptionOf(arg.getClass()),
-                TransformationUtils.retrieveModelDescriptionOf(targetType), arg);
+        return transformationEngine.performTransformation(new ModelDescription(arg.getClass()),
+                new ModelDescription(targetType), arg);
     }
 
     public final void setPortId(String id) {
