@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -46,10 +48,16 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.services.internal.model.NullConnector;
+import org.openengsb.core.services.internal.model.NullModel;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
+import org.openengsb.core.test.DummyModel;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
@@ -61,14 +69,25 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
+    private TransformationEngine transformationEngine;
 
     @Before
     public void setUp() throws Exception {
         registerMockedDomainProvider();
         registerMockedFactory();
         registerConfigPersistence();
-        serviceRegistrationManagerImpl = new ConnectorRegistrationManager();
-        serviceRegistrationManagerImpl.setBundleContext(bundleContext);
+        transformationEngine = mock(TransformationEngine.class);
+        when(transformationEngine
+                .performTransformation(any(ModelDescription.class), any(ModelDescription.class), any()))
+                .thenAnswer(new Answer<Object>() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        return invocation.getArguments()[2];
+                    }
+                });
+        MethodInterceptor securityInterceptor = new ForwardMethodInterceptor();
+        serviceRegistrationManagerImpl = new ConnectorRegistrationManager(bundleContext, transformationEngine,
+                securityInterceptor, new SecurityAttributeProviderImpl());
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         createServiceManager();
     }
@@ -272,6 +291,53 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.create(connectorDescription);
         verify(mock2, never()).setDomainId(anyString());
         verify(mock2, never()).setConnectorId(anyString());
+    }
+
+    @Test
+    public void testCreateConnectorWithToolModel_shouldCreateTransformingProxy() throws Exception {
+        NullConnector mockedConnector = mock(NullConnector.class);
+        when(factory.createNewInstance(anyString())).thenReturn(mockedConnector);
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+
+        serviceManager.create(connectorDescription);
+
+        NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
+        service.nullMethod();
+        verify(mockedConnector).nullMethod();
+    }
+
+    @Test
+    public void testCallTransformingProxy_shouldTransformArguments() throws Exception {
+        NullConnector mockedConnector = mock(NullConnector.class);
+        when(factory.createNewInstance(anyString())).thenReturn(mockedConnector);
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+
+        serviceManager.create(connectorDescription);
+
+        NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
+        DummyModel dummyModel = new DummyModel();
+        dummyModel.setId("42");
+        dummyModel.setValue("foo");
+
+        NullModel nullModel = new NullModel();
+        nullModel.setId(42);
+        nullModel.setValue("foo");
+        when(transformationEngine.performTransformation(
+                any(ModelDescription.class), any(ModelDescription.class), eq(dummyModel)))
+                .thenReturn(nullModel);
+
+        service.commitModel(dummyModel);
+        verify(mockedConnector).commitModel(nullModel);
     }
 
     private void registerMockedFactory() throws Exception {

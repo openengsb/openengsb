@@ -95,6 +95,11 @@ public class ProxyConnectorTest extends AbstractOpenEngSBTest {
         }
     }
 
+    @Test
+    public void createConnectorWithToolModelInterface_shouldTransformArguments() throws Exception {
+
+    }
+
     private interface Interface {
         String test(String id, String uri);
 

@@ -25,8 +25,8 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,15 +48,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.ForwardMethodInterceptor;
 import org.openengsb.core.services.internal.security.RootSubjectHolder;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
@@ -132,8 +136,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private ConnectorManagerImpl createServiceManagerMock() {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
-        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager();
-        registrationManager.setBundleContext(bundleContext);
+        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager(bundleContext,
+                mock(TransformationEngine.class), new ForwardMethodInterceptor(), new SecurityAttributeProviderImpl());
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
         serviceManagerImpl.setConfigPersistence(configPersistence);
@@ -212,7 +216,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.update(connectorFile);
         @SuppressWarnings("rawtypes")
         ArgumentCaptor<Map> attributeCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(factory, times(2)).applyAttributes(eq(createdService), attributeCaptor.capture());
+        verify(factory, times(2)).applyAttributes(any(Connector.class), attributeCaptor.capture());
         String value = (String) attributeCaptor.getAllValues().get(1).get("another");
         assertThat(value, is("foo"));
     }
