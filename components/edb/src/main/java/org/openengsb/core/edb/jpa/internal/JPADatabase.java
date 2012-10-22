@@ -49,7 +49,7 @@ public class JPADatabase implements EngineeringDatabaseService {
     private EntityManager entityManager;
     private JPADao dao;
     private AuthenticationContext authenticationContext;
-
+    private Boolean revisionCheckEnabled;
     private List<EDBErrorHook> errorHooks;
     private List<EDBPostCommitHook> postCommitHooks;
     private List<EDBPreCommitHook> preCommitHooks;
@@ -57,13 +57,15 @@ public class JPADatabase implements EngineeringDatabaseService {
 
     public JPADatabase(JPADao dao, AuthenticationContext authenticationContext,
             List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
-            List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks) {
+            List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks,
+            Boolean revisionCheckEnabled) {
         this.dao = dao;
         this.authenticationContext = authenticationContext;
         this.beginCommitHooks = beginCommitHooks;
         this.preCommitHooks = preCommitHooks;
         this.postCommitHooks = postCommitHooks;
         this.errorHooks = errorHooks;
+        this.revisionCheckEnabled = revisionCheckEnabled;
     }
 
     /**
@@ -89,7 +91,7 @@ public class JPADatabase implements EngineeringDatabaseService {
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit is already commitet.");
         }
-        if (commit.getParentRevisionNumber() != null
+        if (revisionCheckEnabled && commit.getParentRevisionNumber() != null
                 && !commit.getParentRevisionNumber().equals(getCurrentRevisionNumber())) {
             throw new EDBException("EDBCommit do not have the correct head revision number.");
         }

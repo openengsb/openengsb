@@ -61,7 +61,7 @@ public class AbstractEDBTest {
         EDBPreCommitHook preCommitHook = new CheckPreCommitHook(dao);
         ContextHolder.get().setCurrentContextId("testcontext");
 
-        db = new JPADatabase(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null);
+        db = new JPADatabase(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true);
         db.setEntityManager(em);
         db.open();
     }
