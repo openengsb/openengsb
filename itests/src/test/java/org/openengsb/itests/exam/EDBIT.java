@@ -96,7 +96,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testInsert_shouldWork() throws Exception {
-        EDBCommit commit = edbService.createCommit("test", "test");
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
         EDBObject testObject = new EDBObject("testobject");
         testObject.putEDBObjectEntry("testkey", "testvalue");
         commit.insert(testObject);
@@ -106,14 +106,14 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test(expected = EDBException.class)
     public void testDoubleCommit_shouldThrowException() throws Exception {
-        EDBCommit commit = edbService.createCommit("test", "test");
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
         edbService.commit(commit);
         edbService.commit(commit);
     }
 
     @Test
     public void testRetrieveObject_shouldWork() throws Exception {
-        EDBCommit commit = edbService.createCommit("test", "test");
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
         EDBObject testObject = new EDBObject("newtestobject");
         testObject.putEDBObjectEntry("newtestkey", "newtestvalue");
         commit.insert(testObject);
@@ -126,7 +126,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testQueryForObject_shouldWork() throws Exception {
-        EDBCommit commit = edbService.createCommit("test", "test");
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
         EDBObject testObject = new EDBObject("newtestobject1");
         testObject.putEDBObjectEntry("newtestkey1", "newtestvalue1");
         commit.insert(testObject);
@@ -140,14 +140,14 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test(expected = EDBException.class)
     public void testConflictDetection_shouldThrowException() throws Exception {
-        EDBCommit commit = edbService.createCommit("test", "test");
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
         EDBObject testObject = new EDBObject("newtestobject2");
         testObject.putEDBObjectEntry("newtestkey2", "newtestvalue2");
         commit.insert(testObject);
 
         edbService.commit(commit);
 
-        commit = edbService.createCommit("test", "test");
+        commit = edbService.createEDBCommit(null, null, null);
 
         EDBObject obj = edbService.getObject("newtestobject2");
         obj.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(0));

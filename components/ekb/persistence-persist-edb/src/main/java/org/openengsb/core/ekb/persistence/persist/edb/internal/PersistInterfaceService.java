@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 import java.util.List;
 
+import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -95,7 +96,7 @@ public class PersistInterfaceService implements PersistInterface {
         }
         if (persist) {
             ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
-            performPersisting(converted);
+            performPersisting(converted, commit);
         }
         for (EKBPostCommitHook hook : postCommitHooks) {
             try {
@@ -117,9 +118,12 @@ public class PersistInterfaceService implements PersistInterface {
     /**
      * Performs the persisting of the models into the EDB.
      */
-    private void performPersisting(ConvertedCommit commit) throws EKBException {
+    private void performPersisting(ConvertedCommit commit, EKBCommit source) throws EKBException {
         try {
-            edbService.commitEDBObjects(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+            EDBCommit ci = edbService.createEDBCommit(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+            edbService.commit(ci);
+            source.setRevisionNumber(ci.getRevisionNumber());
+            source.setParentRevisionNumber(ci.getParentRevisionNumber());
         } catch (EDBException e) {
             throw new EKBException("Error while commiting EKBCommit", e);
         }
