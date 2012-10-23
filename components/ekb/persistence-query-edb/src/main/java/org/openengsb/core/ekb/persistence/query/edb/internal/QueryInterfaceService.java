@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -111,6 +112,11 @@ public class QueryInterfaceService implements QueryInterface {
         Long now = System.currentTimeMillis();
         Map<String, Object> map = new HashMap<String, Object>();
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
+    }
+    
+    @Override
+    public UUID getCurrentRevisionNumber() {
+        return edbService.getCurrentRevisionNumber();
     }
 
     /**
