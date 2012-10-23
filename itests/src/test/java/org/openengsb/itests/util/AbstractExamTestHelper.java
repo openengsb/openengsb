@@ -59,6 +59,8 @@ import org.openengsb.core.workflow.drools.OsgiHelper;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.TestProbeBuilder;
+import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -307,11 +309,18 @@ public abstract class AbstractExamTestHelper {
         getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
 
-    public static Option[] baseConfiguration() throws Exception {
+    @ProbeBuilder
+    public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) throws IOException {
         InputStream stream = ClassLoader.getSystemResourceAsStream("META-INF/maven/dependencies.properties");
         Properties depProperties = new Properties();
         depProperties.load(stream);
-        projectVersion = (String) depProperties.get("org.openengsb.domain/org.openengsb.domain.example/version");
+        projectVersion = ((String) depProperties.get("org.openengsb.domain/org.openengsb.domain.example/version"))
+                .replace("-",".");
+        probe.setHeader("Project-Version", projectVersion);
+        return probe;
+    }
+
+    public static Option[] baseConfiguration() throws Exception {
         String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
         boolean hold = true;
@@ -382,7 +391,8 @@ public abstract class AbstractExamTestHelper {
         return LogLevel.WARN;
     }
 
-    protected String getProjectVersion() throws IOException {
-        return projectVersion;
+
+    protected String getOsgiProjectVersion(){
+        return bundleContext.getBundle().getHeaders().get("Project-Version");
     }
 }
