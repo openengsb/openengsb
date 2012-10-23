@@ -177,10 +177,7 @@ public class ToolChooserPage extends WebPage {
         viewId = getParameterFromMap(XLinkConstants.XLINK_VIEW_KEY);
         identifier = getParameterFromMap(XLinkConstants.XLINK_IDENTIFIER_KEY);
         expirationDate = XLinkUtils.dateStringToCalendar(getParameterFromMap(XLinkConstants.XLINK_EXPIRATIONDATE_KEY));
-        hostId = req.getHeader(XLinkConstants.XLINK_HOST_HEADERNAME); 
-        if (hostId.contains(":")) {
-            hostId = hostId.substring(0, hostId.indexOf(":"));
-        }
+        hostId = req.getRemoteAddr();
         connectorId = getParameterFromMap(XLinkConstants.XLINK_CONNECTORID_KEY);
     }    
 

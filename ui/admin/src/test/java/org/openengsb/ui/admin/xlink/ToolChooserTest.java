@@ -145,7 +145,7 @@ public class ToolChooserTest extends AbstractUITest {
     }   
     
     public void mockRegistrationOfTools() throws Exception {
-        String hostId = "localhost";
+        String hostId = "127.0.0.1";
                 
         String toolNameA = "Tool A";        
         String connectorIdA = "test1+test1+test1";
@@ -212,10 +212,6 @@ public class ToolChooserTest extends AbstractUITest {
         params.add(XLinkConstants.XLINK_IDENTIFIER_KEY, identifyingString);    
     }    
     
-    private void setupNessecaryHeader() {
-        tester.addRequestHeader(XLinkConstants.XLINK_HOST_HEADERNAME, "localhost");
-    }
-    
     private String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, futureDays);
@@ -228,7 +224,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(ToolChooserPage.class);
@@ -241,7 +236,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_VERSION_KEY);
         
@@ -255,7 +249,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_EXPIRATIONDATE_KEY);
         
@@ -269,7 +262,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_MODELCLASS_KEY);
         
@@ -283,7 +275,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_CONTEXTID_KEY);
         
@@ -297,7 +288,6 @@ public class ToolChooserTest extends AbstractUITest {
         PageParameters params = new PageParameters();
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_IDENTIFIER_KEY);
         
@@ -312,7 +302,6 @@ public class ToolChooserTest extends AbstractUITest {
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
         setupLocalSwitchXLinkParams(params);
-        setupNessecaryHeader();
         
         tester.startPage(ToolChooserPage.class, params);
         tester.assertRenderedPage(MachineResponsePage.class);
@@ -326,7 +315,6 @@ public class ToolChooserTest extends AbstractUITest {
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
         setupLocalSwitchXLinkParams(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_CONNECTORID_KEY);
         params.add(XLinkConstants.XLINK_CONNECTORID_KEY, "test3+test3+test3");
@@ -343,7 +331,6 @@ public class ToolChooserTest extends AbstractUITest {
         setupCommonXLinkParams(params);
         setupIdentfierParamsForExampleOOModel(params);
         setupLocalSwitchXLinkParams(params);
-        setupNessecaryHeader();
         
         params.remove(XLinkConstants.XLINK_VIEW_KEY);
         params.add(XLinkConstants.XLINK_VIEW_KEY, "exampleViewId_wrong");   

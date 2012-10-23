@@ -23,7 +23,6 @@ import java.net.URLEncoder;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -66,7 +65,6 @@ import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
-import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -298,7 +296,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_ReturnsTemplate() throws DomainNotLinkableException {
+    public void testConnectToXLink_ReturnsTemplate() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -310,7 +308,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test
-    public void testConnectToXLink_TemplateContainsCorrectIdentifier() throws DomainNotLinkableException {
+    public void testConnectToXLink_TemplateContainsCorrectIdentifier() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -330,7 +328,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }    
     
     @Test
-    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() throws DomainNotLinkableException {
+    public void testConnectToXLink_TemplateViewToModels_ContainsAllViews() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -351,7 +349,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     } 
    
     @Test
-    public void testGetXLinkRegistration_returnsConnectedRegistration() throws DomainNotLinkableException {
+    public void testGetXLinkRegistration_returnsConnectedRegistration() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -362,7 +360,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() throws DomainNotLinkableException {
+    public void testGetXLinkRegistration_returnsToolRegistrationGlobals() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -375,7 +373,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }     
     
     @Test
-    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() throws DomainNotLinkableException {
+    public void testGetXLinkRegistration_returnsToolRegistrationTemplate() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -398,7 +396,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }         
     
     @Test
-    public void testDisconnectFromXLink_isEmptyAfterDisconnect() throws DomainNotLinkableException {
+    public void testDisconnectFromXLink_isEmptyAfterDisconnect() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -410,7 +408,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }      
     
     @Test
-    public void testConnectToXLink_connectorIsNotfied() throws DomainNotLinkableException {
+    public void testConnectToXLink_connectorIsNotfied() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -428,8 +426,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testConnectToXLink_NoNotification_registrationIsFromDifferentHost() 
-            throws DomainNotLinkableException {
+    public void testConnectToXLink_NoNotification_registrationIsFromDifferentHost() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -446,7 +443,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testDisconnectFromXLink_connectorIsNotfied() throws DomainNotLinkableException {        
+    public void testDisconnectFromXLink_connectorIsNotfied() {        
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -468,8 +465,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
 
     @Test
-    public void testDisconnectFromXLink_NoNotification_deregistrationIsFromDifferentHost() 
-            throws DomainNotLinkableException {        
+    public void testDisconnectFromXLink_NoNotification_deregistrationIsFromDifferentHost() {        
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -488,8 +484,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }   
     
     @Test(expected = DomainNotLinkableException.class)
-    public void testConnectorValidation_connectorIsNullAndFails() 
-            throws DomainNotLinkableException {
+    public void testConnectorValidation_connectorIsNullAndFails() {
         String connectorId = "test3+test3+test3";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
@@ -499,8 +494,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
     
     @Test(expected = DomainNotLinkableException.class)
-    public void testConnectorValidation_connectorIsNotLinkableAndFails() 
-            throws DomainNotLinkableException {
+    public void testConnectorValidation_connectorIsNotLinkableAndFails() {
         String connectorId = "test4+test4+test4";
         String hostId = "127.0.0.1";
         String toolName = "myTool";

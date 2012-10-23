@@ -326,8 +326,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     
     @Override
     public XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
-            String toolName, ModelToViewsTuple[] modelsToViewsArray) 
-        throws DomainNotLinkableException {
+            String toolName, ModelToViewsTuple[] modelsToViewsArray) {
         checkForConnectorLinkable(connectorIpToLink);
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
         Map<ModelDescription, XLinkConnectorView[]> convertedModelsToViews 
