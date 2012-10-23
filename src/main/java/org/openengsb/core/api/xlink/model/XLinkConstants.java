@@ -49,8 +49,9 @@ public final class XLinkConstants {
     /** Keyname of the ViewId, GET-Parameter in XLinks, only mandatory in local switching */
     public static final String XLINK_VIEW_KEY = "viewId";
 
-    /** Headername of the HostId (e.g. the IP), used during the registration for XLink. */
-    public static final String XLINK_HOST_HEADERNAME = "Host";
+    /** Name of the HostId (currently the IP), used to for identification
+     * during the registration for XLink and the tool-chooser webpage. */
+    public static final String XLINK_HOST_HEADERNAME = "IP";
     
     /**Format of the ExpirationDate*/
     public static final String DATEFORMAT = "yyyyMMddkkmmss";

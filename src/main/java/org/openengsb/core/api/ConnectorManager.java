@@ -107,8 +107,8 @@ public interface ConnectorManager {
     
     /**
      * Registers the given connector for XLink. 
-     * Throws an exception if, the supplied connector was not found or does not 
-     * belong to a linkable domain.
+     * Throws an 'DomainNotLinkableException' exception if, the supplied connector was 
+     * not found or does not belong to a linkable domain.
      * <br/><br/>
      * The connector must provide an array of 'OpenEngSBModel/View' tuples, which define
      * the models it accepts for a given view. 
@@ -128,12 +128,12 @@ public interface ConnectorManager {
      * Note that this function does not create a Connector, 
      * it must be called with an already registered Connector. 
      * 
+     * @see org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException
      * @see org.openengsb.core.api.xlink.model.XLinkUrlBlueprint
      * @see org.openengsb.core.services.xlink.XLinkDemonstrationUtils
      */    
     XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
-            String toolName, ModelToViewsTuple[] modelsToViews) 
-            throws DomainNotLinkableException;
+            String toolName, ModelToViewsTuple[] modelsToViews);
     
     /**
      * Unregisters the given Connector from XLink.

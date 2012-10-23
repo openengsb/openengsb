@@ -21,7 +21,7 @@ package org.openengsb.core.api.xlink.exceptions;
  * was not found or does not belong to a linkable domain.
  */
 @SuppressWarnings("serial")
-public class DomainNotLinkableException extends Exception {
+public class DomainNotLinkableException extends RuntimeException {
 
     public DomainNotLinkableException() {
     }
