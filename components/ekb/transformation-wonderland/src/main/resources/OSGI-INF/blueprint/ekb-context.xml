@@ -203,7 +203,7 @@
     <argument type="int" value="32" />
     <argument type="org.osgi.util.tracker.BundleTrackerCustomizer">
       <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationBundleTrackerCustomizer">
-        <property name="transformationEngine" ref="transformationEngineService" />
+        <argument type="org.openengsb.core.ekb.api.TransformationEngine" ref="transformationEngineService" />
       </bean>
     </argument>
   </bean>

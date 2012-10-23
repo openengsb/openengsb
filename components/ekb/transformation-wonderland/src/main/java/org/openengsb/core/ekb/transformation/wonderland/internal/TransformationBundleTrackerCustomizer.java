@@ -31,20 +31,28 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * {@link BundleTrackerCustomizer} that scans new bundles for .transformation-files and registeres them to the
+ * {@link TransformationEngine} and removes them again, when the bundle is removed.
+ */
 public class TransformationBundleTrackerCustomizer implements BundleTrackerCustomizer<List<TransformationDescription>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationBundleTrackerCustomizer.class);
 
     private TransformationEngine transformationEngine;
 
+    public TransformationBundleTrackerCustomizer(TransformationEngine transformationEngine) {
+        this.transformationEngine = transformationEngine;
+    }
+
     @Override
     public List<TransformationDescription> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
         Enumeration<URL> entries = bundle.findEntries("/", "*.transformation", true);
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
-        if(entries == null){
+        if (entries == null) {
             return null;
         }
-        while(entries.hasMoreElements()){
+        while (entries.hasMoreElements()) {
             URL entry = entries.nextElement();
             List<TransformationDescription> descriptionList;
             try {
@@ -60,18 +68,17 @@ public class TransformationBundleTrackerCustomizer implements BundleTrackerCusto
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<TransformationDescription> transformationDescriptions) {
+    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent,
+            List<TransformationDescription> transformationDescriptions) {
         // do nothing
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, List<TransformationDescription> transformationDescriptions) {
-        for(TransformationDescription desc : transformationDescriptions){
+    public void removedBundle(Bundle bundle, BundleEvent bundleEvent,
+            List<TransformationDescription> transformationDescriptions) {
+        for (TransformationDescription desc : transformationDescriptions) {
             transformationEngine.deleteDescription(desc);
         }
     }
 
-    public void setTransformationEngine(TransformationEngine transformationEngine) {
-        this.transformationEngine = transformationEngine;
-    }
 }
