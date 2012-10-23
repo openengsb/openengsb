@@ -20,6 +20,7 @@ package org.openengsb.core.ekb.api;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
@@ -33,6 +34,8 @@ public class EKBCommit {
     private String domainId;
     private String connectorId;
     private String instanceId;
+    private UUID revisionNumber;
+    private UUID parentRevisionNumber;
 
     public EKBCommit() {
         inserts = new ArrayList<OpenEngSBModel>();
@@ -191,5 +194,21 @@ public class EKBCommit {
         if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             throw new IllegalArgumentException("Only models can be committed");
         }
+    }
+    
+    public UUID getParentRevisionNumber() {
+        return parentRevisionNumber;
+    }
+    
+    public void setParentRevisionNumber(UUID parentRevisionNumber) {
+        this.parentRevisionNumber = parentRevisionNumber;
+    }
+
+    public UUID getRevisionNumber() {
+        return revisionNumber;
+    }
+
+    public void setRevisionNumber(UUID revisionNumber) {
+        this.revisionNumber = revisionNumber;
     }
 }
