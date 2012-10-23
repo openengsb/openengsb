@@ -98,8 +98,6 @@ public abstract class AbstractExamTestHelper {
     @Inject
     private AuthenticationContext applicationContext;
 
-    private static String projectVersion;
-
     @Before
     public void waitForRequiredTasks() throws Exception {
         waitForUserDataInitializer();
@@ -314,8 +312,9 @@ public abstract class AbstractExamTestHelper {
         InputStream stream = ClassLoader.getSystemResourceAsStream("META-INF/maven/dependencies.properties");
         Properties depProperties = new Properties();
         depProperties.load(stream);
-        projectVersion = ((String) depProperties.get("org.openengsb.domain/org.openengsb.domain.example/version"))
-                .replace("-",".");
+        String projectVersion = ((String) depProperties
+                .get("org.openengsb.domain/org.openengsb.domain.example/version"))
+                .replace("-", ".");
         probe.setHeader("Project-Version", projectVersion);
         return probe;
     }

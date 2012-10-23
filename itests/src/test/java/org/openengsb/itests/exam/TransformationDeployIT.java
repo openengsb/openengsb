@@ -66,9 +66,9 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         InputStream transformationInputStream = getClass().getClassLoader()
-                .getResourceAsStream("transformations/testDescription.transformation.txt");
+                .getResourceAsStream("test-transformations/testDescription.transformation");
         providerTinyBundle = bundle()
-                .add("test.transformation", transformationInputStream)
+                .add("META-INF/transformations/test.transformation", transformationInputStream)
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.transformation.provider")
                 .set(Constants.BUNDLE_VERSION, "1.0.0");
     }

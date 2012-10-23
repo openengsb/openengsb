@@ -116,7 +116,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
         ExampleRequestModel modelB = transformResponseToRequest(modelA);
 
-        transformationEngine.deleteDescriptionsByFile("testDescription.transformation.txt");
+        transformationEngine.deleteDescriptionsByFile("testDescription.transformation");
         assertThat(modelB.getName(), is("test"));
     }
 
@@ -194,14 +194,14 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         authenticate("admin", "password");
         workflowService.processEvent(new LogEvent());
 
-        transformationEngine.deleteDescriptionsByFile("testDescription.transformation.txt");
+        transformationEngine.deleteDescriptionsByFile("testDescription.transformation");
         ExampleRequestModel result = exampleMock.getModel();
         assertThat(result.getName(), is("test"));
     }
 
     private void loadDescriptionsFromFile() throws Exception {
         InputStream stream =
-            getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation.txt");
+            getClass().getClassLoader().getResourceAsStream("test-transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
         for (TransformationDescription description : descriptions) {
             description.getSourceModel().setVersion(exampleDomainVersion);

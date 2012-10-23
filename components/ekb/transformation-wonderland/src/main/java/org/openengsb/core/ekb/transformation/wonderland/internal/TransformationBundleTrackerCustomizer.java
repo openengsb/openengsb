@@ -47,7 +47,7 @@ public class TransformationBundleTrackerCustomizer implements BundleTrackerCusto
 
     @Override
     public List<TransformationDescription> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
-        Enumeration<URL> entries = bundle.findEntries("/", "*.transformation", true);
+        Enumeration<URL> entries = bundle.findEntries("/META-INF/transformations/", "*.transformation", true);
         List<TransformationDescription> result = new ArrayList<TransformationDescription>();
         if (entries == null) {
             return null;
