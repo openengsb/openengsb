@@ -64,8 +64,8 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        InputStream transformationInputStream =
-                getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation.txt");
+        InputStream transformationInputStream = getClass().getClassLoader()
+                .getResourceAsStream("transformations/testDescription.transformation.txt");
         providerTinyBundle = bundle()
                 .add("test.transformation", transformationInputStream)
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.transformation.provider")
@@ -74,8 +74,8 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
 
     @Test
     public void testInstallBundleWithTransformations_shouldRegisterTransformations() throws Exception {
-        Bundle providerBundle =
-                getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
+        Bundle providerBundle = getBundleContext()
+                .installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
         providerBundle.start();
         assertTrue("transformation is not possible", transformationEngine.isTransformationPossible(
                 new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
@@ -85,28 +85,30 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
 
     @Test
     public void testRemoveBundleWithTransformations_shouldUnregisterTransformations() throws Exception {
-        Bundle providerBundle =
-                getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
+        Bundle providerBundle = getBundleContext()
+                .installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
         providerBundle.start();
         providerBundle.stop();
         providerBundle.uninstall();
-        assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
-                new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
-                new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
+        assertFalse("transformation still possible. It has not been removed",
+                transformationEngine.isTransformationPossible(
+                        new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
+                        new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
         );
     }
 
     @Test
     public void testModifyBundleWithTransformations_shouldUnregisterTransformations() throws Exception {
-        Bundle providerBundle =
-                getBundleContext().installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
+        Bundle providerBundle = getBundleContext()
+                .installBundle("test://testlocation/test.provider.transformation.jar", providerTinyBundle.build());
         providerBundle.start();
         providerTinyBundle.removeResource("test.transformation");
         providerBundle.update(providerTinyBundle.build());
         providerBundle.start();
-        assertFalse("transformation still possible. It has not been removed", transformationEngine.isTransformationPossible(
-                new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
-                new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
+        assertFalse("transformation still possible. It has not been removed",
+                transformationEngine.isTransformationPossible(
+                        new ModelDescription(ExampleResponseModel.class.getName(), getProjectVersion()),
+                        new ModelDescription(ExampleRequestModel.class.getName(), getProjectVersion()))
         );
     }
 

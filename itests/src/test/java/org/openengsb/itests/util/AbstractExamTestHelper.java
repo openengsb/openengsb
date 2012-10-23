@@ -93,7 +93,7 @@ public abstract class AbstractExamTestHelper {
     @Inject
     private BundleContext bundleContext;
 
-    // @Inject
+    @Inject
     private AuthenticationContext applicationContext;
 
     private static String projectVersion;
