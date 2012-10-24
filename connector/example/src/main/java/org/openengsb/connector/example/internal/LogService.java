@@ -17,7 +17,6 @@
 
 package org.openengsb.connector.example.internal;
 
-
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.example.ExampleDomain;

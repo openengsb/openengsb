@@ -61,5 +61,4 @@ public class ExampleConnector extends AbstractOpenEngSBConnectorService implemen
         return response;
     }
 
-
 }

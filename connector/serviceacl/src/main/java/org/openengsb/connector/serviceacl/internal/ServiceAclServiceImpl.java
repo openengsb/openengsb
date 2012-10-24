@@ -212,6 +212,4 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
     public void setAttributeProviders(List<SecurityAttributeProvider> attributeProviders) {
         this.attributeProviders = attributeProviders;
     }
-
-
 }

@@ -17,7 +17,6 @@
 
 package org.openengsb.connector.usernamepassword.internal;
 
-
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.AliveState;
@@ -71,6 +70,5 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
     }
-
 
 }

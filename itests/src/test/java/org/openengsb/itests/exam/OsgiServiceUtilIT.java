@@ -94,7 +94,6 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
-
     }
 
     @Test

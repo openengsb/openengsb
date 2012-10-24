@@ -74,7 +74,6 @@ public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrat
         public AliveState getAliveState() {
             return AliveState.ONLINE;
         }
-
     }
 
     @Override
