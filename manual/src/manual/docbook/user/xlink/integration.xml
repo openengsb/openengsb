@@ -34,6 +34,7 @@
         <title>Registration</title>
         <para>For the XLink-registration of connectors (e.g. the tools) the following functions in
             the class <emphasis role="bold">ConnectorManager</emphasis> are provided.</para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->
         <!--<xi:include href="../../../../../../target/docbook/snippets/ConnectorManager.xml"/>-->
         <ns:para>Every connector announces it´s participation in XLinking when he calls the
             "connect" function. After the registration a XLinkTemplate is returned to the connector.
@@ -44,8 +45,10 @@
         <ns:para>After the registration, the tools receive an XLinkTemplate.</ns:para>
         <ns:para>The attributes of the XLinkTemplate, which is a simple DTO, are the
             following. <anchor xml:id="implementation.xlinkemplate.attributes"/></ns:para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->    
         <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkTemplate.xml"/>-->
         <ns:para>The attributes of the class XLinkRegisteredTools are the following.</ns:para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->
         <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkRegisteredTool.xml"/>-->
     </section>
     <section xml:id="implementation.xlinkprepare">
@@ -73,6 +76,7 @@
         <ns:title>Open Potential Matches in Tools</ns:title>
         <ns:para>Matches in Tools are opened via the following function in the <emphasis role="bold"
             >LinkableDomain</emphasis> interface.</ns:para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->    
         <!--<xi:include href="../../../../../../target/docbook/snippets/LinkableDomainOpenLinks.xml"/>-->
     </section>
     <section xml:id="implementation.localswitch.information">
@@ -84,6 +88,7 @@
                 >LinkableDomain</emphasis>, transferes this UpdateInformation as an Event to the
             Connector. In this way every connector holds a correct list of all running tools on his
             local machine, that participate in XLinking.</ns:para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->    
         <!--<xi:include href="../../../../../../target/docbook/snippets/LinkableDomainUpdateEvent.xml"/>-->
     </section>    
     <section xml:id="implementation.localswitch.creation">
@@ -103,6 +108,7 @@
         <ns:para>This configurations must be provided by the OpenEngSB</ns:para>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestConfigsProvidedByOpenEngSB.xml"/>
         <ns:para>This are the Constants that are used in the Functions above.</ns:para>
+        <!-- TODO [OPENENGSB-3400] uncomment the references to the code-snippet when openengsb-api provides them -->
         <!--<xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsKeyDefs.xml"/>-->
     </section>   
     <section xml:id="implementation.httpservlet">

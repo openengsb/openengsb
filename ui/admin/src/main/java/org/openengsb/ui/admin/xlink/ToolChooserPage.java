@@ -50,13 +50,13 @@ import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.exceptions.OpenXLinkException;
-import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
-import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkConstants;
-import org.openengsb.core.util.ModelUtils;
+import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
+import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.services.xlink.XLinkUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 

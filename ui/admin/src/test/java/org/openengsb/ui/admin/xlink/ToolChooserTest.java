@@ -56,11 +56,11 @@ import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.security.service.UserExistsException;
-import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
-import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkConstants;
+import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
+import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.security.model.ShiroContext;
@@ -131,7 +131,7 @@ public class ToolChooserTest extends AbstractUITest {
     private void customMockContext() throws UserExistsException {
         ((ConnectorManagerImpl) serviceManager).setUtilsService(mockedServiceUtils);
         xLinkMock = new XLinkMockImpl(mockedServiceUtils, new ShiroContext());
-        toolChooserLogic = new ToolChooserLogicImpl((ConnectorManagerImpl)serviceManager);
+        toolChooserLogic = new ToolChooserLogicImpl((ConnectorManagerImpl) serviceManager);
         customContext = new ApplicationContextMock();
         customContext.putBean("osgiUtilsService", mockedServiceUtils);
         customContext.putBean("toolChooserLogic", toolChooserLogic);     

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,19 +42,18 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.services.xlink.XLinkUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.LinkedList;
 
 public class ConnectorManagerImpl implements XLinkConnectorManager {
 
@@ -357,7 +357,8 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         for (XLinkConnectorRegistration currentRegistration : hostRegistrations) {
             if (!currentRegistration.getConnectorId().equals(filterKey.getConnectorIpToLink())) {
                 XLinkConnector[] registeredTools = addConnectorFromArray(currentRegistration
-                    .getxLinkTemplate().getRegisteredTools(), readXLinkConnectorsFromRegistry(newRegistration));            
+                    .getxLinkTemplate().getRegisteredTools(), 
+                    readXLinkConnectorsFromRegistry(newRegistration));            
                 currentRegistration.getxLinkTemplate().setRegisteredTools(registeredTools);                
                 Object serviceObject 
                     = utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
@@ -413,10 +414,10 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     }
     
     private XLinkConnector[] removeConnectorFromArray(XLinkConnector[] currentArray, 
-            XLinkConnector elementToRemove){
+            XLinkConnector elementToRemove) {
         List<XLinkConnector> arrayAsList = new LinkedList<XLinkConnector>();
         for (XLinkConnector currentItem : currentArray) {
-            if(!elementToRemove.equals(currentItem)){
+            if (!elementToRemove.equals(currentItem)) {
                 arrayAsList.add(currentItem);
             }
         }
@@ -424,7 +425,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     }
     
     private XLinkConnector[] addConnectorFromArray(XLinkConnector[] currentArray, 
-            XLinkConnector elementToAdd){
+            XLinkConnector elementToAdd) {
         List<XLinkConnector> arrayAsList = new LinkedList<XLinkConnector>();
         for (XLinkConnector currentItem : currentArray) {
             arrayAsList.add(currentItem);
@@ -461,7 +462,8 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                     ? (other.connectorIpToLink != null) : !this.connectorIpToLink.equals(other.connectorIpToLink)) {
                 return false;
             }
-            if ((this.remoteHostIp == null) ? (other.remoteHostIp != null) : !this.remoteHostIp.equals(other.remoteHostIp)) {
+            if ((this.remoteHostIp == null) 
+                    ? (other.remoteHostIp != null) : !this.remoteHostIp.equals(other.remoteHostIp)) {
                 return false;
             }
             return true;

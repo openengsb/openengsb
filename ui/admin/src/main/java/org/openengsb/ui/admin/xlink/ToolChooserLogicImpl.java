@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
-import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
+import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
 import org.openengsb.core.services.xlink.XLinkUtils;
 
 /**

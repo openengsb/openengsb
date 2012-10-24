@@ -61,22 +61,18 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-<<<<<<< HEAD
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
-import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
-import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
-=======
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.model.NullConnector;
 import org.openengsb.core.services.internal.model.NullModel;
->>>>>>> master
+import org.openengsb.core.services.internal.xlink.ExampleObjectOrientedModel;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.DummyModel;
@@ -92,12 +88,11 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
-<<<<<<< HEAD
+    
     private LinkableDomain testConnector;
     private ArgumentCaptor<XLinkConnector[]> eventArgument;
-=======
+    
     private TransformationEngine transformationEngine;
->>>>>>> master
 
     @Before
     public void setUp() throws Exception {
@@ -370,7 +365,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testGetXLinkRegistration_isEmptyOnInitial() {
         String hostId = "127.0.0.1";
-        assertTrue(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
+        assertTrue(((XLinkConnectorManager) serviceManager).getXLinkRegistration(hostId).isEmpty());
     } 
    
     @Test
@@ -381,7 +376,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertFalse(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
+        assertFalse(((XLinkConnectorManager) serviceManager).getXLinkRegistration(hostId).isEmpty());
     }     
     
     @Test
@@ -392,9 +387,12 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelToViewsTuple[] modelsToViews
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
-        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
-        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
-        assertThat(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
+        assertThat(((XLinkConnectorManager) serviceManager)
+            .getXLinkRegistration(hostId).get(0).getHostId(), is(hostId));
+        assertThat(((XLinkConnectorManager) serviceManager)
+            .getXLinkRegistration(hostId).get(0).getConnectorId(), is(connectorId));
+        assertThat(((XLinkConnectorManager) serviceManager)
+            .getXLinkRegistration(hostId).get(0).getToolName(), is(toolName));
     }     
     
     @Test
@@ -429,7 +427,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.disconnectFromXLink(connectorId, hostId);
-        assertTrue(((XLinkConnectorManager)serviceManager).getXLinkRegistration(hostId).isEmpty());
+        assertTrue(((XLinkConnectorManager) serviceManager).getXLinkRegistration(hostId).isEmpty());
     }      
     
     @Test
@@ -464,7 +462,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             = createModelViewsMap(toolName2);
         serviceManager.connectToXLink(connectorId, hostId, toolName, modelsToViews);
         serviceManager.connectToXLink(connectorId2, hostId2, toolName2, modelsToViews2);
-        verify(testConnector,times(0)).onRegisteredToolsChanged(any(XLinkConnector[].class));
+        verify(testConnector, times(0)).onRegisteredToolsChanged(any(XLinkConnector[].class));
     }
 
     @Test

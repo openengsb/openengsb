@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,8 +42,8 @@ import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.api.xlink.model.XLinkUrlKeyNames;
-import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
+import org.openengsb.core.util.ModelUtils;
 import org.osgi.framework.Version;
 
 /**
