@@ -116,6 +116,7 @@
     <bundle start-level='20'>mvn:org.drools/knowledge-internal-api/${drools.version}</bundle>
     <bundle start-level='20'>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
     <bundle start-level='20'>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+    <bundle start-level='20'>mvn:org.jbpm/jbpm-bpmn2/${jbpm.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.wrapped/com.google.protobuf/${protobuf.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.openengsb.wrapped/cdi-api/${cdi-api.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:joda-time/joda-time/${joda.version}</bundle>

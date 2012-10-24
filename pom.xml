@@ -150,8 +150,8 @@
     <woodstox.version>4.1.2</woodstox.version>
     <neethi.version>3.0.1</neethi.version>
     <javax.mail.version>1.4.4</javax.mail.version>
-    <drools.version>5.5.0-SNAPSHOT</drools.version>
-    <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
+    <drools.version>5.5.0.CR1</drools.version>
+    <jbpm.version>5.4.0.CR1</jbpm.version>
     <jasypt.version>1.6_1</jasypt.version>
     <mvel2.version>2.1.3.Final</mvel2.version>
     <fastinfoset.version>1.2.7_4</fastinfoset.version>
