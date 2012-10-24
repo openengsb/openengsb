@@ -320,6 +320,20 @@
     </details>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.example/${project.version}</bundle>
   </feature>
+  
+  <feature name="openengsb-domain-oosourcecode" version="${project.version}" description="OpenEngSB OOSourceCode Domain">
+    <details>
+      TBW
+    </details>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.OOSourceCode/${project.version}</bundle>
+  </feature> 
+  
+  <feature name="openengsb-domain-sqlcode" version="${project.version}" description="OpenEngSB SQLCode Domain">
+    <details>
+      TBW
+    </details>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.SQLCode/${project.version}</bundle>
+  </feature>  
 
   <feature name="openengsb-connector-example" version="${project.version}" description="OpenEngSB Example Connector">
     <details>
