@@ -19,6 +19,9 @@ package org.openengsb.core.api;
 
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
+import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
+import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 
 /**
  * Manages connector instances.
@@ -100,4 +103,42 @@ public interface ConnectorManager {
      */
     ConnectorDescription getAttributeValues(String connectorId);
 
+        // @extract-start ConnectorManager
+    
+    /**
+     * Registers the given connector for XLink. 
+     * Throws an 'DomainNotLinkableException' exception if, the supplied connector was 
+     * not found or does not belong to a linkable domain.
+     * <br/><br/>
+     * The connector must provide an array of 'OpenEngSBModel/View' tuples, which define
+     * the models it accepts for a given view. 
+     * A toolname must be provided to display a human readable name in the 
+     * XLink tool-chooser website.<br/>
+     * The parameter named 'remoteHostIp' must containing the callers host-IP. This IP is used to identify 
+     * the host when the user calls the XLink tool-chooser website. Therefore the host must not reach 
+     * the website via a proxy. 
+     * <br/><br/>
+     * A XLinkUrlBluePrint is returned, it contains instructions about which OpenEngSBModel is to be used for which view 
+     * and additional information. With the baseUrl and the keyNames, the caller is able to construct valid 
+     * XLink-URLs for one of it's defined model. 
+     * <br/><br/>
+     * The classes 'XLinkDemonstrationUtils' and 'XLinkUtilsTest' in the services package provide examples of how to 
+     * create XLink-URLs. 
+     * <br/><br/>
+     * Note that this function does not create a Connector, 
+     * it must be called with an already registered Connector. 
+     * 
+     * @see org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException
+     * @see org.openengsb.core.api.xlink.model.XLinkUrlBlueprint
+     * @see org.openengsb.core.services.xlink.XLinkDemonstrationUtils
+     */    
+    XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
+            String toolName, ModelToViewsTuple[] modelsToViews);
+    
+    /**
+     * Unregisters the given Connector from XLink.
+     */
+    void disconnectFromXLink(String connectorIpToLink, String remoteHostIp);
+
+    // @extract-end
 }
