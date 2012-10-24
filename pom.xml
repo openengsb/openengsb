@@ -65,7 +65,7 @@
     <felix.gogo.version>0.10.0</felix.gogo.version>
     <pax.exam.version>2.3.1</pax.exam.version>
     <pax.wicket.version>1.0.2</pax.wicket.version>
-    <pax.web.version>2.0.2</pax.web.version>
+    <pax.web.version>3.0.0-SNAPSHOT</pax.web.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>3</openengsb.version.min>
     <openengsb.version.max>4</openengsb.version.max>
@@ -119,7 +119,7 @@
     <opensaml.version>2.5.1_1</opensaml.version>
     <wss4j.version>1.6.3</wss4j.version>
     <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
-    <servicemix.dbcp.version>1.4_2</servicemix.dbcp.version>
+    <servicemix.dbcp.version>1.4_3</servicemix.dbcp.version>
     <slf4j.version>1.6.4</slf4j.version>
     <xerces.version>2.9.1_5</xerces.version>
     <bcel.version>5.2_4</bcel.version>

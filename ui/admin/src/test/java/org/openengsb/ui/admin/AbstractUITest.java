@@ -49,6 +49,7 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
@@ -117,8 +118,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("wiringService", defaultWiringService);
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         context.putBean("osgiUtilsService", serviceUtils);
-        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager();
-        registrationManager.setBundleContext(bundleContext);
+        ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager(bundleContext,
+                mock(TransformationEngine.class), new ForwardMethodInterceptor(), new SecurityAttributeProviderImpl());
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 

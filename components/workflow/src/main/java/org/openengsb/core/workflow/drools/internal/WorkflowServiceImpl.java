@@ -79,6 +79,8 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.primitives.Primitives;
+
 public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
@@ -246,6 +248,13 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         Class<? extends Event> eventClass = event.getClass();
         List<PropertyDescriptor> properties = reflectPropertiesFromEventClass(eventClass);
         for (PropertyDescriptor property : properties) {
+            Class<?> propertyType = property.getPropertyType();
+
+            if (!propertyType.isPrimitive()
+                    && !Primitives.isWrapperType(propertyType)
+                    && !propertyType.equals(String.class)) {
+                continue;
+            }
             Method getter = property.getReadMethod();
             if (Modifier.PUBLIC != getter.getModifiers()) {
                 continue;

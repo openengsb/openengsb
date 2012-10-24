@@ -19,6 +19,7 @@ package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -53,6 +54,10 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private List<String> oids;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;
+    @Column(name = "REVISION")
+    private String revision;
+    @Column(name = "PARENT")
+    private String parent;
 
     private List<EDBObject> objects;
 
@@ -60,6 +65,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private List<EDBObject> inserts;
     @Transient
     private List<EDBObject> updates;
+    
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
@@ -75,11 +81,12 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         deletions = new ArrayList<String>();
         inserts = new ArrayList<EDBObject>();
         updates = new ArrayList<EDBObject>();
+        this.revision = UUID.randomUUID().toString();
     }
 
     @Override
-    public void setCommitted(Boolean c) {
-        committed = c;
+    public void setCommitted(Boolean committed) {
+        this.committed = committed;
     }
 
     @Override
@@ -134,6 +141,14 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         deletions.add(oid);
         LOGGER.debug("deleted object {} from the commit", oid);
     }
+    
+    public void deleteAll(List<EDBObject> objects) throws EDBException {
+        if (objects != null) {
+            for (EDBObject object : objects) {
+                delete(object.getOID());
+            }
+        }
+    }
 
     private void fillOIDs() {
         if (oids == null) {
@@ -153,12 +168,28 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
             LOGGER.debug("Added object {} to the commit for inserting", obj.getOID());
         }
     }
+    
+    public void insertAll(List<EDBObject> objects) throws EDBException {
+        if (objects != null) {
+            for (EDBObject object : objects) {
+                insert(object);
+            }
+        }
+    }
 
     @Override
     public void update(EDBObject obj) throws EDBException {
         if (!updates.contains(obj)) {
             updates.add(obj);
             LOGGER.debug("Added object {} to the commit for updating", obj.getOID());
+        }
+    }
+    
+    public void updateAll(List<EDBObject> objects) throws EDBException {
+        if (objects != null) {
+            for (EDBObject object : objects) {
+                update(object);
+            }
         }
     }
 
@@ -170,5 +201,20 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public List<EDBObject> getUpdates() {
         return updates;
+    }
+
+    @Override
+    public UUID getParentRevisionNumber() {
+        return parent != null ? UUID.fromString(parent) : null;
+    }
+
+    @Override
+    public UUID getRevisionNumber() {
+        return revision != null ? UUID.fromString(revision) : null;
+    }
+
+    @Override
+    public void setHeadRevisionNumber(UUID head) {
+        this.parent = head != null ? head.toString() : null;
     }
 }

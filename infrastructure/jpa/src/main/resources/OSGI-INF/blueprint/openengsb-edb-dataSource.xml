@@ -19,83 +19,59 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-            default-activation="lazy">
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+           default-activation="lazy">
 
-  <!-- Property place holder -->
-  <cm:property-placeholder persistent-id="org.openengsb.infrastructure.jpa">
-    <cm:default-properties>
-      <cm:property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
-      <cm:property name="url" value="jdbc:h2:openengsb" />
-      <cm:property name="username" value="" />
-      <cm:property name="password" value="" />
-      <cm:property name="validationQuery" value="SELECT 1" />
-      <cm:property name="defaultReadOnly" value="false" />
-      <cm:property name="defaultAutoCommit" value="true" />
-      <cm:property name="maxActive" value="8" />
-      <cm:property name="whenExhaustedAction" value="2" />
-      <cm:property name="maxWait" value="-1" />
-      <cm:property name="maxIdle" value="8" />
-      <cm:property name="minIdle" value="0" />
-      <cm:property name="testOnBorrow" value="true" />
-      <cm:property name="testOnReturn" value="true" />
-      <cm:property name="timeBetweenEvictionRunsMillis" value="-1" />
-      <cm:property name="numTestsPerEvictionRun" value="3" />
-      <cm:property name="minEvictableIdleTimeMillis" value="1800000" />
-      <cm:property name="testWhileIdle" value="false" />
-      <cm:property name="softMinEvictableIdleTimeMillis" value="-1" />
-      <cm:property name="lifo" value="true" />
-    </cm:default-properties>
-  </cm:property-placeholder>
+    <!-- Property place holder -->
+    <cm:property-placeholder persistent-id="org.openengsb.infrastructure.jpa">
+        <cm:default-properties>
+            <cm:property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource"/>
+            <cm:property name="url" value="jdbc:h2:openengsb"/>
+            <cm:property name="username" value=""/>
+            <cm:property name="password" value=""/>
+            <cm:property name="validationQuery" value="SELECT 1"/>
+            <cm:property name="defaultReadOnly" value="false"/>
+            <cm:property name="defaultAutoCommit" value="true"/>
+            <cm:property name="maxActive" value="-1"/>
+            <cm:property name="maxWait" value="20"/>
+            <cm:property name="maxIdle" value="10"/>
+            <cm:property name="minIdle" value="0"/>
+            <cm:property name="initialSize" value="0"/>
+            <cm:property name="testOnBorrow" value="true"/>
+            <cm:property name="testOnReturn" value="true"/>
+            <cm:property name="timeBetweenEvictionRunsMillis" value="240000"/>
+            <cm:property name="numTestsPerEvictionRun" value="3"/>
+            <cm:property name="minEvictableIdleTimeMillis" value="1800000"/>
+            <cm:property name="testWhileIdle" value="false"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
 
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value= "${driverClassName}" />
-    <property name="url" value="${url}" />
-    <property name="username" value="${username}" />
-    <property name="password" value="${password}" />
-    <property name="maxIdle" value="1" />
-  </bean>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+        <property name="maxActive" value="${maxActive}"/>
+        <property name="maxWait" value="${maxWait}"/>
+        <property name="maxIdle" value="${maxIdle}"/>
+        <property name="minIdle" value="${minIdle}"/>
+        <property name="testOnBorrow" value="${testOnBorrow}"/>
+        <property name="testOnReturn" value="${testOnReturn}"/>
+        <property name="testWhileIdle" value="${testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${numTestsPerEvictionRun}"/>
+        <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}"/>
+        <property name="validationQuery" value="${validationQuery}"/>
+        <property name="defaultReadOnly" value="${defaultReadOnly}"/>
+        <property name="defaultAutoCommit" value="${defaultAutoCommit}"/>
+        <property name="connectionProperties" value="${connectionProperties}"/>
+    </bean>
 
-  <bean id="connectionFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
-    <argument ref="dataSource" />
-  </bean>
-
-  <bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool" >
-    <argument><null/></argument>
-    <argument value="${maxActive}" />
-    <argument value="${whenExhaustedAction}" />
-    <argument value="${maxWait}" />
-    <argument value="${maxIdle}" />
-    <argument value="${minIdle}" />
-    <argument value="${testOnBorrow}" />
-    <argument value="${testOnReturn}" />
-    <argument value="${timeBetweenEvictionRunsMillis}" />
-    <argument value="${numTestsPerEvictionRun}" />
-    <argument value="${minEvictableIdleTimeMillis}" />
-    <argument value="${testWhileIdle}" />
-    <argument value="${softMinEvictableIdleTimeMillis}" />
-    <argument value="${lifo}" />
-  </bean>
-
-  <bean id="pooledConnectionFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory" >
-    <argument ref="connectionFactory" />
-    <argument ref="connectionPool" />
-    <argument><null/></argument>
-    <argument value="${validationQuery}" />
-    <argument value="${defaultReadOnly}" />
-    <argument value="${defaultAutoCommit}" />
-  </bean>
-
-  <bean id="poolingDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="pooledConnectionFactory">
-    <argument ref="connectionPool" />
-  </bean>
-
-  <service id="xaDataSource" ref="poolingDataSource" interface="javax.sql.DataSource">
-    <service-properties>
-      <entry key="osgi.jndi.service.name" value="jdbc/openengsb"/>
-    </service-properties>
-  </service>
+    <service id="xaDataSource" ref="dataSource" interface="javax.sql.DataSource">
+        <service-properties>
+            <entry key="osgi.jndi.service.name" value="jdbc/openengsb"/>
+        </service-properties>
+    </service>
 
 </blueprint>
 

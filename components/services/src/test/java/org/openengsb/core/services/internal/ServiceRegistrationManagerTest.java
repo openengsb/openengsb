@@ -43,7 +43,9 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.internal.Activator;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
 import org.openengsb.core.services.internal.virtual.ProxyConnectorRegistryImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -69,9 +71,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         MethodResult result = MethodResult.newVoidResult();
         when(callrouter.sendMethodCallWithResult(anyString(), anyString(), any(MethodCall.class))).thenReturn(result);
         registerService(callrouter, new Hashtable<String, Object>(), OutgoingPortUtilService.class);
-        ConnectorRegistrationManager serviceManagerImpl = new ConnectorRegistrationManager();
-        serviceManagerImpl.setBundleContext(bundleContext);
-        registrationManager = serviceManagerImpl;
+        registrationManager = new ConnectorRegistrationManager(bundleContext,
+                mock(TransformationEngine.class), new ForwardMethodInterceptor(), new SecurityAttributeProviderImpl());
         ProxyConnectorProvider proxyConnectorProvider = new ProxyConnectorProvider();
         proxyConnectorProvider.setId(Constants.EXTERNAL_CONNECTOR_PROXY);
         proxyConnectorProvider.setBundleContext(bundleContext);

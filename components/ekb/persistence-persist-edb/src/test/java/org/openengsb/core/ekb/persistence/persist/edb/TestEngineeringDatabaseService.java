@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
@@ -113,15 +114,6 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public void commitEDBObjects(List<EDBObject> arg0, List<EDBObject> arg1, List<EDBObject> arg2) throws EDBException {
-    }
-
-    @Override
-    public EDBCommit createCommit(String arg0, String arg1) {
-        return null;
-    }
-
-    @Override
     public EDBCommit getCommit(Long arg0) throws EDBException {
         return null;
     }
@@ -203,6 +195,17 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public List<EDBObject> queryByMap(Map<String, Object> arg0) throws EDBException {
+        return null;
+    }
+
+    @Override
+    public EDBCommit createEDBCommit(List<EDBObject> arg0, List<EDBObject> arg1, List<EDBObject> arg2)
+        throws EDBException {
+        return null;
+    }
+
+    @Override
+    public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
 
