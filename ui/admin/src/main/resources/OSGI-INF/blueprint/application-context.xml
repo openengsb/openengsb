@@ -36,6 +36,7 @@
   <reference-list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService"
     availability="optional" />
   <reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
+  <reference id="xlinkServiceManager" interface="org.openengsb.core.api.xlink.service.XLinkConnectorManager" />
   <reference id="eventService" interface="org.openengsb.core.workflow.api.WorkflowService" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="ruleManager" interface="org.openengsb.core.workflow.api.RuleManager" />
@@ -45,6 +46,7 @@
   <reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <reference id="queryInterface" interface="org.openengsb.core.ekb.api.QueryInterface" />
   <reference id="edbService" interface="org.openengsb.core.edb.api.EngineeringDatabaseService" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
   <reference-list id="connectorList" interface="org.openengsb.core.api.Domain" member-type="service-reference" />
   <reference-list id="domainProviders" interface="org.openengsb.core.api.DomainProvider" />
   <reference-list id="modelProviders" interface="org.openengsb.labs.delegation.service.ClassProvider"
@@ -53,6 +55,15 @@
   <bean id="osgiUtilsService" class="org.openengsb.core.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
+
+  <bean id="toolChooserLogic" class="org.openengsb.ui.admin.xlink.ToolChooserLogicImpl">
+    <argument ref="xlinkServiceManager" />
+  </bean>
+  
+  <bean id="xLinkMock" class="org.openengsb.ui.admin.xlink.mocking.XLinkMockImpl">
+    <argument ref="osgiUtilsService" />
+    <argument ref="authenticationContext" />
+  </bean>    
 
   <wicket:application id="openengsbApplication" mountPoint="openengsb" applicationName="openengsb"
     class="org.openengsb.ui.admin.WicketApplication">
