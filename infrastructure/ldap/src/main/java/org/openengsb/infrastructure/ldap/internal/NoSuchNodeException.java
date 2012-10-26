@@ -63,7 +63,7 @@ public class NoSuchNodeException extends InconsistentDITException {
     }
 
     /**
-     * Pass the {@link Dn} whose leaf is missing in the DIT.
+     * Returns the {@link Dn} whose leaf is missing in the DIT.
      */
     public Dn getDn() {
         return dn;
