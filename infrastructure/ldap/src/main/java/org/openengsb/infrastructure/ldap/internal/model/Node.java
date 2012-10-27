@@ -96,13 +96,7 @@ public class Node {
 
     @Override
     public String toString() {
-        String s = entry.getDn().getName();
-        if (children != null) {
-            for (Node node : children) {
-                s += "\n" + node.toString();
-            }
-        }
-        return s;
+        return entry.toString();
     }
 
     @Override
