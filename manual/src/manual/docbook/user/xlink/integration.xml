@@ -28,8 +28,9 @@
     
     <title>XLink with OpenEngSB</title>
     <para>In the following section you can see various code snippets that demonstrate how to use or
-        implement the XLink conecpt. You can find a complette java sample client, using XLink,
-        <link xlink:href="https://github.com/openengsb/sample-xlink-java-client">here.</link></para>
+        implement the XLink concept. There are also some sample implementations to demonstrate the
+        concept. How those implementations are installed is explained <link
+            xlink:href="#implementation.sample">here</link>.</para>
     <section xml:id="implementation.registration">
         <title>Registration</title>
         <para>For the XLink-registration of connectors (e.g. the tools) the following functions in
@@ -57,14 +58,14 @@
             to the connector, is demonstrated with the follwing Functions and JUnitTests. <anchor
                 xml:id="implementation.xlinkemplate.prepareUseCase"/> The used Constants or
             Configurations can be found <link xlink:href="#implementation.configs"
-            >here</link>.</ns:para>
+                >here</link>.</ns:para>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsPrepareTemplate.xml"/>
         <xi:include href="../../../../../../target/docbook/snippets/XLinkUtilsTestPrepareTemplate.xml"/>
     </section>
     <section xml:id="implementation.xlinkcreate">
         <title>Generation of a XLink</title>   
         <ns:para>How a valid XLink is generated is demonstrated with the follwing Functions and
-                JUnitTests.<anchor xml:id="implementation.xlinkemplate.generateUsecase"/> The used
+            JUnitTests.<anchor xml:id="implementation.xlinkemplate.generateUsecase"/> The used
             Constants or Configurations can be found <link xlink:href="#implementation.configs"
                 >here</link>. Note that this is no XLink for local switching but for simple
             extraction by an actor. XLinks for local switching are explainded <link
@@ -117,6 +118,63 @@
             standard url, the modelobject identifier and other nessecary metadata will be
             transportet via GET parameters.</ns:para>
     </section> 
+    <section xml:id="implementation.sample">
+        <title>Sample Implementation</title>
+        <ns:para>There are two sample clients, one written in Java and one written in C#, which
+            support the XLink framework and are able to interpret each other's XLinks. Each one of
+            the sample clients implement a Domain which have to be installed on the OpenEngSB server
+            first before running the clients. </ns:para>
+        <ns:para><emphasis role="bold">Installation steps</emphasis></ns:para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <ns:para>Clone and build the reqired domains from Github.</ns:para>
+                    <ns:para><link
+                            xlink:href="https://github.com/openengsb/openengsb-domain-oosourcecode"
+                            >Link to Domain1</link></ns:para>
+                    <ns:para><link
+                            xlink:href="https://github.com/openengsb/openengsb-domain-sqlcode">Link
+                            to Domain2</link></ns:para>
+                </para>
+            </listitem>
+            <listitem>
+                <para>Download, build and start the latest stable version of the OpenEngSB</para>
+            </listitem>
+            <listitem>
+                <para>Install the Domains on the server.</para>
+            </listitem>
+            <listitem>
+                <para>Clone and build the two sample clients. To run them, follow the installation
+                    instructions.</para>
+                <ns:para><link xlink:href="https://github.com/openengsb/sample-xlink-java-client"
+                        >Link to Java sample client</link></ns:para>
+                <ns:para><link xlink:href="https://github.com/openengsb/sample-xlink-csharp-client"
+                        >Link to C# sample client</link></ns:para>
+            </listitem>
+        </itemizedlist>
+        <ns:para>Note that some steps might change due to the following limitations.</ns:para>
+        <ns:para><emphasis role="bold">Current limitations</emphasis></ns:para>
+        <ns:para>Some parts of the framework are not fully implemented yet, therefore some changes
+            and limitations on the sample implementations apply.</ns:para>
+        <ns:para>
+            <itemizedlist>
+                <listitem>
+                    <para>The required domains are already included in the server, since the
+                        transformation is still hardcoded.</para>
+                    <ns:para>This will change, when the following issue is resolved, <link
+                            xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-3401">see
+                            on Jira</link>. </ns:para>
+                </listitem>
+                <listitem>
+                    <ns:para>The C# client is not finished yet, and cannot be used with the XLink
+                        concept. </ns:para>
+                    <ns:para>This will change, when the following issue is resolved, <link
+                            xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-3403"> see
+                            on Jira</link>.</ns:para>
+                </listitem>
+            </itemizedlist>
+        </ns:para>
+    </section>
     <section xml:id="implementation.futurematter">
         <title>Future Matter</title>
         <ns:para>The following issues and problems are not yet resoveld in this concept but are future
@@ -130,7 +188,7 @@
                             xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2776">(see
                             on Jira)</link></para>
                     <ns:para>When completed, the mapper will be explainded <link
-                            xlink:href="#xlink.openengsb.model.transformation">here</link>.</ns:para>
+                        xlink:href="#xlink.openengsb.model.transformation">here</link>.</ns:para>
                 </listitem>
                 <listitem>
                     <para>The identification of a certain host during a call to the registry´s
