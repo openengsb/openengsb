@@ -321,6 +321,7 @@
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.example/${project.version}</bundle>
   </feature>
   
+  <!-- TODO [OPENENGSB-3401] remove this feature after the issue has been resolved -->
   <feature name="openengsb-domain-oosourcecode" version="${project.version}" description="OpenEngSB OOSourceCode Domain">
     <details>
       TBW
@@ -328,6 +329,7 @@
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.OOSourceCode/${project.version}</bundle>
   </feature> 
   
+  <!-- TODO [OPENENGSB-3401] remove this feature after the issue has been resolved -->
   <feature name="openengsb-domain-sqlcode" version="${project.version}" description="OpenEngSB SQLCode Domain">
     <details>
       TBW
