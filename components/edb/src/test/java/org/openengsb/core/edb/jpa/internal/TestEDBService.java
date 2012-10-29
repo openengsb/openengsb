@@ -50,9 +50,9 @@ public class TestEDBService extends JPADatabase {
      * Starts the EDBService for testing purpose
      */
     public void open() throws EDBException {
-        LOGGER.debug("starting to open EDB for testing via JPA");
+        getLogger().debug("starting to open EDB for testing via JPA");
         utx = entityManager.getTransaction();
-        LOGGER.debug("starting of EDB successful");
+        getLogger().debug("starting of EDB successful");
     }
 
     /**
