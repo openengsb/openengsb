@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
@@ -44,9 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JPADatabase implements EngineeringDatabaseService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
-    private EntityTransaction utx;
-    private EntityManager entityManager;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
+    protected EntityManager entityManager;
     private JPADao dao;
     private AuthenticationContext authenticationContext;
     private Boolean revisionCheckEnabled;
@@ -66,24 +64,6 @@ public class JPADatabase implements EngineeringDatabaseService {
         this.postCommitHooks = postCommitHooks;
         this.errorHooks = errorHooks;
         this.revisionCheckEnabled = revisionCheckEnabled;
-    }
-
-    /**
-     * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
-     */
-    public void open() throws EDBException {
-        LOGGER.debug("starting to open EDB for testing via JPA");
-        utx = entityManager.getTransaction();
-        LOGGER.debug("starting of EDB successful");
-    }
-
-    /**
-     * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
-     */
-    public void close() {
-        entityManager.close();
-        utx = null;
-        entityManager = null;
     }
 
     @Override
@@ -166,30 +146,21 @@ public class JPADatabase implements EngineeringDatabaseService {
     }
 
     /**
-     * If the user transaction object is not null, a transaction get started.
+     * Only here for the TestEDBService where there is a real implementation for this method.
      */
-    private void beginTransaction() {
-        if (utx != null) {
-            utx.begin();
-        }
+    protected void beginTransaction() {
     }
 
     /**
-     * If the user transaction object is not null, a transaction get committed.
+     * Only here for the TestEDBService where there is a real implementation for this method.
      */
-    private void commitTransaction() {
-        if (utx != null) {
-            utx.commit();
-        }
+    protected void commitTransaction() {
     }
 
     /**
-     * If the user transaction object is not null, a transaction get rolled back.
+     * Only here for the TestEDBService where there is a real implementation for this method.
      */
-    private void rollbackTransaction() {
-        if (utx != null) {
-            utx.rollback();
-        }
+    protected void rollbackTransaction() {
     }
 
     /**

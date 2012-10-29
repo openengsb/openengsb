@@ -44,8 +44,8 @@ import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 
 public class AbstractEDBTest {
-    protected JPADatabase db;
-    
+    protected TestEDBService db;
+
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
     };
@@ -61,8 +61,7 @@ public class AbstractEDBTest {
         EDBPreCommitHook preCommitHook = new CheckPreCommitHook(dao);
         ContextHolder.get().setCurrentContextId("testcontext");
 
-        db = new JPADatabase(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true);
-        db.setEntityManager(em);
+        db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
     }
 
