@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -49,11 +50,14 @@ import org.openengsb.core.util.ModelUtils;
  */
 public class EDBConverterTest {
     private EDBConverter converter;
+    private String contextId;
 
     @Before
     public void setUp() {
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
         converter = new EDBConverter(edbService);
+        contextId = "testcontext";
+        ContextHolder.get().setCurrentContextId(contextId);
     }
 
     @Test
@@ -79,7 +83,7 @@ public class EDBConverterTest {
 
         assertThat(object.getString("connectorId"), is("testconnector"));
         assertThat(object.getString("id"), is("test"));
-        assertThat(object.getString("oid"), is(EDBConverterUtils.createOID(model, "testdomain", "testconnector")));
+        assertThat(object.getString("oid"), is(EDBConverterUtils.createOID(model, contextId)));
         assertThat(object.getString("domainId"), is("testdomain"));
         assertThat(object.getString("name"), is("testobject"));
         assertThat(object.getString("instanceId"), is("testinstance"));
@@ -102,7 +106,7 @@ public class EDBConverterTest {
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(1);
-        assertThat(object.getString("sub"), is(EDBConverterUtils.createOID(sub, "testdomain", "testconnector")));
+        assertThat(object.getString("sub"), is(EDBConverterUtils.createOID(sub, contextId)));
         EDBObject subObject = objects.get(0);
         assertThat(subObject.getString("id"), is("sub"));
         assertThat(subObject.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
@@ -131,9 +135,9 @@ public class EDBConverterTest {
         EDBObject object = objects.get(2);
 
         assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 0)),
-            is(EDBConverterUtils.createOID(sub1, "testdomain", "testconnector")));
+            is(EDBConverterUtils.createOID(sub1, contextId)));
         assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 1)),
-            is(EDBConverterUtils.createOID(sub2, "testdomain", "testconnector")));
+            is(EDBConverterUtils.createOID(sub2, contextId)));
 
         EDBObject subObject1 = objects.get(0);
         assertThat(subObject1.getString("id"), is("sub1"));

@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -308,7 +309,8 @@ public class EDBConverter {
      * Recursive function to generate a list of EDBObjects out of a model object.
      */
     private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorInformation info) {
-        String oid = EDBConverterUtils.createOID(model, info.getDomainId(), info.getConnectorId());
+        String contextId = ContextHolder.get().getCurrentContextId();
+        String oid = EDBConverterUtils.createOID(model, contextId);
         EDBObject object = new EDBObject(oid);
         try {
             EDBConverterUtils.fillEDBObjectWithEngineeringObjectInformation(object, model);
@@ -328,7 +330,6 @@ public class EDBConverter {
                         wrapper.getFilename(), String.class);
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage());
-                    e.printStackTrace();
                 }
             } else if (OpenEngSBModel.class.isAssignableFrom(entry.getType())) {
                 OpenEngSBModel temp = (OpenEngSBModel) entry.getValue();
@@ -387,6 +388,7 @@ public class EDBConverter {
         object.putEDBObjectEntry("domainId", info.getDomainId());
         object.putEDBObjectEntry("connectorId", info.getConnectorId());
         object.putEDBObjectEntry("instanceId", info.getInstanceId());
+        object.putEDBObjectEntry("contextId", contextId);
         objects.add(object);
         return oid;
     }

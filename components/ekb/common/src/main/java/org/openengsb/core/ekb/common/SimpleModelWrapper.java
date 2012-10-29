@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
-import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.util.ModelUtils;
 
 /**
@@ -51,18 +51,17 @@ public class SimpleModelWrapper implements OpenEngSBModel {
     /**
      * Returns a list of EDBObjects which are referring to this model.
      */
-    public List<EDBObject> getModelsReferringToThisModel(EKBCommit commit, EngineeringDatabaseService edbService) {
+    public List<EDBObject> getModelsReferringToThisModel(EngineeringDatabaseService edbService) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID(commit));
+        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID());
         return edbService.query(params, System.currentTimeMillis());
     }
 
     /**
      * Calculates the complete model oid from the model and the commit object.
      */
-    public String getCompleteModelOID(EKBCommit commit) {
-        return String.format("%s/%s/%s", commit.getDomainId(), commit.getConnectorId(),
-            model.retrieveInternalModelId());
+    public String getCompleteModelOID() {
+        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), model.retrieveInternalModelId());
     }
     
     /**

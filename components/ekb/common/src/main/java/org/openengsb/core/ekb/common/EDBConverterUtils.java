@@ -67,9 +67,9 @@ public final class EDBConverterUtils {
     /**
      * Creates the OID for a model
      */
-    public static String createOID(OpenEngSBModel model, String domainId, String connectorId) {
+    public static String createOID(OpenEngSBModel model, String contextId) {
         StringBuilder builder = new StringBuilder();
-        builder.append(createOIDPrefix(domainId, connectorId));
+        builder.append(contextId).append("/");
         Object modelId = model.retrieveInternalModelId();
         if (modelId != null) {
             builder.append(modelId.toString());
@@ -80,20 +80,11 @@ public final class EDBConverterUtils {
         return builder.toString();
     }
 
-    public static String createOID(Object model, String domainId, String connectorId) {
+    public static String createOID(Object model, String contextId) {
         if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             throw new IllegalArgumentException("This function need to get a model passed.");
         }
-        return createOID((OpenEngSBModel) model, domainId, connectorId);
-    }
-
-    /**
-     * Creates the OID prefix for a model
-     */
-    private static String createOIDPrefix(String domainId, String connectorId) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(domainId).append("/").append(connectorId).append("/");
-        return builder.toString();
+        return createOID((OpenEngSBModel) model, contextId);
     }
 
     /**
