@@ -36,15 +36,15 @@ import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 
-public class JPADatabase extends AbstractEDBService {
+public class EDBService extends AbstractEDBService {
     private JPADao dao;
     private AuthenticationContext authenticationContext;
     
-    public JPADatabase(JPADao dao, AuthenticationContext authenticationContext,
+    public EDBService(JPADao dao, AuthenticationContext authenticationContext,
             List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
             List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks,
             Boolean revisionCheckEnabled) {
-        super(beginCommitHooks, preCommitHooks, postCommitHooks, errorHooks, revisionCheckEnabled, JPADatabase.class);
+        super(beginCommitHooks, preCommitHooks, postCommitHooks, errorHooks, revisionCheckEnabled, EDBService.class);
         this.dao = dao;
         this.authenticationContext = authenticationContext;
     }
