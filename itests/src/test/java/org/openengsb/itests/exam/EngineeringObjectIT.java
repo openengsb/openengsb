@@ -31,6 +31,7 @@ import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -92,6 +93,7 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         List<TransformationDescription> descriptions = generateTransformationDescriptions();
         engine.saveDescriptions(descriptions);
         initialized = true;
+        ContextHolder.get().setCurrentContextId("testcontext");
     }
     
     private ModelDescription getSourceModelADescription() {
@@ -148,12 +150,12 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
         EOModel eo = new EOModel();
         eo.setEdbId("eo/1");
-        eo.setRefModelA("testdomain/testconnector/sourceA/1");
-        eo.setRefModelB("testdomain/testconnector/sourceB/1");
+        eo.setRefModelA(getModelOid("sourceA/1"));
+        eo.setRefModelB(getModelOid("sourceB/1"));
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
-        EOModel result = query.getModel(EOModel.class, "testdomain/testconnector/eo/1");
+        EOModel result = query.getModel(EOModel.class, getModelOid("eo/1"));
         String nameA = result.getNameA();
         String nameB = result.getNameB();
 
@@ -174,17 +176,17 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         
         EOModel eo = new EOModel();
         eo.setEdbId("eo/2");
-        eo.setRefModelA("testdomain/testconnector/sourceA/2");
-        eo.setRefModelB("testdomain/testconnector/sourceB/2");
+        eo.setRefModelA(getModelOid("sourceA/2"));
+        eo.setRefModelB(getModelOid("sourceB/2"));
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
-        eo = query.getModel(EOModel.class, "testdomain/testconnector/eo/2");
+        eo = query.getModel(EOModel.class, getModelOid("eo/2"));
         eo.setNameA("updatedNameA");
         commit = getTestEKBCommit().addUpdate(eo);
         persist.commit(commit);
 
-        SourceModelA result = query.getModel(SourceModelA.class, "testdomain/testconnector/sourceA/2");
+        SourceModelA result = query.getModel(SourceModelA.class, getModelOid("sourceA/2"));
         assertThat(result.getName(), is("updatedNameA"));
     }
     
@@ -201,17 +203,17 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
         EOModel eo = new EOModel();
         eo.setEdbId("eo/3");
-        eo.setRefModelA("testdomain/testconnector/sourceA/3");
-        eo.setRefModelB("testdomain/testconnector/sourceB/3");
+        eo.setRefModelA(getModelOid("sourceA/3"));
+        eo.setRefModelB(getModelOid("sourceB/3"));
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
         
-        SourceModelA source = query.getModel(SourceModelA.class, "testdomain/testconnector/sourceA/3");
+        SourceModelA source = query.getModel(SourceModelA.class, getModelOid("sourceA/3"));
         source.setName("updatedNameA");
         commit = getTestEKBCommit().addUpdate(source);
         persist.commit(commit);
 
-        eo = query.getModel(EOModel.class, "testdomain/testconnector/eo/3");        
+        eo = query.getModel(EOModel.class, getModelOid("eo/3"));        
         assertThat(eo.getNameA(), is("updatedNameA"));
     }
     
@@ -225,22 +227,16 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         
         EOModel eo = new EOModel();
         eo.setEdbId("eo/4");
-        eo.setRefModelA("testdomain/testconnector/sourceA/4");
+        eo.setRefModelA(getModelOid("sourceA/4"));
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
-        eo = query.getModel(EOModel.class, "testdomain/testconnector/eo/4");
+        eo = query.getModel(EOModel.class, getModelOid("eo/4"));
         eo.setNameA("updatedNameA");
         commit = getTestEKBCommit().addUpdate(eo);
         persist.commit(commit);
 
-        SourceModelA result = query.getModel(SourceModelA.class, "testdomain/testconnector/sourceA/4");
+        SourceModelA result = query.getModel(SourceModelA.class, getModelOid("sourceA/4"));
         assertThat(result.getName(), is("updatedNameA"));
-    }
-
-    private EKBCommit getTestEKBCommit() {
-        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
-        commit.setInstanceId("testinstance");
-        return commit;
     }
 }
