@@ -31,7 +31,7 @@ import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 
 /**
- * A test implementation of the EDB service, which add a real implementation for the transaction management, since
+ * A test realization of the EDB service, which add a real implementation for the transaction management, since
  * this is not covered by the container in the unit tests.
  */
 public class TestEDBService extends EDBService {
