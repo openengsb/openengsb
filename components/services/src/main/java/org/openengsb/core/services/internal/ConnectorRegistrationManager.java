@@ -33,6 +33,7 @@ import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.MixinDomain;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -152,13 +153,20 @@ public class ConnectorRegistrationManager {
             registrations.remove(id);
         }
         Class<? extends Domain> domainInterface = getDomainProvider(description.getDomainType()).getDomainInterface();
-        Class<?>[] clazzes = getClassesForDomainProvider(domainInterface);
-        serviceInstance = proxyForTransformation(serviceInstance, domainInterface, clazzes);
-        serviceInstance = proxyForSecurity(id, description.getDomainType(), serviceInstance, clazzes);
+        Set<Class<?>> classSet = Sets.newHashSet((Class<?>) OpenEngSBService.class, Domain.class, Connector.class);
+        classSet.add(domainInterface);
+        for(Class<?> interfaze : serviceInstance.getClass().getInterfaces()){
+            if(interfaze.getAnnotation(MixinDomain.class) != null){
+                classSet.add(interfaze);
+            }
+        }
+        Class<?>[] clazzes = classSet.toArray(new Class<?>[classSet.size()]);
+        Connector proxiedInstance = proxyForTransformation(serviceInstance, domainInterface, clazzes);
+        proxiedInstance = proxyForSecurity(id, description.getDomainType(), proxiedInstance, clazzes);
         Map<String, Object> properties =
                 populatePropertiesWithRequiredAttributes(id, description);
         ServiceRegistration serviceRegistration =
-                bundleContext.registerService(convertClassesToNames(clazzes), serviceInstance,
+                bundleContext.registerService(convertClassesToNames(clazzes), proxiedInstance,
                         MapAsDictionary.wrap(properties));
         registrations.put(id, serviceRegistration);
     }
@@ -193,15 +201,6 @@ public class ConnectorRegistrationManager {
         return (Connector) Proxy.newProxyInstance(domainInterface.getClassLoader(),
                 clazzes, new TransformingConnectorHandler(transformationEngine, serviceInstance));
 
-    }
-
-    private Class<?>[] getClassesForDomainProvider(Class<? extends Domain> domainInterface) {
-        return new Class<?>[]{
-            OpenEngSBService.class,
-            Connector.class,
-            Domain.class,
-            domainInterface,
-        };
     }
 
     private String[] convertClassesToNames(Class<?>[] clazzes) {
