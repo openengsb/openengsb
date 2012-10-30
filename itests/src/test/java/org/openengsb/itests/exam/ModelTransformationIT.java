@@ -201,7 +201,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
 
     private void loadDescriptionsFromFile() throws Exception {
         InputStream stream =
-            getClass().getClassLoader().getResourceAsStream("transformations/testDescription.transformation");
+            getClass().getClassLoader().getResourceAsStream("test-transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
         for (TransformationDescription description : descriptions) {
             description.getSourceModel().setVersion(exampleDomainVersion);
