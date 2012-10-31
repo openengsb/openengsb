@@ -23,7 +23,7 @@ import org.openengsb.core.api.xlink.model.XLinkConnector;
  * Every Domain that wants to offer XLinking to itÂ´s Connectors, must implement this interface. Connectors can choose
  * whether they want to participate in XLinking, or not.
  */
-@MetaDomain("linking")
+@MixinDomain("linking")
 public interface LinkingSupport {
 
     // @extract-start LinkableDomainOpenLinks

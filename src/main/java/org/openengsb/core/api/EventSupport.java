@@ -19,7 +19,7 @@ package org.openengsb.core.api;
 /**
  * Connectors may implement this interface to be notified about events.
  */
-@MetaDomain("event")
+@MixinDomain("event")
 public interface EventSupport {
 
     void onEvent(Event event);

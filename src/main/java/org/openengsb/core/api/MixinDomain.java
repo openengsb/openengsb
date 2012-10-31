@@ -23,16 +23,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark an interface to be a "MetaDomain". Connectors may implement these interfaces to provide additional functionality
+ * Mark an interface to be a "MixinDomain". Connectors may implement these interfaces to provide additional functionality
  * described in such an interface. They can then be used in other Bundles to discover all connectors providing that
  * functionality
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Target(ElementType.TYPE)
-public @interface MetaDomain {
+public @interface MixinDomain {
     /**
-     * short name for the meta-domain, that is used for human-readable representations
+     * short name for the MixinDomain, that is used for human-readable representations
      */
     String value();
 }

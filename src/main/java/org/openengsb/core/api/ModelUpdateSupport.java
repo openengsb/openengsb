@@ -16,12 +16,10 @@
  */
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-
 /**
  *
  */
-@MetaDomain("modelupdate")
+@MixinDomain("modelupdate")
 public interface ModelUpdateSupport {
 
     /**
