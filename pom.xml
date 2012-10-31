@@ -61,6 +61,11 @@
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
+  <properties>
+    <assembly.builder.resources.version>1.0.1</assembly.builder.resources.version>
+    <manual.builder.resources.version>1.0.0</manual.builder.resources.version>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -145,6 +150,73 @@
                 </artifact>
               </artifacts>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>
+              <targetPath>${project.basedir}/target/classes/docbook/snippets</targetPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-manual-builder-resources</artifactId>
+                  <version>${manual.builder.resources.version}</version>
+                  <outputDirectory>${project.build.directory}/manual-resources</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-assembly-builder-resources</artifactId>
+                  <version>${assembly.builder.resources.version}</version>
+                  <outputDirectory>${project.build.directory}/assembly-resources</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/src.xml</descriptor>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
