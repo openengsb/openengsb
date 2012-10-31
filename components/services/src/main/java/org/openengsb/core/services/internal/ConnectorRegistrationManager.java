@@ -80,6 +80,8 @@ public class ConnectorRegistrationManager {
 
     private MethodInterceptor securityInterceptor;
     private TransformationEngine transformationEngine;
+    private final Class<?>[] CONNECTOR_INSTANCE_COMMON_INTERFACES =
+            new Class<?>[]{ OpenEngSBService.class, Domain.class, Connector.class };
 
 
     public ConnectorRegistrationManager(BundleContext bundleContext, TransformationEngine transformationEngine,
@@ -153,27 +155,37 @@ public class ConnectorRegistrationManager {
             registrations.remove(id);
         }
         Class<? extends Domain> domainInterface = getDomainProvider(description.getDomainType()).getDomainInterface();
-        Set<Class<?>> classSet = Sets.newHashSet((Class<?>) OpenEngSBService.class, Domain.class, Connector.class);
-        classSet.add(domainInterface);
-        for(Class<?> interfaze : serviceInstance.getClass().getInterfaces()){
-            if(interfaze.getAnnotation(MixinDomain.class) != null){
-                classSet.add(interfaze);
-            }
-        }
-        Class<?>[] clazzes = classSet.toArray(new Class<?>[classSet.size()]);
+        Class<?>[] clazzes = generateInterfaceListForRegistration(domainInterface, serviceInstance);
         Connector proxiedInstance = proxyForTransformation(serviceInstance, domainInterface, clazzes);
-        proxiedInstance = proxyForSecurity(id, description.getDomainType(), proxiedInstance, clazzes);
-        Map<String, Object> properties =
-                populatePropertiesWithRequiredAttributes(id, description);
+        proxiedInstance = proxyForSecurity(id, description, proxiedInstance, clazzes);
+        Map<String, Object> properties = populatePropertiesWithRequiredAttributes(id, description);
         ServiceRegistration serviceRegistration =
                 bundleContext.registerService(convertClassesToNames(clazzes), proxiedInstance,
                         MapAsDictionary.wrap(properties));
         registrations.put(id, serviceRegistration);
     }
 
-    private Connector proxyForSecurity(String id, String domainType, Connector serviceInstance,
+    private Class<?>[] generateInterfaceListForRegistration(Class<? extends Domain> domainInterface,
+            Connector serviceInstance) {
+        Set<Class<?>> classSet = Sets.newHashSet(CONNECTOR_INSTANCE_COMMON_INTERFACES);
+        classSet.add(domainInterface);
+        classSet.addAll(getMetaDomainInterfacesFromInstance(serviceInstance));
+        return classSet.toArray(new Class<?>[classSet.size()]);
+    }
+
+    private Set<Class<?>> getMetaDomainInterfacesFromInstance(Connector serviceInstance) {
+        Set<Class<?>> result = Sets.newHashSet();
+        for(Class<?> interfaze : serviceInstance.getClass().getInterfaces()){
+            if(interfaze.getAnnotation(MixinDomain.class) != null){
+                result.add(interfaze);
+            }
+        }
+        return result;
+    }
+
+    private Connector proxyForSecurity(String id, ConnectorDescription description, Connector serviceInstance,
             Class<?>[] clazzes) {
-        if (INTERCEPTOR_BLACKLIST.contains(domainType)) {
+        if (INTERCEPTOR_BLACKLIST.contains(description.getDomainType())) {
             LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
             return serviceInstance;
         }

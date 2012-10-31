@@ -32,7 +32,7 @@ import java.util.concurrent.Semaphore;
 
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorConfiguration;
@@ -49,7 +49,6 @@ import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.services.xlink.XLinkUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -366,7 +365,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                     continue;
                 }
                 try {
-                    LinkableDomain service = (LinkableDomain) serviceObject;
+                    LinkingSupport service = (LinkingSupport) serviceObject;
                     service.onRegisteredToolsChanged(registeredTools);
                 } catch (ClassCastException e) {
                     
@@ -385,7 +384,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
             throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not found.");
         }
         try {
-            serviceObject = (LinkableDomain) serviceObject;
+            serviceObject = (LinkingSupport) serviceObject;
         } catch (ClassCastException e) { 
             throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not linkable.");
         }        
@@ -405,7 +404,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                 continue;
             }
             try {
-                LinkableDomain service = (LinkableDomain) serviceObject;
+                LinkingSupport service = (LinkingSupport) serviceObject;
                 service.onRegisteredToolsChanged(registeredTools);
             } catch (ClassCastException e) {
                 

@@ -17,10 +17,10 @@
 
 package org.openengsb.domain.SQLCode;
 
-import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.domain.SQLCode.model.SQLCreate;
 
-public interface SQLCodeDomain extends LinkableDomain {
+public interface SQLCodeDomain extends LinkingSupport {
 
     /**
      * Adds or updates a defined createStmt
