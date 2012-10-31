@@ -18,11 +18,16 @@ package org.openengsb.core.api;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
+/**
+ *
+ */
 @MetaDomain("modelupdate")
 public interface ModelUpdateSupport {
 
-    void onUpdateData();
-
-    void updateData(OpenEngSBModel[] created, OpenEngSBModel[] updated, OpenEngSBModel[] deleted);
+    /**
+     * This method is called whenever a model in the same context is updated. Connectors may act accordingly. The
+     * supplied <code>modelChangeset</code> contains the changes in this update.
+     */
+    void onUpdateData(ModelChangeset modelChangeset);
 
 }

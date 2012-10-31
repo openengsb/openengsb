@@ -16,6 +16,23 @@
  */
 package org.openengsb.core.api;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Mark an interface to be a "MetaDomain". Connectors may implement these interfaces to provide additional functionality
+ * described in such an interface. They can then be used in other Bundles to discover all connectors providing that
+ * functionality
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target(ElementType.TYPE)
 public @interface MetaDomain {
+    /**
+     * short name for the meta-domain, that is used for human-readable representations
+     */
     String value();
 }

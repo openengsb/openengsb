@@ -16,6 +16,9 @@
  */
 package org.openengsb.core.api;
 
+/**
+ * Connectors may implement this interface to be notified about events.
+ */
 @MetaDomain("event")
 public interface EventSupport {
 
