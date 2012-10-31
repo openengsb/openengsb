@@ -84,7 +84,7 @@ public class MethodUtilTest {
         @Override
         public Object nullMethod(Object o, String b) {
             return null;
-        }
+        }        
         @Override
         public void commitModel(DummyModel model) {
 
@@ -129,8 +129,8 @@ public class MethodUtilTest {
         public void commitModel(DummyModel model) {
 
         }
-    }
 
+    }
     public static enum TestEnum {
             ONE, TWO
     }

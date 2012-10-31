@@ -283,4 +283,18 @@ public class ConnectorRegistrationManager {
         DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
         return domainProvider;
     }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
+    }
+
+    public void setSecurityInterceptor(MethodInterceptor securityInterceptor) {
+        this.securityInterceptor = securityInterceptor;
+    }
+
+    public void setAttributeStore(SecurityAttributeProviderImpl attributeStore) {
+        this.attributeStore = attributeStore;
+    }
+
 }

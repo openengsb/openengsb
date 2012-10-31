@@ -18,18 +18,12 @@
 
 -->
 
-<transformations>
-   <!-- id="testId" optional meta data to do identify transformation descriptions -->
-  <transformation source="org.openengsb.domain.example.model.ExampleResponseModel;3.0.0" 
-                  target="org.openengsb.domain.example.model.ExampleRequestModel;3.0.0"                
-                  >
-    <split>
-      <source-field>result</source-field>
-      <target-field>name</target-field>
-      <params>
-      	<param key="splitString" value="-" />
-      	<param key="resultIndex" value="0" />
-      </params>
-    </split>
-  </transformation>
-</transformations>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+      xml:lang="en" lang="en">
+    <head>
+        <title>XLink LocalSwitch</title>
+    </head>
+    <body>
+        <wicket:container wicket:id="message" id="message">message goes here</wicket:container>
+    </body>
+</html>
