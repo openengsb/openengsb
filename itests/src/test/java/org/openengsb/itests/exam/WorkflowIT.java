@@ -17,15 +17,19 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.RuleManager;
@@ -46,8 +50,11 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
-    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
+    private DummyLogDomain exampleMock;
+
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain, EventSupport {
         private boolean wasCalled = false;
+        private Event lastEvent;
 
         @Override
         public String doSomethingWithMessage(String message) {
@@ -75,17 +82,27 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
             wasCalled = true;
             return new ExampleResponseModel();
         }
+
+        @Override
+        public void onEvent(Event event) {
+            lastEvent = event;
+        }
     }
 
-    @Test
-    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
-        DummyLogDomain exampleMock = new DummyLogDomain();
+    @Before
+    public void setUp() throws Exception {
+        exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
         properties.put("connector", "example");
         properties.put("location.foo", "example2");
-        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
+        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
+        getBundleContext().registerService(new String[]{ ExampleDomain.class.getName(), EventSupport.class.getName() },
+                exampleMock, properties);
+    }
 
+    @Test
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         RuleManager ruleManager = getOsgiService(RuleManager.class);
 
         ruleManager.addImport(ExampleDomain.class.getName());
@@ -111,14 +128,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testCreateAndTriggerResponseRule_shouldCallOrigin() throws Exception {
-        DummyLogDomain exampleMock = new DummyLogDomain();
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("domain", "example");
-        properties.put("connector", "example");
-        properties.put("location.foo", "example2");
-        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
-        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
-
         RuleManager ruleManager = getOsgiService(RuleManager.class);
 
         ruleManager.addImport(ExampleDomain.class.getName());
@@ -142,5 +151,15 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         workflowService.processEvent(event);
 
         assertThat(exampleMock.wasCalled, is(true));
+    }
+
+    @Test
+    public void testRaiseEvent_shouldForwardToConnector() throws Exception {
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+        Event event = new Event();
+        ContextHolder.get().setCurrentContextId("foo");
+        authenticateAsAdmin();
+        workflowService.processEvent(event);
+        assertThat(exampleMock.lastEvent, equalTo(event));
     }
 }

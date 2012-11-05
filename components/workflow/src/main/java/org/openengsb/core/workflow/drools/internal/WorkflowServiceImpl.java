@@ -56,6 +56,7 @@ import org.drools.runtime.rule.ConsequenceException;
 import org.drools.runtime.rule.FactHandle;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
@@ -106,6 +107,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private Collection<AuditingDomain> auditingConnectors;
 
+    private Collection<EventSupport> eventReceivers;
+
     @Override
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
@@ -136,6 +139,10 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         } finally {
             session.retract(factHandle);
         }
+        for(EventSupport receiver : eventReceivers){
+            receiver.onEvent(event);
+        }
+
     }
 
     @Override
@@ -465,4 +472,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         this.auditingConnectors = auditingConnectors;
     }
 
+    public void setEventReceivers(Collection<EventSupport> eventReceivers) {
+        this.eventReceivers = eventReceivers;
+    }
 }

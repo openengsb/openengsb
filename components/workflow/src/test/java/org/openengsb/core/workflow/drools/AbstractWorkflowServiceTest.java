@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import org.junit.Before;
 import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -60,6 +61,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
         service = new WorkflowServiceImpl();
         service.setAuditingConnectors(makeServiceList(AuditingDomain.class));
+        service.setEventReceivers(makeServiceList(EventSupport.class));
 
         setupTaskbox();
         service.setRulemanager(manager);
