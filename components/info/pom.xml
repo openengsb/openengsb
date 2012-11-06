@@ -93,13 +93,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.ops4j.pax.web</groupId>
-      <artifactId>pax-web-extender-whiteboard</artifactId>
-    </dependency>
-  </dependencies>
-
 </project>
 
