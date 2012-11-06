@@ -130,13 +130,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.api</artifactId>
-      <version>${openengsb.api.version}</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
   </dependencies>
 
-   <repositories>
+  <repositories>
     <repository> <!-- OEB snapshots are deployed here -->
       <id>sonatype-snapshots</id>
       <name>Sonaype Snapsht Repository</name>
