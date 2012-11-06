@@ -85,7 +85,6 @@ public class PersistenceRuleManagerCrudTest extends AbstractOpenEngSBTest {
         String sampleFlow = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<process xmlns=\"http://drools.org/drools-5.0/process\""
                 + "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\""
-                + "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\""
                 + "         type=\"RuleFlow\" name=\"flowname\" id=\"flowId\" "
                 + "package-name=\"org.openengsb\" >" + "" + "  <header>" + "  </header>" + "  <nodes>"
                 + "    <start id=\"1\" name=\"Start\" x=\"100\" y=\"100\" width=\"48\" height=\"48\" />"
