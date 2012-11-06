@@ -119,6 +119,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
       <version>${javassist.version}</version>
@@ -131,15 +135,7 @@
     <dependency>
       <groupId>org.openengsb.framework.edb</groupId>
       <artifactId>org.openengsb.framework.edb.api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.util</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -152,8 +148,8 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.test</artifactId>
-      <scope>test</scope>
+      <artifactId>org.openengsb.framework.util</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
