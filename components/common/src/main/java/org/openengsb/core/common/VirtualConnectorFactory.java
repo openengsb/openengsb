@@ -18,6 +18,7 @@
 package org.openengsb.core.common;
 
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +28,8 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -69,6 +72,13 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     @Override
     public Connector applyAttributes(Connector instance, Map<String, String> attributes) {
         VirtualType handler = handlers.get(instance);
+        Collection<String> mixins = Maps.filterKeys(attributes, new Predicate<String>() {
+            @Override
+            public boolean apply(String s) {
+                return s.startsWith("mixin.");
+            }
+        }).values();
+
         updateHandlerAttributes(handler, attributes);
         return instance;
     }

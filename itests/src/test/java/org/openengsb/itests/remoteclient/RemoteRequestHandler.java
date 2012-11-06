@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
@@ -34,9 +35,13 @@ import com.google.common.collect.Maps;
 class RemoteRequestHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteRequestHandler.class);
-    private ExampleConnector connector = new ExampleConnector();
+    private Connector connector;
 
     private Map<MethodCall, MethodResult> invocationHistory = Maps.newLinkedHashMap();
+
+    RemoteRequestHandler(Connector connector) {
+        this.connector = connector;
+    }
 
     public MethodResult process(MethodCall request) {
         List<String> argClassList = request.getClasses();
@@ -52,7 +57,7 @@ class RemoteRequestHandler {
         Method method;
         try {
             LOGGER.debug("searching for method {} with args {}", request.getMethodName(), request.getClasses());
-            method = ExampleConnector.class.getMethod(request.getMethodName(), argClasses);
+            method = connector.getClass().getMethod(request.getMethodName(), argClasses);
         } catch (NoSuchMethodException e) {
             return makeExceptionResult(e);
         }

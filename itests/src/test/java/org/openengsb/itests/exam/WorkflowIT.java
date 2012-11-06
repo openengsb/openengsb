@@ -22,8 +22,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
+import org.apache.karaf.features.FeaturesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +37,7 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowService;
@@ -40,6 +47,8 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.itests.remoteclient.ExampleConnector;
+import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -51,6 +60,9 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     private DummyLogDomain exampleMock;
+
+    @Inject
+    private FeaturesService featuresService;
 
     public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain, EventSupport {
         private boolean wasCalled = false;
@@ -162,4 +174,29 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         workflowService.processEvent(event);
         assertThat(exampleMock.lastEvent, equalTo(event));
     }
+
+    @Test
+    public void testRaiseEvent_shouldForwardToRemoteConnector() throws Exception {
+        featuresService.installFeature("openengsb-ports-jms");
+        String openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
+        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
+        final AtomicReference<Event> eventRef = new AtomicReference<Event>();
+        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        attributes.put("mixin.1", EventSupport.class.getName());
+        remoteConnector.start(new ExampleConnector(){
+            @Override
+            public void onEvent(Event event) {
+                eventRef.set(event);
+            }
+        }, new ConnectorDescription("example", "external-connector-proxy",
+                attributes, properties));
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+        Event event = new Event();
+        ContextHolder.get().setCurrentContextId("foo");
+        authenticateAsAdmin();
+        workflowService.processEvent(event);
+        assertThat(eventRef.get(), equalTo(event));
+    }
+
 }
