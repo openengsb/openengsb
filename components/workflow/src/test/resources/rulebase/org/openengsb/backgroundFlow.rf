@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
          type="RuleFlow" name="Test flow in background" id="backgroundFlow" package-name="org.openengsb" routerLayout="2" >
 
   <header>
