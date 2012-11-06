@@ -983,16 +983,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.karaf</groupId>
-        <artifactId>org.osgi.core</artifactId>
-        <version>${karaf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.karaf</groupId>
-        <artifactId>org.osgi.compendium</artifactId>
-        <version>${karaf.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${slf4j.version}</version>

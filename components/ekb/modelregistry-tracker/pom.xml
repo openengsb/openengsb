@@ -109,7 +109,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf</groupId>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
     </dependency>
     <dependency>

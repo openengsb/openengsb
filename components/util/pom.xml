@@ -148,7 +148,7 @@
       <artifactId>spring-aop</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf</groupId>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.compendium</artifactId>
     </dependency>
     <dependency>

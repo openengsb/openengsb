@@ -104,7 +104,7 @@
       <artifactId>org.openengsb.framework.common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf</groupId>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
     </dependency>
     <dependency>
