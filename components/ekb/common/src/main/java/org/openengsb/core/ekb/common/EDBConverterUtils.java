@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -149,6 +150,7 @@ public final class EDBConverterUtils {
             if (value == null) {
                 continue;
             }
+            value = String.format("%s/%s", ContextHolder.get().getCurrentContextId(), value);
             String key = getEOReferenceStringFromAnnotation(annotation);
             object.put(key, new EDBObjectEntry(key, value, String.class));
         }
