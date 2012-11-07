@@ -219,8 +219,9 @@ public class EDBConverterTest {
         EDBObject result = objects.get(0);
         String key1 = getReferenceString(model.getClass(), "modelAId");
         String key2 = getReferenceString(model.getClass(), "modelBId");
-        assertThat(result.getString(key1), is("testReferenceToModelA"));
-        assertThat(result.getString(key2), is("testReferenceToModelB"));
+        System.out.println(result.getString(key1));
+        assertThat(result.getString(key1), is(contextId + "/testReferenceToModelA"));
+        assertThat(result.getString(key2), is(contextId + "/testReferenceToModelB"));
     }
 
     @Test
