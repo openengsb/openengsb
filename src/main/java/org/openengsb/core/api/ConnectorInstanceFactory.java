@@ -50,6 +50,8 @@ public interface ConnectorInstanceFactory {
      * This method is used for filling in the attributes of a service. It can be assumed that the attributes have been
      * validated before.
      *
+     * returns the reconfigured connector instance. This does not have to be the same instance that was given as
+     * parameter to the method
      */
-    void applyAttributes(Connector instance, Map<String, String> attributes);
+    Connector applyAttributes(Connector instance, Map<String, String> attributes);
 }
