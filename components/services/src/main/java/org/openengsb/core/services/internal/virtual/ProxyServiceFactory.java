@@ -38,18 +38,20 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
+    public ProxyConnector updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));
         String destination = attributes.get("destination");
         handler.setDestination(destination);
         String serviceId = attributes.get("serviceId");
         handler.addMetadata("serviceId", serviceId);
+        return handler;
     }
 
     @Override
-    public void applyAttributes(Connector instance, Map<String, String> attributes) {
+    public Connector applyAttributes(Connector instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
+        return instance;
     }
 
     @Override

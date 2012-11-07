@@ -34,14 +34,9 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Con
     
     @SuppressWarnings("unchecked")
     @Override
-    public void applyAttributes(Connector instance, Map<String, String> attributes) {
-        doApplyAttributes((ConnectorType) instance, attributes);
+    public Connector applyAttributes(Connector instance, Map<String, String> attributes) {
+        return doApplyAttributes((ConnectorType) instance, attributes);
     }
-
-    /**
-     * should set the given attributes to the corresponding fields in the instance-object.
-     */
-    public abstract void doApplyAttributes(ConnectorType instance, Map<String, String> attributes);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -58,5 +53,9 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Con
     public Map<String, String> getValidationErrors(Map<String, String> attributes) {
         // do nothing. override to add validation
         return Collections.emptyMap();
+    }
+
+    public ConnectorType doApplyAttributes(ConnectorType instance, Map<String, String> attributes) {
+        return instance;
     }
 }

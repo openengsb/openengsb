@@ -73,8 +73,8 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         }
 
         @Override
-        protected void updateHandlerAttributes(DummyVirtualConnector handler, Map<String, String> attributes) {
-
+        protected DummyVirtualConnector updateHandlerAttributes(DummyVirtualConnector handler, Map<String, String> attributes) {
+            return handler;
         }
 
         @Override

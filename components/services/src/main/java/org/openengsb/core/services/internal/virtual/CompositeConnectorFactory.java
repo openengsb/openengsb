@@ -46,13 +46,14 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
     }
 
     @Override
-    protected void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
+    protected CompositeConnector updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
         String strategyFilter = createStrategyFilterString(attributes.get("compositeStrategy"));
         Filter filter = FilterUtils.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
         CompositeConnectorStrategy strategy =
                 utilsService.getOsgiServiceProxy(filter, CompositeConnectorStrategy.class);
         handler.setQueryString(attributes.get("queryString"));
         handler.setCompositeHandler(strategy);
+        return handler;
     }
 
     public String createStrategyFilterString(String attribute) {
