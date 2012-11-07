@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBDiff;
@@ -42,7 +43,7 @@ import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 public class TestEngineeringDatabaseService implements EngineeringDatabaseService {
 
     private String getModelOid(String modelId) {
-        return EngineeringObjectEnhancerTest.getModelOid(modelId);
+        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
     }
 
     @Override
@@ -73,8 +74,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         }
         if (arg0.equals(getModelOid("common/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));
-            edbObject.putEDBObjectEntry("modelAId", getModelOid("objectA/reference/1"));
-            edbObject.putEDBObjectEntry("modelBId", getModelOid("objectB/reference/1"));
+            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");
@@ -83,7 +84,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         }
         if (arg0.equals(getModelOid("common/reference/2"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/2"));
-            edbObject.putEDBObjectEntry("modelAId", getModelOid("objectA/reference/1"));
+            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/2");
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
@@ -99,8 +100,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         if (reference.equals(getModelOid("objectA/reference/1"))
                 || reference.equals(getModelOid("objectB/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));
-            edbObject.putEDBObjectEntry("modelAId", getModelOid("objectA/reference/1"));
-            edbObject.putEDBObjectEntry("modelBId", getModelOid("objectB/reference/1"));
+            edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
+            edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
             edbObject.putEDBObjectEntry("nameA", "firstObject");
             edbObject.putEDBObjectEntry("nameB", "secondObject");
             edbObject.putEDBObjectEntry("internalModelName", "common/reference/1");

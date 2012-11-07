@@ -61,7 +61,14 @@ public class SimpleModelWrapper implements OpenEngSBModel {
      * Calculates the complete model oid from the model.
      */
     public String getCompleteModelOID() {
-        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), model.retrieveInternalModelId());
+        return appendContextId(model.retrieveInternalModelId());
+    }
+    
+    /**
+     * Appends the currentContext to the given model id.
+     */
+    protected String appendContextId(Object modelId) {
+        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
     }
     
     /**

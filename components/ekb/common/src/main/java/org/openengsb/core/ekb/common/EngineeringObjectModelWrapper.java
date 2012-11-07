@@ -64,6 +64,7 @@ public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
             if (modelKey == null) {
                 return null;
             }
+            modelKey = appendContextId(modelKey);
             Class<?> sourceClass = modelRegistry.loadModel(description);
             return new SimpleModelWrapper(edbConverter.convertEDBObjectToModel(sourceClass,
                 edbService.getObject(modelKey)));

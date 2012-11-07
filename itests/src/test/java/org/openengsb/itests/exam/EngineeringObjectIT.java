@@ -150,8 +150,8 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
         EOModel eo = new EOModel();
         eo.setEdbId("eo/1");
-        eo.setRefModelA(getModelOid("sourceA/1"));
-        eo.setRefModelB(getModelOid("sourceB/1"));
+        eo.setRefModelA("sourceA/1");
+        eo.setRefModelB("sourceB/1");
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
@@ -176,8 +176,8 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         
         EOModel eo = new EOModel();
         eo.setEdbId("eo/2");
-        eo.setRefModelA(getModelOid("sourceA/2"));
-        eo.setRefModelB(getModelOid("sourceB/2"));
+        eo.setRefModelA("sourceA/2");
+        eo.setRefModelB("sourceB/2");
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
@@ -203,8 +203,8 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
         EOModel eo = new EOModel();
         eo.setEdbId("eo/3");
-        eo.setRefModelA(getModelOid("sourceA/3"));
-        eo.setRefModelB(getModelOid("sourceB/3"));
+        eo.setRefModelA("sourceA/3");
+        eo.setRefModelB("sourceB/3");
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
         
@@ -227,7 +227,7 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         
         EOModel eo = new EOModel();
         eo.setEdbId("eo/4");
-        eo.setRefModelA(getModelOid("sourceA/4"));
+        eo.setRefModelA("sourceA/4");
         commit = getTestEKBCommit().addInsert(eo);
         persist.commit(commit);
 
