@@ -35,10 +35,6 @@ public class ServiceAclServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(ServiceAclServiceImpl instance, Map<String, String> attributes) {
-    }
-
-    @Override
     public Connector createNewInstance(String id) {
         return new ServiceAclServiceImpl(userManager, attributeProviders);
     }

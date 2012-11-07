@@ -58,11 +58,12 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     protected abstract VirtualType createNewHandler(String id);
 
     @Override
-    public void applyAttributes(Connector instance, Map<String, String> attributes) {
+    public Connector applyAttributes(Connector instance, Map<String, String> attributes) {
         VirtualType handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
+        return instance;
     }
 
-    protected abstract void updateHandlerAttributes(VirtualType handler, Map<String, String> attributes);
+    protected abstract VirtualType updateHandlerAttributes(VirtualType handler, Map<String, String> attributes);
 
 }

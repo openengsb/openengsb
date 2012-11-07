@@ -32,10 +32,6 @@ public class UsernamePasswordServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(UsernamePasswordServiceImpl instance, Map<String, String> attributes) {
-    }
-
-    @Override
     public Connector createNewInstance(String id) {
         return new UsernamePasswordServiceImpl(userManager);
     }
