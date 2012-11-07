@@ -32,10 +32,6 @@ public class WicketAclServiceInstanceFactory extends
     }
 
     @Override
-    public void doApplyAttributes(WicketAclServiceImpl instance, Map<String, String> attributes) {
-    }
-
-    @Override
     public Connector createNewInstance(String id) {
         return new WicketAclServiceImpl(userManager);
     }

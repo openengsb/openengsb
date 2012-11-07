@@ -34,13 +34,14 @@ public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<
     }
 
     @Override
-    public void doApplyAttributes(LogService instance, Map<String, String> attributes) {
+    public LogService doApplyAttributes(LogService instance, Map<String, String> attributes) {
         if (attributes.containsKey("outputMode")) {
             instance.setOutputMode(attributes.get("outputMode"));
         }
         if (attributes.containsKey("prefix")) {
             instance.setPrefix(attributes.get("prefix"));
         }
+        return instance;
     }
 
     public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {

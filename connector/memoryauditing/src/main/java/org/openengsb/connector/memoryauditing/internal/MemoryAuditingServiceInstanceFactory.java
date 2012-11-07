@@ -29,9 +29,4 @@ public class MemoryAuditingServiceInstanceFactory extends AbstractConnectorInsta
         return new MemoryAuditingServiceImpl(id);
     }
 
-    @Override
-    public void doApplyAttributes(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
-        // nothing to do
-    }
-
 }
