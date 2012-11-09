@@ -17,9 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,6 +33,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -613,6 +612,12 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private void registerMockedFactory() throws Exception {
         factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
+        when(factory.applyAttributes(any(Connector.class), anyMap())).thenAnswer(new Answer<Connector>() {
+            @Override
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
+                return (Connector) invocation.getArguments()[0];
+            }
+        });
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR_KEY, "testc");
         factoryProps.put(Constants.DOMAIN_KEY, "test");

@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -400,6 +402,12 @@ public class WiringPageTest extends AbstractUITest {
                 TestDomainInterface newMock = mock(TestDomainInterface.class);
                 when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
                 return newMock;
+            }
+        });
+        when(factory.applyAttributes(any(Connector.class), anyMap())).thenAnswer(new Answer<Connector>() {
+            @Override
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
+                return (Connector) invocation.getArguments()[0];
             }
         });
         Dictionary<String, Object> props = new Hashtable<String, Object>();

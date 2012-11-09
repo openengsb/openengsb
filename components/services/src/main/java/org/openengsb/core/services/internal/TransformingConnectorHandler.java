@@ -41,4 +41,7 @@ public class TransformingConnectorHandler<ConnectorType> extends AbstractOpenEng
         return transformationHandler.transformResult(result);
     }
 
+    public void setTarget(ConnectorType target) {
+        this.target = target;
+    }
 }
