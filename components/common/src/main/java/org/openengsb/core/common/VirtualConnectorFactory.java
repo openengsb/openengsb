@@ -18,11 +18,8 @@
 package org.openengsb.core.common;
 
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
@@ -30,11 +27,6 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ComputationException;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**

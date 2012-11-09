@@ -117,7 +117,7 @@ public class ConnectorRegistrationManager {
     }
 
     private void createService(String id, ConnectorDescription description)
-            throws ConnectorValidationFailedException {
+        throws ConnectorValidationFailedException {
         ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
         if (!errors.isEmpty()) {
@@ -147,7 +147,7 @@ public class ConnectorRegistrationManager {
     }
 
     private void doRegisterServiceInstance(String id, ConnectorDescription description, Connector serviceInstance) {
-        if(registrations.containsKey(id)){
+        if (registrations.containsKey(id)) {
             registrations.get(id).unregister();
             registrations.remove(id);
         }
@@ -230,7 +230,7 @@ public class ConnectorRegistrationManager {
     }
 
     private void updateAttributes(String id, ConnectorDescription description)
-            throws ConnectorValidationFailedException {
+        throws ConnectorValidationFailedException {
         ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
         Connector current = instances.get(id);
         Map<String, String> validationErrors = factory.getValidationErrors(current, description.getAttributes());
@@ -243,14 +243,14 @@ public class ConnectorRegistrationManager {
     private void doUpdateAttributes(String id, ConnectorDescription description,
             ConnectorInstanceFactory factory, Connector current) {
         Connector connector = factory.applyAttributes(current, description.getAttributes());
-        if(connector != current){
+        if (connector != current) {
             instances.put(id, connector);
             doRegisterServiceInstance(id, description, connector);
         }
     }
 
     private void updateProperties(String id, Map<String, Object> properties) {
-        if(properties == null){
+        if (properties == null) {
             return;
         }
         Map<String, Object> newProps = new HashMap<String, Object>(properties);
