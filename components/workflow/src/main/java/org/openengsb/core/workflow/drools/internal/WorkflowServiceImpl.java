@@ -139,7 +139,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         } finally {
             session.retract(factHandle);
         }
-        for(EventSupport receiver : eventReceivers){
+        for (EventSupport receiver : eventReceivers) {
             receiver.onEvent(event);
         }
 

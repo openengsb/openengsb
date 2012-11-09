@@ -71,6 +71,9 @@ public class ConnectorRegistrationManager {
 
     private static final Set<String> INTERCEPTOR_BLACKLIST = Sets.newHashSet("authentication", "authorization");
 
+    private static final Class<?>[] CONNECTOR_INSTANCE_COMMON_INTERFACES =
+            new Class<?>[]{ OpenEngSBService.class, Domain.class, Connector.class };
+
     private OsgiUtilsService serviceUtils;
     private BundleContext bundleContext;
     private SecurityAttributeProviderImpl attributeStore;
@@ -80,9 +83,6 @@ public class ConnectorRegistrationManager {
 
     private MethodInterceptor securityInterceptor;
     private TransformationEngine transformationEngine;
-    private final Class<?>[] CONNECTOR_INSTANCE_COMMON_INTERFACES =
-            new Class<?>[]{ OpenEngSBService.class, Domain.class, Connector.class };
-
 
     public ConnectorRegistrationManager(BundleContext bundleContext, TransformationEngine transformationEngine,
             MethodInterceptor securityInterceptor, SecurityAttributeProviderImpl attributeStore) {
@@ -175,8 +175,8 @@ public class ConnectorRegistrationManager {
 
     private Set<Class<?>> getMetaDomainInterfacesFromInstance(Connector serviceInstance) {
         Set<Class<?>> result = Sets.newHashSet();
-        for(Class<?> interfaze : serviceInstance.getClass().getInterfaces()){
-            if(interfaze.getAnnotation(MixinDomain.class) != null){
+        for (Class<?> interfaze : serviceInstance.getClass().getInterfaces()) {
+            if (interfaze.getAnnotation(MixinDomain.class) != null) {
                 result.add(interfaze);
             }
         }
