@@ -19,16 +19,21 @@ package org.openengsb.core.common;
 
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ComputationException;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -51,12 +56,13 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     @Override
     public Connector createNewInstance(String id) {
         VirtualType handler = createNewHandler(id);
-        Connector newProxyInstance = createProxy(handler);
+        Set<Class<?>> interfaces = Collections.emptySet();
+        Connector newProxyInstance = createProxy(handler, interfaces);
         handlers.put(newProxyInstance, handler);
         return newProxyInstance;
     }
 
-    private Connector createProxy(VirtualType handler, Class<?>... interfaces) {
+    private Connector createProxy(VirtualType handler, Collection<Class<?>> interfaces) {
         HashSet<Class<?>> classes = Sets.newHashSet(interfaces);
         classes.add(domainProvider.getDomainInterface());
         classes.add(Connector.class);
@@ -78,7 +84,17 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
                 return s.startsWith("mixin.");
             }
         }).values();
-
+        Collection<Class<?>> mixinClasses = Collections2.transform(mixins, new Function<String, Class<?>>() {
+            @Override
+            public Class<?> apply(String input) {
+                try {
+                    return getClass().getClassLoader().loadClass(input);
+                } catch (ClassNotFoundException e) {
+                    throw new ComputationException(e);
+                }
+            }
+        });
+        instance = createProxy(handler, mixinClasses);
         updateHandlerAttributes(handler, attributes);
         return instance;
     }

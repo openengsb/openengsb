@@ -26,6 +26,7 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
+import org.openengsb.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,8 @@ class RemoteRequestHandler {
         }
         try {
             LOGGER.info("invoking method {}", method);
+            JsonUtils.convertAllArgs(request);
+            LOGGER.info("argument: ", request.getArgs()[0].getClass());
             Object result = method.invoke(connector, request.getArgs());
             if (method.getReturnType().equals(void.class)) {
                 MethodResult methodResult = new MethodResult();

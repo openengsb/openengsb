@@ -184,19 +184,26 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new HashMap<String, Object>();
         attributes.put("mixin.1", EventSupport.class.getName());
-        remoteConnector.start(new ExampleConnector(){
-            @Override
-            public void onEvent(Event event) {
-                eventRef.set(event);
-            }
-        }, new ConnectorDescription("example", "external-connector-proxy",
-                attributes, properties));
+        remoteConnector.start(new MyExampleConnector(eventRef),
+                new ConnectorDescription("example", "external-connector-proxy", attributes, properties));
         WorkflowService workflowService = getOsgiService(WorkflowService.class);
-        Event event = new Event();
+        Event event = new Event("test");
         ContextHolder.get().setCurrentContextId("foo");
         authenticateAsAdmin();
         workflowService.processEvent(event);
-        assertThat(eventRef.get(), equalTo(event));
+        assertThat(eventRef.get().getName(), equalTo("test"));
     }
 
+    public static class MyExampleConnector extends ExampleConnector {
+        private final AtomicReference<Event> eventRef;
+
+        public MyExampleConnector(AtomicReference<Event> eventRef) {
+            this.eventRef = eventRef;
+        }
+
+        @Override
+        public void onEvent(Event event) {
+            eventRef.set(event);
+        }
+    }
 }

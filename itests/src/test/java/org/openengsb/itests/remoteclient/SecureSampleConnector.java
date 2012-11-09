@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.apache.commons.collections.MapUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -163,7 +162,7 @@ public final class SecureSampleConnector {
         attributes.put("destination", "tcp://127.0.0.1:%s?example-remote");
         attributes.put("serviceId", "example-remote");
         String createMessage = createCreateMessage(connectorDescription);
-        jmsConfig.sendMessage("receive", String.format(CREATE_MESSAGE, openwirePort));
+        jmsConfig.sendMessage("receive", String.format(createMessage, openwirePort));
         Thread.sleep(5000);
         jmsConfig.sendMessage("receive", String.format(REGISTER_MESSAGE, openwirePort));
     }
