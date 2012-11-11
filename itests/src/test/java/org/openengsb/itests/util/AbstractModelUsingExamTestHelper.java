@@ -21,7 +21,9 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 import java.lang.reflect.Method;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelProvider;
@@ -116,5 +118,15 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
             throw new IllegalArgumentException("There is no method " + methodName
                     + " for the class " + model.getClass().getName());
         }
+    }
+
+    protected String getModelOid(String modelId) {
+        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
+    }
+    
+    protected EKBCommit getTestEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
+        commit.setInstanceId("testinstance");
+        return commit;
     }
 }
