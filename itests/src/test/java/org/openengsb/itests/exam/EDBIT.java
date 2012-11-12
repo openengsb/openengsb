@@ -36,6 +36,7 @@ import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFileP
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -87,6 +88,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         query = getOsgiService(QueryInterface.class);
         persist = getOsgiService(PersistInterface.class);
         registerModelProvider();
+        ContextHolder.get().setCurrentContextId("testcontext");
     }
 
     @Test
@@ -172,7 +174,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model);
         persist.commit(commit);
 
-        OpenEngSBFileModel result = query.getModel(OpenEngSBFileModel.class, "testdomain/testconnector/testId");
+        OpenEngSBFileModel result = query.getModel(OpenEngSBFileModel.class, getModelOid("testId"));
 
         File newFile = result.getFile();
 
@@ -203,7 +205,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
+        EDBObject obj = edbService.getObject(getModelOid("createevent/2"));
 
         String name = obj.getString("name");
         Integer version = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
@@ -248,7 +250,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject obj = edbService.getObject("testdomain/testconnector/batchevent/1");
+        EDBObject obj = edbService.getObject(getModelOid("batchevent/1"));
 
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
@@ -262,12 +264,12 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit.addInsert(model2.getModel());
         persist.commit(commit);
 
-        obj = edbService.getObject("testdomain/testconnector/batchevent/1");
+        obj = edbService.getObject(getModelOid("batchevent/1"));
 
         String name2 = obj.getString("name");
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
-        obj = edbService.getObject("testdomain/testconnector/batchevent/2");
+        obj = edbService.getObject(getModelOid("batchevent/2"));
 
         String name3 = obj.getString("name");
         Integer version3 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
@@ -296,7 +298,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/2");
+        EDBObject obj = edbService.getObject(getModelOid("updateevent/2"));
 
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
@@ -306,7 +308,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
-        obj = edbService.getObject("testdomain/testconnector/updateevent/2");
+        obj = edbService.getObject(getModelOid("updateevent/2"));
 
         String name2 = obj.getString("name");
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
@@ -325,7 +327,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
+        EDBObject obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
         ModelUtils.addOpenEngSBModelEntry(model.getModel(), entry);
@@ -333,7 +335,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         // results in no conflict because the values are the same even if the version is different
-        obj = edbService.getObject("testdomain/testconnector/updateevent/3");
+        obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         assertThat(version1, is(1));
@@ -370,11 +372,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/1");
-        EDBObject subObject = edbService.getObject("testdomain/testconnector/testSub/2");
+        EDBObject mainObject = edbService.getObject(getModelOid("testSub/1"));
+        EDBObject subObject = edbService.getObject(getModelOid("testSub/2"));
 
         assertThat(subObject, notNullValue());
-        assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
+        assertThat(mainObject.getString("subModel"), is(getModelOid("testSub/2")));
     }
 
     @Test
@@ -398,14 +400,14 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/3");
-        EDBObject subObject1 = edbService.getObject("testdomain/testconnector/testSub/4");
-        EDBObject subObject2 = edbService.getObject("testdomain/testconnector/testSub/5");
+        EDBObject mainObject = edbService.getObject(getModelOid("testSub/3"));
+        EDBObject subObject1 = edbService.getObject(getModelOid("testSub/4"));
+        EDBObject subObject2 = edbService.getObject(getModelOid("testSub/5"));
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat(mainObject.getString("subs.0"), is("testdomain/testconnector/testSub/4"));
-        assertThat(mainObject.getString("subs.1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs.0"), is(getModelOid("testSub/4")));
+        assertThat(mainObject.getString("subs.1"), is(getModelOid("testSub/5")));
     }
 
     @Test
@@ -417,7 +419,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modeltailtest/1");
+        Object result = (Object) query.getModel(getTestModel(), getModelOid("modeltailtest/1"));
         Boolean versionPresent = false;
         for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(result)) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
@@ -435,7 +437,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        Object result = (Object) query.getModel(getTestModel(), "testdomain/testconnector/modelmetatest/1");
+        Object result = (Object) query.getModel(getTestModel(), getModelOid("modelmetatest/1"));
         assertThat(ModelUtils.getOpenEngSBModelEntries(result), notNullValue());
         assertThat(ModelUtils.getInternalModelId(result), notNullValue());
         assertThat(ModelUtils.retrieveInternalModelVersion(result), notNullValue());
@@ -454,7 +456,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/1"));
+        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/1")));
         assertThat(model.getModel(), notNullValue());
         sub = new SubModelDecorator(model.getSubModel());
         assertThat(sub.getModel(), notNullValue());
@@ -478,7 +480,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/2"));
+        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/2")));
         assertThat(model.getModel(), notNullValue());
         assertThat(model.getSubs(), notNullValue());
         assertThat(model.getSubs().get(0), notNullValue());
@@ -487,9 +489,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(sub.getName(), is("test1"));
         sub = new SubModelDecorator(model.getSubs().get(1));
         assertThat(sub.getName(), is("test2"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/2/1"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/2/1")));
         assertThat(sub.getName(), is("test1"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/2/2"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/2/2")));
         assertThat(sub.getName(), is("test2"));
     }
 
@@ -510,7 +512,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/3/1"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/3/1")));
         assertThat(sub.getModel(), notNullValue());
         assertThat(sub.getName(), is("updated"));
     }
@@ -550,7 +552,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
-        model = new TestModelDecorator(query.getModel(getTestModel(), "testdomain/testconnector/submodeltest/4"));
+        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/4")));
         assertThat(model.getModel(), notNullValue());
         assertThat(model.getSubs(), notNullValue());
         assertThat(model.getSubs().get(0), notNullValue());
@@ -562,11 +564,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(sub.getName(), is("updatedtest2"));
         sub = new SubModelDecorator(model.getSubs().get(2));
         assertThat(sub.getName(), is("insertedtest3"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/1"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/1")));
         assertThat(sub.getName(), is("updatedtest1"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/2"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/2")));
         assertThat(sub.getName(), is("updatedtest2"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), "testdomain/testconnector/submodeltest/4/3"));
+        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/3")));
         assertThat(sub.getName(), is("insertedtest3"));
     }
 
@@ -585,8 +587,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addDelete(model.getModel());
         persist.commit(commit);
 
-        EDBObject testModel = edbService.getObject("testdomain/testconnector/submodeltest/5");
-        EDBObject subModel = edbService.getObject("testdomain/testconnector/submodeltest/5/1");
+        EDBObject testModel = edbService.getObject(getModelOid("submodeltest/5"));
+        EDBObject subModel = edbService.getObject(getModelOid("submodeltest/5/1"));
         assertThat(testModel.isDeleted(), is(true));
         assertThat(subModel.isDeleted(), is(true));
     }
@@ -611,19 +613,12 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addDelete(model.getModel());
         persist.commit(commit);
         
-        EDBObject testModel = edbService.getObject("testdomain/testconnector/submodeltest/6");
-        EDBObject subModel1 = edbService.getObject("testdomain/testconnector/submodeltest/6/1");
-        EDBObject subModel2 = edbService.getObject("testdomain/testconnector/submodeltest/6/2");
+        EDBObject testModel = edbService.getObject(getModelOid("submodeltest/6"));
+        EDBObject subModel1 = edbService.getObject(getModelOid("submodeltest/6/1"));
+        EDBObject subModel2 = edbService.getObject(getModelOid("submodeltest/6/2"));
         assertThat(testModel.isDeleted(), is(true));
         assertThat(subModel1.isDeleted(), is(true));
         assertThat(subModel2.isDeleted(), is(true));
-    }
-
-
-    private EKBCommit getTestEKBCommit() {
-        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
-        commit.setInstanceId("testinstance");
-        return commit;
     }
 
     private TestModelDecorator getTestModelDecorator() throws Exception {

@@ -123,7 +123,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
         List<SimpleModelWrapper> additionalUpdates = enhanceUpdates(updates, updated, commit);
         if (!additionalUpdates.isEmpty()) {
             for (SimpleModelWrapper model : additionalUpdates) {
-                updated.put(model.getCompleteModelOID(commit), model);
+                updated.put(model.getCompleteModelOID(), model);
             }
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
@@ -137,7 +137,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
             Map<Object, SimpleModelWrapper> updated, EKBCommit commit) {
         List<SimpleModelWrapper> additionalUpdates = new ArrayList<SimpleModelWrapper>();
         for (SimpleModelWrapper model : updates) {
-            if (updated.containsKey(model.getCompleteModelOID(commit))) {
+            if (updated.containsKey(model.getCompleteModelOID())) {
                 continue; // this model was already updated in this commit
             }
             if (model.isEngineeringObject()) {
@@ -153,7 +153,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
      * additionally.
      */
     private List<SimpleModelWrapper> performEOModelUpdate(EngineeringObjectModelWrapper model, EKBCommit commit) {
-        ModelDiff diff = createModelDiff(model.getModel(), model.getCompleteModelOID(commit),
+        ModelDiff diff = createModelDiff(model.getModel(), model.getCompleteModelOID(),
             edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
@@ -201,14 +201,14 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private List<SimpleModelWrapper> getReferenceBasedUpdates(SimpleModelWrapper model,
             Map<Object, SimpleModelWrapper> updated, EKBCommit commit) throws EKBException {
         List<SimpleModelWrapper> updates = new ArrayList<SimpleModelWrapper>();
-        List<EDBObject> references = model.getModelsReferringToThisModel(commit, edbService);
+        List<EDBObject> references = model.getModelsReferringToThisModel(edbService);
         for (EDBObject reference : references) {
             EDBModelObject modelReference = new EDBModelObject(reference, modelRegistry, edbConverter);
             SimpleModelWrapper ref = updateEOByUpdatedModel(modelReference, model, updated);
-            if (!updated.containsKey(ref.getCompleteModelOID(commit))) {
+            if (!updated.containsKey(ref.getCompleteModelOID())) {
                 updates.add(ref);
             }
-            updated.put(ref.getCompleteModelOID(commit), ref);
+            updated.put(ref.getCompleteModelOID(), ref);
         }
         return updates;
     }
