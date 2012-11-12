@@ -19,12 +19,15 @@ package org.openengsb.core.common;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+
+import com.google.common.collect.Sets;
 
 /**
  * Abstract baseclass for {@link ConnectorInstanceFactory}s that are used for {@link VirtualConnector}s. When such a
@@ -45,11 +48,17 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     @Override
     public Connector createNewInstance(String id) {
         VirtualType handler = createNewHandler(id);
-        Connector newProxyInstance =
-            (Connector) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), Connector.class }, handler);
+        Connector newProxyInstance = createProxy(handler);
         handlers.put(newProxyInstance, handler);
         return newProxyInstance;
+    }
+
+    private Connector createProxy(VirtualType handler, Class<?>... interfaces) {
+        HashSet<Class<?>> classes = Sets.newHashSet(interfaces);
+        classes.add(domainProvider.getDomainInterface());
+        classes.add(Connector.class);
+        Class<?>[] classesAsArray = classes.toArray(new Class<?>[classes.size()]);
+        return (Connector) Proxy.newProxyInstance(this.getClass().getClassLoader(), classesAsArray, handler);
     }
 
     /**

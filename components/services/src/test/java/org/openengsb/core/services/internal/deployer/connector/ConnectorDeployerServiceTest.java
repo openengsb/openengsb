@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -48,6 +49,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
@@ -110,6 +113,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         factory = mock(ConnectorInstanceFactory.class);
         createdService = mock(NullDomainImpl.class);
         when(factory.createNewInstance(anyString())).thenReturn(createdService);
+        when(factory.applyAttributes(any(Connector.class), anyMap())).thenAnswer(new Answer<Connector>() {
+            @Override
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
+                return (Connector) invocation.getArguments()[0];
+            }
+        });
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "aconnector");

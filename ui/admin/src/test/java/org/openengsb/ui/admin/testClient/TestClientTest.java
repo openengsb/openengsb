@@ -24,6 +24,8 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -702,6 +704,12 @@ public class TestClientTest extends AbstractUITest {
                 testService = newMock;
                 when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
                 return newMock;
+            }
+        });
+        when(factory.applyAttributes(any(Connector.class), anyMap())).thenAnswer(new Answer<Connector>() {
+            @Override
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
+                return (Connector) invocation.getArguments()[0];
             }
         });
         Dictionary<String, Object> props = new Hashtable<String, Object>();

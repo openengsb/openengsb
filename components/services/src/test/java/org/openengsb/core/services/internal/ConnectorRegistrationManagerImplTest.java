@@ -17,6 +17,8 @@
 
 package org.openengsb.core.services.internal;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -65,6 +67,13 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         createDomainProviderMock(NullDomain.class, "a");
         Connector connectorMock = mock(Connector.class);
         when(connectorInstanceFactory.createNewInstance(anyString())).thenReturn(connectorMock);
+        when(connectorInstanceFactory.applyAttributes(any(Connector.class), anyMap()))
+                .thenAnswer(new Answer<Connector>() {
+                    @Override
+                    public Connector answer(InvocationOnMock invocation) throws Throwable {
+                        return (Connector) invocation.getArguments()[0];
+                    }
+                });
         String connectorId = UUID.randomUUID().toString();
         connectorRegistrationManager.updateRegistration(connectorId, new ConnectorDescription("a", "a",
                 new HashMap<String, String>(), new HashMap<String, Object>()));

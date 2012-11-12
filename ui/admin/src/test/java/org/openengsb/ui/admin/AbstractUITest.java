@@ -201,7 +201,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         service.setUtilsService(serviceUtils);
         registerService(service, props, CompositeConnectorStrategy.class);
 
-        cFactory.applyAttributes(instance,
+        instance = cFactory.applyAttributes(instance,
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
         context.putBean("authorizer", instance);

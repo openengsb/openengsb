@@ -95,28 +95,18 @@ public class ConnectorRegistrationManager {
         if (!instances.containsKey(id)) {
             createService(id, connectorDescription);
         } else if (connectorDescription.getAttributes() != null) {
-            updateAttributes(connectorDescription.getDomainType(), connectorDescription.getConnectorType(), id,
-                connectorDescription.getAttributes());
+            updateAttributes(id, connectorDescription);
         }
-
-        Map<String, Object> properties = connectorDescription.getProperties();
-        if (properties != null) {
-            updateProperties(id, properties);
-        }
+        updateProperties(id, connectorDescription.getProperties());
     }
 
     public void forceUpdateRegistration(String id, ConnectorDescription connectorDescription) {
         if (!instances.containsKey(id)) {
             forceCreateService(id, connectorDescription);
         } else if (connectorDescription.getAttributes() == null) {
-            forceUpdateAttributes(connectorDescription.getDomainType(), connectorDescription.getConnectorType(), id,
-                connectorDescription.getAttributes());
+            forceUpdateAttributes(id, connectorDescription);
         }
-
-        Map<String, Object> properties = connectorDescription.getProperties();
-        if (properties != null) {
-            updateProperties(id, properties);
-        }
+        updateProperties(id, connectorDescription.getProperties());
     };
 
     public void remove(String id) {
@@ -128,58 +118,54 @@ public class ConnectorRegistrationManager {
 
     private void createService(String id, ConnectorDescription description)
         throws ConnectorValidationFailedException {
-        DomainProvider domainProvider = getDomainProvider(description.getDomainType());
-        ConnectorInstanceFactory factory =
-            getConnectorFactory(description.getDomainType(), description.getConnectorType());
-
+        ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
         if (!errors.isEmpty()) {
             throw new ConnectorValidationFailedException(errors);
         }
-
-        finishCreatingInstance(id, description, domainProvider, factory);
+        finishCreatingInstance(id, description, factory);
     }
 
     private void forceCreateService(String id, ConnectorDescription description) {
-        DomainProvider domainProvider = getDomainProvider(description.getDomainType());
-        ConnectorInstanceFactory factory =
-            getConnectorFactory(description.getDomainType(), description.getConnectorType());
-
-        Connector serviceInstance = factory.createNewInstance(id.toString());
-        factory.applyAttributes(serviceInstance, description.getAttributes());
-
-        finishCreatingInstance(id, description, domainProvider, factory);
+        ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
+        finishCreatingInstance(id, description, factory);
     }
 
     private void finishCreatingInstance(String id, ConnectorDescription description,
-            DomainProvider domainProvider, ConnectorInstanceFactory factory) {
+            ConnectorInstanceFactory factory) {
         Connector serviceInstance = factory.createNewInstance(id.toString());
         if (serviceInstance == null) {
             throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
         }
-        factory.applyAttributes(serviceInstance, description.getAttributes());
-
+        serviceInstance = factory.applyAttributes(serviceInstance, description.getAttributes());
         if (!description.getAttributes().containsKey(Constants.SKIP_SET_DOMAIN_TYPE)) {
             serviceInstance.setDomainId(description.getDomainType());
             serviceInstance.setConnectorId(description.getConnectorType());
         }
+        instances.put(id, serviceInstance);
+        doRegisterServiceInstance(id, description, serviceInstance);
+    }
 
-        Class<?>[] clazzes = getClassesForDomainProvider(domainProvider);
-        serviceInstance = proxyForTransformation(serviceInstance, domainProvider.getDomainInterface(), clazzes);
-        serviceInstance = proxyForSecurity(id, description, serviceInstance, clazzes);
-
+    private void doRegisterServiceInstance(String id, ConnectorDescription description, Connector serviceInstance) {
+        if (registrations.containsKey(id)) {
+            registrations.get(id).unregister();
+            registrations.remove(id);
+        }
+        Class<? extends Domain> domainInterface = getDomainProvider(description.getDomainType()).getDomainInterface();
+        Class<?>[] clazzes = getClassesForDomainProvider(domainInterface);
+        serviceInstance = proxyForTransformation(serviceInstance, domainInterface, clazzes);
+        serviceInstance = proxyForSecurity(id, description.getDomainType(), serviceInstance, clazzes);
         Map<String, Object> properties =
-                populatePropertiesWithRequiredAttributes(description.getProperties(), id, description);
+                populatePropertiesWithRequiredAttributes(id, description);
         ServiceRegistration serviceRegistration =
                 bundleContext.registerService(convertClassesToNames(clazzes), serviceInstance,
                         MapAsDictionary.wrap(properties));
         registrations.put(id, serviceRegistration);
-        instances.put(id, serviceInstance);
     }
 
-    private Connector proxyForSecurity(String id, ConnectorDescription description, Connector serviceInstance,
-                                       Class<?>[] clazzes) {
-        if (INTERCEPTOR_BLACKLIST.contains(description.getDomainType())) {
+    private Connector proxyForSecurity(String id, String domainType, Connector serviceInstance,
+            Class<?>[] clazzes) {
+        if (INTERCEPTOR_BLACKLIST.contains(domainType)) {
             LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
             return serviceInstance;
         }
@@ -209,12 +195,12 @@ public class ConnectorRegistrationManager {
 
     }
 
-    private Class<?>[] getClassesForDomainProvider(DomainProvider domainProvider) {
+    private Class<?>[] getClassesForDomainProvider(Class<? extends Domain> domainInterface) {
         return new Class<?>[]{
             OpenEngSBService.class,
             Connector.class,
             Domain.class,
-            domainProvider.getDomainInterface(),
+            domainInterface,
         };
     }
 
@@ -225,7 +211,8 @@ public class ConnectorRegistrationManager {
     }
 
     private Map<String, Object> populatePropertiesWithRequiredAttributes(
-            final Map<String, Object> properties, String id, ConnectorDescription description) {
+            String id, ConnectorDescription description) {
+        Map<String, Object> properties = description.getProperties();
         Map<String, Object> result = new HashMap<String, Object>(properties);
         for (Entry<String, Object> entry : properties.entrySet()) {
             result.put(entry.getKey(), entry.getValue());
@@ -236,13 +223,36 @@ public class ConnectorRegistrationManager {
         return result;
     }
 
-    private void forceUpdateAttributes(String domainType, String connectorType, String id,
-            Map<String, String> attributes) {
-        ConnectorInstanceFactory factory = getConnectorFactory(domainType, connectorType);
-        factory.applyAttributes(instances.get(id), attributes);
+    private void forceUpdateAttributes(String id, ConnectorDescription description) {
+        ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
+        Connector current = instances.get(id);
+        doUpdateAttributes(id, description, factory, current);
+    }
+
+    private void updateAttributes(String id, ConnectorDescription description)
+        throws ConnectorValidationFailedException {
+        ConnectorInstanceFactory factory = getConnectorFactoryForDescription(description);
+        Connector current = instances.get(id);
+        Map<String, String> validationErrors = factory.getValidationErrors(current, description.getAttributes());
+        if (!validationErrors.isEmpty()) {
+            throw new ConnectorValidationFailedException(validationErrors);
+        }
+        doUpdateAttributes(id, description, factory, current);
+    }
+
+    private void doUpdateAttributes(String id, ConnectorDescription description,
+            ConnectorInstanceFactory factory, Connector current) {
+        Connector connector = factory.applyAttributes(current, description.getAttributes());
+        if (connector != current) {
+            instances.put(id, connector);
+            doRegisterServiceInstance(id, description, connector);
+        }
     }
 
     private void updateProperties(String id, Map<String, Object> properties) {
+        if (properties == null) {
+            return;
+        }
         Map<String, Object> newProps = new HashMap<String, Object>(properties);
         ServiceRegistration registration = registrations.get(id);
         ServiceReference reference = registration.getReference();
@@ -257,21 +267,11 @@ public class ConnectorRegistrationManager {
         registration.setProperties(MapAsDictionary.wrap(newProps));
     }
 
-    private void updateAttributes(String domainType, String connectorType, String id, Map<String, String> attributes)
-        throws ConnectorValidationFailedException {
-        ConnectorInstanceFactory factory = getConnectorFactory(domainType, connectorType);
-        Map<String, String> validationErrors = factory.getValidationErrors(instances.get(id), attributes);
-        if (!validationErrors.isEmpty()) {
-            throw new ConnectorValidationFailedException(validationErrors);
-        }
-        factory.applyAttributes(instances.get(id), attributes);
-    }
-
-    protected ConnectorInstanceFactory getConnectorFactory(String domainType, String connectorType) {
+    protected ConnectorInstanceFactory getConnectorFactoryForDescription(ConnectorDescription description) {
         Filter connectorFilter = FilterUtils.makeFilter(ConnectorInstanceFactory.class,
                 String.format("(&(%s=%s)(%s=%s))",
-                        Constants.DOMAIN_KEY, domainType,
-                        Constants.CONNECTOR_KEY, connectorType));
+                        Constants.DOMAIN_KEY, description.getDomainType(),
+                        Constants.CONNECTOR_KEY, description.getConnectorType()));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
