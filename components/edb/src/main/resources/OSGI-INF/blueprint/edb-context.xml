@@ -35,7 +35,7 @@
     <jpa:context unitname="edb" /> 
   </bean>
 
-  <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.JPADatabase">
+  <bean id="edbServiceProvider" class="org.openengsb.core.edb.jpa.internal.EDBService">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
     <argument ref="jpaDao" />
