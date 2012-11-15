@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -106,9 +106,9 @@ public class XLinkMockImpl implements XLinkMock {
         if (serviceObject == null) {
             throw new OpenXLinkException();
         }
-        LinkableDomain service;
+        LinkingSupport service;
         try {
-            service = (LinkableDomain) serviceObject;
+            service = (LinkingSupport) serviceObject;
         } catch (Exception e) {
             throw new DomainNotLinkableException();
         } 

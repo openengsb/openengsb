@@ -57,7 +57,10 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="taskbox" ref="taskbox" />
     <property name="auditingConnectors" ref="auditingConnectors" />
+    <property name="eventReceivers" ref="eventReceivers" />
   </bean>
+
+  <reference-list id="eventReceivers" availability="optional" interface="org.openengsb.core.api.EventSupport" />
 
   <reference-list id="auditingConnectors" availability="optional"
     interface="org.openengsb.domain.auditing.AuditingDomain" />

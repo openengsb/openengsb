@@ -39,7 +39,7 @@ final class ConnectorMessageListener implements MessageListener {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private RemoteRequestHandler requestHandler = new RemoteRequestHandler();
+    private RemoteRequestHandler requestHandler;
     private JmsConfig jmsConfig;
 
     ConnectorMessageListener(JmsConfig jmsConfig, RemoteRequestHandler requestHandler) {
