@@ -95,11 +95,11 @@ public abstract class AbstractExamTestHelper {
     @Inject
     private BundleContext bundleContext;
 
-    @Inject
     private AuthenticationContext applicationContext;
 
     @Before
     public void waitForRequiredTasks() throws Exception {
+        applicationContext = getOsgiService(AuthenticationContext.class);
         waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         int count = 0;
