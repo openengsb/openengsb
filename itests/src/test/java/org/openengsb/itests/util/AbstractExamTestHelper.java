@@ -129,14 +129,16 @@ public abstract class AbstractExamTestHelper {
         applicationContext = getOsgiService(AuthenticationContext.class);
     }
 
-    private static final Map<Integer, String> STATES = ImmutableMap.of(1,"UNINSTALLED", 2, "INSTALLED", 4, "RESOLVED", 8, "STARTING", 32, "ACTIVE");
+    private static final Map<Integer, String> STATES = ImmutableMap.of(1, "UNINSTALLED", 2, "INSTALLED", 4, "RESOLVED",
+            8, "STARTING", 32, "ACTIVE");
 
     private void waitasec() throws InterruptedException {
-        for(Bundle b : bundleContext.getBundles()){
-            if(b.getState()==Bundle.ACTIVE){
+        for (Bundle b : bundleContext.getBundles()) {
+            if (b.getState() == Bundle.ACTIVE) {
                 continue;
             }
-            LOGGER.info(String.format("[%s]-[%s] - %s", b.getBundleId(), STATES.get(b.getState()), b.getSymbolicName()));
+            LOGGER.info(String.format("[%s]-[%s] - %s", b.getBundleId(), STATES.get(b.getState()),
+                    b.getSymbolicName()));
         }
         Thread.sleep(1000);
     }
@@ -391,7 +393,7 @@ public abstract class AbstractExamTestHelper {
     }
 
 
-    protected String getOsgiProjectVersion(){
+    protected String getOsgiProjectVersion() {
         return bundleContext.getBundle().getHeaders().get("Project-Version");
     }
 }
