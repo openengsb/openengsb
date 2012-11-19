@@ -16,6 +16,7 @@ public class DomainArchetypeTest extends AbstractArchetypeTest {
         properties.put("package", "org.openengsb.domain.testdomain");
         properties.put("domainInterface", "TestDomain");
         properties.put("domainName", "testdomain");
+        properties.put("openengsbVersion", "3.0.0-SNAPSHOT");
     }
 
     @Override

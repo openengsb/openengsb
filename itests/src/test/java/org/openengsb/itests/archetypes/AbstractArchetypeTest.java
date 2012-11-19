@@ -29,16 +29,14 @@ public abstract class AbstractArchetypeTest {
         systemProperties.put("version", DEFAULT_TEST_VERSION);
 //        systemProperties.put("interactiveMode", "false");
         
-        // default project may be overwritten here
+        // default project data may be overwritten here
         addArchetypeData(systemProperties);
         
-        // need to make sure test artifacts that have been
+        // need to make sure old test artifacts that have been
         // created are being deleted since this can lead to
         // unstable test behavior
         Verifier verifier = new Verifier(TEST_ROOT.getAbsolutePath());
         
-//        verifier.deleteArtifact(TEST_GROUP_ID, TEST_ARTIFACT_ID, TEST_VERSION, null);
-//        verifier.deleteDirectory(TEST_ARTIFACT_ID);
         verifier.deleteArtifact(
             systemProperties.getProperty("groupId", DEFAULT_TEST_GROUP_ID),
             systemProperties.getProperty("artifactId", DEFAULT_TEST_ARTIFACT_ID),
