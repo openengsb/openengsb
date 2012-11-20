@@ -56,7 +56,7 @@
 
   <build>
     <resources>
-      <resource>
+      <!--<resource>
         <directory>${project.basedir}/src/main/resources</directory>
         <includes>
           <include>**/*</include>
@@ -75,7 +75,7 @@
         <includes>
           <include>**/*.info</include>
         </includes>
-      </resource>
+      </resource>-->
     </resources>
     <plugins>
       <plugin>
