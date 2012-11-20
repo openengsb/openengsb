@@ -34,7 +34,7 @@ public class ${connectorName}ServiceInstanceFactory extends AbstractConnectorIns
         if (attributes.containsKey("attr")) {
             instance.setAttr(attributes.get("attr"));
         }
-        return service;
+        return instance;
     }
 
     @Override
