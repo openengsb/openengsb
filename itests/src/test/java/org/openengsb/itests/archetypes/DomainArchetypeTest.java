@@ -11,7 +11,7 @@ public class DomainArchetypeTest extends AbstractArchetypeTest {
         properties.put("archetypeVersion", "3.0.0-SNAPSHOT");
         properties.put("groupId", "org.openengsb.domain");
         properties.put("artifactId", "org.openengsb.domain.testdomain");
-        properties.put("version", "1.0.0-SNAPSHOT");
+        properties.put("version", "3.0.0-SNAPSHOT");
         properties.put("name", "OpenEngSB :: Domain :: TestDomain");
         properties.put("package", "org.openengsb.domain.testdomain");
         properties.put("domainInterface", "TestDomain");
