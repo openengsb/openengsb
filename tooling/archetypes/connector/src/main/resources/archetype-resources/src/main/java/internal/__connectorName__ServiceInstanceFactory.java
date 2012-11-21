@@ -30,10 +30,11 @@ public class ${connectorName}ServiceInstanceFactory extends AbstractConnectorIns
     }
 
     @Override
-    public void doApplyAttributes(${connectorName}ServiceImpl instance, Map<String, String> attributes) {
+    public ${connectorName}ServiceImpl doApplyAttributes(${connectorName}ServiceImpl instance, Map<String, String> attributes) {
         if (attributes.containsKey("attr")) {
             instance.setAttr(attributes.get("attr"));
         }
+        return instance;
     }
 
     @Override
