@@ -17,16 +17,27 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
+import org.apache.karaf.features.FeaturesService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowService;
@@ -36,6 +47,8 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.itests.remoteclient.ExampleConnector;
+import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -46,8 +59,14 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
-    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
+    private DummyLogDomain exampleMock;
+
+    @Inject
+    private FeaturesService featuresService;
+
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain, EventSupport {
         private boolean wasCalled = false;
+        private Event lastEvent;
 
         @Override
         public String doSomethingWithMessage(String message) {
@@ -75,17 +94,27 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
             wasCalled = true;
             return new ExampleResponseModel();
         }
+
+        @Override
+        public void onEvent(Event event) {
+            lastEvent = event;
+        }
     }
 
-    @Test
-    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
-        DummyLogDomain exampleMock = new DummyLogDomain();
+    @Before
+    public void setUp() throws Exception {
+        exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
         properties.put("connector", "example");
         properties.put("location.foo", "example2");
-        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
+        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
+        getBundleContext().registerService(new String[]{ ExampleDomain.class.getName(), EventSupport.class.getName() },
+                exampleMock, properties);
+    }
 
+    @Test
+    public void testCreateRuleAndTriggerDomain_shouldTriggerDomain() throws Exception {
         RuleManager ruleManager = getOsgiService(RuleManager.class);
 
         ruleManager.addImport(ExampleDomain.class.getName());
@@ -111,14 +140,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testCreateAndTriggerResponseRule_shouldCallOrigin() throws Exception {
-        DummyLogDomain exampleMock = new DummyLogDomain();
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("domain", "example");
-        properties.put("connector", "example");
-        properties.put("location.foo", "example2");
-        properties.put(org.osgi.framework.Constants.SERVICE_PID, "example2");
-        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
-
         RuleManager ruleManager = getOsgiService(RuleManager.class);
 
         ruleManager.addImport(ExampleDomain.class.getName());
@@ -142,5 +163,47 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         workflowService.processEvent(event);
 
         assertThat(exampleMock.wasCalled, is(true));
+    }
+
+    @Test
+    public void testRaiseEvent_shouldForwardToConnector() throws Exception {
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+        Event event = new Event();
+        ContextHolder.get().setCurrentContextId("foo");
+        authenticateAsAdmin();
+        workflowService.processEvent(event);
+        assertThat(exampleMock.lastEvent, equalTo(event));
+    }
+
+    @Test
+    public void testRaiseEvent_shouldForwardToRemoteConnector() throws Exception {
+        featuresService.installFeature("openengsb-ports-jms");
+        String openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
+        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
+        final AtomicReference<Event> eventRef = new AtomicReference<Event>();
+        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        attributes.put("mixin.1", EventSupport.class.getName());
+        remoteConnector.start(new MyExampleConnector(eventRef),
+                new ConnectorDescription("example", "external-connector-proxy", attributes, properties));
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+        Event event = new Event("test");
+        ContextHolder.get().setCurrentContextId("foo");
+        authenticateAsAdmin();
+        workflowService.processEvent(event);
+        assertThat(eventRef.get().getName(), equalTo("test"));
+    }
+
+    public static class MyExampleConnector extends ExampleConnector {
+        private final AtomicReference<Event> eventRef;
+
+        public MyExampleConnector(AtomicReference<Event> eventRef) {
+            this.eventRef = eventRef;
+        }
+
+        @Override
+        public void onEvent(Event event) {
+            eventRef.set(event);
+        }
     }
 }
