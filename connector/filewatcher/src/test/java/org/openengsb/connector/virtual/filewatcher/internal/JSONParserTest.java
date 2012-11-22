@@ -19,24 +19,30 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 
-public class CSVFileParserTest extends AbstractParserTest {
+public class JSONParserTest extends AbstractParserTest {
 
     @Override
     protected FileSerializer<TestModel> createSerializer() {
-        return new CSVParser<TestModel>(TestModel.class);
+        return new JSONParser<TestModel>(TestModel.class);
     }
 
     @Test
-    public void testParseCSVShouldCreateObject() throws Exception {
-        FileUtils.write(testfile, ""
-                + "42,\"foo\", 7\n"
-                + "21,\"bar\", 9\n");
+    public void testParseJSONShouldCreateObject() throws Exception {
+        FileUtils.write(testfile, "[ "
+                + "{ \"a\":42, \"b\":\"foo\", \"c\":7 }, "
+                + "{ \"a\":21, \"b\":\"bar\", \"c\":9 }"
+                + "]");
         List<TestModel> testModels = parser.readFile(testfile);
         assertThat(testModels.size(), is(2));
         TestModel model = testModels.get(0);
@@ -48,4 +54,5 @@ public class CSVFileParserTest extends AbstractParserTest {
         assertThat(model.getB(), is("bar"));
         assertThat(model.getC(), is(9L));
     }
+
 }

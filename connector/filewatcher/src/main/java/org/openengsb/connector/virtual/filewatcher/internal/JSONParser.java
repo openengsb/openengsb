@@ -16,36 +16,34 @@
  */
 package org.openengsb.connector.virtual.filewatcher.internal;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 
-public class CSVFileParserTest extends AbstractParserTest {
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
-    @Override
-    protected FileSerializer<TestModel> createSerializer() {
-        return new CSVParser<TestModel>(TestModel.class);
+public class JSONParser<ResultType> implements FileSerializer<ResultType> {
+
+    private Class<ResultType> resultType;
+
+    public JSONParser(Class<ResultType> resultType) {
+        this.resultType = resultType;
     }
 
-    @Test
-    public void testParseCSVShouldCreateObject() throws Exception {
-        FileUtils.write(testfile, ""
-                + "42,\"foo\", 7\n"
-                + "21,\"bar\", 9\n");
-        List<TestModel> testModels = parser.readFile(testfile);
-        assertThat(testModels.size(), is(2));
-        TestModel model = testModels.get(0);
-        assertThat(model.getA(), is(42));
-        assertThat(model.getB(), is("foo"));
-        assertThat(model.getC(), is(7L));
-        model = testModels.get(1);
-        assertThat(model.getA(), is(21));
-        assertThat(model.getB(), is("bar"));
-        assertThat(model.getC(), is(9L));
+    @Override
+    public List<ResultType> readFile(File path) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        MappingIterator<ResultType> iterator = mapper.reader(resultType).readValues(path);
+        return Lists.newArrayList(iterator);
+    }
+
+    @Override
+    public void writeFile(File path, List<ResultType> models) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(path, models);
     }
 }

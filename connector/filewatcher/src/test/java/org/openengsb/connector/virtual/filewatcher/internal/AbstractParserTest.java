@@ -19,33 +19,42 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 
-public class CSVFileParserTest extends AbstractParserTest {
+public abstract class AbstractParserTest {
 
-    @Override
-    protected FileSerializer<TestModel> createSerializer() {
-        return new CSVParser<TestModel>(TestModel.class);
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+    protected FileSerializer<TestModel> parser;
+    protected File testfile;
+
+    @Before
+    public void setupAbstractParserTest() throws Exception {
+        testfile = temporaryFolder.newFile("testfile.txt");
+        parser = createSerializer();
     }
+
+    protected abstract FileSerializer<TestModel> createSerializer();
 
     @Test
-    public void testParseCSVShouldCreateObject() throws Exception {
-        FileUtils.write(testfile, ""
-                + "42,\"foo\", 7\n"
-                + "21,\"bar\", 9\n");
-        List<TestModel> testModels = parser.readFile(testfile);
-        assertThat(testModels.size(), is(2));
-        TestModel model = testModels.get(0);
-        assertThat(model.getA(), is(42));
-        assertThat(model.getB(), is("foo"));
-        assertThat(model.getC(), is(7L));
-        model = testModels.get(1);
-        assertThat(model.getA(), is(21));
-        assertThat(model.getB(), is("bar"));
-        assertThat(model.getC(), is(9L));
+    public void testWriteDataAndParseShouldBeTheSame() throws Exception {
+        List<TestModel> models = Arrays.asList(
+                new TestModel(42, "foo", 7L),
+                new TestModel(21, "bar", 9L)
+        );
+        parser.writeFile(testfile, models);
+        List<TestModel> parsedModels = parser.readFile(testfile);
+        assertThat(parsedModels, is(models));
     }
+
 }
