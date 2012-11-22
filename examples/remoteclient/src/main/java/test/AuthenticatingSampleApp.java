@@ -33,7 +33,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
@@ -44,6 +43,7 @@ import org.openengsb.core.api.security.EncryptionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 /**

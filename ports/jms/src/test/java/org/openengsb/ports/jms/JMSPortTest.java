@@ -56,8 +56,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -100,6 +98,8 @@ import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.jms.support.JmsUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

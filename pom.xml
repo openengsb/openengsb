@@ -102,7 +102,7 @@
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
-    <jackson.version>1.9.3</jackson.version>
+    <jackson2.version>2.1.1</jackson2.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>2.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
@@ -896,20 +896,25 @@
         <version>${apache.xmlrpc.version}</version>
         <scope>compile</scope>
       </dependency>
+      <!--<dependency>-->
+        <!--<groupId>com.fasterxml.jackson.datatype</groupId>-->
+        <!--<artifactId>jackson-datatype-json-org</artifactId>-->
+        <!--<version>${jackson2.version}</version>-->
+      <!--</dependency>-->
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson.version}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-xc</artifactId>
-        <version>${jackson.version}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>${jackson.version}</version>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-jaxb-annotations</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jettinson</groupId>

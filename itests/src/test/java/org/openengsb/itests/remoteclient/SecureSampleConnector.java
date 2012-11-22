@@ -23,9 +23,6 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.model.BeanDescription;
@@ -35,6 +32,8 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Setup to run this app:
@@ -176,8 +175,7 @@ public final class SecureSampleConnector {
         return requestHandler.getInvocationHistory();
     }
 
-    public static String createCreateMessage(ConnectorDescription connectorDescription) throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static String createCreateMessage(ConnectorDescription connectorDescription) throws IOException {
         String connectorId = "example-remote";
         MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription});
         Map<String, String> metaData = new HashMap<String, String>();
@@ -192,8 +190,7 @@ public final class SecureSampleConnector {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
     }
 
-    public static void createDeleteMessage() throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void createDeleteMessage() throws IOException {
         String connectorId = "example-remote";
         MethodCall methodCall = new MethodCall("delete", new Object[]{ connectorId });
         Map<String, String> metaData = new HashMap<String, String>();
@@ -208,8 +205,7 @@ public final class SecureSampleConnector {
         System.out.println(writeValueAsString);
     }
 
-    public static void createRegisterMessage() throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void createRegisterMessage() throws IOException {
         MethodCall methodCall = new MethodCall("registerConnector", new String[]{ "example-remote", "jms-json",
             "tcp://127.0.0.1:%s?example-remote" });
         Map<String, String> metaData = new HashMap<String, String>();

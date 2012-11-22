@@ -20,10 +20,6 @@ package org.openengsb.core.services.filter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -32,6 +28,9 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
+import org.openengsb.core.util.JsonUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next
@@ -53,7 +52,8 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
 
     @Override
     public MethodResultMessage doFilter(MethodCallMessage input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = createObjectMapper();
+
+        ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
         MethodResultMessage resultMessage;
         try {
             String jsonString = objectMapper.writeValueAsString(input);
@@ -86,17 +86,6 @@ public class OutgoingJsonSecureMethodCallMarshalFilter extends
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, String.class, String.class);
         this.next = next;
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector introspector =
-            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
-        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
-        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
-        return mapper;
     }
 
 }

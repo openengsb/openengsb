@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -29,6 +28,8 @@ import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This filter takes a {@link String} representing a JSON-encoded {@link EncryptedMessage} and parses it. The actual

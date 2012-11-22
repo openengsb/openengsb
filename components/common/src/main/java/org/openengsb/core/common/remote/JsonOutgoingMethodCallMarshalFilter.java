@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -30,6 +29,8 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.util.JsonUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This filter takes a {@link MethodCallMessage} and serializes it to JSON. The String s then passed on to the next

@@ -131,9 +131,10 @@
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/1.8.2_2</bundle>
     <bundle start-level='20'>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
-    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
-    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
-    <bundle start-level='20'>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <bundle start-level='20'>mvn:com.fasterxml.jackson.core/jackson-core/${jackson2.version}</bundle>
+    <bundle start-level='20'>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson2.version}</bundle>
+    <bundle start-level='20'>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson2.version}</bundle>
+    <bundle start-level='20'>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson2.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
     <bundle start-level='20'>mvn:com.google.guava/guava/${guava.version}</bundle>

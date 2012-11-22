@@ -20,7 +20,6 @@ package org.openengsb.core.services.filter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -30,6 +29,8 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This filter takes a {@link String} representing a JSON-encoded {@link SecureRequest} and parses it. The next filter

@@ -21,11 +21,11 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.MethodCall;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 public class JsonUtilTest {
