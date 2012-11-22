@@ -150,6 +150,11 @@
       <artifactId>org.openengsb.framework.services</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-csv</artifactId>
+      <version>2.1.1</version>
+    </dependency>
   </dependencies>
 
   <repositories>
