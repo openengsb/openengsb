@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -30,6 +32,11 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Lists;
 
 public class CSVParser<ResultType> implements FileSerializer<ResultType> {
+
+    private abstract class OpenEngSBModelMixin {
+        @JsonIgnore
+        abstract List<OpenEngSBModelEntry> getOpenEngSBModelTail();
+    }
 
     private Class<ResultType> resultType;
 
@@ -53,6 +60,7 @@ public class CSVParser<ResultType> implements FileSerializer<ResultType> {
     @Override
     public void writeFile(File path, List<ResultType> models) throws IOException {
         CsvMapper csvMapper = new CsvMapper();
+        csvMapper.addMixInAnnotations(resultType, OpenEngSBModelMixin.class);
         CsvSchema schema = csvMapper.schemaFor(resultType);
         System.out.println(schema.getColumnDesc());
         ObjectWriter writer = csvMapper.writer(schema);
