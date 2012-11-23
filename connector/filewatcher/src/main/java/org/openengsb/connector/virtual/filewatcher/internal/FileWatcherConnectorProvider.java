@@ -23,9 +23,20 @@ import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
+import org.openengsb.core.ekb.api.PersistInterface;
+import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
+
+    private QueryInterface queryService;
+
+    private PersistInterface persistService;
+
+    public FileWatcherConnectorProvider(PersistInterface persistService, QueryInterface queryService) {
+        this.persistService = persistService;
+        this.queryService = queryService;
+    }
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -43,7 +54,8 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
 
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
-        return new FileWatcherConnectorFactory(provider, new DefaultOsgiUtilsService(bundleContext));
+        return new FileWatcherConnectorFactory(provider, persistService, queryService,
+                new DefaultOsgiUtilsService(bundleContext));
     }
 
 }

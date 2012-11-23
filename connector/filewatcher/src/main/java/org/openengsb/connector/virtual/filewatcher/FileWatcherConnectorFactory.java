@@ -17,6 +17,8 @@
 
 package org.openengsb.connector.virtual.filewatcher;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
 
@@ -25,6 +27,8 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.VirtualConnectorFactory;
+import org.openengsb.core.ekb.api.PersistInterface;
+import org.openengsb.core.ekb.api.QueryInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,21 +40,54 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private OsgiUtilsService utilsService;
 
-    public FileWatcherConnectorFactory(DomainProvider domainProvider, OsgiUtilsService utilsService) {
+    private QueryInterface queryService;
+
+    private PersistInterface persistService;
+
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, PersistInterface persistService,
+            QueryInterface queryService, OsgiUtilsService utilsService) {
         super(domainProvider);
+        this.persistService = persistService;
+        this.queryService = queryService;
         this.utilsService = utilsService;
     }
 
     @Override
     protected FileWatcherConnector updateHandlerAttributes(FileWatcherConnector handler,
             Map<String, String> attributes) {
-        handler.setWatchfile(attributes.get("watchfile"));
+        Class<?> modelType;
+        try {
+            modelType = getClass().getClassLoader().loadClass(attributes.get("modelType"));
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+        handler.setModelType(modelType);
+
+        String serializerTypeName = attributes.get("serializer");
+
+        Object parser = instantiateParser(serializerTypeName, modelType);
+        handler.setFileSerializer((FileSerializer<?>) parser);
+        handler.setWatchfile(new File(attributes.get("watchfile")));
         return handler;
+    }
+
+    private Object instantiateParser(String serializerTypeName, Class<?> modelType) {
+        try {
+            Class<?> parserType = getClass().getClassLoader().loadClass(serializerTypeName);
+            Constructor<?> constructor = parserType.getConstructor(Class.class);
+            return constructor.newInstance(modelType);
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     protected FileWatcherConnector createNewHandler(String id) {
-        return new FileWatcherConnector(id);
+        return new FileWatcherConnector(id, persistService, queryService);
     }
 
     @Override

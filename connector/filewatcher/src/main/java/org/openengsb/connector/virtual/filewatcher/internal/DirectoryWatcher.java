@@ -26,7 +26,7 @@ public abstract class DirectoryWatcher extends TimerTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryWatcher.class);
 
-    private File watchfile;
+    protected File watchfile;
 
     private long lastmodified;
 
