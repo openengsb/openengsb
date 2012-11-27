@@ -19,6 +19,7 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
@@ -33,6 +34,8 @@ import com.google.common.collect.Lists;
 
 public class CSVParser<ResultType> implements FileSerializer<ResultType> {
 
+    private final CsvMapper mapper;
+
     private abstract class OpenEngSBModelMixin {
         @JsonIgnore
         abstract List<OpenEngSBModelEntry> getOpenEngSBModelTail();
@@ -42,14 +45,18 @@ public class CSVParser<ResultType> implements FileSerializer<ResultType> {
 
     public CSVParser(Class<ResultType> resultType) {
         this.resultType = resultType;
+        mapper = new CsvMapper();
+        mapper.addMixInAnnotations(resultType, OpenEngSBModelMixin.class);
     }
 
     @Override
     public List<ResultType> readFile(File path) throws IOException {
-        CsvMapper csvMapper = new CsvMapper();
-        CsvSchema schema = csvMapper.schemaFor(resultType);
+        if (!path.exists()) {
+            return Collections.emptyList();
+        }
+        CsvSchema schema = mapper.schemaFor(resultType);
         try {
-            MappingIterator<ResultType> iterator = csvMapper.reader(schema).withType(resultType)
+            MappingIterator<ResultType> iterator = mapper.reader(schema).withType(resultType)
                 .readValues(path);
             return Lists.newArrayList(iterator);
         } catch (IOException e) {
@@ -59,11 +66,9 @@ public class CSVParser<ResultType> implements FileSerializer<ResultType> {
 
     @Override
     public void writeFile(File path, List<ResultType> models) throws IOException {
-        CsvMapper csvMapper = new CsvMapper();
-        csvMapper.addMixInAnnotations(resultType, OpenEngSBModelMixin.class);
-        CsvSchema schema = csvMapper.schemaFor(resultType);
+        CsvSchema schema = mapper.schemaFor(resultType);
         System.out.println(schema.getColumnDesc());
-        ObjectWriter writer = csvMapper.writer(schema);
+        ObjectWriter writer = mapper.writer(schema);
         // supplying the file directly does not work.
         // java.lang.UnsupportedOperationException: Generator of type com.fasterxml.jackson.core.json.UTF8JsonGenerator
         // does not support schema of type 'CSV'

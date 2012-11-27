@@ -17,10 +17,13 @@
 package org.openengsb.connector.virtual.filewatcher.internal;
 
 import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
 public class TestModel {
+
     private int a;
+    @OpenEngSBModelId
     private String b;
     private long c;
 

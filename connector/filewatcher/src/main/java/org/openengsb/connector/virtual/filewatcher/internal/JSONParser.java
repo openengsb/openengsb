@@ -18,32 +18,45 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 public class JSONParser<ResultType> implements FileSerializer<ResultType> {
 
+    private final ObjectMapper mapper;
+
+    private abstract class OpenEngSBModelMixin {
+        @JsonIgnore
+        abstract List<OpenEngSBModelEntry> getOpenEngSBModelTail();
+    }
+
     private Class<ResultType> resultType;
 
     public JSONParser(Class<ResultType> resultType) {
         this.resultType = resultType;
+        mapper = new ObjectMapper();
+        mapper.addMixInAnnotations(resultType, OpenEngSBModelMixin.class);
     }
 
     @Override
     public List<ResultType> readFile(File path) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        if(!path.exists()){
+            return Collections.emptyList();
+        }
         MappingIterator<ResultType> iterator = mapper.reader(resultType).readValues(path);
         return Lists.newArrayList(iterator);
     }
 
     @Override
     public void writeFile(File path, List<ResultType> models) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(path, models);
     }
 }

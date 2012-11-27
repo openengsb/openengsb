@@ -75,8 +75,14 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private synchronized void update() throws IOException {
         List<?> models = queryService.queryForActiveModels(modelType);
-        fileSerializer.writeFile(watchfile, (List) models);
-        localModels = models;
+        if(models == null){
+            watchfile.delete();
+            localModels = Collections.emptyList();
+        } else {
+            fileSerializer.writeFile(watchfile, (List) models);
+            localModels = models;
+        }
+
     }
 
     private static <ModelType> EKBCommit buildCommit(List<ModelType> localModels, List<ModelType> newModels) {
@@ -131,6 +137,9 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                     newModels = fileSerializer.readFile(watchfile);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+                if(localModels == null){
+                    System.out.println("localModels are null, WTF?????");
                 }
                 EKBCommit commit = buildCommit((List) localModels, (List) newModels);
                 persistService.commit(commit);
