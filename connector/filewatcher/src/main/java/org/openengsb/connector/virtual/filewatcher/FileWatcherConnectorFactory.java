@@ -93,7 +93,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     @Override
     protected FileWatcherConnector createNewHandler(String id) {
-        return new FileWatcherConnector(id, persistService, queryService, authenticationContext);
+        return new FileWatcherConnector(id, domainProvider.getId(), persistService, queryService, authenticationContext);
     }
 
     @Override

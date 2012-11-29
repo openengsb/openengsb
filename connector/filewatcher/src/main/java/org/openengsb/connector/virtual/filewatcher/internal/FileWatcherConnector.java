@@ -54,9 +54,9 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private Timer timer;
 
-    public FileWatcherConnector(String instanceId, PersistInterface persistService, QueryInterface queryService,
+    public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService, QueryInterface queryService,
             AuthenticationContext authenticationContext) {
-        super(instanceId);
+        super(instanceId, domainType);
         this.authenticationContext = authenticationContext;
         this.persistService = persistService;
         this.queryService = queryService;
@@ -147,7 +147,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 EKBCommit commit = buildCommit((List) localModels, (List) newModels);
                 commit.setConnectorId("filewatcher");
                 commit.setInstanceId(instanceId);
-                commit.setDomainId("example");
+                commit.setDomainId(domainType);
                 ContextHolder.get().setCurrentContextId("foo");
                 authenticationContext.login("admin", new Password("password"));
                 persistService.commit(commit);
