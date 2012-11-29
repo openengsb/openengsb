@@ -25,8 +25,14 @@
       <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
     <bean class="org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnectorProvider">
-      <property name="id" value="filewatcher" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
+      <argument type="java.lang.String" value="filewatcher" />
+      <argument type="org.openengsb.core.ekb.api.PersistInterface" ref="persistenceService" />
+      <argument type="org.openengsb.core.ekb.api.QueryInterface" ref="queryService" />
+      <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext" />
+      <argument type="org.openengsb.core.api.security.AuthenticationContext" ref="authenticationContext" />
     </bean>
   </service>
+  <reference interface="org.openengsb.core.ekb.api.PersistInterface" id="persistenceService" />
+  <reference interface="org.openengsb.core.ekb.api.QueryInterface" id="queryService" />
+  <reference interface="org.openengsb.core.api.security.AuthenticationContext" id="authenticationContext" />
 </blueprint>

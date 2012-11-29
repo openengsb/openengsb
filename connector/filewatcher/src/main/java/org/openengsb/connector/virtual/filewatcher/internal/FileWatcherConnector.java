@@ -25,9 +25,12 @@ import java.util.List;
 import java.util.Timer;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.EventSupport;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnector;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.PersistInterface;
@@ -45,13 +48,16 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private File watchfile;
 
+    private AuthenticationContext authenticationContext;
 
     private List<?> localModels = new ArrayList<Object>();
 
     private Timer timer;
 
-    public FileWatcherConnector(String instanceId, PersistInterface persistService, QueryInterface queryService) {
+    public FileWatcherConnector(String instanceId, PersistInterface persistService, QueryInterface queryService,
+            AuthenticationContext authenticationContext) {
         super(instanceId);
+        this.authenticationContext = authenticationContext;
         this.persistService = persistService;
         this.queryService = queryService;
     }
@@ -61,7 +67,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
         if (ArrayUtils.contains(this.getClass().getInterfaces(), method.getDeclaringClass())) {
             return method.invoke(this, args);
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -138,11 +144,14 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                if(localModels == null){
-                    System.out.println("localModels are null, WTF?????");
-                }
                 EKBCommit commit = buildCommit((List) localModels, (List) newModels);
+                commit.setConnectorId("filewatcher");
+                commit.setInstanceId(instanceId);
+                commit.setDomainId("example");
+                ContextHolder.get().setCurrentContextId("foo");
+                authenticationContext.login("admin", new Password("password"));
                 persistService.commit(commit);
+                authenticationContext.logout();
             }
         };
         if (watchfile.exists()) {

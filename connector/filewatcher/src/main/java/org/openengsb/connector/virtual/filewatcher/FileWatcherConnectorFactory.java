@@ -24,11 +24,14 @@ import java.util.Map;
 
 import org.openengsb.connector.virtual.filewatcher.internal.FileWatcherConnector;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnectorFactory;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.labs.delegation.service.DelegationClassLoader;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,18 +41,21 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorFactory.class);
 
-    private OsgiUtilsService utilsService;
-
     private QueryInterface queryService;
 
     private PersistInterface persistService;
 
+    private DelegationClassLoader delegationClassLoader;
+    private AuthenticationContext authenticationContext;
+
     public FileWatcherConnectorFactory(DomainProvider domainProvider, PersistInterface persistService,
-            QueryInterface queryService, OsgiUtilsService utilsService) {
+            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext) {
         super(domainProvider);
         this.persistService = persistService;
         this.queryService = queryService;
-        this.utilsService = utilsService;
+        this.delegationClassLoader = new DelegationClassLoader(bundleContext, Constants.DELEGATION_CONTEXT_MODELS,
+                getClass().getClassLoader());
+        this.authenticationContext = authenticationContext;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
             Map<String, String> attributes) {
         Class<?> modelType;
         try {
-            modelType = getClass().getClassLoader().loadClass(attributes.get("modelType"));
+            modelType = delegationClassLoader.loadClass(attributes.get("modelType"));
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
@@ -87,7 +93,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     @Override
     protected FileWatcherConnector createNewHandler(String id) {
-        return new FileWatcherConnector(id, persistService, queryService);
+        return new FileWatcherConnector(id, persistService, queryService, authenticationContext);
     }
 
     @Override

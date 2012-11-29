@@ -357,6 +357,7 @@
       Connector implementing a filewatcher for any domain.
     </details>
     <feature version="${project.version}">openengsb-framework</feature>
+    <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-csv/${jackson2.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.virtual.filewatcher/${project.version}</bundle>
   </feature>
 

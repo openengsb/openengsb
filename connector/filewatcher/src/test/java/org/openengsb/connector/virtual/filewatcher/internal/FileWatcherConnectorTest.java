@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,6 +54,7 @@ import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -128,7 +130,8 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
                 return activeModels.get(type);
             }
         });
-        FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider(persistenceService, queryService);
+        FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider("foo", persistenceService,
+                queryService, bundleContext, mock(AuthenticationContext.class));
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
     }

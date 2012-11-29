@@ -44,4 +44,24 @@ public class SourceModelA {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SourceModelA)) return false;
+
+        SourceModelA that = (SourceModelA) o;
+
+        if (edbId != null ? !edbId.equals(that.edbId) : that.edbId != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = edbId != null ? edbId.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }

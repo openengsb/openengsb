@@ -22,10 +22,12 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.AbstractConnectorProvider;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
+import org.osgi.framework.BundleContext;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
 
@@ -33,9 +35,15 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
 
     private PersistInterface persistService;
 
-    public FileWatcherConnectorProvider(PersistInterface persistService, QueryInterface queryService) {
+    private AuthenticationContext authenticationContext;
+
+    public FileWatcherConnectorProvider(String id, PersistInterface persistService, QueryInterface queryService,
+            BundleContext bundleContext, AuthenticationContext authenticationContext) {
+        setId(id);
+        setBundleContext(bundleContext);
         this.persistService = persistService;
         this.queryService = queryService;
+        this.authenticationContext = authenticationContext;
     }
 
     @Override
@@ -43,19 +51,18 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
         Builder builder = ServiceDescriptor.builder(strings);
 
         builder.id("filewatcher");
-        builder.name("composite.name", "filewatcher");
-        builder.description("composite.description");
+        builder.name("filewatcher.name", "filewatcher");
+        builder.description("filewatcher.description");
 
         builder.attribute(builder.newAttribute().id("watchfile").name("filewatcher.watchfile.id")
-            .description("composite.queryString.description").build());
+            .description("filewatcher.watchfile.description").build());
 
         return builder.build();
     }
 
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
-        return new FileWatcherConnectorFactory(provider, persistService, queryService,
-                new DefaultOsgiUtilsService(bundleContext));
+        return new FileWatcherConnectorFactory(provider, persistService, queryService, bundleContext, authenticationContext);
     }
 
 }
