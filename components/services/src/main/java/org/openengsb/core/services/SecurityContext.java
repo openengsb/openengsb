@@ -21,7 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.shiro.concurrent.SubjectAwareExecutorService;
-import org.openengsb.core.services.internal.security.RootSubjectHolder;
+import org.apache.shiro.subject.Subject;
+import org.openengsb.core.services.internal.security.RootAuthenticationToken;
 import org.openengsb.core.util.ContextAwareCallable;
 import org.openengsb.core.util.ContextAwareRunnable;
 import org.openengsb.core.util.ThreadLocalUtil;
@@ -30,7 +31,6 @@ import org.openengsb.core.util.ThreadLocalUtil;
  * provides util-methods for security purposes
  */
 public final class SecurityContext {
-
     /**
      * Executes the given task with root-permissions. Use with care.
      * 
@@ -39,7 +39,13 @@ public final class SecurityContext {
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
         throws ExecutionException {
         ContextAwareCallable<ReturnType> contextAwareCallable = new ContextAwareCallable<ReturnType>(task);
-        return RootSubjectHolder.getRootSubject().execute(contextAwareCallable);
+        Subject newsubject = (new Subject.Builder()).buildSubject();
+        newsubject.login(new RootAuthenticationToken());
+        try {
+            return newsubject.execute(contextAwareCallable);
+        } finally {
+            newsubject.logout();
+        }
     }
 
     /**
@@ -47,7 +53,13 @@ public final class SecurityContext {
      */
     public static void executeWithSystemPermissions(Runnable task) {
         ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
-        RootSubjectHolder.getRootSubject().execute(contextAwaretask);
+        Subject newsubject = (new Subject.Builder()).buildSubject();
+        newsubject.login(new RootAuthenticationToken());
+        try {
+            newsubject.execute(contextAwaretask);
+        } finally {
+            newsubject.logout();
+        }
     }
 
     /**
