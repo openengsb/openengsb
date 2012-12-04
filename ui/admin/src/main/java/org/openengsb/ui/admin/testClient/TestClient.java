@@ -60,7 +60,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
@@ -98,6 +97,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
@@ -576,7 +576,8 @@ public class TestClient extends BasePage {
         String jsonResult = "";
         try {
             jsonResult =
-                JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false)
+                JsonUtils.createObjectMapperWithIntroSpectors()
+                    .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                     .writeValueAsString(secureRequest);
         } catch (IOException ex) {
             handleExceptionWithFeedback(ex);

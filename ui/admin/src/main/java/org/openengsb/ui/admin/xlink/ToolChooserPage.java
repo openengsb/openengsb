@@ -18,7 +18,6 @@
 package org.openengsb.ui.admin.xlink;
 
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,7 +41,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -59,6 +57,8 @@ import org.openengsb.core.services.xlink.XLinkUtils;
 import org.openengsb.core.util.ModelUtils;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Manages the processing of an incoming XLink and, if necessary, renders a page

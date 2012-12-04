@@ -30,7 +30,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
@@ -42,6 +41,7 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.osgi.framework.Constants;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 

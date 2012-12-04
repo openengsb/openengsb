@@ -21,17 +21,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.util.ModelUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Static util class for xlink, defining DemonstrationMethods. 

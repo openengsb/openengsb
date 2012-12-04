@@ -23,10 +23,8 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
@@ -34,6 +32,8 @@ import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Setup to run this app:
@@ -145,18 +145,23 @@ public final class SecureSampleConnector {
         this.openwirePort = openwirePort;
     }
 
-    static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
     private JmsConfig jmsConfig;
     private final String openwirePort;
 
     private RemoteRequestHandler requestHandler;
 
-    public void start() throws Exception {
+    public void start(Connector connectorImpl, ConnectorDescription connectorDescription) throws Exception {
         jmsConfig = new JmsConfig(String.format("failover:(tcp://localhost:%s)?timeout=60000", openwirePort));
         jmsConfig.init();
-        requestHandler = new RemoteRequestHandler();
+        requestHandler = new RemoteRequestHandler(connectorImpl);
         jmsConfig.createConsumerForQueue("example-remote", new ConnectorMessageListener(jmsConfig, requestHandler));
-        jmsConfig.sendMessage("receive", String.format(CREATE_MESSAGE, openwirePort));
+        Map<String, String> attributes = connectorDescription.getAttributes();
+        attributes.put("portId", "jms-json");
+        attributes.put("destination", "tcp://127.0.0.1:%s?example-remote");
+        attributes.put("serviceId", "example-remote");
+        String createMessage = createCreateMessage(connectorDescription);
+        jmsConfig.sendMessage("receive", String.format(createMessage, openwirePort));
         Thread.sleep(5000);
         jmsConfig.sendMessage("receive", String.format(REGISTER_MESSAGE, openwirePort));
     }
@@ -170,19 +175,9 @@ public final class SecureSampleConnector {
         return requestHandler.getInvocationHistory();
     }
 
-    public static void createCreateMessage() throws JsonGenerationException,
-        JsonMappingException, IOException {
-        Map<String, String> attributes = new HashMap<String, String>();
-        Map<String, Object> properties = new HashMap<String, Object>();
-
-        attributes.put("portId", "jms-json");
-        attributes.put("destination", "tcp://127.0.0.1:%s?example-remote");
-        attributes.put("serviceId", "example-remote");
-        ConnectorDescription connectorDescription = new ConnectorDescription("example", "external-connector-proxy",
-            attributes, properties);
-
+    public static String createCreateMessage(ConnectorDescription connectorDescription) throws IOException {
         String connectorId = "example-remote";
-        MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription });
+        MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription});
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
@@ -192,12 +187,10 @@ public final class SecureSampleConnector {
         methodCallRequest.setCredentials(auth);
 
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
-        System.out.println(writeValueAsString);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCallRequest);
     }
 
-    public static void createDeleteMessage() throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void createDeleteMessage() throws IOException {
         String connectorId = "example-remote";
         MethodCall methodCall = new MethodCall("delete", new Object[]{ connectorId });
         Map<String, String> metaData = new HashMap<String, String>();
@@ -212,8 +205,7 @@ public final class SecureSampleConnector {
         System.out.println(writeValueAsString);
     }
 
-    public static void createRegisterMessage() throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public static void createRegisterMessage() throws IOException {
         MethodCall methodCall = new MethodCall("registerConnector", new String[]{ "example-remote", "jms-json",
             "tcp://127.0.0.1:%s?example-remote" });
         Map<String, String> metaData = new HashMap<String, String>();

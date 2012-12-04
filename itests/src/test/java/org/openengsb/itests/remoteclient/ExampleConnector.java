@@ -19,6 +19,8 @@ package org.openengsb.itests.remoteclient;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
@@ -27,7 +29,7 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExampleConnector extends AbstractOpenEngSBConnectorService implements ExampleDomain, Connector {
+public class ExampleConnector extends AbstractOpenEngSBConnectorService implements ExampleDomain, Connector, EventSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExampleConnector.class);
 
@@ -61,4 +63,7 @@ public class ExampleConnector extends AbstractOpenEngSBConnectorService implemen
         return response;
     }
 
+    @Override
+    public void onEvent(Event event) {
+    }
 }

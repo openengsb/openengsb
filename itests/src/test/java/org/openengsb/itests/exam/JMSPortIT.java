@@ -40,11 +40,11 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -56,6 +56,7 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.itests.remoteclient.ExampleConnector;
 import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.ops4j.pax.exam.Option;
@@ -70,6 +71,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.support.JmsUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -173,7 +176,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
-        remoteConnector.start();
+        remoteConnector.start(new ExampleConnector(), new ConnectorDescription("example", "external-connector-proxy"));
         ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(service.pid=example-remote)", 31000);
 
         assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),

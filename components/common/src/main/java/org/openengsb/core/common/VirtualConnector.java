@@ -31,6 +31,8 @@ import org.openengsb.core.api.OpenEngSBService;
  */
 public abstract class VirtualConnector extends AbstractOpenEngSBService implements InvocationHandler {
 
+    protected String domainType;
+
     /**
      * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
      * to the remote object
@@ -40,6 +42,11 @@ public abstract class VirtualConnector extends AbstractOpenEngSBService implemen
 
     protected VirtualConnector(String instanceId) {
         super(instanceId);
+    }
+
+    protected VirtualConnector(String instanceId, String domainType) {
+        super(instanceId);
+        this.domainType = domainType;
     }
 
     @Override

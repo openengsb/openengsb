@@ -107,8 +107,16 @@
       <artifactId>org.openengsb.framework.api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -118,10 +126,6 @@
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils-core</artifactId>
       <version>1.8.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-xc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>

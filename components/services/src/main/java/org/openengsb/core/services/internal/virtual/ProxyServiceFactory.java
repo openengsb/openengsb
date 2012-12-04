@@ -48,13 +48,6 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public Connector applyAttributes(Connector instance, Map<String, String> attributes) {
-        ProxyConnector handler = handlers.get(instance);
-        updateHandlerAttributes(handler, attributes);
-        return instance;
-    }
-
-    @Override
     protected ProxyConnector createNewHandler(String id) {
         ProxyRegistration proxyRegistration = connectorRegistry.create(id);
         return new ProxyConnector(id, outgoingPortUtilService, proxyRegistration);

@@ -17,10 +17,10 @@
 
 package org.openengsb.domain.OOSourceCode;
 
-import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.domain.OOSourceCode.model.OOClass;
 
-public interface OOSourceCodeDomain extends LinkableDomain {
+public interface OOSourceCodeDomain extends LinkingSupport {
 
     /**
      * Adds or updates a defined ModelClass

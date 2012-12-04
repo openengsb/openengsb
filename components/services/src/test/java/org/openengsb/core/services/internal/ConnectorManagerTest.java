@@ -55,7 +55,7 @@ import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.LinkableDomain;
+import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
@@ -88,7 +88,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
     
-    private LinkableDomain testConnector;
+    private LinkingSupport testConnector;
     private ArgumentCaptor<XLinkConnector[]> eventArgument;
     
     private TransformationEngine transformationEngine;
@@ -113,8 +113,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
         mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
-        testConnector = mock(LinkableDomain.class);
-        LinkableDomain testConnector2 = mock(LinkableDomain.class);
+        testConnector = mock(LinkingSupport.class);
+        LinkingSupport testConnector2 = mock(LinkingSupport.class);
         Domain testConnector3 = mock(Domain.class);
         when(mockedServiceUtils.getService("(service.pid=test+test+test)", 100L)).thenReturn(testConnector);
         when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(testConnector2);

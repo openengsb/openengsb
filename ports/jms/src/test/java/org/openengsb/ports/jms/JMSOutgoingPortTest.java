@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +42,9 @@ import org.openengsb.core.services.filter.OutgoingJsonSecureMethodCallMarshalFil
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 

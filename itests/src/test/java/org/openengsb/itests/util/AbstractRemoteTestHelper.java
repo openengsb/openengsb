@@ -31,7 +31,6 @@ import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.remote.MethodResult;
@@ -45,6 +44,8 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Abstracts the general concepts required for remote tests

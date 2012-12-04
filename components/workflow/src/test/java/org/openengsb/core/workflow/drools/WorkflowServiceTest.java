@@ -42,7 +42,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.openengsb.core.api.Domain;
@@ -55,6 +54,8 @@ import org.openengsb.core.workflow.api.model.InternalWorkflowEvent;
 import org.openengsb.core.workflow.api.model.ProcessBag;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 

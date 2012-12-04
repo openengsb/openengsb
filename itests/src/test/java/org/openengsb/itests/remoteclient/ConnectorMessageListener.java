@@ -24,13 +24,13 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 
 final class ConnectorMessageListener implements MessageListener {
@@ -39,7 +39,7 @@ final class ConnectorMessageListener implements MessageListener {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private RemoteRequestHandler requestHandler = new RemoteRequestHandler();
+    private RemoteRequestHandler requestHandler;
     private JmsConfig jmsConfig;
 
     ConnectorMessageListener(JmsConfig jmsConfig, RemoteRequestHandler requestHandler) {

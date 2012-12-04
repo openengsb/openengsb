@@ -23,7 +23,6 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.model.EncryptedMessage;
@@ -35,6 +34,8 @@ import org.openengsb.core.services.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SecureJsonPortTest extends GenericSecurePortTest<String> {
 

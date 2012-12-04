@@ -34,7 +34,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMResult;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -53,6 +52,8 @@ import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PipelineTest {
 
