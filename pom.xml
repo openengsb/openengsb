@@ -124,6 +124,28 @@
               <goal>java2wsdl</goal>
             </goals>
           </execution>
+          <execution>
+            <id>LinkingSupportWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.LinkingSupport</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/LinkingSupport.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>EventSupportWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.EventSupport</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/EventSupport.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -147,6 +169,16 @@
                   <file>target/generated/wsdl/ProxyConnectorRegistry.wsdl</file>
                   <type>wsdl</type>
                   <classifier>ProxyConnectorRegistry</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/LinkingSupport.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>LinkingSupport</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/EventSupport.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>EventSupport</classifier>
                 </artifact>
               </artifacts>
             </configuration>
