@@ -209,6 +209,8 @@
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
                 <feature>openengsb-domain-example</feature>
+                <feature>openengsb-domain-oosourcecode</feature>
+                <feature>openengsb-domain-sqlcode</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
                 <feature>openengsb-connector-example</feature>
