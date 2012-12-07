@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
@@ -94,11 +95,17 @@ public class PropertyConnectionCalculator {
                 map.put(targetField, new HashSet<String>());
             }
             for (String sourceField : step.getSourceFields()) {
-                Set<String> targets = map.get(sourceField);
+                String[] result = StringUtils.split(sourceField, ".");
+                String mapValue = result[0];
+                if (result[0].equals("temp")) {
+                    mapValue = result[0] + "." + result[1];
+                }              
+                
+                Set<String> targets = map.get(mapValue);
                 if (targets != null) {
                     targets.add(targetField);
                 } else {
-                    LOGGER.error("Accessed property with the name {} which isn't existing", sourceField);
+                    LOGGER.error("Accessed property with the name {} which isn't existing", mapValue);
                 }
             }
         }
