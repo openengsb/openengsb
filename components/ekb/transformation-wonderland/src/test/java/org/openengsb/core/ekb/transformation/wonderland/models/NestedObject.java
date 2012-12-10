@@ -17,50 +17,23 @@
 
 package org.openengsb.core.ekb.transformation.wonderland.models;
 
-public class ModelA {
-    private String idA;
-    private String testA;
-    private String blubA;
-    private String blaA;
-    private NestedObject nested;
+public class NestedObject {
+    private String value1;
+    private String value2;
 
-    public String getIdA() {
-        return idA;
+    public String getValue1() {
+        return value1;
     }
 
-    public void setIdA(String idA) {
-        this.idA = idA;
+    public void setValue1(String value1) {
+        this.value1 = value1;
     }
 
-    public String getTestA() {
-        return testA;
+    public String getValue2() {
+        return value2;
     }
 
-    public void setTestA(String testA) {
-        this.testA = testA;
-    }
-
-    public String getBlubA() {
-        return blubA;
-    }
-
-    public void setBlubA(String blubA) {
-        this.blubA = blubA;
-    }
-
-    public String getBlaA() {
-        return blaA;
-    }
-
-    public void setBlaA(String blaA) {
-        this.blaA = blaA;
-    }
-
-    public NestedObject getNested() {
-        return nested;
-    }
-
-    public void setNested(NestedObject nested) {
-        this.nested = nested;
+    public void setValue2(String value2) {
+        this.value2 = value2;
     }
 }

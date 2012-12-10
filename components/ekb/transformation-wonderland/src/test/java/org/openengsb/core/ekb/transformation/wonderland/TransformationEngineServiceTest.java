@@ -38,6 +38,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.transformation.wonderland.internal.TransformationEngineService;
 import org.openengsb.core.ekb.transformation.wonderland.models.ModelA;
 import org.openengsb.core.ekb.transformation.wonderland.models.ModelB;
+import org.openengsb.core.ekb.transformation.wonderland.models.NestedObject;
 
 public class TransformationEngineServiceTest extends TransformationEngineTests {
     private TransformationEngineService service;
@@ -526,6 +527,79 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         assertThat(resultB.getIdB(), is("0001"));
         assertThat(resultB.getTestB(), is("works?!"));
         assertThat(resultB.getIntValue(), is(1));
+    }
+    
+    @Test
+    public void testNestedFieldAccess_shouldWork() throws Exception {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.forwardField("idA", "idB");
+        desc.forwardField("nested.value1", "testB");
+        desc.forwardField("nested.value2", "blubB");
+        installTransformation(desc);
+
+        ModelA model = new ModelA();
+        model.setIdA("test1");
+        
+        NestedObject nested = new NestedObject();
+        nested.setValue1("test2");
+        nested.setValue2("test3");
+        model.setNested(nested);
+
+        ModelB result = transformModelAToModelB(model);
+
+        assertThat(result.getIdB(), is("test1"));
+        assertThat(result.getTestB(), is("test2"));
+        assertThat(result.getBlubB(), is("test3"));
+    }
+    
+    @Test
+    public void testNestedObjectsReadAccess_shouldWork() throws Exception {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.forwardField("idA", "idB");
+        desc.forwardField("nested", "temp.test");
+        desc.forwardField("temp.test.value1", "testB");
+        desc.forwardField("temp.test.value2", "blubB");
+        installTransformation(desc);
+
+        ModelA model = new ModelA();
+        model.setIdA("test1");
+        
+        NestedObject nested = new NestedObject();
+        nested.setValue1("test2");
+        nested.setValue2("test3");
+        model.setNested(nested);
+
+        ModelB result = transformModelAToModelB(model);
+
+        assertThat(result.getIdB(), is("test1"));
+        assertThat(result.getTestB(), is("test2"));
+        assertThat(result.getBlubB(), is("test3"));
+    }
+    
+    @Test
+    public void testNestedObjectsWriteAccess_shouldWork() throws Exception {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.forwardField("idA", "idB");
+        desc.forwardField("nested", "temp.test");
+        desc.forwardField("blaA", "temp.test.value1");
+        desc.forwardField("blubA", "temp.test.value2");
+        desc.forwardField("temp.test.value1", "testB");
+        desc.forwardField("temp.test.value2", "blubB");
+        installTransformation(desc);
+
+        ModelA model = new ModelA();
+        model.setIdA("test1");
+        model.setBlaA("test2");
+        model.setBlubA("test3");
+        
+        NestedObject nested = new NestedObject();
+        model.setNested(nested);
+
+        ModelB result = transformModelAToModelB(model);
+
+        assertThat(result.getIdB(), is("test1"));
+        assertThat(result.getTestB(), is("test2"));
+        assertThat(result.getBlubB(), is("test3"));
     }
 
     private void installTransformation(TransformationDescription description) {
