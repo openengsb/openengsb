@@ -16,7 +16,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -58,7 +60,9 @@
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot>
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current/>
-    <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
+    <repos.example>
+      ${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}
+    </repos.example>
     <!-- Dependency Versions -->
     <!-- core versions -->
     <karaf.version>3.0.0-SNAPSHOT</karaf.version>
@@ -172,8 +176,8 @@
     <javassist.version>3.12.1.GA_3</javassist.version>
     <tinybundles.version>1.0.0</tinybundles.version>
     <aopalliance.version>1.0</aopalliance.version>
-  </properties>  
-  
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -286,19 +290,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-karaf</artifactId>
-        <version>${activemq.version}</version>
-        <classifier>features</classifier>
-        <type>xml</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-blueprint</artifactId>
-        <version>${activemq.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-web-console</artifactId>
         <version>${activemq.version}</version>
       </dependency>
       <dependency>
@@ -495,12 +487,6 @@
         <type>zip</type>
       </dependency>
       <dependency>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>org.apache.karaf.tooling.testing</artifactId>
-        <version>${karaf.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
         <version>${javax.mail.version}</version>
@@ -539,11 +525,6 @@
         <groupId>org.apache.servicemix.bundles</groupId>
         <artifactId>org.apache.servicemix.bundles.opensaml</artifactId>
         <version>${opensaml.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.saaj-impl</artifactId>
-        <version>${saaj-impl.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
@@ -633,17 +614,6 @@
         <version>${tinybundles.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.xmlrpc</groupId>
-        <artifactId>xmlrpc-client</artifactId>
-        <version>${apache.xmlrpc.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <!--<dependency>-->
-        <!--<groupId>com.fasterxml.jackson.datatype</groupId>-->
-        <!--<artifactId>jackson-datatype-json-org</artifactId>-->
-        <!--<version>${jackson2.version}</version>-->
-      <!--</dependency>-->
-      <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
         <version>${jackson2.version}</version>
@@ -657,11 +627,6 @@
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jaxb-annotations</artifactId>
         <version>${jackson2.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.jettinson</groupId>
-        <artifactId>jettinson</artifactId>
-        <version>${jettinson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.janino</groupId>
@@ -725,12 +690,6 @@
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>pax-exam-junit4</artifactId>
-        <version>${pax.exam.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam-util</artifactId>
         <version>${pax.exam.version}</version>
         <scope>test</scope>
       </dependency>
@@ -1143,7 +1102,6 @@
           <artifactId>openjpa-maven-plugin</artifactId>
           <configuration>
             <addDefaultConstructor>true</addDefaultConstructor>
-            <enforcePropertyRestriction>true</enforcePropertyRestriction>
           </configuration>
           <executions>
             <execution>
@@ -1184,7 +1142,7 @@
       </activation>
       <build>
         <plugins>
-         <plugin>
+          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
@@ -1198,7 +1156,7 @@
       </build>
     </profile>
   </profiles>
-  
+
   <repositories>
     <repository> <!-- OEB snapshots are deployed here -->
       <id>sonatype-snapshots</id>
