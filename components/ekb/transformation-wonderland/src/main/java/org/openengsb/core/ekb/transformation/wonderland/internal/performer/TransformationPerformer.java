@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
@@ -34,9 +35,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The TransformationPerformer does the actual performing work between objects.
  */
-// TODO: OPENENGSB-3362, for now the functions are hard coded in this class. It would be much better and much more
-// dynamically if the functions would be provided as services, where a service property defines the operation name.
-// In that way it would be easy for the user to rename, adapt and extend the functions and also add its own functions.
 public class TransformationPerformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationPerformer.class);
     private Map<String, Object> temporaryFields;
@@ -119,7 +117,12 @@ public class TransformationPerformer {
     private List<Object> getSourceFieldValues(TransformationStep step) throws Exception {
         List<Object> sources = new ArrayList<Object>();
         for (String sourceField : step.getSourceFields()) {
-            sources.add(getObjectFromSourceField(sourceField));
+            Object object = getObjectValue(sourceField, true);
+            if (object == null) {
+                String message = String.format("The source field %s is null. Step will be be ignored", sourceField);
+                throw new TransformationStepException(message);
+            }
+            sources.add(object);
         }
         return sources;
     }
@@ -129,34 +132,88 @@ public class TransformationPerformer {
      * fields.
      */
     private void setObjectToTargetField(String fieldname, Object value) throws Exception {
-        if (isTemporaryField(fieldname)) {
-            temporaryFields.put(fieldname, value);
-        } else {
-            FieldUtils.writeField(target, fieldname, value, true);
+        Object toWrite = null;
+        if (fieldname.contains(".")) {
+            String path = StringUtils.substringBeforeLast(fieldname, ".");
+            toWrite = getObjectValue(path, false);
+        }
+        if (toWrite == null && isTemporaryField(fieldname)) {
+            String mapKey = StringUtils.substringAfter(fieldname, ".");
+            mapKey = StringUtils.substringBefore(mapKey, ".");
+            temporaryFields.put(mapKey, value);
+            return;
+        }
+        String realFieldName = fieldname.contains(".") ? StringUtils.substringAfterLast(fieldname, ".") : fieldname;
+        writeObjectToField(realFieldName, value, toWrite, target);
+    }
+
+    /**
+     * Gets the value of the field with the field name either from the source object or the target object, depending on
+     * the parameters. Is also aware of temporary fields.
+     */
+    private Object getObjectValue(String fieldname, boolean fromSource) throws Exception {
+        if (fieldname.contains(".temp.")) {
+            throw new TransformationStepException("The temporary field mark need to be a prefix.");
+        }
+        boolean tempField = isTemporaryField(fieldname);
+        Object sourceObject = fromSource ? source : target;
+        Object result = null;
+
+        for (String part : StringUtils.split(fieldname, ".")) {
+            if (part.equals("temp")) {
+                continue;
+            }
+            if (tempField) {
+                result = loadObjectFromTemporary(part, fieldname);
+                tempField = false;
+            } else {
+                result = loadFieldFromObject(part, result, sourceObject);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Loads the object for the given field name from the temporary fields. If an error occurs, the complete path
+     * (inclusive nested names) are given in an exception.
+     */
+    private Object loadObjectFromTemporary(String fieldname, String complete) throws Exception {
+        if (!temporaryFields.containsKey(fieldname)) {
+            String message = String.format("The temporary field %s doesn't exist.", complete);
+            throw new IllegalArgumentException(message);
+        }
+        return temporaryFields.get(fieldname);
+    }
+
+    /**
+     * Loads the object from the field with the given name from either the object parameter or if this parameter is null
+     * from the alternative parameter.
+     */
+    private Object loadFieldFromObject(String fieldname, Object object, Object alternative) throws Exception {
+        Object source = object != null ? object : alternative;
+        try {
+            return FieldUtils.readField(source, fieldname, true);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Unable to load field '%s' from object '%s'", fieldname,
+                source.getClass().getName()));
         }
     }
 
     /**
-     * Gets the value of the field with the field name of the source object. Is also aware of temporary fields.
+     * Writes a value to the object from the field with the given name from either the object parameter or if this
+     * parameter is null from the alternative parameter.
      */
-    private Object getObjectFromSourceField(String fieldname) throws Exception {
-        if (isTemporaryField(fieldname)) {
-            if (!temporaryFields.containsKey(fieldname)) {
-                String message = String.format("The temporary field %s doesn't exist.", fieldname);
-                throw new TransformationStepException(message);
-            }
-            Object temp = temporaryFields.get(fieldname);
-            return temp;
-        } else {
-            Object result = FieldUtils.readField(source, fieldname, true);
-            if (result == null) {
-                String message = String.format("The source field %s is null and can be ignored", fieldname);
-                throw new TransformationStepException(message);
-            }
-            return result;
+    private void writeObjectToField(String fieldname, Object value, Object object, Object alternative)
+        throws Exception {
+        Object target = object != null ? object : alternative;
+        try {
+            FieldUtils.writeField(target, fieldname, value, true);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Unable to write value '%s' to field '%s' of object %s",
+                value.toString(), fieldname, target.getClass().getName()));
         }
     }
-    
+
     /**
      * Returns true if the given field name points to a temporary field. Returns false if not.
      */
