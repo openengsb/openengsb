@@ -17,8 +17,6 @@
 
 package org.openengsb.connector.memoryauditing.internal;
 
-import java.util.Map;
-
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 

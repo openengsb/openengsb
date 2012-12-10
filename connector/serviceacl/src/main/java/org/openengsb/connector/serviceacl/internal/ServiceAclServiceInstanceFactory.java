@@ -18,7 +18,6 @@
 package org.openengsb.connector.serviceacl.internal;
 
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.security.SecurityAttributeProvider;

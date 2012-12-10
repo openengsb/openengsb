@@ -18,7 +18,6 @@
 package org.openengsb.domain.example;
 
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.Raises;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.domain.example.event.LogEvent;
