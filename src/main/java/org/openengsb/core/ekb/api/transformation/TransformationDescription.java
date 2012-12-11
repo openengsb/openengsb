@@ -40,7 +40,7 @@ public class TransformationDescription {
     public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel) {
         this(sourceModel, targetModel, null);
     }
-    
+
     public TransformationDescription(ModelDescription sourceModel, ModelDescription targetModel, String id) {
         this.sourceModel = sourceModel;
         this.targetModel = targetModel;
@@ -272,12 +272,14 @@ public class TransformationDescription {
      * be created. For the instantiation the targetTypeInit method will be used. If this parameter is null, the
      * constructor of the targetType will be used with the object type of the source object as parameter.
      */
-    public void instantiateField(String sourceField, String targetField, String targetType, String targetTypeInit) {
+    public void instantiateField(String targetField, String targetType, String targetTypeInit, String... sourceFields) {
         TransformationStep step = new TransformationStep();
-        step.setSourceFields(sourceField);
+        step.setSourceFields(sourceFields);
         step.setTargetField(targetField);
         step.setOperationParameter(TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM, targetType);
-        step.setOperationParameter(TransformationConstants.INSTANTIATE_INITMETHOD_PARAM, targetTypeInit);
+        if (targetTypeInit != null) {
+            step.setOperationParameter(TransformationConstants.INSTANTIATE_INITMETHOD_PARAM, targetTypeInit);
+        }
         step.setOperationName("instantiate");
         steps.add(step);
     }
@@ -293,34 +295,34 @@ public class TransformationDescription {
     public List<TransformationStep> getTransformingSteps() {
         return steps;
     }
-    
+
     public String getFileName() {
         return fileName;
     }
-    
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public Map<String, Set<String>> getPropertyConnections() {
         return propertyConnections;
     }
-    
+
     public void setPropertyConnections(Map<String, Set<String>> propertyConnections) {
         this.propertyConnections = propertyConnections;
     }
-    
+
     @Override
     public int hashCode() {
-        Object []obj = new Object[] { sourceModel, steps, targetModel, id};
+        Object[] obj = new Object[]{ sourceModel, steps, targetModel, id };
         return Objects.hashCode(obj);
     }
 
