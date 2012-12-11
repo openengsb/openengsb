@@ -285,7 +285,9 @@
             <programlisting>
             <![CDATA[
 <instantiate>
-  <source-field>fieldA</source-field>
+  <source-fields>
+    <source-field>fieldA</source-field>
+  </source-fields>
   <target-field>fieldB</target-field>
   <params>
     <param key="targetType" value="java.lang.Integer" />
@@ -298,9 +300,15 @@
 ]]>
             </programlisting>
             The parameter targetType defines the class which shall be used for the instantiation. The targetTypeInit
-            parameter is used to define which function of the targetType is used for initiating. Here the value of
-            the source field is taken as parameter. If this parameter isn't set, the constructor of the targetType
-            with the source field as parameter will be used.
+            parameter is used to define which function of the targetType is used for initiating. Here the values of
+            the source fields are taken as parameter. If this parameter isn't set, the constructor of the targetType
+            with the source field values as parameter will be used. The source fields are optional, if no source field
+            is added, the no parameter for the method or the constructor will be used.
+        </para>
+        <para>
+            The targetType class will first be tried to be loaded by the current class loader. If this does not succeed,
+            this method tries to load the class as a model class. For that, the targetType field need to have the following
+            structure: "{modelClassName}:{modelVersion}".
         </para>
         <para>
             The remove leading operation is a string operation. It takes the string from the source field and removes
