@@ -95,6 +95,9 @@ public class PropertyConnectionCalculator {
                 map.put(targetField, new HashSet<String>());
             }
             for (String sourceField : step.getSourceFields()) {
+                if (sourceField == null) {
+                    continue;
+                }
                 String[] result = StringUtils.split(sourceField, ".");
                 String mapValue = result[0];
                 if (result[0].equals("temp")) {
