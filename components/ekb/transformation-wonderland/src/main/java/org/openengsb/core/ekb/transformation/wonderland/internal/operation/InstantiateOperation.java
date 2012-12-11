@@ -120,7 +120,7 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      * Returns a list containing the classes of the elements in the given object list as array.
      */
     private Class<?>[] getClassList(List<Object> objects) {
-        Class<?> [] classes = new Class<?>[objects.size()];
+        Class<?>[] classes = new Class<?>[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             classes[i] = objects.get(i).getClass();
         }
@@ -135,7 +135,7 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
             return this.getClass().getClassLoader().loadClass(className);
         } catch (Exception e) {
             try {
-                String []parts = className.split(";");
+                String[] parts = className.split(";");
                 ModelDescription description = new ModelDescription();
                 description.setModelClassName(parts[0]);
                 if (parts.length > 1) {
