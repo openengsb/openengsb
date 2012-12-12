@@ -51,7 +51,7 @@ public abstract class AbstractArchetypeTest {
         // need to make sure old test artifacts that have been
         // created are being deleted since this can lead to
         // unstable test behavior
-        Verifier verifier = new Verifier(TEST_ROOT.getAbsolutePath());
+        Verifier verifier = new Verifier(TEST_ROOT.getAbsolutePath(), getMavenSettings());
 
         verifier.deleteArtifact(
             systemProperties.getProperty("groupId", DEFAULT_TEST_GROUP_ID),
@@ -90,7 +90,7 @@ public abstract class AbstractArchetypeTest {
         verifier = new Verifier(
             TEST_ROOT.getAbsolutePath()
                     + File.separator
-                    + systemProperties.getProperty("artifactId", DEFAULT_TEST_ARTIFACT_ID));
+                    + systemProperties.getProperty("artifactId", DEFAULT_TEST_ARTIFACT_ID), getMavenSettings());
 
         verifier.setAutoclean(false);
         verifier.executeGoal("compile");
