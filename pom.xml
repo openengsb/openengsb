@@ -1071,18 +1071,6 @@
   </ciManagement>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-        <version>${maven.plugin.wagon.webdav.version}</version>
-      </extension>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>${maven.plugin.wagon.ssh.version}</version>
-      </extension>
-    </extensions>
     <pluginManagement>
       <plugins>
         <plugin>
