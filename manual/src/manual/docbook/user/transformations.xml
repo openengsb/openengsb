@@ -303,11 +303,11 @@
             parameter is used to define which function of the targetType is used for initiating. Here the values of
             the source fields are taken as parameter. If this parameter isn't set, the constructor of the targetType
             with the source field values as parameter will be used. The source fields are optional, if no source field
-            is added, the no parameter for the method or the constructor will be used.
+            is added, then no parameter for the method or the constructor will be used.
         </para>
         <para>
             The targetType class will first be tried to be loaded by the current class loader. If this does not succeed,
-            this method tries to load the class as a model class. For that, the targetType field need to have the following
+            this method tries to load the class as a model class. For that the targetType field need to have the following
             structure: "{modelClassName}:{modelVersion}".
         </para>
         <para>
