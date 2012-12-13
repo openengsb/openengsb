@@ -45,7 +45,7 @@ public interface TransformationOperation {
 
     /**
      * Returns the number of input objects this operation takes. Returns -1 if the amount of input objects is 1 or
-     * higher.
+     * higher. Returns -2 if the amount of input objects is 0 or higher.
      */
     public Integer getOperationInputCount();
     
