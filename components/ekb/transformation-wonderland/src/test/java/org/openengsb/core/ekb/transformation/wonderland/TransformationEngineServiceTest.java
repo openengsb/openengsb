@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.transformation.wonderland;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -388,7 +389,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
     @Test
     public void testInstantiate_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
-        desc.instantiateField("idA", "intValue", Integer.class.getName(), "parseInt");
+        desc.instantiateField("intValue", Integer.class.getName(), "parseInt", "idA");
         installTransformation(desc);
 
         ModelA model = new ModelA();
@@ -397,6 +398,30 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         ModelB result = transformModelAToModelB(model);
 
         assertThat(result.getIntValue(), is(42));
+    }
+
+    @Test
+    public void testInitiateWithNoParameters_shouldCreateInstance() throws Exception {
+        TransformationDescription desc = getDescriptionForModelAToModelB();
+        desc.instantiateField("elements", ArrayList.class.getName(), null);
+        installTransformation(desc);
+        ModelA model = new ModelA();
+        ModelB result = transformModelAToModelB(model);
+        assertThat(result.getElements(), notNullValue());
+    }
+    
+    @Test
+    public void testInitiateWithParameters_shouldCreateInstance() throws Exception {
+        TransformationDescription desc = getDescriptionForModelBToModelA();
+        desc.instantiateField("nested", NestedObject.class.getName(), null, "testB", "blubB");
+        installTransformation(desc);
+        ModelB model = new ModelB();
+        model.setTestB("testvalue1");
+        model.setBlubB("testvalue2");
+        ModelA result = transformModelBToModelA(model);
+        assertThat(result.getNested(), notNullValue());
+        assertThat(result.getNested().getValue1(), is(model.getTestB()));
+        assertThat(result.getNested().getValue2(), is(model.getBlubB()));
     }
 
     @Test
@@ -528,7 +553,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         assertThat(resultB.getTestB(), is("works?!"));
         assertThat(resultB.getIntValue(), is(1));
     }
-    
+
     @Test
     public void testNestedFieldAccess_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
@@ -539,7 +564,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
 
         ModelA model = new ModelA();
         model.setIdA("test1");
-        
+
         NestedObject nested = new NestedObject();
         nested.setValue1("test2");
         nested.setValue2("test3");
@@ -551,7 +576,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
     }
-    
+
     @Test
     public void testNestedObjectsReadAccess_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
@@ -563,7 +588,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
 
         ModelA model = new ModelA();
         model.setIdA("test1");
-        
+
         NestedObject nested = new NestedObject();
         nested.setValue1("test2");
         nested.setValue2("test3");
@@ -575,7 +600,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         assertThat(result.getTestB(), is("test2"));
         assertThat(result.getBlubB(), is("test3"));
     }
-    
+
     @Test
     public void testNestedObjectsWriteAccess_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
@@ -591,7 +616,7 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         model.setIdA("test1");
         model.setBlaA("test2");
         model.setBlubA("test3");
-        
+
         NestedObject nested = new NestedObject();
         model.setNested(nested);
 

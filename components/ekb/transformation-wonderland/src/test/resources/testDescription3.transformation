@@ -51,7 +51,9 @@
       </params>
     </concat>
     <instantiate>
-      <source-field>idA</source-field>
+      <source-fields>
+        <source-field>idA</source-field>
+      </source-fields>
       <target-field>intValue</target-field>
       <params>
         <param key="targetType" value="java.lang.Integer" />
