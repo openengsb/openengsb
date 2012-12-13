@@ -99,7 +99,8 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      * Tries to initiate an object of the target class through the given init method name with the given object as
      * parameter.
      */
-    private Object initiateByMethodName(Class<?> targetClass, String initMethodName, List<Object> objects) throws Exception {
+    private Object initiateByMethodName(Class<?> targetClass, String initMethodName, List<Object> objects)
+        throws Exception {
         Method method = targetClass.getMethod(initMethodName, getClassList(objects));
         if (Modifier.isStatic(method.getModifiers())) {
             return method.invoke(null, objects.toArray());
@@ -115,7 +116,7 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
         Constructor<?> constr = targetClass.getConstructor(getClassList(objects));
         return constr.newInstance(objects.toArray());
     }
-    
+
     /**
      * Returns a list containing the classes of the elements in the given object list as array.
      */
