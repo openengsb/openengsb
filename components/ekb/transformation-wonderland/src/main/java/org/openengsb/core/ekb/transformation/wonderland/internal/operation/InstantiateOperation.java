@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
 
@@ -34,9 +36,11 @@ import org.openengsb.core.ekb.api.transformation.TransformationOperationExceptio
 public class InstantiateOperation extends AbstractStandardTransformationOperation {
     private String typeParam = TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM;
     private String initFuncParam = TransformationConstants.INSTANTIATE_INITMETHOD_PARAM;
+    private ModelRegistry modelRegistry;
 
-    public InstantiateOperation(String operationName) {
+    public InstantiateOperation(String operationName, ModelRegistry modelRegistry) {
         super(operationName, InstantiateOperation.class);
+        this.modelRegistry = modelRegistry;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
 
     @Override
     public Integer getOperationInputCount() {
-        return 1;
+        return -2;
     }
 
     @Override
@@ -67,21 +71,21 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
         checkInputSize(input);
         String targetType = getParameterOrException(parameters, typeParam);
         String initMethodName = getParameterOrDefault(parameters, initFuncParam, null);
-        return tryInitiatingObject(targetType, initMethodName, input.get(0));
+        return tryInitiatingObject(targetType, initMethodName, input);
     }
 
     /**
      * Try to perform the actual initiating of the target class object. Returns the target class object or throws a
      * TransformationOperationException if something went wrong.
      */
-    private Object tryInitiatingObject(String targetType, String initMethodName, Object fieldObject)
+    private Object tryInitiatingObject(String targetType, String initMethodName, List<Object> fieldObjects)
         throws TransformationOperationException {
         Class<?> targetClass = loadClassByName(targetType);
         try {
             if (initMethodName == null) {
-                return initiateByConstructor(targetClass, fieldObject);
+                return initiateByConstructor(targetClass, fieldObjects);
             } else {
-                return initiateByMethodName(targetClass, initMethodName, fieldObject);
+                return initiateByMethodName(targetClass, initMethodName, fieldObjects);
             }
         } catch (Exception e) {
             String message = "Unable to create the desired object. The instantiate operation will be ignored.";
@@ -95,21 +99,32 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      * Tries to initiate an object of the target class through the given init method name with the given object as
      * parameter.
      */
-    private Object initiateByMethodName(Class<?> targetClass, String initMethodName, Object object) throws Exception {
-        Method method = targetClass.getMethod(initMethodName, object.getClass());
+    private Object initiateByMethodName(Class<?> targetClass, String initMethodName, List<Object> objects) throws Exception {
+        Method method = targetClass.getMethod(initMethodName, getClassList(objects));
         if (Modifier.isStatic(method.getModifiers())) {
-            return method.invoke(null, object);
+            return method.invoke(null, objects.toArray());
         } else {
-            return method.invoke(targetClass.newInstance(), object);
+            return method.invoke(targetClass.newInstance(), objects.toArray());
         }
     }
 
     /**
      * Tries to initiate an object of the target class through a constructor with the given object as parameter.
      */
-    private Object initiateByConstructor(Class<?> targetClass, Object object) throws Exception {
-        Constructor<?> constr = targetClass.getConstructor(object.getClass());
-        return constr.newInstance(object);
+    private Object initiateByConstructor(Class<?> targetClass, List<Object> objects) throws Exception {
+        Constructor<?> constr = targetClass.getConstructor(getClassList(objects));
+        return constr.newInstance(objects.toArray());
+    }
+    
+    /**
+     * Returns a list containing the classes of the elements in the given object list as array.
+     */
+    private Class<?>[] getClassList(List<Object> objects) {
+        Class<?>[] classes = new Class<?>[objects.size()];
+        for (int i = 0; i < objects.size(); i++) {
+            classes[i] = objects.get(i).getClass();
+        }
+        return classes;
     }
 
     /**
@@ -119,10 +134,20 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
         try {
             return this.getClass().getClassLoader().loadClass(className);
         } catch (Exception e) {
-            String message = "The class %s can't be found. The instantiate operation will be ignored.";
-            message = String.format(message, className);
-            getLogger().error(message);
-            throw new TransformationOperationException(message, e);
+            try {
+                String[] parts = className.split(";");
+                ModelDescription description = new ModelDescription();
+                description.setModelClassName(parts[0]);
+                if (parts.length > 1) {
+                    description.setVersionString(parts[1]);
+                }
+                return modelRegistry.loadModel(description);
+            } catch (Exception ex) {
+                String message = "The class %s can't be found. The instantiate operation will be ignored.";
+                message = String.format(message, className);
+                getLogger().error(message);
+                throw new TransformationOperationException(message, ex);
+            }
         }
     }
 }

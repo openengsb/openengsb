@@ -68,10 +68,11 @@ public abstract class AbstractStandardTransformationOperation implements Transfo
     protected void checkInputSize(List<Object> input) throws TransformationOperationException {
         int inputCount = getOperationInputCount();
         int inputSize = input.size();
-        if (inputCount == -1 && input.size() < 1) {
+        if (inputCount == -2) {
+            return;
+        } else if (inputCount == -1 && input.size() < 1) {
             throw new TransformationOperationException("There must be at least one input value.");
-        }
-        if (inputCount != -1 && inputSize != inputCount) {
+        } else if (inputCount != -1 && inputSize != inputCount) {
             throw new TransformationOperationException(
                 "The input values are not matching with the operation input count.");
         }

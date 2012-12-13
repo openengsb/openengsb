@@ -195,6 +195,7 @@
     </service-properties>
     <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.operation.InstantiateOperation" >
       <argument value="instantiate" />
+      <argument type="org.openengsb.core.ekb.api.ModelRegistry" ref="modelRegistry" />
     </bean>
   </service>
 

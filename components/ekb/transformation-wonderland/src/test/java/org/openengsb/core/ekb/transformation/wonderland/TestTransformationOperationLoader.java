@@ -63,7 +63,7 @@ public class TestTransformationOperationLoader implements TransformationOperatio
         addOperation(new ReverseOperation("reverse"));
         addOperation(new RemoveLeadingOperation("removeleading"));
         addOperation(new PadOperation("pad"));
-        addOperation(new InstantiateOperation("instantiate"));
+        addOperation(new InstantiateOperation("instantiate", new TestModelRegistry()));
     }
     
     private void addOperation(TransformationOperation operation) {
