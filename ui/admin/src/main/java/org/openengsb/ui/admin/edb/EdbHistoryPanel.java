@@ -33,7 +33,7 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @SecurityAttributes({
-    @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB"),
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB")
 })
 @PaxWicketMountPoint(mountPoint = "edbhistory")
 public class EdbHistoryPanel extends BasePage {
