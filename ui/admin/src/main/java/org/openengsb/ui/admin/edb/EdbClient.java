@@ -67,7 +67,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
 @SecurityAttributes({
-    @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB"),
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB")
 })
 @PaxWicketMountPoint(mountPoint = "edb")
 public class EdbClient extends BasePage {
