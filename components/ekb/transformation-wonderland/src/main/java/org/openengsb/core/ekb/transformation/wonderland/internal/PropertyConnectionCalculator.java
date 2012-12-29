@@ -159,6 +159,6 @@ public class PropertyConnectionCalculator {
      * Returns true if the given property name is a temporary property, returns false if not.
      */
     private boolean isTemporaryProperty(String propertyName) {
-        return propertyName.startsWith("temp.");
+        return propertyName.startsWith("#");
     }
 }
