@@ -116,8 +116,8 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
-        desc.forwardField("blubA", "temp.test");
-        desc.forwardField("temp.test", "blubB");
+        desc.forwardField("blubA", "#test");
+        desc.forwardField("#test", "blubB");
         installTransformation(desc);
 
         ModelA model = new ModelA();
@@ -429,8 +429,8 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
         desc.forwardField("testA", "testB");
-        desc.forwardField("blubA", "temp.test");
-        desc.forwardField("temp.test", "blubB");
+        desc.forwardField("blubA", "#test");
+        desc.forwardField("#test", "blubB");
         installTransformation(desc);
 
         ModelA model = new ModelA();
@@ -581,9 +581,9 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
     public void testNestedObjectsReadAccess_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
-        desc.forwardField("nested", "temp.test");
-        desc.forwardField("temp.test.value1", "testB");
-        desc.forwardField("temp.test.value2", "blubB");
+        desc.forwardField("nested", "#test");
+        desc.forwardField("#test.value1", "testB");
+        desc.forwardField("#test.value2", "blubB");
         installTransformation(desc);
 
         ModelA model = new ModelA();
@@ -605,11 +605,11 @@ public class TransformationEngineServiceTest extends TransformationEngineTests {
     public void testNestedObjectsWriteAccess_shouldWork() throws Exception {
         TransformationDescription desc = getDescriptionForModelAToModelB();
         desc.forwardField("idA", "idB");
-        desc.forwardField("nested", "temp.test");
-        desc.forwardField("blaA", "temp.test.value1");
-        desc.forwardField("blubA", "temp.test.value2");
-        desc.forwardField("temp.test.value1", "testB");
-        desc.forwardField("temp.test.value2", "blubB");
+        desc.forwardField("nested", "#test");
+        desc.forwardField("blaA", "#test.value1");
+        desc.forwardField("blubA", "#test.value2");
+        desc.forwardField("#test.value1", "testB");
+        desc.forwardField("#test.value2", "blubB");
         installTransformation(desc);
 
         ModelA model = new ModelA();

@@ -77,13 +77,13 @@ public class PropertyConnectionCalculatorTest extends TransformationEngineTests 
     public void testIfSimplePropertyConnectionWorksWithTemporaryFields_shouldWork() throws Exception {
         TransformationDescription description =
             new TransformationDescription(getModelADescription(), getModelBDescription());
-        description.forwardField("idA", "temp.A");
-        description.forwardField("temp.A", "temp.B");
-        description.forwardField("temp.B", "temp.C");
-        description.forwardField("temp.C", "temp.D");
-        description.forwardField("temp.D", "temp.E");
-        description.forwardField("temp.E", "temp.F");
-        description.forwardField("temp.F", "idB");
+        description.forwardField("idA", "#A");
+        description.forwardField("#A", "#B");
+        description.forwardField("#B", "#C");
+        description.forwardField("#C", "#D");
+        description.forwardField("#D", "#E");
+        description.forwardField("#E", "#F");
+        description.forwardField("#F", "idB");
         Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         
         assertThat(result.get("idA").contains("idB"), is(true));
@@ -94,14 +94,14 @@ public class PropertyConnectionCalculatorTest extends TransformationEngineTests 
     public void testIfComplexPropertyConnectionWorksWithTemporaryFields_shouldWork() throws Exception {
         TransformationDescription description =
             new TransformationDescription(getModelADescription(), getModelBDescription());
-        description.forwardField("idA", "temp.id");
-        description.forwardField("temp.id", "temp.id+");
-        description.forwardField("blubA", "temp.blub");
-        description.concatField("temp.test", "#", "temp.id+", "temp.blub", "blaA");
-        description.forwardField("temp.test", "testB");
+        description.forwardField("idA", "#id");
+        description.forwardField("#id", "#id+");
+        description.forwardField("blubA", "#blub");
+        description.concatField("#test", "#", "#id+", "#blub", "blaA");
+        description.forwardField("#test", "testB");
         description.mapField("idA", "idB", new HashMap<String, String>());
         description.valueField("blubB", "42");
-        description.concatField("blubB", ".", "testA", "temp.blub");
+        description.concatField("blubB", ".", "testA", "#blub");
         Map<String, Set<String>> result = calculator.getPropertyConnections(description);
         assertThat(result.get("idA").contains("idB"), is(true));
         assertThat(result.get("idA").contains("testB"), is(true));
