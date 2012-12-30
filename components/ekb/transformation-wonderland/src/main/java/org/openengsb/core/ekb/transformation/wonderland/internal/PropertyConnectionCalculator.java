@@ -99,10 +99,7 @@ public class PropertyConnectionCalculator {
                     continue;
                 }
                 String[] result = StringUtils.split(sourceField, ".");
-                String mapValue = result[0];
-                if (result[0].equals("temp")) {
-                    mapValue = result[0] + "." + result[1];
-                }              
+                String mapValue = result[0];            
                 
                 Set<String> targets = map.get(mapValue);
                 if (targets != null) {
