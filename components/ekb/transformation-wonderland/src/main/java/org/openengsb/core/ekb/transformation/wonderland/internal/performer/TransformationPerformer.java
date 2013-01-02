@@ -138,7 +138,7 @@ public class TransformationPerformer {
             toWrite = getObjectValue(path, false);
         }
         if (toWrite == null && isTemporaryField(fieldname)) {
-            String mapKey = StringUtils.substringAfter(fieldname, ".");
+            String mapKey = StringUtils.substringAfter(fieldname, "#");
             mapKey = StringUtils.substringBefore(mapKey, ".");
             temporaryFields.put(mapKey, value);
             return;
@@ -152,22 +152,13 @@ public class TransformationPerformer {
      * the parameters. Is also aware of temporary fields.
      */
     private Object getObjectValue(String fieldname, boolean fromSource) throws Exception {
-        if (fieldname.contains(".temp.")) {
-            throw new TransformationStepException("The temporary field mark need to be a prefix.");
-        }
-        boolean tempField = isTemporaryField(fieldname);
         Object sourceObject = fromSource ? source : target;
         Object result = null;
-
         for (String part : StringUtils.split(fieldname, ".")) {
-            if (part.equals("temp")) {
-                continue;
-            }
-            if (tempField) {
+            if (isTemporaryField(part)) {
                 result = loadObjectFromTemporary(part, fieldname);
-                tempField = false;
             } else {
-                result = loadFieldFromObject(part, result, sourceObject);
+                result = loadObjectFromField(part, result, sourceObject);
             }
         }
         return result;
@@ -178,18 +169,19 @@ public class TransformationPerformer {
      * (inclusive nested names) are given in an exception.
      */
     private Object loadObjectFromTemporary(String fieldname, String complete) throws Exception {
-        if (!temporaryFields.containsKey(fieldname)) {
+        String realName = fieldname.substring(1);
+        if (!temporaryFields.containsKey(realName)) {
             String message = String.format("The temporary field %s doesn't exist.", complete);
             throw new IllegalArgumentException(message);
         }
-        return temporaryFields.get(fieldname);
+        return temporaryFields.get(realName);
     }
 
     /**
      * Loads the object from the field with the given name from either the object parameter or if this parameter is null
      * from the alternative parameter.
      */
-    private Object loadFieldFromObject(String fieldname, Object object, Object alternative) throws Exception {
+    private Object loadObjectFromField(String fieldname, Object object, Object alternative) throws Exception {
         Object source = object != null ? object : alternative;
         try {
             return FieldUtils.readField(source, fieldname, true);
@@ -218,6 +210,6 @@ public class TransformationPerformer {
      * Returns true if the given field name points to a temporary field. Returns false if not.
      */
     private boolean isTemporaryField(String fieldname) {
-        return fieldname.startsWith("temp.");
+        return fieldname.startsWith("#");
     }
 }

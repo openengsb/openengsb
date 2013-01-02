@@ -99,10 +99,7 @@ public class PropertyConnectionCalculator {
                     continue;
                 }
                 String[] result = StringUtils.split(sourceField, ".");
-                String mapValue = result[0];
-                if (result[0].equals("temp")) {
-                    mapValue = result[0] + "." + result[1];
-                }              
+                String mapValue = result[0];            
                 
                 Set<String> targets = map.get(mapValue);
                 if (targets != null) {
@@ -159,6 +156,6 @@ public class PropertyConnectionCalculator {
      * Returns true if the given property name is a temporary property, returns false if not.
      */
     private boolean isTemporaryProperty(String propertyName) {
-        return propertyName.startsWith("temp.");
+        return propertyName.startsWith("#");
     }
 }
