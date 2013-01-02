@@ -998,6 +998,7 @@
   <modules>
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
+    <module>tooling/wsdl2dll</module>
     <!-- OpenEngSB Framework Modules -->
     <module>components/util</module>
     <module>components/common</module>
