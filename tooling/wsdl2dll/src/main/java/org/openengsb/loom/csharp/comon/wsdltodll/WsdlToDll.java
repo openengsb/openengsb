@@ -37,9 +37,6 @@ public class WsdlToDll extends AbstractMojo {
 
     private static final String WSDL_EXE = "wsdl.exe";
 
-    private static final String NUGET_FOLDER = "target/nuget/";
-    private static final String NUGET_LIB = NUGET_FOLDER + "lib";
-
     /**
      * Owner of the Nuget package
      * 
@@ -128,6 +125,13 @@ public class WsdlToDll extends AbstractMojo {
      */
     private File cscFolderLocation;
     /**
+     * Nuget folder
+     * 
+     * @parameter
+     * @required
+     */
+    private String nuget_folder;
+    /**
      * Location of the wsdl file
      * 
      * @parameter
@@ -151,6 +155,8 @@ public class WsdlToDll extends AbstractMojo {
      */
     private String targetVersion;
 
+    private String NUGET_LIB;
+
     private List<String> cspath = new ArrayList<String>();
 
     private List<String> handledClasses = new ArrayList<String>();
@@ -164,6 +170,7 @@ public class WsdlToDll extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
+        NUGET_LIB = nuget_folder + "lib";
         if (isWindows()) {
             createDllFromWsdlUsingWindowsMode();
         } else {
@@ -434,7 +441,7 @@ public class WsdlToDll extends AbstractMojo {
         String[] command = commandList.toArray(new String[commandList.size()]);
         ProcessBuilder builder = new ProcessBuilder();
         builder.redirectErrorStream(true);
-        builder.directory(new File(NUGET_FOLDER));
+        builder.directory(new File(nuget_folder));
         builder.command(command);
         try {
             executeACommand(builder.start());
@@ -515,7 +522,7 @@ public class WsdlToDll extends AbstractMojo {
         assemblyInfoBuilder.append("  </metadata>\n");
         assemblyInfoBuilder.append("</package >\n");
 
-        File assemblyInfo = new File(NUGET_FOLDER, namespace + ".nuspec");
+        File assemblyInfo = new File(nuget_folder, namespace + ".nuspec");
         FileWriter writer = null;
         try {
             writer = new FileWriter(assemblyInfo);
