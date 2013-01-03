@@ -516,9 +516,6 @@ public class WsdlToDll extends AbstractMojo {
         assemblyInfoBuilder.append("    <description>" + namespace + " dll" + "</description>\n");
         assemblyInfoBuilder.append("    <releaseNotes>" + releaseNotes + "</releaseNotes>\n");
         assemblyInfoBuilder.append("    <copyright>" + copyright + "</copyright>\n");
-        assemblyInfoBuilder.append("    <dependencies>\n");
-        assemblyInfoBuilder.append("        <dependency id=\"SampleDependency\" version=\"1.0\" />\n");
-        assemblyInfoBuilder.append("    </dependencies>\n");
         assemblyInfoBuilder.append("  </metadata>\n");
         assemblyInfoBuilder.append("</package >\n");
 
