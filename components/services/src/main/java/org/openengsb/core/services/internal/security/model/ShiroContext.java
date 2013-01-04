@@ -29,8 +29,10 @@ public class ShiroContext implements AuthenticationContext {
 
     @Override
     public void login(String username, Credentials credentials) {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout(); // logout old one
         OpenEngSBAuthenticationToken token = new OpenEngSBAuthenticationToken(username, credentials);
-        SecurityUtils.getSubject().login(token);
+        subject.login(token);
     }
 
     @Override
