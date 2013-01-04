@@ -21,7 +21,6 @@ import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.util.CompositeClassLoader;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -63,11 +63,22 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     }
 
     private Connector createProxy(VirtualType handler, Collection<Class<?>> interfaces) {
-        HashSet<Class<?>> classes = Sets.newHashSet(interfaces);
-        classes.add(domainProvider.getDomainInterface());
+        Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
+        Set<Class<?>> classes = Sets.newHashSet(interfaces);
+        classes.add(domainInterface);
         classes.add(Connector.class);
+        CompositeClassLoader compositeClassLoader = makeCompositeClassLoader(domainInterface, classes);
         Class<?>[] classesAsArray = classes.toArray(new Class<?>[classes.size()]);
-        return (Connector) Proxy.newProxyInstance(this.getClass().getClassLoader(), classesAsArray, handler);
+        return (Connector) Proxy.newProxyInstance(compositeClassLoader, classesAsArray, handler);
+    }
+
+    private CompositeClassLoader makeCompositeClassLoader(Class<? extends Domain> domainInterface, Collection<Class<?>> classes) {
+        CompositeClassLoader compositeClassLoader = new CompositeClassLoader(getClass().getClassLoader(),
+                domainInterface.getClassLoader());
+        for(Class<?> clazz : classes){
+            compositeClassLoader.add(clazz.getClassLoader());
+        }
+        return compositeClassLoader;
     }
 
     /**
