@@ -123,6 +123,7 @@
               org.apache.shiro.subject,
               org.apache.shiro.session.mgt,
               org.apache.shiro.authz,
+              org.apache.shiro.session,
               *
             </Import-Package>
           </instructions>

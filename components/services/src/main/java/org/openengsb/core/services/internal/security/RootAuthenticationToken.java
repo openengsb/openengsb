@@ -14,30 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.services.internal.security;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import org.apache.shiro.authc.AuthenticationToken;
 
-import org.openengsb.core.util.DefaultOsgiUtilsService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-public class SecurityBundleActivator implements BundleActivator {
-
-    private ExecutorService executor = Executors.newCachedThreadPool();
-
+/**
+ * Special Authentication token used for system-access
+ */
+public class RootAuthenticationToken implements AuthenticationToken {
     @Override
-    public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(context);
-        EntryUtils.setUtilsService(utilsService);
-        executor.submit(new UserDataInitializer(utilsService));
+    public Object getCredentials() {
+        return null;
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
-        executor.shutdownNow();
+    public Object getPrincipal() {
+        return new Object();
     }
-
 }

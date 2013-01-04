@@ -23,6 +23,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.services.internal.security.RootAuthenticationToken;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 /**
  * Authenticator to be used in Shiro {@link  org.apache.shiro.mgt.SecurityManager}
@@ -33,6 +34,9 @@ public class OpenEngSBShiroAuthenticator extends AbstractAuthenticator {
 
     @Override
     protected AuthenticationInfo doAuthenticate(AuthenticationToken token) throws AuthenticationException {
+        if (token instanceof RootAuthenticationToken){
+            return new SimpleAuthenticationInfo(new Object(), null, "openengsb");
+        }
         try {
             Authentication authenticate =
                 authenticator.authenticate(token.getPrincipal().toString(), (Credentials) token.getCredentials());

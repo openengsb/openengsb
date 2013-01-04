@@ -44,7 +44,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -64,7 +63,6 @@ import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.services.internal.ForwardMethodInterceptor;
-import org.openengsb.core.services.internal.security.RootSubjectHolder;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
@@ -94,11 +92,6 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
     private WiringService wiringService;
-
-    @BeforeClass
-    public static void setUpClass() {
-        RootSubjectHolder.init();
-    }
 
     @Before
     public void setUp() throws Exception {
