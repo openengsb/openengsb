@@ -244,11 +244,6 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-manual-builder-resources</artifactId>
-        <version>1.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-assembly-builder-resources</artifactId>
         <version>1.0.1</version>
       </dependency>
