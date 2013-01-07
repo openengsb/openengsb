@@ -1047,8 +1047,6 @@
     <module>examples/remotesamples</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
-    <!-- OpenEngSB Manual -->
-    <module>manual</module>
     <!-- OpenEngSB XLink Testdomains-->
     <module>domain/sqlcode</module>
     <module>domain/oosourcecode</module>
