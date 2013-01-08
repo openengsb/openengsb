@@ -34,6 +34,7 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -42,9 +43,13 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
+import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public class AbstractEDBTest {
     protected TestEDBService db;
+
+    @Rule
+    public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
 
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
@@ -54,9 +59,7 @@ public class AbstractEDBTest {
     public void initDB() throws Exception {
         AuthenticationContext authenticationContext = mock(AuthenticationContext.class);
         when(authenticationContext.getAuthenticatedPrincipal()).thenReturn("testuser");
-        Properties props = new Properties();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("edb-test", props);
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = testPersistenceUnit.getEntityManager("edb");
         JPADao dao = new DefaultJPADao(em);
         EDBPreCommitHook preCommitHook = new CheckPreCommitHook(dao);
         ContextHolder.get().setCurrentContextId("testcontext");
