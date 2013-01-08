@@ -35,9 +35,8 @@
   <name>OpenEngSB :: Framework :: Parent</name>
 
   <description>
-    Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen as an extension to an
-    Enterprise Service Bus and is based on JBI (Service Mix). With this project it is tried to provide as many as
-    possible SE domains and to allow to combine the tools as easily as possible.
+    Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen as an Enterprise Service Bus (ESB)
+    focusing on the models of tools instead of their services, as classical ESBs do.
   </description>
 
   <url>http://openengsb.org</url>
