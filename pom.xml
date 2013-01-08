@@ -56,13 +56,6 @@
     <!-- maven plugin versions -->
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
-    <!-- repos -->
-    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot>
-    <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current/>
-    <repos.example>
-      ${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}
-    </repos.example>
     <!-- Dependency Versions -->
     <!-- core versions -->
     <karaf.version>3.0.0-SNAPSHOT</karaf.version>
