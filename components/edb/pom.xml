@@ -171,6 +171,11 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.jpatest</groupId>
+      <artifactId>labs-jpatest-core</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
 
