@@ -34,6 +34,7 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConfigItem;
@@ -44,8 +45,12 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 
 import com.google.common.collect.ImmutableMap;
+import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSBTest {
+
+    @Rule
+    public final TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
 
     private ConnectorJPAPersistenceBackendService service;
     private EntityManager em;
@@ -53,8 +58,7 @@ public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSB
     @Before
     public void setUp() {
         service = new ConnectorJPAPersistenceBackendService();
-        em = Persistence.createEntityManagerFactory("connector-test")
-            .createEntityManager();
+        em = testPersistenceUnit.getEntityManager("openengsb-connector");
         service.setEntityManager(em);
     }
 

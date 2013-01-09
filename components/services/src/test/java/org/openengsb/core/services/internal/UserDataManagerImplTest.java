@@ -39,6 +39,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
@@ -55,6 +56,7 @@ import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
+import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
@@ -103,6 +105,9 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     }
 
+    @Rule
+    public final TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
+
     private EntityManager entityManager;
 
     private UserDataManager userManager;
@@ -110,13 +115,10 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
     private UserData testUser2;
     private UserData testUser3;
 
-    private EntityManagerFactory emf;
-
     @Before
     public void setUp() throws Exception {
         EntryUtils.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
-        emf = Persistence.createEntityManagerFactory("security-test");
-        entityManager = emf.createEntityManager();
+        entityManager = testPersistenceUnit.getEntityManager("openengsb-security");
         setupUserManager();
         testUser2 = new UserData("testUser2");
         entityManager.persist(testUser2);
