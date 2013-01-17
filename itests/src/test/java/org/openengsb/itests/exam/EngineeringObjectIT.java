@@ -97,15 +97,15 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     }
     
     private ModelDescription getSourceModelADescription() {
-        return new ModelDescription(SourceModelA.class, exampleDomainVersion);
+        return new ModelDescription(SourceModelA.class, exampleDomainVersion.toString());
     }
     
     private ModelDescription getSourceModelBDescription() {
-        return new ModelDescription(SourceModelB.class, exampleDomainVersion);
+        return new ModelDescription(SourceModelB.class, exampleDomainVersion.toString());
     }
     
     private ModelDescription getEOModelDescription() {
-        return new ModelDescription(EOModel.class, exampleDomainVersion);
+        return new ModelDescription(EOModel.class, exampleDomainVersion.toString());
     }
 
     private List<TransformationDescription> generateTransformationDescriptions() {

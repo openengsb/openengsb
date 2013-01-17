@@ -32,7 +32,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
@@ -67,7 +66,7 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     }
 
     protected ModelDescription getTestModelDescription() {
-        return new ModelDescription(TestModel.class.getName(), new Version(providerVersion));
+        return new ModelDescription(TestModel.class.getName(), providerVersion);
     }
 
     protected Class<?> getTestModel() throws Exception {
@@ -76,7 +75,7 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     }
 
     protected ModelDescription getSubModelDescription() {
-        return new ModelDescription(SubModel.class.getName(), new Version(providerVersion));
+        return new ModelDescription(SubModel.class.getName(), providerVersion);
     }
 
     protected Class<?> getSubModel() throws Exception {

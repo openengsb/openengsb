@@ -154,8 +154,7 @@ public final class XLinkUtils {
             String version,
             OsgiUtilsService serviceFinder) throws ClassNotFoundException {
         ModelRegistry registry = serviceFinder.getService(ModelRegistry.class);
-        Version versionObj = new Version(version);
-        ModelDescription modelDescription = new ModelDescription(clazz, versionObj);
+        ModelDescription modelDescription = new ModelDescription(clazz, version);
         Class clazzObject = registry.loadModel(modelDescription);   
         return clazzObject;
     }
