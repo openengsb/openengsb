@@ -105,6 +105,12 @@ public interface ConnectorManager {
 
         // @extract-start ConnectorManager
     
+	/**
+	 * Checks for the existence of the specified connector instance.
+	 *
+	 */
+	 boolean connectorExists(String connectorId);
+	
     /**
      * Registers the given connector for XLink. 
      * Throws an 'DomainNotLinkableException' exception if, the supplied connector was 
