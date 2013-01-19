@@ -26,14 +26,14 @@ import org.osgi.framework.Version;
 public abstract class TransformationEngineTests {
 
     protected ModelDescription getModelADescription() {
-        return new ModelDescription(ModelA.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelA.class, new Version(1, 0, 0).toString());
     }
 
     protected ModelDescription getModelBDescription() {
-        return new ModelDescription(ModelB.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelB.class, new Version(1, 0, 0).toString());
     }
 
     protected ModelDescription getModelCDescription() {
-        return new ModelDescription(ModelC.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelC.class, new Version(1, 0, 0).toString());
     }
 }

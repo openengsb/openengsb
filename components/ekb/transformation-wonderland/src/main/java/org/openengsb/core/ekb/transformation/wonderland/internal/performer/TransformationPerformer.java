@@ -29,6 +29,7 @@ import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.api.transformation.TransformationOperation;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationLoader;
 import org.openengsb.core.ekb.api.transformation.TransformationStep;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,10 +57,21 @@ public class TransformationPerformer {
     private void checkNeededValues(TransformationDescription description) {
         String message = "The TransformationDescription doesn't contain a %s. Description loading aborted";
         if (description.getSourceModel().getModelClassName() == null) {
-            throw new IllegalArgumentException(String.format(message, "sourceclass"));
+            throw new IllegalArgumentException(String.format(message, "source class"));
         }
         if (description.getTargetModel().getModelClassName() == null) {
-            throw new IllegalArgumentException(String.format(message, "targetclass"));
+            throw new IllegalArgumentException(String.format(message, "target class"));
+        }
+        String message2 = "The version string of the %s is not a correct version string. Description loading aborted";
+        try {
+            Version.parseVersion(description.getSourceModel().getVersionString());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format(message2, "source class"), e);            
+        }
+        try {
+            Version.parseVersion(description.getTargetModel().getVersionString());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format(message2, "target class"), e);            
         }
     }
 

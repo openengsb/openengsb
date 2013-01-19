@@ -103,7 +103,7 @@ public final class ModelRegistryService extends BundleTracker implements ModelRe
             URL classURL = classEntries.nextElement();
             String classname = extractClassName(classURL);
             if (isModelClass(classname, bundle)) {
-                models.add(new ModelDescription(classname, bundle.getVersion()));
+                models.add(new ModelDescription(classname, bundle.getVersion().toString()));
             }
         }
         return models;

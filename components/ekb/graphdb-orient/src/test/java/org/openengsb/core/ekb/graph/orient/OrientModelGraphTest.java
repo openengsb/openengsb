@@ -62,15 +62,15 @@ public class OrientModelGraphTest {
     }
 
     private static ModelDescription getModelADescription() {
-        return new ModelDescription(ModelA.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelA.class, new Version(1, 0, 0).toString());
     }
 
     private static ModelDescription getModelBDescription() {
-        return new ModelDescription(ModelB.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelB.class, new Version(1, 0, 0).toString());
     }
 
     private static ModelDescription getModelCDescription() {
-        return new ModelDescription(ModelC.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelC.class, new Version(1, 0, 0).toString());
     }
 
     private TransformationDescription getDescriptionForModelAToModelB() {

@@ -60,11 +60,11 @@ public class ModelRegistryServiceTest {
     }
     
     private ModelDescription getCorrectModel() {
-        return new ModelDescription(TestModel.class, new Version(1, 0, 0));
+        return new ModelDescription(TestModel.class, new Version(1, 0, 0).toString());
     }
     
     private ModelDescription getIncorrectModel() {
-        return new ModelDescription(ModelA.class, new Version(1, 0, 0));
+        return new ModelDescription(ModelA.class, new Version(1, 0, 0).toString());
     }
 
     @Test
