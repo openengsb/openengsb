@@ -22,7 +22,7 @@ import java.io.Serializable;
 import org.openengsb.core.api.model.ModelDescription;
 
 /**
- * Modelclass to transfere XLink Model/View associations from a remote tool
+ * Modelclass to transfer XLink Model/View associations from a remote tool
  * during the XLink registration.
  */
 public class ModelToViewsTuple implements Serializable {
