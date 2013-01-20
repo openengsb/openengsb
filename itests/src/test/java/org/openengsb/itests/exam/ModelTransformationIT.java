@@ -75,11 +75,11 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private ModelDescription getExampleRequestDescription() {
-        return new ModelDescription(ExampleRequestModel.class, exampleDomainVersion);
+        return new ModelDescription(ExampleRequestModel.class, exampleDomainVersion.toString());
     }
 
     private ModelDescription getExampleResponseDescription() {
-        return new ModelDescription(ExampleResponseModel.class, exampleDomainVersion);
+        return new ModelDescription(ExampleResponseModel.class, exampleDomainVersion.toString());
     }
 
     private ExampleResponseModel transformRequestToResponse(ExampleRequestModel model) {
@@ -204,8 +204,8 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
             getClass().getClassLoader().getResourceAsStream("test-transformations/testDescription.transformation");
         List<TransformationDescription> descriptions = TransformationUtils.getDescriptionsFromXMLInputStream(stream);
         for (TransformationDescription description : descriptions) {
-            description.getSourceModel().setVersion(exampleDomainVersion);
-            description.getTargetModel().setVersion(exampleDomainVersion);
+            description.getSourceModel().setVersionString(exampleDomainVersion.toString());
+            description.getTargetModel().setVersionString(exampleDomainVersion.toString());
         }
         transformationEngine.saveDescriptions(descriptions);
     }
