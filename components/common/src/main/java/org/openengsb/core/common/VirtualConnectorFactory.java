@@ -72,10 +72,11 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
         return (Connector) Proxy.newProxyInstance(compositeClassLoader, classesAsArray, handler);
     }
 
-    private CompositeClassLoader makeCompositeClassLoader(Class<? extends Domain> domainInterface, Collection<Class<?>> classes) {
+    private CompositeClassLoader makeCompositeClassLoader(Class<? extends Domain> domainInterface,
+        Collection<Class<?>> classes) {
         CompositeClassLoader compositeClassLoader = new CompositeClassLoader(getClass().getClassLoader(),
                 domainInterface.getClassLoader());
-        for(Class<?> clazz : classes){
+        for (Class<?> clazz : classes) {
             compositeClassLoader.add(clazz.getClassLoader());
         }
         return compositeClassLoader;

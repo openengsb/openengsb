@@ -31,7 +31,7 @@ public class CompositeClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        for(ClassLoader cl : loaders){
+        for (ClassLoader cl : loaders) {
             try {
                 return cl.loadClass(name);
             } catch (ClassNotFoundException e) {
@@ -46,7 +46,7 @@ public class CompositeClassLoader extends ClassLoader {
         return super.loadClass(name);
     }
 
-    public void add(ClassLoader loader){
+    public void add(ClassLoader loader) {
         loaders.add(loader);
     }
 }

@@ -19,15 +19,10 @@ package org.openengsb.connector.virtual.filewatcher.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 
 public class JSONParserTest extends AbstractParserTest {

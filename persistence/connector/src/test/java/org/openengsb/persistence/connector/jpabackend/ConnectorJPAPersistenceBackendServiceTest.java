@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,9 +42,9 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 import com.google.common.collect.ImmutableMap;
-import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public class ConnectorJPAPersistenceBackendServiceTest extends AbstractOpenEngSBTest {
 

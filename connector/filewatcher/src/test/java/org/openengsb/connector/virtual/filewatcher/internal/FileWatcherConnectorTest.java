@@ -106,7 +106,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 ServiceList<EventSupport> eventSupports = makeServiceList(EventSupport.class);
-                for(EventSupport e : eventSupports){
+                for (EventSupport e : eventSupports) {
                     try {
                         e.onEvent(new Event());
                     } catch (Exception e1) {
@@ -114,7 +114,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
                     }
                 }
                 EKBCommit commit = (EKBCommit) invocation.getArguments()[0];
-                for(Object o : commit.getInserts()){
+                for (Object o : commit.getInserts()) {
                     if (!activeModels.containsKey(o.getClass())) {
                         activeModels.put(o.getClass(), new ArrayList<Object>());
                     }

@@ -48,7 +48,7 @@ public class JSONParser<ResultType> implements FileSerializer<ResultType> {
 
     @Override
     public List<ResultType> readFile(File path) throws IOException {
-        if(!path.exists()){
+        if (!path.exists()) {
             return Collections.emptyList();
         }
         MappingIterator<ResultType> iterator = mapper.reader(resultType).readValues(path);

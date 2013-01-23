@@ -1,5 +1,7 @@
 package org.openengsb.loom.csharp.comon.wsdltodll;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -20,18 +22,16 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import static java.nio.file.StandardCopyOption.*;
 
 /**
  * Goal which creates a DLL from a WSDL file.
- * 
+ *
  * @goal run
- * 
  * @phase process-sources
  */
 public class WsdlToDll extends AbstractMojo {
 
-    private static final String nugetCommand = "nuget";
+    private static final String NUGET_COMMAND = "nuget";
 
     private static final String CSC_EXE = "csc.exe";
 
@@ -39,56 +39,56 @@ public class WsdlToDll extends AbstractMojo {
 
     /**
      * Owner of the Nuget package
-     * 
+     *
      * @parameter
      * @required default-Value="OpenEngSB"
      */
     private String owner;
     /**
      * Author of the nuget package.
-     * 
+     *
      * @parameter
      * @required default-Value="OpenEngSB
      */
     private String author = "OpenEngSB";
     /**
      * The Url of the project
-     * 
+     *
      * @parameter
      * @optional default-Value=null
      */
     private String projectUrl;
     /**
      * Url to the license
-     * 
+     *
      * @parameter
      * @optional Default-Value=null
      */
     private String licenseUrl;
     /**
      * Url to the icon
-     * 
+     *
      * @parameter
      * @optional Default-Value=null
      */
     private String iconUrl;
     /**
      * Location of the file.
-     * 
+     *
      * @parameter
      * @required Default-Value=false
      */
     private boolean requireLicenseAcceptance;
     /**
      * Location of the file.
-     * 
+     *
      * @parameter
      * @required Default-Value=""
      */
     private String releaseNotes;
     /**
      * Location of the file.
-     * 
+     *
      * @parameter
      * @required Default-Value=OpenEngSB 2012
      */
@@ -98,50 +98,50 @@ public class WsdlToDll extends AbstractMojo {
      * List of default pathes where to search for the installation of the .net framework.
      */
     private static final String[] DEFAULT_WSDL_PATHS = new String[]{
-        System.getenv("ProgramFiles(x86)") + "\\Microsoft SDKs\\Windows\\",
-        System.getenv("ProgramFiles") + "\\Microsoft SDKs\\Windows\\" };
+            System.getenv("ProgramFiles(x86)") + "\\Microsoft SDKs\\Windows\\",
+            System.getenv("ProgramFiles") + "\\Microsoft SDKs\\Windows\\"};
 
     private static final String[] DEFAULT_CSC_PATHS = new String[]{
-        System.getenv("windir") + "\\Microsoft.NET\\Framework64\\",
-        System.getenv("windir") + "\\Microsoft.NET\\Framework\\" };
+            System.getenv("windir") + "\\Microsoft.NET\\Framework64\\",
+            System.getenv("windir") + "\\Microsoft.NET\\Framework\\"};
 
     /**
      * Location of the file.
-     * 
+     *
      * @parameter expression="${project.build.directory}"
      * @required
      */
     private File outputDirectory;
     /**
      * Location of the wsdl.exe command
-     * 
+     *
      * @parameter default-Value=null expression="${wsdlExeFolderLocation}"
      */
     private File wsdlExeFolderLocation;
     /**
      * Location of the csc command.
-     * 
+     *
      * @parameter default-Value=null expression="${cscFolderLocation}"
      */
     private File cscFolderLocation;
     /**
      * Nuget folder
-     * 
+     *
      * @parameter
      * @required
      */
-    private String nuget_folder;
+    private String nugetFolder;
     /**
      * Location of the wsdl file
-     * 
+     *
      * @parameter
      * @required
      */
-    private List<String> wsdl_locations;
+    private List<String> wsdlLocations;
 
     /**
      * Namespace of the WSDL file. This should be the namespace in which a domain should be located.
-     * 
+     *
      * @parameter
      * @required
      */
@@ -149,28 +149,28 @@ public class WsdlToDll extends AbstractMojo {
 
     /**
      * Version that should be written to the resulting DLL
-     * 
+     *
      * @parameter
      * @required
      */
     private String targetVersion;
 
-    private String NUGET_LIB;
+    private String nugetLib;
 
     private List<String> cspath = new ArrayList<String>();
 
     private List<String> handledClasses = new ArrayList<String>();
 
     private static final Pattern CLASS_START_PATTERN = Pattern.compile(
-        "    /// <remarks/>\n(    \\[System.*\\]\n)+ {4}public partial class [A-Za-z0-9 :]+ \\{\n",
-        Pattern.MULTILINE);
+            "    /// <remarks/>\n(    \\[System.*\\]\n)+ {4}public partial class [A-Za-z0-9 :]+ \\{\n",
+            Pattern.MULTILINE);
 
     /**
      * Find and executes the commands wsdl.exe and csc.exe
      */
     @Override
     public void execute() throws MojoExecutionException {
-        NUGET_LIB = nuget_folder + "lib";
+        nugetLib = nugetFolder + "lib";
         if (isWindows()) {
             createDllFromWsdlUsingWindowsMode();
         } else {
@@ -189,28 +189,26 @@ public class WsdlToDll extends AbstractMojo {
 
     /**
      * Linux mode for maven execution
-     * 
+     *
      * @throws MojoExecutionException
      */
-    private void createDllFromWsdlUsingLinuxMode()
-        throws MojoExecutionException {
+    private void createDllFromWsdlUsingLinuxMode() throws MojoExecutionException {
         String errorMessage = new StringBuilder()
-            .append("========================================================================")
-            .append("========================================================================")
-            .append("This plugin can't be used under Linux")
-            .append("========================================================================")
-            .append("========================================================================")
-            .toString();
+                .append("========================================================================")
+                .append("========================================================================")
+                .append("This plugin can't be used under Linux")
+                .append("========================================================================")
+                .append("========================================================================")
+                .toString();
         throw new MojoExecutionException(errorMessage);
     }
 
     /**
      * Windows mode for maven execution
-     * 
+     *
      * @throws MojoExecutionException
      */
-    private void createDllFromWsdlUsingWindowsMode()
-        throws MojoExecutionException {
+    private void createDllFromWsdlUsingWindowsMode() throws MojoExecutionException {
         getLog().info("Execute WSDl to cs command");
         wsdlCommand();
         getLog().info("Execute cs to dll command");
@@ -291,14 +289,13 @@ public class WsdlToDll extends AbstractMojo {
     /**
      * Search for the wsdl command and execute it when it is found
      */
-    private void wsdlCommand()
-        throws MojoExecutionException {
+    private void wsdlCommand() throws MojoExecutionException {
         String cmd = findWsdlCommand();
         int i = 0;
-        for (String location : wsdl_locations) {
+        for (String location : wsdlLocations) {
             String outputFilename = new File(outputDirectory, namespace + (i++) + ".cs").getAbsolutePath();
-            String[] command = new String[]{ cmd, "/serverInterface",
-                "/n:" + namespace, location, "/out:" + outputFilename };
+            String[] command = new String[]{cmd, "/serverInterface",
+                "/n:" + namespace, location, "/out:" + outputFilename};
             ProcessBuilder builder = new ProcessBuilder();
             builder.redirectErrorStream(true);
             builder.command(command);
@@ -306,10 +303,10 @@ public class WsdlToDll extends AbstractMojo {
                 executeACommand(builder.start());
             } catch (IOException e) {
                 throw new MojoExecutionException("Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    + Arrays.toString(command) + "\n", e);
             } catch (InterruptedException e) {
                 throw new MojoExecutionException("Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    + Arrays.toString(command) + "\n", e);
             }
             try {
                 readClassesFromFile(outputFilename);
@@ -378,8 +375,7 @@ public class WsdlToDll extends AbstractMojo {
     /**
      * Search for the csc command and execute it when it is found
      */
-    private void cscCommand()
-        throws MojoExecutionException {
+    private void cscCommand() throws MojoExecutionException {
         generateAssemblyInfo();
         String cscPath = findCscCommand();
         List<String> commandList = new LinkedList<String>(cspath);
@@ -396,12 +392,12 @@ public class WsdlToDll extends AbstractMojo {
             executeACommand(builder.start());
         } catch (IOException e) {
             throw new MojoExecutionException(
-                "Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    "Error, while executing command: "
+                            + Arrays.toString(command) + "\n", e);
         } catch (InterruptedException e) {
             throw new MojoExecutionException(
-                "Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    "Error, while executing command: "
+                            + Arrays.toString(command) + "\n", e);
         }
     }
 
@@ -409,7 +405,7 @@ public class WsdlToDll extends AbstractMojo {
      * Generate the nuget structe (for example a lib folder)
      */
     private void createNugetStructure() {
-        (new File(NUGET_LIB)).mkdirs();
+        (new File(nugetLib)).mkdirs();
     }
 
     private void copyFilesToNuget() throws MojoExecutionException {
@@ -417,10 +413,10 @@ public class WsdlToDll extends AbstractMojo {
         for (File file : folder.listFiles()) {
             if (file.getAbsoluteFile().toPath().toString().endsWith(".dll")) {
                 try {
-                    getLog().info("COPY FILE" + (new File(NUGET_LIB)).getAbsoluteFile().toPath());
-                    Files.copy(file.getAbsoluteFile().toPath(), (new File(NUGET_LIB + "//" + file.getName()))
-                        .getAbsoluteFile().toPath(),
-                        REPLACE_EXISTING);
+                    getLog().info("COPY FILE" + (new File(nugetLib)).getAbsoluteFile().toPath());
+                    Files.copy(file.getAbsoluteFile().toPath(), (new File(nugetLib + "//" + file.getName()))
+                            .getAbsoluteFile().toPath(),
+                            REPLACE_EXISTING);
                 } catch (IOException ex) {
                     throw new MojoExecutionException(ex.getMessage());
                 }
@@ -432,27 +428,25 @@ public class WsdlToDll extends AbstractMojo {
     /**
      * Execute nuget command to pack the .nuspec
      */
-    private void nugetPackCommand()
-        throws MojoExecutionException {
-
+    private void nugetPackCommand() throws MojoExecutionException {
         List<String> commandList = new LinkedList<String>();
-        commandList.add(0, nugetCommand);
+        commandList.add(0, NUGET_COMMAND);
         commandList.add(1, "pack");
         String[] command = commandList.toArray(new String[commandList.size()]);
         ProcessBuilder builder = new ProcessBuilder();
         builder.redirectErrorStream(true);
-        builder.directory(new File(nuget_folder));
+        builder.directory(new File(nugetFolder));
         builder.command(command);
         try {
             executeACommand(builder.start());
         } catch (IOException e) {
             throw new MojoExecutionException(
-                "Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    "Error, while executing command: "
+                            + Arrays.toString(command) + "\n", e);
         } catch (InterruptedException e) {
             throw new MojoExecutionException(
-                "Error, while executing command: "
-                        + Arrays.toString(command) + "\n", e);
+                    "Error, while executing command: "
+                            + Arrays.toString(command) + "\n", e);
         }
     }
 
@@ -464,14 +458,14 @@ public class WsdlToDll extends AbstractMojo {
         assemblyInfoBuilder.append("[assembly: AssemblyCompany(\"").append(owner).append("\")]\n");
 
         assemblyInfoBuilder.append("[assembly: AssemblyDescription(\"").append(namespace + "_domain_dll")
-            .append("\")]\n");
+                .append("\")]\n");
         assemblyInfoBuilder.append("[assembly: AssemblyCopyright(\"").append("Copyright @ " + owner).append("\")]\n");
 
         String truncatedVersion = targetVersion.replaceAll("-.*", "");
         assemblyInfoBuilder.append("[assembly: AssemblyVersion(\"").append(truncatedVersion).append("\")]\n");
         assemblyInfoBuilder.append("[assembly: AssemblyFileVersion(\"").append(truncatedVersion).append("\")]\n");
         assemblyInfoBuilder.append("[assembly: AssemblyInformationalVersion(\"").append(targetVersion)
-            .append("\")]\n");
+                .append("\")]\n");
 
         File assemblyInfo = new File(outputDirectory, "AssemblyInfo.cs");
         FileWriter writer = null;
@@ -519,7 +513,7 @@ public class WsdlToDll extends AbstractMojo {
         assemblyInfoBuilder.append("  </metadata>\n");
         assemblyInfoBuilder.append("</package >\n");
 
-        File assemblyInfo = new File(nuget_folder, namespace + ".nuspec");
+        File assemblyInfo = new File(nugetFolder, namespace + ".nuspec");
         FileWriter writer = null;
         try {
             writer = new FileWriter(assemblyInfo);
@@ -538,11 +532,13 @@ public class WsdlToDll extends AbstractMojo {
         cspath.add(assemblyInfo.getAbsolutePath());
     }
 
-    private void executeACommand(Process child) throws IOException,
-        MojoExecutionException, InterruptedException {
+    private void executeACommand(Process child) throws IOException, MojoExecutionException, InterruptedException {
         BufferedReader brout = new BufferedReader(new InputStreamReader(
-            child.getInputStream()));
-        String error = "", tmp, input = "", last = "";
+                child.getInputStream()));
+        String error = "";
+        String tmp;
+        String input = "";
+        String last = "";
         while ((tmp = brout.readLine()) != null) {
             input += tmp + "\n";
             last = tmp;
@@ -557,7 +553,7 @@ public class WsdlToDll extends AbstractMojo {
             String filepath = last.split("'")[1];
             File file = new File(filepath);
             boolean moved = file.renameTo(new File(outputDirectory, file
-                .getName()));
+                    .getName()));
             if (!moved) {
                 throw new MojoExecutionException("Unable to move file: "
                         + file.getAbsolutePath());

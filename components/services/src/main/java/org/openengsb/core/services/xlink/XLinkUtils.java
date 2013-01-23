@@ -44,7 +44,6 @@ import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 import org.openengsb.core.api.xlink.model.XLinkUrlKeyNames;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.util.ModelUtils;
-import org.osgi.framework.Version;
 
 /**
  * Static util class for xlink, defining XLink keyNames and UtilMethods. 

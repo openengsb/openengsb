@@ -47,13 +47,21 @@ public class SourceModelA {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SourceModelA)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SourceModelA)) {
+            return false;
+        }
 
         SourceModelA that = (SourceModelA) o;
 
-        if (edbId != null ? !edbId.equals(that.edbId) : that.edbId != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (edbId != null ? !edbId.equals(that.edbId) : that.edbId != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
 
         return true;
     }

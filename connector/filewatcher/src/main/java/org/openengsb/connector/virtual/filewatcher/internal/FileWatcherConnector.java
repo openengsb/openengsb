@@ -54,8 +54,8 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private Timer timer;
 
-    public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService, QueryInterface queryService,
-            AuthenticationContext authenticationContext) {
+    public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService,
+            QueryInterface queryService, AuthenticationContext authenticationContext) {
         super(instanceId, domainType);
         this.authenticationContext = authenticationContext;
         this.persistService = persistService;
@@ -81,7 +81,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private synchronized void update() throws IOException {
         List<?> models = queryService.queryForActiveModels(modelType);
-        if(models == null){
+        if (models == null) {
             watchfile.delete();
             localModels = Collections.emptyList();
         } else {

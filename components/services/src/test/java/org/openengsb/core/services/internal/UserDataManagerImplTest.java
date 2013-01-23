@@ -35,8 +35,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -53,10 +51,10 @@ import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.labs.delegation.service.Constants;
 import org.openengsb.labs.delegation.service.internal.ClassProviderImpl;
+import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
