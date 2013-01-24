@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.SecurityUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,19 +57,25 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.services.internal.ForwardMethodInterceptor;
+import org.openengsb.core.services.internal.security.OpenEngSBSecurityManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyConfigPersistenceService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.util.MergeException;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
@@ -113,6 +120,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             }
         });
 
+        setupSecurityManager();
+
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "aconnector");
         props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, "mydomain");
@@ -125,6 +134,23 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
         testConnectorId = "test-connector-instance";
         wiringService = defaultWiringService;
+    }
+
+    private void setupSecurityManager() throws AuthenticationException {
+        AuthenticationDomain authManager = mock(AuthenticationDomain.class);
+        when(authManager.authenticate(anyString(), any(Credentials.class))).thenAnswer(new Answer<Authentication>() {
+            @Override
+            public Authentication answer(InvocationOnMock invocation) throws Throwable {
+                String username = (String) invocation.getArguments()[0];
+                Credentials credentials = (Credentials) invocation.getArguments()[1];
+                return new Authentication(username, credentials);
+            }
+        });
+        OpenEngSBSecurityManager openEngSBSecurityManager = new OpenEngSBSecurityManager();
+        OpenEngSBShiroAuthenticator authenticator = new OpenEngSBShiroAuthenticator();
+        authenticator.setAuthenticator(authManager);
+        openEngSBSecurityManager.setAuthenticator(authenticator);
+        SecurityUtils.setSecurityManager(openEngSBSecurityManager);
     }
 
     private void setupPersistence() {
