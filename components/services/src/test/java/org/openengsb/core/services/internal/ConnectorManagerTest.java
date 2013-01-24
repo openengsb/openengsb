@@ -155,6 +155,20 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
         serviceUtils.getService("(foo=bar)", 100L);
     }
+    
+    @Test
+    public void testCreateService_shouldExist() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+
+        String id = serviceManager.create(connectorDescription);
+        
+        boolean exists = serviceManager.connectorExists(id);
+        assertTrue("Service doesn't exist after creation",exists);
+    }
 
     @Test
     public void testUpdateService_shouldUpdateInstance() throws Exception {
@@ -312,6 +326,23 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         } catch (IllegalArgumentException e) {
             // expected
         }
+    }
+    
+    @Test
+    public void testDeleteService_shouldNotExistAnymore() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        boolean connectorExists;
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
+
+        String connectorId = serviceManager.create(connectorDescription);
+
+        serviceManager.delete(connectorId);
+
+        
+        connectorExists =  serviceManager.connectorExists(connectorId);
+        assertFalse("service was still existing after deletion",connectorExists);
     }
     
     @Test

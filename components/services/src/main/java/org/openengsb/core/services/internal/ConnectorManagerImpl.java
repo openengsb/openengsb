@@ -264,6 +264,20 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
             throw new RuntimeException(e);
         }
     }
+	
+	@Override
+	public boolean connectorExists(String id) {
+		try {
+            List<ConnectorConfiguration> list =
+                configPersistence.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
+            if (list.isEmpty()) {
+               return false;
+            }
+           return true;
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+	}
 
     public void setConfigPersistence(ConfigPersistenceService configPersistence) {
         this.configPersistence = configPersistence;
