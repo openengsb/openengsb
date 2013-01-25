@@ -167,7 +167,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         String id = serviceManager.create(connectorDescription);
         
         boolean exists = serviceManager.connectorExists(id);
-        assertTrue("Service doesn't exist after creation",exists);
+        assertTrue("Service doesn't exist after creation", exists);
     }
 
     @Test
@@ -342,7 +342,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
         
         connectorExists =  serviceManager.connectorExists(connectorId);
-        assertFalse("service was still existing after deletion",connectorExists);
+        assertFalse("service was still existing after deletion", connectorExists);
     }
     
     @Test
