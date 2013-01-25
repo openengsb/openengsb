@@ -270,10 +270,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         try {
             List<ConnectorConfiguration> list =
                 configPersistence.load(ImmutableMap.of(Constants.CONNECTOR_PERSISTENT_ID, id));
-            if (list.isEmpty()) {
-                return false;
-            }
-            return true;
+            return !list.isEmpty();
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
