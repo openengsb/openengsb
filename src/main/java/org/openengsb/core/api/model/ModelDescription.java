@@ -17,8 +17,6 @@
 
 package org.openengsb.core.api.model;
 
-import org.osgi.framework.Version;
-
 import com.google.common.base.Objects;
 
 /**
@@ -35,28 +33,19 @@ public class ModelDescription {
     
     public ModelDescription(String modelClassName, String versionString) {
         this.modelClassName = modelClassName;
-        this.versionString = checkVersionString(versionString);
-    }
-
-    public ModelDescription(String modelClassName, Version version) {
-        this.modelClassName = modelClassName;
-        this.versionString = version.toString();
-    }
-
-    public ModelDescription(String modelClassName) {
-        this(modelClassName, new Version(1, 0, 0));
-    }
-
-    public ModelDescription(Class<?> modelClass, Version version) {
-        this(modelClass.getName(), version);
+        this.versionString = versionString;
     }
 
     public ModelDescription(Class<?> modelClass, String versionString) {
         this(modelClass.getName(), versionString);
     }
+    
+    public ModelDescription(String modelClassName) {
+        this(modelClassName, "1.0.0");
+    }
 
     public ModelDescription(Class<?> modelClass) {
-        this(modelClass.getName(), new Version(1, 0, 0));
+        this(modelClass.getName(), "1.0.0");
     }
 
     public String getModelClassName() {
@@ -71,22 +60,8 @@ public class ModelDescription {
         return versionString;
     }
 
-    public void setVersion(Version version) {
-        this.versionString = version.toString();
-    }
-
     public void setVersionString(String versionString) {
-        this.versionString = checkVersionString(versionString);
-    }
-
-    private String checkVersionString(String versionString) {
-        try {
-            return Version.parseVersion(versionString).toString();
-        } catch (IllegalArgumentException e) {
-            String errorMessage =
-                String.format("%s is not a valid version string for a model description", versionString);
-            throw new IllegalArgumentException(errorMessage, e);
-        }
+        this.versionString = versionString;
     }
 
     @Override
