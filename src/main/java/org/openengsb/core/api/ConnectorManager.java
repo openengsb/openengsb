@@ -103,13 +103,15 @@ public interface ConnectorManager {
      */
     ConnectorDescription getAttributeValues(String connectorId);
 
-        // @extract-start ConnectorManager
+    /**
+     * Checks for the existence of the specified connector instance.
+     * Returns true if connector does exist, false otherwise.
+     *
+     */
+    Boolean connectorExists(String connectorId);
     
-	/**
-	 * Checks for the existence of the specified connector instance.
-	 *
-	 */
-	 boolean connectorExists(String connectorId);
+    // @extract-start ConnectorManager
+    
 	
     /**
      * Registers the given connector for XLink. 
