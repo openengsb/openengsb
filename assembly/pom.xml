@@ -184,6 +184,7 @@
                 <descriptor>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
+                <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
