@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * value for the key and type defines the type of the value.
  */
 @XmlRootElement
-public class OpenEngSBModelEntry {
+public class OpenEngSBModelEntry implements Serializable {
     private String key;
     private Object value;
     private Class<?> type;
