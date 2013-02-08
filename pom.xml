@@ -99,6 +99,7 @@
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
     <jackson2.version>2.1.1</jackson2.version>
+    <uuidgen.version>3.1.3</uuidgen.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>2.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
@@ -168,6 +169,8 @@
     <javassist.version>3.12.1.GA_3</javassist.version>
     <tinybundles.version>1.0.0</tinybundles.version>
     <aopalliance.version>1.0</aopalliance.version>
+    <ldap.server.version>2.0.0-M8</ldap.server.version>
+    <ldap.shared.version>1.0.0-M13</ldap.shared.version>
   </properties>
 
   <dependencyManagement>
@@ -616,6 +619,11 @@
         <version>${jackson2.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.fasterxml.uuid</groupId>
+        <artifactId>java-uuid-generator</artifactId>
+        <version>${uuidgen.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.codehaus.janino</groupId>
         <artifactId>com.springsource.org.codehaus.janino</artifactId>
         <version>${janino.version}</version>
@@ -979,6 +987,42 @@
         <artifactId>org.openengsb.connector.serviceacl</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- LDAP DEPENDENCIES -->
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-all</artifactId>
+        <version>${ldap.server.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-server-integ</artifactId>
+        <version>${ldap.server.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-core-integ</artifactId>
+        <version>${ldap.server.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>ldap-client-test</artifactId>
+        <version>${ldap.server.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.shared</groupId>
+        <artifactId>shared-ldap-model</artifactId>
+        <version>${ldap.shared.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1021,6 +1065,7 @@
     <!-- OpenEngSB Infrastructure Modules -->
     <module>infrastructure/jpa</module>
     <module>infrastructure/jms</module>
+    <module>infrastructure/ldap</module>
     <!-- OpenEngSB Port Modules -->
     <module>ports/jms</module>
     <module>ports/ws</module>
