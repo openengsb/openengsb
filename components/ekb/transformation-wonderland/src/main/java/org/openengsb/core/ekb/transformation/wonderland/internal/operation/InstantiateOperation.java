@@ -20,14 +20,19 @@ package org.openengsb.core.ekb.transformation.wonderland.internal.operation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
+import org.osgi.framework.Version;
 
 /**
  * The instantiate operation is used to support other field types than only strings. It instantiates an object of the
@@ -37,10 +42,20 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
     private String typeParam = TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM;
     private String initFuncParam = TransformationConstants.INSTANTIATE_INITMETHOD_PARAM;
     private ModelRegistry modelRegistry;
+    private Map<String, Class<?>> cache;
+    private Timer timer;
 
     public InstantiateOperation(String operationName, ModelRegistry modelRegistry) {
         super(operationName, InstantiateOperation.class);
         this.modelRegistry = modelRegistry;
+        this.cache = new ConcurrentHashMap<String, Class<?>>();
+        this.timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                cache.clear();
+            }
+        }, new Date(), 5000);
     }
 
     @Override
@@ -132,23 +147,37 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      * Tries to load the class with the given name. Throws a TransformationOperationException if this is not possible.
      */
     private Class<?> loadClassByName(String className) throws TransformationOperationException {
-        try {
-            return this.getClass().getClassLoader().loadClass(className);
-        } catch (Exception e) {
+        Exception e;
+        Class<?> clazz = cache.get(className);
+        if (clazz != null) {
+            return clazz;
+        }
+        if (className.contains(";")) {
             try {
                 String[] parts = className.split(";");
                 ModelDescription description = new ModelDescription();
                 description.setModelClassName(parts[0]);
                 if (parts.length > 1) {
-                    description.setVersionString(parts[1]);
+                    description.setVersionString(new Version(parts[1]).toString());
                 }
-                return modelRegistry.loadModel(description);
+                clazz = modelRegistry.loadModel(description);
+                cache.put(className, clazz);
+                return clazz;
             } catch (Exception ex) {
-                String message = "The class %s can't be found. The instantiate operation will be ignored.";
-                message = String.format(message, className);
-                getLogger().error(message);
-                throw new TransformationOperationException(message, ex);
+                e = ex;
+            }
+        } else {
+            try {
+                clazz = this.getClass().getClassLoader().loadClass(className);
+                cache.put(className, clazz);
+                return clazz;
+            } catch (Exception ex) {
+                e = ex;
             }
         }
+        String message = "The class %s can't be found. The instantiate operation will be ignored.";
+        message = String.format(message, className);
+        getLogger().error(message);
+        throw new TransformationOperationException(message, e);        
     }
 }
