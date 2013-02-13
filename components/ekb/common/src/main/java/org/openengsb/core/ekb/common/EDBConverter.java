@@ -20,6 +20,7 @@ package org.openengsb.core.ekb.common;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -149,6 +150,9 @@ public class EDBConverter {
         } else if (List.class.isAssignableFrom(parameterType)) {
             Class<?> clazz = getGenericListParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
+        } else if (parameterType.isArray()) {
+            Class<?> clazz = parameterType.getComponentType();
+            value = getArrayValue(clazz, propertyName, object);
         } else if (value == null) {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
@@ -206,8 +210,9 @@ public class EDBConverter {
     /**
      * Gets a list object out of an EDBObject.
      */
-    private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
-        List<Object> temp = new ArrayList<Object>();
+    @SuppressWarnings("unchecked")
+    private <T> List<T> getListValue(Class<T> type, String propertyName, EDBObject object) {
+        List<T> temp = new ArrayList<T>();
         for (int i = 0;; i++) {
             String property = EDBConverterUtils.getEntryNameForList(propertyName, i);
             Object obj = object.getObject(property);
@@ -217,10 +222,20 @@ public class EDBConverter {
             if (OpenEngSBModel.class.isAssignableFrom(type)) {
                 obj = convertEDBObjectToUncheckedModel(type, edbService.getObject(object.getString(property)));
             }
-            temp.add(obj);
+            temp.add((T) obj);
             object.remove(property);
         }
         return temp;
+    }
+    
+    /**
+     * Gets an array object out of an EDBObject.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] getArrayValue(Class<T> type, String propertyName, EDBObject object) {
+        List<T> elements = getListValue(type, propertyName, object); 
+        T[] ar = (T[]) Array.newInstance(type, elements.size());
+        return elements.toArray(ar);
     }
 
     /**
@@ -343,6 +358,23 @@ public class EDBConverter {
                 Boolean modelItems = null;
                 for (int i = 0; i < list.size(); i++) {
                     Object item = list.get(i);
+                    if (modelItems == null) {
+                        modelItems = OpenEngSBModel.class.isAssignableFrom(item.getClass());
+                    }
+                    if (modelItems) {
+                        item = convertSubModel((OpenEngSBModel) item, objects, info);
+                    }
+                    String entryName = EDBConverterUtils.getEntryNameForList(entry.getKey(), i);
+                    object.putEDBObjectEntry(entryName, item, item.getClass());
+                }
+            } else if (entry.getType().isArray()) {
+                Object[] array = (Object[]) entry.getValue();
+                if (array == null || array.length == 0) {
+                    continue;
+                }
+                Boolean modelItems = null;
+                for (int i = 0; i < array.length; i++) {
+                    Object item = array[i];
                     if (modelItems == null) {
                         modelItems = OpenEngSBModel.class.isAssignableFrom(item.getClass());
                     }
