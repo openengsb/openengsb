@@ -52,9 +52,9 @@
   <properties>
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- maven plugin versions -->
+    <!-- maven plugin versions 
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
-    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>-->
     <root.version>34-SNAPSHOT</root.version>   
   </properties>
 
@@ -143,46 +143,6 @@
     <url>http://build.openengsb.org/opencit/</url>
   </ciManagement>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>openjpa-maven-plugin</artifactId>
-          <configuration>
-            <addDefaultConstructor>true</addDefaultConstructor>
-          </configuration>
-          <executions>
-            <execution>
-              <id>enhancer</id>
-              <phase>process-classes</phase>
-              <goals>
-                <goal>enhance</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.openjpa</groupId>
-              <artifactId>openjpa</artifactId>
-              <version>${openjpa.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-api</artifactId>
-              <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-log4j12</artifactId>
-              <version>${slf4j.version}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
   <profiles>
     <profile>
       <id>itests</id>
@@ -207,7 +167,7 @@
   </profiles>
 
   <repositories>
-    <repository> <!-- OEB snapshots are deployed here -->
+    <repository> <!-- OEB snapshots are deployed here, need to stay here because of openengsb-root -->
       <id>sonatype-snapshots</id>
       <name>Sonaype Snapsht Repository</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
