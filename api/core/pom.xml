@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-root</artifactId>
+    <version>34-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.api</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: Framework :: API</name>
+
+  <packaging>bundle</packaging>
+
+  <description>
+    Interfaces to be implemented by Domains, Connectors and Events which handle intatiation of Services
+    and Proxies, classes for registration of bundles and services, classes for localization, classes that
+    save connector properties (Persistence) and finally classes that enable the web application to have
+    access to OSGI bundles. This bundle contains only the model and interface descriptions of all those services.
+    In theory someone can take only a minor number of openengsb bundles, the api and create the rest of the
+    system on his own.
+  </description>
+
+  <url>http://www.openengsb.org</url>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
+  </scm>
+
+  <properties>
+    <assembly.builder.resources.version>1.0.1</assembly.builder.resources.version>
+    <manual.builder.resources.version>1.0.0</manual.builder.resources.version>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.info</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>org.ops4j.pax.wicket.util.proxy; resolution:="optional",
+              net.sf.cglib.core; resolution:="optional",
+              net.sf.cglib.proxy; resolution:="optional",
+              net.sf.cglib.reflect; resolution:="optional", *
+            </Import-Package>
+            <Provide-Models>true</Provide-Models>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ConnectorManagerWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.ConnectorManager</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/ConnectorManager.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>ProxyConnectorRegistryWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.remote.ProxyConnectorRegistry</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/ProxyConnectorRegistry.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>LinkingSupportWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.LinkingSupport</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/LinkingSupport.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>EventSupportWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.EventSupport</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/EventSupport.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/generated/wsdl/ConnectorManager.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>ConnectorManager</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/ProxyConnectorRegistry.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>ProxyConnectorRegistry</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/LinkingSupport.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>LinkingSupport</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/EventSupport.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>EventSupport</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>
+              <targetPath>${project.basedir}/target/classes/docbook/snippets</targetPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-manual-builder-resources</artifactId>
+                  <version>${manual.builder.resources.version}</version>
+                  <outputDirectory>${project.build.directory}/manual-resources</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-assembly-builder-resources</artifactId>
+                  <version>${assembly.builder.resources.version}</version>
+                  <outputDirectory>${project.build.directory}/assembly-resources</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/src.xml</descriptor>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+    <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>
+
