@@ -69,6 +69,12 @@
   </dependencyManagement>
 
   <modules>
+    <!-- OpenEngSB API Modules -->
+    <module>api/core</module>
+    <module>api/edb</module>
+    <module>api/ekb</module>
+    <module>api/workflow</module>
+    <module>api/ui</module>
     <!-- OpenEngSB Tooling Modules -->
     <module>tooling/archetypes</module>
     <module>tooling/wsdl2dll</module>
