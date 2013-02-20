@@ -1,0 +1,122 @@
+#
+# Licensed to the Austrian Association for Software Tool Integration (AASTI)
+# under one or more contributor license agreements. See the NOTICE file
+# distributed with this work for additional information regarding copyright
+# ownership. The AASTI licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except in compliance
+# with the License. You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+#=================
+#eclipse-workspace
+#=================
+eclipse-workspace
+
+#=================
+#eclipse-project
+#=================
+*.project
+*.classpath
+*.settings
+*bin
+*.springBeans
+*.checkstyle
+.checkstyleCheckerConfig
+*.local.properties
+
+#=================
+#intellij-project
+#=================
+*.iml
+*.ipr
+*.iws
+*classes
+atlassian-ide-plugin.xml
+.idea
+
+#=================
+#netbeans-project
+#=================
+core/workflow/data
+nb-configuration.xml
+nbactions.xml
+
+#=================
+#maven-files
+#=================
+*target
+
+#================
+#log files
+#================
+*engsb.log*
+*velocity.log*
+
+#================
+#runtime productions
+#================
+*activemq-data
+core/config/ui/data
+engsb-edb-core/dump
+package/embedded/*.log
+package/embedded/data/
+
+#================
+#Mac OS X hidden files/folders
+#================
+.DS_Store
+
+#================
+#WinXP hidden files/folders
+#================
+*Thumbs.db
+
+#================
+#Documentation artifacts
+#================
+*.dia~
+
+#================
+#Assembly artifacts
+#================
+*.zip
+
+#================
+#Easy2Find
+#================
+easy2find
+
+#================
+#pver ignores
+#================
+pconf.pyc
+
+#================
+#pax-provision
+#================
+*runner
+
+#================
+#wicket generated files
+#================
+*.tmp_*
+velocity.log*
+
+#================
+#vi tmp files
+#================
+*.swp
+*~
+
+#================
+#clover files
+#================
+.clover
