@@ -42,7 +42,7 @@ public interface ConnectorManager {
      * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    String create(ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
+    String create(ConnectorDescription connectorDescription);
 
     /**
      * creates a new connector instance with the given id and description. The new connectorDescription is validated
@@ -54,7 +54,7 @@ public interface ConnectorManager {
      * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void createWithId(String id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
+    void createWithId(String id, ConnectorDescription connectorDescription);
 
     /**
      * creates a new connector instance with the given id and description. It works similar to
@@ -77,8 +77,7 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the combination of the new attributes are not valid
      * @throws IllegalArgumentException if no connector instance with the given id is available
      */
-    void update(String connectorId, ConnectorDescription connectorDescription)
-        throws ConnectorValidationFailedException, IllegalArgumentException;
+    void update(String connectorId, ConnectorDescription connectorDescription);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
@@ -88,15 +87,14 @@ public interface ConnectorManager {
      * 
      * @throws IllegalArgumentException if no connector instancewith the given id is available
      */
-    void forceUpdate(String connectorId, ConnectorDescription connectorDescription)
-        throws IllegalArgumentException;
+    void forceUpdate(String connectorId, ConnectorDescription connectorDescription);
 
     /**
      * Deletes the connector instance with the given {@code id}.
      * 
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(String connectorId) throws PersistenceException;
+    void delete(String connectorId);
 
     /**
      * Returns the description for the specified connector instance.
