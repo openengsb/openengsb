@@ -200,8 +200,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         try {
             serviceManager.create(connectorDescription);
             fail("Exception expected");
-        } catch (ConnectorValidationFailedException e) {
-            assertThat(e.getErrorMessages(), is(errorMessages));
+        } catch (RuntimeException e) {
+            assertThat(((ConnectorValidationFailedException)e.getCause()).getErrorMessages(), is(errorMessages));
         }
 
         try {
@@ -252,8 +252,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         try {
             serviceManager.update(connectorId, connectorDescription);
             fail("Exception expected");
-        } catch (ConnectorValidationFailedException e) {
-            assertThat(e.getErrorMessages(), is(errorMessages));
+        } catch (RuntimeException e) {
+            assertThat(((ConnectorValidationFailedException)e.getCause()).getErrorMessages(), is(errorMessages));
         }
 
         try {

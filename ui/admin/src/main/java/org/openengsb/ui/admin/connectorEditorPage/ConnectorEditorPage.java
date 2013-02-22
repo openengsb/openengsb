@@ -110,14 +110,16 @@ public class ConnectorEditorPage extends BasePage {
 
                 }
                 returnToTestClient();
-            } catch (ConnectorValidationFailedException e) {
-                for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
-                    error(String.format("%s: %s", entry.getKey(), entry.getValue()));
-                }
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 LOGGER.error("Couldn't create service", e);
                 error("The service already exists in the system. Please choose a different servcie id.");
             }
+            catch (RuntimeException e) {
+                for (Entry<String, String> entry : ((ConnectorValidationFailedException)e.getCause()).getErrorMessages().entrySet()) {
+                    error(String.format("%s: %s", entry.getKey(), entry.getValue()));
+                }
+            } 
         }
         
         @Override

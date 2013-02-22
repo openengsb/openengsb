@@ -238,7 +238,7 @@ public class ServicesHelper {
                 try {
                     serviceManager.create(connectorDescription);
                     OutputStreamFormater.printValue("Connector successfully created");
-                } catch (ConnectorValidationFailedException e) {
+                } catch (RuntimeException e) {
                     e.printStackTrace();
                     OutputStreamFormater.printValue("Connector validation failed, creation aborted");
                 }
