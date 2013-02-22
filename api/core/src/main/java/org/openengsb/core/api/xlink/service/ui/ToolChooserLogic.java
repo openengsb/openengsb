@@ -18,6 +18,7 @@
 package org.openengsb.core.api.xlink.service.ui;
 
 import java.util.List;
+
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 
@@ -29,22 +30,22 @@ public interface ToolChooserLogic {
     /**
      * Returns the Tools of a given HostId, which are registered for XLink.
      */
-    public List<XLinkConnector> getRegisteredToolsFromHost(String hostId);
+    List<XLinkConnector> getRegisteredToolsFromHost(String hostId);
     
     /**
      * Returns the ModelDescription to a given XLinkRegistration and ViewId.
      * Returns null, if the XLinkRegistration or the ViewId could not be found.
      */
-    public ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId);    
+    ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId);    
     
     /**
      * Returns true, if the given Connector is registered for XLink on the given 
      * HostId.
      */
-    public boolean isConnectorRegistrated(String hostId, String connectorId);
+    boolean isConnectorRegistrated(String hostId, String connectorId);
     
     /**
      * Returns true, if the given View exists for the defined XLinkRegistration.
      */
-    public boolean isViewExisting(String hostId, String connectorId, String viewId);    
+    boolean isViewExisting(String hostId, String connectorId, String viewId);    
 }

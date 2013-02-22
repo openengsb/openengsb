@@ -17,7 +17,13 @@
 
 package org.openengsb.core.services.internal.security.ldap;
 
-import com.google.common.collect.Maps;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.api.security.model.Permission;
@@ -43,12 +49,7 @@ import org.openengsb.infrastructure.ldap.model.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 public class UserDataManagerLdap implements UserDataManager {
 

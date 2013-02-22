@@ -18,8 +18,6 @@
 package org.openengsb.core.api;
 
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelToViewsTuple;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
 
@@ -110,7 +108,6 @@ public interface ConnectorManager {
     
     // @extract-start ConnectorManager
     
-	
     /**
      * Registers the given connector for XLink. 
      * Throws an 'DomainNotLinkableException' exception if, the supplied connector was 
@@ -124,8 +121,8 @@ public interface ConnectorManager {
      * the host when the user calls the XLink tool-chooser website. Therefore the host must not reach 
      * the website via a proxy. 
      * <br/><br/>
-     * A XLinkUrlBluePrint is returned, it contains instructions about which OpenEngSBModel is to be used for which view 
-     * and additional information. With the baseUrl and the keyNames, the caller is able to construct valid 
+     * A XLinkUrlBluePrint is returned, it contains instructions about which OpenEngSBModel is to be used for which
+     * view and additional information. With the baseUrl and the keyNames, the caller is able to construct valid 
      * XLink-URLs for one of it's defined model. 
      * <br/><br/>
      * The classes 'XLinkDemonstrationUtils' and 'XLinkUtilsTest' in the services package provide examples of how to 

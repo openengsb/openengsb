@@ -19,7 +19,6 @@ package org.openengsb.core.ekb.api.transformation;
 
 import java.util.List;
 
-
 /**
  * The TransformationOperationLoader loads transformation operations from the OSGi environment.
  */
@@ -29,11 +28,11 @@ public interface TransformationOperationLoader {
      * Loads the transformation operation with the given name from the OSGi environment. If there is no such operation,
      * a TransformationOperationException is thrown.
      */
-    public TransformationOperation loadTransformationOperationByName(String operationName)
+    TransformationOperation loadTransformationOperationByName(String operationName)
         throws TransformationOperationException;
-    
+
     /**
      * Returns a list of all currently available transformation operations.
      */
-    public List<TransformationOperation> loadActiveTransformationOperations();
+    List<TransformationOperation> loadActiveTransformationOperations();
 }

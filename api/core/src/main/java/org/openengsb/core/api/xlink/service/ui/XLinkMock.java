@@ -32,7 +32,7 @@ public interface XLinkMock {
     /**
      * Transforms the given ModelObject from it´s SourceClass to the defined DestinationModel.  
      */
-    public List<Object> transformModelObject(String sourceModelClass, String sourceModelVersion,             
+    List<Object> transformModelObject(String sourceModelClass, String sourceModelVersion,             
             String destinationModelClass, String destinationModelVersion, 
             Object modelObjectSource) throws ClassNotFoundException, OpenXLinkException;
     
@@ -40,22 +40,20 @@ public interface XLinkMock {
      * Calls the given connector to process the list of transformed Objects as 
      * potential XLink matches.
      */
-    public void openPotentialMatches(List<Object> modelObjectsDestination, 
+    void openPotentialMatches(List<Object> modelObjectsDestination, 
             String connectorToCall, String viewToCall) throws OsgiServiceNotAvailableException, 
             ClassCastException, OpenXLinkException, DomainNotLinkableException; 
     
     /**
      * Returns true, if the transformation between the two defined ModelClasses is possible.
      */
-    public boolean isTransformationPossible(String srcModelClass, String srcModelVersion, 
+    boolean isTransformationPossible(String srcModelClass, String srcModelVersion, 
             String destModelClass, String destModelVersion);   
     
     /**
      * Returns the FieldNames of the given ModelDescription (e.g. ModelClass and ModelVersion) which
      * are marked as identifying Fields for XLink.
      */
-    public List<String> getModelIdentifierToModelDescription(
+    List<String> getModelIdentifierToModelDescription(
             String modelId, String versionId) throws ClassNotFoundException;
-    
-    
 }
