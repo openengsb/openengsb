@@ -353,7 +353,17 @@ public class WsdlToDll extends AbstractMojo {
     private String replaceDuplicateClasses(final String fileString) {
         String result = fileString;
         for (String classDefString : findAllClassDefs(fileString)) {
-            if (!handledClasses.contains(classDefString)) {
+            boolean found = false;
+            for (String element : handledClasses) {
+                if (element.replaceAll("private", "public").replaceAll("public entry[0-9]", "entryX").equals(
+                    classDefString.replaceAll("private", "public").replaceAll("public entry[0-9]", "entryX"))) {
+                    found = true;
+                    break;
+                } else {
+                    found = false;
+                }
+            }
+            if (!found) {
                 handledClasses.add(classDefString);
             } else {
                 result = result.replace(classDefString, "");
