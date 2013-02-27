@@ -20,33 +20,19 @@ package org.openengsb.core.ekb.persistence.persist.edb;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
-import org.openengsb.core.ekb.api.ModelRegistry;
-import org.openengsb.core.ekb.api.TransformationEngine;
-import org.openengsb.core.ekb.common.EDBConverter;
-import org.openengsb.core.ekb.persistence.persist.edb.internal.EngineeringObjectEnhancer;
+import org.openengsb.core.ekb.persistence.persist.edb.internal.EOMode;
 import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA;
 import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 
-public class EngineeringObjectEnhancerTest {
-    public static final String CONTEXT_ID = "testcontext"; 
-    private EngineeringObjectEnhancer enhancer;
-
-    @Before
-    public void setup() {
-        EngineeringDatabaseService edbService = new TestEngineeringDatabaseService();
-        EDBConverter edbConverter = new EDBConverter(edbService);
-        TransformationEngine transformationEngine = new TestTransformationEngine();
-        ModelRegistry modelRegistry = new TestModelRegistry();
-        enhancer = new EngineeringObjectEnhancer(edbService, edbConverter, transformationEngine, modelRegistry);
-        ContextHolder.get().setCurrentContextId(CONTEXT_ID);
+public class EOEnhancerTestFullActivatedMode extends AbstractEngineeringObjectEnhancerTest {
+    
+    public EOEnhancerTestFullActivatedMode() {
+        super(EOMode.FULLY_ACTIVED);
     }
 
     @Test
@@ -55,7 +41,7 @@ public class EngineeringObjectEnhancerTest {
         model.setModelAId("objectA/reference/1");
         model.setModelBId("objectB/reference/1");
         EKBCommit commit = getTestCommit().addInsert(model);
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
 
         assertThat(model.getNameA(), is("firstObject"));
         assertThat(model.getNameB(), is("secondObject"));
@@ -68,7 +54,7 @@ public class EngineeringObjectEnhancerTest {
         model.setId("objectA/reference/1");
         EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
@@ -86,7 +72,7 @@ public class EngineeringObjectEnhancerTest {
         modelb.setId("objectB/reference/1");
         EKBCommit commit = getTestCommit().addUpdate(modelA).addUpdate(modelb);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
@@ -103,7 +89,7 @@ public class EngineeringObjectEnhancerTest {
         model.setModelAId("objectA/reference/2");
         model.setNameA("teststring");
         EKBCommit commit = getTestCommit().addUpdate(model);
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
     }
 
     @Test
@@ -116,7 +102,7 @@ public class EngineeringObjectEnhancerTest {
         model.setNameB("secondObject");
         EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
@@ -136,7 +122,7 @@ public class EngineeringObjectEnhancerTest {
         model.setNameB("secondObject");
         EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         Object inserted = commit.getUpdates().get(commit.getUpdates().size() - 1);
         EngineeringObjectModel result = (EngineeringObjectModel) inserted;
@@ -156,7 +142,7 @@ public class EngineeringObjectEnhancerTest {
         model.setNameB("updatedSecondObject");
         EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         assertThat(after - before == 2, is(true));
         SourceModelA modelA = null;
@@ -179,7 +165,7 @@ public class EngineeringObjectEnhancerTest {
         model.setInternalModelName("common/reference/1");
         EKBCommit commit = getTestCommit().addInsert(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         assertThat(after, is(before));
     }
@@ -193,7 +179,7 @@ public class EngineeringObjectEnhancerTest {
         model.setNameA("updatedFirstObject");
         EKBCommit commit = getTestCommit().addUpdate(model);
         int before = commit.getUpdates().size();
-        enhancer.enhanceEKBCommit(commit);
+        enhancer.onPreCommit(commit);
         int after = commit.getUpdates().size();
         assertThat(after - before == 1, is(true));
         SourceModelA modelA = null;
@@ -203,9 +189,5 @@ public class EngineeringObjectEnhancerTest {
             }
         }
         assertThat(modelA.getNameA(), is("updatedFirstObject"));
-    }
-
-    private EKBCommit getTestCommit() {
-        return new EKBCommit().setDomainId("test").setConnectorId("test");
     }
 }
