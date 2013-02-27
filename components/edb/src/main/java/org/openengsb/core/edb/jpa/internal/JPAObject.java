@@ -25,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import org.apache.openjpa.persistence.jdbc.Index;
+
 @SuppressWarnings("serial")
 @Entity
 /**
@@ -38,6 +40,7 @@ public class JPAObject extends VersionedEntity {
     private Long timestamp;
     @Column(name = "ISDELETED")
     private Boolean isDeleted;
+    @Index
     @Column(name = "OID")
     private String oid;
 
