@@ -61,8 +61,8 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence;
     private OsgiUtilsService utilsService;
-    private Map<XLinkRegistrationKey, XLinkConnectorRegistration> xlinkRegistrations
-        = new HashMap<XLinkRegistrationKey, XLinkConnectorRegistration>();
+    private Map<XLinkRegistrationKey, XLinkConnectorRegistration> xlinkRegistrations =
+        new HashMap<XLinkRegistrationKey, XLinkConnectorRegistration>();
     private String xLinkBaseUrl;
     private int xLinkExpiresIn = 3;
 
@@ -85,7 +85,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                     break;
                 } catch (ConnectorValidationFailedException e) {
                     LOGGER.error("connector {} that has been loaded from persistence was found to be invalid",
-                            configuration.getConnectorId(), e);
+                        configuration.getConnectorId(), e);
                     break;
                 } catch (OsgiServiceNotAvailableException e) {
                     LOGGER.warn("connector {}  that has been loaded from persistence could not be created because the"
@@ -129,18 +129,21 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     }
 
     @Override
-    public String create(ConnectorDescription connectorDescription) throws ConnectorValidationFailedException {
+    public String create(ConnectorDescription connectorDescription) {
         String id = UUID.randomUUID().toString();
         createWithId(id, connectorDescription);
         return id;
     }
 
     @Override
-    public void createWithId(String id, ConnectorDescription connectorDescription)
-        throws ConnectorValidationFailedException {
+    public void createWithId(String id, ConnectorDescription connectorDescription) {
         checkForExistingServices(id);
         addDefaultLocations(id, connectorDescription);
-        registrationManager.updateRegistration(id, connectorDescription);
+        try {
+            registrationManager.updateRegistration(id, connectorDescription);
+        } catch (ConnectorValidationFailedException e) {
+            throw new RuntimeException(e);
+        }
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
             configPersistence.persist(configuration);
@@ -185,10 +188,13 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     }
 
     @Override
-    public void update(String id, ConnectorDescription connectorDescpription)
-        throws ConnectorValidationFailedException, IllegalArgumentException {
+    public void update(String id, ConnectorDescription connectorDescpription) {
         ConnectorDescription old = getOldConfig(id);
-        registrationManager.updateRegistration(id, connectorDescpription);
+        try {
+            registrationManager.updateRegistration(id, connectorDescpription);
+        } catch (ConnectorValidationFailedException e) {
+            throw new RuntimeException(e);
+        }
         applyConfigChanges(old, connectorDescpription);
         try {
             configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
@@ -287,7 +293,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     public void setUtilsService(OsgiUtilsService utilsService) {
         this.utilsService = utilsService;
     }
-    
+
     public void setxLinkBaseUrl(String xLinkBaseUrl) {
         this.xLinkBaseUrl = xLinkBaseUrl;
     }
@@ -305,7 +311,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                 foundReg = xlinkRegistrations.get(key);
                 xlinkRegistrations.remove(key);
             }
-        }  
+        }
         if (foundReg != null) {
             notifyAllConnectorsRegisteredOnSameHostAboutDeregistration(foundReg);
         }
@@ -323,55 +329,53 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         }
         return registrationsOfHostId;
     }
-    
+
     private Map<ModelDescription, XLinkConnectorView[]> convertToMapWithModelDescriptionAsKey(
-        List<ModelToViewsTuple> modelsToViews) {
-        Map<ModelDescription, XLinkConnectorView[]> convertedMap 
-            = new HashMap<ModelDescription, XLinkConnectorView[]>();
+            List<ModelToViewsTuple> modelsToViews) {
+        Map<ModelDescription, XLinkConnectorView[]> convertedMap =
+            new HashMap<ModelDescription, XLinkConnectorView[]>();
         for (ModelToViewsTuple tupel : modelsToViews) {
             convertedMap.put(tupel.getDescription(), tupel.getViews());
-        }        
+        }
         return convertedMap;
     }
-    
+
     @Override
-    public XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp, 
+    public XLinkUrlBlueprint connectToXLink(String connectorIpToLink, String remoteHostIp,
             String toolName, ModelToViewsTuple[] modelsToViewsArray) {
         checkForConnectorLinkable(connectorIpToLink);
         List<ModelToViewsTuple> modelsToViews = Arrays.asList(modelsToViewsArray);
-        Map<ModelDescription, XLinkConnectorView[]> convertedModelsToViews 
-            = convertToMapWithModelDescriptionAsKey(modelsToViews);
+        Map<ModelDescription, XLinkConnectorView[]> convertedModelsToViews =
+            convertToMapWithModelDescriptionAsKey(modelsToViews);
         List<XLinkConnectorRegistration> registrations = getXLinkRegistration(remoteHostIp);
         XLinkUrlBlueprint template = XLinkUtils.prepareXLinkTemplate(
-                xLinkBaseUrl, 
-                connectorIpToLink, 
-                convertedModelsToViews, 
-                xLinkExpiresIn, 
-                XLinkUtils.getLocalToolFromRegistrations(registrations));
+            xLinkBaseUrl,
+            connectorIpToLink,
+            convertedModelsToViews,
+            xLinkExpiresIn,
+            XLinkUtils.getLocalToolFromRegistrations(registrations));
         XLinkConnectorRegistration newRegistration;
         XLinkRegistrationKey key = new XLinkRegistrationKey(connectorIpToLink, remoteHostIp);
         synchronized (xlinkRegistrations) {
-            newRegistration
-                = new XLinkConnectorRegistration(remoteHostIp, connectorIpToLink, toolName, 
-                        convertedModelsToViews, template);
+            newRegistration = new XLinkConnectorRegistration(remoteHostIp, connectorIpToLink, toolName,
+                convertedModelsToViews, template);
             xlinkRegistrations.put(key, newRegistration);
         }
         notifyAllConnectorsRegisteredOnSameHostAboutRegistration(key, newRegistration);
         return template;
     }
-    
+
     private void notifyAllConnectorsRegisteredOnSameHostAboutRegistration(
             XLinkRegistrationKey filterKey, XLinkConnectorRegistration newRegistration) {
-        List<XLinkConnectorRegistration> hostRegistrations
-            = getXLinkRegistration(newRegistration.getHostId());
+        List<XLinkConnectorRegistration> hostRegistrations = getXLinkRegistration(newRegistration.getHostId());
         for (XLinkConnectorRegistration currentRegistration : hostRegistrations) {
             if (!currentRegistration.getConnectorId().equals(filterKey.getConnectorIpToLink())) {
                 XLinkConnector[] registeredTools = addConnectorFromArray(currentRegistration
-                    .getxLinkTemplate().getRegisteredTools(), 
-                    readXLinkConnectorsFromRegistry(newRegistration));            
-                currentRegistration.getxLinkTemplate().setRegisteredTools(registeredTools);                
-                Object serviceObject 
-                    = utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
+                    .getxLinkTemplate().getRegisteredTools(),
+                    readXLinkConnectorsFromRegistry(newRegistration));
+                currentRegistration.getxLinkTemplate().setRegisteredTools(registeredTools);
+                Object serviceObject =
+                    utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
                 if (serviceObject == null) {
                     continue;
                 }
@@ -379,38 +383,36 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                     LinkingSupport service = (LinkingSupport) serviceObject;
                     service.onRegisteredToolsChanged(registeredTools);
                 } catch (ClassCastException e) {
-                    
+
                 }
             }
         }
     }
-    
+
     /**
      * Checks if the given ConnectorId is registered and is an instance of a linkable domain.
      */
     private void checkForConnectorLinkable(String connectorId) throws DomainNotLinkableException {
-        Object serviceObject 
-            = utilsService.getService("(service.pid=" + connectorId + ")", 100L);
+        Object serviceObject = utilsService.getService("(service.pid=" + connectorId + ")", 100L);
         if (serviceObject == null) {
             throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not found.");
         }
         try {
             serviceObject = (LinkingSupport) serviceObject;
-        } catch (ClassCastException e) { 
+        } catch (ClassCastException e) {
             throw new DomainNotLinkableException("Connector with Id " + connectorId + " was not linkable.");
-        }        
+        }
     }
-    
+
     private void notifyAllConnectorsRegisteredOnSameHostAboutDeregistration(
             XLinkConnectorRegistration oldRegistration) {
-        List<XLinkConnectorRegistration> hostRegistrations
-            = getXLinkRegistration(oldRegistration.getHostId());
+        List<XLinkConnectorRegistration> hostRegistrations = getXLinkRegistration(oldRegistration.getHostId());
         for (XLinkConnectorRegistration currentRegistration : hostRegistrations) {
             XLinkConnector[] registeredTools = removeConnectorFromArray(currentRegistration
-                .getxLinkTemplate().getRegisteredTools(), readXLinkConnectorsFromRegistry(oldRegistration));            
+                .getxLinkTemplate().getRegisteredTools(), readXLinkConnectorsFromRegistry(oldRegistration));
             currentRegistration.getxLinkTemplate().setRegisteredTools(registeredTools);
-            Object serviceObject 
-                = utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
+            Object serviceObject =
+                utilsService.getService("(service.pid=" + currentRegistration.getConnectorId() + ")", 100L);
             if (serviceObject == null) {
                 continue;
             }
@@ -418,12 +420,12 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                 LinkingSupport service = (LinkingSupport) serviceObject;
                 service.onRegisteredToolsChanged(registeredTools);
             } catch (ClassCastException e) {
-                
+
             }
         }
     }
-    
-    private XLinkConnector[] removeConnectorFromArray(XLinkConnector[] currentArray, 
+
+    private XLinkConnector[] removeConnectorFromArray(XLinkConnector[] currentArray,
             XLinkConnector elementToRemove) {
         List<XLinkConnector> arrayAsList = new LinkedList<XLinkConnector>();
         for (XLinkConnector currentItem : currentArray) {
@@ -433,23 +435,23 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         }
         return arrayAsList.toArray(new XLinkConnector[0]);
     }
-    
-    private XLinkConnector[] addConnectorFromArray(XLinkConnector[] currentArray, 
+
+    private XLinkConnector[] addConnectorFromArray(XLinkConnector[] currentArray,
             XLinkConnector elementToAdd) {
         List<XLinkConnector> arrayAsList = new LinkedList<XLinkConnector>();
         for (XLinkConnector currentItem : currentArray) {
             arrayAsList.add(currentItem);
-        }        
+        }
         arrayAsList.add(elementToAdd);
         return arrayAsList.toArray(new XLinkConnector[0]);
-    }    
-    
+    }
+
     private XLinkConnector readXLinkConnectorsFromRegistry(XLinkConnectorRegistration registration) {
         List<XLinkConnectorRegistration> regList = new ArrayList<XLinkConnectorRegistration>();
         regList.add(registration);
         return XLinkUtils.getLocalToolFromRegistrations(regList)[0];
     }
-    
+
     private class XLinkRegistrationKey {
         private String connectorIpToLink;
         private String remoteHostIp;
@@ -468,11 +470,11 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
                 return false;
             }
             final XLinkRegistrationKey other = (XLinkRegistrationKey) obj;
-            if ((this.connectorIpToLink == null) 
+            if ((this.connectorIpToLink == null)
                     ? (other.connectorIpToLink != null) : !this.connectorIpToLink.equals(other.connectorIpToLink)) {
                 return false;
             }
-            if ((this.remoteHostIp == null) 
+            if ((this.remoteHostIp == null)
                     ? (other.remoteHostIp != null) : !this.remoteHostIp.equals(other.remoteHostIp)) {
                 return false;
             }
@@ -502,7 +504,7 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         public void setRemoteHostIp(String remoteHostIp) {
             this.remoteHostIp = remoteHostIp;
         }
-        
+
     }
 
 }

@@ -183,6 +183,21 @@ public class EDBConverterTest {
         assertThat(model.getEnumeration(), is(result.getEnumeration()));
         assertThat(model.getName(), is(result.getName()));
     }
+    
+    @Test
+    public void testIfArraysAreSupported_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        Integer []numbers = new Integer[] { 1, 2, 3, 4 };
+        model.setNumbers(numbers);
+        EDBObject object = converter.convertModelToEDBObject(model, getTestConnectorInformation()).get(0);
+        TestModel result = converter.convertEDBObjectToModel(TestModel.class, object);
+        
+        assertThat(result.getNumbers(), notNullValue());
+        assertThat(numbers[0], is(result.getNumbers()[0]));
+        assertThat(numbers[1], is(result.getNumbers()[1]));
+        assertThat(numbers[2], is(result.getNumbers()[2]));
+        assertThat(numbers[3], is(result.getNumbers()[3]));
+    }
 
     @Test
     public void testEDBObjectToModelConversion_shouldWork() throws Exception {
@@ -219,7 +234,6 @@ public class EDBConverterTest {
         EDBObject result = objects.get(0);
         String key1 = getReferenceString(model.getClass(), "modelAId");
         String key2 = getReferenceString(model.getClass(), "modelBId");
-        System.out.println(result.getString(key1));
         assertThat(result.getString(key1), is(contextId + "/testReferenceToModelA"));
         assertThat(result.getString(key2), is(contextId + "/testReferenceToModelB"));
     }

@@ -41,6 +41,7 @@ public class TestModel {
     private List<SubModel> subs;
     private Map<String, String> map;
     private int number;
+    private Integer[] numbers;
 
     public void setId(String id) {
         this.id = id;
@@ -124,5 +125,13 @@ public class TestModel {
     
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public Integer[] getNumbers() {
+        return numbers;
+    }
+
+    public void setNumbers(Integer[] numbers) {
+        this.numbers = numbers;
     }
 }

@@ -19,7 +19,15 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0">
+
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.ekb">
+    <cm:default-properties>
+      <cm:property name="modelUpdatePropagationMode" value="FULLY_ACTIVATED" />
+    </cm:default-properties>
+  </cm:property-placeholder>
   
   <!-- EDB Converter -->
   <bean id="edbConverter" class="org.openengsb.core.ekb.common.EDBConverter">
@@ -31,6 +39,7 @@
     <argument ref="edbConverter"/>
     <argument ref="transformationEngine"/>
     <argument ref="modelRegistry"/>
+    <argument value="${modelUpdatePropagationMode}"/>
   </bean>
   
   <service interface="org.openengsb.core.ekb.api.hooks.EKBPreCommitHook">
