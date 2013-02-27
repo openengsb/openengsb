@@ -44,9 +44,6 @@ import org.slf4j.LoggerFactory;
  * The EngineeringObjectEnhancer enhance an EKBCommit object with additional models which need to be updated or enhance
  * inserted models based on the Engineering Object concept of the OpenEngSB.
  */
-// TODO: OPENENGSB-3356, until now the automatic update propagation is done without asking. There should be a
-// possibility to alter this behavior, so that it is possible e.g. to have no automatic update propagation at
-// all or that only Engineering Objects receive automatic updates.
 public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private static final Logger LOGGER = LoggerFactory.getLogger(EngineeringObjectEnhancer.class);
     // TODO: OPENENGSB-3359, replace edbService and edbConverter with queryInterface
@@ -54,17 +51,27 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private EDBConverter edbConverter;
     private TransformationEngine transformationEngine;
     private ModelRegistry modelRegistry;
+    private EOMode mode;
 
     public EngineeringObjectEnhancer(EngineeringDatabaseService edbService, EDBConverter edbConverter,
-            TransformationEngine transformationEngine, ModelRegistry modelRegistry) {
+            TransformationEngine transformationEngine, ModelRegistry modelRegistry, String mode) {
         this.edbService = edbService;
         this.edbConverter = edbConverter;
         this.transformationEngine = transformationEngine;
         this.modelRegistry = modelRegistry;
+        try {
+            this.mode = EOMode.valueOf(mode);
+        } catch (IllegalArgumentException e) {
+            this.mode = EOMode.DEACTIVATED;
+            LOGGER.error("Unknown mode setting. The engineering object enhancement will be deactivated.", e);
+        }
     }
 
     @Override
     public void onPreCommit(EKBCommit commit) throws EKBException {
+        if (mode == EOMode.DEACTIVATED) {
+            return;
+        }
         enhanceEKBCommit(commit);
     }
 
@@ -73,7 +80,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
      * or new objects will be added to the updates of the EKBCommit object. Throws an EKBException if an error in the
      * Engineering Object logic occurs.
      */
-    public void enhanceEKBCommit(EKBCommit commit) throws EKBException {
+    private void enhanceEKBCommit(EKBCommit commit) throws EKBException {
         LOGGER.debug("Started to enhance the EKBCommit with Engineering Object information");
         enhanceCommitInserts(commit);
         enhanceCommitUpdates(commit);
