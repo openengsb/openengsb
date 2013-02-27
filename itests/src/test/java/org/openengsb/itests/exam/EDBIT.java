@@ -77,6 +77,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
             new KarafDistributionConfigurationFilePutOption(
                 "/etc/org.openengsb.infrastructure.jpa",
                 "password", ""),
+            new KarafDistributionConfigurationFilePutOption(
+                "/etc/org.openengsb.ekb",
+                "modelUpdatePropagationMode", "DEACTIVATED"),
             mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject()
         };
         return combine(baseConfiguration(), options);

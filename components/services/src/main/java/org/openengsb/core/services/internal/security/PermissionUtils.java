@@ -17,12 +17,13 @@
 
 package org.openengsb.core.services.internal.security;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
+
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.services.internal.security.model.EntryValue;
 import org.openengsb.core.services.internal.security.model.PermissionData;
 
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 /**
  * Provides util-functions for handling Permissions.

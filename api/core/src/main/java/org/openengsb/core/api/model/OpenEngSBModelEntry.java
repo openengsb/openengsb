@@ -18,6 +18,7 @@
 package org.openengsb.core.api.model;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

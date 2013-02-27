@@ -201,7 +201,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             serviceManager.create(connectorDescription);
             fail("Exception expected");
         } catch (RuntimeException e) {
-            assertThat(((ConnectorValidationFailedException)e.getCause()).getErrorMessages(), is(errorMessages));
+            assertThat(((ConnectorValidationFailedException) e.getCause()).getErrorMessages(), is(errorMessages));
         }
 
         try {
@@ -253,7 +253,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             serviceManager.update(connectorId, connectorDescription);
             fail("Exception expected");
         } catch (RuntimeException e) {
-            assertThat(((ConnectorValidationFailedException)e.getCause()).getErrorMessages(), is(errorMessages));
+            assertThat(((ConnectorValidationFailedException) e.getCause()).getErrorMessages(), is(errorMessages));
         }
 
         try {
@@ -566,7 +566,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         
         descriptions.put("en", "This is a demo view.");
         descriptions.put("de", "Das ist eine demonstration view.");
-        views = new ArrayList();
+        views = new ArrayList<XLinkConnectorView>();
         views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
         views.add(new XLinkConnectorView(viewId2, toolName, descriptions));        
         

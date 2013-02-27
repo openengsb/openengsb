@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.apache.openjpa.persistence.jdbc.Index;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
 /**
@@ -29,6 +30,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 @SuppressWarnings("serial")
 @Entity
 public class JPAEntry extends VersionedEntity {
+    @Index
     @Column(name = "KEY")
     private String key;
     @Column(name = "VALUE")

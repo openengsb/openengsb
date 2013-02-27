@@ -23,9 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark an interface to be a "MixinDomain". Connectors may implement these interfaces to provide additional functionality
- * described in such an interface. They can then be used in other Bundles to discover all connectors providing that
- * functionality
+ * Mark an interface to be a "MixinDomain". Connectors may implement these interfaces to provide additional 
+ * functionality described in such an interface. They can then be used in other Bundles to discover all connectors 
+ * providing that functionality
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
