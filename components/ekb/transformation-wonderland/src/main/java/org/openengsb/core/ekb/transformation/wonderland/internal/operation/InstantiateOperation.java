@@ -20,13 +20,9 @@ package org.openengsb.core.ekb.transformation.wonderland.internal.operation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
@@ -42,20 +38,10 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
     private String typeParam = TransformationConstants.INSTANTIATE_TARGETTYPE_PARAM;
     private String initFuncParam = TransformationConstants.INSTANTIATE_INITMETHOD_PARAM;
     private ModelRegistry modelRegistry;
-    private Map<String, Class<?>> cache;
-    private Timer timer;
 
     public InstantiateOperation(String operationName, ModelRegistry modelRegistry) {
         super(operationName, InstantiateOperation.class);
         this.modelRegistry = modelRegistry;
-        this.cache = new ConcurrentHashMap<String, Class<?>>();
-        this.timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                cache.clear();
-            }
-        }, new Date(), 5000);
     }
 
     @Override
@@ -148,10 +134,6 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      */
     private Class<?> loadClassByName(String className) throws TransformationOperationException {
         Exception e;
-        Class<?> clazz = cache.get(className);
-        if (clazz != null) {
-            return clazz;
-        }
         if (className.contains(";")) {
             try {
                 String[] parts = className.split(";");
@@ -160,17 +142,13 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
                 if (parts.length > 1) {
                     description.setVersionString(new Version(parts[1]).toString());
                 }
-                clazz = modelRegistry.loadModel(description);
-                cache.put(className, clazz);
-                return clazz;
+                return modelRegistry.loadModel(description);
             } catch (Exception ex) {
                 e = ex;
             }
         } else {
             try {
-                clazz = this.getClass().getClassLoader().loadClass(className);
-                cache.put(className, clazz);
-                return clazz;
+                return this.getClass().getClassLoader().loadClass(className);
             } catch (Exception ex) {
                 e = ex;
             }
