@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.services.internal.model;
 
-import java.util.List;
+package org.openengsb.core.services.internal.model;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
@@ -25,34 +24,25 @@ import org.openengsb.labs.delegation.service.Provide;
 
 @Model
 @Provide(context = Constants.DELEGATION_CONTEXT_MODELS)
-public class NullModel {
+public class SubModel {
     @OpenEngSBModelId
-    private Integer id;
-    private String value;
-    private List<SubModel> subs;
+    private String id;
+    private String name;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public List<SubModel> getSubs() {
-        return subs;
-    }
-
-    public void setSubs(List<SubModel> subs) {
-        this.subs = subs;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
