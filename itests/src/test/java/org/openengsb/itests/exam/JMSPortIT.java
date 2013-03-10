@@ -20,7 +20,6 @@ package org.openengsb.itests.exam;
 import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -44,7 +43,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -52,21 +50,15 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.util.JsonUtils;
 import org.openengsb.core.util.ModelUtils;
-import org.openengsb.core.workflow.api.model.RuleBaseElementId;
-import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
-import org.openengsb.itests.remoteclient.ExampleConnector;
-import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.options.extra.VMOption;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +69,6 @@ import org.springframework.jms.support.JmsUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
@@ -96,155 +87,95 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        openwirePort = getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
-        addWorkflow("simpleFlow");
-        String string = null;
-        while (string == null) {
-            // TODO OPENENGSB-2097 find a better way than an endless loop
-            LOGGER.warn("checking for simpleFlow to be present");
-            string = ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
-            Thread.sleep(1000);
-        }
-
-        utilsService = new DefaultOsgiUtilsService(getBundleContext());
+        openwirePort = getOpenwirePort();
+        additionalJMSSetUp(LOGGER);
+        utilsService = getOsgiUtils();
     }
 
     @Test
     public void testJmsPortPresence_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
-
     }
 
     @Test
     public void testStartSimpleWorkflow_ShouldReturn42() throws Exception {
-        JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
-        SecretKey sessionKey = generateSessionKey();
-        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-
-        verifyEncryptedResult(sessionKey, result);
+        EncryptedAnswer answer = sendMessage(METHOD_CALL_STRING);
+        verifyEncryptedResult(answer.getSessionKey(), answer.getAnswer());
     }
 
     @Test
     public void testStartSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
-        JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
-        SecretKey sessionKey = generateSessionKey();
-        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-
-        verifyEncryptedResult(sessionKey, result);
+        EncryptedAnswer answer = sendMessage(METHOD_CALL_STRING_FILTER);
+        verifyEncryptedResult(answer.getSessionKey(), answer.getAnswer());
     }
 
     @Test
     public void testSendMethodCallWithWrongAuthentication_shouldFail() throws Exception {
-        JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "wrong-password");
-        SecretKey sessionKey = generateSessionKey();
-        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-
+        String result = sendMessage(METHOD_CALL_STRING, "admin", "wrong-password").getAnswer();
         assertThat(result, containsString("Exception"));
         assertThat(result, not(containsString("The answer to life the universe and everything")));
     }
 
     @Test
     public void testRecordAuditInCoreService_shouldReturnVoid() throws Exception {
-        JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
-        SecretKey sessionKey = generateSessionKey();
-        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-        String decryptedResult = decryptResult(sessionKey, result);
-
+        EncryptedAnswer answer = sendMessage(VOID_CALL_STRING);
+        String decryptedResult = decryptResult(answer.getSessionKey(), answer.getAnswer());
         assertThat(decryptedResult, containsString("\"type\":\"Void\""));
         assertThat(decryptedResult, not(containsString("Exception")));
     }
 
     @Test
-    public void testStartAndStopRemoteConnector_shouldRegisterAndUnregisterProxy() throws Exception {
-        authenticateAsAdmin();
-        // make sure security-stuff is off
-        System.setProperty("org.openengsb.jms.noencrypt", "true");
-        System.setProperty("org.openengsb.security.noverify", "true");
-
-        // make sure jms is up and running
-        utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-
-        SecureSampleConnector remoteConnector = new SecureSampleConnector(openwirePort);
-        remoteConnector.start(new ExampleConnector(), new ConnectorDescription("example", "external-connector-proxy"));
-        ExampleDomain osgiService = getOsgiService(ExampleDomain.class, "(service.pid=example-remote)", 31000);
-
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(service.pid=example-remote)"), not(nullValue()));
-        assertThat(osgiService, not(nullValue()));
-
-        remoteConnector.getInvocationHistory().clear();
-        osgiService.doSomethingWithMessage("test");
-        assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
-
-        remoteConnector.stop();
-        Thread.sleep(5000);
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example-remote)"), nullValue());
-    }
-
-    @Test
     public void testSendMethodWithModelAsParamter_shouldWork() throws Exception {
-        ExampleDomain service = new DummyService("test");
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.SERVICE_PID, "test");
-        properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", new String[]{ "foo" });
-        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
-
-        JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(METHOD_CALL_WITH_MODEL_PARAMETER, "admin", "password");
-        SecretKey sessionKey = generateSessionKey();
-        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-        String decryptedResult = decryptResult(sessionKey, result);
-
-        ObjectMapper mapper = new ObjectMapper();
-        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
-        JsonUtils.convertResult(methodResult);
-        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
-
+        registerDummyService();
+        EncryptedAnswer answer = sendMessage(METHOD_CALL_WITH_MODEL_PARAMETER);
+        String decryptedResult = decryptResult(answer.getSessionKey(), answer.getAnswer());
+        ExampleResponseModel model = extractResponseModelFromMethodResult(decryptedResult);
         assertThat(decryptedResult.contains("successful"), is(true));
         assertThat(model.getResult(), is("successful"));
     }
-    
+
     @Test
     public void testSendMethodWithModelIncludingTailAsParamter_shouldWork() throws Exception {
+        registerDummyService();
+        EncryptedAnswer answer = sendMessage(METHOD_CALL_WITH_MODEL_INCLUDING_TAIL_PARAMETER);
+        String decryptedResult = decryptResult(answer.getSessionKey(), answer.getAnswer());
+        ExampleResponseModel model = extractResponseModelFromMethodResult(decryptedResult);
+        assertThat(decryptedResult.contains("successful with tail"), is(true));
+        assertThat(model.getResult(), is("successful with tail"));
+    }
+
+    private ExampleResponseModel extractResponseModelFromMethodResult(String jsonMessage) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        MethodResultMessage methodResult = mapper.readValue(jsonMessage, MethodResultMessage.class);
+        JsonUtils.convertResult(methodResult);
+        return (ExampleResponseModel) methodResult.getResult().getArg();
+    }
+
+    private void registerDummyService() throws Exception {
+        if (isOsgiServiceAvailable(ExampleDomain.class, "(service.pid=test)")) {
+            // if we get here, the domain is already registered
+            return;
+        }
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put(Constants.SERVICE_PID, "test");
         properties.put(Constants.SERVICE_RANKING, -1);
         properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+    }
 
+    private EncryptedAnswer sendMessage(String methodCall) throws Exception {
+        return sendMessage(methodCall, "admin", "password");
+    }
+
+    private EncryptedAnswer sendMessage(String methodCall, String username, String password) throws Exception {
         JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(METHOD_CALL_WITH_MODEL_INCLUDING_TAIL_PARAMETER, "admin", "password");
+        String secureRequest = prepareRequest(methodCall, username, password);
         SecretKey sessionKey = generateSessionKey();
         String encryptedMessage = encryptMessage(secureRequest, sessionKey);
-
-        String result = sendMessage(template, encryptedMessage);
-        String decryptedResult = decryptResult(sessionKey, result);
-
-        ObjectMapper mapper = new ObjectMapper();
-        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
-        JsonUtils.convertResult(methodResult);
-        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
-
-        assertThat(decryptedResult.contains("successful with tail"), is(true));
-        assertThat(model.getResult(), is("successful with tail"));
+        String answer = sendMessage(template, encryptedMessage);
+        return new EncryptedAnswer(answer, sessionKey);
     }
 
     private String sendMessage(final JmsTemplate template, final String msg) {
@@ -270,10 +201,28 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
-        ActiveMQConnectionFactory cf =
-            new ActiveMQConnectionFactory("failover:(tcp://localhost:" + openwirePort + ")?timeout=60000");
+        String connection = String.format("failover:(tcp://localhost:%s)?timeout=60000", openwirePort);
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(connection);
         JmsTemplate template = new JmsTemplate(cf);
         return template;
+    }
+
+    private class EncryptedAnswer {
+        private String answer;
+        private SecretKey sessionKey;
+
+        public EncryptedAnswer(String answer, SecretKey sessionKey) {
+            this.answer = answer;
+            this.sessionKey = sessionKey;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public SecretKey getSessionKey() {
+            return sessionKey;
+        }
     }
 
     public class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
@@ -305,7 +254,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 if (entry.getKey().equals("specialKey") && entry.getValue().equals("specialValue")) {
                     response.setResult("successful with tail");
                 }
-            }            
+            }
             return response;
         }
     }

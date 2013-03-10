@@ -130,7 +130,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     private static final Map<Integer, String> STATES = ImmutableMap.of(1, "UNINSTALLED", 2, "INSTALLED", 4, "RESOLVED",
-            8, "STARTING", 32, "ACTIVE");
+        8, "STARTING", 32, "ACTIVE");
 
     private void waitasec() throws InterruptedException {
         for (Bundle b : bundleContext.getBundles()) {
@@ -138,7 +138,7 @@ public abstract class AbstractExamTestHelper {
                 continue;
             }
             LOGGER.info(String.format("[%s]-[%s] - %s", b.getBundleId(), STATES.get(b.getState()),
-                    b.getSymbolicName()));
+                b.getSymbolicName()));
         }
         Thread.sleep(1000);
     }
@@ -199,6 +199,14 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected <T> T getOsgiService(Class<T> type, String filter, long timeout) {
+        return queryOsgiService(type, filter, timeout, true);
+    }
+
+    protected Boolean isOsgiServiceAvailable(Class<?> type, String filter) {
+        return queryOsgiService(type, filter, 100, false) != null;
+    }
+
+    protected <T> T queryOsgiService(Class<T> type, String filter, long timeout, boolean throwException) {
         ServiceTracker tracker = null;
         try {
             String flt;
@@ -217,7 +225,7 @@ public abstract class AbstractExamTestHelper {
             // Note that the tracker is not closed to keep the reference
             // This is buggy, as the service reference may change i think
             Object svc = type.cast(tracker.waitForService(timeout));
-            if (svc == null) {
+            if (svc == null && throwException) {
                 @SuppressWarnings("rawtypes")
                 Dictionary dic = bundleContext.getBundle().getHeaders();
                 System.err.println("Test bundle headers: " + explode(dic));
@@ -232,7 +240,7 @@ public abstract class AbstractExamTestHelper {
 
                 throw new RuntimeException("Gave up waiting for service " + flt);
             }
-            return type.cast(svc);
+            return svc != null ? type.cast(svc) : null;
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException("Invalid filter", e);
         } catch (InterruptedException e) {
@@ -315,8 +323,8 @@ public abstract class AbstractExamTestHelper {
         Properties depProperties = new Properties();
         depProperties.load(stream);
         String projectVersion = ((String) depProperties
-                .get("org.openengsb.domain/org.openengsb.domain.example/version"))
-                .replace("-", ".");
+            .get("org.openengsb.domain/org.openengsb.domain.example/version"))
+            .replace("-", ".");
         probe.setHeader("Project-Version", projectVersion);
         return probe;
     }
@@ -391,7 +399,6 @@ public abstract class AbstractExamTestHelper {
         }
         return LogLevel.WARN;
     }
-
 
     protected String getOsgiProjectVersion() {
         return bundleContext.getBundle().getHeaders().get("Project-Version");
