@@ -224,7 +224,11 @@ public class ServicesHelper {
         ConnectorDescription connectorDescription =
             new ConnectorDescription(domainProviderId, connectorProvider.getId(), attributeMap, properties);
         if (force) {
-            serviceManager.forceCreate(connectorDescription);
+            if (id != null && !id.isEmpty()) {
+                serviceManager.forceCreateWithId(id, connectorDescription);
+            } else {
+                serviceManager.forceCreate(connectorDescription);
+            }
             OutputStreamFormater.printValue("Connector successfully created");
         } else {
             OutputStreamFormater.printValue("Do you want to create the connector with the following attributes:", "");
@@ -235,7 +239,11 @@ public class ServicesHelper {
             OutputStreamFormater.printValue("Create connector: (Y/n)");
             if (!readUserInput().equalsIgnoreCase("n")) {
                 try {
-                    serviceManager.create(connectorDescription);
+                    if (id != null && !id.isEmpty()) {
+                        serviceManager.createWithId(id, connectorDescription);
+                    } else {
+                        serviceManager.create(connectorDescription);
+                    }
                     OutputStreamFormater.printValue("Connector successfully created");
                 } catch (RuntimeException e) {
                     e.printStackTrace();
