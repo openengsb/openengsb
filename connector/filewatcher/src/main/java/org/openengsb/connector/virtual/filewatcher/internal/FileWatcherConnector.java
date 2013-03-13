@@ -163,7 +163,6 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                LOGGER.warn(modelType.getName() + " " + Arrays.deepToString(localModels.toArray()) + " " + Arrays.deepToString(newModels.toArray()));
                 EKBCommit commit = buildCommit((List) localModels, (List) newModels);
                 commit.setConnectorId("filewatcher");
                 commit.setInstanceId(instanceId);

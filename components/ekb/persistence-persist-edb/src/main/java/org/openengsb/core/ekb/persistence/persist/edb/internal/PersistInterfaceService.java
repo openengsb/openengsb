@@ -63,9 +63,7 @@ public class PersistInterfaceService implements PersistInterface {
     public void commit(EKBCommit commit) throws SanityCheckException, EKBException {
         LOGGER.debug("Commit of models was called");
         runPersistingLogic(commit, true, true);
-        // throw event in WorkflowEngine here
         workflowService.processEvent(new CommitEvent(commit));
-//        LOGGER.warn(workflowService.toString());
         LOGGER.debug("Commit of models was successful");
     }
 
