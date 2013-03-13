@@ -78,12 +78,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.features</groupId>
-      <artifactId>spring</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.features</groupId>
       <artifactId>enterprise</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
@@ -181,7 +175,6 @@
             <configuration>
               <descriptors>
                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
-                <descriptor>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
                 <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
@@ -193,9 +186,6 @@
                 <feature>management</feature>
                 <feature>kar</feature>
                 <feature>eventadmin</feature>
-                <feature>spring</feature>
-                <feature>spring-web</feature>
-                <feature>spring-dm</feature>
                 <feature>war</feature>
                 <feature>transaction</feature>
                 <feature>jpa</feature>
@@ -215,6 +205,11 @@
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
                 <feature>openengsb-connector-example</feature>
+                <!-- Other -->
+                <feature>spring</feature>
+                <feature>spring-web</feature>
+                <feature>spring-dm</feature>
+                <feature>spring-jms</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
