@@ -55,7 +55,7 @@ public interface ConnectorManager {
     void createWithId(String id, ConnectorDescription connectorDescription);
 
     /**
-     * creates a new connector instance with the given id and description. It works similar to
+     * creates a new connector instance with the given description. It works similar to
      * {@link ConnectorManager#createService} but skips the validation step. However this method still assumes that each
      * attribute is valid by itself (e.g. number-attributes)
      * 
@@ -65,6 +65,18 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
     String forceCreate(ConnectorDescription connectorDescription);
+    
+    /**
+     * creates a new connector instance with the given id and description. It works similar to
+     * {@link ConnectorManager#createService} but skips the validation step. However this method still assumes that each
+     * attribute is valid by itself (e.g. number-attributes)
+     * 
+     * The connector instance is then registered in the OSGi-registry and persisted using
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     * 
+     * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
+     */
+    void forceCreateWithId(String id, ConnectorDescription connectorDescription);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means

@@ -28,10 +28,6 @@ import org.osgi.framework.Bundle;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
 public class OpenEngSBInfo extends OsgiCommandSupport {
-
-    private String versionNumber;
-    private String droolsVersion;
-
     private List<InfoProvider> infoProviders = new LinkedList<InfoProvider>();
 
     @Override
@@ -39,16 +35,26 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
         //
         // print OpenEngSB information
         //
-        OutputStreamFormater.printValue("OpenEngSB Framework");
-        OutputStreamFormater.printValue("OpenEngSB Framework Version", versionNumber);
         // print loaded openengsb-bundles
+        String versionNumber = "";
+        String droolsVersion = "";
         Bundle[] bundles = getBundleContext().getBundles();
         Integer count = 0;
         for (Bundle b : bundles) {
             if (b.getSymbolicName().startsWith("org.openengsb.framework")) {
+                if (versionNumber.isEmpty()) {
+                    versionNumber = b.getVersion().toString();
+                }
                 count++;
+            } else if (b.getSymbolicName().startsWith("org.drools")) {
+                if (droolsVersion.isEmpty()) {
+                    droolsVersion = b.getVersion().toString();
+                }
             }
         }
+
+        OutputStreamFormater.printValue("OpenEngSB Framework");
+        OutputStreamFormater.printValue("OpenEngSB Framework Version", versionNumber);
         OutputStreamFormater.printValue("OpenEngSB Framework Bundles", count.toString());
         OutputStreamFormater.printValue("\n");
 
@@ -71,13 +77,5 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
 
     public void setInfoProviders(List<InfoProvider> infoProviders) {
         this.infoProviders = infoProviders;
-    }
-
-    public void setVersionNumber(String versionNumber) {
-        this.versionNumber = versionNumber;
-    }
-
-    public void setDroolsVersion(String droolsVersion) {
-        this.droolsVersion = droolsVersion;
     }
 }
