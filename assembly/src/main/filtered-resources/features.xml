@@ -77,6 +77,7 @@
     <feature>shiro-core</feature>
     <feature>shiro-web</feature>
     <feature>shiro-spring</feature>
+    
 
     <feature version="${project.version}">openengsb-domain-auditing</feature>
 
@@ -373,6 +374,44 @@
     <feature version="${project.version}">openengsb-framework</feature>
     <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-csv/${jackson2.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.virtual.filewatcher/${project.version}</bundle>
+  </feature>
+  
+  <feature name="spring" version="${project.version}" description="Spring features for the OpenEngSB">
+    <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${servicemix.aop.version}</bundle>   
+    <bundle start-level="30">mvn:org.springframework/spring-core/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-asm/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-expression/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-beans/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-aop/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-context/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-context-support/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
+  </feature>
+  
+  <feature name="spring-web" version="${project.version}" description="Spring web features for the OpenEngSB">
+    <feature>spring</feature>
+    <feature>http</feature>
+    <bundle start-level="30">mvn:org.springframework/spring-web/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-webmvc/${spring.version}</bundle>
+  </feature>
+  
+  <feature name="spring-dm" version="${project.version}" description="Spring DM support">
+    <feature>spring</feature>
+    <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${servicemix.cglib.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework.osgi/spring-osgi-extender/${spring.osgi.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
+    <bundle start-level="30">mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
+    <bundle start-level="30">mvn:org.apache.karaf.bundle/org.apache.karaf.bundle.springstate/${karaf.version}</bundle>
+  </feature>
+  
+  <feature name="spring-jms" version="${project.version}" description="Spring JMS support">
+    <feature>spring</feature>
+    <bundle start-level="30">mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <bundle start-level="10">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${geronimo.jta.version}</bundle>
+    <bundle start-level="10">mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/${geronimo.jms.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-jms/${spring.version}</bundle>
   </feature>
 
 </features>
