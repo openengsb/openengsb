@@ -28,6 +28,7 @@ import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.transformation.TransformationConstants;
 import org.openengsb.core.ekb.api.transformation.TransformationOperationException;
+import org.osgi.framework.Version;
 
 /**
  * The instantiate operation is used to support other field types than only strings. It instantiates an object of the
@@ -132,23 +133,29 @@ public class InstantiateOperation extends AbstractStandardTransformationOperatio
      * Tries to load the class with the given name. Throws a TransformationOperationException if this is not possible.
      */
     private Class<?> loadClassByName(String className) throws TransformationOperationException {
-        try {
-            return this.getClass().getClassLoader().loadClass(className);
-        } catch (Exception e) {
+        Exception e;
+        if (className.contains(";")) {
             try {
                 String[] parts = className.split(";");
                 ModelDescription description = new ModelDescription();
                 description.setModelClassName(parts[0]);
                 if (parts.length > 1) {
-                    description.setVersionString(parts[1]);
+                    description.setVersionString(new Version(parts[1]).toString());
                 }
                 return modelRegistry.loadModel(description);
             } catch (Exception ex) {
-                String message = "The class %s can't be found. The instantiate operation will be ignored.";
-                message = String.format(message, className);
-                getLogger().error(message);
-                throw new TransformationOperationException(message, ex);
+                e = ex;
+            }
+        } else {
+            try {
+                return this.getClass().getClassLoader().loadClass(className);
+            } catch (Exception ex) {
+                e = ex;
             }
         }
+        String message = "The class %s can't be found. The instantiate operation will be ignored.";
+        message = String.format(message, className);
+        getLogger().error(message);
+        throw new TransformationOperationException(message, e);        
     }
 }
