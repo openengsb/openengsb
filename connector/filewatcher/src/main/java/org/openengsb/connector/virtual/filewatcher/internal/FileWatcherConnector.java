@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
@@ -32,12 +33,16 @@ import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnector;
+import org.openengsb.core.ekb.api.CommitEvent;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileWatcherConnector extends VirtualConnector implements EventSupport {
-
+    private Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnector.class);
+    
     private Class<?> modelType;
 
     private QueryInterface queryService;
@@ -53,6 +58,8 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
     private List<?> localModels = new ArrayList<Object>();
 
     private Timer timer;
+    
+    private EKBCommit lastCommit; // temporary solution
 
     public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService,
             QueryInterface queryService, AuthenticationContext authenticationContext) {
@@ -72,6 +79,18 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     @Override
     public void onEvent(Event event) {
+        if (!(event instanceof CommitEvent)) {
+            return;
+        }
+        else {
+            EKBCommit commit = ((CommitEvent) event).getCommit();
+            
+            if (commit == lastCommit) { // avoid endless commit cycles
+                return;
+            }
+        }
+        
+        
         try {
             update();
         } catch (IOException e) {
@@ -144,6 +163,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                LOGGER.warn(modelType.getName() + " " + Arrays.deepToString(localModels.toArray()) + " " + Arrays.deepToString(newModels.toArray()));
                 EKBCommit commit = buildCommit((List) localModels, (List) newModels);
                 commit.setConnectorId("filewatcher");
                 commit.setInstanceId(instanceId);
@@ -152,6 +172,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 authenticationContext.login("admin", new Password("password"));
                 persistService.commit(commit);
                 authenticationContext.logout();
+                lastCommit = commit;
             }
         };
         if (watchfile.exists()) {

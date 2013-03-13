@@ -19,9 +19,11 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 import java.util.List;
 
+import org.openengsb.core.api.Event;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.CommitEvent;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
@@ -31,6 +33,7 @@ import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
 import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.ConvertedCommit;
 import org.openengsb.core.ekb.common.EDBConverter;
+import org.openengsb.core.workflow.api.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,19 +48,24 @@ public class PersistInterfaceService implements PersistInterface {
     private EDBConverter edbConverter;
     private List<EKBPreCommitHook> preCommitHooks;
     private List<EKBPostCommitHook> postCommitHooks;
+    private WorkflowService workflowService;
 
     public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
-            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks) {
+            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks, WorkflowService workflowService) {
         this.edbService = edbService;
         this.edbConverter = edbConverter;
         this.preCommitHooks = preCommitHooks;
         this.postCommitHooks = postCommitHooks;
+        this.workflowService = workflowService;
     }
 
     @Override
     public void commit(EKBCommit commit) throws SanityCheckException, EKBException {
         LOGGER.debug("Commit of models was called");
         runPersistingLogic(commit, true, true);
+        // throw event in WorkflowEngine here
+        workflowService.processEvent(new CommitEvent(commit));
+//        LOGGER.warn(workflowService.toString());
         LOGGER.debug("Commit of models was successful");
     }
 
