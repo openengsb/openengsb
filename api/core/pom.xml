@@ -146,6 +146,17 @@
               <goal>java2wsdl</goal>
             </goals>
           </execution>
+          <execution>
+            <id>OpenEngSBModelWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.api.model.OpenEngSBModel</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/OpenEngSBModel.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -179,6 +190,11 @@
                   <file>target/generated/wsdl/EventSupport.wsdl</file>
                   <type>wsdl</type>
                   <classifier>EventSupport</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/OpenEngSBModel.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>OpenEngSBModel</classifier>
                 </artifact>
               </artifacts>
             </configuration>
