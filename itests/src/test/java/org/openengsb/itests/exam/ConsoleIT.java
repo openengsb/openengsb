@@ -22,12 +22,15 @@ import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +43,8 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
 import org.ops4j.pax.exam.TestProbeBuilder;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
@@ -51,9 +52,17 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 @RunWith(JUnit4TestRunner.class)
-// This one will run each test in it's own container (slower speed)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
+    private static final String FRAMEWORK_VERSION = "framework-version";
+    private static final String FRAMEWORK_ELEMENT_COUNT = "framework-element-count";
+    private static final String DROOLS_VERSION = "drools-version";
+    private static final String KARAF_VERSION = "karaf-version";
+    private static final String OSGI_VERSION = "osgi-version";
+
+    private OutputStreamHelper outputStreamHelper;
+    private CommandSession cs;
+    private CommandProcessor cp;
+    private String testServiceId;
 
     @BeforeClass
     public static void initialize() {
@@ -66,38 +75,39 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         return probe;
     }
 
+    @Before
+    public void setUp() throws Exception {
+        if (cp == null) {
+            Bundle b = getInstalledBundle("org.openengsb.framework.console");
+            b.start();
+            cp = getOsgiService(CommandProcessor.class);
+        }
+        outputStreamHelper = new OutputStreamHelper();
+        PrintStream out = new PrintStream(outputStreamHelper);
+        cs = cp.createSession(System.in, out, System.err);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        outputStreamHelper.close();
+        cs.close();
+    }
+
     @Test
     public void testToExecuteOpenEngSBInfoCommand_shouldPrintOpenEngSBInformation() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
-
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
-
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
+        Map<String, String> info = loadDataForInfoCommand();
         cs.execute("openengsb:info");
-        cs.close();
         List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "OpenEngSB Framework Version", ""));
-        assertTrue(contains(result, "Karaf Version", ""));
-        assertTrue(contains(result, "OSGi Framework", ""));
-        assertTrue(contains(result, "Drools version", ""));
+        assertTrue(contains(result, "OpenEngSB Framework Version", info.get(FRAMEWORK_VERSION)));
+        assertTrue(contains(result, "OpenEngSB Framework Bundles", info.get(FRAMEWORK_ELEMENT_COUNT)));
+        assertTrue(contains(result, "Karaf Version", info.get(KARAF_VERSION)));
+        assertTrue(contains(result, "OSGi Framework", info.get(OSGI_VERSION)));
+        assertTrue(contains(result, "Drools version", info.get(DROOLS_VERSION)));
     }
 
     @Test
     public void testToExecuteOpenEngSBDomainInfoCommand_shouldPrintInfoAboutDomain() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
-
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
-
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
         cs.execute("openengsb:domains");
-        cs.close();
-
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
         assertTrue(contains(result, "Example Domain",
@@ -106,20 +116,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testToExecuteOpenEngSBServiceListCommand_shouldListServices() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
-
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
-
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
-
         waitForDefaultConnectors();
-
         cs.execute("openengsb:service list");
-        cs.close();
-
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "root-authenticator", "ONLINE"));
         assertTrue(contains(result, "auditing-root", "ONLINE"));
@@ -127,55 +125,70 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
-        ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
-        ConnectorDescription connectorDescription = new ConnectorDescription("authentication", "composite-connector");
-        Map<String, String> attributes =
-            Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", 
-                "(foo=bar)"));
-
-        connectorDescription.setAttributes(attributes);
-
-        connectorManager.create(connectorDescription);
-
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
-
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
-
-        waitForDefaultConnectors();
-
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
-        cs.execute("openengsb:service -f true delete root-authenticator ");
+    public void testListCommand_shouldShowPreviouslyAddedService() throws Exception {
+        String id = addTestService();
         cs.execute("openengsb:service list");
-        cs.close();
-
         List<String> result = outputStreamHelper.getResult();
-        assertFalse(contains(result, "root-authenticator", "ONLINE"));
+        assertTrue(contains(result, id, "ONLINE"));
+    }
+
+    @Test
+    public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
+        String id = addTestService();
+        cs.execute("openengsb:service -f true delete " + id);
+        cs.execute("openengsb:service list");
+        List<String> result = outputStreamHelper.getResult();
+        assertTrue(result.contains(String.format("Service: %s successfully deleted", id)));
+        assertFalse(contains(result, id, "ONLINE"));
     }
 
     @Test
     public void testToExecuteOpenEngSBServiceCreateCommand_shouldCreateService() throws Exception {
-        CommandProcessor cp = getOsgiService(CommandProcessor.class);
-
-        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
-        PrintStream out = new PrintStream(outputStreamHelper);
-        CommandSession cs = cp.createSession(System.in, out, System.err);
-
-        Bundle b = getInstalledBundle("org.openengsb.framework.console");
-        b.start();
-
-        waitForDefaultConnectors();
+        String serviceId = "testID";
         String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing "
-                + "service.pid:testID attr:something");
+                + "service.pid:%s attr:something", serviceId);
         cs.execute(executeCommand);
-        cs.close();
+        cs.execute("openengsb:service list");
 
         List<String> result = outputStreamHelper.getResult();
         assertTrue(result.contains("Connector successfully created"));
+        assertTrue(contains(result, serviceId, "ONLINE"));
+    }
+
+    private String addTestService() {
+        if (testServiceId != null) {
+            return testServiceId;
+        }
+        ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
+        ConnectorDescription connectorDescription = new ConnectorDescription("authentication", "composite-connector");
+        Map<String, String> attributes =
+            Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString",
+                "(foo=bar)"));
+        connectorDescription.setAttributes(attributes);
+        testServiceId = connectorManager.create(connectorDescription);
+        return testServiceId;
+    }
+
+    private Map<String, String> loadDataForInfoCommand() {
+        Map<String, String> data = new HashMap<String, String>();
+        Integer count = 0;
+        for (Bundle b : getBundleContext().getBundles()) {
+            if (b.getSymbolicName().startsWith("org.openengsb.framework")) {
+                if (!data.containsKey(FRAMEWORK_VERSION)) {
+                    data.put(FRAMEWORK_VERSION, b.getVersion().toString());
+                }
+                count++;
+            } else if (b.getSymbolicName().startsWith("org.drools")) {
+                if (!data.containsKey(DROOLS_VERSION)) {
+                    data.put(DROOLS_VERSION, b.getVersion().toString());
+                }
+            }
+        }
+        data.put(FRAMEWORK_ELEMENT_COUNT, count.toString());
+        data.put(OSGI_VERSION, getBundleContext().getBundle(0).getSymbolicName()
+                + " - " + getBundleContext().getBundle(0).getVersion());
+        data.put(KARAF_VERSION, System.getProperty("karaf.version"));
+        return data;
     }
 
     private boolean contains(List<String> list, String value, String value2) {

@@ -165,6 +165,13 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
     @Override
     public String forceCreate(ConnectorDescription connectorDescription) {
         String id = UUID.randomUUID().toString();
+        forceCreateWithId(id, connectorDescription);
+        return id;
+    }
+    
+    @Override
+    public void forceCreateWithId(String id, ConnectorDescription connectorDescription) {
+        checkForExistingServices(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
@@ -172,7 +179,6 @@ public class ConnectorManagerImpl implements XLinkConnectorManager {
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
-        return id;
     }
 
     private void checkForExistingServices(String id) {
