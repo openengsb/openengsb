@@ -45,11 +45,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.util.JsonUtils;
+import org.openengsb.core.util.ModelUtils;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
@@ -218,6 +220,32 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(decryptedResult.contains("successful"), is(true));
         assertThat(model.getResult(), is("successful"));
     }
+    
+    @Test
+    public void testSendMethodWithModelIncludingTailAsParamter_shouldWork() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(Constants.SERVICE_PID, "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.root", new String[]{ "foo" });
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        JmsTemplate template = prepareActiveMqConnection();
+        String secureRequest = prepareRequest(METHOD_CALL_WITH_MODEL_INCLUDING_TAIL_PARAMETER, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+
+        String result = sendMessage(template, encryptedMessage);
+        String decryptedResult = decryptResult(sessionKey, result);
+
+        ObjectMapper mapper = new ObjectMapper();
+        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
+        JsonUtils.convertResult(methodResult);
+        ExampleResponseModel model = (ExampleResponseModel) methodResult.getResult().getArg();
+
+        assertThat(decryptedResult.contains("successful with tail"), is(true));
+        assertThat(model.getResult(), is("successful with tail"));
+    }
 
     private String sendMessage(final JmsTemplate template, final String msg) {
         String resultString = template.execute(new SessionCallback<String>() {
@@ -273,6 +301,11 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             ExampleResponseModel response = new ExampleResponseModel();
             response.setResult("successful");
+            for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(model)) {
+                if (entry.getKey().equals("specialKey") && entry.getValue().equals("specialValue")) {
+                    response.setResult("successful with tail");
+                }
+            }            
             return response;
         }
     }

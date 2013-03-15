@@ -17,9 +17,11 @@
 
 package org.openengsb.core.util;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.List;
 
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
@@ -27,10 +29,15 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.base.Preconditions;
 
@@ -39,6 +46,25 @@ public final class JsonUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        // adding the additional deserializer needed to deserialize models
+        MAPPER.registerModule(new SimpleModule().addDeserializer(Object.class, new OpenEngSBModelEntryDeserializer()));
+    }
+
+    /**
+     * Converts an object in JSON format to the given class. Throws an IOException if the conversion could not be
+     * performed.
+     */
+    public static <T> T convertObject(String json, Class<T> clazz) throws IOException {
+        try {
+            return MAPPER.readValue(json, clazz);
+        } catch (IOException e) {
+            String error = String.format("Unable to parse given json '%s' into class '%s'.", json, clazz.getName());
+            LOGGER.error(error, e);
+            throw new IOException(error, e);
+        }
+    }
 
     private static Object convertArgument(String className, Object arg) {
         try {
@@ -92,5 +118,49 @@ public final class JsonUtils {
     }
 
     private JsonUtils() {
+    }
+
+    /**
+     * The OpenEngSBModelEntryDeserializer class is needed in order to be able to transform the list of
+     * OpenEngSBModelEntry elements, which is contained in every model tail, from a JSON string into a list of actual
+     * elements.
+     */
+    @SuppressWarnings("serial")
+    private static class OpenEngSBModelEntryDeserializer extends StdScalarDeserializer<OpenEngSBModelEntry> {
+        public OpenEngSBModelEntryDeserializer() {
+            super(OpenEngSBModelEntry.class);
+        }
+
+        @Override
+        public OpenEngSBModelEntry deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            JsonToken token = jp.getCurrentToken();
+            OpenEngSBModelEntry entry = new OpenEngSBModelEntry();
+            if (token != JsonToken.START_OBJECT) {
+                return null;
+            } else {
+                // skip the JsonToken.START_OBJECT token
+                token = jp.nextValue();
+            }
+            do {
+                if (token == JsonToken.END_OBJECT) {
+                    return entry;
+                } else {
+                    if (jp.getCurrentName().equals("key")) {
+                        entry.setKey(jp.getValueAsString());
+                    } else if (jp.getCurrentName().equals("value")) {
+                        entry.setValue(jp.getValueAsString());
+                    } else if (jp.getCurrentName().equals("type")) {
+                        try {
+                            entry.setType(findType(jp.getValueAsString()));
+                        } catch (ClassNotFoundException e) {
+                            LOGGER.error("Did not find class of type " + jp.getValueAsString(), e);
+                            break;
+                        }
+                    }
+                }
+                token = jp.nextValue();
+            } while (token != null);
+            return null;
+        }
     }
 }
