@@ -16,6 +16,8 @@
  */
 package org.openengsb.core.services.internal.model;
 
+import java.util.List;
+
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
@@ -27,6 +29,7 @@ public class NullModel {
     @OpenEngSBModelId
     private Integer id;
     private String value;
+    private List<SubModel> subs;
 
     public Integer getId() {
         return id;
@@ -43,4 +46,13 @@ public class NullModel {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public List<SubModel> getSubs() {
+        return subs;
+    }
+
+    public void setSubs(List<SubModel> subs) {
+        this.subs = subs;
+    }
+
 }

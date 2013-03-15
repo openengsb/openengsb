@@ -79,6 +79,7 @@
     <module>tooling/archetypes</module>
     <module>tooling/wsdl2dll</module>
     <!-- OpenEngSB Framework Modules -->
+    <module>test</module>
     <module>components/util</module>
     <module>components/common</module>
     <module>components/weaver/service</module>

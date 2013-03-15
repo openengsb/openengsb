@@ -117,6 +117,21 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "    \"args\": ["
             + "        { \"id\":10, \"name\":\"test\" } ]"
             + "}";
+    
+    protected static final String METHOD_CALL_WITH_MODEL_INCLUDING_TAIL_PARAMETER = ""
+            + "{"
+            + "    \"classes\": ["
+            + "        \"org.openengsb.domain.example.model.ExampleRequestModel\""
+            + "    ],"
+            + "    \"methodName\": \"doSomethingWithModel\","
+            + "    \"metaData\": {"
+            + "        \"serviceId\": \"test\""
+            + "    },"
+            + "    \"args\": ["
+            + "        { \"id\":10, \"name\":\"test\", \"openEngSBModelTail\" :[{ " 
+            + "           \"key\":\"specialKey\", \"value\":\"specialValue\", \"type\":\"java.lang.String\" }] " 
+            + "         } ]"
+            + "}";
 
     protected RuleManager ruleManager;
 

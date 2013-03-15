@@ -202,23 +202,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generateDocSrc</id>
-            <goals>
-              <goal>extractSource</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <sourcePath>${project.basedir}/src/</sourcePath>
-              <targetPath>${project.basedir}/target/classes/docbook/snippets</targetPath>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -255,7 +238,6 @@
         <configuration>
           <descriptors>
             <descriptor>${project.basedir}/target/assembly-resources/src.xml</descriptor>
-            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
@@ -270,7 +252,6 @@
       </plugin>
     </plugins>
   </build>
-
 
   <dependencies>
     <dependency>
