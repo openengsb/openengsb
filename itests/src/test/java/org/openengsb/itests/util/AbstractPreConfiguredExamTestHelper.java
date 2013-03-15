@@ -26,6 +26,8 @@ import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * This additional layer is required since the Configuration annotation is differently handled in exam 2.x. To avoid any
@@ -44,6 +46,11 @@ public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTe
         getOsgiService(AuditingDomain.class);
         getOsgiService(AuthenticationDomain.class, "(service.pid=root-authenticator)", 30000);
         getOsgiService(AuthorizationDomain.class, "(service.pid=root-authorizer)", 30000);
+    }
+    
+    protected Version getExampleDomainVersion() throws Exception {
+        Bundle b = getInstalledBundle("org.openengsb.domain.example");
+        return b.getVersion();
     }
 
 }

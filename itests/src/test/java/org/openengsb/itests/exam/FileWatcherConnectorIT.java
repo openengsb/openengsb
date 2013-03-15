@@ -91,8 +91,8 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
     @Test
     public void testModelTransformationFromAtoB() throws Exception {
         TransformationEngine transformationEngine = getOsgiService(TransformationEngine.class);
-        ModelDescription modelDescriptionA = new ModelDescription(SourceModelA.class, "3.0.0.SNAPSHOT");
-        ModelDescription modelDescriptionB = new ModelDescription(SourceModelB.class, "3.0.0.SNAPSHOT");
+        ModelDescription modelDescriptionA = new ModelDescription(SourceModelA.class, getExampleDomainVersion().toString());
+        ModelDescription modelDescriptionB = new ModelDescription(SourceModelB.class, getExampleDomainVersion().toString());
         TransformationDescription transfDescription = new TransformationDescription(modelDescriptionA, modelDescriptionB);
 
         transfDescription.forwardField("edbId", "edbId");
@@ -102,12 +102,12 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         File watchfile1 = tempFolder.newFile("file1.csv");
         File watchfile2 = tempFolder.newFile("file2.csv");
 
-        registerConnector("org.openengsb.domain.example.model.SourceModelA", watchfile1);
-        registerConnector("org.openengsb.domain.example.model.SourceModelB", watchfile2);
+        registerConnector(SourceModelA.class.getName(), watchfile1);
+        registerConnector(SourceModelB.class.getName(), watchfile2);
         
         Thread.sleep(2000); // required, apparently
         FileUtils.write(watchfile1, "\"foo\",\"bar\"");
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
         String fileContents = FileUtils.readFileToString(watchfile2);
         
         assertThat(fileContents, is("\"foo\",\"bar\""));

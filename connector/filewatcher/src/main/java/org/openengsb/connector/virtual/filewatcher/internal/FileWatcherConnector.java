@@ -79,23 +79,23 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     @Override
     public void onEvent(Event event) {
-        if (!(event instanceof CommitEvent)) {
-            return;
-        }
-        else {
-            EKBCommit commit = ((CommitEvent) event).getCommit();
-            
-            if (commit == lastCommit) { // avoid endless commit cycles
-                return;
-            }
-        }
-        
-        
-        try {
-            update();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        if (!(event instanceof CommitEvent)) {
+//            return;
+//        }
+//        else {
+//            EKBCommit commit = ((CommitEvent) event).getCommit();
+//            
+//            if (commit == lastCommit) { // avoid endless commit cycles
+//                return;
+//            }
+//        }
+//        
+//        
+//        try {
+//            update();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     private synchronized void update() throws IOException {
