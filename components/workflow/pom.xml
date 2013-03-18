@@ -181,25 +181,25 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework.workflow</groupId>
       <artifactId>org.openengsb.framework.workflow.api</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.util</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -208,7 +208,7 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.services</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -219,13 +219,13 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -243,7 +243,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.example</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -254,7 +254,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

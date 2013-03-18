@@ -120,13 +120,13 @@
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.example</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -136,7 +136,7 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
