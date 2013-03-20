@@ -24,49 +24,49 @@
 
   <requiredProperties>
     <requiredProperty key="groupId">
-      <defaultValue>org.openengsb.connector.connectorname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>org.openengsb.connector</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>${project.version}</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>Connectorname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="connectorName">
-      <defaultValue>Connectorname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="connectorNameL">
-      <defaultValue>connectorname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="domainInterface">
-      <defaultValue>DomainInterfaceName</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="domain">
-      <defaultValue>ExampleDomain</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="domainL">
-      <defaultValue>example</defaultValue>
+      <defaultValue />
     </requiredProperty>
      <requiredProperty key="domainVersion">
-      <defaultValue>1.2.0</defaultValue>
+      <defaultValue />
     </requiredProperty>
      <requiredProperty key="domainRange">
-      <defaultValue>[1.2,1.3)</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="package">
-      <defaultValue>org.openengsb.connector.connectorname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="scmConnection">
-      <defaultValue>scm:git:git://github.com/openengsb/openengsb-connector-connectorName.git</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="scmDeveloperConnection">
-      <defaultValue>scm:git:git@github.com:openengsb/openengsb-connector-connectorName.git</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="scmUrl">
-      <defaultValue>http://github.com/openengsb/openengsb-connector-connectorName</defaultValue>
+      <defaultValue />
     </requiredProperty>
   </requiredProperties>
 

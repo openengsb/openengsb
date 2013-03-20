@@ -25,28 +25,28 @@
 
   <requiredProperties>
     <requiredProperty key="groupId">
-      <defaultValue>org.openengsb.domain</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>org.openengsb.domain.domainname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>OpenEngSB :: Domain :: Domainname </defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>3.0.0-SNAPSHOT</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="openengsbVersion" >
-      <defaultValue>3.0.0-SNAPSHOT</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="package">
-      <defaultValue>org.openengsb.domain.domainname</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="domainInterface">
-      <defaultValue>DomainnameDomain</defaultValue>
+      <defaultValue />
     </requiredProperty>
     <requiredProperty key="domainName">
-      <defaultValue>domainname</defaultValue>
+      <defaultValue />
     </requiredProperty>
   </requiredProperties>
 

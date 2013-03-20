@@ -17,23 +17,26 @@
 
 package org.openengsb.itests.archetypes;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DomainArchetypeTest extends AbstractArchetypeTest {
 
     @Override
     protected void addArchetypeData(Properties properties) {
-        properties.put("archetypeGroupId", "org.openengsb.tooling.archetypes");
-        properties.put("archetypeArtifactId", "org.openengsb.tooling.archetypes.domain");
-        properties.put("archetypeVersion", "3.0.0-SNAPSHOT");
-        properties.put("groupId", "org.openengsb.domain");
-        properties.put("artifactId", "org.openengsb.domain.testdomain");
-        properties.put("version", "3.0.0-SNAPSHOT");
-        properties.put("name", "OpenEngSB :: Domain :: TestDomain");
-        properties.put("package", "org.openengsb.domain.testdomain");
-        properties.put("domainInterface", "TestDomain");
-        properties.put("domainName", "testdomain");
-        properties.put("openengsbVersion", "3.0.0-SNAPSHOT");
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = loader.getResourceAsStream("archetype.domain.properties");
+        try {
+            prop.load(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Object key : prop.keySet()) {
+            properties.setProperty((String) key, (String) prop.get(key));
+        }
     }
 
     @Override
