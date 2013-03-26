@@ -1,5 +1,14 @@
+OpenEngSB Framework
+==========================
+
+The OpenEngSB Framework is the underlying engine of the OpenEngSB implementing and wiring together all required
+concepts and tools to provide a common integration environment.
+
+[![Build Status](https://travis-ci.org/openengsb/openengsb-framework.png?branch=master)](https://travis-ci.org/openengsb/openengsb-framework)
+
 How to build
 ==========================
+
 * Install JDK 6 or higher
 
   You can install [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or

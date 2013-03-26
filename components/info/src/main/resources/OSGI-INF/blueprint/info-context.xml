@@ -19,13 +19,13 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <service interface="org.ops4j.pax.web.extender.whiteboard.ResourceMapping">
-    <bean class="org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping">
-      <property name="alias" value="/system" />
-      <property name="path" value="/system" />
-    </bean>
+  <service interface="javax.servlet.Servlet">
+    <service-properties>
+      <entry key="alias" value="/system/framework.version.info"/>
+    </service-properties>
+    <bean class="org.openengsb.framework.info.internal.SystemInformationServlet"/>
   </service>
 
 </blueprint>
