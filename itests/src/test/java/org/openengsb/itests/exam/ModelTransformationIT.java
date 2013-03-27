@@ -131,10 +131,10 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
             new TransformationDescription(getExampleResponseDescription(), getExampleRequestDescription());
         description.addStep("dummy", Arrays.asList("result"), "name", new HashMap<String, String>());
         transformationEngine.saveDescription(description);
-        
+
         ExampleResponseModel modelA = new ExampleResponseModel();
         modelA.setResult("teststring");
-        
+
         ExampleRequestModel modelB = transformResponseToRequest(modelA);
 
         assertThat(modelB.getName(), is("DUMMYteststringDUMMY"));
@@ -171,22 +171,20 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
         targetDescription =
             String.format(targetDescription, ExampleRequestModel.class.getName(), exampleDomainVersion.toString());
 
-        ruleManager
-            .add(
-                new RuleBaseElementId(RuleBaseElementType.Rule, "example"),
-                ""
-                        + "when\n"
-                        + "  event : LogEvent()\n"
-                        + "then\n"
-                        + sourceDescription
-                        + targetDescription
-                        + "  ExampleResponseModel object = new ExampleResponseModel();"
-                        + "  object.setResult(\"test-42\");"
-                        + "  ExampleRequestModel model = "
-                        + "(ExampleRequestModel) "
-                        + "ekbTransformationService.performTransformation(source, target, object);"
-                        + "  example2.doSomethingWithModel(model);\n"
-            );
+        ruleManager.add(
+            new RuleBaseElementId(RuleBaseElementType.Rule, "example"),
+            ""
+                    + "when\n"
+                    + "  event : LogEvent()\n"
+                    + "then\n"
+                    + sourceDescription
+                    + targetDescription
+                    + "  ExampleResponseModel object = new ExampleResponseModel();"
+                    + "  object.setResult(\"test-42\");"
+                    + "  ExampleRequestModel model = "
+                    + "(ExampleRequestModel) "
+                    + "ekbTransformationService.performTransformation(source, target, object);"
+                    + "  example2.doSomethingWithModel(model);\n");
 
         ContextHolder.get().setCurrentContextId("foo");
         WorkflowService workflowService = getOsgiService(WorkflowService.class);
