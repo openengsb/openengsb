@@ -69,6 +69,7 @@ public class JsonSupportTest {
     @Test
     public void tryConvertJSONIntoModelWithAdditionalSerializer_shouldThrowNoException() throws Exception {
         NullModel model = createTestModel();
+        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("number", 42, Integer.class));
         String result = mapper.writeValueAsString(model);
 
         NullModel other = JsonUtils.convertObject(result, NullModel.class);
@@ -80,8 +81,9 @@ public class JsonSupportTest {
         assertThat(model.getSubs().get(0).getName(), is(other.getSubs().get(0).getName()));
         assertThat(model.getSubs().get(1).getId(), is(other.getSubs().get(1).getId()));
         assertThat(model.getSubs().get(1).getName(), is(other.getSubs().get(1).getName()));
-        assertThat(entries.size(), is(2));
+        assertThat(entries.size(), is(3));
         assertThat(entries.contains(new OpenEngSBModelEntry("test", "test", String.class)), is(true));
         assertThat(entries.contains(new OpenEngSBModelEntry("test2", "test2", String.class)), is(true));
+        assertThat(entries.contains(new OpenEngSBModelEntry("number", 42, Integer.class)), is(true));
     }
 }
