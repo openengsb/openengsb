@@ -40,6 +40,7 @@ import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.PersistInterfaceService;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel;
 import org.openengsb.core.ekb.persistence.persist.edb.models.TestModel2;
+import org.openengsb.core.workflow.api.WorkflowService;
 
 public class PersistInterfaceServiceTest {
     private PersistInterfaceService service;
@@ -53,7 +54,7 @@ public class PersistInterfaceServiceTest {
         EDBCommit result = mock(EDBCommit.class);
         when(edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
             anyListOf(EDBObject.class))).thenReturn(result);
-        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks);
+        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, mock(WorkflowService.class));
         ContextHolder.get().setCurrentContextId("test");
     }
 

@@ -31,6 +31,7 @@ import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnector;
 import org.openengsb.core.ekb.api.CommitEvent;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public class FileWatcherConnector extends VirtualConnector implements EventSupport {
     private Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnector.class);
-    
+
     private Class<?> modelType;
 
     private QueryInterface queryService;
@@ -58,7 +59,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
     private List<?> localModels = new ArrayList<Object>();
 
     private Timer timer;
-    
+
     private EKBCommit lastCommit; // temporary solution
 
     public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService,
@@ -79,23 +80,29 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     @Override
     public void onEvent(Event event) {
-//        if (!(event instanceof CommitEvent)) {
-//            return;
-//        }
-//        else {
-//            EKBCommit commit = ((CommitEvent) event).getCommit();
-//            
-//            if (commit == lastCommit) { // avoid endless commit cycles
-//                return;
-//            }
-//        }
-//        
-//        
-//        try {
-//            update();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        if (!(event instanceof CommitEvent)) {
+            return;
+        }
+        else {
+            EKBCommit commit = ((CommitEvent) event).getCommit();
+
+            if (commit == lastCommit) { // avoid endless commit cycles
+                return;
+            }
+            LOGGER.warn("caught event: {} ({})", event.toString(), watchfile.getAbsolutePath());
+            
+            for (OpenEngSBModel model : commit.getInserts())
+            {
+                // check if transformation to modelType is possible and perform transformation
+            }
+        }
+        
+        
+//         try {
+//             update();
+//         } catch (IOException e) {
+//             throw new RuntimeException(e);
+//         }
     }
 
     private synchronized void update() throws IOException {
@@ -107,7 +114,6 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
             fileSerializer.writeFile(watchfile, (List) models);
             localModels = models;
         }
-
     }
 
     private static <ModelType> EKBCommit buildCommit(List<ModelType> localModels, List<ModelType> newModels) {
@@ -169,9 +175,10 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 commit.setDomainId(domainType);
                 ContextHolder.get().setCurrentContextId("foo");
                 authenticationContext.login("admin", new Password("password"));
+                LOGGER.warn("committing: {} ({})", commit, watchfile.getAbsolutePath());
+                lastCommit = commit;
                 persistService.commit(commit);
                 authenticationContext.logout();
-                lastCommit = commit;
             }
         };
         if (watchfile.exists()) {

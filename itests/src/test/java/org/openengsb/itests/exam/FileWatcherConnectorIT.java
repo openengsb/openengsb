@@ -105,9 +105,9 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         registerConnector(SourceModelA.class.getName(), watchfile1);
         registerConnector(SourceModelB.class.getName(), watchfile2);
         
-        Thread.sleep(2000); // required, apparently
+        Thread.sleep(5000);
         FileUtils.write(watchfile1, "\"foo\",\"bar\"");
-//        Thread.sleep(2000);
+        Thread.sleep(2000);
         String fileContents = FileUtils.readFileToString(watchfile2);
         
         assertThat(fileContents, is("\"foo\",\"bar\""));
