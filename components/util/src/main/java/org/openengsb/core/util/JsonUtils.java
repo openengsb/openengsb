@@ -19,8 +19,10 @@ package org.openengsb.core.util;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.apache.commons.lang.reflect.MethodUtils;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
@@ -28,6 +30,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ClassUtils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -143,6 +146,10 @@ public final class JsonUtils {
             }
             do {
                 if (token == JsonToken.END_OBJECT) {
+                    Object value = createValueOfEntry(entry);
+                    if (value != null) {
+                        entry.setValue(value);
+                    }
                     return entry;
                 } else {
                     if (jp.getCurrentName().equals("key")) {
@@ -161,6 +168,32 @@ public final class JsonUtils {
                 token = jp.nextValue();
             } while (token != null);
             return null;
+        }
+
+        /**
+         * Converts the string located in the value property of the entry in the correct data format and returns it.
+         */
+        private Object createValueOfEntry(OpenEngSBModelEntry entry) {
+            if (entry.getType().equals(String.class)) {
+                return entry.getValue();
+            }
+            Object element = null;
+            if (entry.getType() == null) {
+                LOGGER.error("Unknown type for model entry with key {}", entry.getKey());
+                return element;
+            }
+            try {
+                Class<?> clazz = entry.getType();
+                Constructor<?> constr = ClassUtils.getConstructorIfAvailable(clazz, String.class);
+                if (constr != null) {
+                    element = constr.newInstance(entry.getValue());
+                } else {
+                    element = MethodUtils.invokeStaticMethod(clazz, "valueOf", entry.getValue());
+                }
+            } catch (Exception e) {
+                LOGGER.error("Unable to convert value with the key {} to correct type", entry.getKey());
+            }
+            return element;
         }
     }
 }
