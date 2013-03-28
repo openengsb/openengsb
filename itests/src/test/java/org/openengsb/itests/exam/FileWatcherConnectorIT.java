@@ -49,10 +49,13 @@ import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.domain.example.model.SourceModelB;
 import org.openengsb.core.api.model.ModelDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper {
+    Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorIT.class);
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -105,12 +108,14 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         registerConnector(SourceModelA.class.getName(), watchfile1);
         registerConnector(SourceModelB.class.getName(), watchfile2);
         
+        getOsgiService(ExampleDomain.class, 30000L);
         Thread.sleep(5000);
-        FileUtils.write(watchfile1, "\"foo\",\"bar\"");
+        FileUtils.write(watchfile1, "foo,bar");
         Thread.sleep(2000);
-        String fileContents = FileUtils.readFileToString(watchfile2);
         
-        assertThat(fileContents, is("\"foo\",\"bar\""));
+        String fileContents = FileUtils.readFileToString(watchfile2).trim();
+        
+        assertThat(fileContents, is("foo,bar"));
     }
     
     private void registerConnector(String modelName, File watchfile) {

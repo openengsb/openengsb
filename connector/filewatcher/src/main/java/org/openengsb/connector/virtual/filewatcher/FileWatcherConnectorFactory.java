@@ -30,6 +30,7 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnectorFactory;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -47,15 +48,18 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private DelegationClassLoader delegationClassLoader;
     private AuthenticationContext authenticationContext;
+    
+    private TransformationEngine transformationEngine;
 
     public FileWatcherConnectorFactory(DomainProvider domainProvider, PersistInterface persistService,
-            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext) {
+            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext, TransformationEngine transformationEngine) {
         super(domainProvider);
         this.persistService = persistService;
         this.queryService = queryService;
         this.delegationClassLoader = new DelegationClassLoader(bundleContext, Constants.DELEGATION_CONTEXT_MODELS,
                 getClass().getClassLoader());
         this.authenticationContext = authenticationContext;
+        this.transformationEngine = transformationEngine;
     }
 
     @Override
@@ -94,7 +98,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
     @Override
     protected FileWatcherConnector createNewHandler(String id) {
         return new FileWatcherConnector(
-            id, domainProvider.getId(), persistService, queryService, authenticationContext);
+            id, domainProvider.getId(), persistService, queryService, authenticationContext, transformationEngine);
     }
 
     @Override
