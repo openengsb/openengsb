@@ -198,6 +198,28 @@ public abstract class AbstractExamTestHelper {
         return false;
     }
 
+    protected void waitForOsgiBundle(String symbolicName) throws Exception {
+        waitForOsgiBundle(symbolicName, DEFAULT_TIMEOUT);
+    }
+
+    protected void waitForOsgiBundle(String symbolicName, long timeout) throws Exception {
+        int sleepTime = 1000;
+        int i = 0;
+        Bundle b = null;
+        do {
+            b = getInstalledBundle(symbolicName);
+            if (b.getState() == Bundle.ACTIVE) {
+                break;
+            }
+            // break the loop after timeout to avoid endless loop
+            if ((i * sleepTime) >= timeout) {
+                break;
+            }
+            Thread.sleep(sleepTime);
+            i++;
+        } while (b.getState() != Bundle.ACTIVE);
+    }
+
     protected <T> T getOsgiService(Class<T> type, String filter, long timeout) {
         return queryOsgiService(type, filter, timeout, true);
     }
@@ -339,9 +361,9 @@ public abstract class AbstractExamTestHelper {
             Properties properties = new Properties();
             properties.load(paxLocalStream);
             loglevel = (String) ObjectUtils.defaultIfNull(properties.getProperty("loglevel"), loglevel);
-            debugPort = (String) ObjectUtils.defaultIfNull(properties.getProperty("debugport"), debugPort);
-            debug = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
-            hold = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
+            debugPort = "5005"; // (String) ObjectUtils.defaultIfNull(properties.getProperty("debugport"), debugPort);
+            debug = true; // ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
+            hold = true; // ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
         }
         Properties portNames = new Properties();
         InputStream portsPropertiesFile = ClassLoader.getSystemResourceAsStream("ports.properties");

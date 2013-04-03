@@ -567,7 +567,7 @@ public class WsdlToDll extends AbstractMojo {
         String input = "";
         String last = "";
         while ((tmp = brout.readLine()) != null) {
-            if (isNotALineToFilter(tmp)){
+            if (isNotALineToFilter(tmp)) {
                 input += tmp + "\n";
             }
             last = tmp;

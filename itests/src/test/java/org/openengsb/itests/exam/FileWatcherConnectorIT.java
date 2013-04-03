@@ -78,7 +78,8 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         attributes.put("mixin.1", EventSupport.class.getName());
         attributes.put("modelType", "org.openengsb.domain.example.model.SourceModelA");
         Map<String, Object> properties = new HashMap<String, Object>();
-        ConnectorDescription connectorDescription = new ConnectorDescription("example", "filewatcher", attributes, properties);
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription("example", "filewatcher", attributes, properties);
         connectorManager.create(connectorDescription);
         getOsgiService(ExampleDomain.class, 30000L);
         Thread.sleep(1500);

@@ -41,11 +41,14 @@ public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTe
         return combine(baseConfiguration(),
             editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"));
     }
-    
-    protected void waitForDefaultConnectors() {
-        getOsgiService(AuditingDomain.class);
+
+    protected void waitForAuthenticationEnvironment() throws Exception {
+        getOsgiService(AuditingDomain.class, 30000);
         getOsgiService(AuthenticationDomain.class, "(service.pid=root-authenticator)", 30000);
         getOsgiService(AuthorizationDomain.class, "(service.pid=root-authorizer)", 30000);
+
+        // TODO: find better solution to find out if the Shiro authenticator is running
+        waitForOsgiBundle("org.openengsb.framework.services");
     }
     
     protected Version getExampleDomainVersion() throws Exception {

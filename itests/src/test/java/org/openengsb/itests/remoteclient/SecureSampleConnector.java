@@ -37,13 +37,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Setup to run this app:
- *
+ * 
  * + Start OpenEngSB
- *
+ * 
  * + install the jms-feature: features:install openengsb-ports-jms
- *
+ * 
  * + copy example+external-connector-proxy+example-remote.connector to the openengsb/config-directory
- *
+ * 
  * + copy openengsb/etc/keys/public.key.data to src/main/resources
  */
 public final class SecureSampleConnector {
@@ -177,7 +177,7 @@ public final class SecureSampleConnector {
 
     public static String createCreateMessage(ConnectorDescription connectorDescription) throws IOException {
         String connectorId = "example-remote";
-        MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription});
+        MethodCall methodCall = new MethodCall("createWithId", new Object[]{ connectorId, connectorDescription });
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);

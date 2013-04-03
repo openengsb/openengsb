@@ -82,6 +82,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testSendEvent_shouldCallService() throws Exception {
+        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
@@ -105,8 +106,6 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
 
         assertThat(logService.isWasCalled(), is(true));
     }
-
-
 
     private void addHelloWorldRule() throws Exception {
         RuleManager ruleManager = getOsgiService(RuleManager.class);
