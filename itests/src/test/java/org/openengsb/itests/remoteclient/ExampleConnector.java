@@ -29,7 +29,8 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExampleConnector extends AbstractOpenEngSBConnectorService implements ExampleDomain, Connector, EventSupport {
+public class ExampleConnector extends AbstractOpenEngSBConnectorService implements ExampleDomain, Connector,
+        EventSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExampleConnector.class);
 

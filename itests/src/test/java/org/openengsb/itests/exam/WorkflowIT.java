@@ -103,6 +103,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        waitForAuthenticationEnvironment();
         exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -167,10 +168,10 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testRaiseEvent_shouldForwardToConnector() throws Exception {
-        WorkflowService workflowService = getOsgiService(WorkflowService.class);
-        Event event = new Event();
         ContextHolder.get().setCurrentContextId("foo");
         authenticateAsAdmin();
+        Event event = new Event();
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
         workflowService.processEvent(event);
         assertThat(exampleMock.lastEvent, equalTo(event));
     }

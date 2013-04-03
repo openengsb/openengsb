@@ -60,11 +60,9 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testOsgiServiceProxy_shouldProxyService() throws Exception {
-        ConnectorProvider proxy =
-            getServiceUtils().getOsgiServiceProxy(
-                FilterUtils.makeFilter(ConnectorProvider.class,
-                    String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
-                ConnectorProvider.class);
+        ConnectorProvider proxy = getServiceUtils().getOsgiServiceProxy(
+            FilterUtils.makeFilter(ConnectorProvider.class, String.format("(%s=example)",
+                org.openengsb.core.api.Constants.CONNECTOR_KEY)), ConnectorProvider.class);
         assertThat(proxy.getId(), is("example"));
     }
 

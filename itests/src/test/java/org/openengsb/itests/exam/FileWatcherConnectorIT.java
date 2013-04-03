@@ -64,13 +64,14 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
     public void testServiceDoesNotExist_shouldNotFindExampleDomain() throws Exception {
         File watchfile = tempFolder.newFile("testfile.csv");
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
-        Map<String,String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("watchfile", watchfile.getAbsolutePath());
         attributes.put("serializer", "org.openengsb.connector.virtual.filewatcher.internal.CSVParser");
         attributes.put("mixin.1", EventSupport.class.getName());
         attributes.put("modelType", "org.openengsb.domain.example.model.SourceModelA");
         Map<String, Object> properties = new HashMap<String, Object>();
-        ConnectorDescription connectorDescription = new ConnectorDescription("example", "filewatcher", attributes, properties);
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription("example", "filewatcher", attributes, properties);
         connectorManager.create(connectorDescription);
         getOsgiService(ExampleDomain.class, 30000L);
         Thread.sleep(1500);
