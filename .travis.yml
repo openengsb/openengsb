@@ -1,6 +1,6 @@
 language: java
 install: mvn install -U -DskipTests=true
-script: mvn install -Pitests,checkstyle,licenseCheck                                                                                         
+script: mvn install deploy -Pitests,checkstyle,licenseCheck
 notifications:
   email:
       recipients:
