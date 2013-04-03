@@ -73,7 +73,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         addWorkflow("TaskDemoWorkflow");
         
         assertThat(taskboxService.getOpenTasks().size(), is(0));
-        waitForDefaultConnectors();
+        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
 
         ProcessBag processBag = new ProcessBag();
@@ -101,7 +101,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
-        waitForDefaultConnectors();
+        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
         workflowService.startFlow("TaskDemoWorkflow");
         assertThat(taskboxService.getOpenTasks().size(), is(1));
@@ -119,7 +119,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
-        waitForDefaultConnectors();
+        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
 
         long id = workflowService.startFlow("TaskDemoWorkflow");
@@ -146,7 +146,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     @Test
     public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws Exception {
         addWorkflow("HIDemoWorkflow");
-        waitForDefaultConnectors();
+        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
         workflowService.startFlow("HIDemoWorkflow");
         Task task = taskboxService.getOpenTasks().get(0);
