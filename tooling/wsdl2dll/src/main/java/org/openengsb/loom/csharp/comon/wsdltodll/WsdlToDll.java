@@ -567,7 +567,9 @@ public class WsdlToDll extends AbstractMojo {
         String input = "";
         String last = "";
         while ((tmp = brout.readLine()) != null) {
-            input += tmp + "\n";
+            if (isNotALineToFilter(tmp)) {
+                input += tmp + "\n";
+            }
             last = tmp;
         }
         if (child.exitValue() > 0) {
@@ -591,5 +593,9 @@ public class WsdlToDll extends AbstractMojo {
         if (child.waitFor() != 0) {
             throw new MojoExecutionException(error);
         }
+    }
+
+    private boolean isNotALineToFilter(String tmp) {
+        return !(tmp.startsWith("Schema validation error:") || tmp.startsWith("Warning:"));
     }
 }

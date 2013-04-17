@@ -18,8 +18,7 @@
 package org.openengsb.itests.exam;
 
 import static junit.framework.Assert.assertFalse;
-
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertTrue;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -37,9 +36,6 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.util.OutputStreamFormater;
-import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
 import org.ops4j.pax.exam.TestProbeBuilder;
@@ -116,7 +112,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testToExecuteOpenEngSBServiceListCommand_shouldListServices() throws Exception {
-        waitForDefaultConnectors();
+        waitForAuthenticationEnvironment();
         cs.execute("openengsb:service list");
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "root-authenticator", "ONLINE"));

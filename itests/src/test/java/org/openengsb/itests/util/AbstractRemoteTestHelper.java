@@ -38,6 +38,7 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.util.CipherUtils;
+import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
@@ -138,6 +139,25 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         ruleManager = getOsgiService(RuleManager.class);
+    }
+    
+    protected void additionalJMSSetUp(Logger logger) throws Exception {
+        addWorkflow("simpleFlow");
+        String string = null;
+        while (string == null) {
+            // TODO OPENENGSB-2097 find a better way than an endless loop
+            logger.warn("checking for simpleFlow to be present");
+            string = ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
+            Thread.sleep(1000);
+        }
+    }
+    
+    protected String getOpenwirePort() throws Exception {
+        return getConfigProperty("org.openengsb.infrastructure.jms", "openwire");
+    }
+    
+    protected DefaultOsgiUtilsService getOsgiUtils() throws Exception {
+        return new DefaultOsgiUtilsService(getBundleContext());
     }
 
     protected void addWorkflow(String workflow) throws IOException, RuleBaseException {

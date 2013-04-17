@@ -26,10 +26,6 @@
     <version>34-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <openengsb.api.version>3.0.0-SNAPSHOT</openengsb.api.version>
-  </properties>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.framework.edb</groupId>
   <artifactId>org.openengsb.framework.edb.api</artifactId>
