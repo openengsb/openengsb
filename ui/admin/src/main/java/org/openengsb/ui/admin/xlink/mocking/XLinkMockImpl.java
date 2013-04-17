@@ -100,42 +100,48 @@ public class XLinkMockImpl implements XLinkMock {
      * Utility map for hardwired transformation
      * TODO [OPENENGSB-2776] remove this map when real transformation is available
      */    
-    Map<String, String> nameMappingSQLToOOClass = new HashMap<String, String>() {{
-        put("ClientContract", "Business_Order");
-        put("Client", "Customer");
-        put("ProducedProduct", "Order_Position");
-        put("ProductionMachine", "Facility_Machine");
-        put("ProductionFacility", "Production");
-        put("ProductionChain", "Production");
-        put("ProductionPlan", "Production");
-    }};
+    Map<String, String> nameMappingSQLToOOClass = new HashMap<String, String>() { 
+        { 
+            put("ClientContract", "Business_Order");
+            put("Client", "Customer");
+            put("ProducedProduct", "Order_Position");
+            put("ProductionMachine", "Facility_Machine");
+            put("ProductionFacility", "Production");
+            put("ProductionChain", "Production");
+            put("ProductionPlan", "Production");
+        } 
+    };
     
     /**
      * Utility map for hardwired transformation
      * TODO [OPENENGSB-2776] remove this map when real transformation is available
      */            
-    Map<String, String> nameMappingOOClassToSQL = new HashMap<String, String>() {{
-        put("Business_Order", "ClientContract");
-        put("Customer", "Client");
-        put("Order_Position", "ProducedProduct");
-        put("Facility_Machine", "ProductionMachine");
-	put("Production_Facility", "Production");
-        put("Production_ Chain", "Production");
-        put("Production_ Plan", "Production");	
-    }};
+    Map<String, String> nameMappingOOClassToSQL = new HashMap<String, String>() { 
+        { 
+            put("Business_Order", "ClientContract");
+            put("Customer", "Client");
+            put("Order_Position", "ProducedProduct");
+            put("Facility_Machine", "ProductionMachine");
+            put("Production_Facility", "Production");
+            put("Production_Chain", "Production");
+            put("Production_Plan", "Production");
+        } 
+    };    
     
     /**
      * Utility map for hardwired transformation
      * TODO [OPENENGSB-2776] remove this map when real transformation is available
      */        
-    Map<String, String> attributeTypeMappingSQLtoOOClass = new HashMap<String, String>() {{
-        put("VARCHAR", "string");
-        put("INTEGER", "int");
-        put("FLOAT", "double");
-        put("BIT", "bool");
-        put("DATE", "DateTime");
-        put("BIGINT", "long");
-    }};
+    Map<String, String> attributeTypeMappingSQLtoOOClass = new HashMap<String, String>() { 
+        { 
+            put("VARCHAR", "string");
+            put("INTEGER", "int");
+            put("FLOAT", "double");
+            put("BIT", "bool");
+            put("DATE", "DateTime");
+            put("BIGINT", "long");
+        } 
+    };
 
     /**
      * Utility map for hardwired transformation
@@ -147,21 +153,23 @@ public class XLinkMockImpl implements XLinkMock {
      * Utility map for hardwired transformation
      * TODO [OPENENGSB-2776] remove this map when real transformation is available
      */        
-    Map<String, String> attributeMappingNameSQLtoOOClass = new HashMap<String, String>() {{
-        put("cc_Id", "bo_Id");
-        put("client", "customer_id");
-        put("dateOfCreation", "creationDate");
-        put("company", "organisation");
-        put("pc_Id", "cm_Id");
-        put("chainName", "nameOfChain");
-        put("duration", "executionTime");
-        put("pp_Id", "pm_Id");
-        put("sp_Id", "fo_Id");
-        put("productLabel", "itemName");
-        put("count", "outputAmount");
-        put("productionDate", "outputDate");  
-        put("productionMachine", "productionFacility_Id");   
-    }};    
+    Map<String, String> attributeMappingNameSQLtoOOClass = new HashMap<String, String>() { 
+        { 
+            put("cc_Id", "bo_Id");
+            put("client", "customer_id");
+            put("dateOfCreation", "creationDate");
+            put("company", "organisation");
+            put("pc_Id", "cm_Id");
+            put("chainName", "nameOfChain");
+            put("duration", "executionTime");
+            put("pp_Id", "pm_Id");
+            put("sp_Id", "fo_Id");
+            put("productLabel", "itemName");
+            put("count", "outputAmount");
+            put("productionDate", "outputDate");  
+            put("productionMachine", "productionFacility_Id");   
+        } 
+    };    
 
     /**
      * Utility map for hardwired transformation
@@ -177,7 +185,7 @@ public class XLinkMockImpl implements XLinkMock {
         OOClass ooclass = (OOClass) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
         
         //transform name
-        if(nameMappingSQLToOOClass.get(sqlSource.getTableName()) != null) {
+        if (nameMappingSQLToOOClass.get(sqlSource.getTableName()) != null) {
             ooclass.setClassName(nameMappingSQLToOOClass.get(sqlSource.getTableName()));
         } else {
             ooclass.setClassName(sqlSource.getTableName());
@@ -185,18 +193,20 @@ public class XLinkMockImpl implements XLinkMock {
         
         //transform attribute names & types
         OOVariable[] transformedVariables = new OOVariable[sqlSource.getFields().length];
-        for(int i = 0; i < transformedVariables.length ; i++){
+        for (int i = 0; i < transformedVariables.length ; i++) {
             transformedVariables[i] = new OOVariable();
-            if(attributeTypeMappingSQLtoOOClass.get(sqlSource.getFields()[i].getFieldType()) != null) {
-                transformedVariables[i].setType(attributeTypeMappingSQLtoOOClass.get(sqlSource.getFields()[i].getFieldType()));
-            } else if(sqlSource.getFields()[i].getFieldType().contains("VARCHAR")){
+            if (attributeTypeMappingSQLtoOOClass.get(sqlSource.getFields()[i].getFieldType()) != null) {
+                transformedVariables[i].setType(
+                        attributeTypeMappingSQLtoOOClass.get(sqlSource.getFields()[i].getFieldType()));
+            } else if (sqlSource.getFields()[i].getFieldType().contains("VARCHAR")) {
                 transformedVariables[i].setType("string");
             } else {
                 transformedVariables[i].setType(sqlSource.getFields()[i].getFieldType());
             }
             
-            if(attributeMappingNameSQLtoOOClass.get(sqlSource.getFields()[i].getFieldName()) != null) {
-                transformedVariables[i].setName(attributeMappingNameSQLtoOOClass.get(sqlSource.getFields()[i].getFieldName()));
+            if (attributeMappingNameSQLtoOOClass.get(sqlSource.getFields()[i].getFieldName()) != null) {
+                transformedVariables[i].setName(
+                        attributeMappingNameSQLtoOOClass.get(sqlSource.getFields()[i].getFieldName()));
             } else {
                 transformedVariables[i].setName(sqlSource.getFields()[i].getFieldName());
             }            
@@ -221,7 +231,7 @@ public class XLinkMockImpl implements XLinkMock {
         SQLCreate sqlcreate = (SQLCreate) XLinkUtils.createEmptyInstanceOfModelClass(destinationClass);
         
         //transform name
-        if(nameMappingOOClassToSQL.get(ooSource.getClassName()) != null) {
+        if (nameMappingOOClassToSQL.get(ooSource.getClassName()) != null) {
             sqlcreate.setTableName(nameMappingOOClassToSQL.get(ooSource.getClassName()));
         } else {
             sqlcreate.setTableName(ooSource.getClassName());
@@ -229,17 +239,19 @@ public class XLinkMockImpl implements XLinkMock {
         
         //transform attribute names & types
         SQLCreateField[] transformedFields = new SQLCreateField[ooSource.getAttributes().length];
-        for(int i = 0; i < transformedFields.length ; i++){
+        for (int i = 0; i < transformedFields.length ; i++) {
             transformedFields[i] = new SQLCreateField();
             
-            if(attributeTypeMappingOOClassToSQL.get(ooSource.getAttributes()[i].getType()) != null) {
-                transformedFields[i].setFieldType(attributeTypeMappingOOClassToSQL.get(ooSource.getAttributes()[i].getType()));
+            if (attributeTypeMappingOOClassToSQL.get(ooSource.getAttributes()[i].getType()) != null) {
+                transformedFields[i].setFieldType(
+                        attributeTypeMappingOOClassToSQL.get(ooSource.getAttributes()[i].getType()));
             } else {
                 transformedFields[i].setFieldType(ooSource.getAttributes()[i].getType());
             }
             
-            if(attributeNameMappingOOClassToSQL.get(ooSource.getAttributes()[i].getName()) != null) {
-                transformedFields[i].setFieldName(attributeNameMappingOOClassToSQL.get(ooSource.getAttributes()[i].getName()));
+            if (attributeNameMappingOOClassToSQL.get(ooSource.getAttributes()[i].getName()) != null) {
+                transformedFields[i].setFieldName(
+                        attributeNameMappingOOClassToSQL.get(ooSource.getAttributes()[i].getName()));
             } else {
                 transformedFields[i].setFieldName(ooSource.getAttributes()[i].getName());
             }            
@@ -257,8 +269,9 @@ public class XLinkMockImpl implements XLinkMock {
      */
     private <V, K> Map<V, K> invertMap(Map<K, V> map) {
         Map<V, K> inv = new HashMap<V, K>();
-        for (Entry<K, V> entry : map.entrySet())
-        inv.put(entry.getValue(), entry.getKey());
+        for (Entry<K, V> entry : map.entrySet()) {
+            inv.put(entry.getValue(), entry.getKey());
+        }
         return inv;
     }
     
