@@ -55,6 +55,9 @@ public class XLinkMockImpl implements XLinkMock {
  
     /**
      * TODO [OPENENGSB-2776] replace with real transformation    
+     * 
+     * After fix, move function to ToolChooserLogicImpl.class
+     * @see org.openengsb.ui.admin.xlink.ToolChooserLogicImpl
      */
     @Override
     public List<Object> transformModelObject(String sourceModelClass, String sourceModelVersion,             
@@ -72,6 +75,10 @@ public class XLinkMockImpl implements XLinkMock {
             = XLinkUtils.getClassOfOpenEngSBModel(
                 destinationModelClass, destinationModelVersion, 
                 osgiService);
+        
+        if (!destinationClass.getName().equals(destinationModelClass)) {
+            throw new OpenXLinkException();
+        }
        
         //########### MOCK start ###########      
         
@@ -277,6 +284,9 @@ public class XLinkMockImpl implements XLinkMock {
     
     /**
      * TODO [OPENENGSB-3267] remove dummy login after implementation of filter on wicketpage
+     * 
+     * After fix, move function to ToolChooserLogicImpl.class
+     * @see org.openengsb.ui.admin.xlink.ToolChooserLogicImpl
      */
     @Override
     public void openPotentialMatches(List<Object> modelObjectsDestination, 
@@ -298,6 +308,9 @@ public class XLinkMockImpl implements XLinkMock {
     
     /**
      * TODO [OPENENGSB-2776] implement real check here
+     * 
+     * After fix, move function to ToolChooserLogicImpl.class
+     * @see org.openengsb.ui.admin.xlink.ToolChooserLogicImpl
      */
     @Override
     public boolean isTransformationPossible(String srcModelClass, String srcModelVersion, 
@@ -313,6 +326,9 @@ public class XLinkMockImpl implements XLinkMock {
     
     /**
      * TODO [OPENENGSB-3266] fetch real xlink identifiers instead all of them
+     * 
+     * After fix, move function to ToolChooserLogicImpl.class
+     * @see org.openengsb.ui.admin.xlink.ToolChooserLogicImpl
      */
     @Override
     public List<String> getModelIdentifierToModelDescription(
