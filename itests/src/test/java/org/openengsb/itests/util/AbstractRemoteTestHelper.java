@@ -51,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Abstracts the general concepts required for remote tests
  */
-public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
+public class AtbstractRemoteTestHelper extends AbstractExamTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
