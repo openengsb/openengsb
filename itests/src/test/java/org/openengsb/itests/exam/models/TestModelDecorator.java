@@ -77,4 +77,13 @@ public class TestModelDecorator {
     public List<Integer> getIds() throws Exception {
         return (List<Integer>) MethodUtils.invokeMethod(model, "getIds", null);
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Object> getChildren() throws Exception {
+        return (List<Object>) MethodUtils.invokeMethod(model, "getChildren", null);
+    }
+
+    public void setChildren(List<Object> children) throws Exception {
+        MethodUtils.invokeMethod(model, "setChildren", children);
+    }
 }

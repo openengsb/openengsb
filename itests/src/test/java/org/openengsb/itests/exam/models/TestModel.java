@@ -30,6 +30,8 @@ public class TestModel {
     private SubModel subModel;
     private List<SubModel> subs;
     private List<Integer> ids;
+
+    private List<TestModel> children;
     
     public void setName(String name) {
         this.name = name;
@@ -69,5 +71,13 @@ public class TestModel {
 
     public List<Integer> getIds() {
         return ids;
+    }
+
+    public List<TestModel> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<TestModel> children) {
+        this.children = children;
     }
 }
