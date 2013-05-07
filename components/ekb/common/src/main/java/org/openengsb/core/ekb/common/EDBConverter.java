@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +157,7 @@ public class EDBConverter {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             Object timestamp = object.getObject(EDBConstants.MODEL_TIMESTAMP);
-            Long time = new Date().getTime();
+            Long time = System.currentTimeMillis();
             if (timestamp != null) {
                 try {
                     time = Long.parseLong(timestamp.toString());
