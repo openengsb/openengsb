@@ -47,7 +47,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public EDBObject getObject(String arg0) throws EDBException {
+    public EDBObject getObject(String arg0, Long timestamp) throws EDBException {
         if (arg0.equals(getModelOid("objectA/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("objectA/reference/1"));
             edbObject.putEDBObjectEntry("nameA", "firstObject");
@@ -90,8 +90,12 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
             edbObject.putEDBObjectEntry(EDBConstants.MODEL_TYPE, EngineeringObjectModel.class.getName());
             return edbObject;
         }
-
         return null;
+    }
+    
+    @Override
+    public EDBObject getObject(String oid) throws EDBException {
+        return getObject(oid, null);
     }
 
     @Override
@@ -211,5 +215,4 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
-
 }

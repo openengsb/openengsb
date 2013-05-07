@@ -22,6 +22,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -106,6 +108,12 @@ public class QueryInterfaceServiceTest {
         subObject3.putEDBObjectEntry("value", "DDDDD");
         subObject3.putEDBObjectEntry(EDBConstants.MODEL_TYPE, SubModel.class.getName());
 
+        when(edbService.getObject(eq("testoid"), anyLong())).thenReturn(edbObject);
+        when(edbService.getObject(eq("testoidimpl"), anyLong())).thenReturn(edbObjectImpl);
+        when(edbService.getObject(eq("mapoid"), anyLong())).thenReturn(mapTest);
+        when(edbService.getObject(eq("suboid1"), anyLong())).thenReturn(subObject1);
+        when(edbService.getObject(eq("suboid2"), anyLong())).thenReturn(subObject2);
+        when(edbService.getObject(eq("suboid3"), anyLong())).thenReturn(subObject3);
         when(edbService.getObject("testoid")).thenReturn(edbObject);
         when(edbService.getObject("testoidimpl")).thenReturn(edbObjectImpl);
         when(edbService.getObject("mapoid")).thenReturn(mapTest);
