@@ -35,6 +35,12 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
+    
+    /**
+     * Retrieve the current state of the object with the specified OID for the
+     * given timestamp.
+     */
+    EDBObject getObject(String oid, Long timestamp) throws EDBException;
 
     /**
      * Retrieve the current state of the objects with the specified OIDs.

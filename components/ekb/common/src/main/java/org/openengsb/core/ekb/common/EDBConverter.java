@@ -156,7 +156,16 @@ public class EDBConverter {
         } else if (value == null) {
             return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
-            EDBObject obj = edbService.getObject((String) value);
+            Object timestamp = object.getObject(EDBConstants.MODEL_TIMESTAMP);
+            Long time = System.currentTimeMillis();
+            if (timestamp != null) {
+                try {
+                    time = Long.parseLong(timestamp.toString());
+                } catch (NumberFormatException e) {
+                    LOGGER.warn("The model with the oid {} has an invalid timestamp.", object.getOID());
+                }
+            }
+            EDBObject obj = edbService.getObject((String) value, time);
             value = convertEDBObjectToUncheckedModel(parameterType, obj);
             object.remove(propertyName);
         } else if (parameterType.equals(FileWrapper.class)) {
