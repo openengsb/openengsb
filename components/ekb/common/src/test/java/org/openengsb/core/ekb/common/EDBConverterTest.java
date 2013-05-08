@@ -126,18 +126,18 @@ public class EDBConverterTest {
         RecursiveModel root = new RecursiveModel();
         root.setId("root");
 
-        RecursiveModel root_child = new RecursiveModel();
-        root_child.setId("root_child");
+        RecursiveModel rootChild = new RecursiveModel();
+        rootChild.setId("root_child");
 
-        RecursiveModel root_child_child = new RecursiveModel();
-        root_child_child.setId("root_child_child");
+        RecursiveModel rootChildChild = new RecursiveModel();
+        rootChildChild.setId("root_child_child");
 
-        RecursiveModel root_child_child_child = new RecursiveModel();
-        root_child_child_child.setId("root_child_child_child");
+        RecursiveModel rootChildChildChild = new RecursiveModel();
+        rootChildChildChild.setId("root_child_child_child");
 
-        root.setChild(root_child);
-        root_child.setChild(root_child_child);
-        root_child_child.setChild(root_child_child_child);
+        root.setChild(rootChild);
+        rootChild.setChild(rootChildChild);
+        rootChildChild.setChild(rootChildChildChild);
 
         ConnectorInformation id = getTestConnectorInformation();
 
@@ -173,20 +173,20 @@ public class EDBConverterTest {
         // prepare
         RecursiveModel root = new RecursiveModel("root");
 
-        RecursiveModel root_child1 = new RecursiveModel("root_child1");
-        RecursiveModel root_child2 = new RecursiveModel("root_child2");
+        RecursiveModel rootChild1 = new RecursiveModel("root_child1");
+        RecursiveModel rootChild2 = new RecursiveModel("root_child2");
 
-        RecursiveModel child1_child1 = new RecursiveModel("child1_child1");
+        RecursiveModel child1Child1 = new RecursiveModel("child1_child1");
 
-        RecursiveModel child2_child1 = new RecursiveModel("child2_child1");
-        RecursiveModel child2_child2 = new RecursiveModel("child2_child2");
+        RecursiveModel child2Child1 = new RecursiveModel("child2_child1");
+        RecursiveModel child2Child2 = new RecursiveModel("child2_child2");
 
-        List<RecursiveModel> root_children = Arrays.asList(new RecursiveModel[] { root_child1, root_child2 });
-        List<RecursiveModel> child2_children = Arrays.asList(new RecursiveModel[] { child2_child1, child2_child2 });
+        List<RecursiveModel> rootChildren = Arrays.asList(new RecursiveModel[] { rootChild1, rootChild2 });
+        List<RecursiveModel> child2Children = Arrays.asList(new RecursiveModel[] { child2Child1, child2Child2 });
 
-        root.setChildren(root_children);
-        root_child1.setChild(child1_child1);
-        root_child2.setChildren(child2_children);
+        root.setChildren(rootChildren);
+        rootChild1.setChild(child1Child1);
+        rootChild2.setChildren(child2Children);
 
         ConnectorInformation id = getTestConnectorInformation();
 
@@ -436,26 +436,30 @@ public class EDBConverterTest {
         RecursiveModel mRoot = converter.convertEDBObjectToModel(RecursiveModel.class, root);
 
         // assert
-        RecursiveModel mChild1, mChild2, mChild3, mChild4;
-        List<RecursiveModel> root_children, child1_children;
+        RecursiveModel mChild1;
+        RecursiveModel mChild2;
+        RecursiveModel mChild3;
+        RecursiveModel mChild4;
+        List<RecursiveModel> rootChildren;
+        List<RecursiveModel> child1Children;
 
         assertEquals("root", mRoot.getId());
-        root_children = mRoot.getChildren();
-        assertNotNull(root_children);
-        assertEquals(2, root_children.size());
+        rootChildren = mRoot.getChildren();
+        assertNotNull(rootChildren);
+        assertEquals(2, rootChildren.size());
 
-        mChild1 = root_children.get(0);
-        mChild2 = root_children.get(1);
+        mChild1 = rootChildren.get(0);
+        mChild2 = rootChildren.get(1);
 
         assertEquals("child1", mChild1.getId());
         assertEquals("child2", mChild2.getId());
 
-        child1_children = mChild1.getChildren();
-        assertNotNull(child1_children);
-        assertEquals(2, child1_children.size());
+        child1Children = mChild1.getChildren();
+        assertNotNull(child1Children);
+        assertEquals(2, child1Children.size());
 
-        mChild3 = child1_children.get(0);
-        mChild4 = child1_children.get(1);
+        mChild3 = child1Children.get(0);
+        mChild4 = child1Children.get(1);
 
         assertEquals("child3", mChild3.getId());
         assertEquals("child4", mChild4.getId());

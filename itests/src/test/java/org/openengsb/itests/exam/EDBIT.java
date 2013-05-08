@@ -417,9 +417,18 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testComplexModelComposition_persistsAndResolvesModelsCorrectly() throws Exception {
         // prepare
-        TestModelDecorator root, child1, child2, child11, child12;
-        TestModelDecorator rRoot, rChild1, rChild2, rChild11, rChild12;
-        SubModelDecorator leaf, rLeaf;
+        TestModelDecorator root;
+        TestModelDecorator child1;
+        TestModelDecorator child2;
+        TestModelDecorator child11;
+        TestModelDecorator child12;
+        TestModelDecorator rRoot;
+        TestModelDecorator rChild1;
+        TestModelDecorator rChild2;
+        TestModelDecorator rChild11;
+        TestModelDecorator rChild12;
+        SubModelDecorator leaf;
+        SubModelDecorator rLeaf;
 
         root = getTestModelDecorator();
         child1 = getTestModelDecorator();
@@ -428,13 +437,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         child12 = getTestModelDecorator();
         leaf = getSubModelDecorator();
 
-        List<Object> root_children = new ArrayList<>();
-        root_children.add(child1.getModel());
-        root_children.add(child2.getModel());
+        List<Object> rootChildren = new ArrayList<>();
+        rootChildren.add(child1.getModel());
+        rootChildren.add(child2.getModel());
 
-        List<Object> child1_children = new ArrayList<>();
-        child1_children.add(child11.getModel());
-        child1_children.add(child12.getModel());
+        List<Object> child1Children = new ArrayList<>();
+        child1Children.add(child11.getModel());
+        child1Children.add(child12.getModel());
 
         root.setEdbId("root");
         root.setName("root");
@@ -450,8 +459,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         leaf.setName("leaf");
 
         child11.setSubModel(leaf.getModel());
-        child1.setChildren(child1_children);
-        root.setChildren(root_children);
+        child1.setChildren(child1Children);
+        root.setChildren(rootChildren);
 
         // test
         EKBCommit commit = getTestEKBCommit().addInsert(root.getModel());
@@ -463,22 +472,22 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(rRoot.getEdbId(), is("root"));
         assertNotNull(rRoot.getChildren());
 
-        List<?> result_children = rRoot.getChildren();
-        assertThat(result_children.size(), is(2));
+        List<?> resultChildren = rRoot.getChildren();
+        assertThat(resultChildren.size(), is(2));
 
-        rChild1 = new TestModelDecorator(result_children.get(0));
-        rChild2 = new TestModelDecorator(result_children.get(1));
+        rChild1 = new TestModelDecorator(resultChildren.get(0));
+        rChild2 = new TestModelDecorator(resultChildren.get(1));
 
         assertThat(rChild1.getEdbId(), is("child1"));
         assertNotNull(rChild1.getChildren());
 
         assertThat(rChild2.getEdbId(), is("child2"));
 
-        List<Object> rChild1_children = rChild1.getChildren();
-        assertThat(rChild1_children.size(), is(2));
+        List<Object> rChild1Children = rChild1.getChildren();
+        assertThat(rChild1Children.size(), is(2));
 
-        rChild11 = new TestModelDecorator(rChild1_children.get(0));
-        rChild12 = new TestModelDecorator(rChild1_children.get(1));
+        rChild11 = new TestModelDecorator(rChild1Children.get(0));
+        rChild12 = new TestModelDecorator(rChild1Children.get(1));
 
         assertThat(rChild11.getEdbId(), is("child11"));
         assertThat(rChild12.getEdbId(), is("child12"));
@@ -490,7 +499,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testComplexModelComposition_cascadesDeleteCorrectly() throws Exception {
         // prepare
-        TestModelDecorator root, child1, child2, child11, child12;
+        TestModelDecorator root;
+        TestModelDecorator child1;
+        TestModelDecorator child2;
+        TestModelDecorator child11;
+        TestModelDecorator child12;
         SubModelDecorator leaf;
 
         root = getTestModelDecorator();
@@ -500,13 +513,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         child12 = getTestModelDecorator();
         leaf = getSubModelDecorator();
 
-        List<Object> root_children = new ArrayList<>();
-        root_children.add(child1.getModel());
-        root_children.add(child2.getModel());
+        List<Object> rootChildren = new ArrayList<>();
+        rootChildren.add(child1.getModel());
+        rootChildren.add(child2.getModel());
 
-        List<Object> child1_children = new ArrayList<>();
-        child1_children.add(child11.getModel());
-        child1_children.add(child12.getModel());
+        List<Object> child1Children = new ArrayList<>();
+        child1Children.add(child11.getModel());
+        child1Children.add(child12.getModel());
 
         root.setEdbId("root/1");
         root.setName("root/1");
@@ -522,8 +535,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         leaf.setName("leaf/1");
 
         child11.setSubModel(leaf.getModel());
-        child1.setChildren(child1_children);
-        root.setChildren(root_children);
+        child1.setChildren(child1Children);
+        root.setChildren(rootChildren);
 
         EKBCommit commit = getTestEKBCommit().addInsert(root.getModel());
         persist.commit(commit);
