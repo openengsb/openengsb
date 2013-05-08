@@ -459,7 +459,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/1")));
+        model = loadTestModel("submodeltest/1");
         assertThat(model.getModel(), notNullValue());
         sub = new SubModelDecorator(model.getSubModel());
         assertThat(sub.getModel(), notNullValue());
@@ -483,7 +483,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/2")));
+        model = loadTestModel("submodeltest/2");
         assertThat(model.getModel(), notNullValue());
         assertThat(model.getSubs(), notNullValue());
         assertThat(model.getSubs().get(0), notNullValue());
@@ -492,9 +492,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(sub.getName(), is("test1"));
         sub = new SubModelDecorator(model.getSubs().get(1));
         assertThat(sub.getName(), is("test2"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/2/1")));
+        sub = loadSubModel("submodeltest/2/1");
         assertThat(sub.getName(), is("test1"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/2/2")));
+        sub = loadSubModel("submodeltest/2/2");
         assertThat(sub.getName(), is("test2"));
     }
 
@@ -515,7 +515,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/3/1")));
+        sub = loadSubModel("submodeltest/3/1");
         assertThat(sub.getModel(), notNullValue());
         assertThat(sub.getName(), is("updated"));
     }
@@ -567,11 +567,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(sub.getName(), is("updatedtest2"));
         sub = new SubModelDecorator(model.getSubs().get(2));
         assertThat(sub.getName(), is("insertedtest3"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/1")));
+        sub = loadSubModel("submodeltest/4/1");
         assertThat(sub.getName(), is("updatedtest1"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/2")));
+        sub = loadSubModel("submodeltest/4/2");
         assertThat(sub.getName(), is("updatedtest2"));
-        sub = new SubModelDecorator(query.getModel(getSubModel(), getModelOid("submodeltest/4/3")));
+        sub = loadSubModel("submodeltest/4/3");
         assertThat(sub.getName(), is("insertedtest3"));
     }
 
@@ -622,6 +622,43 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(testModel.isDeleted(), is(true));
         assertThat(subModel1.isDeleted(), is(true));
         assertThat(subModel2.isDeleted(), is(true));
+    }
+    
+    @Test
+    public void testIfSubModelIsLoadedCorrectly_shouldLoadCorrectVersionOfSubModel() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("submodeltest/7");
+
+        SubModelDecorator sub = getSubModelDecorator();
+        sub.setName("test");
+        sub.setEdbId("submodeltest/7/1");
+        model.setSubModel(sub.getModel());
+
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        Thread.sleep(5);
+        
+        sub.setName("test2");
+        commit = getTestEKBCommit().addUpdate(sub.getModel());
+        persist.commit(commit);
+        
+        sub = loadSubModel("submodeltest/7/1");
+        assertThat(sub.getModel(), notNullValue());
+        assertThat(sub.getName(), is("test2"));
+        
+        model = loadTestModel("submodeltest/7");
+        assertThat(model.getModel(), notNullValue());
+        sub = new SubModelDecorator(model.getSubModel());
+        assertThat(sub.getModel(), notNullValue());
+        assertThat(sub.getName(), is("test"));
+    }
+    
+    private TestModelDecorator loadTestModel(String oid) throws Exception {
+        return new TestModelDecorator(query.getModel(getTestModel(), getModelOid(oid)));
+    }
+    
+    private SubModelDecorator loadSubModel(String oid) throws Exception {
+        return new SubModelDecorator(query.getModel(getSubModel(), getModelOid(oid)));
     }
 
     private TestModelDecorator getTestModelDecorator() throws Exception {
