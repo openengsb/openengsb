@@ -7,7 +7,7 @@ before_install:
   - mv repository ~/.m2/
   - rm oeb_bootstrap_m2_repo.zip
 
-install: 
+install: mvn validate
 
 script: mvn install -Pitests,checkstyle,licenseCheck
 
