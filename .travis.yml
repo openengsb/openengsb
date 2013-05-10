@@ -2,6 +2,7 @@ language: java
 before_install:
   - wget http://openengsb.org/travis/oeb_bootstrap_m2_repo.zip
   - unzip oeb_bootstrap_m2_repo.zip
+  - rm -rf ~/.m2/repository
   - mv repository ~/.m2/
   - rm oeb_bootstrap_m2_repo.zip
 install: 
