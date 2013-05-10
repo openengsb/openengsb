@@ -21,9 +21,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -367,9 +369,9 @@ public class EDBConverterTest {
         child3.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
         child3.putEDBObjectEntry("id", "child3");
 
-        when(mockedService.getObject("child1")).thenReturn(child1);
-        when(mockedService.getObject("child2")).thenReturn(child2);
-        when(mockedService.getObject("child3")).thenReturn(child3);
+        when(mockedService.getObject(eq("child1"), anyLong())).thenReturn(child1);
+        when(mockedService.getObject(eq("child2"), anyLong())).thenReturn(child2);
+        when(mockedService.getObject(eq("child3"), anyLong())).thenReturn(child3);
 
         // test
         RecursiveModel mRoot = converter.convertEDBObjectToModel(RecursiveModel.class, root);
