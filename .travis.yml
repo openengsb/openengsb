@@ -1,5 +1,10 @@
 language: java
-install: mvn install -U -DskipTests=true
+before_install:
+  - wget http://openengsb.org/travis/oeb_bootstrap_m2_repo.zip
+  - unzip oeb_bootstrap_m2_repo.zip
+  - mv repository ~/.m2/
+  - rm oeb_bootstrap_m2_repo.zip
+install: 
 script: mvn install -Pitests,checkstyle,licenseCheck
 notifications:
   email:
