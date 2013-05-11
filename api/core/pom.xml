@@ -99,8 +99,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
         <executions>
           <execution>
             <id>ConnectorManagerWsdl</id>
@@ -108,9 +108,13 @@
             <configuration>
               <className>org.openengsb.core.api.ConnectorManager</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/ConnectorManager.wsdl</outputFileName>
+              <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>aegis</databinding>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
           <execution>
@@ -119,9 +123,13 @@
             <configuration>
               <className>org.openengsb.core.api.remote.ProxyConnectorRegistry</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/ProxyConnectorRegistry.wsdl</outputFileName>
+              <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>aegis</databinding>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
           <execution>
@@ -130,9 +138,13 @@
             <configuration>
               <className>org.openengsb.core.api.LinkingSupport</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/LinkingSupport.wsdl</outputFileName>
+              <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>aegis</databinding>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
           <execution>
@@ -141,9 +153,13 @@
             <configuration>
               <className>org.openengsb.core.api.EventSupport</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/EventSupport.wsdl</outputFileName>
+              <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>aegis</databinding>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
           <execution>
@@ -152,9 +168,13 @@
             <configuration>
               <className>org.openengsb.core.api.model.OpenEngSBModel</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/OpenEngSBModel.wsdl</outputFileName>
+	          <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>jaxb</databinding>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
         </executions>
