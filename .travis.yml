@@ -1,15 +1,16 @@
 language: java
 
 before_install:
+  - cat ~/.m2/settings.xml
   - wget http://openengsb.org/travis/oeb_bootstrap_m2_repo.zip
   - unzip -q oeb_bootstrap_m2_repo.zip
   - rm -rf ~/.m2/repository
   - mv repository ~/.m2/
   - rm oeb_bootstrap_m2_repo.zip
 
-install: mvn validate -o
+install: mvn validate
 
-script: mvn install -Pitests,checkstyle,licenseCheck -o
+script: mvn install -Pitests,checkstyle,licenseCheck
 
 notifications:
   email:
