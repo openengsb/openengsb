@@ -115,12 +115,12 @@ public class WsdlToDll extends AbstractMojo {
      * List of default pathes where to search for the installation of the .net framework.
      */
     private static final String[] DEFAULT_WSDL_PATHS = new String[]{
-            System.getenv("ProgramFiles(x86)") + "\\Microsoft SDKs\\Windows\\",
-            System.getenv("ProgramFiles") + "\\Microsoft SDKs\\Windows\\" };
+        System.getenv("ProgramFiles(x86)") + "\\Microsoft SDKs\\Windows\\",
+        System.getenv("ProgramFiles") + "\\Microsoft SDKs\\Windows\\" };
 
     private static final String[] DEFAULT_CSC_PATHS = new String[]{
-            System.getenv("windir") + "\\Microsoft.NET\\Framework64\\",
-            System.getenv("windir") + "\\Microsoft.NET\\Framework\\" };
+        System.getenv("windir") + "\\Microsoft.NET\\Framework64\\",
+        System.getenv("windir") + "\\Microsoft.NET\\Framework\\" };
 
     /**
      * Location of the file.
@@ -214,12 +214,12 @@ public class WsdlToDll extends AbstractMojo {
      */
     private void createDllFromWsdlUsingLinuxMode() throws MojoExecutionException {
         String errorMessage = new StringBuilder()
-                .append("========================================================================")
-                .append("========================================================================")
-                .append("This plugin can't be used under Linux")
-                .append("========================================================================")
-                .append("========================================================================")
-              .toString();
+            .append("========================================================================")
+            .append("========================================================================")
+            .append("This plugin can't be used under Linux")
+            .append("========================================================================")
+            .append("========================================================================")
+            .toString();
         throw new MojoExecutionException(errorMessage);
     }
 
