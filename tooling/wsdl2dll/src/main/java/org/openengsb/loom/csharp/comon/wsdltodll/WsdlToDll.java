@@ -354,11 +354,9 @@ public class WsdlToDll extends AbstractMojo {
             int index = -1;
             if (isClass) {
                 index = matcher.start();
-            }
-            else if (isAbstractClass) {
+            } else if (isAbstractClass) {
                 index = abstractMatcher.start();
-            }
-            else {
+            } else {
                 index = inheritedMatcher.start();
             }
             String classDefString = p.substring(index) + "\n    }\n";
