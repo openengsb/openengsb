@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.exam.models;
+package org.openengsb.core.ekb.common.models;
 
 import java.util.List;
 
@@ -23,61 +23,52 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
-public class TestModel {
-    private String name;
+public class RecursiveModel {
     @OpenEngSBModelId
-    private String edbId;
-    private SubModel subModel;
-    private List<SubModel> subs;
-    private List<Integer> ids;
+    private String id;
+    private String value;
 
-    private List<TestModel> children;
-    
-    public void setName(String name) {
-        this.name = name;
+    private RecursiveModel child;
+
+    private List<RecursiveModel> children;
+
+    public RecursiveModel() {
+
     }
 
-    public String getName() {
-        return name;
+    public RecursiveModel(String id) {
+        setId(id);
     }
 
-    public void setEdbId(String edbId) {
-        this.edbId = edbId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getEdbId() {
-        return edbId;
+    public String getId() {
+        return id;
     }
 
-    public void setSubModel(SubModel subModel) {
-        this.subModel = subModel;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public SubModel getSubModel() {
-        return subModel;
+    public String getValue() {
+        return value;
     }
 
-    public void setSubs(List<SubModel> subs) {
-        this.subs = subs;
+    public RecursiveModel getChild() {
+        return child;
     }
 
-    public List<SubModel> getSubs() {
-        return subs;
+    public void setChild(RecursiveModel child) {
+        this.child = child;
     }
 
-    public void setIds(List<Integer> ids) {
-        this.ids = ids;
-    }
-
-    public List<Integer> getIds() {
-        return ids;
-    }
-
-    public List<TestModel> getChildren() {
+    public List<RecursiveModel> getChildren() {
         return children;
     }
 
-    public void setChildren(List<TestModel> children) {
+    public void setChildren(List<RecursiveModel> children) {
         this.children = children;
     }
 }

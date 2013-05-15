@@ -81,6 +81,13 @@ public class EDBService extends AbstractEDBService {
         JPAObject temp = dao.getJPAObject(oid);
         return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
+    
+    @Override
+    public EDBObject getObject(String oid, Long timestamp) throws EDBException {
+        getLogger().debug("loading JPAObject with the oid {} for timestamp {}", oid, timestamp);
+        JPAObject temp = dao.getJPAObject(oid, timestamp);
+        return EDBUtils.convertJPAObjectToEDBObject(temp);
+    }
 
     @Override
     public List<EDBObject> getObjects(List<String> oids) throws EDBException {

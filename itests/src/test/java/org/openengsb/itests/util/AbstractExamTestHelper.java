@@ -89,7 +89,7 @@ public abstract class AbstractExamTestHelper {
      */
 
     private static final int DEBUG_PORT = 5005;
-    private static final String LOG_LEVEL = "WARN";
+    private static final String LOG_LEVEL = "ERROR";
     public static final long DEFAULT_TIMEOUT = 30000;
 
     @Inject
