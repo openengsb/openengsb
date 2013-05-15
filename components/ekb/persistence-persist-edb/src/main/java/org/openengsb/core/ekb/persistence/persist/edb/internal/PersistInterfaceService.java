@@ -19,7 +19,6 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 import java.util.List;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -51,7 +50,8 @@ public class PersistInterfaceService implements PersistInterface {
     private WorkflowService workflowService;
 
     public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
-            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks, WorkflowService workflowService) {
+            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks,
+            WorkflowService workflowService) {
         this.edbService = edbService;
         this.edbConverter = edbConverter;
         this.preCommitHooks = preCommitHooks;

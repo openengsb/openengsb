@@ -48,16 +48,17 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private DelegationClassLoader delegationClassLoader;
     private AuthenticationContext authenticationContext;
-    
+
     private TransformationEngine transformationEngine;
 
     public FileWatcherConnectorFactory(DomainProvider domainProvider, PersistInterface persistService,
-            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext, TransformationEngine transformationEngine) {
+            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext,
+            TransformationEngine transformationEngine) {
         super(domainProvider);
         this.persistService = persistService;
         this.queryService = queryService;
         this.delegationClassLoader = new DelegationClassLoader(bundleContext, Constants.DELEGATION_CONTEXT_MODELS,
-                getClass().getClassLoader());
+            getClass().getClassLoader());
         this.authenticationContext = authenticationContext;
         this.transformationEngine = transformationEngine;
     }

@@ -36,11 +36,12 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
     private PersistInterface persistService;
 
     private AuthenticationContext authenticationContext;
-    
+
     private TransformationEngine transformationEngine;
 
     public FileWatcherConnectorProvider(String id, PersistInterface persistService, QueryInterface queryService,
-            BundleContext bundleContext, AuthenticationContext authenticationContext, TransformationEngine transformationEngine) {
+            BundleContext bundleContext, AuthenticationContext authenticationContext,
+            TransformationEngine transformationEngine) {
         setId(id);
         setBundleContext(bundleContext);
         this.persistService = persistService;

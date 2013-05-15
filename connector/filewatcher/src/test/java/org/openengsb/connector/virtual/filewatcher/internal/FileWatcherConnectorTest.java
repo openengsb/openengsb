@@ -131,7 +131,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
             }
         });
         FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider("foo", persistenceService,
-                queryService, bundleContext, mock(AuthenticationContext.class), mock(TransformationEngine.class));
+                queryService, bundleContext, mock(AuthenticationContext.class), transformationEngine);
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
     }
