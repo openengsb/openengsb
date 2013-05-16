@@ -46,10 +46,12 @@ import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
+import org.openengsb.core.ekb.common.models.PrimitivePropertiesModel;
 import org.openengsb.core.ekb.common.models.RecursiveModel;
 import org.openengsb.core.ekb.common.models.SubModel;
 import org.openengsb.core.ekb.common.models.TestModel;
 import org.openengsb.core.ekb.common.models.TestModel2.ENUM;
+import org.openengsb.core.ekb.common.models.WrappedPropertiesModel;
 import org.openengsb.core.util.ModelUtils;
 
 /**
@@ -75,6 +77,122 @@ public class EDBConverterTest {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
                 model instanceof OpenEngSBModel, is(true));
+    }
+
+    @Test
+    public void primitivePropertyConversion_toEDBObject_works() {
+        PrimitivePropertiesModel model = new PrimitivePropertiesModel();
+
+        model.setId("test");
+
+        model.setBooleanByGet(true);
+        model.setBooleanByIs(true);
+        model.setPrimitiveChar(Character.MAX_VALUE);
+        model.setPrimitiveDouble(Double.MAX_VALUE);
+        model.setPrimitiveFloat(Float.MAX_VALUE);
+        model.setPrimitiveInt(Integer.MAX_VALUE);
+        model.setPrimitiveLong(Long.MAX_VALUE);
+        model.setPrimitiveShort(Short.MAX_VALUE);
+
+        ConnectorInformation id = getTestConnectorInformation();
+        List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
+        EDBObject object = objects.get(0);
+
+        assertThat(object.getBoolean("booleanByGet"), is(true));
+        assertThat(object.getBoolean("booleanByIs"), is(true));
+        assertThat(object.getChar("primitiveChar"), is(Character.MAX_VALUE));
+        assertThat(object.getShort("primitiveShort"), is(Short.MAX_VALUE));
+        assertThat(object.getInteger("primitiveInt"), is(Integer.MAX_VALUE));
+        assertThat(object.getLong("primitiveLong"), is(Long.MAX_VALUE));
+        assertThat(object.getFloat("primitiveFloat"), is(Float.MAX_VALUE));
+        assertThat(object.getDouble("primitiveDouble"), is(Double.MAX_VALUE));
+    }
+
+    @Test
+    public void primitivePropertyConversion_toModel_works() {
+        EDBObject object = new EDBObject("test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, PrimitivePropertiesModel.class.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_OID, "test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
+        object.putEDBObjectEntry("id", "test");
+        object.putEDBObjectEntry("booleanByGet", true);
+        object.putEDBObjectEntry("booleanByIs", true);
+        object.putEDBObjectEntry("primitiveChar", Character.MAX_VALUE);
+        object.putEDBObjectEntry("primitiveShort", Short.MAX_VALUE);
+        object.putEDBObjectEntry("primitiveInt", Integer.MAX_VALUE);
+        object.putEDBObjectEntry("primitiveLong", Long.MAX_VALUE);
+        object.putEDBObjectEntry("primitiveFloat", Float.MAX_VALUE);
+        object.putEDBObjectEntry("primitiveDouble", Double.MAX_VALUE);
+
+        PrimitivePropertiesModel model = converter.convertEDBObjectToModel(PrimitivePropertiesModel.class, object);
+
+        assertThat(model.getId(), is("test"));
+        assertThat(model.getBooleanByGet(), is(true));
+        assertThat(model.isBooleanByIs(), is(true));
+        assertThat(model.getPrimitiveChar(), is(Character.MAX_VALUE));
+        assertThat(model.getPrimitiveShort(), is(Short.MAX_VALUE));
+        assertThat(model.getPrimitiveInt(), is(Integer.MAX_VALUE));
+        assertThat(model.getPrimitiveLong(), is(Long.MAX_VALUE));
+        assertThat(model.getPrimitiveFloat(), is(Float.MAX_VALUE));
+        assertThat(model.getPrimitiveDouble(), is(Double.MAX_VALUE));
+    }
+
+    @Test
+    public void wrappedPropertyConversion_toEDBObject_works() {
+        WrappedPropertiesModel model = new WrappedPropertiesModel();
+
+        model.setId("test");
+
+        model.setBooleanByGet(true);
+        model.setBooleanByIs(true);
+        model.setWrappedChar(Character.MAX_VALUE);
+        model.setWrappedDouble(Double.MAX_VALUE);
+        model.setWrappedFloat(Float.MAX_VALUE);
+        model.setWrappedInt(Integer.MAX_VALUE);
+        model.setWrappedLong(Long.MAX_VALUE);
+        model.setWrappedShort(Short.MAX_VALUE);
+
+        ConnectorInformation id = getTestConnectorInformation();
+        List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
+        EDBObject object = objects.get(0);
+
+        assertThat(object.getBoolean("booleanByGet"), is(true));
+        assertThat(object.getBoolean("booleanByIs"), is(true));
+        assertThat(object.getChar("wrappedChar"), is(Character.MAX_VALUE));
+        assertThat(object.getShort("wrappedShort"), is(Short.MAX_VALUE));
+        assertThat(object.getInteger("wrappedInt"), is(Integer.MAX_VALUE));
+        assertThat(object.getLong("wrappedLong"), is(Long.MAX_VALUE));
+        assertThat(object.getFloat("wrappedFloat"), is(Float.MAX_VALUE));
+        assertThat(object.getDouble("wrappedDouble"), is(Double.MAX_VALUE));
+    }
+
+    @Test
+    public void wrappedPropertyConversion_toModel_works() {
+        EDBObject object = new EDBObject("test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, WrappedPropertiesModel.class.getName());
+        object.putEDBObjectEntry(EDBConstants.MODEL_OID, "test");
+        object.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
+        object.putEDBObjectEntry("id", "test");
+        object.putEDBObjectEntry("booleanByGet", true);
+        object.putEDBObjectEntry("booleanByIs", true);
+        object.putEDBObjectEntry("wrappedChar", Character.MAX_VALUE);
+        object.putEDBObjectEntry("wrappedShort", Short.MAX_VALUE);
+        object.putEDBObjectEntry("wrappedInt", Integer.MAX_VALUE);
+        object.putEDBObjectEntry("wrappedLong", Long.MAX_VALUE);
+        object.putEDBObjectEntry("wrappedFloat", Float.MAX_VALUE);
+        object.putEDBObjectEntry("wrappedDouble", Double.MAX_VALUE);
+
+        WrappedPropertiesModel model = converter.convertEDBObjectToModel(WrappedPropertiesModel.class, object);
+
+        assertThat(model.getId(), is("test"));
+        assertThat(model.getBooleanByGet(), is(true));
+        assertThat(model.isBooleanByIs(), is(true));
+        assertThat(model.getWrappedChar(), is(Character.MAX_VALUE));
+        assertThat(model.getWrappedShort(), is(Short.MAX_VALUE));
+        assertThat(model.getWrappedInt(), is(Integer.MAX_VALUE));
+        assertThat(model.getWrappedLong(), is(Long.MAX_VALUE));
+        assertThat(model.getWrappedFloat(), is(Float.MAX_VALUE));
+        assertThat(model.getWrappedDouble(), is(Double.MAX_VALUE));
     }
 
     @Test
