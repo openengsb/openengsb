@@ -44,18 +44,23 @@ public class ManipulationUtilsTest {
         TestModel model = new TestModel();
         model.setId("testId");
         model.setName("testName");
+        model.setTestBoolean(true);
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         String id = null;
         String name = null;
+        Boolean bool = null;
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("id")) {
                 id = (String) entry.getValue();
             } else if (entry.getKey().equals("name")) {
                 name = (String) entry.getValue();
+            } else if (entry.getKey().equals("testBoolean")) {
+                bool = (Boolean) entry.getValue();
             }
         }
         assertThat(id, is(model.getId()));
         assertThat(name, is(model.getName()));
+        assertThat(bool, is(model.getTestBoolean()));
     }
 
     @Test
@@ -80,9 +85,9 @@ public class ManipulationUtilsTest {
         TestModel model = new TestModel();
         ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
         ModelUtils.removeOpenEngSBModelEntry(model, "test");
-        // the result has two elements even though the model has three properties,
+        // the result has three elements even though the model has four properties,
         // since the third property is ignored
-        assertThat(ModelUtils.getOpenEngSBModelEntries(model).size(), is(2));
+        assertThat(ModelUtils.getOpenEngSBModelEntries(model).size(), is(3));
     }
 
     @Test
