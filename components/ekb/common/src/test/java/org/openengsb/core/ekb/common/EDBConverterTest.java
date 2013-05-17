@@ -86,7 +86,8 @@ public class EDBConverterTest {
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
         model.setCheck(false);
-        model.getCheck2(true);
+        model.setCheck2(true);
+        model.setCheck3(false);
 
         ConnectorInformation id = getTestConnectorInformation();
 
@@ -103,6 +104,7 @@ public class EDBConverterTest {
         assertThat(object.getObject("date", Date.class), is(date));
         assertThat(object.getObject("check", Boolean.class), is(false));
         assertThat(object.getObject("check2", Boolean.class), is(true));
+        assertThat(object.getObject("check3", Boolean.class), is(false));
         assertThat(object.getString(EDBConstants.MODEL_TYPE), is(TestModel.class.getName()));
     }
 
