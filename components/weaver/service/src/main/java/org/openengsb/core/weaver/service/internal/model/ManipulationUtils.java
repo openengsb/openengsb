@@ -276,11 +276,11 @@ public final class ManipulationUtils {
         CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called retrieveInternalModelId"));
-        if (modelIdField == null || !isGetterExisting(modelIdField, clazz)) {
+        CtMethod idFieldGetter = getFieldGetter(modelIdField, clazz);
+        if (modelIdField == null || idFieldGetter == null) {
             builder.append("return null;");
         } else {
-            builder.append(String.format("return %s;",
-                getPropertyGetter(modelIdField.getName(), modelIdField.getType().getName())));
+            builder.append(String.format("return %s();", idFieldGetter.getName()));
         }
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
@@ -375,50 +375,78 @@ public final class ManipulationUtils {
             builder.append(wrapperName).append("\", ").append(wrapperName);
             builder.append(", ").append(wrapperName).append(".getClass()));}\n");
             addFileFunction(clazz, property);
-        } else if (!isGetterExisting(field, clazz)) {
+            return builder.toString();
+        }
+        CtMethod getter = getFieldGetter(field, clazz);
+        if (getter == null) {
             LOGGER.warn(String.format("Ignoring property '%s' since there is no getter for it defined", property));
         } else if (fieldType.isPrimitive()) {
             builder.append(createTrace(String.format("Handle primitive type property '%s'", property)));
             CtPrimitiveType primitiveType = (CtPrimitiveType) fieldType;
             String wrapperName = primitiveType.getWrapperName();
             builder.append("elements.add(new OpenEngSBModelEntry(\"").append(property).append("\", ");
-            builder.append(wrapperName).append(".valueOf(").append(getPropertyGetter(property, wrapperName));
-            builder.append("), ").append(wrapperName).append(".class));\n");
+            builder.append(wrapperName).append(".valueOf(").append(getter.getName());
+            builder.append("()), ").append(wrapperName).append(".class));\n");
         } else {
             builder.append(createTrace(String.format("Handle property '%s'", property)));
             builder.append("elements.add(new OpenEngSBModelEntry(\"");
-            builder.append(property).append("\", ").append(getPropertyGetter(property, fieldType.getName()));
-            builder.append(", ").append(fieldType.getName()).append(".class));\n");
+            builder.append(property).append("\", ").append(getter.getName());
+            builder.append("(), ").append(fieldType.getName()).append(".class));\n");
         }
         return builder.toString();
     }
 
     /**
-     * Returns true if the corresponding getter for the given field is existing, returns false if not
+     * Returns the getter to a given field of the given class object and returns null if there is no getter for the
+     * given field defined.
      */
-    private static Boolean isGetterExisting(CtField field, CtClass clazz) throws NotFoundException {
-        CtMethod method = new CtMethod(field.getType(), "descCreateMethod", new CtClass[]{}, clazz);
-        String desc = method.getSignature();
-        String getter = getPropertyGetter(field.getName(), field.getType().getName());
-        getter = getter.substring(0, getter.length() - 2);
-        try {
-            clazz.getMethod(getter, desc);
-        } catch (NotFoundException e) {
-            LOGGER.debug(String.format("No getter with the name '%s' and the description '%s' found", getter, desc));
-            return false;
+    private static CtMethod getFieldGetter(CtField field, CtClass clazz) throws NotFoundException {
+        if (field == null) {
+            return null;
         }
-        return true;
+        return getFieldGetter(field, clazz, false);
     }
 
     /**
-     * Returns the name of the corresponding getter to a properties name and type.
+     * Returns the getter method in case it exists or returns null if this is not the case. The failover parameter is
+     * needed to deal with boolean types, since it should be allowed to allow getters in the form of "isXXX" or
+     * "getXXX".
      */
-    private static String getPropertyGetter(String property, String type) {
-        if (type.equals("java.lang.Boolean") || type.equals("boolean")) {
-            return String.format("is%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
-        } else {
-            return String.format("get%s%s()", Character.toUpperCase(property.charAt(0)), property.substring(1));
+    private static CtMethod getFieldGetter(CtField field, CtClass clazz, boolean failover) throws NotFoundException {
+        CtMethod method = new CtMethod(field.getType(), "descCreateMethod", new CtClass[]{}, clazz);
+        String desc = method.getSignature();
+        String getter = getPropertyGetter(field, failover);
+        try {
+            return clazz.getMethod(getter, desc);
+        } catch (NotFoundException e) {
+            // try once again with getXXX instead of isXXX
+            if (isBooleanType(field)) {
+                return getFieldGetter(field, clazz, true);
+            }
+            LOGGER.debug(String.format("No getter with the name '%s' and the description '%s' found", getter, desc));
+            return null;
         }
+    }
+
+    /**
+     * Returns the name of the corresponding getter to a properties name and type. The failover is needed to support
+     * both getter name types for boolean properties.
+     */
+    private static String getPropertyGetter(CtField field, boolean failover) throws NotFoundException {
+        String property = field.getName();
+        if (!failover && isBooleanType(field)) {
+            return String.format("is%s%s", Character.toUpperCase(property.charAt(0)), property.substring(1));
+        } else {
+            return String.format("get%s%s", Character.toUpperCase(property.charAt(0)), property.substring(1));
+        }
+    }
+
+    /**
+     * Returns true if the given field is a boolean type (primitive or wrapper) and false if it is not the case
+     */
+    private static boolean isBooleanType(CtField field) throws NotFoundException {
+        String typeName = field.getType().getName();
+        return typeName.equals("java.lang.Boolean") || typeName.equals("boolean");
     }
 
     /**

@@ -42,6 +42,9 @@ public class TestModel {
     private Map<String, String> map;
     private int number;
     private Integer[] numbers;
+    private boolean check;
+    private Boolean check2;
+    private Boolean check3;
 
     public void setId(String id) {
         this.id = id;
@@ -133,5 +136,29 @@ public class TestModel {
 
     public void setNumbers(Integer[] numbers) {
         this.numbers = numbers;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
+    public Boolean isCheck2() {
+        return check2;
+    }
+
+    public void setCheck2(Boolean check2) {
+        this.check2 = check2;
+    }
+
+    public Boolean isCheck3() {
+        return check3;
+    }
+
+    public void setCheck3(Boolean check3) {
+        this.check3 = check3;
     }
 }
