@@ -125,20 +125,20 @@ public class WsdlToDll extends AbstractMojo {
     /**
      * Location of the file.
      * 
-     * @parameter property="${project.build.directory}"
+     * @parameter default-Value=null
      * @required
      */
     private File outputDirectory;
     /**
      * Location of the wsdl.exe command
      * 
-     * @parameter default-Value=null property="${wsdlExeFolderLocation}"
+     * @parameter default-Value=null
      */
     private File wsdlExeFolderLocation;
     /**
      * Location of the csc command.
      * 
-     * @parameter default-Value=null property="${cscFolderLocation}"
+     * @parameter default-Value=null
      */
     private File cscFolderLocation;
     /**
