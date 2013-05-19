@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EDBObject handle an object that is ready to be put into the EDB and give access to some metadata. It contains a
- * map of helper functions for easier adding and retrieving of the EDBObjectEntries and the values it contains.
+ * EDBObject handle an object that is ready to be put into the EDB and give access to some metadata. It contains a map
+ * of helper functions for easier adding and retrieving of the EDBObjectEntries and the values it contains.
  */
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, EDBObjectEntry> {
@@ -84,11 +84,59 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     }
 
     /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Boolean. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
+     */
+    public Boolean getBoolean(String key) {
+        return getObject(key, Boolean.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Short. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
+     */
+    public Short getShort(String key) {
+        return getObject(key, Short.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Integer. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
+     */
+    public Integer getInteger(String key) {
+        return getObject(key, Integer.class);
+    }
+
+    /**
      * Returns the value of the EDBObjectEntry for the given key, casted as Long. Returns null if there is no element
      * for the given key, or the value for the given key is null.
      */
     public Long getLong(String key) {
         return getObject(key, Long.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Float. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
+     */
+    public Float getFloat(String key) {
+        return getObject(key, Float.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Double. Returns null if there is no element
+     * for the given key, or the value for the given key is null.
+     */
+    public Double getDouble(String key) {
+        return getObject(key, Double.class);
+    }
+
+    /**
+     * Returns the value of the EDBObjectEntry for the given key, casted as Character. Returns null if there is no
+     * element for the given key, or the value for the given key is null.
+     */
+    public Character getChar(String key) {
+        return getObject(key, Character.class);
     }
 
     /**
@@ -137,7 +185,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     public void putEDBObjectEntry(String key, Object value, Class<?> type) {
         putEDBObjectEntry(key, value, type.getName());
     }
-    
+
     /**
      * Adds an EDBObjectEntry to this EDBObject. It uses the type of the given object value as type parameter
      */
