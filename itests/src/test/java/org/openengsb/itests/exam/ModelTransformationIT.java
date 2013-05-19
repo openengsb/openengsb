@@ -53,7 +53,6 @@ import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
@@ -65,8 +64,7 @@ public class ModelTransformationIT extends AbstractPreConfiguredExamTestHelper {
     @Before
     public void setup() throws Exception {
         transformationEngine = getOsgiService(TransformationEngine.class);
-        Bundle b = getInstalledBundle("org.openengsb.domain.example");
-        exampleDomainVersion = b.getVersion();
+        exampleDomainVersion = getExampleDomainVersion();
     }
 
     @Test

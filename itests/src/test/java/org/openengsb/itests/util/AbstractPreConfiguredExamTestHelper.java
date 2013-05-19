@@ -26,6 +26,8 @@ import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * This additional layer is required since the Configuration annotation is differently handled in exam 2.x. To avoid any
@@ -47,6 +49,11 @@ public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTe
 
         // TODO: find better solution to find out if the Shiro authenticator is running
         waitForOsgiBundle("org.openengsb.framework.services");
+    }
+    
+    protected Version getExampleDomainVersion() throws Exception {
+        Bundle b = getInstalledBundle("org.openengsb.domain.example");
+        return b.getVersion();
     }
 
 }

@@ -26,6 +26,7 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.AbstractConnectorProvider;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.TransformationEngine;
 import org.osgi.framework.BundleContext;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
@@ -36,13 +37,17 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
 
     private AuthenticationContext authenticationContext;
 
+    private TransformationEngine transformationEngine;
+
     public FileWatcherConnectorProvider(String id, PersistInterface persistService, QueryInterface queryService,
-            BundleContext bundleContext, AuthenticationContext authenticationContext) {
+            BundleContext bundleContext, AuthenticationContext authenticationContext,
+            TransformationEngine transformationEngine) {
         setId(id);
         setBundleContext(bundleContext);
         this.persistService = persistService;
         this.queryService = queryService;
         this.authenticationContext = authenticationContext;
+        this.transformationEngine = transformationEngine;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
         return new FileWatcherConnectorFactory(
-            provider, persistService, queryService, bundleContext, authenticationContext);
+            provider, persistService, queryService, bundleContext, authenticationContext, transformationEngine);
     }
 
 }

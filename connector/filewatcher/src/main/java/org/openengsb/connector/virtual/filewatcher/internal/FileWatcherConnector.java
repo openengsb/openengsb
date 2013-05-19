@@ -30,13 +30,21 @@ import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnector;
+import org.openengsb.core.ekb.api.CommitEvent;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.TransformationEngine;
+import org.openengsb.core.util.ModelUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileWatcherConnector extends VirtualConnector implements EventSupport {
+    private Logger logger = LoggerFactory.getLogger(FileWatcherConnector.class);
 
     private Class<?> modelType;
 
@@ -54,12 +62,20 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     private Timer timer;
 
+    private EKBCommit lastCommit;
+
+    private final TransformationEngine transformationEngine;
+
+    private boolean ignoreLastModification = false;
+
     public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService,
-            QueryInterface queryService, AuthenticationContext authenticationContext) {
+            QueryInterface queryService, AuthenticationContext authenticationContext,
+            TransformationEngine transformationEngine) {
         super(instanceId, domainType);
         this.authenticationContext = authenticationContext;
         this.persistService = persistService;
         this.queryService = queryService;
+        this.transformationEngine = transformationEngine;
     }
 
     @Override
@@ -72,10 +88,58 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
 
     @Override
     public void onEvent(Event event) {
+        if (!(event instanceof CommitEvent)) {
+            logger.debug("caught non-commit-event {} - only updating local models", event.toString());
+
+            try {
+                update();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return;
+        }
+
+        EKBCommit commit = ((CommitEvent) event).getCommit();
+
+        if (commit.equals(lastCommit)) {
+            logger.debug("caught event with our own commit ({}) - ignoring", commit.toString());
+            return;
+        }
+        logger.debug("caught commit event: {}", event.toString());
+
+        OpenEngSBModel tempModel;
+
         try {
-            update();
-        } catch (IOException e) {
+            tempModel = (OpenEngSBModel) modelType.newInstance();
+        } catch (InstantiationException e) {
             throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        ModelDescription localModelDesc =
+            new ModelDescription(modelType, ModelUtils.retrieveModelVersionAsString(tempModel));
+        List<Object> sourceModels = new ArrayList<Object>();
+
+        for (OpenEngSBModel model : commit.getInserts()) {
+            ModelDescription tempModelDesc =
+                new ModelDescription(model.getClass(), ModelUtils.retrieveModelVersionAsString(model));
+
+            if (transformationEngine.isTransformationPossible(tempModelDesc, localModelDesc)) {
+                logger.debug("transforming from model {} to {}", tempModelDesc.toString(),
+                    localModelDesc.toString());
+                sourceModels.add(transformationEngine.performTransformation(tempModelDesc, localModelDesc, model));
+            }
+        }
+
+        if (sourceModels.size() > 0) {
+            try {
+                ignoreLastModification = true;
+                fileSerializer.writeFile(watchfile, (List) sourceModels);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -88,7 +152,6 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
             fileSerializer.writeFile(watchfile, (List) models);
             localModels = models;
         }
-
     }
 
     private static <ModelType> EKBCommit buildCommit(List<ModelType> localModels, List<ModelType> newModels) {
@@ -138,6 +201,11 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
         DirectoryWatcher watcher = new DirectoryWatcher(watchfile) {
             @Override
             protected synchronized void onFileModified() {
+                if (ignoreLastModification) {
+                    ignoreLastModification = false;
+                    return;
+                }
+
                 List<?> newModels = null;
                 try {
                     newModels = fileSerializer.readFile(watchfile);
@@ -150,6 +218,8 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 commit.setDomainId(domainType);
                 ContextHolder.get().setCurrentContextId("foo");
                 authenticationContext.login("admin", new Password("password"));
+                logger.debug("committing {}", commit.toString());
+                lastCommit = commit;
                 persistService.commit(commit);
                 authenticationContext.logout();
             }

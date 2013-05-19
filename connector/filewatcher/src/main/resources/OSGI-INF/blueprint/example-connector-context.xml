@@ -30,9 +30,11 @@
       <argument type="org.openengsb.core.ekb.api.QueryInterface" ref="queryService" />
       <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext" />
       <argument type="org.openengsb.core.api.security.AuthenticationContext" ref="authenticationContext" />
+      <argument type="org.openengsb.core.ekb.api.TransformationEngine" ref="transformationEngine" />
     </bean>
   </service>
   <reference interface="org.openengsb.core.ekb.api.PersistInterface" id="persistenceService" />
   <reference interface="org.openengsb.core.ekb.api.QueryInterface" id="queryService" />
   <reference interface="org.openengsb.core.api.security.AuthenticationContext" id="authenticationContext" />
+  <reference interface="org.openengsb.core.ekb.api.TransformationEngine" id="transformationEngine" />
 </blueprint>

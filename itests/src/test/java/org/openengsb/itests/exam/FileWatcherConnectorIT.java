@@ -45,9 +45,17 @@ import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
+import org.openengsb.core.ekb.api.TransformationEngine;
+import org.openengsb.core.ekb.api.transformation.TransformationDescription;
+import org.openengsb.domain.example.model.SourceModelB;
+import org.openengsb.core.api.model.ModelDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper {
+    Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorIT.class);
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -63,16 +71,8 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
     @Test
     public void testServiceDoesNotExist_shouldNotFindExampleDomain() throws Exception {
         File watchfile = tempFolder.newFile("testfile.csv");
-        ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("watchfile", watchfile.getAbsolutePath());
-        attributes.put("serializer", "org.openengsb.connector.virtual.filewatcher.internal.CSVParser");
-        attributes.put("mixin.1", EventSupport.class.getName());
-        attributes.put("modelType", "org.openengsb.domain.example.model.SourceModelA");
-        Map<String, Object> properties = new HashMap<String, Object>();
-        ConnectorDescription connectorDescription =
-            new ConnectorDescription("example", "filewatcher", attributes, properties);
-        connectorManager.create(connectorDescription);
+
+        registerConnector(SourceModelA.class.getName(), watchfile);
         getOsgiService(ExampleDomain.class, 30000L);
         Thread.sleep(1500);
         FileUtils.write(watchfile, "\"foo\",\"bar\"");
@@ -82,6 +82,49 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         assertThat(sourceModelAs.size(), is(1));
         assertThat(sourceModelAs.get(0).getEdbId(), is("foo"));
         assertThat(sourceModelAs.get(0).getName(), is("bar"));
+    }
+
+    @Test
+    public void testModelTransformationFromAtoB() throws Exception {
+        TransformationEngine transformationEngine = getOsgiService(TransformationEngine.class);
+        ModelDescription modelDescriptionA =
+            new ModelDescription(SourceModelA.class, getExampleDomainVersion().toString());
+        ModelDescription modelDescriptionB =
+            new ModelDescription(SourceModelB.class, getExampleDomainVersion().toString());
+        TransformationDescription transfDescription =
+            new TransformationDescription(modelDescriptionA, modelDescriptionB);
+
+        transfDescription.forwardField("edbId", "edbId");
+        transfDescription.forwardField("name", "name");
+        transformationEngine.saveDescription(transfDescription);
+
+        File watchfile1 = tempFolder.newFile("file1.csv");
+        File watchfile2 = tempFolder.newFile("file2.csv");
+
+        registerConnector(SourceModelA.class.getName(), watchfile1);
+        registerConnector(SourceModelB.class.getName(), watchfile2);
+
+        getOsgiService(ExampleDomain.class, 30000L);
+        Thread.sleep(5000);
+        FileUtils.write(watchfile1, "foo,bar");
+        Thread.sleep(2000);
+
+        String fileContents = FileUtils.readFileToString(watchfile2).trim();
+
+        assertThat(fileContents, is("foo,bar"));
+    }
+
+    private void registerConnector(String modelName, File watchfile) {
+        ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("watchfile", watchfile.getAbsolutePath());
+        attributes.put("serializer", "org.openengsb.connector.virtual.filewatcher.internal.CSVParser");
+        attributes.put("mixin.1", EventSupport.class.getName());
+        attributes.put("modelType", modelName);
+        Map<String, Object> properties = new HashMap<String, Object>();
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription("example", "filewatcher", attributes, properties);
+        connectorManager.create(connectorDescription);
     }
 
 }
