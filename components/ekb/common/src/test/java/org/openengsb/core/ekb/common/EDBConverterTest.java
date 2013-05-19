@@ -85,6 +85,9 @@ public class EDBConverterTest {
         model.setDate(date);
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
+        model.setCheck(false);
+        model.setCheck2(true);
+        model.setCheck3(false);
 
         ConnectorInformation id = getTestConnectorInformation();
 
@@ -99,6 +102,9 @@ public class EDBConverterTest {
         assertThat(object.getString("instanceId"), is("testinstance"));
         assertThat(object.getObject("enumeration", ENUM.class), is(ENUM.A));
         assertThat(object.getObject("date", Date.class), is(date));
+        assertThat(object.getObject("check", Boolean.class), is(false));
+        assertThat(object.getObject("check2", Boolean.class), is(true));
+        assertThat(object.getObject("check3", Boolean.class), is(false));
         assertThat(object.getString(EDBConstants.MODEL_TYPE), is(TestModel.class.getName()));
     }
 
@@ -324,9 +330,13 @@ public class EDBConverterTest {
         object.putEDBObjectEntry("id", "test");
         object.putEDBObjectEntry("name", "testname");
         object.putEDBObjectEntry("number", 42);
+        object.putEDBObjectEntry("check", false);
+        object.putEDBObjectEntry("check2", true);
         TestModel model = converter.convertEDBObjectToModel(TestModel.class, object);
         assertThat(model.getId(), is("test"));
         assertThat(model.getName(), is("testname"));
+        assertThat(model.isCheck(), is(false));
+        assertThat(model.isCheck2(), is(true));
         List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
         Integer version = null;
         for (OpenEngSBModelEntry entry : entries) {

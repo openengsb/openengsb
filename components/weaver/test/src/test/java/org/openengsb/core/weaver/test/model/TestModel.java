@@ -28,6 +28,7 @@ public class TestModel {
     private String name;
     @IgnoredModelField
     private String ignore;
+    private Boolean testBoolean;
 
     public void setId(String id) {
         this.id = id;
@@ -51,5 +52,13 @@ public class TestModel {
     
     public String getIgnore() {
         return ignore;
+    }
+
+    public Boolean getTestBoolean() {
+        return testBoolean;
+    }
+
+    public void setTestBoolean(Boolean testBoolean) {
+        this.testBoolean = testBoolean;
     }
 }
