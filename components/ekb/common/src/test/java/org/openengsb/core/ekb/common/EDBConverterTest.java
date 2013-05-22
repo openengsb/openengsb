@@ -44,6 +44,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.common.models.PrimitivePropertiesModel;
@@ -350,6 +351,17 @@ public class EDBConverterTest {
         obj = objects.get(0);
         assertEquals("child1_child1", obj.getString("id"));
         assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
+    }
+    
+    @Test
+    public void testIfEDBObjectsContainCorrectType_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        model.setNumber(42);
+        ConnectorInformation id = getTestConnectorInformation();
+        List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
+        EDBObject object = objects.get(0);
+        EDBObjectEntry entry = object.get("number");
+        assertThat(entry.getType(), is(Integer.class.toString()));
     }
 
     @Test
