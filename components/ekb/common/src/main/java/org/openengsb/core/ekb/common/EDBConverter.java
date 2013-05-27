@@ -418,7 +418,7 @@ public class EDBConverter {
                     i++;
                 }
             } else {
-                object.putEDBObjectEntry(entry.getKey(), entry.getValue(), entry.getType().getName());
+                object.putEDBObjectEntry(entry.getKey(), entry.getValue(), entry.getType());
             }
         }
         object.putEDBObjectEntry(EDBConstants.MODEL_TYPE, model.retrieveModelName());
