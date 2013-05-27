@@ -50,6 +50,7 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.ModelUtils;
+import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
 import org.openengsb.itests.exam.models.SubModelDecorator;
 import org.openengsb.itests.exam.models.TestModelDecorator;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
@@ -800,7 +801,54 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(sub.getModel(), notNullValue());
         assertThat(sub.getName(), is("test"));
     }
-    
+
+    @Test
+    public void testPrimitivePropertyTypeConversion_shouldConvertAndPersistWithCorrectType() throws Exception {
+        PrimitivePropertyModelDecorator model = getPrimitivePropertyModelDecorator();
+
+        // TODO: OPENENGSB-3627 test for character types
+        model.setId("ppm/0");
+        model.setBooleanByGet(true);
+        model.setBooleanByIs(true);
+//        model.setPrimitiveChar(Character.MAX_VALUE);
+        model.setPrimitiveDouble(Double.MAX_VALUE);
+        model.setPrimitiveFloat(Float.MAX_VALUE);
+        model.setPrimitiveInt(Integer.MAX_VALUE);
+        model.setPrimitiveLong(Long.MAX_VALUE);
+        model.setPrimitiveShort(Short.MAX_VALUE);
+
+        assertThat(model.isBooleanByIs(), is(true));
+        assertThat(model.getBooleanByGet(), is(true));
+        
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        
+        System.out.println("getting object");
+        
+        // check edb object
+        EDBObject edbObject = edbService.getObject(getModelOid("ppm/0"));
+        
+        // check entry types
+        assertThat(edbObject.get("booleanByGet").getType(), is(Boolean.class.getName()));
+        assertThat(edbObject.get("booleanByIs").getType(), is(Boolean.class.getName()));
+//        assertThat(edbObject.get("primitiveChar").getType(), is(Character.class.getName()));
+        assertThat(edbObject.get("primitiveShort").getType(), is(Short.class.getName()));
+        assertThat(edbObject.get("primitiveInt").getType(), is(Integer.class.getName()));
+        assertThat(edbObject.get("primitiveLong").getType(), is(Long.class.getName()));
+        assertThat(edbObject.get("primitiveFloat").getType(), is(Float.class.getName()));
+        assertThat(edbObject.get("primitiveDouble").getType(), is(Double.class.getName()));
+
+        // check values
+        assertThat(edbObject.getBoolean("booleanByGet"), is(true));
+        assertThat(edbObject.getBoolean("booleanByIs"), is(true));
+//        assertThat(edbObject.getChar("primitiveChar"), is(Character.MAX_VALUE));
+        assertThat(edbObject.getShort("primitiveShort"), is(Short.MAX_VALUE));
+        assertThat(edbObject.getInteger("primitiveInt"), is(Integer.MAX_VALUE));
+        assertThat(edbObject.getLong("primitiveLong"), is(Long.MAX_VALUE));
+        assertThat(edbObject.getFloat("primitiveFloat"), is(Float.MAX_VALUE));
+        assertThat(edbObject.getDouble("primitiveDouble"), is(Double.MAX_VALUE));
+    }
+
     private TestModelDecorator loadTestModel(String oid) throws Exception {
         return new TestModelDecorator(query.getModel(getTestModel(), getModelOid(oid)));
     }
@@ -815,5 +863,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     private SubModelDecorator getSubModelDecorator() throws Exception {
         return new SubModelDecorator(getSubModel().newInstance());
+    }
+
+    private PrimitivePropertyModelDecorator getPrimitivePropertyModelDecorator() throws Exception {
+        return new PrimitivePropertyModelDecorator(getPrimitivePropertyModel().newInstance());
     }
 }

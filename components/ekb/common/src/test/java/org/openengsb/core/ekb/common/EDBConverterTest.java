@@ -99,6 +99,17 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
 
+        // check entry types
+        assertThat(object.get("booleanByGet").getType(), is(Boolean.class.getName()));
+        assertThat(object.get("booleanByIs").getType(), is(Boolean.class.getName()));
+        assertThat(object.get("primitiveChar").getType(), is(Character.class.getName()));
+        assertThat(object.get("primitiveShort").getType(), is(Short.class.getName()));
+        assertThat(object.get("primitiveInt").getType(), is(Integer.class.getName()));
+        assertThat(object.get("primitiveLong").getType(), is(Long.class.getName()));
+        assertThat(object.get("primitiveFloat").getType(), is(Float.class.getName()));
+        assertThat(object.get("primitiveDouble").getType(), is(Double.class.getName()));
+
+        // check values
         assertThat(object.getBoolean("booleanByGet"), is(true));
         assertThat(object.getBoolean("booleanByIs"), is(true));
         assertThat(object.getChar("primitiveChar"), is(Character.MAX_VALUE));
@@ -157,6 +168,17 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
 
+        // check entry types
+        assertThat(object.get("booleanByGet").getType(), is(Boolean.class.getName()));
+        assertThat(object.get("booleanByIs").getType(), is(Boolean.class.getName()));
+        assertThat(object.get("wrappedChar").getType(), is(Character.class.getName()));
+        assertThat(object.get("wrappedShort").getType(), is(Short.class.getName()));
+        assertThat(object.get("wrappedInt").getType(), is(Integer.class.getName()));
+        assertThat(object.get("wrappedLong").getType(), is(Long.class.getName()));
+        assertThat(object.get("wrappedFloat").getType(), is(Float.class.getName()));
+        assertThat(object.get("wrappedDouble").getType(), is(Double.class.getName()));
+
+        // check values
         assertThat(object.getBoolean("booleanByGet"), is(true));
         assertThat(object.getBoolean("booleanByIs"), is(true));
         assertThat(object.getChar("wrappedChar"), is(Character.MAX_VALUE));

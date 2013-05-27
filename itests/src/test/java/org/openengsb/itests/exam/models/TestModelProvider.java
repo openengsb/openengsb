@@ -40,4 +40,8 @@ public class TestModelProvider implements BundleActivator {
     public Class<?> loadSubModel() {
         return SubModel.class;
     }
+
+    public Class<?> loadPrimitivePropertyModel() {
+        return PrimitivePropertyModel.class;
+    }
 }
