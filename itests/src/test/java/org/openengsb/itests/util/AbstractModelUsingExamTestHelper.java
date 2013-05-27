@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.itests.exam.models.PrimitivePropertyModel;
 import org.openengsb.itests.exam.models.SubModel;
 import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelProvider;
@@ -49,6 +50,7 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
             bundle()
                 .add(TestModel.class)
                 .add(SubModel.class)
+                .add(PrimitivePropertyModel.class)
                 .add(TestModelProvider.class)
                 .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
@@ -81,6 +83,15 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     protected Class<?> getSubModel() throws Exception {
         Object provider = loadTestModelProvider();
         return (Class<?>) provider.getClass().getMethod("loadSubModel").invoke(provider);
+    }
+
+    protected ModelDescription getPrimitivePropertyModelDescription() {
+        return new ModelDescription(PrimitivePropertyModel.class.getName(), providerVersion);
+    }
+
+    protected Class<?> getPrimitivePropertyModel() throws Exception {
+        Object provider = loadTestModelProvider();
+        return (Class<?>) provider.getClass().getMethod("loadPrimitivePropertyModel").invoke(provider);
     }
 
     private Object loadTestModelProvider() throws Exception {
