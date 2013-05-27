@@ -361,7 +361,7 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
         EDBObjectEntry entry = object.get("number");
-        assertThat(entry.getType(), is(Integer.class.toString()));
+        assertThat(entry.getType(), is(Integer.class.getName()));
     }
 
     @Test
