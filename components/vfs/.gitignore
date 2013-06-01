@@ -1,0 +1,15 @@
+*.orig
+*~
+target/*
+*/target/*
+*/nb-configuration.xml
+nb-configuration.xml
+*/nbproject/*
+Repository/
+*.iml
+.idea/*
+*.BACKUP.*
+*.LOCAL.*
+*.BASE.*
+*.REMOTE.*
+/target

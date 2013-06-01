@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.openengsb.framework.vfs</groupId>
+		<artifactId>org.openengsb.framework.vfs</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>org.openengsb.framework.vfs.vfsconfigurationservice</groupId>
+	<artifactId>org.openengsb.framework.vfs.vfsconfigurationservice</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>OpenEngSB :: Framework :: VFS :: VFSConfigurationService</name>
+	<packaging>bundle</packaging>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>4.0.3</version>
+		</dependency>
+ 
+		<dependency>
+            <groupId>org.openengsb.framework.vfs.configurationserviceapi</groupId>
+            <artifactId>org.openengsb.framework.vfs.configurationserviceapi</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+		
+		<dependency>
+			<groupId>net.lingala.zip4j</groupId>
+			<artifactId>zip4j</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+        
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+        
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.8</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>../target</directory>
+		<outputDirectory>target</outputDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Name>OpenEngSB :: Framework :: VFS :: VFSConfigurationService</Bundle-Name>
+						<Bundle-Activator>org.openengsb.framework.vfs.vfsconfigurationservice.activator.Activator</Bundle-Activator>
+						
+						<Export-Package>
+							net.lingala.*,
+							net.lingala.zip4j.core,
+							net.lingala.zip4j.exception,
+							net.lingala.zip4j.model
+						</Export-Package>
+
+						<Import-Package>
+							org.osgi.framework,
+							org.openengsb.framework.vfs.configurationserviceapi.common,
+							org.openengsb.framework.vfs.configurationserviceapi.configurableservice,
+							org.openengsb.framework.vfs.configurationserviceapi.configurationservice,
+							org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler,
+							org.openengsb.framework.vfs.configurationserviceapi.remoteservice,
+							net.lingala.*,
+							net.lingala.zip4j.core,
+							net.lingala.zip4j.exception,
+							net.lingala.zip4j.model,
+							org.slf4j;version="1.5.10",
+							*;resolution:=optional
+						</Import-Package>
+
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
