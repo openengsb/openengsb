@@ -44,12 +44,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-		
-		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
-			<artifactId>zip4j</artifactId>
-			<version>1.3.1</version>
-		</dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
@@ -89,8 +83,6 @@
 	</dependencies>
 
 	<build>
-		<directory>../target</directory>
-		<outputDirectory>target</outputDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -103,30 +95,32 @@
 						<Bundle-Activator>org.openengsb.framework.vfs.vfsconfigurationservice.activator.Activator</Bundle-Activator>
 						
 						<Export-Package>
-							net.lingala.*,
-							net.lingala.zip4j.core,
-							net.lingala.zip4j.exception,
-							net.lingala.zip4j.model
 						</Export-Package>
 
+						<Private-Package>
+							org.openengsb.framework.vfs.vfsrepositoryhandler.*
+						</Private-Package>
+
 						<Import-Package>
-							org.osgi.framework,
-							org.openengsb.framework.vfs.configurationserviceapi.common,
-							org.openengsb.framework.vfs.configurationserviceapi.configurableservice,
-							org.openengsb.framework.vfs.configurationserviceapi.configurationservice,
-							org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler,
-							org.openengsb.framework.vfs.configurationserviceapi.remoteservice,
-							net.lingala.*,
-							net.lingala.zip4j.core,
-							net.lingala.zip4j.exception,
-							net.lingala.zip4j.model,
-							org.slf4j;version="1.5.10",
 							*;resolution:=optional
 						</Import-Package>
 
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 					</instructions>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.servicemix.tooling</groupId>
+				<artifactId>depends-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>generate-depends-file</id>
+						<goals>
+							<goal>generate-depends-file</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
