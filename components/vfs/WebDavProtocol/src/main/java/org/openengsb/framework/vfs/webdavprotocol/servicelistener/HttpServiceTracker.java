@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.servicelistener;
+package org.openengsb.framework.vfs.webdavprotocol.servicelistener;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

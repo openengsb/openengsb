@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.resourcetypes;
+package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.exceptions.BadRequestException;
 import io.milton.http.exceptions.ConflictException;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.openengsb.framework.vfs.webDavProtocol.common.ChildUtils;
+import org.openengsb.framework.vfs.webdavprotocol.common.ChildUtils;
 
 /**
  *

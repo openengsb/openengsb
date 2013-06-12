@@ -2,18 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.webdavhandler;
+package org.openengsb.framework.vfs.webdavprotocol.webdavhandler;
 
 //import io.milton.servlet.MiltonServlet;
 import io.milton.servlet.MiltonServlet;
 import java.util.Hashtable;
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
-import org.openengsb.framework.vfs.webDavProtocol.servicelistener.RepositoryHandlerListener;
-import org.openengsb.framework.vfs.webDavProtocol.servicelistener.HttpServiceListener;
+import org.openengsb.framework.vfs.webdavprotocol.servicelistener.RepositoryHandlerListener;
+import org.openengsb.framework.vfs.webdavprotocol.servicelistener.HttpServiceListener;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import org.openengsb.core.services.SecurityContext;
 
 /**
  *
@@ -123,7 +124,7 @@ public class WebDavHandler
 		try
 		{
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			props.put("resource.factory.class", "org.openengsb.framework.vfs.webDavProtocol.factories.ResourceFactoryImpl");
+			props.put("resource.factory.class", "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
 			httpService.registerServlet("/", servlet, props, null);
 
 			log.info("Milton servlet registered");

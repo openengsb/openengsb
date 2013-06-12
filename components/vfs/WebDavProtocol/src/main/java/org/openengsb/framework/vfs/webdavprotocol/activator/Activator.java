@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.activator;
+package org.openengsb.framework.vfs.webdavprotocol.activator;
 
-import org.openengsb.framework.vfs.webDavProtocol.servicelistener.RepositoryHandlerListener;
-import org.openengsb.framework.vfs.webDavProtocol.servicelistener.HttpServiceListener;
-import org.openengsb.framework.vfs.webDavProtocol.webdavhandler.WebDavHandler;
+import org.openengsb.framework.vfs.webdavprotocol.servicelistener.RepositoryHandlerListener;
+import org.openengsb.framework.vfs.webdavprotocol.servicelistener.HttpServiceListener;
+import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
