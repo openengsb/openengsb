@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.resourcetypes;
+package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.exceptions.BadRequestException;
 import io.milton.http.exceptions.ConflictException;

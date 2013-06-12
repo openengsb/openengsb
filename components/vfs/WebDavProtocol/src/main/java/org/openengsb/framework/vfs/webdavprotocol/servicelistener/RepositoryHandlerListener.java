@@ -1,11 +1,11 @@
-package org.openengsb.framework.vfs.webDavProtocol.servicelistener;
+package org.openengsb.framework.vfs.webdavprotocol.servicelistener;
 
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
-import org.openengsb.framework.vfs.webDavProtocol.webdavhandler.WebDavHandler;
+import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

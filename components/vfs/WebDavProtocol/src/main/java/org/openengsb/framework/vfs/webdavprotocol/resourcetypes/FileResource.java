@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.resourcetypes;
+package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.Auth;
 import io.milton.http.Range;
@@ -105,6 +105,8 @@ public class FileResource extends AbstractResource implements GetableResource, R
 			}
 		}
 	}
+	
+	
 
 	public void copyTo(CollectionResource toCollection, String name) throws NotAuthorizedException, BadRequestException, ConflictException
 	{

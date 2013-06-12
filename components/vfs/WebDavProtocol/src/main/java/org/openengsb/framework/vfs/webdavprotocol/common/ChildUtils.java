@@ -1,4 +1,4 @@
-package org.openengsb.framework.vfs.webDavProtocol.common;
+package org.openengsb.framework.vfs.webdavprotocol.common;
 
 /*
  * Copyright 2012 McEvoy Software Ltd.

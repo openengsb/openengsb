@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.openengsb.framework.vfs.webDavProtocol.factories;
+package org.openengsb.framework.vfs.webdavprotocol.factories;
 
 import io.milton.common.Path;
 import io.milton.http.HttpManager;
@@ -14,8 +14,8 @@ import io.milton.resource.Resource;
 import java.io.File;
 
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
-import org.openengsb.framework.vfs.webDavProtocol.resourcetypes.DirectoryResource;
-import org.openengsb.framework.vfs.webDavProtocol.webdavhandler.WebDavHandler;
+import org.openengsb.framework.vfs.webdavprotocol.resourcetypes.DirectoryResource;
+import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
