@@ -27,16 +27,10 @@ import io.milton.resource.DigestResource;
 import io.milton.resource.PropFindableResource;
 import java.util.Date;
 import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.openengsb.domain.authentication.*;
-import org.openengsb.domain.authorization.*;
 import org.openengsb.core.services.*;
 
 /**
