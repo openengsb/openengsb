@@ -1,6 +1,8 @@
 package org.openengsb.framework.vfs.vfsrepositoryhandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,124 +20,115 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VFSRepositoryHandler implements RepositoryHandler
-{
+public final class VFSRepositoryHandler implements RepositoryHandler {
 
-	private static VFSRepositoryHandler instance;
-	private final Logger logger = LoggerFactory.getLogger(VFSRepositoryHandler.class);
-	private ResourceBundle repositoryHandlerProperties = ResourceBundle.getBundle("repositoryhandler");
-	private Path repositoryPath;
-	private Path configurationPath;
-	private Path tagsPath;
-	private ConfigurationTags tags;
-	private DateFormat tagsDateFormat;
-	private ConfigurationService configurationService = null;
-	private ConfigurationServiceListener configurationServiceListener = null;
-	private BundleContext bundleContext;
-	private FileOperator fileOperator;
+    private static VFSRepositoryHandler instance;
+    private final Logger logger = LoggerFactory.getLogger(VFSRepositoryHandler.class);
+    private ResourceBundle repositoryHandlerProperties = ResourceBundle.getBundle("repositoryhandler");
+    private Path repositoryPath;
+    private Path configurationPath;
+    private Path tagsPath;
+    private ConfigurationTags tags;
+    private DateFormat tagsDateFormat;
+    private ConfigurationService configurationService = null;
+    private ConfigurationServiceListener configurationServiceListener = null;
+    private BundleContext bundleContext;
+    private FileOperator fileOperator;
 
-	private VFSRepositoryHandler()
-	{
-		fileOperator = new VFSFileOperator();
+    private VFSRepositoryHandler() {
+        fileOperator = new VFSFileOperator();
 
-		Path currentDirectory = (new File(".")).toPath();
-		repositoryPath = currentDirectory.resolve(repositoryHandlerProperties.getString("repository_path"));
-		configurationPath = repositoryPath.resolve(repositoryHandlerProperties.getString("configuration_path"));
-		tagsPath = repositoryPath.resolve(repositoryHandlerProperties.getString("tags_path"));
+        Path currentDirectory = (new File(".")).toPath();
+        repositoryPath = currentDirectory.resolve(repositoryHandlerProperties.getString("repository_path"));
+        configurationPath = repositoryPath.resolve(repositoryHandlerProperties.getString("configuration_path"));
+        tagsPath = repositoryPath.resolve(repositoryHandlerProperties.getString("tags_path"));
 
-		tagsDateFormat = new SimpleDateFormat(repositoryHandlerProperties.getString("tags_date_format"));
-		
-		tags = new ConfigurationTags();
-	}
+        tagsDateFormat = new SimpleDateFormat(repositoryHandlerProperties.getString("tags_date_format"));
 
-	public static VFSRepositoryHandler getInstance()
-	{
-		if (instance == null)
-		{
-			instance = new VFSRepositoryHandler();
-		}
+        tags = new ConfigurationTags();
+    }
 
-		return instance;
-	}
+    public static VFSRepositoryHandler getInstance() {
+        if (instance == null) {
+            instance = new VFSRepositoryHandler();
+        }
 
-	public void setBundleContext(BundleContext bundleContext)
-	{
-		this.bundleContext = bundleContext;
-	}
+        return instance;
+    }
 
-	public void setFileOperator(FileOperator fileZipper)
-	{
-		this.fileOperator = fileZipper;
-	}
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
-	public void start()
-	{
-		configurationServiceListener = new ConfigurationServiceListener(bundleContext, this);
-		configurationServiceListener.open();
+    public void setFileOperator(FileOperator fileZipper) {
+        this.fileOperator = fileZipper;
+    }
 
-		fileOperator.createDirectoryIfNotExists(repositoryPath);
-		fileOperator.createDirectoryIfNotExists(configurationPath);
-		fileOperator.createDirectoryIfNotExists(tagsPath);
+    public void start() {
+        configurationServiceListener = new ConfigurationServiceListener(bundleContext, this);
+        configurationServiceListener.open();
 
-		readExistingTags();
-	}
+        try {
+            Files.createDirectories(repositoryPath);
+            Files.createDirectories(configurationPath);
+            Files.createDirectories(tagsPath);
+        } catch (IOException e) {
+            logger.error("Could not create repository directories: " + e.getMessage());
+        }
 
-	public void tagDirectory(Path path, String tagName)
-	{
-		logger.debug("tagDirectory");
+        readExistingTags();
+    }
 
-		Date tagDate = new Date();
-		String tagDirectoryName = tagsDateFormat.format(tagDate) + "_" + tagName;
-		Path tagPath = tagsPath.resolve(tagDirectoryName);
+    public void tagDirectory(Path path, String tagName) {
+        logger.debug("tagDirectory");
 
-		fileOperator.copyDirectory(path, tagPath);
+        Date tagDate = new Date();
+        String tagDirectoryName = tagsDateFormat.format(tagDate) + "_" + tagName;
+        Path tagPath = tagsPath.resolve(tagDirectoryName);
+        
+        try {
+            Files.copy(path, tagPath);
+        } catch (IOException e) {
+            logger.error("Could not copy tag to destination: " + e.getMessage());
+        }
 
-		Tag tag = new ConfigurationTag(tagName, tagPath, tagDate);
-		tags.addTag(tag);
+        Tag tag = new ConfigurationTag(tagName, tagPath, tagDate);
+        tags.addTag(tag);
 
-		if (configurationService != null)
-		{
-			logger.debug("executing newTag in ConfigurationService");
-			configurationService.newTag(tag);
-		}
-	}
+        if (configurationService != null) {
+            logger.debug("executing newTag in ConfigurationService");
+            configurationService.newTag(tag);
+        }
+    }
 
-	public Tag getPreviousTag(Tag currentTag)
-	{
-		return tags.getPreviousTag(currentTag);
-	}
+    public Tag getPreviousTag(Tag currentTag) {
+        return tags.getPreviousTag(currentTag);
+    }
 
-	public Path getRepositoryPath()
-	{
-		return repositoryPath;
-	}
+    public Path getRepositoryPath() {
+        return repositoryPath;
+    }
 
-	public Path getConfigurationPath()
-	{
-		return configurationPath;
-	}
+    public Path getConfigurationPath() {
+        return configurationPath;
+    }
 
-	public void registerConfigurationService(ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
+    public void registerConfigurationService(ConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
-	public ConfigurationService getConfigurationService()
-	{
-		return this.configurationService;
-	}
+    public ConfigurationService getConfigurationService() {
+        return this.configurationService;
+    }
 
-	public void deregisterConfigurationService()
-	{
-		configurationService = null;
-	}
+    public void deregisterConfigurationService() {
+        configurationService = null;
+    }
 
-	private void readExistingTags()
-	{
-		tags = new ConfigurationTags();
-		for (Tag tag : fileOperator.getTagsFromDirectory(tagsPath))
-		{
-				tags.addTag(tag);
-		}
-	}
+    private void readExistingTags() {
+        tags = new ConfigurationTags();
+        for (Tag tag : fileOperator.getTagsFromDirectory(tagsPath)) {
+            tags.addTag(tag);
+        }
+    }
 }

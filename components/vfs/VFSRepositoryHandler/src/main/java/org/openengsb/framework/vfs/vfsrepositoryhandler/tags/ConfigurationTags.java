@@ -7,77 +7,69 @@ import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfigurationTags
-{
+public class ConfigurationTags {
 
-	private final Logger logger = LoggerFactory.getLogger(ConfigurationTags.class);
-	private List<Tag> tags;
+    private final Logger logger = LoggerFactory.getLogger(ConfigurationTags.class);
+    private List<Tag> tags;
 
-	public ConfigurationTags()
-	{
-		tags = new ArrayList<Tag>();
-	}
+    public ConfigurationTags() {
+        tags = new ArrayList<Tag>();
+    }
 
-	public List<Tag> getTags()
-	{
-		Collections.sort(tags);
-		return tags;
-	}
+    public List<Tag> getTags() {
+        Collections.sort(tags);
+        return tags;
+    }
 
-	public void addTag(Tag tag)
-	{
-		if (!tags.contains(tag))
-		{
-			tags.add(tag);
-			Collections.sort(tags);
-		}
-	}
+    public void addTag(Tag tag) {
+        if (!tags.contains(tag)) {
+            tags.add(tag);
+            Collections.sort(tags);
+        }
+    }
 
-	@Override
-	public boolean equals(Object that)
-	{
-		if (that == null)
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object that) {
+        if (that == null) {
+            return false;
+        }
 
-		if (!(that instanceof ConfigurationTags))
-		{
-			return false;
-		}
+        if (!(that instanceof ConfigurationTags)) {
+            return false;
+        }
 
-		ConfigurationTags thatTags = (ConfigurationTags) that;
+        ConfigurationTags thatTags = (ConfigurationTags) that;
 
-		List<Tag> thisTagList = getTags();
-		List<Tag> thatTagList = thatTags.getTags();
+        List<Tag> thisTagList = getTags();
+        List<Tag> thatTagList = thatTags.getTags();
 
-		if (thisTagList.size() != thatTagList.size())
-		{
-			return false;
-		}
+        if (thisTagList.size() != thatTagList.size()) {
+            return false;
+        }
 
-		for (int i = 0; i < thisTagList.size(); i++)
-		{
-			if (!thisTagList.get(i).equals(thatTagList.get(i)))
-			{
-				return false;
-			}
-		}
+        for (int i = 0; i < thisTagList.size(); i++) {
+            if (!thisTagList.get(i).equals(thatTagList.get(i))) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public Tag getPreviousTag(Tag tag)
-	{
-		Collections.sort(tags);
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-		int index = tags.indexOf(tag);
+    public Tag getPreviousTag(Tag tag) {
+        Collections.sort(tags);
 
-		if (index > 0)
-		{
-			return tags.get(index - 1);
-		}
+        int index = tags.indexOf(tag);
 
-		return null;
-	}
+        if (index > 0) {
+            return tags.get(index - 1);
+        }
+
+        return null;
+    }
 }

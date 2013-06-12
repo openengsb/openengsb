@@ -11,77 +11,71 @@ import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfigurationTag implements Tag
-{
-	private final Logger logger = LoggerFactory.getLogger(ConfigurationTag.class);
-	private ResourceBundle configurationServiceProperties = ResourceBundle.getBundle("repositoryhandler");
-	DateFormat dateFormat = new SimpleDateFormat(configurationServiceProperties.getString("tags_date_format"));
-	private String name;
-	private Path path;
-	private Date date;
+public class ConfigurationTag implements Tag {
 
-	public ConfigurationTag(String name, Path path, Date date)
-	{
-		this.name = name;
-		this.path = path;
-		this.date = date;
-	}
+    private final Logger logger = LoggerFactory.getLogger(ConfigurationTag.class);
+    private ResourceBundle configurationServiceProperties = ResourceBundle.getBundle("repositoryhandler");
+    DateFormat dateFormat = new SimpleDateFormat(configurationServiceProperties.getString("tags_date_format"));
+    private String name;
+    private Path path;
+    private Date date;
 
-	public ConfigurationTag(Path path) throws ParseException
-	{
-		this.path = path;
-		parseNameAndDate(path.toFile());
-	}
+    public ConfigurationTag(String name, Path path, Date date) {
+        this.name = name;
+        this.path = path;
+        this.date = date;
+    }
 
-	public ConfigurationTag(File file) throws ParseException
-	{
-		path = file.toPath();
-		parseNameAndDate(file);
-	}
+    public ConfigurationTag(Path path) throws ParseException {
+        this.path = path;
+        parseNameAndDate(path.toFile());
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public ConfigurationTag(File file) throws ParseException {
+        path = file.toPath();
+        parseNameAndDate(file);
+    }
 
-	public Path getPath()
-	{
-		return path;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Date getDate()
-	{
-		return date;
-	}
+    public Path getPath() {
+        return path;
+    }
 
-	public int compareTo(Tag that)
-	{
-		return date.compareTo(that.getDate());
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	@Override
-	public boolean equals(Object that)
-	{
-		if (that == null)
-		{
-			return false;
-		}
+    public int compareTo(Tag that) {
+        return date.compareTo(that.getDate());
+    }
 
-		if (!(that instanceof ConfigurationTag))
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object that) {
+        if (that == null) {
+            return false;
+        }
 
-		ConfigurationTag tag = (ConfigurationTag) that;
-		return (name.equals(tag.name) && date.equals(tag.date));
-	}
+        if (!(that instanceof ConfigurationTag)) {
+            return false;
+        }
 
-	private void parseNameAndDate(File file) throws ParseException
-	{
-		String fileName = file.getName();
-		int splitIndex = fileName.indexOf("_", fileName.indexOf("_") + 1);
-		name = fileName.substring(splitIndex + 1, fileName.length());
+        ConfigurationTag tag = (ConfigurationTag) that;
+        return name.equals(tag.name) && date.equals(tag.date);
+    }
 
-		date = dateFormat.parse(fileName);
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    private void parseNameAndDate(File file) throws ParseException {
+        String fileName = file.getName();
+        int splitIndex = fileName.indexOf("_", fileName.indexOf("_") + 1);
+        name = fileName.substring(splitIndex + 1, fileName.length());
+
+        date = dateFormat.parse(fileName);
+    }
 }
