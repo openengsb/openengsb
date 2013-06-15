@@ -32,128 +32,97 @@ import org.slf4j.LoggerFactory;
  *
  * @author Richard
  */
-public class FileResource extends AbstractResource implements GetableResource, ReplaceableResource, MoveableResource, CopyableResource, DeletableResource, IResourceFileType
-{
+public class FileResource extends AbstractResource implements GetableResource, ReplaceableResource, MoveableResource, CopyableResource, DeletableResource, IResourceFileType {
 
-	private Logger log = LoggerFactory.getLogger(FileResource.class);
-	private File file;
-	private ArrayList<Resource> children;
+    private Logger log = LoggerFactory.getLogger(FileResource.class);
+    private File file;
+    private ArrayList<Resource> children;
 
-	public FileResource(File file)
-	{
-		this.file = file;
-	}
+    public FileResource(File file) {
+        this.file = file;
+    }
 
-	public String getName()
-	{
-		return file.getName();
-	}
+    public String getName() {
+        return file.getName();
+    }
 
-	public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException
-	{
-		return null;
-	}
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+        return null;
+    }
 
-	public void sendContent(OutputStream out, Range range, Map<String, String> params, String contentType) throws IOException, NotAuthorizedException, BadRequestException, NotFoundException
-	{
-		Files.copy(file.toPath(), out);
-	}
+    public void sendContent(OutputStream out, Range range, Map<String, String> params, String contentType) throws IOException, NotAuthorizedException, BadRequestException, NotFoundException {
+        Files.copy(file.toPath(), out);
+    }
 
-	public Long getMaxAgeSeconds(Auth auth)
-	{
-		return null;
-	}
+    public Long getMaxAgeSeconds(Auth auth) {
+        return null;
+    }
 
-	public String getContentType(String accepts)
-	{
-		return "file";
-	}
+    public String getContentType(String accepts) {
+        return "file";
+    }
 
-	public Long getContentLength()
-	{
-		return file.length();
-	}
+    public Long getContentLength() {
+        return file.length();
+    }
 
-	public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException
-	{
-		try
-		{
-			Files.deleteIfExists(file.toPath());
-			Files.copy(in, file.toPath());
-		}
-		catch (IOException ex)
-		{
-			log.error("replace content error " + ex.getMessage());
-		}
-	}
+    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+        try {
+            Files.deleteIfExists(file.toPath());
+            Files.copy(in, file.toPath());
+        } catch (IOException ex) {
+            log.error("replace content error " + ex.getMessage());
+        }
+    }
 
-	public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException
-	{
-		log.debug("Move File");
-		if (rDest instanceof IResourceFileType)
-		{
-			File des = ((IResourceFileType) rDest).getFile();
-			des = new File(des, name);
-			try
-			{
-				Files.move(file.toPath(), des.toPath());
-				//Files.move(((IResourceFileType) rDest).getFile().toPath(), new File(name).toPath());
-			}
-			catch (IOException ex)
-			{
-				log.error("file move problem " + ex.getMessage());
-			}
-		}
-	}
-	
-	
+    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+        log.debug("Move File");
+        if (rDest instanceof IResourceFileType) {
+            File des = ((IResourceFileType) rDest).getFile();
+            des = new File(des, name);
+            try {
+                Files.move(file.toPath(), des.toPath());
+                //Files.move(((IResourceFileType) rDest).getFile().toPath(), new File(name).toPath());
+            } catch (IOException ex) {
+                log.error("file move problem " + ex.getMessage());
+            }
+        }
+    }
 
-	public void copyTo(CollectionResource toCollection, String name) throws NotAuthorizedException, BadRequestException, ConflictException
-	{
-		log.debug("Copy File");
-		if (toCollection instanceof IResourceFileType)
-		{
-			File des = ((IResourceFileType) toCollection).getFile();
-			des = new File(des, name);
-			try
-			{
-				Files.copy(file.toPath(), des.toPath());
-				//Files.move(((IResourceFileType) rDest).getFile().toPath(), new File(name).toPath());
-			}
-			catch (IOException ex)
-			{
-				log.error("file move problem " + ex.getMessage());
-			}
-		}
+    public void copyTo(CollectionResource toCollection, String name) throws NotAuthorizedException, BadRequestException, ConflictException {
+        log.debug("Copy File");
+        if (toCollection instanceof IResourceFileType) {
+            File des = ((IResourceFileType) toCollection).getFile();
+            des = new File(des, name);
+            try {
+                Files.copy(file.toPath(), des.toPath());
+                //Files.move(((IResourceFileType) rDest).getFile().toPath(), new File(name).toPath());
+            } catch (IOException ex) {
+                log.error("file move problem " + ex.getMessage());
+            }
+        }
 
-	}
+    }
 
-	public void delete() throws NotAuthorizedException, ConflictException, BadRequestException
-	{
-		try
-		{
-			Files.delete(file.toPath());
-		}
-		catch (IOException ex)
-		{
-			log.error("delete problem " + ex.getMessage());
-		}
-	}
+    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException ex) {
+            log.error("delete problem " + ex.getMessage());
+        }
+    }
 
-	public File getFile()
-	{
-		return file;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	@Override
-	public String getUniqueId()
-	{
-		return file.getAbsolutePath();
-	}
+    @Override
+    public String getUniqueId() {
+        return file.getAbsolutePath();
+    }
 
-	@Override
-	public Date getModifiedDate()
-	{
-		return new Date(file.lastModified());
-	}
+    @Override
+    public Date getModifiedDate() {
+        return new Date(file.lastModified());
+    }
 }

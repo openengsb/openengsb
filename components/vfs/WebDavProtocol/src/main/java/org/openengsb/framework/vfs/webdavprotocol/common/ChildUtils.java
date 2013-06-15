@@ -21,18 +21,14 @@ import java.util.Collection;
  *
  * @author brad
  */
-public class ChildUtils
-{
+public class ChildUtils {
 
-	public static Resource child(String childName, Collection<? extends Resource> children)
-	{
-		for (Resource r : children)
-		{
-			if (r.getName().equals(childName))
-			{
-				return r;
-			}
-		}
-		return null;
-	}
+    public static Resource child(String childName, Collection<? extends Resource> children) {
+        for (Resource r : children) {
+            if (r.getName().equals(childName)) {
+                return r;
+            }
+        }
+        return null;
+    }
 }

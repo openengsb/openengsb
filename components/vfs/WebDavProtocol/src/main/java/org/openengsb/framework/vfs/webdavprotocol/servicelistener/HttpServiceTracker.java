@@ -15,35 +15,30 @@ import org.slf4j.LoggerFactory;
  *
  * @author Richard
  */
-public class HttpServiceTracker extends ServiceTracker
-{
+public class HttpServiceTracker extends ServiceTracker {
 
-	private final Logger logger = LoggerFactory.getLogger(HttpServiceTracker.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpServiceTracker.class);
 
-	public HttpServiceTracker(BundleContext context)
-	{
-		super(context, HttpService.class.getName(), null);
-	}
+    public HttpServiceTracker(BundleContext context) {
+        super(context, HttpService.class.getName(), null);
+    }
 
-	@Override
-	public Object addingService(ServiceReference reference)
-	{
-		logger.info("HttpServiceTracker found new HttpService");
-		HttpService http = (HttpService) super.addingService(reference);
-		return http;
-	}
+    @Override
+    public Object addingService(ServiceReference reference) {
+        logger.info("HttpServiceTracker found new HttpService");
+        HttpService http = (HttpService) super.addingService(reference);
+        return http;
+    }
 
-	@Override
-	public void removedService(ServiceReference reference, Object service)
-	{
-		logger.info("HttpServiceTracker unregistered HttpService");
-		super.removedService(reference, service);
-	}
+    @Override
+    public void removedService(ServiceReference reference, Object service) {
+        logger.info("HttpServiceTracker unregistered HttpService");
+        super.removedService(reference, service);
+    }
 
-	@Override
-	public void modifiedService(ServiceReference reference, Object service)
-	{
-		logger.info("HttpServiceTracker modified HttpService");
-		super.modifiedService(reference, service);
-	}
+    @Override
+    public void modifiedService(ServiceReference reference, Object service) {
+        logger.info("HttpServiceTracker modified HttpService");
+        super.modifiedService(reference, service);
+    }
 }

@@ -14,29 +14,24 @@ import org.osgi.framework.BundleContext;
  *
  * @author Richard
  */
-public class Activator implements BundleActivator
-{
+public class Activator implements BundleActivator {
 
-	private HttpServiceListener wrapp;
-	private RepositoryHandlerListener confWrapp;
-	private WebDavHandler webDavHandler = null;
+    private HttpServiceListener wrapp;
+    private RepositoryHandlerListener confWrapp;
+    private WebDavHandler webDavHandler = null;
 
-	public void start(BundleContext bc) throws Exception
-	{
-		if (webDavHandler == null)
-		{
-			webDavHandler = WebDavHandler.getInstance();
-		}
+    public void start(BundleContext bc) throws Exception {
+        if (webDavHandler == null) {
+            webDavHandler = WebDavHandler.getInstance();
+        }
 
-		webDavHandler.setBundleContext(bc);
-		webDavHandler.start();
-	}
+        webDavHandler.setBundleContext(bc);
+        webDavHandler.start();
+    }
 
-	public void stop(BundleContext bc) throws Exception
-	{
-		if (webDavHandler != null)
-		{
-			webDavHandler.stopMilton();
-		}
-	}
+    public void stop(BundleContext bc) throws Exception {
+        if (webDavHandler != null) {
+            webDavHandler.stopMilton();
+        }
+    }
 }

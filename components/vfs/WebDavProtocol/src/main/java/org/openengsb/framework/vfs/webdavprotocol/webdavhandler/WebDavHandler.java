@@ -20,94 +20,81 @@ import org.slf4j.LoggerFactory;
  *
  * @author Richard
  */
-public class WebDavHandler
-{
+public class WebDavHandler {
 
-	private Logger log = LoggerFactory.getLogger(WebDavHandler.class);
-	private static WebDavHandler instance = new WebDavHandler();
-	private BundleContext bundleContext;
-	private HttpService httpService = null;
-	private RepositoryHandler repositoryHandler = null;
-	private MiltonServlet servlet;
-	private HttpServiceListener httpServiceListener;
-	private RepositoryHandlerListener repositoryHandlerListener;
+    private Logger log = LoggerFactory.getLogger(WebDavHandler.class);
+    private static WebDavHandler instance = new WebDavHandler();
+    private BundleContext bundleContext;
+    private HttpService httpService = null;
+    private RepositoryHandler repositoryHandler = null;
+    private MiltonServlet servlet;
+    private HttpServiceListener httpServiceListener;
+    private RepositoryHandlerListener repositoryHandlerListener;
 
-	private WebDavHandler()
-	{
-	}
+    private WebDavHandler() {
+    }
 
-	public static WebDavHandler getInstance()
-	{
-		return instance;
-	}
+    public static WebDavHandler getInstance() {
+        return instance;
+    }
 
-	public void setBundleContext(BundleContext bundleContext)
-	{
-		this.bundleContext = bundleContext;
-	}
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
-	public void start()
-	{
-		log.debug("start webDavHandler");
+    public void start() {
+        log.debug("start webDavHandler");
 
-		log.debug("start httpService listener");
-		httpServiceListener = new HttpServiceListener(bundleContext, this);
-		httpServiceListener.open();
+        log.debug("start httpService listener");
+        httpServiceListener = new HttpServiceListener(bundleContext, this);
+        httpServiceListener.open();
 
-		log.debug("start repositoryHandler listener");
-		repositoryHandlerListener = new RepositoryHandlerListener(bundleContext, this);
-		repositoryHandlerListener.open();
+        log.debug("start repositoryHandler listener");
+        repositoryHandlerListener = new RepositoryHandlerListener(bundleContext, this);
+        repositoryHandlerListener.open();
 
-		//HttpServiceTracker hts = new HttpServiceTracker(bundleContext);
-		//hts.open();
-	}
+        //HttpServiceTracker hts = new HttpServiceTracker(bundleContext);
+        //hts.open();
+    }
 
-	public void registerHttpService(HttpService httpService)
-	{
-		this.httpService = httpService;
-		startMilton();
-	}
+    public void registerHttpService(HttpService httpService) {
+        this.httpService = httpService;
+        startMilton();
+    }
 
-	public void unregisterHttpService()
-	{
-		this.httpService = null;
-		stopMilton();
-	}
+    public void unregisterHttpService() {
+        this.httpService = null;
+        stopMilton();
+    }
 
-	public void registerRepositoryHandler(RepositoryHandler repositoryHandler)
-	{
-		this.repositoryHandler = repositoryHandler;
-		startMilton();
-	}
+    public void registerRepositoryHandler(RepositoryHandler repositoryHandler) {
+        this.repositoryHandler = repositoryHandler;
+        startMilton();
+    }
 
-	public void unregisterRepositoryHandler()
-	{
-		this.repositoryHandler = null;
-		stopMilton();
-	}
+    public void unregisterRepositoryHandler() {
+        this.repositoryHandler = null;
+        stopMilton();
+    }
 
-	public RepositoryHandler getRepositoryHandler()
-	{
-		return this.repositoryHandler;
-	}
+    public RepositoryHandler getRepositoryHandler() {
+        return this.repositoryHandler;
+    }
 
-	private void startMilton()
-	{
-		log.info("Starting milton");
+    private void startMilton() {
+        log.info("Starting milton");
 
-		if (repositoryHandler == null)
-		{
-			log.error("repositoryHandler = null, return");
-			return;
-		}
+        if (repositoryHandler == null) {
+            log.error("repositoryHandler = null, return");
+            return;
+        }
 
-		if (httpService == null)
-		{
-			log.error("HttpService = null, return");
-			return;
-		}
+        if (httpService == null) {
+            log.error("HttpService = null, return");
+            return;
+        }
 
-		servlet = new MiltonServlet();
+        servlet = new MiltonServlet();
 
 //		MiltionServletConfig conf = new MiltionServletConfig();
 //
@@ -121,38 +108,31 @@ public class WebDavHandler
 //			return;
 //		}
 
-		try
-		{
-			Hashtable<String, String> props = new Hashtable<String, String>();
-			props.put("resource.factory.class", "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
-			httpService.registerServlet("/", servlet, props, null);
+        try {
+            Hashtable<String, String> props = new Hashtable<String, String>();
+            props.put("resource.factory.class", "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
+            httpService.registerServlet("/", servlet, props, null);
 
-			log.info("Milton servlet registered");
-		}
-		catch (Exception e)
-		{
-			log.debug("register servlet failed: " + e.getMessage());
-		}
-	}
+            log.info("Milton servlet registered");
+        } catch (Exception e) {
+            log.debug("register servlet failed: " + e.getMessage());
+        }
+    }
 
-	public void stopMilton()
-	{
-		if (httpServiceListener != null)
-		{
-			httpServiceListener.close();
-		}
+    public void stopMilton() {
+        if (httpServiceListener != null) {
+            httpServiceListener.close();
+        }
 
-		if (repositoryHandlerListener != null)
-		{
-			repositoryHandlerListener.close();
-		}
+        if (repositoryHandlerListener != null) {
+            repositoryHandlerListener.close();
+        }
 
-		if (servlet != null)
-		{
-			servlet.destroy();
-		}
+        if (servlet != null) {
+            servlet.destroy();
+        }
 
-		httpService = null;
-		repositoryHandler = null;
-	}
+        httpService = null;
+        repositoryHandler = null;
+    }
 }

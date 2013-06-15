@@ -10,8 +10,7 @@ import java.io.File;
  *
  * @author Richard
  */
-public interface IResourceFileType
-{
+public interface IResourceFileType {
 
-	public File getFile();
+    public File getFile();
 }

@@ -15,35 +15,29 @@ import java.io.InputStream;
  *
  * @author Richard
  */
-public class FileResourceReadOnly extends FileResource
-{
+public class FileResourceReadOnly extends FileResource {
 
-	public FileResourceReadOnly(File file)
-	{
-		super(file);
-	}
+    public FileResourceReadOnly(File file) {
+        super(file);
+    }
 
-	@Override
-	public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException
-	{
-		throw new NotAuthorizedException("Tag folder is read only", this);
-	}
+    @Override
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
+    }
 
-	@Override
-	public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException
-	{
-		throw new NotAuthorizedException("Tag folder is read only", this);
-	}
+    @Override
+    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
+    }
 
-	@Override
-	public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException
-	{
-		throw new NotAuthorizedException("Tag folder is read only", this);
-	}
+    @Override
+    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
+    }
 
-	@Override
-	public void delete() throws NotAuthorizedException, ConflictException, BadRequestException
-	{
-		throw new NotAuthorizedException("Tag folder is read only", this);
-	}
+    @Override
+    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
+    }
 }
