@@ -19,7 +19,8 @@ public class MiltionServletConfig implements ServletConfig {
     private HashMap<String, String> parameters = new HashMap<String, String>();
 
     public MiltionServletConfig() {
-        parameters.put("resource.factory.class", "org.openengsb.framework.vfs.webDavProtocol.Factories.ResourceFactoryImpl");
+        parameters.put("resource.factory.class",
+                "org.openengsb.framework.vfs.webDavProtocol.Factories.ResourceFactoryImpl");
     }
 
     public String getServletName() {

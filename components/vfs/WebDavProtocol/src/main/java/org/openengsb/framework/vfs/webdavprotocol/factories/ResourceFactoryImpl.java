@@ -35,7 +35,8 @@ public class ResourceFactoryImpl implements ResourceFactory {
         repositoryHandler = webDavHandler.getRepositoryHandler();
     }
 
-    public Resource getResource(String host, String url) throws NotAuthorizedException, BadRequestException {
+    @Override
+    public Resource getResource(String host, String url) throws NotAuthorizedException {
         log.debug("getResource: url: " + url);
         Path path = Path.path(url);
         Resource r = find(path);
@@ -43,7 +44,7 @@ public class ResourceFactoryImpl implements ResourceFactory {
         return r;
     }
 
-    private Resource find(Path path) throws NotAuthorizedException, BadRequestException {
+    private Resource find(Path path) throws NotAuthorizedException {
         if (path.isRoot()) {
             log.debug("_path is root");
 
@@ -75,7 +76,11 @@ public class ResourceFactoryImpl implements ResourceFactory {
         if (rParent instanceof CollectionResource) {
             log.debug("_rParent  instanceof CollectionResource");
             CollectionResource folder = (CollectionResource) rParent;
-            return folder.child(path.getName());
+            try {
+                return folder.child(path.getName());
+            } catch (BadRequestException ex) {
+                return null;
+            }
         }
         return null;
     }

@@ -12,5 +12,5 @@ import java.io.File;
  */
 public interface IResourceFileType {
 
-    public File getFile();
+    File getFile();
 }

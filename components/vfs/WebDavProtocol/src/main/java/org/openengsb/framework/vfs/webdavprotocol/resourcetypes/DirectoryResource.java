@@ -29,7 +29,9 @@ import org.openengsb.framework.vfs.webdavprotocol.common.ChildUtils;
  *
  * @author Richard
  */
-public class DirectoryResource extends AbstractResource implements MakeCollectionableResource, ReplaceableResource, DeletableResource, MoveableResource, IResourceFileType, PutableResource {
+public class DirectoryResource extends AbstractResource implements
+        MakeCollectionableResource, ReplaceableResource, DeletableResource,
+        MoveableResource, IResourceFileType, PutableResource {
 
     private File file;
     private ArrayList<Resource> children;
@@ -41,11 +43,14 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         this.file = directory;
     }
 
+    @Override
     public String getName() {
         return file.getName();
     }
 
-    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+    @Override
+    public CollectionResource createCollection(String newName) throws
+            NotAuthorizedException {
         File newfile = new File(file, newName);
         DirectoryResource r = new DirectoryResource(newfile);
         newfile.mkdir();
@@ -53,7 +58,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
     }
 
     @Override
-    public Resource child(String childName) throws BadRequestException, NotAuthorizedException {
+    public Resource child(String childName) throws 
+           NotAuthorizedException {
         return ChildUtils.child(childName, getChildren());
     }
 
@@ -67,7 +73,7 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         return new Date(file.lastModified());
     }
 
-    public List<? extends Resource> getChildren() throws NotAuthorizedException, BadRequestException {
+    public List<? extends Resource> getChildren() throws NotAuthorizedException {
         if (children == null) {
             children = new ArrayList<Resource>();
         }
@@ -90,7 +96,7 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         return children;
     }
 
-    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+    public void replaceContent(InputStream in, Long length) throws BadRequestException {
         try {
             Files.deleteIfExists(file.toPath());
             Files.copy(in, file.toPath());
@@ -99,7 +105,7 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         }
     }
 
-    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+    public void delete() throws NotAuthorizedException {
         try {
             Files.delete(file.toPath());
         } catch (IOException ex) {
@@ -107,7 +113,7 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         }
     }
 
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+    public void moveTo(CollectionResource rDest, String name) throws ConflictException {
         if (rDest instanceof IResourceFileType) {
             try {
                 File f = ((IResourceFileType) rDest).getFile();
@@ -124,7 +130,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         return file;
     }
 
-    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws IOException, ConflictException, NotAuthorizedException, BadRequestException {
+    public Resource createNew(String newName, InputStream inputStream,
+            Long length, String contentType) throws IOException {
         log.info("Create new File");
         File f = new File(file, newName);
 

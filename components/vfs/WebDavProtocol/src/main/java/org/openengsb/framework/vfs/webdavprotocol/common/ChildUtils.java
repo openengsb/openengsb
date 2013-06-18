@@ -21,8 +21,11 @@ import java.util.Collection;
  *
  * @author brad
  */
-public class ChildUtils {
+public final class ChildUtils {
 
+    private ChildUtils() {
+    }
+    
     public static Resource child(String childName, Collection<? extends Resource> children) {
         for (Resource r : children) {
             if (r.getName().equals(childName)) {

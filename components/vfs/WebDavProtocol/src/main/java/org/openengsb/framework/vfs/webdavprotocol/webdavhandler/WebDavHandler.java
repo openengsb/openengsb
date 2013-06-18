@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Richard
  */
-public class WebDavHandler {
+public final class WebDavHandler {
 
     private Logger log = LoggerFactory.getLogger(WebDavHandler.class);
     private static WebDavHandler instance = new WebDavHandler();
@@ -96,21 +96,10 @@ public class WebDavHandler {
 
         servlet = new MiltonServlet();
 
-//		MiltionServletConfig conf = new MiltionServletConfig();
-//
-//		try
-//		{
-//			servlet.init(conf);
-//		}
-//		catch (ServletException ex)
-//		{
-//			log.error("problem set init of servlet");
-//			return;
-//		}
-
         try {
             Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("resource.factory.class", "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
+            props.put("resource.factory.class",
+                    "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
             httpService.registerServlet("/", servlet, props, null);
 
             log.info("Milton servlet registered");

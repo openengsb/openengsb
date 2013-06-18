@@ -4,13 +4,10 @@
  */
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
-import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,29 +30,29 @@ public class DirectoryResourceReadOnly extends DirectoryResource {
     }
 
     @Override
-    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+    public CollectionResource createCollection(String newName) {
         return null;
     }
 
     @Override
-    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+    public void replaceContent(InputStream in, Long length) {
     }
 
     @Override
-    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+    public void delete() {
     }
 
     @Override
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+    public void moveTo(CollectionResource rDest, String name) {
     }
 
     @Override
-    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws IOException, ConflictException, NotAuthorizedException, BadRequestException {
+    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) {
         return null;
     }
 
     @Override
-    public List<? extends Resource> getChildren() throws NotAuthorizedException, BadRequestException {
+    public List<? extends Resource> getChildren() throws NotAuthorizedException {
         if (children == null) {
             children = new ArrayList<Resource>();
         }
