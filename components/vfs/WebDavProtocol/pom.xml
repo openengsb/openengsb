@@ -142,8 +142,6 @@
     </dependencies>
 
     <build>
-        <directory>../target</directory>
-        <outputDirectory>target</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
