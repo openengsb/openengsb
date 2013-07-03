@@ -5,7 +5,6 @@
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.DeletableResource;
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openengsb.framework.vfs.webdavprotocol.common.ChildUtils;
@@ -29,7 +29,9 @@ import org.openengsb.framework.vfs.webdavprotocol.common.ChildUtils;
  *
  * @author Richard
  */
-public class DirectoryResource extends AbstractResource implements MakeCollectionableResource, ReplaceableResource, DeletableResource, MoveableResource, IResourceFileType, PutableResource {
+public class DirectoryResource extends AbstractResource implements
+        MakeCollectionableResource, ReplaceableResource, DeletableResource,
+        MoveableResource, IResourceFileType, PutableResource {
 
     private File file;
     private ArrayList<Resource> children;
@@ -41,11 +43,13 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         this.file = directory;
     }
 
+    @Override
     public String getName() {
         return file.getName();
     }
 
-    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+    @Override
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         File newfile = new File(file, newName);
         DirectoryResource r = new DirectoryResource(newfile);
         newfile.mkdir();
@@ -53,8 +57,13 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
     }
 
     @Override
-    public Resource child(String childName) throws BadRequestException, NotAuthorizedException {
-        return ChildUtils.child(childName, getChildren());
+    public Resource child(String childName) throws BadRequestException {
+        try {
+            return ChildUtils.child(childName, getChildren());
+        } catch (NotAuthorizedException ex) {
+            java.util.logging.Logger.getLogger(DirectoryResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -67,7 +76,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         return new Date(file.lastModified());
     }
 
-    public List<? extends Resource> getChildren() throws NotAuthorizedException, BadRequestException {
+    @Override
+    public List<? extends Resource> getChildren() throws NotAuthorizedException {
         if (children == null) {
             children = new ArrayList<Resource>();
         }
@@ -90,7 +100,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         return children;
     }
 
-    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+    @Override
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
         try {
             Files.deleteIfExists(file.toPath());
             Files.copy(in, file.toPath());
@@ -99,7 +110,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         }
     }
 
-    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+    @Override
+    public void delete() throws NotAuthorizedException {
         try {
             Files.delete(file.toPath());
         } catch (IOException ex) {
@@ -107,7 +119,8 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         }
     }
 
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+    @Override
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
         if (rDest instanceof IResourceFileType) {
             try {
                 File f = ((IResourceFileType) rDest).getFile();
@@ -120,11 +133,14 @@ public class DirectoryResource extends AbstractResource implements MakeCollectio
         }
     }
 
+    @Override
     public File getFile() {
         return file;
     }
 
-    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws IOException, ConflictException, NotAuthorizedException, BadRequestException {
+    @Override
+    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws 
+            IOException {
         log.info("Create new File");
         File f = new File(file, newName);
 

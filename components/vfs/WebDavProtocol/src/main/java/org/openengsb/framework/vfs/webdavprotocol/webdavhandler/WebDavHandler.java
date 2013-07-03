@@ -16,13 +16,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.openengsb.core.services.SecurityContext;
 
 /**
  *
  * @author Richard
  */
-public class WebDavHandler {
+public final class WebDavHandler {
 
     private Logger log = LoggerFactory.getLogger(WebDavHandler.class);
     private static WebDavHandler instance = new WebDavHandler();
@@ -32,8 +31,8 @@ public class WebDavHandler {
     private MiltonServlet servlet;
     private HttpServiceListener httpServiceListener;
     private RepositoryHandlerListener repositoryHandlerListener;
-	private AuthenticationDomainTracker authenticationDomainTracker= null;
-	private AuthenticationDomain authenticator;
+    private AuthenticationDomainTracker authenticationDomainTracker = null;
+    private AuthenticationDomain authenticator;
 
     private WebDavHandler() {
     }
@@ -56,8 +55,8 @@ public class WebDavHandler {
         log.debug("start repositoryHandler listener");
         repositoryHandlerListener = new RepositoryHandlerListener(bundleContext, this);
         repositoryHandlerListener.open();
-		
-		log.debug("start authenticationDomain Tracker");
+
+        log.debug("start authenticationDomain Tracker");
         authenticationDomainTracker = new AuthenticationDomainTracker(bundleContext, this);
         authenticationDomainTracker.open();
 
@@ -79,22 +78,18 @@ public class WebDavHandler {
         this.repositoryHandler = repositoryHandler;
         startMilton();
     }
-	
-	 public void registerAuthenticationDomainService(AuthenticationDomain authenticationDomain)
-	 {
-		 authenticator = authenticationDomain;
-	 }
-	 
-	 public AuthenticationDomain getAuthenticationDomainService()
-	 {
-		 return authenticator;
-	 }
 
-    public void unregisterAuthenticationDomainService()
-	{
-		authenticator = null;
+    public void registerAuthenticationDomainService(AuthenticationDomain authenticationDomain) {
+        authenticator = authenticationDomain;
     }
 
+    public AuthenticationDomain getAuthenticationDomainService() {
+        return authenticator;
+    }
+
+    public void unregisterAuthenticationDomainService() {
+        authenticator = null;
+    }
 
     public void unregisterRepositoryHandler() {
         this.repositoryHandler = null;
@@ -120,21 +115,10 @@ public class WebDavHandler {
 
         servlet = new MiltonServlet();
 
-//		MiltionServletConfig conf = new MiltionServletConfig();
-//
-//		try
-//		{
-//			servlet.init(conf);
-//		}
-//		catch (ServletException ex)
-//		{
-//			log.error("problem set init of servlet");
-//			return;
-//		}
-
         try {
             Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("resource.factory.class", "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
+            props.put("resource.factory.class",
+                    "org.openengsb.framework.vfs.webdavprotocol.factories.ResourceFactoryImpl");
             httpService.registerServlet("/", servlet, props, null);
 
             log.info("Milton servlet registered");

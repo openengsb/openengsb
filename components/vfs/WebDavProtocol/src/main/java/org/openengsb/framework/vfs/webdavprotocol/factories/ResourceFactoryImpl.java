@@ -12,6 +12,7 @@ import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.Resource;
 import java.io.File;
+import java.util.logging.Level;
 
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.webdavprotocol.resourcetypes.DirectoryResource;
@@ -35,7 +36,7 @@ public class ResourceFactoryImpl implements ResourceFactory {
         repositoryHandler = webDavHandler.getRepositoryHandler();
     }
 
-    public Resource getResource(String host, String url) throws NotAuthorizedException, BadRequestException {
+    public Resource getResource(String host, String url) throws NotAuthorizedException {
         log.debug("getResource: url: " + url);
         Path path = Path.path(url);
         Resource r = find(path);
@@ -43,7 +44,7 @@ public class ResourceFactoryImpl implements ResourceFactory {
         return r;
     }
 
-    private Resource find(Path path) throws NotAuthorizedException, BadRequestException {
+    private Resource find(Path path) throws NotAuthorizedException {
         if (path.isRoot()) {
             log.debug("_path is root");
 
@@ -73,9 +74,13 @@ public class ResourceFactoryImpl implements ResourceFactory {
         }
 
         if (rParent instanceof CollectionResource) {
-            log.debug("_rParent  instanceof CollectionResource");
-            CollectionResource folder = (CollectionResource) rParent;
-            return folder.child(path.getName());
+            try {
+                log.debug("_rParent  instanceof CollectionResource");
+                CollectionResource folder = (CollectionResource) rParent;
+                return folder.child(path.getName());
+            } catch (BadRequestException ex) {
+                java.util.logging.Logger.getLogger(ResourceFactoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return null;
     }

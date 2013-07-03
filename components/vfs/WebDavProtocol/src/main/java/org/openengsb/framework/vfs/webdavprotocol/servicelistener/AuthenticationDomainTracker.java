@@ -9,7 +9,6 @@ import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,8 @@ public class AuthenticationDomainTracker {
     }
 
     public void open() {
-        tracker = new ServiceTracker<AuthenticationDomain, AuthenticationDomain>(context, AuthenticationDomain.class, null) {
+        tracker = new ServiceTracker
+                <AuthenticationDomain, AuthenticationDomain>(context, AuthenticationDomain.class, null) {
             @Override
             public AuthenticationDomain addingService(ServiceReference<AuthenticationDomain> reference) {
 

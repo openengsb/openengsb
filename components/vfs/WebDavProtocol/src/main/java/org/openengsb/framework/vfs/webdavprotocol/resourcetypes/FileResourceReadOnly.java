@@ -4,8 +4,6 @@
  */
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
-import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import java.io.File;
@@ -22,22 +20,22 @@ public class FileResourceReadOnly extends FileResource {
     }
 
     @Override
-    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         throw new NotAuthorizedException("Tag folder is read only", this);
     }
 
     @Override
-    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
         throw new NotAuthorizedException("Tag folder is read only", this);
     }
 
     @Override
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
         throw new NotAuthorizedException("Tag folder is read only", this);
     }
 
     @Override
-    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+    public void delete() throws NotAuthorizedException {
         throw new NotAuthorizedException("Tag folder is read only", this);
     }
 }

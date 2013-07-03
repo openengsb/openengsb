@@ -4,8 +4,6 @@
  */
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
-import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.Resource;
@@ -33,29 +31,30 @@ public class DirectoryResourceReadOnly extends DirectoryResource {
     }
 
     @Override
-    public CollectionResource createCollection(String newName) throws NotAuthorizedException, ConflictException, BadRequestException {
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         return null;
     }
 
     @Override
-    public void replaceContent(InputStream in, Long length) throws BadRequestException, ConflictException, NotAuthorizedException {
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
     }
 
     @Override
-    public void delete() throws NotAuthorizedException, ConflictException, BadRequestException {
+    public void delete() throws NotAuthorizedException {
     }
 
     @Override
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException, NotAuthorizedException, BadRequestException {
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
     }
 
     @Override
-    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws IOException, ConflictException, NotAuthorizedException, BadRequestException {
+    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws 
+            IOException {
         return null;
     }
 
     @Override
-    public List<? extends Resource> getChildren() throws NotAuthorizedException, BadRequestException {
+    public List<? extends Resource> getChildren() throws NotAuthorizedException {
         if (children == null) {
             children = new ArrayList<Resource>();
         }
