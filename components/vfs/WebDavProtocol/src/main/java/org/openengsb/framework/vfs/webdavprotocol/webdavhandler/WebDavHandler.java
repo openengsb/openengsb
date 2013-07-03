@@ -7,7 +7,9 @@ package org.openengsb.framework.vfs.webdavprotocol.webdavhandler;
 //import io.milton.servlet.MiltonServlet;
 import io.milton.servlet.MiltonServlet;
 import java.util.Hashtable;
+import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.webdavprotocol.servicelistener.AuthenticationDomainTracker;
 import org.openengsb.framework.vfs.webdavprotocol.servicelistener.RepositoryHandlerListener;
 import org.openengsb.framework.vfs.webdavprotocol.servicelistener.HttpServiceListener;
 import org.osgi.framework.BundleContext;
@@ -30,6 +32,8 @@ public class WebDavHandler {
     private MiltonServlet servlet;
     private HttpServiceListener httpServiceListener;
     private RepositoryHandlerListener repositoryHandlerListener;
+	private AuthenticationDomainTracker authenticationDomainTracker= null;
+	private AuthenticationDomain authenticator;
 
     private WebDavHandler() {
     }
@@ -52,6 +56,10 @@ public class WebDavHandler {
         log.debug("start repositoryHandler listener");
         repositoryHandlerListener = new RepositoryHandlerListener(bundleContext, this);
         repositoryHandlerListener.open();
+		
+		log.debug("start authenticationDomain Tracker");
+        authenticationDomainTracker = new AuthenticationDomainTracker(bundleContext, this);
+        authenticationDomainTracker.open();
 
         //HttpServiceTracker hts = new HttpServiceTracker(bundleContext);
         //hts.open();
@@ -71,6 +79,22 @@ public class WebDavHandler {
         this.repositoryHandler = repositoryHandler;
         startMilton();
     }
+	
+	 public void registerAuthenticationDomainService(AuthenticationDomain authenticationDomain)
+	 {
+		 authenticator = authenticationDomain;
+	 }
+	 
+	 public AuthenticationDomain getAuthenticationDomainService()
+	 {
+		 return authenticator;
+	 }
+
+    public void unregisterAuthenticationDomainService()
+	{
+		authenticator = null;
+    }
+
 
     public void unregisterRepositoryHandler() {
         this.repositoryHandler = null;
