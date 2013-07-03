@@ -2,7 +2,6 @@ package org.openengsb.framework.vfs.vfsrepositoryhandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,9 +68,9 @@ public final class VFSRepositoryHandler implements RepositoryHandler {
         configurationServiceListener.open();
 
         try {
-            Files.createDirectories(repositoryPath);
-            Files.createDirectories(configurationPath);
-            Files.createDirectories(tagsPath);
+            fileOperator.createDirectories(repositoryPath);
+            fileOperator.createDirectories(configurationPath);
+            fileOperator.createDirectories(tagsPath);
         } catch (IOException e) {
             logger.error("Could not create repository directories: " + e.getMessage());
         }
@@ -87,7 +86,7 @@ public final class VFSRepositoryHandler implements RepositoryHandler {
         Path tagPath = tagsPath.resolve(tagDirectoryName);
         
         try {
-            Files.copy(path, tagPath);
+            fileOperator.copy(path, tagPath);
         } catch (IOException e) {
             logger.error("Could not copy tag to destination: " + e.getMessage());
         }

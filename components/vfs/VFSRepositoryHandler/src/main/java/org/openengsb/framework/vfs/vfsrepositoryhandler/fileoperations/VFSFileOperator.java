@@ -1,6 +1,7 @@
 package org.openengsb.framework.vfs.vfsrepositoryhandler.fileoperations;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -32,5 +33,13 @@ public class VFSFileOperator implements FileOperator {
         }
 
         return tags;
+    }
+
+    public void createDirectories(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
+
+    public void copy(Path source, Path destination) throws IOException {
+        Files.copy(source, destination);
     }
 }
