@@ -23,14 +23,17 @@ public class MiltionServletConfig implements ServletConfig {
                 "org.openengsb.framework.vfs.webDavProtocol.Factories.ResourceFactoryImpl");
     }
 
+    @Override
     public String getServletName() {
         return MiltonServlet.class.toString();
     }
 
+    @Override
     public ServletContext getServletContext() {
         return null;
     }
 
+    @Override
     public String getInitParameter(String string) {
         if (parameters.containsKey(string)) {
             return parameters.get(string);
@@ -38,6 +41,7 @@ public class MiltionServletConfig implements ServletConfig {
         return null;
     }
 
+    @Override
     public Enumeration getInitParameterNames() {
         return new InitEnum();
     }
@@ -49,6 +53,7 @@ public class MiltionServletConfig implements ServletConfig {
         public InitEnum() {
         }
 
+        @Override
         public boolean hasMoreElements() {
             if (readCount < parameters.size()) {
                 return true;
@@ -57,6 +62,7 @@ public class MiltionServletConfig implements ServletConfig {
             return false;
         }
 
+        @Override
         public Object nextElement() {
             return (String) (parameters.keySet().toArray()[readCount++]);
         }

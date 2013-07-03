@@ -20,6 +20,7 @@ public class Activator implements BundleActivator {
     private RepositoryHandlerListener confWrapp;
     private WebDavHandler webDavHandler = null;
 
+    @Override
     public void start(BundleContext bc) throws Exception {
         if (webDavHandler == null) {
             webDavHandler = WebDavHandler.getInstance();
@@ -29,6 +30,7 @@ public class Activator implements BundleActivator {
         webDavHandler.start();
     }
 
+    @Override
     public void stop(BundleContext bc) throws Exception {
         if (webDavHandler != null) {
             webDavHandler.stopMilton();

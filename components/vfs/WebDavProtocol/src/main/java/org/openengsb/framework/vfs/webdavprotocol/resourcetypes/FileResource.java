@@ -6,8 +6,6 @@ package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.Auth;
 import io.milton.http.Range;
-import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.CopyableResource;
@@ -48,13 +46,13 @@ public class FileResource extends AbstractResource implements
         return file.getName();
     }
 
-    public CollectionResource createCollection(String newName) {
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         return null;
     }
 
     @Override
-    public void sendContent(OutputStream out, Range range,
-            Map<String, String> params, String contentType) throws IOException {
+    public void sendContent(OutputStream out, Range range, Map<String, String> params, String contentType) throws 
+            IOException {
         Files.copy(file.toPath(), out);
     }
 
@@ -73,10 +71,8 @@ public class FileResource extends AbstractResource implements
         return file.length();
     }
 
-    
     @Override
-    public void replaceContent(InputStream in, Long length) throws
-        BadRequestException {
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
         try {
             Files.deleteIfExists(file.toPath());
             Files.copy(in, file.toPath());
@@ -86,8 +82,7 @@ public class FileResource extends AbstractResource implements
     }
 
     @Override
-    public void moveTo(CollectionResource rDest, String name) throws
-            ConflictException {
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
         log.debug("Move File");
         if (rDest instanceof IResourceFileType) {
             File des = ((IResourceFileType) rDest).getFile();

@@ -8,6 +8,7 @@ import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.Resource;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,24 +31,25 @@ public class DirectoryResourceReadOnly extends DirectoryResource {
     }
 
     @Override
-    public CollectionResource createCollection(String newName) {
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         return null;
     }
 
     @Override
-    public void replaceContent(InputStream in, Long length) {
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
     }
 
     @Override
-    public void delete() {
+    public void delete() throws NotAuthorizedException {
     }
 
     @Override
-    public void moveTo(CollectionResource rDest, String name) {
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
     }
 
     @Override
-    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) {
+    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws 
+            IOException {
         return null;
     }
 

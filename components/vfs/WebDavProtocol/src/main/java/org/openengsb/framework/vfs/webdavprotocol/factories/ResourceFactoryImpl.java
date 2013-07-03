@@ -12,6 +12,7 @@ import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.Resource;
 import java.io.File;
+import java.util.logging.Level;
 
 import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.webdavprotocol.resourcetypes.DirectoryResource;
@@ -74,12 +75,12 @@ public class ResourceFactoryImpl implements ResourceFactory {
         }
 
         if (rParent instanceof CollectionResource) {
-            log.debug("_rParent  instanceof CollectionResource");
-            CollectionResource folder = (CollectionResource) rParent;
             try {
+                log.debug("_rParent  instanceof CollectionResource");
+                CollectionResource folder = (CollectionResource) rParent;
                 return folder.child(path.getName());
             } catch (BadRequestException ex) {
-                return null;
+                java.util.logging.Logger.getLogger(ResourceFactoryImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return null;

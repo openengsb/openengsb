@@ -23,14 +23,14 @@ public class FileResourceReadOnly extends FileResource {
 
     @Override
     public void replaceContent(InputStream in, Long length) throws 
-            BadRequestException {
-        throw new BadRequestException("Tag folder is read only");
+            NotAuthorizedException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
     }
 
     @Override
     public void moveTo(CollectionResource rDest, String name) throws
-            ConflictException {
-        throw new ConflictException("Tag folder is read only");
+            NotAuthorizedException {
+        throw new NotAuthorizedException("Tag folder is read only", this);
     }
 
     @Override

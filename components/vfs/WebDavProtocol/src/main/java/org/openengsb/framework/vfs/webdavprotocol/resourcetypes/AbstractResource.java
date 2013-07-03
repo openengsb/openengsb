@@ -26,41 +26,57 @@ import io.milton.http.http11.auth.DigestResponse;
 import io.milton.resource.DigestResource;
 import io.milton.resource.PropFindableResource;
 import java.util.Date;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.api.security.model.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
+import org.openengsb.core.services.*;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 
-/**
- *
- *
- */
 public abstract class AbstractResource implements DigestResource, PropFindableResource {
 
     private Logger log = LoggerFactory.getLogger(AbstractResource.class);
-    private OpenEngSBShiroAuthenticator openEngSBShiroAuthenticator = new OpenEngSBShiroAuthenticator();
+    private AuthenticationDomain authenticator;
+    private WebDavHandler webDavHandler = WebDavHandler.getInstance();
 
     public AbstractResource() {
     }
 
     @Override
-    public Object authenticate(String user, String requestedPassword) {
-        UsernamePasswordToken token = new UsernamePasswordToken(user, requestedPassword);
-        AuthenticationInfo info;
-        try {
-            info = openEngSBShiroAuthenticator.authenticate(token);
-        } catch (Exception ex) {
-            return null;
+    public Object authenticate(final String user, final String requestedPassword) {
+        AuthenticationToken token = new AuthenticationToken() {
+            @Override
+            public Object getPrincipal() {
+                return user;
+            }
+
+            @Override
+            public Object getCredentials() {
+                return new Password(requestedPassword);
+            }
+        };
+
+
+        if (authenticator == null) {
+            authenticator = webDavHandler.getAuthenticationDomainService();
+            if (authenticator == null) {
+                log.error("Authenticator is still null, not able to get it from webDavHandler");
+            }
         }
-        /*
-         if (user.equals("user") && requestedPassword.equals("password"))
-         {
-         return user;
-         }
-         */
-        return info;
+
+        try {
+            Authentication authenticate =
+                    authenticator.authenticate(token.getPrincipal().toString(), (Credentials) token.getCredentials());
+
+        } catch (AuthenticationException ex) {
+            log.debug("Login Error: " + ex.getMessage());
+        }
+        return null;
     }
 
     @Override

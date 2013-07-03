@@ -5,7 +5,6 @@
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
 import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import io.milton.resource.DeletableResource;
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openengsb.framework.vfs.webdavprotocol.common.ChildUtils;
@@ -49,8 +49,7 @@ public class DirectoryResource extends AbstractResource implements
     }
 
     @Override
-    public CollectionResource createCollection(String newName) throws
-            NotAuthorizedException {
+    public CollectionResource createCollection(String newName) throws NotAuthorizedException {
         File newfile = new File(file, newName);
         DirectoryResource r = new DirectoryResource(newfile);
         newfile.mkdir();
@@ -58,9 +57,13 @@ public class DirectoryResource extends AbstractResource implements
     }
 
     @Override
-    public Resource child(String childName) throws 
-           NotAuthorizedException {
-        return ChildUtils.child(childName, getChildren());
+    public Resource child(String childName) throws BadRequestException {
+        try {
+            return ChildUtils.child(childName, getChildren());
+        } catch (NotAuthorizedException ex) {
+            java.util.logging.Logger.getLogger(DirectoryResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -73,6 +76,7 @@ public class DirectoryResource extends AbstractResource implements
         return new Date(file.lastModified());
     }
 
+    @Override
     public List<? extends Resource> getChildren() throws NotAuthorizedException {
         if (children == null) {
             children = new ArrayList<Resource>();
@@ -96,7 +100,8 @@ public class DirectoryResource extends AbstractResource implements
         return children;
     }
 
-    public void replaceContent(InputStream in, Long length) throws BadRequestException {
+    @Override
+    public void replaceContent(InputStream in, Long length) throws NotAuthorizedException {
         try {
             Files.deleteIfExists(file.toPath());
             Files.copy(in, file.toPath());
@@ -105,6 +110,7 @@ public class DirectoryResource extends AbstractResource implements
         }
     }
 
+    @Override
     public void delete() throws NotAuthorizedException {
         try {
             Files.delete(file.toPath());
@@ -113,7 +119,8 @@ public class DirectoryResource extends AbstractResource implements
         }
     }
 
-    public void moveTo(CollectionResource rDest, String name) throws ConflictException {
+    @Override
+    public void moveTo(CollectionResource rDest, String name) throws NotAuthorizedException {
         if (rDest instanceof IResourceFileType) {
             try {
                 File f = ((IResourceFileType) rDest).getFile();
@@ -126,12 +133,14 @@ public class DirectoryResource extends AbstractResource implements
         }
     }
 
+    @Override
     public File getFile() {
         return file;
     }
 
-    public Resource createNew(String newName, InputStream inputStream,
-            Long length, String contentType) throws IOException {
+    @Override
+    public Resource createNew(String newName, InputStream inputStream, Long length, String contentType) throws 
+            IOException {
         log.info("Create new File");
         File f = new File(file, newName);
 
