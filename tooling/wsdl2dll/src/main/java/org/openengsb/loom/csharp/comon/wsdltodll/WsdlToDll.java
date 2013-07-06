@@ -22,7 +22,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,14 +30,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.openengsb.loom.csharp.comon.wsdltodll.csfilehandling.FileComparer;
 
 /**
  * Goal which creates a DLL from a WSDL file.
@@ -49,7 +46,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class WsdlToDll extends AbstractMojo {
 
     private static final String LINUX_WSDL_SERVER_PARAMETER = "-server";
-    private static final String LINUX_WSDL_COMMAND = "wsdl";
+    private static final String LINUX_WSDL_COMMAND = "wsdl2";
     private static final String LINUX_CSC_COMMAND = "mcs";
     private static final String WINDWOS_WSDL_SERVER_PARAMETER = "/serverInterface";
     private static final String WINDOWS_WSDL_COMMAND = "wsdl.exe";
@@ -59,7 +56,7 @@ public class WsdlToDll extends AbstractMojo {
     private String cscCommand;
     private String wsdlCommand;
     private String serverParameter;
-    private Boolean WindowsModus;
+    private Boolean windowsModus;
 
     /**
      * Owner of the Nuget package
@@ -188,23 +185,14 @@ public class WsdlToDll extends AbstractMojo {
 
     private List<String> cspath = new ArrayList<String>();
 
-    private List<String> handledClasses = new ArrayList<String>();
-
-    private static final Pattern CLASS_START_PATTERN_1 = Pattern
-        .compile("    /// <remarks/>\n(    \\[System.*\\]\n)+ {4}public partial class \\w+ \\{\n");
-    private static final Pattern ABSTRACT_CLASS_START_PATTERN = Pattern
-        .compile("    /// <remarks/>\n(    \\[System.*\\]\n)+ {4}public abstract partial class \\w+ \\{");
-    private static final Pattern INHERITED_CLASS_START_PATTERN = Pattern
-        .compile("    /// <remarks/>\n(    \\[System.*\\]\n)+ {4}public partial class [A-Za-z]* : [A-Za-z]* \\{");
-
     /**
      * Find and executes the commands wsdl.exe and csc.exe
      */
     @Override
     public void execute() throws MojoExecutionException {
         checkParameters();
-        WindowsModus = isWindows();
-        if (WindowsModus) {
+        windowsModus = isWindows();
+        if (windowsModus) {
             setWindowsVariables();
         } else {
             setLinuxVariables();
@@ -223,6 +211,7 @@ public class WsdlToDll extends AbstractMojo {
         cscCommand = WINDOWS_CSC_COMMAND;
         wsdlCommand = WINDOWS_WSDL_COMMAND;
         serverParameter = WINDWOS_WSDL_SERVER_PARAMETER;
+
     }
 
     private void setLinuxVariables() {
@@ -251,9 +240,10 @@ public class WsdlToDll extends AbstractMojo {
         getLog().info("Execute cs to dll command");
         cscCommand();
         if (generateNugetPackage) {
-            if (!WindowsModus) {
+            if (!windowsModus) {
                 throw new MojoExecutionException(
-                    "At this point, mono and nuget does not work so well together. Please execute the plugin with nuget");
+                    "At this point, mono and nuget does not work so well together."
+                            + "Please execute the plugin with nuget");
             }
             nugetLib = nugetFolder + "lib";
             getLog().info("Create Nuget folder structure");
@@ -268,7 +258,7 @@ public class WsdlToDll extends AbstractMojo {
     }
 
     private String findWsdlCommand() throws MojoExecutionException {
-        if (!WindowsModus) {
+        if (!windowsModus) {
             // In Linux, the wsdl command can be accessed directly
             return wsdlCommand;
         }
@@ -290,7 +280,7 @@ public class WsdlToDll extends AbstractMojo {
     }
 
     private String findCscCommand() throws MojoExecutionException {
-        if (!WindowsModus) {
+        if (!windowsModus) {
             // In Linux, the wsdl command can be accessed directly
             return cscCommand;
         }
@@ -347,7 +337,6 @@ public class WsdlToDll extends AbstractMojo {
      */
     private void wsdlCommand() throws MojoExecutionException {
         String cmd = findWsdlCommand();
-        List<File> csfiles = new LinkedList<File>();
         int i = 0;
         for (String location : wsdlLocations) {
             String outputFilename = new File(outputDirectory, namespace + (i++)
@@ -369,94 +358,17 @@ public class WsdlToDll extends AbstractMojo {
                     "Error, while executing command: "
                             + Arrays.toString(command) + "\n", e);
             }
-            try {
-                readClassesFromFile(outputFilename);
-            } catch (IOException e) {
-                throw new MojoExecutionException(
-                    "unable to postprocess generated outputfile", e);
-            }
             cspath.add(outputFilename);
         }
-
-    }
-
-    private Collection<String> findAllClassDefs(String fileString) {
-        String[] parts = fileString.split("\n {4}\\}");
-        Collection<String> result = new HashSet<String>();
-        for (String p : parts) {
-            Matcher matcher = CLASS_START_PATTERN_1.matcher(p);
-            Matcher abstractMatcher = ABSTRACT_CLASS_START_PATTERN.matcher(p);
-            Matcher inheritedMatcher = INHERITED_CLASS_START_PATTERN.matcher(p);
-            Boolean isClass = matcher.find();
-            Boolean isAbstractClass = abstractMatcher.find();
-            Boolean isInheritedClass = inheritedMatcher.find();
-            if (!isClass && !isAbstractClass && !isInheritedClass) {
-                continue;
-            }
-            int index = -1;
-            if (isClass) {
-                index = matcher.start();
-            } else if (isAbstractClass) {
-                index = abstractMatcher.start();
-            } else {
-                index = inheritedMatcher.start();
-            }
-            String classDefString = p.substring(index) + "\n    }\n";
-            result.add(classDefString);
-        }
-        return result;
-    }
-
-    private String replaceDuplicateClasses(final String fileString) {
-        String result = fileString;
-        for (String classDefString : findAllClassDefs(fileString)) {
-            boolean found = false;
-            for (String element : handledClasses) {
-                if (element
-                    .replaceAll("private", "public")
-                    .replaceAll("public entry[0-9]", "entryX")
-                    .equals(classDefString.replaceAll("private", "public")
-                        .replaceAll("public entry[0-9]", "entryX"))) {
-                    found = true;
-                    break;
-                } else {
-                    found = false;
-                }
-            }
-            if (!found) {
-                handledClasses.add(classDefString);
-            } else {
-                result = result.replace(classDefString, "");
-            }
-        }
-        return result;
-    }
-
-    private void readClassesFromFile(String outputFilename) throws IOException {
-        String fileString = readFileToString(new File(outputFilename));
-        String processed = replaceDuplicateClasses(fileString);
-        if (processed.equals(fileString)) {
-            return;
-        }
-        getLog().info("rewriting " + outputFilename);
-        FileWriter fileWriter = new FileWriter(new File(outputFilename));
-        fileWriter.append(processed);
-        fileWriter.close();
-    }
-
-    private static String readFileToString(File file) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        StringBuilder sb = new StringBuilder();
-        String line;
         try {
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-        } finally {
-            bufferedReader.close();
+            FileComparer.removeSimilaritiesAndSaveFiles(cspath, getLog(),
+                windowsModus);
+        } catch (IOException e) {
+            throw new MojoExecutionException(
+                "It was not possible, to remove similarities form the files",
+                e);
         }
-        return sb.toString();
+
     }
 
     /**
@@ -469,7 +381,7 @@ public class WsdlToDll extends AbstractMojo {
         commandList.add(0, cscPath);
         commandList.add(1, "/target:library");
         commandList.add(2, "/out:" + namespace + ".dll");
-        if (!WindowsModus) {
+        if (!windowsModus) {
             commandList.add(3, "/reference:System.Web.Services");
         }
         String[] command = commandList.toArray(new String[commandList.size()]);
@@ -656,7 +568,7 @@ public class WsdlToDll extends AbstractMojo {
                 }
                 input += tmp + "\n";
             } else {
-                ignore = !WindowsModus;
+                ignore = !windowsModus;
             }
             last = tmp;
         }
