@@ -240,10 +240,10 @@ public class WsdlToDll extends AbstractMojo {
         getLog().info("Execute cs to dll command");
         cscCommand();
         if (generateNugetPackage) {
-            if (!windowsModus) {
+            if (isLinux()) {
                 throw new MojoExecutionException(
                     "At this point, mono and nuget does not work so well together."
-                            + "Please execute the plugin with nuget");
+                            + "Please execute the plugin with nuget under Windows");
             }
             nugetLib = nugetFolder + "lib";
             getLog().info("Create Nuget folder structure");
@@ -258,9 +258,13 @@ public class WsdlToDll extends AbstractMojo {
     }
 
     private String findWsdlCommand() throws MojoExecutionException {
-        if (!windowsModus) {
-            // In Linux, the wsdl command can be accessed directly
-            return wsdlCommand;
+        if (isLinux()) {
+            if (isMonoCommandInstalled(wsdlCommand)) {
+                return wsdlCommand;
+            }
+            throw new MojoExecutionException("The program '" + wsdlCommand
+                    + "' is currently not installed.  You can install it by typing: "
+                    + "sudo apt-get install mono-devel");
         }
         if (wsdlExeFolderLocation != null) {
             return wsdlExeFolderLocation.getAbsolutePath();
@@ -279,11 +283,28 @@ public class WsdlToDll extends AbstractMojo {
                 + " -DwsdlExeFolderLocation=\"C:\\path\\to\\wsdl.exe\"");
     }
 
-    private String findCscCommand() throws MojoExecutionException {
-        if (!windowsModus) {
-            // In Linux, the wsdl command can be accessed directly
-            return cscCommand;
+    private boolean isMonoCommandInstalled(String command) {
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.redirectErrorStream(true);
+        builder.command(command);
+        try {
+            executeACommand(builder.start());
+        } catch (MojoExecutionException | IOException | InterruptedException e) {
+            return false;
         }
+        return true;
+    }
+
+    private String findCscCommand() throws MojoExecutionException {
+        if (isLinux()) {
+            if (isMonoCommandInstalled(cscCommand)) {
+                return cscCommand;
+            }
+            throw new MojoExecutionException("The program '" + cscCommand
+                    + "' is currently not installed.  You can install it by typing: "
+                    + "sudo apt-get install mono-" + cscCommand);
+        }
+
         if (cscFolderLocation != null) {
             return cscFolderLocation.getAbsolutePath();
         }
@@ -301,6 +322,10 @@ public class WsdlToDll extends AbstractMojo {
                 + " in paths " + Arrays.toString(DEFAULT_CSC_PATHS) + "\n "
                 + "You can specify the path manually by adding the argument \n"
                 + " -DcscFolderLocation=\"C:\\path\\to\\csc.exe\"");
+    }
+
+    private boolean isLinux() {
+        return !windowsModus;
     }
 
     private Collection<File> findAllInstalledSDKs(String[] paths) {
@@ -349,11 +374,7 @@ public class WsdlToDll extends AbstractMojo {
 
             try {
                 executeACommand(builder.start());
-            } catch (IOException e) {
-                throw new MojoExecutionException(
-                    "Error, while executing command: "
-                            + Arrays.toString(command) + "\n", e);
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new MojoExecutionException(
                     "Error, while executing command: "
                             + Arrays.toString(command) + "\n", e);
@@ -381,7 +402,7 @@ public class WsdlToDll extends AbstractMojo {
         commandList.add(0, cscPath);
         commandList.add(1, "/target:library");
         commandList.add(2, "/out:" + namespace + ".dll");
-        if (!windowsModus) {
+        if (isLinux()) {
             commandList.add(3, "/reference:System.Web.Services");
         }
         String[] command = commandList.toArray(new String[commandList.size()]);
@@ -417,7 +438,7 @@ public class WsdlToDll extends AbstractMojo {
                                 + (new File(nugetLib)).getAbsoluteFile()
                                     .toPath());
                     Files.copy(file.getAbsoluteFile().toPath(), (new File(
-                        nugetLib + "//" + file.getName()))
+                        nugetLib + "/" + file.getName()))
                         .getAbsoluteFile().toPath(), REPLACE_EXISTING);
                 } catch (IOException ex) {
                     throw new MojoExecutionException(ex.getMessage());
@@ -553,24 +574,24 @@ public class WsdlToDll extends AbstractMojo {
         BufferedReader brout = new BufferedReader(new InputStreamReader(
             child.getInputStream()));
         String error = "";
-        String tmp;
+        String tmpLine;
         String input = "";
         String last = "";
-        boolean ignore = false;
-        while ((tmp = brout.readLine()) != null) {
-            if (isNotALineToFilter(tmp)) {
-                if (ignore) {
-                    if (isAMonoWsdlWarningLine(tmp)) {
-                        ignore = false;
+        boolean isAWarningLines = false;
+        while ((tmpLine = brout.readLine()) != null) {
+            if (isNotALineToFilter(tmpLine)) {
+                if (isAWarningLines) {
+                    if (isNotAMonoWsdlWarningLine(tmpLine)) {
+                        isAWarningLines = false;
                     } else {
                         continue;
                     }
                 }
-                input += tmp + "\n";
+                input += tmpLine + "\n";
             } else {
-                ignore = !windowsModus;
+                isAWarningLines = isLinux();
             }
-            last = tmp;
+            last = tmpLine;
         }
         getLog().info("Waiting until process is finished");
 
@@ -605,7 +626,7 @@ public class WsdlToDll extends AbstractMojo {
      * @param line
      * @return
      */
-    private boolean isAMonoWsdlWarningLine(String line) {
+    private boolean isNotAMonoWsdlWarningLine(String line) {
         return !line.startsWith(" ") && !line.equals("");
     }
 

@@ -62,25 +62,25 @@ public class FileComparer {
         logging.info("Start reding cs File");
         List<String> linescs2 = getFileLinesAsList(csFile2);
         logging.info("Search classes");
-        List<String> classNames1 = searchClass(linescs1);
+        List<String> classNames1 = searchClasses(linescs1);
         logging.info("Found " + classNames1.size() + " classes");
         logging.info("Search classes");
-        List<String> classNames2 = searchClass(linescs2);
+        List<String> classNames2 = searchClasses(linescs2);
         logging.info("Found " + classNames2.size() + " classes");
         logging.info("Removing similarities from the file");
         for (String name : findSimilarClassNames(classNames1, classNames2)) {
-            linescs1 = removeClass(linescs1, name);
+            linescs1 = removeLinesContainingClassname(linescs1, name);
         }
         logging.info("Remove Attributes, which stands alone");
-        linescs1 = removeUselessAttributes(linescs1);
+        linescs1 = removeAttributesNotBoundToClass(linescs1);
         if (!windows) {
             logging.info("Replace abstract classes with interfaces");
             linescs1 = replaceAbstractClasses(linescs1);
             linescs2 = replaceAbstractClasses(linescs2);
             logging.info("Save files");
         }
-        saveFiles(linescs1, csFile1);
-        saveFiles(linescs2, csFile2);
+        replaceFilesWithNewContent(linescs1, csFile1);
+        replaceFilesWithNewContent(linescs2, csFile2);
     }
 
     /**
@@ -97,51 +97,32 @@ public class FileComparer {
         return result;
     }
 
-    /**
-     * Replace the abstract class with interface
-     * 
-     * @param line
-     * @return
-     */
     private String removeAbstract(String line) {
-        String tmp = line;
-        if (isAbstractClassLine(tmp)) {
+        String tmpLine = line;
+        if (isAbstractClassLine(tmpLine)) {
             logging.info("Found abstract class. Convert it to a interface");
-            tmp = tmp.replace(ABSTRACT_CLASS_SIGNITURE + " ", "interface I");
-            if (tmp.contains(":")) {
-                tmp = tmp.substring(0, tmp.indexOf(":")) + "{";
+            tmpLine = tmpLine.replace(ABSTRACT_CLASS_SIGNITURE + " ", "interface I");
+            if (tmpLine.contains(":")) {
+                tmpLine = tmpLine.substring(0, tmpLine.indexOf(":")) + "{";
             }
-            tmp = tmp.replace(" {", "SoapBinding {");
+            tmpLine = tmpLine.replace(" {", "SoapBinding {");
         } else {
-            if (tmp.contains("abstract")) {
+            if (tmpLine.contains("abstract")) {
                 logging.info("Found abstract method. Convert it");
-                tmp = tmp.replace("abstract", "");
-                tmp = tmp.replace("public", "");
-                tmp = tmp.replace("private", "");
-                tmp = tmp.replace("protected", "");
+                tmpLine = tmpLine.replace("abstract", "");
+                tmpLine = tmpLine.replace("public", "");
+                tmpLine = tmpLine.replace("private", "");
+                tmpLine = tmpLine.replace("protected", "");
             }
         }
-        return tmp;
+        return tmpLine;
     }
 
-    /**
-     * Checks if a line is a abstract class
-     * 
-     * @param line
-     * @return
-     */
     private boolean isAbstractClassLine(String line) {
         return line.contains(ABSTRACT_CLASS_SIGNITURE);
     }
 
-    /**
-     * Saves the file with the new content
-     * 
-     * @param lines
-     * @param file
-     * @throws IOException
-     */
-    private void saveFiles(List<String> lines, File file) throws IOException {
+    private void replaceFilesWithNewContent(List<String> lines, File file) throws IOException {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
         for (int i = 0; i < lines.size(); i++) {
             out.write(lines.get(i));
@@ -150,48 +131,34 @@ public class FileComparer {
         out.close();
     }
 
-    /**
-     * removes the class with the name in className from the File lines
-     * 
-     * @param lines
-     * @param className
-     * @return
-     */
-    private List<String> removeClass(List<String> lines, String className) {
+    private List<String> removeLinesContainingClassname(List<String> lines, String className) {
         List<String> result = new LinkedList<String>();
-        boolean ignore = false;
-        int openingKlammer = 0;
+        boolean ignoreLine = false;
+        int openingBracket = 0;
         for (int i = 0; i < lines.size(); i++) {
-            if (isClass(lines.get(i), className) && isCSharpClass(lines.get(i))) {
-                ignore = true;
+            if (containsLineClassname(lines.get(i), className) && isCSharpClass(lines.get(i))) {
+                ignoreLine = true;
             }
-            if (!ignore) {
+            if (!ignoreLine) {
                 result.add(lines.get(i));
             } else {
                 if (lines.get(i).contains("{")) {
-                    openingKlammer++;
+                    openingBracket++;
                 }
                 if (lines.get(i).contains("}")) {
-                    openingKlammer--;
+                    openingBracket--;
                 }
-                if (openingKlammer <= 0) {
+                if (openingBracket <= 0) {
                     result.add("");
-                    ignore = false;
-                    openingKlammer = 0;
+                    ignoreLine = false;
+                    openingBracket = 0;
                 }
             }
         }
         return result;
     }
 
-    /**
-     * Checks if a String line is the first line of a class
-     * 
-     * @param line
-     * @param classname
-     * @return
-     */
-    private boolean isClass(String line, String classname) {
+    private boolean containsLineClassname(String line, String classname) {
         String classline = line;
         if (line.contains(":")) {
             classline = line.substring(0, line.indexOf(":"));
@@ -199,48 +166,35 @@ public class FileComparer {
         return classline.contains(classname);
     }
 
-    /**
-     * This method removes the Attributes that are not bind to a class
-     * 
-     * @param lines
-     * @return
-     */
-    private List<String> removeUselessAttributes(List<String> lines) {
-        List<String> result = new LinkedList<String>();
-        List<Integer> tmp = new LinkedList<Integer>();
+    private List<String> removeAttributesNotBoundToClass(List<String> lines) {
+        List<String> linesWithoutUnboundAttributes = new LinkedList<String>();
+        List<Integer> tmpLineIndexToDelete = new LinkedList<Integer>();
         List<Integer> linesToDelete = new LinkedList<Integer>();
-        boolean count = false;
+        boolean addAttributesToDelete = false;
         for (int i = 0; i < lines.size(); i++) {
-            result.add(lines.get(i));
+            linesWithoutUnboundAttributes.add(lines.get(i));
             if (lines.get(i).contains("[")) {
-                count = true;
+                addAttributesToDelete = true;
             }
-            if (count) {
-                tmp.add(i);
+            if (addAttributesToDelete) {
+                tmpLineIndexToDelete.add(i);
                 if (lines.get(i).contains("{")
                         || (lines.get(i) != "" && !lines.get(i).contains("["))) {
-                    count = false;
-                    tmp = new LinkedList<Integer>();
+                    addAttributesToDelete = false;
+                    tmpLineIndexToDelete = new LinkedList<Integer>();
                     continue;
                 } else {
                     if (lines.get(i) == "") {
-                        linesToDelete.addAll(tmp);
-                        count = false;
-                        tmp = new LinkedList<Integer>();
+                        linesToDelete.addAll(tmpLineIndexToDelete);
+                        addAttributesToDelete = false;
+                        tmpLineIndexToDelete = new LinkedList<Integer>();
                     }
                 }
             }
         }
-        return removeLines(result, linesToDelete);
+        return removeLines(linesWithoutUnboundAttributes, linesToDelete);
     }
 
-    /**
-     * Removes Elements from a list
-     * 
-     * @param input
-     * @param removeLinesAsInteger
-     * @return
-     */
     private List<String> removeLines(List<String> input,
             List<Integer> removeLinesAsInteger) {
         Collections.sort(removeLinesAsInteger, new Comparator<Integer>() {
@@ -257,13 +211,6 @@ public class FileComparer {
 
     }
 
-    /**
-     * Search for similar class names
-     * 
-     * @param classnames1
-     * @param classnames2
-     * @return
-     */
     private List<String> findSimilarClassNames(List<String> classnames1,
             List<String> classnames2) {
         List<String> result = new LinkedList<String>();
@@ -276,12 +223,12 @@ public class FileComparer {
     }
 
     /**
-     * Finds alle the classes in a File (lines=read File line by line)
+     * Finds all the classes in a File (lines=read File line by line)
      * 
      * @param lines
      * @return
      */
-    private List<String> searchClass(List<String> lines) {
+    private List<String> searchClasses(List<String> lines) {
         List<String> result = new LinkedList<String>();
         for (String line : lines) {
             if (isCSharpClass(line)) {
