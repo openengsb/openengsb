@@ -284,6 +284,12 @@ public class WsdlToDll extends AbstractMojo {
     }
 
     private boolean isMonoCommandInstalled(String command) {
+        List<String> commandList = new LinkedList<String>();
+        commandList.add(command);
+        return isMonoCommandInstalled(commandList);
+    }
+
+    private boolean isMonoCommandInstalled(List<String> command) {
         ProcessBuilder builder = new ProcessBuilder();
         builder.redirectErrorStream(true);
         builder.command(command);
@@ -297,7 +303,10 @@ public class WsdlToDll extends AbstractMojo {
 
     private String findCscCommand() throws MojoExecutionException {
         if (isLinux()) {
-            if (isMonoCommandInstalled(cscCommand)) {
+            List<String> commands = new LinkedList<String>();
+            commands.add(cscCommand);
+            commands.add("/help");
+            if (isMonoCommandInstalled(commands)) {
                 return cscCommand;
             }
             throw new MojoExecutionException("The program '" + cscCommand
