@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.maven.plugin.logging.Log;
 // Note: Under Linux, WSDL and WSDL2 converts a WSDL not to an interface. It creates an abstract class that
 // is not compatible with the .Net Bridge (RealProxy only accepts interface or Classes that implement 
@@ -42,6 +44,10 @@ public class FileComparer {
     private File csFile2;
     private Boolean windows;
     private Log logging;
+
+    public FileComparer(Log logger) {
+        this.logging = logger;
+    }
 
     public FileComparer(File csFile1, File csFile2, Log logging,
             Boolean windows) {
@@ -89,7 +95,7 @@ public class FileComparer {
      * @param lines
      * @return
      */
-    private List<String> replaceAbstractClasses(List<String> lines) {
+    public List<String> replaceAbstractClasses(List<String> lines) {
         List<String> result = new LinkedList<String>();
         for (int i = 0; i < lines.size(); i++) {
             result.add(removeAbstract(lines.get(i)));
@@ -122,7 +128,7 @@ public class FileComparer {
         return line.contains(ABSTRACT_CLASS_SIGNITURE);
     }
 
-    private void replaceFilesWithNewContent(List<String> lines, File file) throws IOException {
+    public void replaceFilesWithNewContent(List<String> lines, File file) throws IOException {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
         for (int i = 0; i < lines.size(); i++) {
             out.write(lines.get(i));
@@ -131,7 +137,7 @@ public class FileComparer {
         out.close();
     }
 
-    private List<String> removeLinesContainingClassname(List<String> lines, String className) {
+    public List<String> removeLinesContainingClassname(List<String> lines, String className) {
         List<String> result = new LinkedList<String>();
         boolean ignoreLine = false;
         int openingBracket = 0;
@@ -163,10 +169,12 @@ public class FileComparer {
         if (line.contains(":")) {
             classline = line.substring(0, line.indexOf(":"));
         }
-        return classline.contains(classname);
+        String patternString = "\\b(" + classname + ")\\b";
+        Pattern pattern = Pattern.compile(patternString);
+        return pattern.matcher(classline).find();
     }
 
-    private List<String> removeAttributesNotBoundToClass(List<String> lines) {
+    public List<String> removeAttributesNotBoundToClass(List<String> lines) {
         List<String> linesWithoutUnboundAttributes = new LinkedList<String>();
         List<Integer> tmpLineIndexToDelete = new LinkedList<Integer>();
         List<Integer> linesToDelete = new LinkedList<Integer>();
@@ -273,7 +281,7 @@ public class FileComparer {
      * @return
      * @throws IOException
      */
-    private List<String> getFileLinesAsList(File f) throws IOException {
+    public List<String> getFileLinesAsList(File f) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(
             new DataInputStream(new FileInputStream(f))));
         List<String> result = new LinkedList<String>();
