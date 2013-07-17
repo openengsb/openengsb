@@ -37,7 +37,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     private boolean providerInstalled = false;
-    private String providerVersion = "1.0.0";
+    private final String providerVersion = "1.0.0";
 
     protected void registerModelProvider() throws Exception {
         if (providerInstalled) {
@@ -46,23 +46,22 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
         String delegationHeader =
             String.format("%s-%s", org.openengsb.labs.delegation.service.Constants.PROVIDED_CLASSES_HEADER,
                 org.openengsb.core.api.Constants.DELEGATION_CONTEXT_MODELS);
-        TinyBundle providerTinyBundle =
-            bundle()
-                .add(TestModel.class)
-                .add(SubModel.class)
-                .add(PrimitivePropertyModel.class)
-                .add(TestModelProvider.class)
-                .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
-                .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
-                .set(Constants.BUNDLE_VERSION, providerVersion)
-                .set(Constants.EXPORT_PACKAGE, "org.openengsb.itests.exam.models")
-                .set(Constants.IMPORT_PACKAGE,
-                    "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
-                            + "org.openengsb.labs.delegation.service")
-                .set(delegationHeader, "org.openengsb.itests.exam.models.*")
-                .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
-        Bundle providerBundle =
-            getBundleContext().installBundle("test://testlocation/test.provider.jar", providerTinyBundle.build());
+        TinyBundle providerTinyBundle = bundle()
+            .add(TestModel.class)
+            .add(SubModel.class)
+            .add(PrimitivePropertyModel.class)
+            .add(TestModelProvider.class)
+            .set(Constants.BUNDLE_ACTIVATOR, TestModelProvider.class.getName())
+            .set(Constants.BUNDLE_SYMBOLICNAME, "test.model.provider")
+            .set(Constants.BUNDLE_VERSION, providerVersion)
+            .set(Constants.EXPORT_PACKAGE, "org.openengsb.itests.exam.models")
+            .set(Constants.IMPORT_PACKAGE,
+                "org.openengsb.core.api.model, org.osgi.framework, org.slf4j, "
+                        + "org.openengsb.labs.delegation.service")
+            .set(delegationHeader, "org.openengsb.itests.exam.models.*")
+            .set(org.openengsb.core.api.Constants.PROVIDE_MODELS_HEADER, "true");
+        Bundle providerBundle = getBundleContext().installBundle("test://testlocation/test.provider.jar",
+            providerTinyBundle.build());
         providerBundle.start();
         providerInstalled = true;
     }
@@ -125,15 +124,15 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
             Method method = model.getClass().getMethod(methodName);
             return method.invoke(model);
         } catch (Exception e) {
-            throw new IllegalArgumentException("There is no method " + methodName
-                    + " for the class " + model.getClass().getName());
+            throw new IllegalArgumentException("There is no method " + methodName + " for the class "
+                    + model.getClass().getName());
         }
     }
 
     protected String getModelOid(String modelId) {
         return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
     }
-    
+
     protected EKBCommit getTestEKBCommit() {
         EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
         commit.setInstanceId("testinstance");
