@@ -421,10 +421,7 @@ public class WsdlToDll extends AbstractMojo {
         builder.command(command);
         try {
             executeACommand(builder.start());
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error, while executing command: "
-                    + Arrays.toString(command) + "\n", e);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             throw new MojoExecutionException("Error, while executing command: "
                     + Arrays.toString(command) + "\n", e);
         }
@@ -471,10 +468,7 @@ public class WsdlToDll extends AbstractMojo {
         builder.command(command);
         try {
             executeACommand(builder.start());
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error, while executing command: "
-                    + Arrays.toString(command) + "\n", e);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             throw new MojoExecutionException("Error, while executing command: "
                     + Arrays.toString(command) + "\n", e);
         }
