@@ -3,7 +3,6 @@ package org.openengsb.framework.vfs.vfsrepositoryhandler;
 import org.openengsb.framework.vfs.vfsrepositoryhandler.fileoperations.FileOperator;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.when;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.vfsrepositoryhandler.tags.ConfigurationTag;
 import org.osgi.framework.BundleContext;
-import org.powermock.api.easymock.PowerMock;
 
 public class VFSRepositoryHandlerTest {
 
@@ -51,15 +49,14 @@ public class VFSRepositoryHandlerTest {
     public void testRepositoryPaths() throws IOException {
         //TODO: Bundle Context = null, check if ok
         FileOperator fileOperator = mock(FileOperator.class);
-        Files files = mock(Files.class);
         RepositoryHandler repositoryHandler = VFSRepositoryHandler.getInstance();
         ((VFSRepositoryHandler) repositoryHandler).setFileOperator(fileOperator);
         ((VFSRepositoryHandler) repositoryHandler).setBundleContext(bundleContext);
         ((VFSRepositoryHandler) repositoryHandler).start();
 
-        verify(files).createDirectories(repositoryPath);
-        verify(files).createDirectories(configurationPath);
-        verify(files).createDirectories(tagsPath);
+        verify(fileOperator).createDirectories(repositoryPath);
+        verify(fileOperator).createDirectories(configurationPath);
+        verify(fileOperator).createDirectories(tagsPath);
 
         Assert.assertEquals(repositoryPath, repositoryHandler.getRepositoryPath());
         Assert.assertEquals(configurationPath, repositoryHandler.getConfigurationPath());
@@ -68,7 +65,6 @@ public class VFSRepositoryHandlerTest {
     @Test
     public void testTagDirectory() throws IOException {
         FileOperator fileOperator = mock(FileOperator.class);
-        Files files = mock(Files.class);
         
         RepositoryHandler repositoryHandler = VFSRepositoryHandler.getInstance();
         ((VFSRepositoryHandler) repositoryHandler).setFileOperator(fileOperator);
@@ -82,7 +78,7 @@ public class VFSRepositoryHandlerTest {
 
         repositoryHandler.tagDirectory(configurationPath, tagName);
 
-        verify(files).copy(configurationPath, expectedTagPath);
+        verify(fileOperator).copy(configurationPath, expectedTagPath);
     }
 
     @Test
