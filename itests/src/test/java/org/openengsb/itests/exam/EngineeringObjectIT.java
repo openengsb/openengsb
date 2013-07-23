@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextHolder;
@@ -177,7 +176,6 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     }
 
     @Test
-    @Ignore
     public void testIfSourceUpdateWorksCorrectly_shouldUpdateEngineeringObject() throws Exception {
         SourceModelA sourceA = new SourceModelA("sourceA/3", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/3", "sourceNameB", "shared");
@@ -195,7 +193,7 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(eo.getNameA(), is("updatedNameA"));
         assertThat(eo.getShared(), is("updatedShared"));
-        assertThat(sourceB.getShared(), is("updateShared"));
+        assertThat(sourceB.getShared(), is("updatedShared"));
     }
 
     @Test

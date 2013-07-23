@@ -96,7 +96,6 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
         List<SimpleModelWrapper> result = recursiveUpdateEnhancement(
             convertOpenEngSBModelList(commit.getUpdates()), updated, commit);
         commit.getUpdates().addAll(convertSimpleModelWrapperList(result));
-
     }
 
     /**
@@ -128,10 +127,10 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private List<SimpleModelWrapper> recursiveUpdateEnhancement(List<SimpleModelWrapper> updates,
             Map<Object, SimpleModelWrapper> updated, EKBCommit commit) {
         List<SimpleModelWrapper> additionalUpdates = enhanceUpdates(updates, updated, commit);
+        for (SimpleModelWrapper model : updates) {
+            updated.put(model.getCompleteModelOID(), model);
+        }
         if (!additionalUpdates.isEmpty()) {
-            for (SimpleModelWrapper model : additionalUpdates) {
-                updated.put(model.getCompleteModelOID(), model);
-            }
             additionalUpdates.addAll(recursiveUpdateEnhancement(additionalUpdates, updated, commit));
         }
         return additionalUpdates;
@@ -215,7 +214,6 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
             if (!updated.containsKey(ref.getCompleteModelOID())) {
                 updates.add(ref);
             }
-            updated.put(ref.getCompleteModelOID(), ref);
         }
         return updates;
     }
