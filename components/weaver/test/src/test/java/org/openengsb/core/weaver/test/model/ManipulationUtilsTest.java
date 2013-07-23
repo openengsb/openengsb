@@ -66,11 +66,8 @@ public class ManipulationUtilsTest {
     @Test
     public void testIfAddOpenEngSBModelEntryWork_shouldWork() throws Exception {
         TestModel model = new TestModel();
-        OpenEngSBModel bla = (OpenEngSBModel) model;
-
-        ModelUtils.addOpenEngSBModelEntry(bla, new OpenEngSBModelEntry("test", "test", String.class));
-
-        List<OpenEngSBModelEntry> entries = bla.toOpenEngSBModelEntries();
+        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         String test = null;
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("test")) {
