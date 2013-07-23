@@ -40,12 +40,12 @@ public class ManipulationUtilsTest {
     }
 
     @Test
-    public void testIfGetOpenEngSBModelEntriesWork_shouldWork() throws Exception {
+    public void testIfToOpenEngSBModelEntriesWork_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("testId");
         model.setName("testName");
         model.setTestBoolean(true);
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         String id = null;
         String name = null;
         Boolean bool = null;
@@ -79,6 +79,15 @@ public class ManipulationUtilsTest {
         }
         assertThat(test, is("test"));
     }
+    
+    @Test
+    public void testIfToOpenEngSBModelValuesWork_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        int before = ModelUtils.toOpenEngSBModelValues(model).size();
+        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
+        int after = ModelUtils.toOpenEngSBModelValues(model).size();
+        assertThat(before, is(after));
+    }
 
     @Test
     public void testIfRemoveOpenEngSBModelEntryWork_shouldWork() throws Exception {
@@ -87,7 +96,7 @@ public class ManipulationUtilsTest {
         ModelUtils.removeOpenEngSBModelEntry(model, "test");
         // the result has three elements even though the model has four properties,
         // since the third property is ignored
-        assertThat(ModelUtils.getOpenEngSBModelEntries(model).size(), is(3));
+        assertThat(ModelUtils.toOpenEngSBModelEntries(model).size(), is(3));
     }
 
     @Test
@@ -131,7 +140,7 @@ public class ManipulationUtilsTest {
         model.setValue1(5);
         model.setValue2(42L);
         model.setValue3(true);
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         assertThat((Integer) getEntryByName(entries, "value1"), is(5));
         assertThat((Long) getEntryByName(entries, "value2"), is(42L));
         assertThat((Boolean) getEntryByName(entries, "value3"), is(true));
@@ -155,7 +164,7 @@ public class ManipulationUtilsTest {
         model.setValue1(5);
         model.setValue2(42L);
         model.setValue3(true);
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         assertThat(getEntryByName(entries, "ignoredField"), nullValue());
     }
     
@@ -165,7 +174,7 @@ public class ManipulationUtilsTest {
         model.setId("testId");
         model.setName("testName");
         model.setChild("testChild");
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         assertThat((String) getEntryByName(entries, "id"), is("testId"));
         assertThat((String) getEntryByName(entries, "name"), is("testName"));
         assertThat((String) getEntryByName(entries, "child"), is("testChild"));

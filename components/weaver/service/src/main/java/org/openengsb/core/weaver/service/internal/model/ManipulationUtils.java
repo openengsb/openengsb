@@ -159,7 +159,8 @@ public final class ManipulationUtils {
         addRetrieveInternalModelId(cc);
         addRetrieveInternalModelTimestamp(cc);
         addRetrieveInternalModelVersion(cc);
-        addGetOpenEngSBModelEntries(cc);
+        addToOpenEngSBModelValues(cc);
+        addToOpenEngSBModelEntries(cc);
         cc.setModifiers(cc.getModifiers() & ~Modifier.ABSTRACT);
     }
 
@@ -315,11 +316,28 @@ public final class ManipulationUtils {
         method.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(method);
     }
+    
+    /**
+     * Adds the toOpenEngSBModelValues method to the class.
+     */
+    private static void addToOpenEngSBModelValues(CtClass clazz) throws NotFoundException,
+    CannotCompileException, ClassNotFoundException {
+        StringBuilder builder = new StringBuilder();
+        CtClass[] params = generateClassField();
+        CtMethod m = new CtMethod(cp.get(List.class.getName()), "toOpenEngSBModelValues", params, clazz);
+        builder.append(createTrace("Add elements of the model tail"));
+        builder.append("List elements = new ArrayList();\n");
+        builder.append(createTrace("Add properties of the model"));
+        builder.append(createModelEntryList(clazz));
+        builder.append("return elements;");
+        m.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(m);
+    }
 
     /**
      * Adds the getOpenEngSBModelEntries method to the class.
      */
-    private static void addGetOpenEngSBModelEntries(CtClass clazz) throws NotFoundException,
+    private static void addToOpenEngSBModelEntries(CtClass clazz) throws NotFoundException,
         CannotCompileException, ClassNotFoundException {
         CtClass[] params = generateClassField();
         CtMethod m = new CtMethod(cp.get(List.class.getName()), "toOpenEngSBModelEntries", params, clazz);
@@ -327,8 +345,7 @@ public final class ManipulationUtils {
         builder.append(createTrace("Add elements of the model tail"));
         builder.append("List elements = new ArrayList();\n");
         builder.append("elements.addAll(").append(TAIL_FIELD).append(".values());\n");
-        builder.append(createTrace("Add properties of the model"));
-        builder.append(createModelEntryList(clazz));
+        builder.append("elements.addAll(toOpenEngSBModelValues());\n");
         builder.append("return elements;");
         m.setBody(createMethodBody(builder.toString()));
         clazz.addMethod(m);

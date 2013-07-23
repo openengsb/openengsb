@@ -489,7 +489,7 @@ public class EDBConverterTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.isCheck(), is(false));
         assertThat(model.isCheck2(), is(true));
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         Integer version = null;
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
