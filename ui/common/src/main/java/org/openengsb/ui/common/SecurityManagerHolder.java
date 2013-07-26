@@ -16,12 +16,15 @@
  */
 package org.openengsb.ui.common;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 public class SecurityManagerHolder {
 
-    @PaxWicketBean(name = "webSecurityManager")
+    @Inject
+    @Named("webSecurityManager")
     private WebSecurityManager webSecurityManager;
 
     public WebSecurityManager getWebSecurityManager() {

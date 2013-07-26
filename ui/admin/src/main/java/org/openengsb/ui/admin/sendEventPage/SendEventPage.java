@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -61,7 +64,6 @@ import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
 import org.openengsb.ui.common.workflow.WorkflowStartPanel;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,24 +79,28 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     public static final String PAGE_NAME_KEY = "sendEventPage.title";
     public static final String PAGE_DESCRIPTION_KEY = "sendEventPage.description";
 
-    @PaxWicketBean(name = "osgiUtilsService")
+    @Inject
+    @Named("osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean(name = "eventService")
+    @Inject
+    @Named("eventService")
     private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
-    @PaxWicketBean(name = "ruleManager")
+    @Inject
+    @Named("ruleManager")
     private RuleManager ruleManager;
 
-    @PaxWicketBean(name = "auditing")
+    @Inject
+    @Named("auditing")
     private AuditingDomain auditing;
 
     private RepeatingView fieldList;
 
     private final ValueConverter valueConverter = new ValueConverter();
 
-    private Map<String, String> realValues = new HashMap<String, String>();
+    private final Map<String, String> realValues = new HashMap<String, String>();
 
     public SendEventPage() {
         initContent();

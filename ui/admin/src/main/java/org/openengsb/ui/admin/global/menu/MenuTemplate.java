@@ -20,6 +20,9 @@ package org.openengsb.ui.admin.global.menu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -39,7 +42,6 @@ import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class MenuTemplate extends Panel {
@@ -49,7 +51,8 @@ public class MenuTemplate extends Panel {
 
     private static String menuIndex;
 
-    @PaxWicketBean(name = "attributeStore")
+    @Inject
+    @Named("attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
 
     public MenuTemplate(String id, String menuIndex) {

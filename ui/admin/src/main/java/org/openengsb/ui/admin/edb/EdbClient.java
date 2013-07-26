@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -55,7 +58,6 @@ import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,12 +105,14 @@ public class EdbClient extends BasePage {
         }
     }
 
-    private IModel<EkbQuery> queryModel = new Model<EdbClient.EkbQuery>(new EkbQuery());
+    private final IModel<EkbQuery> queryModel = new Model<EdbClient.EkbQuery>(new EkbQuery());
 
-    @PaxWicketBean(name = "queryInterface")
+    @Inject
+    @Named("queryInterface")
     private QueryInterface ekbQueryInterface;
 
-    @PaxWicketBean(name = "modelProviders")
+    @Inject
+    @Named("modelProviders")
     private List<ClassProvider> modelProviders;
 
     private TextField<String> queryField;

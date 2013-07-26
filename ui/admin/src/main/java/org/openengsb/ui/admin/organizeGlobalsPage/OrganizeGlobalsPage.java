@@ -20,24 +20,25 @@ package org.openengsb.ui.admin.organizeGlobalsPage;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.tree.BaseTree;
+import org.apache.wicket.extensions.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.workflow.api.RuleBaseException;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,8 @@ public class OrganizeGlobalsPage extends BasePage {
     public static final String PAGE_NAME_KEY = "organizeGlobals.tile";
     public static final String PAGE_DESCRIPTION_KEY = "organizeGlobals.description";
 
-    @PaxWicketBean(name = "ruleManager")
+    @Inject
+    @Named("ruleManager")
     private RuleManager ruleManager;
 
     private String globalName = "";

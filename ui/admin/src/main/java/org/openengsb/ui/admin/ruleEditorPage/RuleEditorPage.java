@@ -17,13 +17,15 @@
 
 package org.openengsb.ui.admin.ruleEditorPage;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
@@ -35,7 +37,8 @@ public class RuleEditorPage extends BasePage implements RuleManagerProvider {
     public static final String PAGE_NAME_KEY = "ruleeditor.tile";
     public static final String PAGE_DESCRIPTION_KEY = "ruleeditor.description";
 
-    @PaxWicketBean(name = "ruleManager")
+    @Inject
+    @Named("ruleManager")
     private RuleManager ruleManager;
 
     public RuleEditorPage() {

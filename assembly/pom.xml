@@ -89,6 +89,20 @@
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>features</artifactId>
+      <version>${pax.wicket.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>paxwicket</artifactId>
+      <version>${pax.wicket.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
   </dependencies>
 
   <build>
@@ -178,6 +192,8 @@
                 <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
                 <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
+                <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
+                <descriptor>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
@@ -210,6 +226,9 @@
                 <feature>spring-web</feature>
                 <feature>spring-dm</feature>
                 <feature>spring-jms</feature>
+                <!-- Pax Wicket -->
+                <feature>pax-wicket</feature>
+                <feature>wicket</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
