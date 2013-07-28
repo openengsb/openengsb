@@ -250,7 +250,7 @@ public class ToolChooserPage extends WebPage {
         boolean found;
         for (String key : identifierKeyNames) {
             found = false;
-            for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelEntries(identifierObject)) {
+            for (OpenEngSBModelEntry entry : ModelUtils.toOpenEngSBModelEntries(identifierObject)) {
                 if (entry.getKey().equals(key)) {
                     found = true;
                     if (entry.getValue() == null) {

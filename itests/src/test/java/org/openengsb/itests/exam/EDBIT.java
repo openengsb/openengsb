@@ -590,7 +590,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
         Object result = (Object) query.getModel(getTestModel(), getModelOid("modelmetatest/1"));
-        assertThat(ModelUtils.getOpenEngSBModelEntries(result), notNullValue());
+        assertThat(ModelUtils.toOpenEngSBModelEntries(result), notNullValue());
         assertThat(ModelUtils.getInternalModelId(result), notNullValue());
         assertThat(ModelUtils.retrieveInternalModelVersion(result), notNullValue());
         assertThat(ModelUtils.retrieveInternalModelTimestamp(result), notNullValue());

@@ -30,6 +30,12 @@ public interface OpenEngSBModel extends Serializable {
     /**
      * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.
      */
+    List<OpenEngSBModelEntry> toOpenEngSBModelValues();
+
+    /**
+     * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain
+     * and additionally all elements from the model tail.
+     */
     List<OpenEngSBModelEntry> toOpenEngSBModelEntries();
 
     /**
@@ -73,12 +79,12 @@ public interface OpenEngSBModel extends Serializable {
      * model.
      */
     void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries);
-    
+
     /**
      * Returns the name of the instance model of this OpenEngSBModel object.
      */
     String retrieveModelName();
-    
+
     /**
      * Returns the version of the instance model of this OpenEngSBModel object.
      */

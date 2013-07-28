@@ -85,7 +85,7 @@ public final class XLinkDemonstrationUtils {
         Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelInformation.getModelClassName(), 
             modelInformation.getVersionString(), serviceFinder);
         Object modelOfView = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
-        List<OpenEngSBModelEntry> keyNames = ModelUtils.getOpenEngSBModelEntries(modelOfView);
+        List<OpenEngSBModelEntry> keyNames = ModelUtils.toOpenEngSBModelEntries(modelOfView);
         for (int i = 0; i < keyNames.size(); i++) {
             XLinkUtils.setValueOfModel(modelOfView, keyNames.get(i), identifierValues.get(i));
         } 

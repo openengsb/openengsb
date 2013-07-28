@@ -135,7 +135,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelGeneral_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        TestModel model2 = ModelUtils.createModel(TestModel.class, ModelUtils.getOpenEngSBModelEntries(model));
+        TestModel model2 = ModelUtils.createModel(TestModel.class, ModelUtils.toOpenEngSBModelEntries(model));
 
         assertThat(model.getId().equals(model2.getId()), is(true));
         assertThat(model.getDate().equals(model2.getDate()), is(true));
@@ -152,7 +152,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
         SubModel sub = model.getSub();
         boolean subValue = false;
 
@@ -173,7 +173,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
 
         SubModel subModel1 = null;
         SubModel subModel2 = null;
@@ -349,7 +349,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
 
         boolean testExists = false;
         Object testValue = null;
