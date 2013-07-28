@@ -163,4 +163,9 @@ public class SimpleModelWrapper implements OpenEngSBModel {
     public List<OpenEngSBModelEntry> toOpenEngSBModelEntries() {
         return model.toOpenEngSBModelEntries();
     }
+
+    @Override
+    public List<OpenEngSBModelEntry> toOpenEngSBModelValues() {
+        return model.toOpenEngSBModelValues();
+    }
 }
