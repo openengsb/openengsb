@@ -214,6 +214,11 @@ public class EDBService extends AbstractEDBService {
         }
         return commits.get(0);
     }
+    
+    @Override
+    public EDBCommit getCommitByRevision(String revision) throws EDBException {
+        return dao.getJPACommit(revision);
+    }
 
     @Override
     public Diff getDiff(Long firstTimestamp, Long secondTimestamp) throws EDBException {
