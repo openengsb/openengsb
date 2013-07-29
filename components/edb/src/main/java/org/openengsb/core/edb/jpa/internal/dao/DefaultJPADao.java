@@ -259,6 +259,27 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
+    public JPACommit getJPACommit(String revision) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Get commit for the revision {}", revision);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
+            Root<JPACommit> from = query.from(JPACommit.class);
+            query.select(from).where(criteriaBuilder.equal(from.get("revision"), revision));
+            TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
+            List<JPACommit> result = typedQuery.getResultList();
+            switch (result.size()) {
+                case 0:
+                    throw new EDBException("There is no commit with the given revision " + revision);
+                case 1:
+                    return result.get(0);
+                default:
+                    throw new EDBException("More than one commit with the given revision found!");
+            }
+        }
+    }
+
+    @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get commits which are given to a param map with {} elements", param.size());

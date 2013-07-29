@@ -35,10 +35,9 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
-    
+
     /**
-     * Retrieve the current state of the object with the specified OID for the
-     * given timestamp.
+     * Retrieve the current state of the object with the specified OID for the given timestamp.
      */
     EDBObject getObject(String oid, Long timestamp) throws EDBException;
 
@@ -106,6 +105,12 @@ public interface EngineeringDatabaseService {
     EDBCommit getCommit(Long from) throws EDBException;
 
     /**
+     * Convenience function to get a commit for a given revision string. If there is no commit for the given revision
+     * string or if a database error occurs, an EDBException is thrown.
+     */
+    EDBCommit getCommitByRevision(String revision) throws EDBException;
+
+    /**
      * Convenience function to query for a commit with a single matching key-value pair.
      */
     EDBCommit getLastCommitByKeyValue(String key, Object value) throws EDBException;
@@ -134,13 +139,13 @@ public interface EngineeringDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException;
-    
+
     /**
-     * Creates an EDBCommit object out of the given EDBObject lists 
+     * Creates an EDBCommit object out of the given EDBObject lists
      */
     EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException;
-    
+
     /**
      * Returns the revision of the current state of the EDB.
      */

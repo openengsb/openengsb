@@ -215,4 +215,9 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
+
+    @Override
+    public EDBCommit getCommitByRevision(String revision) throws EDBException {
+        return null;
+    }
 }
