@@ -410,7 +410,7 @@ public final class ManipulationUtils {
         builder.append(createTrace(String.format("Handle File type property '%s'", property)))
             .append(String.format("if(%s == null) {", property))
             .append(String.format("elements.add(new OpenEngSBModelEntry(\"%s\"", wrapperName))
-            .append("null, FileWrapper.class));}\n else {")
+            .append(", null, FileWrapper.class));}\n else {")
             .append(String.format("FileWrapper %s = new FileWrapper(%s);\n", wrapperName, property))
             .append(String.format("%s.serialize();\n", wrapperName))
             .append(String.format("elements.add(new OpenEngSBModelEntry(\"%s\",%s,%s.getClass()));}\n",
