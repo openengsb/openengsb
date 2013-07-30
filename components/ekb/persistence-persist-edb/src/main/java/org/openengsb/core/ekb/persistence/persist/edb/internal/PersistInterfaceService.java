@@ -17,10 +17,12 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
+import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
@@ -126,6 +128,21 @@ public class PersistInterfaceService implements PersistInterface {
             source.setParentRevisionNumber(ci.getParentRevisionNumber());
         } catch (EDBException e) {
             throw new EKBException("Error while commiting EKBCommit", e);
+        }
+    }
+
+    @Override
+    public void revertCommit(String revision) throws EKBException {
+        try {
+            EDBCommit commit = edbService.getCommitByRevision(revision);
+            EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
+                commit.getObjects(), new ArrayList<EDBObject>());
+            for (String delete : commit.getDeletions()) {
+                newCommit.delete(delete);
+            }
+            edbService.commit(newCommit);
+        } catch (EDBException e) {
+            throw new EKBException("Unable to revert to the given revision " + revision, e);
         }
     }
 }
