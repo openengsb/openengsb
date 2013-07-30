@@ -865,8 +865,6 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        System.out.println("getting object");
-
         // check edb object
         EDBObject edbObject = edbService.getObject(getModelOid("ppm/0"));
 
