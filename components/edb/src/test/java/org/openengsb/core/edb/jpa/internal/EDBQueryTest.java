@@ -337,13 +337,35 @@ public class EDBQueryTest extends AbstractEDBTest {
 
     @Test
     public void testIfRetrievingCommitByRevisionWorks_shouldWork() throws Exception {
-        EDBObject obj = new EDBObject("/test/query/9", new HashMap<String, EDBObjectEntry>());
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = new EDBObject("/test/query/9", entries);
         EDBCommit ci = getEDBCommit();
         ci.insert(obj);
         db.commit(ci);
         EDBCommit test = db.getCommitByRevision(ci.getRevisionNumber().toString());
         assertThat(test, notNullValue());
         assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
+    }
+    
+    @Test
+    public void testIfRetrievingCommitByRevisionWithIntermediateCommitsWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = new EDBObject("/test/query/10", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        db.commit(ci);
+        String revision = ci.getRevisionNumber().toString();
+        obj.putEDBObjectEntry("test", "test2", String.class);
+        EDBCommit ci2 = getEDBCommit();
+        ci2.update(obj);
+        db.commit(ci2);
+        EDBCommit test = db.getCommitByRevision(revision);
+        assertThat(test, notNullValue());
+        assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
     }
 
     @Test(expected = EDBException.class)
