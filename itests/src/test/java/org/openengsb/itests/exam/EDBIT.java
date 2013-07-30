@@ -52,7 +52,6 @@ import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.util.ModelUtils;
 import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
 import org.openengsb.itests.exam.models.SubModelDecorator;
-import org.openengsb.itests.exam.models.TestModel;
 import org.openengsb.itests.exam.models.TestModelDecorator;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
@@ -323,6 +322,17 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(version1, is(1));
         assertThat(name2, is("test2"));
         assertThat(version2, is(2));
+    }
+    
+    @Test
+    public void testIfLoadingOfCommitsWork_shouldWork() throws Exception {
+        EDBCommit commit = edbService.createEDBCommit(null, null, null);
+        EDBObject testObject = new EDBObject("commitload/1");
+        testObject.putEDBObjectEntry("testkey", "testvalue");
+        commit.insert(testObject);
+        Long testtime = edbService.commit(commit);
+        EDBCommit result = edbService.getCommit(testtime);
+        assertThat(result.getOIDs().size(), is(1));
     }
 
     @Test
@@ -807,7 +817,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     public void testRevertInvalidCommit_shouldThrowException() throws Exception {
         persist.revertCommit(UUID.randomUUID().toString());
     }
-    
+
     @Test
     public void testRevertFunctionality_shouldRevertModelsToOldState() throws Exception {
         TestModelDecorator model = getTestModelDecorator();
@@ -819,23 +829,26 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
         String revision = commit.getRevisionNumber().toString();
-        
+
         model.setName("middle");
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
         String revision2 = commit.getRevisionNumber().toString();
-        
+
         commit = getTestEKBCommit().addInsert(model2.getModel());
         persist.commit(commit);
         model.setName("after");
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
-        
-        TestModelDecorator result1 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+
+        TestModelDecorator result1 =
+            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
         persist.revertCommit(revision2);
-        TestModelDecorator result2 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        TestModelDecorator result2 =
+            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
         persist.revertCommit(revision);
-        TestModelDecorator result3 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        TestModelDecorator result3 =
+            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
         assertThat(result1, notNullValue());
         assertThat(result2, notNullValue());
         assertThat(result3, notNullValue());
