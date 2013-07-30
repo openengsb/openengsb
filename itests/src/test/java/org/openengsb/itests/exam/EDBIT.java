@@ -20,7 +20,6 @@ package org.openengsb.itests.exam;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
@@ -32,6 +31,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.junit.Before;
@@ -471,7 +471,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         // assert
         assertThat(rRoot.getEdbId(), is("root"));
-        assertNotNull(rRoot.getChildren());
+        assertThat(rRoot.getChildren(), notNullValue());
 
         List<?> resultChildren = rRoot.getChildren();
         assertThat(resultChildren.size(), is(2));
@@ -480,7 +480,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         rChild2 = new TestModelDecorator(resultChildren.get(1));
 
         assertThat(rChild1.getEdbId(), is("child1"));
-        assertNotNull(rChild1.getChildren());
+        assertThat(rChild1.getChildren(), notNullValue());
 
         assertThat(rChild2.getEdbId(), is("child2"));
 
@@ -800,6 +800,47 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         sub = new SubModelDecorator(model.getSubModel());
         assertThat(sub.getModel(), notNullValue());
         assertThat(sub.getName(), is("test"));
+    }
+
+    @Test(expected = EKBException.class)
+    public void testRevertInvalidCommit_shouldThrowException() throws Exception {
+        persist.revertCommit(UUID.randomUUID().toString());
+    }
+    
+    @Test
+    public void testRevertFunctionality_shouldRevertModelsToOldState() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("reverttest/1");
+        model.setName("before");
+        TestModelDecorator model2 = getTestModelDecorator();
+        model2.setEdbId("reverttest/2");
+        model2.setName("test");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        String revision = commit.getRevisionNumber().toString();
+        
+        model.setName("middle");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
+        persist.commit(commit);
+        String revision2 = commit.getRevisionNumber().toString();
+        
+        commit = getTestEKBCommit().addInsert(model2.getModel());
+        persist.commit(commit);
+        model.setName("after");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
+        persist.commit(commit);
+        
+        TestModelDecorator result1 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        persist.revertCommit(revision2);
+        TestModelDecorator result2 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        persist.revertCommit(revision);
+        TestModelDecorator result3 = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        assertThat(result1, notNullValue());
+        assertThat(result2, notNullValue());
+        assertThat(result3, notNullValue());
+        assertThat(result1.getName(), is("after"));
+        assertThat(result2.getName(), is("middle"));
+        assertThat(result3.getName(), is("before"));
     }
 
     @Test
