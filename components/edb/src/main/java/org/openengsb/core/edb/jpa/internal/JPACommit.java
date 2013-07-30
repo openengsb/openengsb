@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
@@ -47,10 +48,10 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "CONTEXT", length = 50)
     private String context;
     @Column(name = "DELS")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> deletions;
     @Column(name = "OIDS")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> oids;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;
@@ -59,18 +60,20 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "PARENT")
     private String parent;
 
-    private List<EDBObject> objects;
-
     @Transient
     private List<EDBObject> inserts;
     @Transient
     private List<EDBObject> updates;
-    
+
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
     @Deprecated
     public JPACommit() {
+        inserts = new ArrayList<EDBObject>();
+        updates = new ArrayList<EDBObject>();
+        deletions = new ArrayList<String>();
+        oids = new ArrayList<String>();
     }
 
     public JPACommit(String committer, String contextId) {
@@ -96,8 +99,11 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 
     @Override
     public List<String> getOIDs() {
-        fillOIDs();
-        return oids;
+        return oids != null ? oids : new ArrayList<String>();
+    }
+
+    public void setOids(List<String> oids) {
+        this.oids = oids;
     }
 
     public final List<EDBObject> getObjects() {
@@ -109,7 +115,11 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 
     @Override
     public final List<String> getDeletions() {
-        return deletions;
+        return deletions != null ? deletions : new ArrayList<String>();
+    }
+
+    public void setDeletions(List<String> deletions) {
+        this.deletions = deletions;
     }
 
     @Override
@@ -141,7 +151,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         deletions.add(oid);
         LOGGER.debug("deleted object {} from the commit", oid);
     }
-    
+
     public void deleteAll(List<EDBObject> objects) throws EDBException {
         if (objects != null) {
             for (EDBObject object : objects) {
@@ -150,25 +160,15 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         }
     }
 
-    private void fillOIDs() {
-        if (oids == null) {
-            oids = new ArrayList<String>();
-        } else {
-            oids.clear();
-        }
-        for (EDBObject o : objects) {
-            oids.add(o.getOID());
-        }
-    }
-
     @Override
     public void insert(EDBObject obj) throws EDBException {
         if (!inserts.contains(obj)) {
             inserts.add(obj);
+            oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for inserting", obj.getOID());
         }
     }
-    
+
     public void insertAll(List<EDBObject> objects) throws EDBException {
         if (objects != null) {
             for (EDBObject object : objects) {
@@ -181,10 +181,11 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void update(EDBObject obj) throws EDBException {
         if (!updates.contains(obj)) {
             updates.add(obj);
+            oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for updating", obj.getOID());
         }
     }
-    
+
     public void updateAll(List<EDBObject> objects) throws EDBException {
         if (objects != null) {
             for (EDBObject object : objects) {
@@ -195,12 +196,12 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 
     @Override
     public List<EDBObject> getInserts() {
-        return inserts;
+        return inserts != null ? inserts : new ArrayList<EDBObject>();
     }
 
     @Override
     public List<EDBObject> getUpdates() {
-        return updates;
+        return updates != null ? updates : new ArrayList<EDBObject>();
     }
 
     @Override
