@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -136,7 +137,13 @@ public class PersistInterfaceService implements PersistInterface {
         try {
             EDBCommit commit = edbService.getCommitByRevision(revision);
             EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
-                commit.getObjects(), new ArrayList<EDBObject>());
+                new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
+            for (String oid : commit.getOIDs()) {
+                EDBObject reverted = edbService.getObject(oid, commit.getTimestamp());
+                // need to be done in order to avoid problems with conflict detection
+                reverted.remove(EDBConstants.MODEL_VERSION);
+                newCommit.update(reverted);
+            }
             for (String delete : commit.getDeletions()) {
                 newCommit.delete(delete);
             }
