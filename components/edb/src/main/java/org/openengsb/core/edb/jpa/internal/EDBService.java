@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
@@ -192,6 +193,12 @@ public class EDBService extends AbstractEDBService {
     public JPACommit getLastCommit(Map<String, Object> queryMap) throws EDBException {
         JPACommit result = dao.getLastCommit(queryMap);
         return result;
+    }
+    
+    @Override
+    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        getLogger().debug("Request revisions of matching commits for the request {}", request);
+        return dao.getRevisionsOfMatchingCommits(request);
     }
 
     @Override

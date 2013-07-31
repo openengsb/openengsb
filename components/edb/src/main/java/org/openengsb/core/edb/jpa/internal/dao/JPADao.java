@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -80,6 +81,11 @@ public interface JPADao {
      * Loads a JPACommit with the given timestamp
      */
     List<JPACommit> getJPACommit(long timestamp) throws EDBException;
+
+    /**
+     * Returns a list of revision strings of all commits which are matching the request of the given request object.
+     */
+    List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
 
     /**
      * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.

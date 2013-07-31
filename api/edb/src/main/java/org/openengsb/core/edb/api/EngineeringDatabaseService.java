@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.model.CommitQueryRequest;
+
 /**
  * Defines the connection to the engineering database.
  */
@@ -97,6 +99,11 @@ public interface EngineeringDatabaseService {
      * More general query for a commit, with AND-connected key-value pairs to match.
      */
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
+    
+    /**
+     * Returns a list of revision strings of all commits which are matching the given request.
+     */
+    List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
 
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
