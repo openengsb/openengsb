@@ -80,7 +80,9 @@ public final class EDBUtils {
             result.put(entry.getKey(), entry);
         }
         result.setDeleted(object.isDeleted());
-        result.updateTimestamp(object.getTimestamp());
+        if (object.getTimestamp() != null) {
+            result.updateTimestamp(object.getTimestamp());
+        }
         return result;
     }
 

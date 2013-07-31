@@ -27,11 +27,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,18 +61,20 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "PARENT")
     private String parent;
 
-    @Transient
-    private List<EDBObject> inserts;
-    @Transient
-    private List<EDBObject> updates;
+    @Column(name = "INSERTS")
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<JPAObject> inserts;
+    @Column(name = "UPDATES")
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<JPAObject> updates;
 
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
     @Deprecated
     public JPACommit() {
-        inserts = new ArrayList<EDBObject>();
-        updates = new ArrayList<EDBObject>();
+        inserts = new ArrayList<JPAObject>();
+        updates = new ArrayList<JPAObject>();
         deletions = new ArrayList<String>();
         oids = new ArrayList<String>();
     }
@@ -82,8 +85,8 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 
         oids = new ArrayList<String>();
         deletions = new ArrayList<String>();
-        inserts = new ArrayList<EDBObject>();
-        updates = new ArrayList<EDBObject>();
+        inserts = new ArrayList<JPAObject>();
+        updates = new ArrayList<JPAObject>();
         this.revision = UUID.randomUUID().toString();
     }
 
@@ -107,7 +110,14 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     }
 
     public final List<EDBObject> getObjects() {
-        List<EDBObject> objects = new ArrayList<EDBObject>();
+        List<JPAObject> objects = new ArrayList<JPAObject>();
+        objects.addAll(inserts);
+        objects.addAll(updates);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+    }
+    
+    public List<JPAObject> getJPAObjects() {
+        List<JPAObject> objects = new ArrayList<JPAObject>();
         objects.addAll(inserts);
         objects.addAll(updates);
         return objects;
@@ -163,7 +173,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public void insert(EDBObject obj) throws EDBException {
         if (!inserts.contains(obj)) {
-            inserts.add(obj);
+            inserts.add(EDBUtils.convertEDBObjectToJPAObject(obj));
             oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for inserting", obj.getOID());
         }
@@ -180,7 +190,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public void update(EDBObject obj) throws EDBException {
         if (!updates.contains(obj)) {
-            updates.add(obj);
+            updates.add(EDBUtils.convertEDBObjectToJPAObject(obj));
             oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for updating", obj.getOID());
         }
@@ -196,12 +206,22 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 
     @Override
     public List<EDBObject> getInserts() {
-        return inserts != null ? inserts : new ArrayList<EDBObject>();
+        return inserts != null ? EDBUtils.convertJPAObjectsToEDBObjects(inserts)
+                : new ArrayList<EDBObject>();
+    }
+    
+    public List<JPAObject> getInsertedObjects() {
+        return inserts != null ? inserts : new ArrayList<JPAObject>();
     }
 
     @Override
     public List<EDBObject> getUpdates() {
-        return updates != null ? updates : new ArrayList<EDBObject>();
+        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates) 
+                : new ArrayList<EDBObject>();
+    }
+    
+    public List<JPAObject> getUpdatedObjects() {
+        return updates != null ? updates : new ArrayList<JPAObject>();
     }
 
     @Override
