@@ -26,8 +26,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.common.EDBConverter;
@@ -115,7 +120,7 @@ public class QueryInterfaceService implements QueryInterface {
         Map<String, Object> map = new HashMap<String, Object>();
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
     }
-    
+
     @Override
     public UUID getCurrentRevisionNumber() {
         return edbService.getCurrentRevisionNumber();
@@ -124,6 +129,42 @@ public class QueryInterfaceService implements QueryInterface {
     @Override
     public List<String> queryForCommits(CommitQueryRequest request) throws EKBException {
         return edbService.getRevisionsOfMatchingCommits(request);
+    }
+
+    @Override
+    public EKBCommit loadCommit(String revision) throws EKBException {
+        try {
+            EDBCommit commit = edbService.getCommitByRevision(revision);
+            return convertEDBCommitToEKBCommit(commit);
+        } catch (EDBException e) {
+            throw new EKBException("There is no commit with the revision " + revision);
+        }
+    }
+
+    /**
+     * Converts an EDBCommit object into an EKBCommit object.
+     */
+    private EKBCommit convertEDBCommitToEKBCommit(EDBCommit commit) throws EKBException {
+        EKBCommit result = new EKBCommit();
+        result.setRevisionNumber(commit.getRevisionNumber());
+        result.setParentRevisionNumber(commit.getParentRevisionNumber());
+        for (EDBObject insert : commit.getInserts()) {
+            // TODO: implement
+        }
+        for (EDBObject update : commit.getUpdates()) {
+            // TODO: implement
+        }
+        for (String delete : commit.getDeletions()) {
+            EDBObject object = edbService.getObject(delete, commit.getTimestamp());
+            // TODO: implement
+        }
+        return result;
+    }
+    
+    private ModelDescription getDescriptionFromObject(EDBObject obj) {
+        String modelName = obj.getString(EDBConstants.MODEL_TYPE);
+        String modelVersion = obj.getString(EDBConstants.MODEL_TYPE_VERSION);
+        return new ModelDescription(modelName, modelVersion);
     }
 
     /**
