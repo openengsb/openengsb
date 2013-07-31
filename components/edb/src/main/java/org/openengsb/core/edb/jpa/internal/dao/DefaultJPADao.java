@@ -32,6 +32,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -316,6 +317,38 @@ public class DefaultJPADao implements JPADao {
                 throw new EDBException("there was no Object found with the given query parameters", ex);
             }
         }
+    }
+
+    @Override
+    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Get matching revisions for the request {}", request);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
+            Root from = query.from(JPACommit.class);
+            query.select(from.get("revision"));
+
+            Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
+            query.where(criteriaBuilder.and(predicates));
+            query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
+
+            TypedQuery<String> typedQuery = entityManager.createQuery(query);
+            return typedQuery.getResultList();
+        }
+    }
+
+    private Predicate[] convertCommitRequestToPredicates(CriteriaBuilder builder, Root from,
+            CommitQueryRequest request) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (request.getCommitter() != null) {
+            predicates.add(builder.equal(from.get("committer"), request.getCommitter()));
+        }
+        if (request.getContext() != null) {
+            predicates.add(builder.equal(from.get("context"), request.getContext()));
+        }
+        predicates.add(builder.between(from.get("timestamp"), request.getStartTimestamp(),
+            request.getEndTimestamp()));
+        return predicates.toArray(new Predicate[predicates.size()]);
     }
 
     /**
