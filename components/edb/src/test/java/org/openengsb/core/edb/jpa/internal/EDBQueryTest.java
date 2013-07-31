@@ -19,14 +19,18 @@ package org.openengsb.core.edb.jpa.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
@@ -81,7 +85,7 @@ public class EDBQueryTest extends AbstractEDBTest {
 
         checkTimeStamps(Arrays.asList(time1, time2));
     }
-    
+
     @Test
     public void testQueryOfOldVersion_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
@@ -318,7 +322,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(time2 > 0, is(true));
         assertThat(time3 > 0, is(true));
     }
-    
+
     @Test
     public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
@@ -330,5 +334,84 @@ public class EDBQueryTest extends AbstractEDBTest {
         List<EDBObject> result = db.queryByKeyValue("bla%", "test");
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
+    }
+
+    @Test
+    public void testIfRetrievingCommitByRevisionWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = new EDBObject("/test/query/9", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        db.commit(ci);
+        EDBCommit test = db.getCommitByRevision(ci.getRevisionNumber().toString());
+        assertThat(test, notNullValue());
+        assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
+    }
+
+    @Test
+    public void testIfRetrievingCommitByRevisionWithIntermediateCommitsWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = new EDBObject("/test/query/10", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        db.commit(ci);
+        String revision = ci.getRevisionNumber().toString();
+        obj.putEDBObjectEntry("test", "test2", String.class);
+        EDBCommit ci2 = getEDBCommit();
+        ci2.update(obj);
+        db.commit(ci2);
+        EDBCommit test = db.getCommitByRevision(revision);
+        assertThat(test, notNullValue());
+        assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testIfRetrievingCommitByInvalidRevisionFails_shouldFail() throws Exception {
+        db.getCommitByRevision(UUID.randomUUID().toString());
+    }
+
+    @Test
+    public void testIfRetrievingCommitRevisionsByRequestGivesCorrectRevisions_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = new EDBObject("/test/query/11", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        Long timestamp1 = db.commit(ci);
+        String revision1 = ci.getRevisionNumber().toString();
+        obj.putEDBObjectEntry("test2", "test2", String.class);
+        ci = getEDBCommit();
+        ci.update(obj);
+        Long timestamp2 = db.commit(ci);
+        String revision2 = ci.getRevisionNumber().toString();
+        CommitQueryRequest request = new CommitQueryRequest();
+        request.setCommitter("wrongName");
+        assertThat(db.getRevisionsOfMatchingCommits(request).size(), is(0));
+        request = new CommitQueryRequest();
+        request.setCommitter("wrongContext");
+        assertThat(db.getRevisionsOfMatchingCommits(request).size(), is(0));
+        
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp1);
+        List<String> revisions = db.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(2));
+        assertThat(revisions.get(0), is(revision1));
+        assertThat(revisions.get(1), is(revision2));
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp1);
+        request.setCommitter("testuser");
+        revisions = db.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(2));
+        assertThat(revisions.get(0), is(revision1));
+        assertThat(revisions.get(1), is(revision2));
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp2);
+        revisions = db.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(1));
+        assertThat(revisions.get(0), is(revision2));
     }
 }

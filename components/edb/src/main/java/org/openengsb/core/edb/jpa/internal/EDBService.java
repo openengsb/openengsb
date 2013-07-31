@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
@@ -193,6 +194,12 @@ public class EDBService extends AbstractEDBService {
         JPACommit result = dao.getLastCommit(queryMap);
         return result;
     }
+    
+    @Override
+    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        getLogger().debug("Request revisions of matching commits for the request {}", request);
+        return dao.getRevisionsOfMatchingCommits(request);
+    }
 
     @Override
     public UUID getCurrentRevisionNumber() throws EDBException {
@@ -208,11 +215,16 @@ public class EDBService extends AbstractEDBService {
     public JPACommit getCommit(Long from) throws EDBException {
         List<JPACommit> commits = dao.getJPACommit(from);
         if (commits == null || commits.size() == 0) {
-            throw new EDBException("there is no commit for this timestamp");
+            throw new EDBException("There is no commit for this timestamp");
         } else if (commits.size() > 1) {
-            throw new EDBException("there are more than one commit for one timestamp");
+            throw new EDBException("There are more than one commit for one timestamp");
         }
         return commits.get(0);
+    }
+    
+    @Override
+    public EDBCommit getCommitByRevision(String revision) throws EDBException {
+        return dao.getJPACommit(revision);
     }
 
     @Override
