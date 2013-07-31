@@ -151,6 +151,9 @@ public class QueryInterfaceService implements QueryInterface {
         Map<ModelDescription, Class<?>> cache = new HashMap<>();
         result.setRevisionNumber(commit.getRevisionNumber());
         result.setParentRevisionNumber(commit.getParentRevisionNumber());
+        result.setDomainId(commit.getDomainId());
+        result.setConnectorId(commit.getConnectorId());
+        result.setInstanceId(commit.getInstanceId());
         for (EDBObject insert : commit.getInserts()) {
             result.addInsert(createModelOfEDBObject(insert, cache));
         }
