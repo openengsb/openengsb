@@ -124,6 +124,9 @@ public class PersistInterfaceService implements PersistInterface {
     private void performPersisting(ConvertedCommit commit, EKBCommit source) throws EKBException {
         try {
             EDBCommit ci = edbService.createEDBCommit(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+            ci.setDomainId(source.getDomainId());
+            ci.setConnectorId(source.getConnectorId());
+            ci.setInstanceId(source.getInstanceId());
             edbService.commit(ci);
             source.setRevisionNumber(ci.getRevisionNumber());
             source.setParentRevisionNumber(ci.getParentRevisionNumber());

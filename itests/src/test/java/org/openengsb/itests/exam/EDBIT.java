@@ -873,10 +873,19 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit = query.loadCommit(revision);
         assertThat(commit, notNullValue());
         assertThat(commit.getInserts().size(), is(1));
+        assertThat(commit.getRevisionNumber().toString(), is(revision));
+        assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
+        assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
+        assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
         
         commit = query.loadCommit(revision2);
         assertThat(commit, notNullValue());
         assertThat(commit.getUpdates().size(), is(1));
+        assertThat(commit.getRevisionNumber().toString(), is(revision2));
+        assertThat(commit.getParentRevisionNumber().toString(), is(revision));
+        assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
+        assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
+        assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
     }
 
     @Test
