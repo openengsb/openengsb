@@ -57,7 +57,12 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private String revision;
     @Column(name = "PARENT")
     private String parent;
-
+    @Column(name = "DOMAIN")
+    private String domainId;
+    @Column(name = "CONNECTOR")
+    private String connectorId;
+    @Column(name = "INSTANCE")
+    private String instanceId;
     @Column(name = "INSERTS")
     @OneToMany(fetch = FetchType.EAGER)
     private List<JPAObject> inserts;
@@ -220,5 +225,35 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public void setHeadRevisionNumber(UUID head) {
         this.parent = head != null ? head.toString() : null;
+    }
+    
+    @Override
+    public String getDomainId() {
+        return domainId;
+    }
+
+    @Override
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+
+    @Override
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    @Override
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
+    @Override
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    @Override
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }
