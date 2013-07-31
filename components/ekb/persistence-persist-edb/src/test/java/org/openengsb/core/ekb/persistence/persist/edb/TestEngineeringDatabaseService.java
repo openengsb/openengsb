@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBDiff;
@@ -218,6 +219,11 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public EDBCommit getCommitByRevision(String revision) throws EDBException {
+        return null;
+    }
+
+    @Override
+    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         return null;
     }
 }
