@@ -856,6 +856,28 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(result2.getName(), is("middle"));
         assertThat(result3.getName(), is("before"));
     }
+    
+    @Test
+    public void testLoadingOfEKBCommits_shouldLoadAllInformation() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("ekbload/1");
+        model.setName("test");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        String revision = commit.getRevisionNumber().toString();
+        model.setName("test2");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
+        persist.commit(commit);
+        String revision2 = commit.getRevisionNumber().toString();
+        
+        commit = query.loadCommit(revision);
+        assertThat(commit, notNullValue());
+        assertThat(commit.getInserts().size(), is(1));
+        
+        commit = query.loadCommit(revision2);
+        assertThat(commit, notNullValue());
+        assertThat(commit.getUpdates().size(), is(1));
+    }
 
     @Test
     public void testPrimitivePropertyTypeConversion_shouldConvertAndPersistWithCorrectType() throws Exception {
