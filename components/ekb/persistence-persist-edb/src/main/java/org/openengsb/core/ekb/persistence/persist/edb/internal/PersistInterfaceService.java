@@ -138,8 +138,7 @@ public class PersistInterfaceService implements PersistInterface {
             EDBCommit commit = edbService.getCommitByRevision(revision);
             EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
                 new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
-            for (String oid : commit.getOIDs()) {
-                EDBObject reverted = edbService.getObject(oid, commit.getTimestamp());
+            for (EDBObject reverted : commit.getObjects()) {
                 // need to be done in order to avoid problems with conflict detection
                 reverted.remove(EDBConstants.MODEL_VERSION);
                 newCommit.update(reverted);
