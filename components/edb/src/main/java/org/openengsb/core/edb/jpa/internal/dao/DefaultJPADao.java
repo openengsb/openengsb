@@ -319,6 +319,7 @@ public class DefaultJPADao implements JPADao {
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         synchronized (entityManager) {
@@ -337,6 +338,7 @@ public class DefaultJPADao implements JPADao {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private Predicate[] convertCommitRequestToPredicates(CriteriaBuilder builder, Root from,
             CommitQueryRequest request) {
         List<Predicate> predicates = new ArrayList<>();

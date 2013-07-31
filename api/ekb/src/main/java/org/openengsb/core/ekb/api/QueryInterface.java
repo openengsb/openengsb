@@ -87,4 +87,8 @@ public interface QueryInterface {
      */
     List<String> queryForCommits(CommitQueryRequest request) throws EKBException;
     
+    /**
+     * Loads the EKBCommit object with the given revision from the data source.
+     */
+    EKBCommit loadCommit(String revision) throws EKBException;
 }
