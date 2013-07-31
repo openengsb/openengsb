@@ -34,6 +34,7 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ public class QueryInterfaceService implements QueryInterface {
 
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
+    private ModelRegistry modelRegistry;
 
     private static final Pattern MAP_OUT_OF_STRING_QUERY_PATTERN = Pattern
         .compile("(\\w+\\:\\\"[^\\\"]*\\\"(\\s(and)\\s\\w+\\:\\\"[^\\\"]*\\\")*)?");
@@ -146,24 +148,53 @@ public class QueryInterfaceService implements QueryInterface {
      */
     private EKBCommit convertEDBCommitToEKBCommit(EDBCommit commit) throws EKBException {
         EKBCommit result = new EKBCommit();
+        Map<ModelDescription, Class<?>> cache = new HashMap<>();
         result.setRevisionNumber(commit.getRevisionNumber());
         result.setParentRevisionNumber(commit.getParentRevisionNumber());
         for (EDBObject insert : commit.getInserts()) {
-            // TODO: implement
+            result.addInsert(createModelOfEDBObject(insert, cache));
         }
         for (EDBObject update : commit.getUpdates()) {
-            // TODO: implement
+            result.addUpdate(createModelOfEDBObject(update, cache));
         }
         for (String delete : commit.getDeletions()) {
             EDBObject object = edbService.getObject(delete, commit.getTimestamp());
-            // TODO: implement
+            result.addDelete(createModelOfEDBObject(object, cache));
         }
         return result;
     }
     
+    /**
+     * Converts an EDBObject instance into a model. For this, the method need to retrieve the model class
+     * to be able to instantiate the corresponding model objects. If the conversion fails, null is returned.
+     */
+    private Object createModelOfEDBObject(EDBObject object, Map<ModelDescription, Class<?>> cache) {
+        try {
+            ModelDescription description = getDescriptionFromObject(object);
+            Class<?> modelClass;
+            if (cache.containsKey(description)) {
+                modelClass = cache.get(description);
+            } else {
+                modelClass = modelRegistry.loadModel(description);
+                cache.put(description, modelClass);
+            }
+            return edbConverter.convertEDBObjectToModel(modelClass, object);
+        } catch (IllegalArgumentException | ClassNotFoundException e) {
+            LOGGER.warn("Unable to create model of the object {}", object.getOID(), e);
+            return null;
+        }
+    }
+    
+    /**
+     * Extracts the required values to lookup a model class from the given EDBObject. If this object does not
+     * contain the required information, an IllegalArgumentException is thrown.
+     */
     private ModelDescription getDescriptionFromObject(EDBObject obj) {
         String modelName = obj.getString(EDBConstants.MODEL_TYPE);
         String modelVersion = obj.getString(EDBConstants.MODEL_TYPE_VERSION);
+        if (modelName == null || modelVersion == null) {
+            throw new IllegalArgumentException("The object " + obj.getOID() + " contains no model information");
+        }
         return new ModelDescription(modelName, modelVersion);
     }
 
@@ -195,5 +226,9 @@ public class QueryInterfaceService implements QueryInterface {
 
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
+    }
+    
+    public void setModelRegistry(ModelRegistry modelRegistry) {
+        this.modelRegistry = modelRegistry;
     }
 }
