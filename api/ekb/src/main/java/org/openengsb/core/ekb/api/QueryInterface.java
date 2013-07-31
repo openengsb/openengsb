@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.model.CommitQueryRequest;
+
 /**
  * The query interface provides the functions to access the data stored in the EDB.
  */
@@ -79,4 +81,10 @@ public interface QueryInterface {
      * Returns the most recent revision number of the EDB
      */
     UUID getCurrentRevisionNumber();
+    
+    /**
+     * Returns a list of revision strings of all commits which are matching the given request.
+     */
+    List<String> queryForCommits(CommitQueryRequest request) throws EKBException;
+    
 }
