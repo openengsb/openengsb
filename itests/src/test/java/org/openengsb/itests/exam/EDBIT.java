@@ -332,7 +332,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit.insert(testObject);
         Long testtime = edbService.commit(commit);
         EDBCommit result = edbService.getCommit(testtime);
-        assertThat(result.getOIDs().size(), is(1));
+        assertThat(result.getInserts().size(), is(1));
     }
 
     @Test

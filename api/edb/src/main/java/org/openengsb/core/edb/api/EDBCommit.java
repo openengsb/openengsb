@@ -44,11 +44,6 @@ public interface EDBCommit {
     void delete(String oid) throws EDBException;
 
     /**
-     * For a query-commit: Retrieve a list of OIDs representing the objects which have been changed by this commit.
-     */
-    List<String> getOIDs();
-
-    /**
      * For a created commit: retrieve the list of all objects that have been inserted to this commit.
      */
     List<EDBObject> getInserts();
