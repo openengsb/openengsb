@@ -51,9 +51,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "DELS")
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> deletions;
-    @Column(name = "OIDS")
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> oids;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;
     @Column(name = "REVISION")
@@ -76,14 +73,11 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
         deletions = new ArrayList<String>();
-        oids = new ArrayList<String>();
     }
 
     public JPACommit(String committer, String contextId) {
         this.committer = committer;
         this.context = contextId;
-
-        oids = new ArrayList<String>();
         deletions = new ArrayList<String>();
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
@@ -98,15 +92,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public boolean isCommitted() {
         return committed;
-    }
-
-    @Override
-    public List<String> getOIDs() {
-        return oids != null ? oids : new ArrayList<String>();
-    }
-
-    public void setOids(List<String> oids) {
-        this.oids = oids;
     }
 
     public final List<EDBObject> getObjects() {
@@ -174,7 +159,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void insert(EDBObject obj) throws EDBException {
         if (!inserts.contains(obj)) {
             inserts.add(EDBUtils.convertEDBObjectToJPAObject(obj));
-            oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for inserting", obj.getOID());
         }
     }
@@ -191,7 +175,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void update(EDBObject obj) throws EDBException {
         if (!updates.contains(obj)) {
             updates.add(EDBUtils.convertEDBObjectToJPAObject(obj));
-            oids.add(obj.getOID());
             LOGGER.debug("Added object {} to the commit for updating", obj.getOID());
         }
     }
