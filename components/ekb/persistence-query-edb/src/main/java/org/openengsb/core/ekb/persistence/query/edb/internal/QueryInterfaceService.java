@@ -25,8 +25,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.slf4j.Logger;
@@ -117,6 +119,11 @@ public class QueryInterfaceService implements QueryInterface {
     @Override
     public UUID getCurrentRevisionNumber() {
         return edbService.getCurrentRevisionNumber();
+    }
+
+    @Override
+    public List<String> queryForCommits(CommitQueryRequest request) throws EKBException {
+        return edbService.getRevisionsOfMatchingCommits(request);
     }
 
     /**
