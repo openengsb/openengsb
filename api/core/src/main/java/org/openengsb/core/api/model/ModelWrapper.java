@@ -19,15 +19,16 @@ package org.openengsb.core.api.model;
 
 import java.util.List;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.Version;
 
 /**
  * This class is a class which wraps a model object for easier model handling in the static code.
  */
-public final class ModelWrapper {
-    private OpenEngSBModel model;
+public class ModelWrapper {
+    protected OpenEngSBModel model;
 
-    private ModelWrapper(OpenEngSBModel model) {
+    public ModelWrapper(OpenEngSBModel model) {
         this.model = model;
     }
 
@@ -150,5 +151,19 @@ public final class ModelWrapper {
      */
     public Version retrieveModelVersionObject() {
         return new Version(retrieveModelVersion());
+    }
+    
+    /**
+     * Calculates the complete model oid from the model.
+     */
+    public String getCompleteModelOID() {
+        return appendContextId(model.retrieveInternalModelId());
+    }
+    
+    /**
+     * Appends the currentContext to the given model id.
+     */
+    protected String appendContextId(Object modelId) {
+        return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
     }
 }
