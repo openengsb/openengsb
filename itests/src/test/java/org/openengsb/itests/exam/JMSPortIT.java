@@ -250,7 +250,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             ExampleResponseModel response = new ExampleResponseModel();
             response.setResult("successful");
-            for (OpenEngSBModelEntry entry : ModelWrapper.create(model).getOpenEngSBModelTail()) {
+            for (OpenEngSBModelEntry entry : ModelWrapper.wrap(model).getOpenEngSBModelTail()) {
                 if (entry.getKey().equals("specialKey") && entry.getValue().equals("specialValue")) {
                     response.setResult("successful with tail");
                 }

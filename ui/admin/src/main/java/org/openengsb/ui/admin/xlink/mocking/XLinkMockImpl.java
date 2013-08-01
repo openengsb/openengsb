@@ -335,7 +335,7 @@ public class XLinkMockImpl implements XLinkMock {
             String modelId, String versionId) throws ClassNotFoundException {
         Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, osgiService);
         Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
         //########### MOCK start ###########
         
