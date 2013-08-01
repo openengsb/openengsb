@@ -30,10 +30,10 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 
 /**
- * The EOModel class is a helper class which encapsulates functions for models which are Engineering Objects.
+ * The EngineeringObjectModelWrapper class is a helper class which encapsulates functions for models which are
+ * Engineering Objects.
  */
-@SuppressWarnings("serial")
-public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
+public class EngineeringObjectModelWrapper extends AdvancedModelWrapper {
 
     public EngineeringObjectModelWrapper(OpenEngSBModel model) {
         super(model);
@@ -56,7 +56,7 @@ public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
      * Loads the model referenced by the given field for the given model instance. Returns null if the field has no
      * value set.
      */
-    public SimpleModelWrapper loadReferencedModel(Field field, ModelRegistry modelRegistry,
+    public AdvancedModelWrapper loadReferencedModel(Field field, ModelRegistry modelRegistry,
             EngineeringDatabaseService edbService, EDBConverter edbConverter) {
         try {
             ModelDescription description = getModelDescriptionFromField(field);
@@ -66,8 +66,9 @@ public class EngineeringObjectModelWrapper extends SimpleModelWrapper {
             }
             modelKey = appendContextId(modelKey);
             Class<?> sourceClass = modelRegistry.loadModel(description);
-            return new SimpleModelWrapper(edbConverter.convertEDBObjectToModel(sourceClass,
-                edbService.getObject(modelKey)));
+            Object model = edbConverter.convertEDBObjectToModel(sourceClass,
+                edbService.getObject(modelKey));
+            return new AdvancedModelWrapper((OpenEngSBModel) model);
         } catch (SecurityException e) {
             throw new EKBException(generateErrorMessage(field), e);
         } catch (IllegalArgumentException e) {
