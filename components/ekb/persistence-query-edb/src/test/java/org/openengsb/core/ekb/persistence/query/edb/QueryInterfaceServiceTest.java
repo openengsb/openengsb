@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBConstants;
@@ -135,7 +136,8 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelGeneral_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        TestModel model2 = ModelUtils.createModel(TestModel.class, ModelUtils.toOpenEngSBModelEntries(model));
+        TestModel model2 = ModelUtils.createModel(TestModel.class, 
+            ModelWrapper.create(model).toOpenEngSBModelEntries());
 
         assertThat(model.getId().equals(model2.getId()), is(true));
         assertThat(model.getDate().equals(model2.getDate()), is(true));
@@ -152,7 +154,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
         SubModel sub = model.getSub();
         boolean subValue = false;
 
@@ -173,7 +175,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
 
         SubModel subModel1 = null;
         SubModel subModel2 = null;
@@ -349,7 +351,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
 
         boolean testExists = false;
         Object testValue = null;

@@ -39,6 +39,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
@@ -53,7 +54,6 @@ import org.openengsb.core.ekb.common.models.SubModel;
 import org.openengsb.core.ekb.common.models.TestModel;
 import org.openengsb.core.ekb.common.models.TestModel2.ENUM;
 import org.openengsb.core.ekb.common.models.WrappedPropertiesModel;
-import org.openengsb.core.util.ModelUtils;
 
 /**
  * The EDBConverter test file only tests the converting Model -> EDBObject since the other way round is tested by the
@@ -489,7 +489,7 @@ public class EDBConverterTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.isCheck(), is(false));
         assertThat(model.isCheck2(), is(true));
-        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
         Integer version = null;
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {

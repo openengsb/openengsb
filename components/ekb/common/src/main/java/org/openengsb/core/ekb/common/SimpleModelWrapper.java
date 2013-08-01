@@ -24,12 +24,12 @@ import java.util.Map;
 
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
-import org.openengsb.core.util.ModelUtils;
 
 /**
  * The SimpleModelWrapper class is a helper class which encapsulates functions for models which are not part of the
@@ -44,7 +44,7 @@ public class SimpleModelWrapper implements OpenEngSBModel {
     }
 
     public SimpleModelWrapper(Object model) {
-        ModelUtils.checkIfObjectIsModel(model);
+        ModelWrapper.isModel(model.getClass());
         this.model = (OpenEngSBModel) model;
     }
 
