@@ -137,7 +137,7 @@ public class QueryInterfaceServiceTest {
     public void testGetOpenEngSBModelGeneral_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
         TestModel model2 = ModelUtils.createModel(TestModel.class, 
-            ModelWrapper.create(model).toOpenEngSBModelEntries());
+            ModelWrapper.wrap(model).toOpenEngSBModelEntries());
 
         assertThat(model.getId().equals(model2.getId()), is(true));
         assertThat(model.getDate().equals(model2.getDate()), is(true));
@@ -154,7 +154,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         SubModel sub = model.getSub();
         boolean subValue = false;
 
@@ -175,7 +175,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
 
         SubModel subModel1 = null;
         SubModel subModel2 = null;
@@ -351,7 +351,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
 
         boolean testExists = false;
         Object testValue = null;

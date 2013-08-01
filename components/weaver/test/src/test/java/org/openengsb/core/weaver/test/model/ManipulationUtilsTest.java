@@ -46,7 +46,7 @@ public class ManipulationUtilsTest {
         model.setId("testId");
         model.setName("testName");
         model.setTestBoolean(true);
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         String id = null;
         String name = null;
         Boolean bool = null;
@@ -66,7 +66,7 @@ public class ManipulationUtilsTest {
 
     @Test
     public void testIfAddOpenEngSBModelEntryWork_shouldWork() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
         List<OpenEngSBModelEntry> entries = wrapper.toOpenEngSBModelEntries();
         String test = null;
@@ -80,7 +80,7 @@ public class ManipulationUtilsTest {
     
     @Test
     public void testIfToOpenEngSBModelValuesWork_shouldWork() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         int before = wrapper.toOpenEngSBModelValues().size();
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
         int after = wrapper.toOpenEngSBModelValues().size();
@@ -89,7 +89,7 @@ public class ManipulationUtilsTest {
 
     @Test
     public void testIfRemoveOpenEngSBModelEntryWork_shouldWork() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
         wrapper.removeOpenEngSBModelEntry("test");
         // the result has three elements even though the model has four properties,
@@ -101,13 +101,13 @@ public class ManipulationUtilsTest {
     public void testIfModelIdInsertionWorks_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("id");
-        String id = (String) ModelWrapper.create(model).retrieveInternalModelId();
+        String id = (String) ModelWrapper.wrap(model).retrieveInternalModelId();
         assertThat(id, is(model.getId()));
     }
 
     @Test
     public void testIfModelTailRetrievingWorks_shouldWork() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
         List<OpenEngSBModelEntry> tail = wrapper.getOpenEngSBModelTail();
         assertThat(tail.size(), is(1));
@@ -116,7 +116,7 @@ public class ManipulationUtilsTest {
 
     @Test
     public void testIfModelTailSettingWorks_shouldWork() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         entries.add(new OpenEngSBModelEntry("test", "test", String.class));
         entries.add(new OpenEngSBModelEntry("test2", "test2", String.class));
@@ -127,7 +127,7 @@ public class ManipulationUtilsTest {
 
     @Test
     public void testIfNullModelTailSettingWorks_shouldThrowNoException() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         wrapper.setOpenEngSBModelTail(null);
         assertThat(wrapper.getOpenEngSBModelTail().size(), is(0));
     }
@@ -138,7 +138,7 @@ public class ManipulationUtilsTest {
         model.setValue1(5);
         model.setValue2(42L);
         model.setValue3(true);
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         assertThat((Integer) getEntryByName(entries, "value1"), is(5));
         assertThat((Long) getEntryByName(entries, "value2"), is(42L));
         assertThat((Boolean) getEntryByName(entries, "value3"), is(true));
@@ -162,7 +162,7 @@ public class ManipulationUtilsTest {
         model.setValue1(5);
         model.setValue2(42L);
         model.setValue3(true);
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(model).toOpenEngSBModelEntries();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         assertThat(getEntryByName(entries, "ignoredField"), nullValue());
     }
     
@@ -172,7 +172,7 @@ public class ManipulationUtilsTest {
         model.setId("testId");
         model.setName("testName");
         model.setChild("testChild");
-        ModelWrapper wrapper = ModelWrapper.create(model);
+        ModelWrapper wrapper = ModelWrapper.wrap(model);
         List<OpenEngSBModelEntry> entries = wrapper.toOpenEngSBModelEntries();
         assertThat((String) getEntryByName(entries, "id"), is("testId"));
         assertThat((String) getEntryByName(entries, "name"), is("testName"));
@@ -182,13 +182,13 @@ public class ManipulationUtilsTest {
     
     @Test
     public void testIfRetrieveModelNameWork_shouldReturnModelName() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         assertThat(wrapper.retrieveModelName(), is(TestModel.class.getName()));
     }
     
     @Test
     public void testIfRetrieveModelVersionWork_shouldReturnModelVersion() throws Exception {
-        ModelWrapper wrapper = ModelWrapper.create(new TestModel());
+        ModelWrapper wrapper = ModelWrapper.wrap(new TestModel());
         assertThat(wrapper.retrieveModelVersion(), is(new Version("1.0.0").toString()));
     }
 

@@ -22,7 +22,7 @@ import java.util.List;
 import org.osgi.framework.Version;
 
 /**
- * This class is a class which wraps a model object for easier model handling during runtime.
+ * This class is a class which wraps a model object for easier model handling in the static code.
  */
 public final class ModelWrapper {
     private OpenEngSBModel model;
@@ -35,7 +35,7 @@ public final class ModelWrapper {
      * Creates a model wrapper object out of the given model object. Throws IllegalArgumentException in case the given
      * model object is no model.
      */
-    public static ModelWrapper create(Object model) {
+    public static ModelWrapper wrap(Object model) {
         if (!(isModel(model.getClass()))) {
             throw new IllegalArgumentException("The given object is no model");
         }
@@ -144,7 +144,7 @@ public final class ModelWrapper {
     public String retrieveModelVersion() {
         return model.retrieveModelVersion();
     }
-    
+
     /**
      * Creates a version object from the model version string in the wrapper model.
      */
