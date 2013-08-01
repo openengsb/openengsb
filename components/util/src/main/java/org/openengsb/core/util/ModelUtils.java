@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,114 +42,6 @@ public final class ModelUtils {
     public static final String MODEL_TAIL_FIELD_NAME = "openEngSBModelTail";
 
     private ModelUtils() {
-    }
-
-    /**
-     * Performs the toOpenEngSBModelEntries function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> toOpenEngSBModelEntries(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).toOpenEngSBModelEntries();
-    }
-    
-    /**
-     * Performs the toOpenEngSBModelValues function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> toOpenEngSBModelValues(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).toOpenEngSBModelValues();
-    }
-
-    /**
-     * Performs the addOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
-    }
-
-    /**
-     * Performs the removeOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static void removeOpenEngSBModelEntry(Object model, String key) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
-    }
-
-    /**
-     * Performs the retrieveInternalModelId function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static Object getInternalModelId(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelId();
-    }
-    
-    /**
-     * Performs the retrieveInternalModelTimestamp function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static Long retrieveInternalModelTimestamp(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelTimestamp();
-    }
-    
-    /**
-     * Performs the retrieveInternalModelVersion function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static Integer retrieveInternalModelVersion(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelVersion();
-    }
-    
-    /**
-     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static String retrieveModelVersionAsString(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelVersion();
-    }
-
-    /**
-     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static String retrieveModelName(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelName();
-    }
-
-    /**
-     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static Version retrieveModelVersion(Object model) {
-        checkIfObjectIsModel(model);
-        return new Version(((OpenEngSBModel) model).retrieveModelVersion());
-    }
-
-    /**
-     * Performs the getOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> getOpenEngSBModelTail(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).getOpenEngSBModelTail();
-    }
-
-    /**
-     * Performs the setOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static void setOpenEngSBModelTail(Object model, List<OpenEngSBModelEntry> entries) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).setOpenEngSBModelTail(entries);
     }
 
     /**
@@ -223,33 +114,12 @@ public final class ModelUtils {
     }
 
     /**
-     * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
-     */
-    public static void checkIfObjectIsModel(Object model) {
-        checkIfClassIsModel(model.getClass());
-    }
-
-    /**
-     * Returns true if the given object is an OpenEngSBModel, returns false if not.
-     */
-    public static boolean isObjectModel(Object model) {
-        return isClassModel(model.getClass());
-    }
-
-    /**
      * Checks if the given class is an OpenEngSBModel. Throws an IllegalArgumentException if not.
      */
-    public static void checkIfClassIsModel(Class<?> clazz) {
+    private static void checkIfClassIsModel(Class<?> clazz) {
         if (!OpenEngSBModel.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException("The given class is no model");
         }
-    }
-
-    /**
-     * Returns true if the given class is an OpenEngSBModel, returns false if not.
-     */
-    public static boolean isClassModel(Class<?> clazz) {
-        return OpenEngSBModel.class.isAssignableFrom(clazz);
     }
 
     /**
