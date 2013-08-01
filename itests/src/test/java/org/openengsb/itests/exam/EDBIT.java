@@ -346,7 +346,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EDBObject obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelWrapper.create(model.getModel()).addOpenEngSBModelEntry(entry);
+        ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
@@ -368,7 +368,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         model.setName("test2");
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelWrapper.create(model.getModel()).addOpenEngSBModelEntry(entry);
+        ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
 
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
@@ -584,7 +584,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         Object result = (Object) query.getModel(getTestModel(), getModelOid("modeltailtest/1"));
         Boolean versionPresent = false;
-        for (OpenEngSBModelEntry entry : ModelWrapper.create(result).getOpenEngSBModelTail()) {
+        for (OpenEngSBModelEntry entry : ModelWrapper.wrap(result).getOpenEngSBModelTail()) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
                 versionPresent = true;
             }
@@ -601,7 +601,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
         Object result = (Object) query.getModel(getTestModel(), getModelOid("modelmetatest/1"));
-        ModelWrapper wrapper = ModelWrapper.create(result);
+        ModelWrapper wrapper = ModelWrapper.wrap(result);
         assertThat(wrapper.toOpenEngSBModelEntries(), notNullValue());
         assertThat(wrapper.retrieveInternalModelId(), notNullValue());
         assertThat(wrapper.retrieveInternalModelVersion(), notNullValue());

@@ -51,7 +51,7 @@ public class JsonSupportTest {
         sub2.setId("sub2");
         sub2.setName("test2");
         model.setSubs(Arrays.asList(sub1, sub2));
-        ModelWrapper wrapper = ModelWrapper.create(model);
+        ModelWrapper wrapper = ModelWrapper.wrap(model);
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test2", "test2", String.class));
         return model;
@@ -69,12 +69,12 @@ public class JsonSupportTest {
     @Test
     public void tryConvertJSONIntoModelWithAdditionalSerializer_shouldThrowNoException() throws Exception {
         NullModel model = createTestModel();
-        ModelWrapper wrapper = ModelWrapper.create(model);
+        ModelWrapper wrapper = ModelWrapper.wrap(model);
         wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("number", 42, Integer.class));
         String result = mapper.writeValueAsString(model);
 
         NullModel other = JsonUtils.convertObject(result, NullModel.class);
-        List<OpenEngSBModelEntry> entries = ModelWrapper.create(other).getOpenEngSBModelTail();
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(other).getOpenEngSBModelTail();
         assertThat(model.getId(), is(other.getId()));
         assertThat(model.getValue(), is(other.getValue()));
         assertThat(model.getSubs().size(), is(other.getSubs().size()));

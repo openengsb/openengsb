@@ -17,25 +17,22 @@
 
 package org.openengsb.core.util;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 /**
- * This static util class contains all necessary functions to deal with OpenEngSBModels.
+ * This static utility class contains the logic for creating a model instance with a list of model entries which shall
+ * be set in the model instance.
  */
 public final class ModelUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtils.class);
@@ -48,7 +45,9 @@ public final class ModelUtils {
      * Creates a model of the given type and uses the list of OpenEngSBModelEntries as initialization data.
      */
     public static <T> T createModel(Class<T> model, List<OpenEngSBModelEntry> entries) {
-        checkIfClassIsModel(model);
+        if (!ModelWrapper.isModel(model)) {
+            throw new IllegalArgumentException("The given class is no model");
+        }
         try {
             T instance = model.newInstance();
             for (OpenEngSBModelEntry entry : entries) {
@@ -99,11 +98,10 @@ public final class ModelUtils {
     private static boolean tryToSetValueThroughSetter(OpenEngSBModelEntry entry, Object instance)
         throws IllegalAccessException {
         try {
-            String setterName = getSetterName(entry.getKey());
-            Method method = instance.getClass().getMethod(setterName, entry.getType());
+            Method method = new PropertyDescriptor(entry.getKey(), instance.getClass()).getWriteMethod();
             method.invoke(instance, entry.getValue());
             return true;
-        } catch (NoSuchMethodException e) {
+        } catch (IntrospectionException e) {
             // if there exist no such method, then it is an entry meant for the model tail
         } catch (IllegalArgumentException e) {
             LOGGER.error("IllegalArgumentException while trying to set values for the new model.", e);
@@ -111,31 +109,5 @@ public final class ModelUtils {
             LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
         }
         return false;
-    }
-
-    /**
-     * Checks if the given class is an OpenEngSBModel. Throws an IllegalArgumentException if not.
-     */
-    private static void checkIfClassIsModel(Class<?> clazz) {
-        if (!OpenEngSBModel.class.isAssignableFrom(clazz)) {
-            throw new IllegalArgumentException("The given class is no model");
-        }
-    }
-
-    /**
-     * Returns all property descriptors for a given class.
-     */
-    public static List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(clasz);
-            return Arrays.asList(beanInfo.getPropertyDescriptors());
-        } catch (IntrospectionException e) {
-            LOGGER.error("instantiation exception while trying to create instance of class {}", clasz.getName());
-        }
-        return Lists.newArrayList();
-    }
-
-    private static String getSetterName(String propertyName) {
-        return String.format("%s%s%s", "set", (propertyName.charAt(0) + "").toUpperCase(), propertyName.substring(1));
     }
 }
