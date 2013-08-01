@@ -65,6 +65,15 @@ public class DefaultConverterStep implements EDBConverterStep {
             if (typeClass == null) {
                 return entry.getValue();
             }
+            if (typeClass == Character.class) {
+                if (entry.getValue().length() > 1) {
+                    LOGGER.warn("Too many chars in the string for a character type: " + entry.getValue());
+                    LOGGER.warn("The first char of the string will be used.");
+                    return entry.getValue().charAt(0);
+                } else if (entry.getValue().length() != 0) {
+                    return entry.getValue().charAt(0);
+                }
+            }
             Object result = invokeValueOf(typeClass, entry.getValue());
             if (result != null) {
                 return result;
