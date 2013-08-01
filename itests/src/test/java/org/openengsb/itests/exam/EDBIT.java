@@ -805,12 +805,10 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testPrimitivePropertyTypeConversion_shouldConvertAndPersistWithCorrectType() throws Exception {
         PrimitivePropertyModelDecorator model = getPrimitivePropertyModelDecorator();
-
-        // TODO: OPENENGSB-3627 test for character types
         model.setId("ppm/0");
         model.setBooleanByGet(true);
         model.setBooleanByIs(true);
-//        model.setPrimitiveChar(Character.MAX_VALUE);
+        model.setPrimitiveChar(Character.MAX_VALUE);
         model.setPrimitiveDouble(Double.MAX_VALUE);
         model.setPrimitiveFloat(Float.MAX_VALUE);
         model.setPrimitiveInt(Integer.MAX_VALUE);
@@ -831,7 +829,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         // check entry types
         assertThat(edbObject.get("booleanByGet").getType(), is(Boolean.class.getName()));
         assertThat(edbObject.get("booleanByIs").getType(), is(Boolean.class.getName()));
-//        assertThat(edbObject.get("primitiveChar").getType(), is(Character.class.getName()));
+        assertThat(edbObject.get("primitiveChar").getType(), is(Character.class.getName()));
         assertThat(edbObject.get("primitiveShort").getType(), is(Short.class.getName()));
         assertThat(edbObject.get("primitiveInt").getType(), is(Integer.class.getName()));
         assertThat(edbObject.get("primitiveLong").getType(), is(Long.class.getName()));
@@ -841,7 +839,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         // check values
         assertThat(edbObject.getBoolean("booleanByGet"), is(true));
         assertThat(edbObject.getBoolean("booleanByIs"), is(true));
-//        assertThat(edbObject.getChar("primitiveChar"), is(Character.MAX_VALUE));
+        assertThat(edbObject.getChar("primitiveChar"), is(Character.MAX_VALUE));
         assertThat(edbObject.getShort("primitiveShort"), is(Short.MAX_VALUE));
         assertThat(edbObject.getInteger("primitiveInt"), is(Integer.MAX_VALUE));
         assertThat(edbObject.getLong("primitiveLong"), is(Long.MAX_VALUE));
