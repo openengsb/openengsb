@@ -151,6 +151,7 @@ public class QueryInterfaceService implements QueryInterface {
         EKBCommit result = new EKBCommit();
         Map<ModelDescription, Class<?>> cache = new HashMap<>();
         result.setRevisionNumber(commit.getRevisionNumber());
+        result.setComment(commit.getComment());
         result.setParentRevisionNumber(commit.getParentRevisionNumber());
         result.setDomainId(commit.getDomainId());
         result.setConnectorId(commit.getConnectorId());

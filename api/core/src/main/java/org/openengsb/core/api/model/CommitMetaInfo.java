@@ -26,6 +26,7 @@ public class CommitMetaInfo {
     private String committer;
     private Long timestamp;
     private String context;
+    private String comment;
     private String revision;
     private String parent;
     private String domainId;
@@ -54,6 +55,14 @@ public class CommitMetaInfo {
 
     public void setContext(String context) {
         this.context = context;
+    }
+    
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getRevision() {

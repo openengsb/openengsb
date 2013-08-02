@@ -863,10 +863,12 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setEdbId("ekbload/1");
         model.setName("test");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        commit.setComment("This is the first comment");
         persist.commit(commit);
         String revision = commit.getRevisionNumber().toString();
         model.setName("test2");
         commit = getTestEKBCommit().addUpdate(model.getModel());
+        commit.setComment("This is the second comment");
         persist.commit(commit);
         String revision2 = commit.getRevisionNumber().toString();
         
@@ -877,6 +879,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
         assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
         assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
+        assertThat(commit.getComment(), is("This is the first comment"));
         
         commit = query.loadCommit(revision2);
         assertThat(commit, notNullValue());
@@ -886,6 +889,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
         assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
         assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
+        assertThat(commit.getComment(), is("This is the second comment"));
     }
 
     @Test
