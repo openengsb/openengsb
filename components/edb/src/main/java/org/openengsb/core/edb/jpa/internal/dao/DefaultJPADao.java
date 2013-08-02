@@ -32,6 +32,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
@@ -321,20 +322,33 @@ public class DefaultJPADao implements JPADao {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get matching revisions for the request {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
+            CriteriaQuery query = criteriaBuilder.createQuery();
             Root from = query.from(JPACommit.class);
-            query.select(from.get("revision"));
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("revision")
+                , from.get("parent"), from.get("domainId"), from.get("connectorId"), from.get("instanceId"));
 
             Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
             query.where(criteriaBuilder.and(predicates));
             query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
-
-            TypedQuery<String> typedQuery = entityManager.createQuery(query);
-            return typedQuery.getResultList();
+            TypedQuery<Object[]> typedQuery = entityManager.createQuery(query);
+            List<CommitMetaInfo> infos = new ArrayList<>();
+            for (Object[] row : typedQuery.getResultList()) {
+                CommitMetaInfo info = new CommitMetaInfo();
+                info.setCommitter(row[0] != null ? row[0].toString() : null);
+                info.setTimestamp(row[1] != null ? Long.valueOf(row[1].toString()) : null);
+                info.setContext(row[2] != null ? row[2].toString() : null);
+                info.setRevision(row[3] != null ? row[3].toString() : null);
+                info.setParent(row[4] != null ? row[4].toString() : null);
+                info.setDomainId(row[5] != null ? row[5].toString() : null);
+                info.setConnectorId(row[6] != null ? row[6].toString() : null);
+                info.setInstanceId(row[7] != null ? row[7].toString() : null);
+                infos.add(info);
+            }
+            return infos;
         }
     }
 

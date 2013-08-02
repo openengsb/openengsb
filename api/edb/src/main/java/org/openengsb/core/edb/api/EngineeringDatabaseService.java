@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 
 /**
@@ -101,9 +102,9 @@ public interface EngineeringDatabaseService {
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
     
     /**
-     * Returns a list of revision strings of all commits which are matching the given request.
+     * Returns a list of commit meta information of all commits which are matching the given request.
      */
-    List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
 
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
