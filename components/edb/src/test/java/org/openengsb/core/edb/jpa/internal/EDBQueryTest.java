@@ -386,6 +386,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         String revision1 = ci.getRevisionNumber().toString();
         obj.putEDBObjectEntry("test2", "test2", String.class);
         ci = getEDBCommit();
+        ci.setComment("this is a comment");
         ci.update(obj);
         Long timestamp2 = db.commit(ci);
         String revision2 = ci.getRevisionNumber().toString();
@@ -411,11 +412,13 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(revisions.get(1).getRevision(), is(revision2));
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp2);
+        
         revisions = db.getRevisionsOfMatchingCommits(request);
         assertThat(revisions.size(), is(1));
         assertThat(revisions.get(0).getRevision(), is(revision2));
         assertThat(revisions.get(0).getCommitter(), is(COMMITTER));
         assertThat(revisions.get(0).getContext(), is(CONTEXT));
         assertThat(revisions.get(0).getTimestamp(), is(timestamp2));
+        assertThat(revisions.get(0).getComment(), is("this is a comment"));
     }
 }

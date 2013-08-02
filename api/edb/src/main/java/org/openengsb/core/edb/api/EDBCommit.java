@@ -138,4 +138,14 @@ public interface EDBCommit {
      * Sets the instance id from which this commit has been sent.
      */
     void setInstanceId(String instanceId);
+    
+    /**
+     * Returns the comment to this commit.
+     */
+    String getComment();
+    
+    /**
+     * Sets the comment for this commit.
+     */
+    void setComment(String comment);
 }

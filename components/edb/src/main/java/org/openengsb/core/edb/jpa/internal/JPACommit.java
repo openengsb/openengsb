@@ -48,9 +48,8 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private Long timestamp;
     @Column(name = "CONTEXT", length = 50)
     private String context;
-    @Column(name = "DELS")
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> deletions;
+    @Column(name = "COMMENT", length = 200)
+    private String comment;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;
     @Column(name = "REVISION")
@@ -69,6 +68,9 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "UPDATES")
     @OneToMany(fetch = FetchType.EAGER)
     private List<JPAObject> updates;
+    @Column(name = "DELS")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> deletions;
 
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
@@ -255,5 +257,15 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
+    }
+
+    @Override
+    public String getComment() {
+        return comment;
+    }
+
+    @Override
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

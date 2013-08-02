@@ -327,9 +327,10 @@ public class DefaultJPADao implements JPADao {
             LOGGER.debug("Get matching revisions for the request {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery query = criteriaBuilder.createQuery();
-            Root from = query.from(JPACommit.class);
-            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("revision")
-                , from.get("parent"), from.get("domainId"), from.get("connectorId"), from.get("instanceId"));
+            Root<JPACommit> from = query.from(JPACommit.class);
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment")
+                , from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId")
+                , from.get("instanceId"));
 
             Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
             query.where(criteriaBuilder.and(predicates));
@@ -341,11 +342,12 @@ public class DefaultJPADao implements JPADao {
                 info.setCommitter(row[0] != null ? row[0].toString() : null);
                 info.setTimestamp(row[1] != null ? Long.valueOf(row[1].toString()) : null);
                 info.setContext(row[2] != null ? row[2].toString() : null);
-                info.setRevision(row[3] != null ? row[3].toString() : null);
-                info.setParent(row[4] != null ? row[4].toString() : null);
-                info.setDomainId(row[5] != null ? row[5].toString() : null);
-                info.setConnectorId(row[6] != null ? row[6].toString() : null);
-                info.setInstanceId(row[7] != null ? row[7].toString() : null);
+                info.setComment(row[3] != null ? row[3].toString() : null);
+                info.setRevision(row[4] != null ? row[4].toString() : null);
+                info.setParent(row[5] != null ? row[5].toString() : null);
+                info.setDomainId(row[6] != null ? row[6].toString() : null);
+                info.setConnectorId(row[7] != null ? row[7].toString() : null);
+                info.setInstanceId(row[8] != null ? row[8].toString() : null);
                 infos.add(info);
             }
             return infos;
