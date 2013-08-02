@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
@@ -397,21 +398,24 @@ public class EDBQueryTest extends AbstractEDBTest {
         
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp1);
-        List<String> revisions = db.getRevisionsOfMatchingCommits(request);
+        List<CommitMetaInfo> revisions = db.getRevisionsOfMatchingCommits(request);
         assertThat(revisions.size(), is(2));
-        assertThat(revisions.get(0), is(revision1));
-        assertThat(revisions.get(1), is(revision2));
+        assertThat(revisions.get(0).getRevision(), is(revision1));
+        assertThat(revisions.get(1).getRevision(), is(revision2));
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp1);
         request.setCommitter("testuser");
         revisions = db.getRevisionsOfMatchingCommits(request);
         assertThat(revisions.size(), is(2));
-        assertThat(revisions.get(0), is(revision1));
-        assertThat(revisions.get(1), is(revision2));
+        assertThat(revisions.get(0).getRevision(), is(revision1));
+        assertThat(revisions.get(1).getRevision(), is(revision2));
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp2);
         revisions = db.getRevisionsOfMatchingCommits(request);
         assertThat(revisions.size(), is(1));
-        assertThat(revisions.get(0), is(revision2));
+        assertThat(revisions.get(0).getRevision(), is(revision2));
+        assertThat(revisions.get(0).getCommitter(), is(COMMITTER));
+        assertThat(revisions.get(0).getContext(), is(CONTEXT));
+        assertThat(revisions.get(0).getTimestamp(), is(timestamp2));
     }
 }

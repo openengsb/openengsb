@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 
 /**
@@ -83,9 +84,9 @@ public interface QueryInterface {
     UUID getCurrentRevisionNumber();
     
     /**
-     * Returns a list of revision strings of all commits which are matching the given request.
+     * Returns a list of commit meta information of all commits which are matching the given request.
      */
-    List<String> queryForCommits(CommitQueryRequest request) throws EKBException;
+    List<CommitMetaInfo> queryForCommits(CommitQueryRequest request) throws EKBException;
     
     /**
      * Loads the EKBCommit object with the given revision from the data source.

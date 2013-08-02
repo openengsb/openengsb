@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -196,7 +197,7 @@ public class EDBService extends AbstractEDBService {
     }
     
     @Override
-    public List<String> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         getLogger().debug("Request revisions of matching commits for the request {}", request);
         return dao.getRevisionsOfMatchingCommits(request);
     }

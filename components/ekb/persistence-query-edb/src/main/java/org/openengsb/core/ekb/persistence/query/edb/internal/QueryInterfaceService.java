@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -129,7 +130,7 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
-    public List<String> queryForCommits(CommitQueryRequest request) throws EKBException {
+    public List<CommitMetaInfo> queryForCommits(CommitQueryRequest request) throws EKBException {
         return edbService.getRevisionsOfMatchingCommits(request);
     }
 
