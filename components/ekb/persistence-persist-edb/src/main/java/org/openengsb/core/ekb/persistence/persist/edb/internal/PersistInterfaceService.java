@@ -127,6 +127,7 @@ public class PersistInterfaceService implements PersistInterface {
             ci.setDomainId(source.getDomainId());
             ci.setConnectorId(source.getConnectorId());
             ci.setInstanceId(source.getInstanceId());
+            ci.setComment(source.getComment());
             edbService.commit(ci);
             source.setRevisionNumber(ci.getRevisionNumber());
             source.setParentRevisionNumber(ci.getParentRevisionNumber());
