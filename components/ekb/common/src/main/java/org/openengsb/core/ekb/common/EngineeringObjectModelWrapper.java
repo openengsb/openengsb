@@ -33,10 +33,20 @@ import org.openengsb.core.ekb.api.ModelRegistry;
  * The EngineeringObjectModelWrapper class is a helper class which encapsulates functions for models which are
  * Engineering Objects.
  */
-public class EngineeringObjectModelWrapper extends AdvancedModelWrapper {
+public final class EngineeringObjectModelWrapper extends AdvancedModelWrapper {
 
-    public EngineeringObjectModelWrapper(OpenEngSBModel model) {
+    private EngineeringObjectModelWrapper(OpenEngSBModel model) {
         super(model);
+    }
+
+    /**
+     * Returns the corresponding engineering object model wrapper to the given advanced model wrapper.
+     */
+    public static EngineeringObjectModelWrapper enhance(AdvancedModelWrapper model) {
+        if (!model.isEngineeringObject()) {
+            throw new IllegalArgumentException("The model of the AdvancedModelWrapper is no EngineeringObject");
+        }
+        return new EngineeringObjectModelWrapper(model.getUnderlyingModel());
     }
 
     /**

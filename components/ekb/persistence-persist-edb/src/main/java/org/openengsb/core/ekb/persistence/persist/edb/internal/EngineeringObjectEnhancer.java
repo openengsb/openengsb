@@ -104,7 +104,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private List<AdvancedModelWrapper> convertOpenEngSBModelList(List<OpenEngSBModel> models) {
         List<AdvancedModelWrapper> wrappers = new ArrayList<AdvancedModelWrapper>();
         for (OpenEngSBModel model : models) {
-            wrappers.add(new AdvancedModelWrapper(model));
+            wrappers.add(AdvancedModelWrapper.wrap(model));
         }
         return wrappers;
     }
@@ -115,7 +115,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private List<OpenEngSBModel> convertSimpleModelWrapperList(List<AdvancedModelWrapper> wrappers) {
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         for (AdvancedModelWrapper wrapper : wrappers) {
-            models.add(wrapper.getModel());
+            models.add(wrapper.getUnderlyingModel());
         }
         return models;
     }
@@ -159,7 +159,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
      * additionally.
      */
     private List<AdvancedModelWrapper> performEOModelUpdate(EngineeringObjectModelWrapper model, EKBCommit commit) {
-        ModelDiff diff = createModelDiff(model.getModel(), model.getCompleteModelOID(),
+        ModelDiff diff = createModelDiff(model.getUnderlyingModel(), model.getCompleteModelOID(),
             edbService, edbConverter);
         boolean referencesChanged = diff.isForeignKeyChanged();
         boolean valuesChanged = diff.isValueChanged();
@@ -231,11 +231,11 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
         if (wrapper == null) {
             ref = reference.getCorrespondingModel();
         } else {
-            ref = wrapper.getModel();
+            ref = wrapper.getUnderlyingModel();
         }
         Object transformResult = transformationEngine.performTransformation(source, description,
-            model.getModel(), ref);
-        return new AdvancedModelWrapper((OpenEngSBModel) transformResult);
+            model.getUnderlyingModel(), ref);
+        return AdvancedModelWrapper.wrap(transformResult);
     }
 
     /**
@@ -243,7 +243,7 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
      */
     private void enhanceCommitInserts(EKBCommit commit) throws EKBException {
         for (OpenEngSBModel model : commit.getInserts()) {
-            AdvancedModelWrapper simple = new AdvancedModelWrapper(model);
+            AdvancedModelWrapper simple = AdvancedModelWrapper.wrap(model);
             if (simple.isEngineeringObject()) {
                 performInsertEOLogic(simple.toEngineeringObject());
             }
@@ -270,8 +270,8 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
         ModelDescription sourceDesc = source.getModelDescription();
         ModelDescription targetDesc = target.getModelDescription();
         Object transformResult = transformationEngine.performTransformation(sourceDesc, targetDesc,
-            source.getModel(), target.getModel());
-        return new AdvancedModelWrapper((OpenEngSBModel) transformResult);
+            source.getUnderlyingModel(), target.getUnderlyingModel());
+        return AdvancedModelWrapper.wrap(transformResult);
     }
 
     /**
