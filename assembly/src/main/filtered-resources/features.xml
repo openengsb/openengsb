@@ -148,7 +148,7 @@
     <bundle start-level='40'>mvn:org.openengsb.labs.delegation/org.openengsb.labs.delegation.service/${labs.delegation.version}</bundle>
     <!-- JPA Infrastructure -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle start-level='30'>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
+    <bundle start-level='25'>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle start-level='30'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle start-level='30'>mvn:com.h2database/h2/${h2.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
