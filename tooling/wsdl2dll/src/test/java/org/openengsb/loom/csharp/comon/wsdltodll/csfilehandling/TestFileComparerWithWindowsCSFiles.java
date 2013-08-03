@@ -31,8 +31,8 @@ import org.openengsb.loom.csharp.comon.wsdltodll.test.resources.ResourceManager;
 import junit.framework.Assert;
 
 public class TestFileComparerWithWindowsCSFiles {
-    private static final int EXAMPLE_FILE1_SIZE_AFTER_FILECOMPARER = 150;
-    private static final int EXAMPLE_FILE2_SIZE_AFTER_FILECOMPARER = 130;
+    private static final int EXAMPLE_FILE1_SIZE_AFTER_FILECOMPARER = 167;
+    private static final int EXAMPLE_FILE2_SIZE_AFTER_FILECOMPARER = 147;
 
     private ResourceManager resourcesManager;
     private FileComparer fileComparer;

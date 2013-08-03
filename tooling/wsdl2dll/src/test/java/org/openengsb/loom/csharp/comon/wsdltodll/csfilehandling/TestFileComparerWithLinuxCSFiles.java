@@ -31,8 +31,8 @@ import org.openengsb.loom.csharp.comon.wsdltodll.test.resources.ResourceManager;
 import junit.framework.Assert;
 
 public class TestFileComparerWithLinuxCSFiles {
-    private static final int EXAMPLE_FILE1_SIZE_AFTER_FILECOMPARER = 140;
-    private static final int EXAMPLE_FILE2_SIZE_AFTER_FILECOMPARER = 123;
+    private static final int EXAMPLE_FILE1_SIZE_AFTER_FILECOMPARER = 157;
+    private static final int EXAMPLE_FILE2_SIZE_AFTER_FILECOMPARER = 140;
 
     private ResourceManager resourcesManager;
     private FileComparer fileComparer;
@@ -76,8 +76,8 @@ public class TestFileComparerWithLinuxCSFiles {
         filepathes.add(exampleFile2.getAbsolutePath());
         FileComparer.removeSimilaritiesAndSaveFiles(filepathes,
             mockedlogger, false);
-        Assert.assertEquals(fileComparer.getFileLinesAsList(exampleFile1).size(), 140);
-        Assert.assertEquals(fileComparer.getFileLinesAsList(exampleFile2).size(), 123);
+        Assert.assertEquals(fileComparer.getFileLinesAsList(exampleFile1).size(), 157);
+        Assert.assertEquals(fileComparer.getFileLinesAsList(exampleFile2).size(), 140);
         Assert.assertNotSame(fileComparer.getFileLinesAsList(exampleFile1).size(),
             EXAMPLE_FILE1_SIZE_AFTER_FILECOMPARER);
         Assert.assertEquals(fileComparer.getFileLinesAsList(exampleFile2).size(),

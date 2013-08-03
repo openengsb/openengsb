@@ -38,7 +38,6 @@ public class TestAbstractAnPartialClassReplacement {
         mockedlogger = Mockito.mock(Log.class);
         file1AsList = new LinkedList<String>();
         fileComparer = new FileComparer(mockedlogger);
-
     }
 
     @Test
