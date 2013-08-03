@@ -17,8 +17,11 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.openengsb.core.edb.api.EDBObjectEntry;
@@ -37,6 +40,9 @@ public class JPAEntry extends VersionedEntity {
     private String value;
     @Column(name = "TYPE")
     private String type;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name="STAGE",nullable = true)
+	private JPAStage stage;
 
     public JPAEntry() {
         key = "";
@@ -78,4 +84,12 @@ public class JPAEntry extends VersionedEntity {
     public void setType(String type) {
         this.type = type;
     }
+	
+	public void setJPAStage(JPAStage stage){
+		this.stage = stage;
+	}
+	
+	public JPAStage getJPAStage(){
+		return this.stage;
+	}
 }

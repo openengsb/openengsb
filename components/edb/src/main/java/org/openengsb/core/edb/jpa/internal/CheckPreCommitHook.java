@@ -171,18 +171,23 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         String oid = newObject.getOID();
         EDBObject object = getObject(oid);
         for (EDBObjectEntry entry : newObject.values()) {
-            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
-                continue;
+			checkEntryForConflict(entry, object.getObject(entry.getKey()));
+        }
+    }
+	
+	
+	private void checkEntryForConflict(EDBObjectEntry entry, Object value) throws EDBException {
+			if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                //continue;
+				return;
             }
-            Object value = object.getObject(entry.getKey());
             if (value == null || !value.equals(entry.getValue())) {
                 LOGGER.debug("Conflict detected at key {} when comparing {} with {}", new Object[]{ entry.getKey(),
                     entry.getValue(), value == null ? "null" : value.toString() });
                 throw new EDBException("Conflict detected. Failure when comparing the values of the key "
                         + entry.getKey());
             }
-        }
-    }
+	}
 
     /**
      * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
@@ -206,6 +211,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         JPAObject temp = dao.getJPAObject(oid);
         return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
+
+    
 
     /**
      * Loads the actual version of a model with the given oid.

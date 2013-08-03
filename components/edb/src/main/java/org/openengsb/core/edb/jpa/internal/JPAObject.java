@@ -24,6 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -34,6 +35,10 @@ import org.apache.openjpa.persistence.jdbc.Index;
  * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
 public class JPAObject extends VersionedEntity {
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name="STAGE",nullable = true)
+	private JPAStage stage;
+	
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAEntry> entries;
     @Column(name = "TIME")
@@ -55,6 +60,14 @@ public class JPAObject extends VersionedEntity {
     public void setEntries(List<JPAEntry> entries) {
         this.entries = entries;
     }
+	
+	public void setJPAStage(JPAStage stage){
+		this.stage = stage;
+	}
+	
+	public JPAStage getJPAStage(){
+		return this.stage;
+	}
 
     public Boolean isDeleted() {
         return isDeleted;

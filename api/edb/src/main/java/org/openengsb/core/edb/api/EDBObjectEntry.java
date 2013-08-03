@@ -27,18 +27,28 @@ public class EDBObjectEntry {
     private String key;
     private Object value;
     private String type;
+	private EDBStage stage;
 
     public EDBObjectEntry() {
     }
 
     public EDBObjectEntry(String key, Object value, Class<?> type) {
-        this(key, value, type.getName());
+        this(key, value, type.getName(), null);
+    }
+	
+	public EDBObjectEntry(String key, Object value, Class<?> type, EDBStage stage) {
+        this(key, value, type.getName(), stage);
     }
 
     public EDBObjectEntry(String key, Object value, String type) {
+        this(key, value, type, null);
+    }
+	
+	public EDBObjectEntry(String key, Object value, String type, EDBStage stage) {
         this.key = key;
         this.value = value;
         this.type = type;
+		this.stage = stage;
     }
 
     public String getKey() {
@@ -63,6 +73,14 @@ public class EDBObjectEntry {
 
     public void setType(String type) {
         this.type = type;
+    }
+	
+	public EDBStage getEDBStage() {
+        return stage;
+    }
+
+    public void setEDBStage(EDBStage stage) {
+        this.stage = stage;
     }
 
     @Override

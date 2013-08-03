@@ -118,6 +118,8 @@ public interface EngineeringDatabaseService {
      * Find all OIDs which have been "resurrected" (deleted and recreated)
      */
     List<String> getResurrectedOIDs() throws EDBException;
+	
+	List<String> getStagedResurrectedOIDs(String sid) throws EDBException;
 
     /**
      * Fixed-Complex-Query - Get all objects at the state of last commit which matches the provided query.

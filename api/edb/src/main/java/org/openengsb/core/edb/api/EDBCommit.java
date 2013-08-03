@@ -28,6 +28,8 @@ import java.util.UUID;
  * throws an exception if you want to commit it again.
  */
 public interface EDBCommit {
+	EDBStage getEDBStage();
+	void setEDBStage(EDBStage stage);
     /**
      * Add an object to be inserted. The object's timestamp must match the commit's timestamp.
      */

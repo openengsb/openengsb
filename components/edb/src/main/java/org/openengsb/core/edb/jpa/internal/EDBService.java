@@ -222,8 +222,12 @@ public class EDBService extends AbstractEDBService {
     }
 
     @Override
-    public List<EDBObject> getStateOfLastCommitMatching(
-            Map<String, Object> queryMap) throws EDBException {
+    public List<String> getStagedResurrectedOIDs(String sid) throws EDBException {
+        return dao.getStagedResurrectedOIDs(sid);
+    }
+
+    @Override
+    public List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> queryMap) throws EDBException {
         JPACommit ci = getLastCommit(queryMap);
         return getHead(ci.getTimestamp());
     }

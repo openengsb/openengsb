@@ -29,13 +29,22 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private static final String OID_CONST = "oid";
     private static final String DELETED_CONST = "isDeleted";
 
-    /**
+    
+	private EDBStage stage;
+	
+	/**
      * Create an EDBObject with a specified OID.
      */
     public EDBObject(String oid) {
         super();
         setOID(oid);
+		this.stage = null;
     }
+	
+	public EDBObject(String oid, EDBStage stage){
+		super(oid);
+		this.stage = stage;
+	}
 
     /**
      * Create an EDBObject using a Map of data. The OID is stored after loading the data Map, so any already existing
@@ -166,4 +175,12 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
         builder.append(" \"").append(entry.getKey()).append("\"");
         builder.append(" : ").append(entry.getValue());
     }
+    
+    public void setEDBStage(EDBStage stage) {
+		this.stage = stage;
+	}
+	
+	public EDBStage getEDBStage(){
+		return this.stage;
+	}
 }
