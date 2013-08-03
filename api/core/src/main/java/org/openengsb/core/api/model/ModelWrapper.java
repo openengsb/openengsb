@@ -28,7 +28,7 @@ import org.osgi.framework.Version;
 public class ModelWrapper {
     protected OpenEngSBModel model;
 
-    public ModelWrapper(OpenEngSBModel model) {
+    protected ModelWrapper(OpenEngSBModel model) {
         this.model = model;
     }
 
@@ -53,7 +53,7 @@ public class ModelWrapper {
     /**
      * Returns the underlying model object.
      */
-    public OpenEngSBModel getModel() {
+    public OpenEngSBModel getUnderlyingModel() {
         return model;
     }
 
