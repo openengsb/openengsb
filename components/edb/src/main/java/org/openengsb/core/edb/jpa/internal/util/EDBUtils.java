@@ -25,6 +25,7 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
+import org.openengsb.core.edb.jpa.internal.JPAStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +90,7 @@ public final class EDBUtils {
      */
     public static JPAObject convertEDBObjectToJPAObject(EDBObject object) {
         JPAObject result = new JPAObject();
+			((JPAObject)result).setJPAStage((JPAStage)((EDBObject)object).getEDBStage());
         result.setTimestamp(object.getTimestamp());
         result.setOID(object.getOID());
         result.setDeleted(object.isDeleted());

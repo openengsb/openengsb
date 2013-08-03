@@ -55,7 +55,7 @@ public abstract class AbstractJPADao
 			//return criteriaBuilder.and(predicateSid);
 		}
 		
-		return predicate;
+		return criteriaBuilder.equal(from.get("stage"), null);
 	}
 	
 	/**
@@ -281,12 +281,7 @@ public abstract class AbstractJPADao
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
             subquery.where(criteriaBuilder.le(maxTime.get("timestamp"), timestamp));
 			
-			Predicate stagePred = checkSid(criteriaBuilder, maxTime, sid, null);
-			
-			if(stagePred != null)
-			{
-				subquery.where(stagePred);
-			}
+			subquery.where(checkSid(criteriaBuilder, maxTime, sid, null));
 			
 			query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
 			

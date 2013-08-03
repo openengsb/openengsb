@@ -63,7 +63,7 @@ public interface JPADao {
      */
     JPAObject getJPAObject(String oid) throws EDBException;
 	
-	JPAObject getStagedJPAObject(String oid, String sid) throws EDBException;
+	JPAObject getJPAObject(String oid, String sid) throws EDBException;
     
     /**
      * Returns the newest JPAObjects with the given oids

@@ -166,7 +166,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     private EDBException runPreCommitHooks(EDBCommit commit) {
         EDBException exception = null;
         for (EDBPreCommitHook hook : preCommitHooks) {
-            try {
+            try {				
                 hook.onPreCommit(commit);
             } catch (ServiceUnavailableException e) {
                 // Ignore

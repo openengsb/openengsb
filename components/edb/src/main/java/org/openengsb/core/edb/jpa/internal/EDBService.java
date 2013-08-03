@@ -82,6 +82,12 @@ public class EDBService extends AbstractEDBService {
         return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 
+    @Override 
+    public EDBObject getStagedObject(String oid, String sid) throws EDBException {
+        getLogger().debug("loading newest JPAObject with the oid {} and sid {}", new Object[]{oid, sid});
+        JPAObject temp = dao.getJPAObject(oid,sid);
+		return EDBUtils.convertJPAObjectToEDBObject(temp);
+    }
     @Override
     public List<EDBObject> getObjects(List<String> oids) throws EDBException {
         List<JPAObject> objects = dao.getJPAObjects(oids);

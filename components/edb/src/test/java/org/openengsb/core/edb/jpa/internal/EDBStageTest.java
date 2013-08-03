@@ -22,28 +22,31 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import org.openengsb.core.edb.api.EDBStage;
 import static org.hamcrest.Matchers.notNullValue;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBObject;
 
 public class EDBStageTest extends AbstractEDBTest
 {
 	
-//	@Test
-//    public void testCommit_shouldWork() throws Exception {
-//		JPAStage stage = new JPAStage();
-//		stage.setStageId("stage1");
-//		stage.setCreator("sveti");
-//		stage.setTimeStamp(Long.MIN_VALUE);
-//        EDBStageObject obj = new EDBStageObject("stage1","Tester");
-//        obj.putEntry("Test", "Hooray");
-//        EDBStageCommit ci = db.createEDBStageCommit(stage, Arrays.asList(obj), null, null);
-//        long time = db.commit(ci);
-//
-//        obj = null;
-//        obj = db.getStagedObject("Tester", "stage1");
-//        String hooray = obj.getString("Test");
-//
-//        assertThat(obj, notNullValue());
-//        assertThat(hooray, notNullValue());
-//
-//        checkTimeStamps(Arrays.asList(time));
-//    }
+	@Test
+    public void testCommit_shouldWork() throws Exception {
+		JPAStage stage = new JPAStage();
+		stage.setStageId("stage1");
+		stage.setCreator("sveti");
+		stage.setTimeStamp(Long.MIN_VALUE);
+        EDBObject obj = new EDBObject("Tester", stage);
+        obj.putEntry("Test", "Hooray");
+        EDBCommit ci = db.createEDBCommit(Arrays.asList(obj), null, null);
+		ci.setEDBStage(stage);
+        long time = db.commit(ci);
+
+        obj = null;
+        obj = db.getStagedObject("Tester", "stage1");
+        String hooray = obj.getString("Test");
+
+        assertThat(obj, notNullValue());
+        assertThat(hooray, notNullValue());
+
+        checkTimeStamps(Arrays.asList(time));
+    }
 }

@@ -26,6 +26,7 @@ import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
@@ -52,10 +53,10 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         List<String> deleteFails = null;
 
         if (commit.getInserts() != null) {
-            insertFails = checkInserts(commit.getInserts());
+            insertFails = checkInserts(commit.getInserts(), commit.getEDBStage());
         }
         if (commit.getDeletions() != null) {
-            deleteFails = checkDeletions(commit.getDeletions());
+            deleteFails = checkDeletions(commit.getDeletions(), commit.getEDBStage());
         }
         if (commit.getUpdates() != null) {
             updateFails = checkUpdates(commit.getUpdates());
@@ -93,11 +94,11 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      * Checks if all oid's of the given EDBObjects are not existing yet. Returns a list of objects where the EDBObject
      * already exists.
      */
-    private List<EDBObject> checkInserts(List<EDBObject> inserts) {
+    private List<EDBObject> checkInserts(List<EDBObject> inserts, EDBStage stage) {
         List<EDBObject> failedObjects = new ArrayList<EDBObject>();
         for (EDBObject insert : inserts) {
             String oid = insert.getOID();
-            if (checkIfActiveOidExisting(oid)) {
+            if (checkIfActiveOidExisting(oid, checkStage(stage))) {
                 failedObjects.add(insert);
             } else {
                 insert.putEDBObjectEntry(EDBConstants.MODEL_VERSION, Integer.valueOf(1));
@@ -106,14 +107,24 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         return failedObjects;
     }
 
+	private String checkStage(EDBStage stage)
+	{
+		if(stage != null)
+		{
+			return stage.getStageId();
+		}
+		
+		return null;
+	}
+
     /**
      * Checks if all oid's of the given EDBObjects are existing. Returns a list of objects where the EDBObject doesn't
      * exist.
      */
-    private List<String> checkDeletions(List<String> deletes) {
+    private List<String> checkDeletions(List<String> deletes, EDBStage stage) {
         List<String> failedObjects = new ArrayList<String>();
         for (String delete : deletes) {
-            if (!checkIfActiveOidExisting(delete)) {
+            if (!checkIfActiveOidExisting(delete, checkStage(stage))) {
                 failedObjects.add(delete);
             }
         }
@@ -169,7 +180,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      */
     private void checkForConflict(EDBObject newObject) throws EDBException {
         String oid = newObject.getOID();
-        EDBObject object = getObject(oid);
+        EDBObject object = getObject(oid, checkStage(newObject.getEDBStage()));
         for (EDBObjectEntry entry : newObject.values()) {
 			checkEntryForConflict(entry, object.getObject(entry.getKey()));
         }
@@ -192,9 +203,9 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     /**
      * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
      */
-    private boolean checkIfActiveOidExisting(String oid) {
+    private boolean checkIfActiveOidExisting(String oid, String sid) {
         try {
-            EDBObject obj = getObject(oid);
+            EDBObject obj = getObject(oid, sid);
             if (!obj.isDeleted()) {
                 return true;
             }
@@ -207,8 +218,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     /**
      * Loads the EDBObject for the given oid.
      */
-    private EDBObject getObject(String oid) throws EDBException {
-        JPAObject temp = dao.getJPAObject(oid);
+    private EDBObject getObject(String oid, String sid) throws EDBException {
+        JPAObject temp = dao.getJPAObject(oid, sid);
         return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 

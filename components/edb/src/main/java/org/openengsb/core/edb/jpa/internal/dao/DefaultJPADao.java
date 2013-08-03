@@ -108,7 +108,7 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     }
 	
 	@Override
-    public JPAObject getStagedJPAObject(String oid, String sid) throws EDBException {
+    public JPAObject getJPAObject(String oid, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading newest object {} from stage {}", oid, sid);
             return getStagedJPAObject(oid, sid, System.currentTimeMillis());
