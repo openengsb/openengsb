@@ -17,6 +17,9 @@
 
 package org.openengsb.core.ekb.common;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +48,8 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 /**
  * The EDBConverter class responsibility is the converting between EDBObjects and models and the vice-versa.
@@ -105,7 +111,7 @@ public class EDBConverter {
         }
         EDBConverterUtils.filterEngineeringObjectInformation(object, model);
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-        for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
+        for (PropertyDescriptor propertyDescriptor : getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
                     || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
                 continue;
@@ -131,6 +137,19 @@ public class EDBConverter {
             }
         }
         return ModelUtils.createModel(model, entries);
+    }
+    
+    /**
+     * Returns all property descriptors for a given class.
+     */
+    private List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(clasz);
+            return Arrays.asList(beanInfo.getPropertyDescriptors());
+        } catch (IntrospectionException e) {
+            LOGGER.error("instantiation exception while trying to create instance of class {}", clasz.getName());
+        }
+        return Lists.newArrayList();
     }
 
     /**

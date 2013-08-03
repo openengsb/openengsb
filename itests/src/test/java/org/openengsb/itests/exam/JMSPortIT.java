@@ -43,13 +43,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.core.util.JsonUtils;
-import org.openengsb.core.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -250,7 +250,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
             ExampleResponseModel response = new ExampleResponseModel();
             response.setResult("successful");
-            for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(model)) {
+            for (OpenEngSBModelEntry entry : ModelWrapper.wrap(model).getOpenEngSBModelTail()) {
                 if (entry.getKey().equals("specialKey") && entry.getValue().equals("specialValue")) {
                     response.setResult("successful with tail");
                 }

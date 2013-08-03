@@ -20,20 +20,20 @@ package org.openengsb.ui.admin.xlink.mocking;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.LinkingSupport;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.exceptions.OpenXLinkException;
 import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.openengsb.core.util.ModelUtils;
 import org.openengsb.domain.OOSourceCode.model.OOClass;
 import org.openengsb.domain.OOSourceCode.model.OOVariable;
 import org.openengsb.domain.SQLCode.model.SQLCreate;
@@ -335,7 +335,7 @@ public class XLinkMockImpl implements XLinkMock {
             String modelId, String versionId) throws ClassNotFoundException {
         Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelId, versionId, osgiService);
         Object model = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
-        List<OpenEngSBModelEntry> entries = ModelUtils.toOpenEngSBModelEntries(model);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(model).toOpenEngSBModelEntries();
         List<String> identifierKeyNames = new ArrayList<String>();
         //########### MOCK start ###########
         
