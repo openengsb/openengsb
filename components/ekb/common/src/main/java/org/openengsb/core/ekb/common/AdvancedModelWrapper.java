@@ -34,8 +34,19 @@ import org.openengsb.core.edb.api.EngineeringDatabaseService;
  */
 public class AdvancedModelWrapper extends ModelWrapper {
 
-    public AdvancedModelWrapper(OpenEngSBModel model) {
+    protected AdvancedModelWrapper(OpenEngSBModel model) {
         super(model);
+    }
+
+    /**
+     * Creates an advanced model wrapper object out of the given model object. Throws IllegalArgumentException in case
+     * the given model object is no model.
+     */
+    public static AdvancedModelWrapper wrap(Object model) {
+        if (!(isModel(model.getClass()))) {
+            throw new IllegalArgumentException("The given object is no model");
+        }
+        return new AdvancedModelWrapper((OpenEngSBModel) model);
     }
 
     /**
@@ -53,7 +64,14 @@ public class AdvancedModelWrapper extends ModelWrapper {
     public Boolean isEngineeringObject() {
         return isEngineeringObjectClass(model.getClass());
     }
-    
+
+    /**
+     * Returns the corresponding engineering object model wrapper to the given advanced model wrapper.
+     */
+    public EngineeringObjectModelWrapper toEngineeringObject() {
+        return EngineeringObjectModelWrapper.enhance(this);
+    }
+
     /**
      * Returns true if the class is the class of an engineering object, returns false if not.
      */
@@ -64,15 +82,5 @@ public class AdvancedModelWrapper extends ModelWrapper {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns the corresponding engineering object model wrapper to the simple model this wrapper is wrapping.
-     */
-    public EngineeringObjectModelWrapper toEngineeringObject() throws IllegalArgumentException {
-        if (!isEngineeringObject()) {
-            throw new IllegalArgumentException("The model of the AdvancedModelWrapper is no EngineeringObject");
-        }
-        return new EngineeringObjectModelWrapper(model);
     }
 }
