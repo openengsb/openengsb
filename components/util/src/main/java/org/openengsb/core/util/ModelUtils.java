@@ -17,8 +17,6 @@
 
 package org.openengsb.core.util;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -98,10 +96,11 @@ public final class ModelUtils {
     private static boolean tryToSetValueThroughSetter(OpenEngSBModelEntry entry, Object instance)
         throws IllegalAccessException {
         try {
-            Method method = new PropertyDescriptor(entry.getKey(), instance.getClass()).getWriteMethod();
+            String setterName = getSetterName(entry.getKey());
+            Method method = instance.getClass().getMethod(setterName, entry.getType());
             method.invoke(instance, entry.getValue());
             return true;
-        } catch (IntrospectionException e) {
+        } catch (NoSuchMethodException e) {
             // if there exist no such method, then it is an entry meant for the model tail
         } catch (IllegalArgumentException e) {
             LOGGER.error("IllegalArgumentException while trying to set values for the new model.", e);
@@ -109,5 +108,9 @@ public final class ModelUtils {
             LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
         }
         return false;
+    }
+
+    private static String getSetterName(String propertyName) {
+        return String.format("%s%s%s", "set", (propertyName.charAt(0) + "").toUpperCase(), propertyName.substring(1));
     }
 }
