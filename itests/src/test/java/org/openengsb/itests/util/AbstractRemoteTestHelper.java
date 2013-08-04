@@ -17,7 +17,17 @@
 
 package org.openengsb.itests.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.PublicKey;
+
+import javax.crypto.SecretKey;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -36,15 +46,7 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.SecretKey;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.PublicKey;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Abstracts the general concepts required for remote tests

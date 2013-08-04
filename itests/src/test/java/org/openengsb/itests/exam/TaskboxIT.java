@@ -44,13 +44,11 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.api.model.Task;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+//@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     private TaskboxService taskboxService;
     private WorkflowService workflowService;
