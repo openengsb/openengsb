@@ -73,6 +73,14 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Column(name="STAGE",nullable = true)
 	private JPAStage stage;
+
+    protected List<EDBObject> objects;
+
+    @Transient
+    protected List<EDBObject> inserts;
+    @Transient
+    protected List<EDBObject> updates;
+	
 	
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
@@ -93,18 +101,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         this.revision = UUID.randomUUID().toString();
     }		
 
-	@Override
-	public EDBStage getEDBStage()
-	{
-		return this.stage;
-	}
-
-	@Override
-	public void setEDBStage(EDBStage stage)
-	{
-		this.stage = (JPAStage)stage;
-		}
-		
     @Override
     public void setCommitted(Boolean committed) {
         this.committed = committed;
@@ -121,7 +117,6 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return oids;
     }
 
-	@Override
     public final List<EDBObject> getObjects() {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.addAll(inserts);
@@ -239,4 +234,16 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void setHeadRevisionNumber(UUID head) {
         this.parent = head != null ? head.toString() : null;
     }
+
+	@Override
+	public EDBStage getEDBStage()
+	{
+		return this.stage;
+	}
+
+	@Override
+	public void setEDBStage(EDBStage stage)
+	{
+		this.stage = (JPAStage)stage;
+	}
 }

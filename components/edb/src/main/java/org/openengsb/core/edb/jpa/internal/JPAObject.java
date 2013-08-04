@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -35,21 +36,21 @@ import org.apache.openjpa.persistence.jdbc.Index;
  * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
 public class JPAObject extends VersionedEntity {
+	@Column(name = "TIME")
+    protected Long timestamp;
+    @Column(name = "ISDELETED")
+    protected Boolean isDeleted;
+    @Index
+    @Column(name = "OID")
+    protected String oid;   
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Column(name="STAGE",nullable = true)
 	private JPAStage stage;
 	
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<JPAEntry> entries;
-    @Column(name = "TIME")
-    private Long timestamp;
-    @Column(name = "ISDELETED")
-    private Boolean isDeleted;
-    @Index
-    @Column(name = "OID")
-    private String oid;
-
-    public JPAObject() {
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    protected List<JPAEntry> entries;
+	
+    public JPAObject(){
         isDeleted = false;
     }
     

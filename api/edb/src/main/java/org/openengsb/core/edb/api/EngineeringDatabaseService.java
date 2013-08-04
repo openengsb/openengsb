@@ -36,7 +36,7 @@ public interface EngineeringDatabaseService {
      */
     EDBObject getObject(String oid) throws EDBException;
 
-	EDBObject getStagedObject(String oid, String sid) throws EDBException;
+	EDBObject getObject(String oid, String sid) throws EDBException;
     /**
      * Retrieve the current state of the objects with the specified OIDs.
      */
@@ -89,11 +89,13 @@ public interface EngineeringDatabaseService {
      */
     List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException;
 
+	List<EDBCommit> getCommitsByKeyValue(String key, Object value, String sid) throws EDBException;
     /**
      * More general query for a commit, with AND-connected key-value pairs to match.
      */
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
 
+	List<EDBCommit> getCommits(Map<String, Object> query, String sid) throws EDBException;
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
      * returned. Exceptions are only thrown for database errors.
@@ -137,6 +139,9 @@ public interface EngineeringDatabaseService {
      */
     EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException;
+	
+	EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+		throws EDBException;
     
     /**
      * Returns the revision of the current state of the EDB.

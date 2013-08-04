@@ -28,9 +28,12 @@ import java.util.UUID;
  * throws an exception if you want to commit it again.
  */
 public interface EDBCommit {
+	
 	EDBStage getEDBStage();
+	
 	void setEDBStage(EDBStage stage);
-    /**
+	
+	/**
      * Add an object to be inserted. The object's timestamp must match the commit's timestamp.
      */
     void insert(EDBObject obj) throws EDBException;
@@ -39,8 +42,8 @@ public interface EDBCommit {
      * Add an object to be updated. The object's timestamp must match the commit's timestamp.
      */
     void update(EDBObject obj) throws EDBException;
-
-    /**
+	
+	/**
      * Delete an object that already exists.
      */
     void delete(String oid) throws EDBException;

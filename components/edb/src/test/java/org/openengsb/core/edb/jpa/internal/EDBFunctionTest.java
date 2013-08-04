@@ -38,7 +38,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 
 import com.google.common.collect.Maps;
 
-public class EDBFunctionTest extends AbstractEDBTest {    
+public class EDBFunctionTest extends AbstractEDBFunctionTest {    
 
     @Test
     public void testOpenDatabase_shouldWork() throws Exception {
@@ -47,37 +47,12 @@ public class EDBFunctionTest extends AbstractEDBTest {
 
     @Test
     public void testCommit_shouldWork() throws Exception {
-        EDBObject obj = new EDBObject("Tester");
-        obj.putEDBObjectEntry("Test", "Hooray");
-        EDBCommit ci = db.createEDBCommit(Arrays.asList(obj), null, null);
-
-        long time = db.commit(ci);
-
-        obj = null;
-        obj = db.getObject("Tester");
-        String hooray = obj.getString("Test");
-
-        assertThat(obj, notNullValue());
-        assertThat(hooray, notNullValue());
-
-        checkTimeStamps(Arrays.asList(time));
+		super.testCommit_shouldWork(null);
     }
 
     @Test
     public void testGetCommits_shouldWork() throws Exception {
-        EDBObject obj = new EDBObject("TestObject");
-        obj.putEDBObjectEntry("Bla", "Blabla");
-        EDBCommit ci = db.createEDBCommit(Arrays.asList(obj), null, null);
-
-        long time = db.commit(ci);
-
-        List<EDBCommit> commits1 = db.getCommitsByKeyValue("context", "testcontext");
-        List<EDBCommit> commits2 = db.getCommitsByKeyValue("context", "DoesNotExist");
-
-        assertThat(commits1.size(), is(1));
-        assertThat(commits2.size(), is(0));
-
-        checkTimeStamps(Arrays.asList(time));
+		super.testGetCommits_shouldWork(null);
     }
 
     @Test(expected = EDBException.class)

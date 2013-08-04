@@ -52,37 +52,37 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
-        return super.getJPAHead(JPAObject.class, null, timestamp);
+        return super.getJPAHead(null, timestamp);
     }
 	
 	@Override
-	public JPAHead getStagedJPAHead(long timestamp, String sid) throws EDBException
+	public JPAHead getJPAHead(long timestamp, String sid) throws EDBException
 	{
-		return super.getJPAHead(JPAObject.class, sid, timestamp);
+		return super.getJPAHead(sid, timestamp);
 	}
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid) throws EDBException {
-        return super.getJPAObjectHistory(JPAObject.class, oid, null);
+        return super.getJPAObjectHistory(oid, null);
     }
 	
 	@Override
-	public List<JPAObject> getStagedJPAObjectHistory(String oid, String sid) throws EDBException
+	public List<JPAObject> getJPAObjectHistory(String oid, String sid) throws EDBException
 	{
-		return super.getJPAObjectHistory(JPAObject.class, oid, sid);
+		return super.getJPAObjectHistory(oid, sid);
 	}
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException {
-        return super.getJPAObjectHistory(JPAObject.class, oid, null, from, to);
+        return super.getJPAObjectHistory(oid, null, from, to);
     }
 	
 	@Override
-	public List<JPAObject> getStagedJPAObjectHistory(String oid, String sid, long from, long to) throws EDBException
+	public List<JPAObject> getJPAObjectHistory(String oid, String sid, long from, long to) throws EDBException
 	{
-		return super.getJPAObjectHistory(JPAObject.class, oid, sid, from, to);
+		return super.getJPAObjectHistory(oid, sid, from, to);
 	}
 	
 	
@@ -90,20 +90,20 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
-        return this.getJPAObject(JPAObject.class, oid, null, timestamp);
+        return this.getJPAObject(oid, null, timestamp);
     }
 	
 	@Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public JPAObject getStagedJPAObject(String oid, String sid, long timestamp) throws EDBException {
-        return getJPAObject(JPAObject.class, oid, sid, timestamp);
+    public JPAObject getJPAObject(String oid, String sid, long timestamp) throws EDBException {
+        return super.getJPAObject(oid, sid, timestamp);
     }
 
     @Override
     public JPAObject getJPAObject(String oid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading newest object {}", oid);
-            return getJPAObject(oid, System.currentTimeMillis());
+            return this.getJPAObject(oid, System.currentTimeMillis());
         }
     }
 	
@@ -111,32 +111,32 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     public JPAObject getJPAObject(String oid, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading newest object {} from stage {}", oid, sid);
-            return getStagedJPAObject(oid, sid, System.currentTimeMillis());
+            return this.getJPAObject(oid, sid, System.currentTimeMillis());
         }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public List<JPAObject> getJPAObjects(List<String> oids) throws EDBException {
-        return super.getJPAObjects(JPAObject.class, oids, null);
+        return super.getJPAObjects(oids, null);
     }
 	
 	@Override
-	public List<JPAObject> getStagedJPAObjects(List<String> oids, String sid) throws EDBException
+	public List<JPAObject> getJPAObjects(List<String> oids, String sid) throws EDBException
 	{
-		return super.getJPAObjects(JPAObject.class, oids, sid);
+		return super.getJPAObjects(oids, sid);
 	}
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
-        return super.getJPACommit(JPACommit.class, JPAObject.class, oid, null, from, to);
+        return super.getJPACommit(oid, null, from, to);
     }
 	
 	@Override
-	public List<JPACommit> getStagedJPACommit(String oid, String sid, long from, long to) throws EDBException
+	public List<JPACommit> getJPACommit(String oid, String sid, long from, long to) throws EDBException
 	{
-		return super.getJPACommit(JPACommit.class, JPAObject.class, oid, sid, from, to);
+		return super.getJPACommit(oid, sid, from, to);
 	}
 	
 	
@@ -144,82 +144,82 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public List<String> getResurrectedOIDs() throws EDBException {
-        return super.getResurrectedOIDs(JPAObject.class, null);
+        return super.getResurrectedOIDs(null);
     }
 	
 	@Override
-	public List<String> getStagedResurrectedOIDs(String sid) throws EDBException
+	public List<String> getResurrectedOIDs(String sid) throws EDBException
 	{
-		return super.getResurrectedOIDs(JPAObject.class, sid);
+		return super.getResurrectedOIDs(sid);
 	}
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
         //return (List<JPACommit>)(List<?>)super.getJPACommit(JPABaseCommit.class, timestamp, null);
-		return super.getJPACommit(JPACommit.class, timestamp, null);
+		return super.getJPACommit(timestamp, null);
     }
 	
 	@Override
-	public List<JPACommit> getStagedJPACommit(long timestamp, String sid) throws EDBException
+	public List<JPACommit> getJPACommit(long timestamp, String sid) throws EDBException
 	{
-		return super.getJPACommit(JPACommit.class, timestamp, sid);
+		return super.getJPACommit(timestamp, sid);
 	}
 
     @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
-        return super.getCommits(JPACommit.class, param, null);
+        return super.getCommits(param, null);
     }
 	
 	@Override
-	public List<JPACommit> getStagedCommits(Map<String, Object> param, String sid) throws EDBException
+	public List<JPACommit> getCommits(Map<String, Object> param, String sid) throws EDBException
 	{
-		return super.getCommits(JPACommit.class, param, sid);
+		return super.getCommits(param, sid);
 	}
 
     @Override
     public JPACommit getLastCommit(Map<String, Object> param) throws EDBException {
-        return super.getLastCommit(JPACommit.class, param, null);
+        return super.getLastCommit(param, null);
     }
 	
 	@Override
-	public JPACommit getLastStagedCommit(Map<String, Object> param, String sid) throws EDBException
+	public JPACommit getLastCommit(Map<String, Object> param, String sid) throws EDBException
 	{
-		return super.getLastCommit(JPACommit.class, param, sid);
+		return super.getLastCommit(param, sid);
 	}
 
     @Override
     public List<JPAObject> query(Map<String, Object> values) throws EDBException {
-        return super.query(JPAObject.class, values, null);
+        return super.query(values, null);
     }
 	
 	@Override
-	public List<JPAObject> queryStaged(Map<String, Object> values, String sid) throws EDBException
+	public List<JPAObject> query(Map<String, Object> values, String sid) throws EDBException
 	{
-		return super.query(JPAObject.class, values, sid);
+		return super.query(values, sid);
 	}
 
     @Override
     public Integer getVersionOfOid(String oid) throws EDBException {
-        return super.getVersionOfOid(JPAObject.class, oid, null);
+        return super.getVersionOfOid(oid, null);
     }
 	
 	@Override
-	public Integer getStagedVersionOfOid(String oid, String sid) throws EDBException
+	public Integer getVersionOfOid(String oid, String sid) throws EDBException
 	{
-		return super.getVersionOfOid(JPAObject.class, oid, sid);
+		return super.getVersionOfOid(oid, sid);
 	}
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException {
-        return super.query(JPAObject.class, values, timestamp, null);
+        return super.query(values, timestamp, null);
     }
 	
 	@Override
-	public List<JPAObject> queryStaged(Map<String, Object> values, String sid, Long timestamp) throws EDBException
+	public List<JPAObject> query(Map<String, Object> values, String sid, Long timestamp) throws EDBException
 	{
-		return super.query(JPAObject.class, values, timestamp, sid);
+		return super.query(values, timestamp, sid);
 	}
 
     public void setEntityManager(EntityManager entityManager) {

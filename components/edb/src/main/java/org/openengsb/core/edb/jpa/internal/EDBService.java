@@ -29,6 +29,7 @@ import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBBeginCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBErrorHook;
 import org.openengsb.core.edb.api.hooks.EDBPostCommitHook;
@@ -77,15 +78,13 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        getLogger().debug("loading newest JPAObject with the oid {}", oid);
-        JPAObject temp = dao.getJPAObject(oid);
-        return EDBUtils.convertJPAObjectToEDBObject(temp);
+		return getObject(oid, null);
     }
 
     @Override 
-    public EDBObject getStagedObject(String oid, String sid) throws EDBException {
+    public EDBObject getObject(String oid, String sid) throws EDBException {
         getLogger().debug("loading newest JPAObject with the oid {} and sid {}", new Object[]{oid, sid});
-        JPAObject temp = dao.getJPAObject(oid,sid);
+        JPAObject temp = dao.getJPAObject(oid, sid);
 		return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
     @Override
@@ -169,17 +168,26 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException {
+        return getCommitsByKeyValue(key, value, null);
+    }
+    
+    @Override
+    public List<EDBCommit> getCommitsByKeyValue(String key, Object value, String sid) throws EDBException {
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
-        return getCommits(queryMap);
+        return getCommits(queryMap, sid);
     }
 
     @Override
     public List<EDBCommit> getCommits(Map<String, Object> queryMap) throws EDBException {
-        List<JPACommit> commits = dao.getCommits(queryMap);
-        return new ArrayList<EDBCommit>(commits);
+        return getCommits(queryMap, null);
     }
 
+    @Override
+    public List<EDBCommit> getCommits(Map<String, Object> queryMap, String sid) throws EDBException {
+        List<JPACommit> commits = dao.getCommits(queryMap, sid);
+        return new ArrayList<EDBCommit>(commits);
+    }
     @Override
     public JPACommit getLastCommitByKeyValue(String key, Object value) throws EDBException {
         Map<String, Object> queryMap = new HashMap<String, Object>();
@@ -229,7 +237,7 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public List<String> getStagedResurrectedOIDs(String sid) throws EDBException {
-        return dao.getStagedResurrectedOIDs(sid);
+        return dao.getResurrectedOIDs(sid);
     }
 
     @Override
@@ -248,16 +256,23 @@ public class EDBService extends AbstractEDBService {
     @Override
     public EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException {
-        String committer = getAuthenticatedUser();
+        return this.createEDBCommit(null, inserts, updates, deletes);
+    }
+	
+	@Override
+	public EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+		throws EDBException {
+		String committer = getAuthenticatedUser();
         String contextId = getActualContextId();
         JPACommit commit = new JPACommit(committer, contextId);
+		commit.setEDBStage(stage);
         getLogger().debug("creating commit for committer {} with contextId {}", committer, contextId);
         commit.insertAll(inserts);
         commit.updateAll(updates);
         commit.deleteAll(deletes);
         commit.setHeadRevisionNumber(getCurrentRevisionNumber());
         return commit;
-    }
+	}
 
     /**
      * Returns the actual authenticated user.

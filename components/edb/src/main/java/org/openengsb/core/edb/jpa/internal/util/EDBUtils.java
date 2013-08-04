@@ -20,9 +20,9 @@ package org.openengsb.core.edb.jpa.internal.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
 import org.openengsb.core.edb.jpa.internal.JPAStage;
@@ -45,70 +45,104 @@ public final class EDBUtils {
      * type of the JPAEntry, the simple string object will be written in the resulting element. To instantiate the type
      * first the static method "valueOf" of the type will be tried. If that didn't work, then the constructor of the
      * object with a string parameter is used. If that didn't work either, the simple string will be set in the entry.
-     */
+     */	
     public static EDBObjectEntry convertJPAEntryToEDBObjectEntry(JPAEntry entry) {
-        for (EDBConverterStep step : steps) {
+		for (EDBConverterStep step : steps) {
             if (step.doesStepFit(entry.getType())) {
                 LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
-                return step.convertToEDBObjectEntry(entry);
+                EDBObjectEntry result = step.convertToEDBObjectEntry(entry);
+				result.setEDBStage(entry.getJPAStage());
+				return result;
             }
         }
         LOGGER.error("No EDBConverterStep fit for JPAEntry {}", entry);
         return null;
-    }
+	}
 
-    /**
-     * Converts a JPAEntry object into an EDBObjectEntry.
+	/**
+     * Converts a EDBObjectEntry object into an JPAEntry.
      */
     public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry) {
-        for (EDBConverterStep step : steps) {
+		for (EDBConverterStep step : steps) {
             if (step.doesStepFit(entry.getType())) {
                 LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
-                return step.convertToJPAEntry(entry);
+                JPAEntry result = step.convertToJPAEntry(entry);
+				result.setJPAStage(convertEDBStageToJPAStage(entry.getEDBStage()));
+				return result;
             }
         }
         LOGGER.error("No EDBConverterStep fit for EDBObjectEntry {}", entry);
         return null;
-    }
+	}
+	
+	private static List<JPAEntry> convertEDBObjectEntriesToJPAEntries(EDBObject object){
+		List<JPAEntry> entries = new ArrayList<JPAEntry>();
+		for (EDBObjectEntry entry : object.values()) {
+            entries.add(convertEDBObjectEntryToJPAEntry(entry));
+        }
+		return entries;
+	}
 
     /**
      * Converts a JPAObject object into an EDBObject.
      */
-    public static EDBObject convertJPAObjectToEDBObject(JPAObject object) {
-        EDBObject result = new EDBObject(object.getOID());
-        for (JPAEntry kvp : object.getEntries()) {
+    
+	public static EDBObject convertJPAObjectToEDBObject(JPAObject object) {
+        EDBObject result = null;
+		
+		if(object instanceof JPAObject) {
+			result = new EDBObject(object.getOID());
+		 }
+
+        for (JPAEntry kvp : (List<JPAEntry>)object.getEntries()) {
             EDBObjectEntry entry = convertJPAEntryToEDBObjectEntry(kvp);
             result.put(entry.getKey(), entry);
         }
         result.setDeleted(object.isDeleted());
         result.updateTimestamp(object.getTimestamp());
+		result.setEDBStage(object.getJPAStage());
         return result;
     }
 
-    /**
-     * Converts an EDBObject object into a JPAObject object.
-     */
-    public static JPAObject convertEDBObjectToJPAObject(EDBObject object) {
-        JPAObject result = new JPAObject();
+	public static JPAObject convertEDBObjectToJPAObject(EDBObject object) {
+		JPAObject result = null;
+		
+		if(object instanceof EDBObject) {
+			result = new JPAObject();
+			result.setEntries(EDBUtils.convertEDBObjectEntriesToJPAEntries((EDBObject)object));
 			((JPAObject)result).setJPAStage((JPAStage)((EDBObject)object).getEDBStage());
+		}
+		result.setJPAStage(convertEDBStageToJPAStage(object.getEDBStage()));
         result.setTimestamp(object.getTimestamp());
         result.setOID(object.getOID());
         result.setDeleted(object.isDeleted());
-        List<JPAEntry> entries = new ArrayList<JPAEntry>();
-        for (EDBObjectEntry entry : object.values()) {
-            entries.add(convertEDBObjectEntryToJPAEntry(entry));
-        }
-        result.setEntries(entries);
+		
         return result;
-    }
-
+	}
+	
+	private static JPAStage convertEDBStageToJPAStage(EDBStage object){
+		//in this case it is unstaged
+		if(object == null)
+			return null;
+		
+		//if the object is allready a JPAStage obejct we can scip conversion.
+		if(object instanceof JPAStage)
+			return (JPAStage)object;
+		
+		JPAStage result = new JPAStage();
+		result.setCreator(object.getCreator());
+		result.setStageId(object.getStageId());
+		result.setTimeStamp(object.getTimeStamp());
+		
+		return result;
+	}
     /**
      * Converts a list of EDBObjects into a list of JPAObjects
      */
     public static List<JPAObject> convertEDBObjectsToJPAObjects(List<EDBObject> objects) {
         List<JPAObject> result = new ArrayList<JPAObject>();
         for (EDBObject object : objects) {
-            result.add(convertEDBObjectToJPAObject(object));
+            result.add((JPAObject)convertEDBObjectToJPAObject(object));
         }
         return result;
     }

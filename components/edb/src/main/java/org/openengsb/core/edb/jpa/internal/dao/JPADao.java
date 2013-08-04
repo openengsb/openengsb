@@ -35,28 +35,28 @@ public interface JPADao {
      */
     JPAHead getJPAHead(long timestamp) throws EDBException;
 	
-	JPAHead getStagedJPAHead(long timestamp, String sid) throws EDBException;
+	JPAHead getJPAHead(long timestamp, String sid) throws EDBException;
 
     /**
      * Returns the history (all objects) of a given object.
      */
     List<JPAObject> getJPAObjectHistory(String oid) throws EDBException;
 	
-	List<JPAObject> getStagedJPAObjectHistory(String oid, String sid) throws EDBException;
+	List<JPAObject> getJPAObjectHistory(String oid, String sid) throws EDBException;
 
     /**
      * Returns the history (between from and to) of a given object.
      */
     List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException;
 	
-	List<JPAObject> getStagedJPAObjectHistory(String oid, String sid, long from, long to) throws EDBException;
+	List<JPAObject> getJPAObjectHistory(String oid, String sid, long from, long to) throws EDBException;
 
     /**
      * Returns a JPAObject with the given timestamp
      */
     JPAObject getJPAObject(String oid, long timestamp) throws EDBException;
 	
-	JPAObject getStagedJPAObject(String oid, String sid, long timestamp) throws EDBException;
+	JPAObject getJPAObject(String oid, String sid, long timestamp) throws EDBException;
     
     /**
      * Returns the newest JPAObject with the given oid
@@ -70,49 +70,49 @@ public interface JPADao {
      */
     List<JPAObject> getJPAObjects(List<String> oids) throws EDBException;
 	
-	List<JPAObject> getStagedJPAObjects(List<String> oids, String sid) throws EDBException;
+	List<JPAObject> getJPAObjects(List<String> oids, String sid) throws EDBException;
 
     /**
      * Returns all commits which are involved with the given oid which are between from and to
      */
     List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException;
 	
-	List<JPACommit> getStagedJPACommit(String oid, String sid, long from, long to) throws EDBException;
+	List<JPACommit> getJPACommit(String oid, String sid, long from, long to) throws EDBException;
     
     /**
      * Returns a list of oids from the JPAObjects which has been resurrected
      */
     List<String> getResurrectedOIDs() throws EDBException;
 	
-	List<String> getStagedResurrectedOIDs(String sid) throws EDBException;
+	List<String> getResurrectedOIDs(String sid) throws EDBException;
 
     /**
      * Loads a JPACommit with the given timestamp
      */
     List<JPACommit> getJPACommit(long timestamp) throws EDBException;
 	
-	List<JPACommit> getStagedJPACommit(long timestamp, String sid) throws EDBException;
+	List<JPACommit> getJPACommit(long timestamp, String sid) throws EDBException;
 
     /**
      * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.
      */
     List<JPACommit> getCommits(Map<String, Object> param) throws EDBException;
 	
-	List<JPACommit> getStagedCommits(Map<String, Object> param, String sid) throws EDBException;
+	List<JPACommit> getCommits(Map<String, Object> param, String sid) throws EDBException;
 
     /**
      * like getCommits, but it returns only the newest commit
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
 	
-	JPACommit getLastStagedCommit(Map<String, Object> param, String sid) throws EDBException;
+	JPACommit getLastCommit(Map<String, Object> param, String sid) throws EDBException;
     
     /**
      * Returns a list of JPAObjects which have all JPAEntries with the given keys and values.
      */
     List<JPAObject> query(Map<String, Object> values) throws EDBException;
 	
-	List<JPAObject> queryStaged(Map<String, Object> values, String sid) throws EDBException;
+	List<JPAObject> query(Map<String, Object> values, String sid) throws EDBException;
     
     /**
      * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
@@ -120,12 +120,12 @@ public interface JPADao {
      */
     List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException;
 	
-	List<JPAObject> queryStaged(Map<String, Object> values, String sid, Long timestamp) throws EDBException;
+	List<JPAObject> query(Map<String, Object> values, String sid, Long timestamp) throws EDBException;
     
     /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.
      */
     Integer getVersionOfOid(String oid) throws EDBException;
 	
-	Integer getStagedVersionOfOid(String oid, String sid) throws EDBException;
+	Integer getVersionOfOid(String oid, String sid) throws EDBException;
 }

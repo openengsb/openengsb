@@ -23,30 +23,30 @@ import org.junit.Test;
 import org.openengsb.core.edb.api.EDBStage;
 import static org.hamcrest.Matchers.notNullValue;
 import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 
-public class EDBStageTest extends AbstractEDBTest
+public class EDBStageTest extends AbstractEDBFunctionTest
 {
-	
-	@Test
-    public void testCommit_shouldWork() throws Exception {
+	private JPAStage getStage() {
 		JPAStage stage = new JPAStage();
 		stage.setStageId("stage1");
 		stage.setCreator("sveti");
-		stage.setTimeStamp(Long.MIN_VALUE);
-        EDBObject obj = new EDBObject("Tester", stage);
-        obj.putEntry("Test", "Hooray");
-        EDBCommit ci = db.createEDBCommit(Arrays.asList(obj), null, null);
-		ci.setEDBStage(stage);
-        long time = db.commit(ci);
-
-        obj = null;
-        obj = db.getStagedObject("Tester", "stage1");
-        String hooray = obj.getString("Test");
-
-        assertThat(obj, notNullValue());
-        assertThat(hooray, notNullValue());
-
-        checkTimeStamps(Arrays.asList(time));
+		return stage;
+	}
+	
+	@Test
+    public void testCommit_shouldWork() throws Exception {
+		super.testCommit_shouldWork(getStage());
+    }
+	
+	@Test
+    public void testGetCommits_shouldWork() throws Exception {
+		super.testGetCommits_shouldWork(getStage());
+	}
+	
+	@Test(expected = EDBException.class)
+    public void testGetInexistantObject_shouldThrowException() throws Exception {
+        db.getObject("/this/object/does/not/exist", "this/stage/neither");
     }
 }
