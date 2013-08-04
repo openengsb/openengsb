@@ -141,7 +141,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         String rowTwoText = taskTwoRow.asText();
 
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
-        System.out.println(taskOverviewPage.asXml());
+//        System.out.println(taskOverviewPage.asXml());
         waitForTextOnPage(taskOverviewPage, new ElementCondition() {
             @Override
             public boolean isPresent(HtmlPage page) {
