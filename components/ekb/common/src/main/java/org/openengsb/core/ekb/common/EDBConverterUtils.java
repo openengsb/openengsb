@@ -81,13 +81,6 @@ public final class EDBConverterUtils {
         return builder.toString();
     }
 
-    public static String createOID(Object model, String contextId) {
-        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            throw new IllegalArgumentException("This function need to get a model passed.");
-        }
-        return createOID((OpenEngSBModel) model, contextId);
-    }
-
     /**
      * Gets the information about domain, connector and instance of an EKBCommit object and returns the corresponding
      * ConnectorInformation object.

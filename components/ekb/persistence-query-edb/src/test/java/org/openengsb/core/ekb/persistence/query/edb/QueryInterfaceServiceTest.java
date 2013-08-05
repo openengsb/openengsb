@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +34,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.ModelWrapper;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
@@ -130,7 +129,7 @@ public class QueryInterfaceServiceTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            model instanceof OpenEngSBModel, is(true));
+            ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test
@@ -191,7 +190,6 @@ public class QueryInterfaceServiceTest {
 
         assertThat(subModel1, notNullValue());
         assertThat(subModel2, notNullValue());
-
         assertThat(subModel1.getId(), is("AAAAA"));
         assertThat(subModel1.getValue(), is("BBBBB"));
         assertThat(subModel2.getId(), is("CCCCC"));
@@ -221,9 +219,7 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testListAsParameterWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
-
         List<String> testList = model.getList();
-
         assertThat(testList.size(), is(3));
         assertThat(testList.get(0), is("blub"));
         assertThat(testList.get(1), is("blab"));
@@ -233,11 +229,9 @@ public class QueryInterfaceServiceTest {
         temp.add("test1");
         temp.add("test2");
         temp.add("test3");
-
         model.setList(temp);
-
         testList = model.getList();
-
+        
         assertThat(testList.size(), is(3));
         assertThat(testList.get(0), is("test1"));
         assertThat(testList.get(1), is("test2"));
@@ -249,7 +243,6 @@ public class QueryInterfaceServiceTest {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<String> testList = model.getList();
-
         assertThat(testList.size(), is(3));
         assertThat(testList.get(0), is("blub"));
         assertThat(testList.get(1), is("blab"));
@@ -259,11 +252,8 @@ public class QueryInterfaceServiceTest {
         temp.add("test1");
         temp.add("test2");
         temp.add("test3");
-
         model.setList(temp);
-
         testList = model.getList();
-
         assertThat(testList.size(), is(3));
         assertThat(testList.get(0), is("test1"));
         assertThat(testList.get(1), is("test2"));
@@ -273,15 +263,12 @@ public class QueryInterfaceServiceTest {
     @Test
     public void testComplexAsParameterWithImplementedClass_shouldWork() throws Exception {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
-
         SubModel sub = model.getSub();
-
         assertThat(sub.getId(), is("testid"));
         assertThat(sub.getValue(), is("testvalue"));
 
         sub.setId("blabla");
         sub.setValue("blublub");
-
         assertThat(sub.getId(), is("blabla"));
         assertThat(sub.getValue(), is("blublub"));
     }
@@ -291,7 +278,6 @@ public class QueryInterfaceServiceTest {
         TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         List<SubModel> sub = model.getSubs();
-
         assertThat(sub.get(0).getId(), is("AAAAA"));
         assertThat(sub.get(0).getValue(), is("BBBBB"));
         assertThat(sub.get(1).getId(), is("CCCCC"));
@@ -303,7 +289,6 @@ public class QueryInterfaceServiceTest {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<SubModel> sub = model.getSubs();
-
         assertThat(sub.get(0).getId(), is("AAAAA"));
         assertThat(sub.get(0).getValue(), is("BBBBB"));
         assertThat(sub.get(1).getId(), is("CCCCC"));
@@ -315,13 +300,11 @@ public class QueryInterfaceServiceTest {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         SubModel sub = model.getSub();
-
         assertThat(sub.getId(), is("testid"));
         assertThat(sub.getValue(), is("testvalue"));
 
         sub.setId("blabla");
         sub.setValue("blublub");
-
         assertThat(sub.getId(), is("blabla"));
         assertThat(sub.getValue(), is("blublub"));
     }
@@ -332,7 +315,6 @@ public class QueryInterfaceServiceTest {
 
         ENUM temp = model.getEnumeration();
         model.setEnumeration(ENUM.B);
-
         assertThat(temp, is(ENUM.A));
         assertThat(model.getEnumeration(), is(ENUM.B));
     }
@@ -343,7 +325,6 @@ public class QueryInterfaceServiceTest {
 
         ENUM temp = model.getEnumeration();
         model.setEnumeration(ENUM.B);
-
         assertThat(temp, is(ENUM.A));
         assertThat(model.getEnumeration(), is(ENUM.B));
     }
@@ -355,7 +336,6 @@ public class QueryInterfaceServiceTest {
 
         boolean testExists = false;
         Object testValue = null;
-
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("test")) {
                 testExists = true;

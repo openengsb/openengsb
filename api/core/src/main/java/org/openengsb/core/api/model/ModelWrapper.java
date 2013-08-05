@@ -164,14 +164,14 @@ public class ModelWrapper implements OpenEngSBModel {
     public Version retrieveModelVersionObject() {
         return new Version(retrieveModelVersion());
     }
-    
+
     /**
      * Calculates the complete model oid from the model.
      */
     public String getCompleteModelOID() {
         return appendContextId(model.retrieveInternalModelId());
     }
-    
+
     /**
      * Appends the currentContext to the given model id.
      */
