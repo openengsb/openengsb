@@ -51,15 +51,17 @@ public class AbstractEDBTest {
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
     };
+    protected static final String COMMITTER = "testuser";
+    protected static final String CONTEXT = "testcontext";
 
     @Before
     public void initDB() throws Exception {
         AuthenticationContext authenticationContext = mock(AuthenticationContext.class);
-        when(authenticationContext.getAuthenticatedPrincipal()).thenReturn("testuser");
+        when(authenticationContext.getAuthenticatedPrincipal()).thenReturn(COMMITTER);
         EntityManager em = testPersistenceUnit.getEntityManager("edb");
         JPADao dao = new DefaultJPADao(em);
         EDBPreCommitHook preCommitHook = new CheckPreCommitHook(dao);
-        ContextHolder.get().setCurrentContextId("testcontext");
+        ContextHolder.get().setCurrentContextId(CONTEXT);
 
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();

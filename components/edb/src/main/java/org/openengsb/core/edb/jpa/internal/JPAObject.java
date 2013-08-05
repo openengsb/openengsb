@@ -17,6 +17,8 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,7 +36,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
  * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
 public class JPAObject extends VersionedEntity {
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<JPAEntry> entries;
     @Column(name = "TIME")
     private Long timestamp;
@@ -45,13 +47,47 @@ public class JPAObject extends VersionedEntity {
     private String oid;
 
     public JPAObject() {
+        entries = new ArrayList<>();
         isDeleted = false;
     }
-    
+
+    /**
+     * Adds an new entry to the JPAEntry list of this object.
+     */
+    public void addEntry(JPAEntry entry) {
+        entries.add(entry);
+    }
+
+    /**
+     * Returns the entry of the JPAEntry list of this object with the given key. Returns null in case there is no such
+     * entry.
+     */
+    public JPAEntry getEntry(String entryKey) {
+        for (JPAEntry entry : entries) {
+            if (entry.getKey().equals(entryKey)) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes the entry from the JPAEntry list of this object with the given key.
+     */
+    public void removeEntry(String entryKey) {
+        Iterator<JPAEntry> iter = entries.iterator();
+        while (iter.hasNext()) {
+            if (iter.next().getKey().equals(entryKey)) {
+                iter.remove();
+                return;
+            }
+        }
+    }
+
     public List<JPAEntry> getEntries() {
         return entries;
     }
-    
+
     public void setEntries(List<JPAEntry> entries) {
         this.entries = entries;
     }
@@ -59,7 +95,7 @@ public class JPAObject extends VersionedEntity {
     public Boolean isDeleted() {
         return isDeleted;
     }
-    
+
     public void setDeleted(Boolean deleted) {
         this.isDeleted = deleted;
     }
@@ -67,7 +103,7 @@ public class JPAObject extends VersionedEntity {
     public Long getTimestamp() {
         return timestamp;
     }
-    
+
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }

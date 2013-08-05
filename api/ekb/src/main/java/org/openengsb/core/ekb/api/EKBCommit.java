@@ -34,6 +34,7 @@ public class EKBCommit {
     private String domainId;
     private String connectorId;
     private String instanceId;
+    private String comment;
     private UUID revisionNumber;
     private UUID parentRevisionNumber;
 
@@ -210,5 +211,13 @@ public class EKBCommit {
 
     public void setRevisionNumber(UUID revisionNumber) {
         this.revisionNumber = revisionNumber;
+    }
+    
+    public String getComment() {
+        return comment;
+    }
+    
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

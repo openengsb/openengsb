@@ -44,11 +44,6 @@ public interface EDBCommit {
     void delete(String oid) throws EDBException;
 
     /**
-     * For a query-commit: Retrieve a list of OIDs representing the objects which have been changed by this commit.
-     */
-    List<String> getOIDs();
-
-    /**
      * For a created commit: retrieve the list of all objects that have been inserted to this commit.
      */
     List<EDBObject> getInserts();
@@ -113,4 +108,44 @@ public interface EDBCommit {
      * Sets the revision number of the parent of the EDBCommit object.
      */
     void setHeadRevisionNumber(UUID revisionNumber);
+    
+    /**
+     * Returns the domain id from which this commit has been sent.
+     */
+    String getDomainId();
+    
+    /**
+     * Sets the domain id from which this commit has been sent.
+     */
+    void setDomainId(String domainId);
+    
+    /**
+     * Returns the connector id from which this commit has been sent.
+     */
+    String getConnectorId();
+    
+    /**
+     * Sets the connector id from which this commit has been sent.
+     */
+    void setConnectorId(String connectorId);
+    
+    /**
+     * Returns the instance id from which this commit has been sent.
+     */
+    String getInstanceId();
+    
+    /**
+     * Sets the instance id from which this commit has been sent.
+     */
+    void setInstanceId(String instanceId);
+    
+    /**
+     * Returns the comment to this commit.
+     */
+    String getComment();
+    
+    /**
+     * Sets the comment for this commit.
+     */
+    void setComment(String comment);
 }
