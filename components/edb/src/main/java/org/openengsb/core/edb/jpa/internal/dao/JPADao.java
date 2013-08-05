@@ -20,6 +20,8 @@ package org.openengsb.core.edb.jpa.internal.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -49,12 +51,12 @@ public interface JPADao {
      * Returns a JPAObject with the given timestamp
      */
     JPAObject getJPAObject(String oid, long timestamp) throws EDBException;
-    
+
     /**
      * Returns the newest JPAObject with the given oid
      */
     JPAObject getJPAObject(String oid) throws EDBException;
-    
+
     /**
      * Returns the newest JPAObjects with the given oids
      */
@@ -64,7 +66,13 @@ public interface JPADao {
      * Returns all commits which are involved with the given oid which are between from and to
      */
     List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException;
-    
+
+    /**
+     * Returns the commit object for the given revision string. Throws an EDBException in case of no commit present for
+     * this revision
+     */
+    JPACommit getJPACommit(String revision) throws EDBException;
+
     /**
      * Returns a list of oids from the JPAObjects which has been resurrected
      */
@@ -76,6 +84,12 @@ public interface JPADao {
     List<JPACommit> getJPACommit(long timestamp) throws EDBException;
 
     /**
+     * Returns a list of commit meta information of all commits which are matching the request of the given request
+     * object.
+     */
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
+
+    /**
      * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.
      */
     List<JPACommit> getCommits(Map<String, Object> param) throws EDBException;
@@ -84,18 +98,18 @@ public interface JPADao {
      * like getCommits, but it returns only the newest commit
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
-    
+
     /**
      * Returns a list of JPAObjects which have all JPAEntries with the given keys and values.
      */
     List<JPAObject> query(Map<String, Object> values) throws EDBException;
-    
+
     /**
      * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
      * (similar to getHead)
      */
     List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException;
-    
+
     /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.
      */

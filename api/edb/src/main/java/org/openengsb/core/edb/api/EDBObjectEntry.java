@@ -17,13 +17,16 @@
 
 package org.openengsb.core.edb.api;
 
+import java.io.Serializable;
+
 import com.google.common.base.Objects;
 
 /**
  * The EDBObjectEntry class represents a key/value/type triple. An EDBObject has a number of these entries which
  * represent the actual information which is saved in the EDB.
  */
-public class EDBObjectEntry {
+@SuppressWarnings("serial")
+public class EDBObjectEntry implements Serializable {
     private String key;
     private Object value;
     private String type;

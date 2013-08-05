@@ -32,6 +32,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -259,6 +261,27 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
+    public JPACommit getJPACommit(String revision) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Get commit for the revision {}", revision);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
+            Root<JPACommit> from = query.from(JPACommit.class);
+            query.select(from).where(criteriaBuilder.equal(from.get("revision"), revision));
+            TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
+            List<JPACommit> result = typedQuery.getResultList();
+            switch (result.size()) {
+                case 0:
+                    throw new EDBException("There is no commit with the given revision " + revision);
+                case 1:
+                    return result.get(0);
+                default:
+                    throw new EDBException("More than one commit with the given revision found!");
+            }
+        }
+    }
+
+    @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get commits which are given to a param map with {} elements", param.size());
@@ -295,6 +318,55 @@ public class DefaultJPADao implements JPADao {
                 throw new EDBException("there was no Object found with the given query parameters", ex);
             }
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Get matching revisions for the request {}", request);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery query = criteriaBuilder.createQuery();
+            Root<JPACommit> from = query.from(JPACommit.class);
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment")
+                , from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId")
+                , from.get("instanceId"));
+
+            Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
+            query.where(criteriaBuilder.and(predicates));
+            query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
+            TypedQuery<Object[]> typedQuery = entityManager.createQuery(query);
+            List<CommitMetaInfo> infos = new ArrayList<>();
+            for (Object[] row : typedQuery.getResultList()) {
+                CommitMetaInfo info = new CommitMetaInfo();
+                info.setCommitter(row[0] != null ? row[0].toString() : null);
+                info.setTimestamp(row[1] != null ? Long.valueOf(row[1].toString()) : null);
+                info.setContext(row[2] != null ? row[2].toString() : null);
+                info.setComment(row[3] != null ? row[3].toString() : null);
+                info.setRevision(row[4] != null ? row[4].toString() : null);
+                info.setParent(row[5] != null ? row[5].toString() : null);
+                info.setDomainId(row[6] != null ? row[6].toString() : null);
+                info.setConnectorId(row[7] != null ? row[7].toString() : null);
+                info.setInstanceId(row[8] != null ? row[8].toString() : null);
+                infos.add(info);
+            }
+            return infos;
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Predicate[] convertCommitRequestToPredicates(CriteriaBuilder builder, Root from,
+            CommitQueryRequest request) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (request.getCommitter() != null) {
+            predicates.add(builder.equal(from.get("committer"), request.getCommitter()));
+        }
+        if (request.getContext() != null) {
+            predicates.add(builder.equal(from.get("context"), request.getContext()));
+        }
+        predicates.add(builder.between(from.get("timestamp"), request.getStartTimestamp(),
+            request.getEndTimestamp()));
+        return predicates.toArray(new Predicate[predicates.size()]);
     }
 
     /**
