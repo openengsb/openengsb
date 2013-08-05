@@ -40,13 +40,6 @@ import org.openengsb.core.edb.api.EDBStage;
  */
 public class AbstractEDBFunctionTest extends AbstractEDBTest {
 	
-	private String getSid(JPAStage stage) {
-		if(stage != null)
-			return stage.getStageId();
-		
-		return null;
-	}
-	
 	private void assertStage(EDBStage actual, EDBStage expected) {
 		if(expected == null)
 		{

@@ -30,56 +30,12 @@ import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
-public class EDBQueryTest extends AbstractEDBTest {
+public class EDBQueryTest extends AbstractEDBQueryTest {
 
     @SuppressWarnings("serial")
     @Test
     public void testQueryWithSomeAspects_shouldWork() throws Exception {
-        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("A", "B", data1);
-        putValue("Cow", "Milk", data1);
-        putValue("Dog", "Food", data1);
-        EDBObject v1 = new EDBObject("/test/query1", data1);
-        EDBCommit ci = getEDBCommit();
-        ci.insert(v1);
-        long time1 = db.commit(ci);
-
-        Map<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>();
-        putValue("Cow", "Milk", data2);
-        putValue("House", "Garden", data2);
-        v1 = new EDBObject("/test/query2", data2);
-        ci = getEDBCommit();
-        ci.insert(v1);
-        long time2 = db.commit(ci);
-
-        List<EDBObject> list1 = db.queryByKeyValue("A", "B");
-        List<EDBObject> list2 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Dog", "Food");
-            }
-        });
-
-        List<EDBObject> list3 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("Cow", "Milk");
-            }
-        });
-
-        List<EDBObject> list4 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Cow", "Milk");
-                put("House", "Garden");
-            }
-        });
-
-        assertThat(list1.size(), is(1));
-        assertThat(list2.size(), is(1));
-        assertThat(list3.size(), is(2));
-        assertThat(list4.size(), is(0));
-
-        checkTimeStamps(Arrays.asList(time1, time2));
+		super.testQueryWithSomeAspects_shouldWork(null);
     }
     
     @Test

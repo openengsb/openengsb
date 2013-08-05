@@ -145,5 +145,18 @@ public class AbstractEDBTest {
         }
         return null;
     }
-
+	
+	protected String getSid(JPAStage stage) {
+		if(stage != null)
+			return stage.getStageId();
+		
+		return null;
+	}
+	
+	protected JPAStage getStage() {
+		JPAStage stage = new JPAStage();
+		stage.setStageId("stage1");
+		stage.setCreator("sveti");
+		return stage;
+	}
 }

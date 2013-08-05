@@ -27,14 +27,7 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 
 public class EDBStageFunctionTest extends AbstractEDBFunctionTest
-{
-	private JPAStage getStage() {
-		JPAStage stage = new JPAStage();
-		stage.setStageId("stage1");
-		stage.setCreator("sveti");
-		return stage;
-	}
-	
+{	
 	@Test
     public void testCommit_shouldWork() throws Exception {
 		super.testCommit_shouldWork(getStage());
