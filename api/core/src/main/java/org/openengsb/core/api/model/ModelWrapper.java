@@ -25,7 +25,8 @@ import org.osgi.framework.Version;
 /**
  * This class is a class which wraps a model object for easier model handling in the static code.
  */
-public class ModelWrapper {
+@SuppressWarnings("serial")
+public class ModelWrapper implements OpenEngSBModel {
     protected OpenEngSBModel model;
 
     protected ModelWrapper(OpenEngSBModel model) {
@@ -72,6 +73,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public List<OpenEngSBModelEntry> toOpenEngSBModelValues() {
         return model.toOpenEngSBModelValues();
     }
@@ -79,6 +81,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public List<OpenEngSBModelEntry> toOpenEngSBModelEntries() {
         return model.toOpenEngSBModelEntries();
     }
@@ -86,6 +89,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public Object retrieveInternalModelId() {
         return model.retrieveInternalModelId();
     }
@@ -93,6 +97,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public Long retrieveInternalModelTimestamp() {
         return model.retrieveInternalModelTimestamp();
     }
@@ -100,6 +105,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public Integer retrieveInternalModelVersion() {
         return model.retrieveInternalModelVersion();
     }
@@ -107,6 +113,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public void addOpenEngSBModelEntry(OpenEngSBModelEntry entry) {
         model.addOpenEngSBModelEntry(entry);
     }
@@ -114,6 +121,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public void removeOpenEngSBModelEntry(String key) {
         model.removeOpenEngSBModelEntry(key);
     }
@@ -121,6 +129,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public List<OpenEngSBModelEntry> getOpenEngSBModelTail() {
         return model.getOpenEngSBModelTail();
     }
@@ -128,6 +137,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public void setOpenEngSBModelTail(List<OpenEngSBModelEntry> entries) {
         model.setOpenEngSBModelTail(entries);
     }
@@ -135,6 +145,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public String retrieveModelName() {
         return model.retrieveModelName();
     }
@@ -142,6 +153,7 @@ public class ModelWrapper {
     /**
      * Calls the corresponding method in the wrapped model.
      */
+    @Override
     public String retrieveModelVersion() {
         return model.retrieveModelVersion();
     }
