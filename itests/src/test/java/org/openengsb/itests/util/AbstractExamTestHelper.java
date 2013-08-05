@@ -250,14 +250,14 @@ public abstract class AbstractExamTestHelper {
             if (svc == null && throwException) {
                 @SuppressWarnings("rawtypes")
                 Dictionary dic = bundleContext.getBundle().getHeaders();
-                System.err.println("Test bundle headers: " + explode(dic));
+                LOGGER.error("Test bundle headers: {}", explode(dic));
 
-                for (ServiceReference ref : asCollection(bundleContext.getAllServiceReferences(null, null))) {
-                    System.err.println("ServiceReference: " + ref);
+                for (ServiceReference<?> ref : asCollection(bundleContext.getAllServiceReferences(null, null))) {
+                    LOGGER.error("ServiceReference: {}", ref);
                 }
 
-                for (ServiceReference ref : asCollection(bundleContext.getAllServiceReferences(null, flt))) {
-                    System.err.println("Filtered ServiceReference: " + ref);
+                for (ServiceReference<?> ref : asCollection(bundleContext.getAllServiceReferences(null, flt))) {
+                    LOGGER.error("Filtered ServiceReference: {}", ref);
                 }
 
                 throw new RuntimeException("Gave up waiting for service " + flt);
@@ -287,10 +287,10 @@ public abstract class AbstractExamTestHelper {
     /*
      * Provides an iterable collection of references, even if the original array is null
      */
-    private static Collection<ServiceReference> asCollection(ServiceReference[] references) {
-        List<ServiceReference> result = new LinkedList<ServiceReference>();
+    private static Collection<ServiceReference<?>> asCollection(ServiceReference<?>[] references) {
+        List<ServiceReference<?>> result = new LinkedList<ServiceReference<?>>();
         if (references != null) {
-            for (ServiceReference reference : references) {
+            for (ServiceReference<?> reference : references) {
                 result.add(reference);
             }
         }
