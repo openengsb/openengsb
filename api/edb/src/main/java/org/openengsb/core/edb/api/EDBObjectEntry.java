@@ -41,7 +41,8 @@ public class EDBObjectEntry {
     }
 
     public EDBObjectEntry(String key, Object value, String type) {
-        this(key, value, type, null);
+
+		this(key, value, type, null);
     }
 	
 	public EDBObjectEntry(String key, Object value, String type, EDBStage stage) {

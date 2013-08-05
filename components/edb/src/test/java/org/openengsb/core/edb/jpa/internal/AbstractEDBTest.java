@@ -37,6 +37,7 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
@@ -73,15 +74,22 @@ public class AbstractEDBTest {
     /**
      * Returns an EDBCommit object.
      */
-    protected EDBCommit getEDBCommit() {
-        return db.createEDBCommit(null, null, null);
+	protected EDBCommit getEDBCommit() {
+        return getEDBCommit(null);
     }
 
+    protected EDBCommit getEDBCommit(EDBStage stage) {
+        return db.createEDBCommit(stage, null, null, null);
+    }
     /**
      * Creates a new commit object, adds the given inserts, updates and deletes and commit it.
      */
     protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
-        EDBCommit ci = db.createEDBCommit(inserts, updates, deletes);
+        return this.commitObjects(inserts, updates, deletes, null);
+    }
+	
+	 protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes, EDBStage stage) {
+        EDBCommit ci = db.createEDBCommit(stage, inserts, updates, deletes);
         return db.commit(ci);
     }
 
@@ -89,15 +97,23 @@ public class AbstractEDBTest {
      * Adds an EDBObjectEntry based on the given key and value to the given map
      */
     protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
-        map.put(key, new EDBObjectEntry(key, value, value.getClass()));
+        this.putValue(key, value, map, null);
+    }
+	
+	protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map, JPAStage stage) {
+        map.put(key, new EDBObjectEntry(key, value, value.getClass(), stage));
     }
 
     /**
      * Returns a random test EDBObject
      */
     protected EDBObject createRandomTestObject(String oid) {
+        return this.createRandomTestObject(oid, null);
+    }
+	
+	protected EDBObject createRandomTestObject(String oid, JPAStage stage) {
         Random random = new Random(System.currentTimeMillis());
-        EDBObject result = new EDBObject(oid);
+        EDBObject result = new EDBObject(oid, stage);
         int max = 5;
 
         for (int i = 0; i < max; ++i) {
@@ -105,7 +121,8 @@ public class AbstractEDBTest {
             String value = "key value " + Integer.toString(random.nextInt(100));
             result.putEDBObjectEntry(key, value);
         }
-        return new EDBObject(oid);
+
+		return result;
     }
 
     /**

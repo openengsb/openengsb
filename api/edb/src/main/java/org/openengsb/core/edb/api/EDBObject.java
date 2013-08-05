@@ -56,6 +56,12 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
 		this.setOID(oid);
     }
 	
+	public EDBObject(String oid, Map<String, EDBObjectEntry> data, EDBStage stage) {
+        super(data);
+		this.stage = stage;
+		this.setOID(oid);
+    }
+	
     /**
      * Retrieve the timestamp for this object.
      */

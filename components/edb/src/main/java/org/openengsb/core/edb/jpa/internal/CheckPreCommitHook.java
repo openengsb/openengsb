@@ -151,12 +151,12 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     /**
      * Investigates the version of an EDBObject and checks if a conflict can be found.
      */
-    private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
+	 private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
         Integer modelVersion = newObject.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         String oid = newObject.getOID();
 
         if (modelVersion != null) {
-            Integer currentVersion = getVersionOfOid(oid);
+            Integer currentVersion = getVersionOfOid(oid, checkStage(newObject.getEDBStage()));
             if (!modelVersion.equals(currentVersion)) {
                 try {
                     checkForConflict(newObject);
@@ -168,7 +168,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
                 modelVersion = currentVersion;
             }
         } else {
-            modelVersion = getVersionOfOid(oid);
+            modelVersion = getVersionOfOid(oid, checkStage(newObject.getEDBStage()));
         }
 
         return modelVersion;
@@ -185,7 +185,6 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
 			checkEntryForConflict(entry, object.getObject(entry.getKey()));
         }
     }
-	
 	
 	private void checkEntryForConflict(EDBObjectEntry entry, Object value) throws EDBException {
 			if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
@@ -228,7 +227,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     /**
      * Loads the actual version of a model with the given oid.
      */
-    private Integer getVersionOfOid(String oid) throws EDBException {
-        return dao.getVersionOfOid(oid);
+	private Integer getVersionOfOid(String oid, String sid) throws EDBException {
+        return dao.getVersionOfOid(oid, sid);
     }
 }

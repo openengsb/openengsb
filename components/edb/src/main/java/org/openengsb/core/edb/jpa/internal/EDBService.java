@@ -56,8 +56,8 @@ public class EDBService extends AbstractEDBService {
     @Override
     public Long commit(EDBCommit commit) throws EDBException {
         return performCommitLogic(commit);
-    }    
-
+    }
+	
     /**
      * Only here for the TestEDBService where there is a real implementation for this method.
      */
@@ -89,31 +89,47 @@ public class EDBService extends AbstractEDBService {
     }
     @Override
     public List<EDBObject> getObjects(List<String> oids) throws EDBException {
-        List<JPAObject> objects = dao.getJPAObjects(oids);
-        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+        return this.getObjects(oids, null);
     }
 
+	@Override
+    public List<EDBObject> getObjects(List<String> oids, String sid) throws EDBException {
+        List<JPAObject> objects = dao.getJPAObjects(oids, sid);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+    }
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
-        getLogger().debug("loading history of JPAObject with the oid {}", oid);
-        List<JPAObject> objects = dao.getJPAObjectHistory(oid);
-        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+        return this.getHistory(oid, null);
     }
 
+    @Override
+    public List<EDBObject> getHistory(String oid, String sid) throws EDBException {
+		getLogger().debug("loading history of JPAStageObject with the oid {} and sid {}", new Object[]{oid,sid});
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid, sid);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+    }
     @Override
     public List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to) throws EDBException {
-        getLogger().debug("loading JPAObject with the oid {} from "
-                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
-        List<JPAObject> objects = dao.getJPAObjectHistory(oid, from, to);
-        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+        return this.getHistoryForTimeRange(oid, from, to, null);
     }
 
     @Override
+    public List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to, String sid) throws EDBException {
+         getLogger().debug("loading JPAObject with the oid {} and sid {} from "
+                + "the timestamp {} to the timestamp {}", new Object[]{ oid, sid, from, to });
+        List<JPAObject> objects = dao.getJPAObjectHistory(oid, sid, from, to);
+        return EDBUtils.convertJPAObjectsToEDBObjects(objects);
+    }
+    @Override
     public List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException {
-        getLogger().debug("loading the log of JPAObject with the oid {} from "
-                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
-        List<EDBObject> history = getHistoryForTimeRange(oid, from, to);
-        List<JPACommit> commits = dao.getJPACommit(oid, from, to);
+        return this.getLog(oid, from, to, null);
+    }
+    
+    @Override
+    public List<EDBLogEntry> getLog(String oid, Long from, Long to, String sid) throws EDBException{
+        getLogger().debug("loading the log of JPAObject with the oid {}, sid {} from timestamp {} to {}", new Object[]{oid, sid, from, to});
+        List<EDBObject> history = getHistoryForTimeRange(oid, from, to, sid);
+        List<JPACommit> commits = dao.getJPACommit(oid, sid, from, to);
         if (history.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
                     + Integer.toString(history.size()) + " history entries");
@@ -127,13 +143,22 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public List<EDBObject> getHead() throws EDBException {
-        return dao.getJPAHead(System.currentTimeMillis()).getEDBObjects();
+        return this.getHead(null);
     }
 
     @Override
+    public List<EDBObject> getHead(String sid) throws EDBException {
+        return dao.getJPAHead(System.currentTimeMillis(), sid).getEDBObjects();
+    }
+    @Override
     public List<EDBObject> getHead(long timestamp) throws EDBException {
+        return this.getHead(timestamp, null);
+    }
+	
+	@Override
+    public List<EDBObject> getHead(long timestamp, String sid) throws EDBException {
         getLogger().debug("load the elements of the JPAHead with the timestamp {}", timestamp);
-        JPAHead head = dao.getJPAHead(timestamp);
+        JPAHead head = dao.getJPAHead(timestamp, sid);
         if (head != null) {
             return head.getEDBObjects();
         }
@@ -142,16 +167,26 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException {
+        return this.queryByKeyValue(key, value, null);
+    }
+    
+    @Override
+    public List<EDBObject> queryByKeyValue(String key, Object value, String sid) throws EDBException {
         getLogger().debug("query for objects with key = {} and value = {}", key, value);
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
-        return queryByMap(queryMap);
+        return queryByMap(queryMap, sid);
     }
 
     @Override
     public List<EDBObject> queryByMap(Map<String, Object> queryMap) throws EDBException {
+        return this.queryByMap(queryMap, null);
+    }
+    
+	@Override
+    public List<EDBObject> queryByMap(Map<String, Object> queryMap, String sid) throws EDBException {
         try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, sid));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -159,8 +194,13 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
+       return this.query(queryMap, timestamp, null);
+    }
+	
+	@Override
+    public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp, String sid) throws EDBException {
         try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, timestamp));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, sid, timestamp));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -190,21 +230,40 @@ public class EDBService extends AbstractEDBService {
     }
     @Override
     public JPACommit getLastCommitByKeyValue(String key, Object value) throws EDBException {
+        return this.getLastCommitByKeyValue(key, value, null);
+    }
+    
+	@Override
+    public JPACommit getLastCommitByKeyValue(String key, Object value, String sid) throws EDBException {
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
-        return getLastCommit(queryMap);
+        return getLastCommit(queryMap, sid);
     }
 
     @Override
     public JPACommit getLastCommit(Map<String, Object> queryMap) throws EDBException {
-        JPACommit result = dao.getLastCommit(queryMap);
+        return this.getLastCommit(queryMap, null);
+    }
+   
+	@Override
+    public JPACommit getLastCommit(Map<String, Object> queryMap, String sid) throws EDBException {
+        JPACommit result = dao.getLastCommit(queryMap, sid);
         return result;
     }
 
     @Override
     public UUID getCurrentRevisionNumber() throws EDBException {
+        return this.getCurrentRevisionNumber(null);
+    }
+    
+	@Override
+    public UUID getCurrentRevisionNumber(EDBStage stage) throws EDBException {
+		String sid = null;
+		if(stage!=null)
+			sid = stage.getStageId();
+		
         try {
-            return getCommit(System.currentTimeMillis()).getRevisionNumber();
+            return getCommit(System.currentTimeMillis(), sid).getRevisionNumber();
         } catch (EDBException e) {
             getLogger().debug("There was no commit so far, so the current revision number is null");
             return null;
@@ -213,7 +272,12 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public JPACommit getCommit(Long from) throws EDBException {
-        List<JPACommit> commits = dao.getJPACommit(from);
+        return this.getCommit(from, null);
+    }
+	
+	@Override
+    public JPACommit getCommit(Long from, String sid) throws EDBException {
+        List<JPACommit> commits = dao.getJPACommit(from, sid);
         if (commits == null || commits.size() == 0) {
             throw new EDBException("there is no commit for this timestamp");
         } else if (commits.size() > 1) {
@@ -224,33 +288,46 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public Diff getDiff(Long firstTimestamp, Long secondTimestamp) throws EDBException {
-        List<EDBObject> headA = getHead(firstTimestamp);
-        List<EDBObject> headB = getHead(secondTimestamp);
-
-        return new Diff(getCommit(firstTimestamp), getCommit(secondTimestamp), headA, headB);
+        return this.getDiff(firstTimestamp, secondTimestamp, null, null);
     }
 
+    @Override
+    public Diff getDiff(Long firstTimestamp, Long secondTimestamp, String sid1, String sid2) throws EDBException {
+        List<EDBObject> headA = getHead(firstTimestamp, sid1);
+        List<EDBObject> headB = getHead(secondTimestamp, sid2);
+        
+        return new Diff(getCommit(firstTimestamp, sid1), getCommit(secondTimestamp, sid2), headA, headB);
+    }
     @Override
     public List<String> getResurrectedOIDs() throws EDBException {
-        return dao.getResurrectedOIDs();
+        return this.getResurrectedOIDs(null);
     }
 
     @Override
-    public List<String> getStagedResurrectedOIDs(String sid) throws EDBException {
+    public List<String> getResurrectedOIDs(String sid) throws EDBException {
         return dao.getResurrectedOIDs(sid);
     }
 
     @Override
     public List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> queryMap) throws EDBException {
-        JPACommit ci = getLastCommit(queryMap);
+        return this.getStateOfLastCommitMatching(queryMap, null);
+    }
+	
+	@Override
+    public List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> queryMap, String sid) throws EDBException {
+        JPACommit ci = getLastCommit(queryMap, sid);
         return getHead(ci.getTimestamp());
     }
-
     @Override
     public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException {
+        return this.getStateOfLastCommitMatchingByKeyValue(key, value, null);
+    }
+    
+	@Override
+    public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value, String sid) throws EDBException {
         Map<String, Object> query = new HashMap<String, Object>();
         query.put(key, value);
-        return getStateOfLastCommitMatching(query);
+        return getStateOfLastCommitMatching(query, sid);
     }
 
     @Override
@@ -270,7 +347,7 @@ public class EDBService extends AbstractEDBService {
         commit.insertAll(inserts);
         commit.updateAll(updates);
         commit.deleteAll(deletes);
-        commit.setHeadRevisionNumber(getCurrentRevisionNumber());
+        commit.setHeadRevisionNumber(getCurrentRevisionNumber(stage));
         return commit;
 	}
 
