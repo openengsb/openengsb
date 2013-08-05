@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiff;
 import org.openengsb.core.ekb.persistence.persist.edb.internal.ModelDiffEntry;
@@ -33,7 +34,7 @@ public class ModelDiffTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            model instanceof OpenEngSBModel, is(true));
+            ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test

@@ -29,7 +29,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -61,7 +61,7 @@ public class PersistInterfaceServiceTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            model instanceof OpenEngSBModel, is(true));
+            ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test

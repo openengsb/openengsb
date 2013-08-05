@@ -17,26 +17,20 @@
 
 package org.openengsb.core.util;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 /**
- * This static util class contains all necessary functions to deal with OpenEngSBModels.
+ * This static utility class contains the logic for creating a model instance with a list of model entries which shall
+ * be set in the model instance.
  */
 public final class ModelUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtils.class);
@@ -46,118 +40,12 @@ public final class ModelUtils {
     }
 
     /**
-     * Performs the toOpenEngSBModelEntries function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> toOpenEngSBModelEntries(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).toOpenEngSBModelEntries();
-    }
-    
-    /**
-     * Performs the toOpenEngSBModelValues function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> toOpenEngSBModelValues(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).toOpenEngSBModelValues();
-    }
-
-    /**
-     * Performs the addOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static void addOpenEngSBModelEntry(Object model, OpenEngSBModelEntry entry) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).addOpenEngSBModelEntry(entry);
-    }
-
-    /**
-     * Performs the removeOpenEngSBModelEntry function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static void removeOpenEngSBModelEntry(Object model, String key) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).removeOpenEngSBModelEntry(key);
-    }
-
-    /**
-     * Performs the retrieveInternalModelId function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static Object getInternalModelId(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelId();
-    }
-    
-    /**
-     * Performs the retrieveInternalModelTimestamp function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static Long retrieveInternalModelTimestamp(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelTimestamp();
-    }
-    
-    /**
-     * Performs the retrieveInternalModelVersion function on a model object. Throws an IllegalArgumentException if the
-     * passed object is not an OpenEngSBModel instance.
-     */
-    public static Integer retrieveInternalModelVersion(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveInternalModelVersion();
-    }
-    
-    /**
-     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static String retrieveModelVersionAsString(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelVersion();
-    }
-
-    /**
-     * Performs the retrieveModelName function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static String retrieveModelName(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).retrieveModelName();
-    }
-
-    /**
-     * Performs the retrieveModelVersion function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static Version retrieveModelVersion(Object model) {
-        checkIfObjectIsModel(model);
-        return new Version(((OpenEngSBModel) model).retrieveModelVersion());
-    }
-
-    /**
-     * Performs the getOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static List<OpenEngSBModelEntry> getOpenEngSBModelTail(Object model) {
-        checkIfObjectIsModel(model);
-        return ((OpenEngSBModel) model).getOpenEngSBModelTail();
-    }
-
-    /**
-     * Performs the setOpenEngSBModelTail function on a model object. Throws an IllegalArgumentException if the passed
-     * object is not an OpenEngSBModel instance.
-     */
-    public static void setOpenEngSBModelTail(Object model, List<OpenEngSBModelEntry> entries) {
-        checkIfObjectIsModel(model);
-        ((OpenEngSBModel) model).setOpenEngSBModelTail(entries);
-    }
-
-    /**
      * Creates a model of the given type and uses the list of OpenEngSBModelEntries as initialization data.
      */
     public static <T> T createModel(Class<T> model, List<OpenEngSBModelEntry> entries) {
-        checkIfClassIsModel(model);
+        if (!ModelWrapper.isModel(model)) {
+            throw new IllegalArgumentException("The given class is no model");
+        }
         try {
             T instance = model.newInstance();
             for (OpenEngSBModelEntry entry : entries) {
@@ -220,49 +108,6 @@ public final class ModelUtils {
             LOGGER.error("InvocationTargetException while trying to set values for the new model.", e);
         }
         return false;
-    }
-
-    /**
-     * Checks if the given object is an OpenEngSBModel. Throws an IllegalArgumentException if not.
-     */
-    public static void checkIfObjectIsModel(Object model) {
-        checkIfClassIsModel(model.getClass());
-    }
-
-    /**
-     * Returns true if the given object is an OpenEngSBModel, returns false if not.
-     */
-    public static boolean isObjectModel(Object model) {
-        return isClassModel(model.getClass());
-    }
-
-    /**
-     * Checks if the given class is an OpenEngSBModel. Throws an IllegalArgumentException if not.
-     */
-    public static void checkIfClassIsModel(Class<?> clazz) {
-        if (!OpenEngSBModel.class.isAssignableFrom(clazz)) {
-            throw new IllegalArgumentException("The given class is no model");
-        }
-    }
-
-    /**
-     * Returns true if the given class is an OpenEngSBModel, returns false if not.
-     */
-    public static boolean isClassModel(Class<?> clazz) {
-        return OpenEngSBModel.class.isAssignableFrom(clazz);
-    }
-
-    /**
-     * Returns all property descriptors for a given class.
-     */
-    public static List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(clasz);
-            return Arrays.asList(beanInfo.getPropertyDescriptors());
-        } catch (IntrospectionException e) {
-            LOGGER.error("instantiation exception while trying to create instance of class {}", clasz.getName());
-        }
-        return Lists.newArrayList();
     }
 
     private static String getSetterName(String propertyName) {
