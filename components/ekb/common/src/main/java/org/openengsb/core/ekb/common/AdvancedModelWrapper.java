@@ -32,6 +32,7 @@ import org.openengsb.core.edb.api.EngineeringDatabaseService;
  * The AdvancedModelWrapper class is a helper class which encapsulates functions for models which are not part of the
  * standard function set.
  */
+@SuppressWarnings("serial")
 public class AdvancedModelWrapper extends ModelWrapper {
 
     protected AdvancedModelWrapper(OpenEngSBModel model) {
