@@ -42,8 +42,6 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Constants;
 
 @RunWith(JUnit4TestRunner.class)
-// This one will run each test in it's own container (slower speed)
-// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
