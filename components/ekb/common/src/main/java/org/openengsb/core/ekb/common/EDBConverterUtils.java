@@ -138,7 +138,7 @@ public final class EDBConverterUtils {
      */
     public static void fillEDBObjectWithEngineeringObjectInformation(EDBObject object, OpenEngSBModel model)
         throws IllegalAccessException {
-        if (!new SimpleModelWrapper(model).isEngineeringObject()) {
+        if (!new AdvancedModelWrapper(model).isEngineeringObject()) {
             return;
         }
         for (Field field : model.getClass().getDeclaredFields()) {
@@ -168,7 +168,7 @@ public final class EDBConverterUtils {
      * Filters the reference prefix values added in the model to EDBObject conversion out of the EDBObject
      */
     public static void filterEngineeringObjectInformation(EDBObject object, Class<?> model) {
-        if (!SimpleModelWrapper.isEngineeringObjectClass(model)) {
+        if (!AdvancedModelWrapper.isEngineeringObjectClass(model)) {
             return;
         }
         Set<String> keySet = object.keySet();
