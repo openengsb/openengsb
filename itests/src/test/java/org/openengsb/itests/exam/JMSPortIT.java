@@ -70,7 +70,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(JUnit4TestRunner.class)
 public class JMSPortIT extends AbstractRemoteTestHelper {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
     private DefaultOsgiUtilsService utilsService;
     private String openwirePort;

@@ -30,8 +30,6 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -144,8 +142,7 @@ public final class SecureSampleConnector {
     public SecureSampleConnector(String openwirePort) {
         this.openwirePort = openwirePort;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
+    
     private JmsConfig jmsConfig;
     private final String openwirePort;
 

@@ -22,26 +22,28 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import org.apache.karaf.features.FeaturesService;
 import org.eclipse.osgi.framework.internal.core.Constants;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.domain.example.ExampleDomainEvents;
+import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class DomainInstallIT extends AbstractExamTestHelper {
 
     @Configuration
@@ -52,23 +54,29 @@ public class DomainInstallIT extends AbstractExamTestHelper {
     @Inject
     private FeaturesService featuresService;
 
+    @After
+    public void cleanUp() throws Exception {
+        featuresService.uninstallFeature("openengsb-domain-example");
+    }
+    
     @Test
     public void testIfModelIsWeaved_shouldWeaveModel() throws Exception {
         featuresService.installFeature("openengsb-domain-example");
         Class<?> loadClass =
-            this.getClass().getClassLoader().loadClass("org.openengsb.domain.example.model.ExampleRequestModel");
-        assertTrue("ExampleRequestModel has not been woven correctly", 
-                OpenEngSBModel.class.isAssignableFrom(loadClass));
+            this.getClass().getClassLoader().loadClass(ExampleRequestModel.class.getName());
+        assertTrue("ExampleRequestModel has not been woven correctly",
+            OpenEngSBModel.class.isAssignableFrom(loadClass));
     }
 
     @Test
     public void testInstallDomain_shouldRegisterDomainEvents() throws Exception {
-        ServiceReference serviceReference =
+        ServiceReference<?> serviceReference =
             getBundleContext().getServiceReference("org.openengsb.domain.example.ExampleDomainEvents");
         assertThat(serviceReference, is(nullValue()));
         featuresService.installFeature("openengsb-domain-example");
-        ServiceTracker tracker =
-            new ServiceTracker(getBundleContext(), "org.openengsb.domain.example.ExampleDomainEvents", null);
+        ServiceTracker<ExampleDomainEvents, Object> tracker =
+            new ServiceTracker<ExampleDomainEvents, Object>(getBundleContext(),
+                ExampleDomainEvents.class, null);
         tracker.open();
         Object service = tracker.waitForService(10000);
         assertThat(service, not(nullValue()));
@@ -76,13 +84,13 @@ public class DomainInstallIT extends AbstractExamTestHelper {
 
     @Test
     public void testInstallDomain_shouldRegisterDomainProvider() throws Exception {
-        ServiceReference[] serviceReferences =
-            getBundleContext().getServiceReferences(DomainProvider.class.getName(), "(domain=example)");
-        assertThat(serviceReferences, is(nullValue()));
+        Collection<ServiceReference<DomainProvider>> serviceReferences =
+            getBundleContext().getServiceReferences(DomainProvider.class, "(domain=example)");
+        assertThat(serviceReferences.size(), is(0));
         featuresService.installFeature("openengsb-domain-example");
         String filter = String.format("(&(%s=%s)(domain=example))",
             Constants.OBJECTCLASS, DomainProvider.class.getName());
-        ServiceTracker tracker = new ServiceTracker(getBundleContext(), FrameworkUtil.createFilter(filter), null);
+        ServiceTracker<DomainProvider, Object> tracker = new ServiceTracker<DomainProvider, Object>(getBundleContext(), FrameworkUtil.createFilter(filter), null);
         tracker.open();
         DomainProvider service = (DomainProvider) tracker.waitForService(10000);
         assertThat(service, not(nullValue()));
