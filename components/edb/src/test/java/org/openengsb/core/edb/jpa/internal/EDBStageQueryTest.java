@@ -28,4 +28,29 @@ public class EDBStageQueryTest extends AbstractEDBQueryTest
     public void testQueryWithSomeAspects_shouldWork() throws Exception {
 		super.testQueryWithSomeAspects_shouldWork(getStage());
 	}
+	
+	@Test
+    public void testQueryOfOldVersion_shouldWork() throws Exception {
+		super.testQueryOfOldVersion_shouldWork(getStage());
+	}
+	
+	@Test
+    public void testQueryWithTimestamp_shouldWork() throws Exception {
+		super.testQueryWithTimestamp_shouldWork(getStage());
+	}
+	
+	@Test
+    public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
+		super.testQueryWithTimestampAndEmptyMap_shouldWork(getStage());
+	}
+	
+	@Test
+    public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
+		super.testQueryOfLastKnownVersion_shouldWork(getStage());
+	}
+	
+	@Test
+    public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
+		super.testIfQueryingWithLikeWorks_shouldWork(getStage());
+	}
 }
