@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -49,7 +50,6 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
-import org.openengsb.core.util.ModelUtils;
 import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
 import org.openengsb.itests.exam.models.SubModelDecorator;
 import org.openengsb.itests.exam.models.TestModelDecorator;
@@ -211,7 +211,6 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("createevent/2"));
-
         String name = obj.getString("name");
         Integer version = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
@@ -235,10 +234,10 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testEKBInsertCommitAndQueryDataWithBackslashes_shouldReturnModelObject() throws Exception {
-        Object model = getTestModel().newInstance();
-        setProperty(model, "setName", "C:\\\\test");
-        setProperty(model, "setEdbId", "createevent/6");
-        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("C:\\\\test");
+        model.setEdbId("createevent/6");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         @SuppressWarnings("unchecked")
@@ -256,13 +255,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("batchevent/1"));
-
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
         model.setName("test2");
         commit = getTestEKBCommit().addUpdate(model.getModel());
-
         TestModelDecorator model2 = getTestModelDecorator();
         model2.setName("test3");
         model2.setEdbId("batchevent/2");
@@ -270,12 +267,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         obj = edbService.getObject(getModelOid("batchevent/1"));
-
         String name2 = obj.getString("name");
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
-
         obj = edbService.getObject(getModelOid("batchevent/2"));
-
         String name3 = obj.getString("name");
         Integer version3 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
@@ -304,17 +298,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("updateevent/2"));
-
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
-
         model.setName("test2");
-
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
         obj = edbService.getObject(getModelOid("updateevent/2"));
-
         String name2 = obj.getString("name");
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
@@ -346,7 +336,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EDBObject obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelUtils.addOpenEngSBModelEntry(model.getModel(), entry);
+        ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
 
@@ -368,8 +358,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         model.setName("test2");
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
-        ModelUtils.addOpenEngSBModelEntry(model.getModel(), entry);
-
+        ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
         commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
     }
@@ -582,13 +571,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        Object result = (Object) query.getModel(getTestModel(), getModelOid("modeltailtest/1"));
-        Boolean versionPresent = false;
-        for (OpenEngSBModelEntry entry : ModelUtils.getOpenEngSBModelTail(result)) {
-            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
-                versionPresent = true;
-            }
-        }
+        ModelWrapper result = ModelWrapper.wrap(query.getModel(getTestModel(), getModelOid("modeltailtest/1")));
+        Boolean versionPresent = result.retrieveInternalModelVersion() != null;
         assertThat(versionPresent, is(true));
     }
 
@@ -600,11 +584,12 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        Object result = (Object) query.getModel(getTestModel(), getModelOid("modelmetatest/1"));
-        assertThat(ModelUtils.toOpenEngSBModelEntries(result), notNullValue());
-        assertThat(ModelUtils.getInternalModelId(result), notNullValue());
-        assertThat(ModelUtils.retrieveInternalModelVersion(result), notNullValue());
-        assertThat(ModelUtils.retrieveInternalModelTimestamp(result), notNullValue());
+        ModelWrapper wrapper = ModelWrapper.wrap(query.getModel(getTestModel()
+            , getModelOid("modelmetatest/1")));
+        assertThat(wrapper.toOpenEngSBModelEntries(), notNullValue());
+        assertThat(wrapper.retrieveInternalModelId(), notNullValue());
+        assertThat(wrapper.retrieveInternalModelVersion(), notNullValue());
+        assertThat(wrapper.retrieveInternalModelTimestamp(), notNullValue());
     }
 
     @Test
@@ -913,7 +898,6 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         // check edb object
         EDBObject edbObject = edbService.getObject(getModelOid("ppm/0"));
-
         // check entry types
         assertThat(edbObject.get("booleanByGet").getType(), is(Boolean.class.getName()));
         assertThat(edbObject.get("booleanByIs").getType(), is(Boolean.class.getName()));
