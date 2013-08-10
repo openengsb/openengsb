@@ -32,34 +32,10 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 
 public class EDBQueryTest extends AbstractEDBQueryTest {
 
-    @SuppressWarnings("serial")
-    @Test
-    public void testQueryWithSomeAspects_shouldWork() throws Exception {
-		super.testQueryWithSomeAspects_shouldWork(null);
-    }
-    
-    @Test
-    public void testQueryOfOldVersion_shouldWork() throws Exception {
-		super.testQueryOfOldVersion_shouldWork(null);
-    }
-
-    @Test
-    public void testQueryWithTimestamp_shouldWork() throws Exception {
-		super.testQueryWithTimestamp_shouldWork(null);
-    }
-
-    @Test
-    public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
-		super.testQueryWithTimestampAndEmptyMap_shouldWork(null);
+	@Override
+	protected Tools initTools()
+	{
+		return new TestTools();
 	}
-
-    @Test
-    public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
-		super.testQueryOfLastKnownVersion_shouldWork(null);
-	}
-    
-    @Test
-    public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
-		super.testIfQueryingWithLikeWorks_shouldWork(null);
-	}
+	
 }

@@ -43,8 +43,11 @@ import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
-public class AbstractEDBTest {
+public abstract class AbstractEDBTest {
     protected TestEDBService db;
+	protected Tools tools;
+	
+	protected abstract Tools initTools();
 
     @Rule
     public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
@@ -64,6 +67,9 @@ public class AbstractEDBTest {
 
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
+		
+		this.tools = this.initTools();
+		this.tools.setDb(db);
     }
 
     @After
@@ -75,21 +81,14 @@ public class AbstractEDBTest {
      * Returns an EDBCommit object.
      */
 	protected EDBCommit getEDBCommit() {
-        return getEDBCommit(null);
-    }
+		return tools.createEDBCommit(null, null, null);
+	}
 
-    protected EDBCommit getEDBCommit(EDBStage stage) {
-        return db.createEDBCommit(stage, null, null, null);
-    }
     /**
      * Creates a new commit object, adds the given inserts, updates and deletes and commit it.
      */
-    protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
-        return this.commitObjects(inserts, updates, deletes, null);
-    }
-	
-	 protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes, EDBStage stage) {
-        EDBCommit ci = db.createEDBCommit(stage, inserts, updates, deletes);
+	 protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
+        EDBCommit ci = tools.createEDBCommit(inserts, updates, deletes);
         return db.commit(ci);
     }
 
@@ -103,13 +102,9 @@ public class AbstractEDBTest {
     /**
      * Returns a random test EDBObject
      */
-    protected EDBObject createRandomTestObject(String oid) {
-        return this.createRandomTestObject(oid, null);
-    }
-	
-	protected EDBObject createRandomTestObject(String oid, JPAStage stage) {
+	protected EDBObject createRandomTestObject(String oid) {
         Random random = new Random(System.currentTimeMillis());
-        EDBObject result = new EDBObject(oid, stage);
+        EDBObject result = tools.createEDBObject(oid);
         int max = 5;
 
         for (int i = 0; i < max; ++i) {
@@ -141,18 +136,4 @@ public class AbstractEDBTest {
         }
         return null;
     }
-	
-	protected String getSid(JPAStage stage) {
-		if(stage != null)
-			return stage.getStageId();
-		
-		return null;
-	}
-	
-	protected JPAStage getStage() {
-		JPAStage stage = new JPAStage();
-		stage.setStageId("stage1");
-		stage.setCreator("sveti");
-		return stage;
-	}
 }

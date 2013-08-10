@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import org.junit.Test;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
@@ -29,45 +30,47 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 
 public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 {
-	protected void testQueryWithSomeAspects_shouldWork(JPAStage stage) throws Exception {
+	@SuppressWarnings("serial")
+    @Test
+	public void testQueryWithSomeAspects_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("A", "B", data1);
         putValue("Cow", "Milk", data1);
         putValue("Dog", "Food", data1);
-        EDBObject v1 = new EDBObject("/test/query1", data1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v1 = tools.createEDBObject("/test/query1", data1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         long time1 = db.commit(ci);
 
         Map<String, EDBObjectEntry> data2 = new HashMap<String, EDBObjectEntry>();
         putValue("Cow", "Milk", data2);
         putValue("House", "Garden", data2);
-        v1 = new EDBObject("/test/query2", data2, stage);
+        v1 = tools.createEDBObject("/test/query2", data2);
         ci = getEDBCommit();
         ci.insert(v1);
         long time2 = db.commit(ci);
 
-        List<EDBObject> list1 = db.queryByKeyValue("A", "B", getSid(stage));
-        List<EDBObject> list2 = db.queryByMap(new HashMap<String, Object>() {
+        List<EDBObject> list1 = tools.queryByKeyValue("A", "B");
+        List<EDBObject> list2 = tools.queryByMap(new HashMap<String, Object>() {
             {
                 put("A", "B");
                 put("Dog", "Food");
             }
-        }, getSid(stage));
+        });
 
-        List<EDBObject> list3 = db.queryByMap(new HashMap<String, Object>() {
+        List<EDBObject> list3 = tools.queryByMap(new HashMap<String, Object>() {
             {
                 put("Cow", "Milk");
             }
-        }, getSid(stage));
+        });
 
-        List<EDBObject> list4 = db.queryByMap(new HashMap<String, Object>() {
+        List<EDBObject> list4 = tools.queryByMap(new HashMap<String, Object>() {
             {
                 put("A", "B");
                 put("Cow", "Milk");
                 put("House", "Garden");
             }
-        }, getSid(stage));
+        });
 
         assertThat(list1.size(), is(1));
         assertThat(list2.size(), is(1));
@@ -77,22 +80,23 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         checkTimeStamps(Arrays.asList(time1, time2));
     }
 	
-	protected void testQueryOfOldVersion_shouldWork(JPAStage stage) throws Exception {
+	@Test
+	public void testQueryOfOldVersion_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 1", data1v1);
         putValue("pre:KeyB", "pre:Value A 1", data1v1);
-        EDBObject v11 = new EDBObject("pre:/test/object1", data1v1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v11 = tools.createEDBObject("pre:/test/object1", data1v1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v11);
         Map<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 2", data2v1);
         putValue("pre:KeyB", "pre:Value A 1", data2v1);
-        EDBObject v12 = new EDBObject("pre:/test/object2", data2v1, stage);
+        EDBObject v12 = tools.createEDBObject("pre:/test/object2", data2v1);
         ci.insert(v12);
         Map<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 3", data3v1);
         putValue("pre:KeyB", "pre:Value A 1", data3v1);
-        EDBObject v13 = new EDBObject("pre:/test/object3", data3v1, stage);
+        EDBObject v13 = tools.createEDBObject("pre:/test/object3", data3v1);
         ci.insert(v13);
 
         long time1 = db.commit(ci);
@@ -100,18 +104,18 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         Map<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 1", data1v2);
         putValue("pre:KeyB", "pre:Value A 1", data1v2);
-        EDBObject v21 = new EDBObject("pre:/test/object1", data1v2, stage);
-        ci = getEDBCommit(stage);
+        EDBObject v21 = tools.createEDBObject("pre:/test/object1", data1v2);
+        ci = getEDBCommit();
         ci.update(v21);
         Map<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 2", data2v2);
         putValue("pre:KeyB", "pre:Value A 1", data2v2);
-        EDBObject v22 = new EDBObject("pre:/test/object2", data2v2, stage);
+        EDBObject v22 = tools.createEDBObject("pre:/test/object2", data2v2);
         ci.update(v22);
         Map<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 4", data4v1);
         putValue("pre:KeyB", "pre:Value A 1", data4v1);
-        EDBObject v23 = new EDBObject("pre:/test/object4", data4v1, stage);
+        EDBObject v23 = tools.createEDBObject("pre:/test/object4", data4v1);
         ci.update(v23);
 
         long time2 = db.commit(ci);
@@ -119,25 +123,25 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         Map<String, EDBObjectEntry> data1v3 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 1", data1v3);
         putValue("pre:KeyB", "pre:Value A 1", data1v3);
-        EDBObject v31 = new EDBObject("pre:/test/object1", data1v3, stage);
-        ci = getEDBCommit(stage);
+        EDBObject v31 = tools.createEDBObject("pre:/test/object1", data1v3);
+        ci = getEDBCommit();
         ci.update(v31);
         Map<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 2a", data2v3);
         putValue("pre:KeyB", "pre:Value A 1", data2v3);
-        EDBObject v32 = new EDBObject("pre:/test/object2", data2v3, stage);
+        EDBObject v32 = tools.createEDBObject("pre:/test/object2", data2v3);
         ci.update(v32);
         Map<String, EDBObjectEntry> data4v2 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 4", data4v2);
         putValue("pre:KeyB", "pre:Value A 1", data4v2);
-        EDBObject v33 = new EDBObject("pre:/test/object4", data4v2, stage);
+        EDBObject v33 = tools.createEDBObject("pre:/test/object4", data4v2);
         ci.update(v33);
 
         long time3 = db.commit(ci);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("pre:KeyB", "pre:Value A 1");
-        List<EDBObject> result = db.query(map, time2, getSid(stage));
+        List<EDBObject> result = tools.query(map, time2);
 
         boolean b1 = false;
         boolean b2 = false;
@@ -163,64 +167,66 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(time3 > 0, is(true));
     }
 	
-	protected void testQueryWithTimestamp_shouldWork(JPAStage stage) throws Exception {
+	@Test
+	public void testQueryWithTimestamp_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Cow", "Milk", data1);
         putValue("Dog", "Food", data1);
-        EDBObject v1 = new EDBObject("/test/querynew1", data1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v1 = tools.createEDBObject("/test/querynew1", data1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
 
         data1 = new HashMap<String, EDBObjectEntry>();
         putValue("Dog", "Food", data1);
-        v1 = new EDBObject("/test/querynew1", data1, stage);
-        ci = getEDBCommit(stage);
+        v1 = tools.createEDBObject("/test/querynew1", data1);
+        ci = getEDBCommit();
         ci.update(v1);
         db.commit(ci);
 
         data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Dog", "Food", data1);
-        v1 = new EDBObject("/test/querynew2", data1, stage);
-        ci = getEDBCommit(stage);
+        v1 = tools.createEDBObject("/test/querynew2", data1);
+        ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("K", "B");
-        List<EDBObject> result = db.query(map, System.currentTimeMillis(), getSid(stage));
+        List<EDBObject> result = tools.query(map, System.currentTimeMillis());
         assertThat(result.size(), is(1));
     }
 	
-	protected void testQueryWithTimestampAndEmptyMap_shouldWork(JPAStage stage) throws Exception {
+	@Test
+	public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Cow", "Milk", data1);
         putValue("Dog", "Food", data1);
-        EDBObject v1 = new EDBObject("/test/querynew3", data1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v1 = tools.createEDBObject("/test/querynew3", data1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
 
         data1 = new HashMap<String, EDBObjectEntry>();
         putValue("Dog", "Food", data1);
-        v1 = new EDBObject("/test/querynew3", data1, stage);
-        ci = getEDBCommit(stage);
+        v1 = tools.createEDBObject("/test/querynew3", data1);
+        ci = getEDBCommit();
         ci.update(v1);
         db.commit(ci);
 
         data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Dog", "Food", data1);
-        v1 = new EDBObject("/test/querynew4", data1, stage);
-        ci = getEDBCommit(stage);
+        v1 = tools.createEDBObject("/test/querynew4", data1);
+        ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
 
         Map<String, Object> map = new HashMap<String, Object>();
-        List<EDBObject> result = db.query(map, System.currentTimeMillis(), getSid(stage));
+        List<EDBObject> result = tools.query(map, System.currentTimeMillis());
         EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
         EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
         assertThat(result.size(), is(2));
@@ -228,57 +234,58 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(result2.containsKey("Dog"), is(true));
     }
 	
-	protected void testQueryOfLastKnownVersion_shouldWork(JPAStage stage) throws Exception {
+	@Test
+	public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 1", data1v1);
         putValue("KeyB", "Value A 1", data1v1);
-        EDBObject v11 = new EDBObject("/test/object1", data1v1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v11 = tools.createEDBObject("/test/object1", data1v1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v11);
         Map<String, EDBObjectEntry> data2v1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 2", data2v1);
         putValue("KeyB", "Value A 1", data2v1);
-        EDBObject v12 = new EDBObject("/test/object2", data2v1, stage);
+        EDBObject v12 = tools.createEDBObject("/test/object2", data2v1);
         ci.insert(v12);
         Map<String, EDBObjectEntry> data3v1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 3", data3v1);
         putValue("KeyB", "Value A 1", data3v1);
-        EDBObject v13 = new EDBObject("/test/object3", data3v1, stage);
+        EDBObject v13 = tools.createEDBObject("/test/object3", data3v1);
         ci.insert(v13);
 
         long time1 = db.commit(ci);
 
-        ci = getEDBCommit(stage);
+        ci = getEDBCommit();
         Map<String, EDBObjectEntry> data1v2 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 1", data1v2);
         putValue("KeyB", "Value A 1", data1v2);
-        EDBObject v21 = new EDBObject("/test/object1", data1v2, stage);
+        EDBObject v21 = tools.createEDBObject("/test/object1", data1v2);
         ci.update(v21);
         Map<String, EDBObjectEntry> data2v2 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 2", data2v2);
         putValue("KeyB", "Value A 1", data2v2);
-        EDBObject v22 = new EDBObject("/test/object2", data2v2, stage);
+        EDBObject v22 = tools.createEDBObject("/test/object2", data2v2);
         ci.update(v22);
 
         long time2 = db.commit(ci);
 
-        ci = getEDBCommit(stage);
+        ci = getEDBCommit();
         Map<String, EDBObjectEntry> data2v3 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 2a", data2v3);
         putValue("KeyB", "Value A 1", data2v3);
-        EDBObject v32 = new EDBObject("/test/object2", data2v3, stage);
+        EDBObject v32 = tools.createEDBObject("/test/object2", data2v3);
         ci.update(v32);
         Map<String, EDBObjectEntry> data4v1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 4", data4v1);
         putValue("KeyB", "Value A 1", data4v1);
-        EDBObject v33 = new EDBObject("/test/object4", data4v1, stage);
+        EDBObject v33 = tools.createEDBObject("/test/object4", data4v1);
         ci.insert(v33);
 
         long time3 = db.commit(ci);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("KeyB", "Value A 1");
-        List<EDBObject> result = db.query(map, time3, getSid(stage));
+        List<EDBObject> result = tools.query(map, time3);
 
         boolean b1 = false;
         boolean b2 = false;
@@ -309,14 +316,15 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(time3 > 0, is(true));
     }
 	
-	protected void testIfQueryingWithLikeWorks_shouldWork(JPAStage stage) throws Exception {
+	@Test
+	public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("bla_kdjer", "test", data1);
-        EDBObject v1 = new EDBObject("/test/query/8", data1, stage);
-        EDBCommit ci = getEDBCommit(stage);
+        EDBObject v1 = tools.createEDBObject("/test/query/8", data1);
+        EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
-        List<EDBObject> result = db.queryByKeyValue("bla%", "test", getSid(stage));
+        List<EDBObject> result = tools.queryByKeyValue("bla%", "test");
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
     }
