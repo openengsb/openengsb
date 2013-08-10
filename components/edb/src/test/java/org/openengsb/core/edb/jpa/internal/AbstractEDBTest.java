@@ -96,12 +96,8 @@ public class AbstractEDBTest {
     /**
      * Adds an EDBObjectEntry based on the given key and value to the given map
      */
-    protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
-        this.putValue(key, value, map, null);
-    }
-	
-	protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map, JPAStage stage) {
-        map.put(key, new EDBObjectEntry(key, value, value.getClass(), stage));
+	protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
+        map.put(key, new EDBObjectEntry(key, value, value.getClass()));
     }
 
     /**

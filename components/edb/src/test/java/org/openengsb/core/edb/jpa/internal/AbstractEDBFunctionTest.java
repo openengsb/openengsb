@@ -1,11 +1,12 @@
-/*
- * Copyright 2013 vauve_000.
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,10 +35,6 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EDBStage;
 
-/**
- *
- * @author vauve_000
- */
 public class AbstractEDBFunctionTest extends AbstractEDBTest {
 	
 	private void assertStage(EDBStage actual, EDBStage expected) {
@@ -95,9 +92,9 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         long time3 = 0;
         long time4 = 0;
         HashMap<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("Lock", "Key", data1, stage);
-        putValue("Door", "Bell", data1, stage);
-        putValue("Cat", "Spongebob", data1, stage);
+        putValue("Lock", "Key", data1);
+        putValue("Door", "Bell", data1);
+        putValue("Cat", "Spongebob", data1);
         EDBObject v1 = new EDBObject("/history/object", data1, stage);
         EDBCommit ci = getEDBCommit(stage);
         ci.insert(createRandomTestObject("/useless/1", stage));
@@ -106,7 +103,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         time1 = db.commit(ci);
 
         HashMap<String, EDBObjectEntry> data2 = (HashMap<String, EDBObjectEntry>) data1.clone();
-        putValue("Lock", "Smith", data2, stage);
+        putValue("Lock", "Smith", data2);
         EDBObject v2 = new EDBObject("/history/object", data2, stage);
         ci = getEDBCommit(stage);
         ci.insert(createRandomTestObject("/useless/2", stage));
@@ -120,7 +117,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         ci.insert(createRandomTestObject("/useless/4", stage));
         time3 = db.commit(ci);
 
-        putValue("Cat", "Dog", data3, stage);
+        putValue("Cat", "Dog", data3);
         EDBObject v3 = new EDBObject("/history/object", data3, stage);
         ci = getEDBCommit(stage);
         ci.update(v3);
@@ -180,9 +177,9 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         long time3 = 0;
         long time4 = 0;
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("Burger", "Salad", data1, stage);
-        putValue("Bla", "Blub", data1, stage);
-        putValue("Cheese", "Butter", data1, stage);
+        putValue("Burger", "Salad", data1);
+        putValue("Bla", "Blub", data1);
+        putValue("Cheese", "Butter", data1);
         EDBObject v1 = new EDBObject("/history/test/object", data1, stage);
         EDBCommit ci = getEDBCommit(stage);
         ci.insert(createRandomTestObject("/useless/test/1", stage));
@@ -192,7 +189,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         time1 = db.commit(ci);
 
         Map<String, EDBObjectEntry> data2 = Maps.newHashMap(data1);
-        putValue("Burger", "Meat", data2, stage);
+        putValue("Burger", "Meat", data2);
         EDBObject v2 = new EDBObject("/history/test/object", data2, stage);
         ci = getEDBCommit(stage);
         ci.insert(createRandomTestObject("/useless/test/2", stage));
@@ -205,7 +202,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         ci.insert(createRandomTestObject("/useless/test/3", stage));
         ci.insert(createRandomTestObject("/useless/test/4", stage));
         time3 = db.commit(ci);
-        putValue("Cheese", "Milk", data3, stage);
+        putValue("Cheese", "Milk", data3);
 
         EDBObject v3 = new EDBObject("/history/test/object", data3, stage);
         ci = getEDBCommit(stage);
@@ -225,9 +222,9 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         long time2 = 0;
         long time3 = 0;
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("KeyA", "Value A 1", data1, stage);
-        putValue("KeyB", "Value B 1", data1, stage);
-        putValue("KeyC", "Value C 1", data1, stage);
+        putValue("KeyA", "Value A 1", data1);
+        putValue("KeyB", "Value B 1", data1);
+        putValue("KeyC", "Value C 1", data1);
         EDBObject v1 = new EDBObject("/diff/object", data1, stage);
         EDBCommit ci = getEDBCommit(stage);
         ci.insert(v1);
@@ -235,8 +232,8 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
 
         Map<String, EDBObjectEntry> data2 = Maps.newHashMap(data1);
 
-        putValue("KeyD", "Value D 1", data2, stage);
-        putValue("KeyA", "Value A 2", data2, stage);
+        putValue("KeyD", "Value D 1", data2);
+        putValue("KeyA", "Value A 2", data2);
         EDBObject v2 = new EDBObject("/diff/object", data2, stage);
         ci = getEDBCommit(stage);
         ci.update(v2);
@@ -245,7 +242,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
         Map<String, EDBObjectEntry> data3 = Maps.newHashMap(data2);
 
         data3.remove("KeyB");
-        putValue("KeyC", "Value C 3", data3, stage);
+        putValue("KeyC", "Value C 3", data3);
         EDBObject v3 = new EDBObject("/diff/object", data3, stage);
         ci = getEDBCommit(stage);
         ci.update(v3);
@@ -264,7 +261,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
 	
 	protected void testGetResurrectedOIDs_shouldWork(JPAStage stage) throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("KeyA", "Value A 1", data1, stage);
+        putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = new EDBObject("/ress/object", data1, stage);
         EDBCommit ci = getEDBCommit(stage);
         ci.insert(v1);
@@ -292,7 +289,7 @@ public class AbstractEDBFunctionTest extends AbstractEDBTest {
 	
 	protected void testCommitTwiceSameCommit_shouldThrowError(JPAStage stage) throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("KeyA", "Value A 1", data1, stage);
+        putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = new EDBObject("/fail/object", data1, stage);
         EDBCommit ci = getEDBCommit(stage);
         ci.insert(v1);

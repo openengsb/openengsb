@@ -28,6 +28,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -62,6 +63,9 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private String revision;
     @Column(name = "PARENT")
     private String parent;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name="STAGE",nullable = true)
+	private JPAStage stage;
 
     private List<EDBObject> objects;
 
@@ -69,28 +73,17 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private List<EDBObject> inserts;
     @Transient
     private List<EDBObject> updates;
-    
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@Column(name="STAGE",nullable = true)
-	private JPAStage stage;
-
-    protected List<EDBObject> objects;
-
-    @Transient
-    protected List<EDBObject> inserts;
-    @Transient
-    protected List<EDBObject> updates;
 	
 	
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
     @Deprecated
-    public JPACommit() {
-    }
-
-    public JPACommit(String committer, String contextId) {
-        this.committer = committer;
+	public JPACommit() {
+	}
+	
+	public JPACommit(String committer, String contextId) {
+		this.committer = committer;
         this.context = contextId;
         this.stage = null;
 

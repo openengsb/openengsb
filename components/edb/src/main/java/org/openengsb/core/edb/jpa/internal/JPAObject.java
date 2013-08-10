@@ -23,6 +23,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -37,18 +38,18 @@ import org.apache.openjpa.persistence.jdbc.Index;
  */
 public class JPAObject extends VersionedEntity {
 	@Column(name = "TIME")
-    protected Long timestamp;
+    private Long timestamp;
     @Column(name = "ISDELETED")
-    protected Boolean isDeleted;
+    private Boolean isDeleted;
     @Index
     @Column(name = "OID")
-    protected String oid;   
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private String oid;   
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Column(name="STAGE",nullable = true)
 	private JPAStage stage;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    protected List<JPAEntry> entries;
+    private List<JPAEntry> entries;
 	
     public JPAObject(){
         isDeleted = false;

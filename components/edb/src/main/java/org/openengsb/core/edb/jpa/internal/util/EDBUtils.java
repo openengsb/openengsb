@@ -51,7 +51,6 @@ public final class EDBUtils {
             if (step.doesStepFit(entry.getType())) {
                 LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
                 EDBObjectEntry result = step.convertToEDBObjectEntry(entry);
-				result.setEDBStage(entry.getJPAStage());
 				return result;
             }
         }
@@ -67,7 +66,6 @@ public final class EDBUtils {
             if (step.doesStepFit(entry.getType())) {
                 LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
                 JPAEntry result = step.convertToJPAEntry(entry);
-				result.setJPAStage(convertEDBStageToJPAStage(entry.getEDBStage()));
 				return result;
             }
         }

@@ -144,7 +144,7 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Adds an EDBObjectEntry to this EDBObject
      */
     public void putEDBObjectEntry(String key, Object value, String type) {
-		put(key, new EDBObjectEntry(key, value, type, this.stage));
+		put(key, new EDBObjectEntry(key, value, type));
 	}
 
     /**
