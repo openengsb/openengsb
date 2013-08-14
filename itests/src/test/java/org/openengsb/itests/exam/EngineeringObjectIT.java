@@ -283,4 +283,22 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         assertThat(sourceBs.size(), is(0));
         assertThat(sourceAs.size(), is(1));
     }
+    
+    @Test
+    public void testIfUpdatePropagationWithMissingModelsWorks_shouldUpdateExistingModels() throws Exception {
+        SourceModelB sourceB = new SourceModelB("sourceB/9", "sourceNameB", "shared");
+        persist.commit(getTestEKBCommit().addInsert(sourceB));
+
+        EOModel eo = new EOModel("eo/9", "this/does/not/exist", sourceB.getEdbId(), "shared");
+        persist.commit(getTestEKBCommit().addInsert(eo));
+
+        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        eo.setNameB("updatedNameB");
+        eo.setShared("updatedShared");
+        persist.commit(getTestEKBCommit().addUpdate(eo));
+
+        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        assertThat(sourceB.getName(), is("updatedNameB"));
+        assertThat(sourceB.getShared(), is("updatedShared"));
+    }
 }
