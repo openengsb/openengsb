@@ -84,44 +84,46 @@ public class QueryInterfaceService implements QueryInterface {
     }
 
     @Override
-    public <T> List<T> queryForModelsByQueryMapAtTimestamp(Class<T> model, Map<String, Object> queryMap,
-            Long timestamp) {
-        LOGGER.debug("Invoked queryForModels with the model {}, a map for the time {}",
-            model.getName(), new Date(timestamp).toString());
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
-    }
-
-    @Override
     public <T> List<T> queryForModels(Class<T> model, String query) {
         return queryForModelsAtTimestamp(model, query, System.currentTimeMillis() + "");
     }
 
     @Override
     public <T> List<T> queryForModelsAtTimestamp(Class<T> model, String query, String timestamp) {
+        Long time;
         if (timestamp == null || timestamp.isEmpty()) {
             LOGGER.debug("Got invalid timestamp string. Use the current timestamp instead");
-            timestamp = new Date().getTime() + "";
+            time = System.currentTimeMillis();
+        } else {
+            time = Long.parseLong(timestamp);
         }
-        Long time = Long.parseLong(timestamp);
         LOGGER.debug("Invoked queryForModels with the model {} and the querystring {} for the time {}",
             new Object[]{ model.getName(), query, new Date(time).toString() });
-        Map<String, Object> map = generateMapOutOfString(query);
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, time));
+        return queryForModelsByQueryMapAtTimestamp(model, generateMapOutOfString(query), time);
     }
 
     @Override
     public <T> List<T> queryForActiveModelsByQueryMap(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForActiveModels with the model {} and a query map", model.getName());
-        Long now = System.currentTimeMillis();
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, now));
+        return queryForModelsByQueryMapAtTimestamp(model, queryMap, System.currentTimeMillis());
     }
 
     @Override
     public <T> List<T> queryForActiveModels(Class<T> model) {
         LOGGER.debug("Invoked queryForActiveModels with the model {}", model.getName());
-        Long now = System.currentTimeMillis();
-        Map<String, Object> map = new HashMap<String, Object>();
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(map, now));
+        return queryForModelsByQueryMapAtTimestamp(model, new HashMap<String, Object>(), System.currentTimeMillis());
+    }
+    
+    @Override
+    public <T> List<T> queryForModelsByQueryMapAtTimestamp(Class<T> model, Map<String, Object> queryMap,
+            Long timestamp) {
+        LOGGER.debug("Invoked queryForModels with the model {}, a map for the time {}",
+            model.getName(), new Date(timestamp).toString());
+        if (queryMap == null) {
+            queryMap = new HashMap<String, Object>();
+        }
+        queryMap.put(EDBConstants.MODEL_TYPE, model.getName());
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
     }
 
     @Override
