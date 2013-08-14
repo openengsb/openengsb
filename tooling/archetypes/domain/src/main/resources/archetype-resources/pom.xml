@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>${openengsbVersion}</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
