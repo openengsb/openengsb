@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.edb.api.EDBConstants;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
@@ -34,9 +36,9 @@ import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
+import org.openengsb.core.ekb.common.AdvancedModelWrapper;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.EngineeringObjectModelWrapper;
-import org.openengsb.core.ekb.common.AdvancedModelWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,9 +186,13 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
     private List<AdvancedModelWrapper> updateReferencedModelsByEO(EngineeringObjectModelWrapper model) {
         List<AdvancedModelWrapper> updates = new ArrayList<AdvancedModelWrapper>();
         for (Field field : model.getForeignKeyFields()) {
-            AdvancedModelWrapper result = performMerge(model, loadReferencedModel(model, field));
-            if (result != null) {
-                updates.add(result);
+            try {
+                AdvancedModelWrapper result = performMerge(model, loadReferencedModel(model, field));
+                if (result != null) {
+                    updates.add(result);
+                }
+            } catch (EDBException e) {
+                LOGGER.debug("Skipped referenced model for field {}, since it does not exist.", field, e);
             }
         }
         return updates;
@@ -271,7 +277,9 @@ public class EngineeringObjectEnhancer implements EKBPreCommitHook {
         ModelDescription targetDesc = target.getModelDescription();
         Object transformResult = transformationEngine.performTransformation(sourceDesc, targetDesc,
             source.getUnderlyingModel(), target.getUnderlyingModel());
-        return AdvancedModelWrapper.wrap(transformResult);
+        AdvancedModelWrapper wrapper = AdvancedModelWrapper.wrap(transformResult);
+        wrapper.removeOpenEngSBModelEntry(EDBConstants.MODEL_VERSION);
+        return wrapper;
     }
 
     /**
