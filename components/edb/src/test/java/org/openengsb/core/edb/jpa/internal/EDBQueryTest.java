@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
@@ -37,7 +38,6 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 
 public class EDBQueryTest extends AbstractEDBTest {
 
-    @SuppressWarnings("serial")
     @Test
     public void testQueryWithSomeAspects_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
@@ -57,28 +57,16 @@ public class EDBQueryTest extends AbstractEDBTest {
         ci.insert(v1);
         long time2 = db.commit(ci);
 
-        List<EDBObject> list1 = db.queryByKeyValue("A", "B");
-        List<EDBObject> list2 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Dog", "Food");
-            }
-        });
-
-        List<EDBObject> list3 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("Cow", "Milk");
-            }
-        });
-
-        List<EDBObject> list4 = db.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Cow", "Milk");
-                put("House", "Garden");
-            }
-        });
-
+        QueryRequest req = QueryRequest.query("A", "B");
+        List<EDBObject> list1 = db.query(req);
+        req = QueryRequest.query("A", "B").addParameter("Dog", "Food");
+        List<EDBObject> list2 = db.query(req);
+        req = QueryRequest.query("Cow", "Milk");
+        List<EDBObject> list3 = db.query(req);
+        req = QueryRequest.query("A", "B").addParameter("Cow", "Milk")
+                .addParameter("House", "Garden");
+        List<EDBObject> list4 = db.query(req);
+        
         assertThat(list1.size(), is(1));
         assertThat(list2.size(), is(1));
         assertThat(list3.size(), is(2));
@@ -145,10 +133,8 @@ public class EDBQueryTest extends AbstractEDBTest {
         ci.update(v33);
 
         long time3 = db.commit(ci);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("pre:KeyB", "pre:Value A 1");
-        List<EDBObject> result = db.query(map, time2);
+        List<EDBObject> result = db.query(QueryRequest.query("pre:KeyB", "pre:Value A 1")
+            .setTimestamp(time2));
 
         boolean b1 = false;
         boolean b2 = false;
@@ -199,10 +185,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("K", "B");
-        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        List<EDBObject> result = db.query(QueryRequest.query("K", "B"));
         assertThat(result.size(), is(1));
     }
 
@@ -232,8 +215,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         ci.insert(v1);
         db.commit(ci);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        List<EDBObject> result = db.query(QueryRequest.query());
         EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
         EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
         assertThat(result.size(), is(2));
@@ -292,7 +274,7 @@ public class EDBQueryTest extends AbstractEDBTest {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("KeyB", "Value A 1");
-        List<EDBObject> result = db.query(map, time3);
+        List<EDBObject> result = db.query(QueryRequest.query("KeyB", "Value A 1").setTimestamp(time3));
 
         boolean b1 = false;
         boolean b2 = false;
@@ -332,7 +314,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
-        List<EDBObject> result = db.queryByKeyValue("bla%", "test");
+        List<EDBObject> result = db.query(QueryRequest.query("bla%", "test"));
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
     }
@@ -396,7 +378,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         request = new CommitQueryRequest();
         request.setCommitter("wrongContext");
         assertThat(db.getRevisionsOfMatchingCommits(request).size(), is(0));
-        
+
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp1);
         List<CommitMetaInfo> revisions = db.getRevisionsOfMatchingCommits(request);
@@ -412,7 +394,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(revisions.get(1).getRevision(), is(revision2));
         request = new CommitQueryRequest();
         request.setStartTimestamp(timestamp2);
-        
+
         revisions = db.getRevisionsOfMatchingCommits(request);
         assertThat(revisions.size(), is(1));
         assertThat(revisions.get(0).getRevision(), is(revision2));

@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 
 /**
  * Defines the connection to the engineering database.
@@ -75,21 +76,27 @@ public interface EngineeringDatabaseService {
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
 
+    // DOCU:
+//    /**
+//     * Convenience function to query for a single key-value pair in the current state.
+//     */
+//    List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException;
+//
+//    /**
+//     * More general query for an object in the current state with the provided key-value pairs.
+//     */
+//    List<EDBObject> queryByMap(Map<String, Object> query) throws EDBException;
+//
+//    /**
+//     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
+//     * (similar to getHead)
+//     * */
+//    List<EDBObject> query(Map<String, Object> query, Long timestamp) throws EDBException;
+    
     /**
-     * Convenience function to query for a single key-value pair in the current state.
+     * Queries for EDBObject based on the given query request object
      */
-    List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException;
-
-    /**
-     * More general query for an object in the current state with the provided key-value pairs.
-     */
-    List<EDBObject> queryByMap(Map<String, Object> query) throws EDBException;
-
-    /**
-     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
-     * (similar to getHead)
-     * */
-    List<EDBObject> query(Map<String, Object> query, Long timestamp) throws EDBException;
+    List<EDBObject> query(QueryRequest request) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
