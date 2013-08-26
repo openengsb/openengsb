@@ -75,23 +75,6 @@ public interface EngineeringDatabaseService {
      * It will be equivalent retrieving the head from the latest commit before or at the exact time provided.
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
-
-    // DOCU:
-//    /**
-//     * Convenience function to query for a single key-value pair in the current state.
-//     */
-//    List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException;
-//
-//    /**
-//     * More general query for an object in the current state with the provided key-value pairs.
-//     */
-//    List<EDBObject> queryByMap(Map<String, Object> query) throws EDBException;
-//
-//    /**
-//     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
-//     * (similar to getHead)
-//     * */
-//    List<EDBObject> query(Map<String, Object> query, Long timestamp) throws EDBException;
     
     /**
      * Queries for EDBObject based on the given query request object

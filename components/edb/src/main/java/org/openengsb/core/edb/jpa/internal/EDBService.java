@@ -149,37 +149,11 @@ public class EDBService extends AbstractEDBService {
     public List<EDBObject> query(QueryRequest request) throws EDBException {
         getLogger().debug("Query for objects based on the request: {}", request);
         try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(request.getParameters(), request.getTimestamp()));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(request));
         } catch (Exception ex) {
             throw new EDBException("Failed to query for objects with the given map", ex);
         }
     }
-
-    // @Override
-    // public List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException {
-    // getLogger().debug("query for objects with key = {} and value = {}", key, value);
-    // Map<String, Object> queryMap = new HashMap<String, Object>();
-    // queryMap.put(key, value);
-    // return queryByMap(queryMap);
-    // }
-    //
-    // @Override
-    // public List<EDBObject> queryByMap(Map<String, Object> queryMap) throws EDBException {
-    // try {
-    // return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
-    // } catch (Exception ex) {
-    // throw new EDBException("failed to query for objects with the given map", ex);
-    // }
-    // }
-    //
-    // @Override
-    // public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
-    // try {
-    // return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, timestamp));
-    // } catch (Exception ex) {
-    // throw new EDBException("failed to query for objects with the given map", ex);
-    // }
-    // }
 
     @Override
     public List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException {

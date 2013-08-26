@@ -34,6 +34,7 @@ import javax.persistence.criteria.Subquery;
 
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -396,22 +397,6 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
-    public List<JPAObject> query(Map<String, Object> values) throws EDBException {
-        synchronized (entityManager) {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-            Root<JPAObject> from = query.from(JPAObject.class);
-
-            List<Predicate> predicates = convertQueryMapIntoPredicateList(values, from, criteriaBuilder);
-            query.where(predicates.toArray(new Predicate[1]));
-            query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
-            TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
-            List<JPAObject> result = typedQuery.getResultList();
-            return result;
-        }
-    }
-
-    @Override
     public Integer getVersionOfOid(String oid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("loading version of model under the oid {}", oid);
@@ -435,13 +420,13 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException {
+    public List<JPAObject> query(QueryRequest request) throws EDBException {
         synchronized (entityManager) {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
 
             Root<JPAObject> from = criteriaQuery.from(JPAObject.class);
-            List<Predicate> predicates = convertQueryMapIntoPredicateList(values, from, criteriaBuilder);
+            List<Predicate> predicates = convertRequestToPredicateList(request, from, criteriaBuilder);
             predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
 
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
@@ -449,11 +434,11 @@ public class DefaultJPADao implements JPADao {
             Expression<Long> maxExpression = criteriaBuilder.max(subFrom.get("timestamp"));
             subquery.select(maxExpression);
             Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
-            Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), timestamp);
+            Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2));
 
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
-            criteriaQuery.where(predicates.toArray(new Predicate[0]));
+            criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
             return typedQuery.getResultList();
@@ -461,15 +446,14 @@ public class DefaultJPADao implements JPADao {
     }
 
     /**
-     * Converts a parameter map for a query operation into a list of predicates which need to be added to the criteria
-     * query.
+     * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
+     * the criteria query.
      */
-    private List<Predicate> convertQueryMapIntoPredicateList(Map<String, Object> map, Root<?> from,
+    private List<Predicate> convertRequestToPredicateList(QueryRequest request, Root<?> from,
             CriteriaBuilder builder) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        for (Map.Entry<String, Object> value : map.entrySet()) {
+        List<Predicate> predicates = new ArrayList<>();
+        for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
             Join<?, ?> join = from.join("entries");
-
             Predicate predicate1 = builder.like(join.<String> get("key"), value.getKey());
             Predicate predicate2 = builder.like(join.<String> get("value"), value.getValue().toString());
             predicates.add(builder.and(predicate1, predicate2));
