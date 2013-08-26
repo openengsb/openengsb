@@ -42,6 +42,10 @@ public final class QueryRequest {
         parameters.put(key, value);
         return this;
     }
+    
+    public Object getParameter(String key) {
+        return parameters.get(key);
+    }
 
     public Map<String, Object> getParameters() {
         return parameters;

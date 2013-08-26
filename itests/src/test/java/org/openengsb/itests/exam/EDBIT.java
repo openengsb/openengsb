@@ -41,6 +41,7 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBFileModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
@@ -140,7 +141,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         edbService.commit(commit);
 
-        List<EDBObject> objects = edbService.queryByKeyValue("newtestkey1", "newtestvalue1");
+        List<EDBObject> objects = edbService.query(QueryRequest.query("newtestkey1", "newtestvalue1"));
         assertThat(objects, notNullValue());
         assertThat(objects.size(), not(0));
     }

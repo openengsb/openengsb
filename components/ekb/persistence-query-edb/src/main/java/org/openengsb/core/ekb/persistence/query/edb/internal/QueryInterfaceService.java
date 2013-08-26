@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
@@ -80,7 +81,20 @@ public class QueryInterfaceService implements QueryInterface {
     @Override
     public <T> List<T> queryForModelsByQueryMap(Class<T> model, Map<String, Object> queryMap) {
         LOGGER.debug("Invoked queryForModels with the model {} and a map", model.getName());
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.queryByMap(queryMap));
+        QueryRequest request = createRequest(queryMap, null);
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(request));
+    }
+    
+    // DOCU:
+    private QueryRequest createRequest(Map<String, Object> queryMap, Long timestamp) {
+        QueryRequest request = QueryRequest.query();
+        for (Map.Entry<String, Object> entry : queryMap.entrySet()) {
+            request.addParameter(entry.getKey(), entry.getValue());
+        }
+        if (timestamp != null) {
+            request.setTimestamp(timestamp);
+        }
+        return request;
     }
 
     @Override
@@ -123,7 +137,8 @@ public class QueryInterfaceService implements QueryInterface {
             queryMap = new HashMap<String, Object>();
         }
         queryMap.put(EDBConstants.MODEL_TYPE, model.getName());
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
+        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(
+            createRequest(queryMap, timestamp)));
     }
 
     @Override
