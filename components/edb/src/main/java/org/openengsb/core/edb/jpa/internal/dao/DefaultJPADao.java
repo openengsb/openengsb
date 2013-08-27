@@ -422,6 +422,7 @@ public class DefaultJPADao implements JPADao {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> query(QueryRequest request) throws EDBException {
         synchronized (entityManager) {
+            LOGGER.debug("Perform query with the query object: {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
 

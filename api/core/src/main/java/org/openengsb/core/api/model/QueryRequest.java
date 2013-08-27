@@ -20,6 +20,9 @@ package org.openengsb.core.api.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
+
 /**
  * The QueryRequest object encapsulates a query request for data against the Engineering Database. It contains
  * parameters which represent properties of models and allows to define meta data for the query. This meta data is:
@@ -149,5 +152,16 @@ public final class QueryRequest {
     public QueryRequest caseInsensitive() {
         this.caseSensitive = false;
         return this;
+    }
+    
+    @Override
+    public String toString() {
+        ToStringHelper helper = Objects.toStringHelper(getClass()).add("timestamp", timestamp);
+        helper.addValue(wildcardAware ? "wildcard aware" : "wildcard unaware");
+        helper.addValue(caseSensitive ? "case sensitive" : "case insensitive");
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            helper.add(entry.getKey(), entry.getValue());
+        }
+        return helper.toString();
     }
 }
