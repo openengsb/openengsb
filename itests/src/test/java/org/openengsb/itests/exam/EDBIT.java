@@ -228,7 +228,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         @SuppressWarnings("unchecked")
-        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\test\"");
+        List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
@@ -242,7 +242,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         persist.commit(commit);
 
         @SuppressWarnings("unchecked")
-        List<Object> result = (List<Object>) query.queryForModels(getTestModel(), "name:\"C:\\\\test\"");
+        List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }

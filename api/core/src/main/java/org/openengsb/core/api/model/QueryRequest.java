@@ -30,16 +30,21 @@ public final class QueryRequest {
         timestamp = System.currentTimeMillis();
     }
     
-    public static QueryRequest query() {
+    public static QueryRequest create() {
         return new QueryRequest();
     }
     
     public static QueryRequest query(String key, Object value) {
-        return new QueryRequest().addParameter(key, value);
+        return QueryRequest.create().addParameter(key, value);
     }
     
     public QueryRequest addParameter(String key, Object value) {
         parameters.put(key, value);
+        return this;
+    }
+    
+    public QueryRequest removeParameter(String key) {
+        parameters.remove(key);
         return this;
     }
     
@@ -49,11 +54,6 @@ public final class QueryRequest {
 
     public Map<String, Object> getParameters() {
         return parameters;
-    }
-
-    public QueryRequest setParameters(Map<String, Object> parameters) {
-        this.parameters = parameters;
-        return this;
     }
 
     public long getTimestamp() {

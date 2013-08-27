@@ -100,7 +100,9 @@ public interface JPADao {
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
     
-    // DOCU:
+    /**
+     * Returns a list of JPAObjects which match to the parameters in the given query request
+     */
     List<JPAObject> query(QueryRequest request) throws EDBException;
 
     /**

@@ -215,7 +215,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         ci.insert(v1);
         db.commit(ci);
 
-        List<EDBObject> result = db.query(QueryRequest.query());
+        List<EDBObject> result = db.query(QueryRequest.create());
         EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
         EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
         assertThat(result.size(), is(2));
