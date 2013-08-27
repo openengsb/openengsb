@@ -24,10 +24,12 @@ import java.util.Map;
 public final class QueryRequest {
     private Map<String, Object> parameters;
     private long timestamp;
+    private boolean wildcardAware;
 
     private QueryRequest() {
         parameters = new HashMap<String, Object>();
         timestamp = System.currentTimeMillis();
+        wildcardAware = false;
     }
     
     public static QueryRequest create() {
@@ -64,5 +66,18 @@ public final class QueryRequest {
         this.timestamp = timestamp;
         return this;
     }
+    
+    public boolean isWildcardAware() {
+        return wildcardAware;
+    }
+    
+    public QueryRequest wildcardAware() {
+        this.wildcardAware = true;
+        return this;
+    }
 
+    public QueryRequest wildcardUnaware() {
+        this.wildcardAware = false;
+        return this;
+    }
 }

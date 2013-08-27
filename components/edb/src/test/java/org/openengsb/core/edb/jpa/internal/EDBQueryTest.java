@@ -309,14 +309,19 @@ public class EDBQueryTest extends AbstractEDBTest {
     @Test
     public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("bla_kdjer", "test", data1);
+        putValue("bla", "teststring", data1);
         EDBObject v1 = new EDBObject("/test/query/8", data1);
         EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
-        List<EDBObject> result = db.query(QueryRequest.query("bla%", "test"));
+        List<EDBObject> result = db.query(QueryRequest.query("bla", "test%").wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
+        result = db.query(QueryRequest.query("bla", "test_tring").wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/8"));
+        result = db.query(QueryRequest.query("bla", "test%").wildcardUnaware());
+        assertThat(result.size(), is(0));
     }
 
     @Test
