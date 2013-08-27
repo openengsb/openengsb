@@ -29,17 +29,21 @@ import java.util.Map;
  * System.currentTimeMillis().
  * 
  * wildcardAware = Defines if the values of the parameters are aware of wildcards. Wildcards are % for a generic
- * sequence of characters and _ for exactly one unknown character. The default value for false. 
+ * sequence of characters and _ for exactly one unknown character. The default value is false.
+ * 
+ * caseSensitive = Defines if the values of the parameters are case sensitive in the query. The default value is true.
  */
 public final class QueryRequest {
     private Map<String, Object> parameters;
     private long timestamp;
     private boolean wildcardAware;
+    private boolean caseSensitive;
 
     private QueryRequest() {
         parameters = new HashMap<String, Object>();
         timestamp = System.currentTimeMillis();
         wildcardAware = false;
+        caseSensitive = true;
     }
 
     /**
@@ -121,6 +125,29 @@ public final class QueryRequest {
      */
     public QueryRequest wildcardUnaware() {
         this.wildcardAware = false;
+        return this;
+    }
+
+    /**
+     * Returns true if this request is case sensitive and false if it is not.
+     */
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    /**
+     * Sets this request case sensitive.
+     */
+    public QueryRequest caseSensitive() {
+        this.caseSensitive = true;
+        return this;
+    }
+
+    /**
+     * Sets this request case insensitive.
+     */
+    public QueryRequest caseInsensitive() {
+        this.caseSensitive = false;
         return this;
     }
 }

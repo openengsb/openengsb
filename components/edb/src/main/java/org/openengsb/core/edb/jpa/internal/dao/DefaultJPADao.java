@@ -454,13 +454,16 @@ public class DefaultJPADao implements JPADao {
         List<Predicate> predicates = new ArrayList<>();
         for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
             Join<?, ?> join = from.join("entries");
-            Predicate predicate1 = builder.equal(join.<String> get("key"), value.getKey());
-            Predicate predicate2;
-            if (request.isWildcardAware()) {
-                predicate2 = builder.like(join.<String> get("value"), value.getValue().toString());
-            } else {
-                predicate2 = builder.equal(join.<String> get("value"), value.getValue().toString());
+            Expression<String> expression = join.<String> get("value");
+            String val = value.getValue().toString();
+            if (!request.isCaseSensitive()) {
+                expression = builder.lower(expression);
+                val = val.toLowerCase();
             }
+            Predicate predicate1 = builder.equal(join.<String> get("key"), value.getKey());
+            Predicate predicate2 = request.isWildcardAware()
+                    ? builder.like(expression, val) : builder.equal(expression, val);
+
             predicates.add(builder.and(predicate1, predicate2));
         }
         return predicates;
