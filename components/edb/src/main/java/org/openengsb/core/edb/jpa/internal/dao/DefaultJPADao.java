@@ -42,6 +42,8 @@ import org.openengsb.core.edb.jpa.internal.JPAObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterables;
+
 public class DefaultJPADao implements JPADao {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
     private EntityManager entityManager;
@@ -367,7 +369,7 @@ public class DefaultJPADao implements JPADao {
         }
         predicates.add(builder.between(from.get("timestamp"), request.getStartTimestamp(),
             request.getEndTimestamp()));
-        return predicates.toArray(new Predicate[predicates.size()]);
+        return Iterables.toArray(predicates, Predicate.class);
     }
 
     /**
@@ -439,7 +441,7 @@ public class DefaultJPADao implements JPADao {
             subquery.where(criteriaBuilder.and(p1, p2));
             
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
-            criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
+            criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
             return typedQuery.getResultList();
