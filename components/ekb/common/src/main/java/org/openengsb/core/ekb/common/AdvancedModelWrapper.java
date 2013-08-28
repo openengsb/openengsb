@@ -18,12 +18,11 @@
 package org.openengsb.core.ekb.common;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
@@ -54,9 +53,8 @@ public class AdvancedModelWrapper extends ModelWrapper {
      * Returns a list of EDBObjects which are referring to this model.
      */
     public List<EDBObject> getModelsReferringToThisModel(EngineeringDatabaseService edbService) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put(EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID());
-        return edbService.query(params, System.currentTimeMillis());
+        return edbService.query(QueryRequest.query(
+            EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID()));
     }
 
     /**

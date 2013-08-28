@@ -257,11 +257,11 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         eo.setNameB("sourceNameB");
         persist.commit(getTestEKBCommit().addInsert(eo));
 
-        List<EOModel> eos = query.queryForModels(EOModel.class, "oid:\"" + getModelOid("eo/7") + "\"");
+        List<EOModel> eos = query.queryByString(EOModel.class, "oid:\"" + getModelOid("eo/7") + "\"");
         List<SourceModelB> sourceBs =
-            query.queryForModels(SourceModelB.class, "oid:\"" + getModelOid("sourceB/7") + "\"");
+            query.queryByString(SourceModelB.class, "oid:\"" + getModelOid("sourceB/7") + "\"");
         List<SourceModelA> sourceAs =
-            query.queryForModels(SourceModelA.class, "oid:\"" + getModelOid("sourceA/7") + "\"");
+            query.queryByString(SourceModelA.class, "oid:\"" + getModelOid("sourceA/7") + "\"");
 
         assertThat(eos.size(), is(1));
         assertThat(sourceBs.size(), is(0));
@@ -273,11 +273,11 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         SourceModelA sourceA = new SourceModelA("sourceA/8", "sourceNameA", "shared");
         persist.commit(getTestEKBCommit().addInsert(sourceA));
 
-        List<EOModel> eos = query.queryForModels(EOModel.class, "oid:\"" + getModelOid("eo/8") + "\"");
+        List<EOModel> eos = query.queryByString(EOModel.class, "oid:\"" + getModelOid("eo/8") + "\"");
         List<SourceModelB> sourceBs =
-            query.queryForModels(SourceModelB.class, "oid:\"" + getModelOid("sourceB/8") + "\"");
+            query.queryByString(SourceModelB.class, "oid:\"" + getModelOid("sourceB/8") + "\"");
         List<SourceModelA> sourceAs =
-            query.queryForModels(SourceModelA.class, "oid:\"" + getModelOid("sourceA/8") + "\"");
+            query.queryByString(SourceModelA.class, "oid:\"" + getModelOid("sourceA/8") + "\"");
 
         assertThat(eos.size(), is(0));
         assertThat(sourceBs.size(), is(0));

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
@@ -98,17 +99,11 @@ public interface JPADao {
      * like getCommits, but it returns only the newest commit
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
-
+    
     /**
-     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values.
+     * Returns a list of JPAObjects which match to the parameters in the given query request
      */
-    List<JPAObject> query(Map<String, Object> values) throws EDBException;
-
-    /**
-     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
-     * (similar to getHead)
-     */
-    List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException;
+    List<JPAObject> query(QueryRequest request) throws EDBException;
 
     /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.

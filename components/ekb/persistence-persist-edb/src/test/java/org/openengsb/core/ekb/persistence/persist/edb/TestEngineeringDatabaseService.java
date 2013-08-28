@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBDiff;
@@ -101,8 +102,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public List<EDBObject> query(Map<String, Object> arg0, Long arg1) throws EDBException {
-        String reference = (String) arg0.get(EDBConverterUtils.REFERENCE_PREFIX + "%");
+    public List<EDBObject> query(QueryRequest request) throws EDBException {
+        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%");
         if (reference.equals(getModelOid("objectA/reference/1"))
                 || reference.equals(getModelOid("objectB/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));
@@ -198,16 +199,6 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public List<EDBObject> queryByKeyValue(String arg0, Object arg1) throws EDBException {
-        return null;
-    }
-
-    @Override
-    public List<EDBObject> queryByMap(Map<String, Object> arg0) throws EDBException {
-        return null;
-    }
-
-    @Override
     public EDBCommit createEDBCommit(List<EDBObject> arg0, List<EDBObject> arg1, List<EDBObject> arg2)
         throws EDBException {
         return null;
@@ -227,4 +218,6 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         return null;
     }
+
+    
 }

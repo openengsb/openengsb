@@ -38,6 +38,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.EDBConverterUtils;
 import org.openengsb.core.ekb.persistence.query.edb.internal.QueryInterfaceService;
@@ -377,9 +378,9 @@ public class QueryInterfaceServiceTest {
 
     private boolean checkQuery(String query) {
         try {
-            service.queryForModelsAtTimestamp(TestModel.class, query, new Date().getTime() + "");
+            service.queryByStringAndTimestamp(TestModel.class, query, new Date().getTime() + "");
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (EKBException e) {
         }
         return false;
     }
