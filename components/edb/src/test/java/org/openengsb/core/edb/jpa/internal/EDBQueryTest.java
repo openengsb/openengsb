@@ -423,4 +423,25 @@ public class EDBQueryTest extends AbstractEDBTest {
         result = db.query(QueryRequest.query("test", "this is a test").caseSensitive());
         assertThat(result.size(), is(0));
     }
+    
+    @Test
+    public void testIfQueryingWithCaseSensitivityAndWildcards_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        putValue("test", "This is A new test", data1);
+        EDBObject v1 = new EDBObject("/test/query/13", data1);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(v1);
+        db.commit(ci);
+        List<EDBObject> result = db.query(QueryRequest.query("test", "this is a % test")
+            .caseInsensitive().wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/13"));
+        result = db.query(QueryRequest.query("test", "this is a % test").caseInsensitive().wildcardUnaware());
+        assertThat(result.size(), is(0));
+        result = db.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardUnaware());
+        assertThat(result.size(), is(0));
+        result = db.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/13"));
+    }
 }

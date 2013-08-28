@@ -437,7 +437,7 @@ public class DefaultJPADao implements JPADao {
             Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
             Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2));
-
+            
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
 
@@ -461,7 +461,7 @@ public class DefaultJPADao implements JPADao {
                 expression = builder.lower(expression);
                 val = val.toLowerCase();
             }
-            Predicate predicate1 = builder.equal(join.<String> get("key"), value.getKey());
+            Predicate predicate1 = builder.like(join.<String> get("key"), value.getKey());
             Predicate predicate2 = request.isWildcardAware()
                     ? builder.like(expression, val) : builder.equal(expression, val);
 

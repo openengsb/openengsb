@@ -32,7 +32,7 @@ import com.google.common.base.Objects.ToStringHelper;
  * System.currentTimeMillis().
  * 
  * wildcardAware = Defines if the values of the parameters are aware of wildcards. Wildcards are % for a generic
- * sequence of characters and _ for exactly one unknown character. The default value is false.
+ * sequence of characters and _ for exactly one unknown character. The default value is true.
  * 
  * caseSensitive = Defines if the values of the parameters are case sensitive in the query. The default value is true.
  */
@@ -45,7 +45,7 @@ public final class QueryRequest {
     private QueryRequest() {
         parameters = new HashMap<String, Object>();
         timestamp = System.currentTimeMillis();
-        wildcardAware = false;
+        wildcardAware = true;
         caseSensitive = true;
     }
 
