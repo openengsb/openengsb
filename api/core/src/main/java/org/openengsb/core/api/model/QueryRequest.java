@@ -35,18 +35,23 @@ import com.google.common.base.Objects.ToStringHelper;
  * sequence of characters and _ for exactly one unknown character. The default value is true.
  * 
  * caseSensitive = Defines if the values of the parameters are case sensitive in the query. The default value is true.
+ * 
+ * andJoined = Defines if the parameters are joined via logical AND operators (value=true) or logical OR operators
+ * (value=false). The default value is true.
  */
 public final class QueryRequest {
     private Map<String, Object> parameters;
     private long timestamp;
     private boolean wildcardAware;
     private boolean caseSensitive;
+    private boolean andJoined;
 
     private QueryRequest() {
         parameters = new HashMap<String, Object>();
         timestamp = System.currentTimeMillis();
         wildcardAware = true;
         caseSensitive = true;
+        andJoined = true;
     }
 
     /**
@@ -153,12 +158,37 @@ public final class QueryRequest {
         this.caseSensitive = false;
         return this;
     }
-    
+
+    /**
+     * Returns true if the parameters should be joined with a logical AND or false if they should be joined with a
+     * logical OR
+     */
+    public boolean isAndJoined() {
+        return andJoined;
+    }
+
+    /**
+     * Sets the value that the parameters should be joined with a logical AND
+     */
+    public QueryRequest andJoined() {
+        this.andJoined = true;
+        return this;
+    }
+
+    /**
+     * Sets the value that the parameters should be joined with a logical OR
+     */
+    public QueryRequest orJoined() {
+        this.andJoined = false;
+        return this;
+    }
+
     @Override
     public String toString() {
         ToStringHelper helper = Objects.toStringHelper(getClass()).add("timestamp", timestamp);
         helper.addValue(wildcardAware ? "wildcard aware" : "wildcard unaware");
         helper.addValue(caseSensitive ? "case sensitive" : "case insensitive");
+        helper.addValue(andJoined ? "and-joined" : "or-joined");
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             helper.add(entry.getKey(), entry.getValue());
         }

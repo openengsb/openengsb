@@ -444,4 +444,38 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
     }
+    
+    @Test
+    public void testIfOrRequestsAreWorking_shouldReturnCorrectObjects() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<>();
+        putValue("Cow", "Milk", data1);
+        putValue("Cheese", "Cheddar", data1);
+        EDBObject v1 = new EDBObject("/test/query/14/1", data1);
+        Map<String, EDBObjectEntry> data2 = new HashMap<>();
+        putValue("Animal", "Dog", data2);
+        putValue("Cow", "Milk", data2);
+        EDBObject v2 = new EDBObject("/test/query/14/2", data2);
+        Map<String, EDBObjectEntry> data3 = new HashMap<>();
+        putValue("House", "Garden", data3);
+        EDBObject v3 = new EDBObject("/test/query/14/3", data3);
+        Map<String, EDBObjectEntry> data4 = new HashMap<>();
+        putValue("Cheese", "Cheddar", data4);
+        putValue("Animal", "Dog", data4);
+        EDBObject v4 = new EDBObject("/test/query/14/4", data4);
+        EDBCommit commit = getEDBCommit();
+        commit.insert(v1);
+        commit.insert(v2);
+        commit.insert(v3);
+        commit.insert(v4);
+        db.commit(commit);
+        QueryRequest request = QueryRequest.create().orJoined();
+        request.addParameter("Cow", "Milk");
+        assertThat(db.query(request).size(), is(2));
+        request.addParameter("Animal", "Dog");
+        assertThat(db.query(request).size(), is(3));
+        request.removeParameter("Cow");
+        assertThat(db.query(request).size(), is(2));
+        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
+        assertThat(db.query(request).size(), is(4));
+    }
 }

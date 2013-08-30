@@ -427,9 +427,9 @@ public class DefaultJPADao implements JPADao {
             LOGGER.debug("Perform query with the query object: {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
-
+            criteriaQuery.distinct(!request.isAndJoined());
             Root<JPAObject> from = criteriaQuery.from(JPAObject.class);
-            List<Predicate> predicates = convertRequestToPredicateList(request, from, criteriaBuilder);
+            List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
 
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
@@ -441,6 +441,7 @@ public class DefaultJPADao implements JPADao {
             subquery.where(criteriaBuilder.and(p1, p2));
             
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
+            predicates.add(convertParametersToPredicate(request, from, criteriaBuilder));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
@@ -452,7 +453,7 @@ public class DefaultJPADao implements JPADao {
      * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
      * the criteria query.
      */
-    private List<Predicate> convertRequestToPredicateList(QueryRequest request, Root<?> from,
+    private Predicate convertParametersToPredicate(QueryRequest request, Root<?> from,
             CriteriaBuilder builder) {
         List<Predicate> predicates = new ArrayList<>();
         for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
@@ -469,7 +470,11 @@ public class DefaultJPADao implements JPADao {
 
             predicates.add(builder.and(predicate1, predicate2));
         }
-        return predicates;
+        if (request.isAndJoined()) {
+            return builder.and(Iterables.toArray(predicates, Predicate.class));
+        } else {
+            return builder.or(Iterables.toArray(predicates, Predicate.class));
+        }
     }
 
     public void setEntityManager(EntityManager entityManager) {
