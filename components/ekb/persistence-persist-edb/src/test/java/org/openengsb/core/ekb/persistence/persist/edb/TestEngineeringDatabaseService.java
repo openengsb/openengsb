@@ -208,6 +208,11 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
+    
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
+        return null;
+    }
 
     @Override
     public EDBCommit getCommitByRevision(String revision) throws EDBException {
@@ -218,6 +223,5 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         return null;
     }
-
     
 }
