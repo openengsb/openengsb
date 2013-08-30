@@ -60,24 +60,6 @@ public class EDBService extends AbstractEDBService {
         return performCommitLogic(commit);
     }
 
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void beginTransaction() {
-    }
-
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void commitTransaction() {
-    }
-
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void rollbackTransaction() {
-    }
-
     @Override
     public EDBObject getObject(String oid) throws EDBException {
         getLogger().debug("loading newest JPAObject with the oid {}", oid);
@@ -196,6 +178,16 @@ public class EDBService extends AbstractEDBService {
             return null;
         }
     }
+    
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
+        try {
+            return getLastCommitByKeyValue("context", contextId).getRevisionNumber();
+        } catch (EDBException e) {
+            getLogger().debug("There was no commit so far under this context, so null is returned");
+        }
+        return null;
+    }
 
     @Override
     public JPACommit getCommit(Long from) throws EDBException {
@@ -267,4 +259,5 @@ public class EDBService extends AbstractEDBService {
     private String getActualContextId() {
         return ContextHolder.get().getCurrentContextId();
     }
+
 }

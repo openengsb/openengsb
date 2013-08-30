@@ -74,6 +74,11 @@ public interface QueryInterface {
      * Returns the most recent revision number of the EDB
      */
     UUID getCurrentRevisionNumber();
+    
+    /**
+     * Returns the revision of the last commit performed in the EDB under the given contextId.
+     */
+    UUID getLastRevisionNumberOfContext(String contextId);
 
     /**
      * Returns a list of commit meta information of all commits which are matching the given request.

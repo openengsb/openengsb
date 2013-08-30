@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.QueryRequest;
@@ -443,5 +445,40 @@ public class EDBQueryTest extends AbstractEDBTest {
         result = db.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
+    }
+    
+    @Test
+    public void testIfLastRevisionNumberOfContextWorks_shouldReturnCorrectRevisions() throws Exception {
+        String context1 = "context1";
+        String context2 = "context2";
+        String context3 = "context3";
+        ContextHolder.get().setCurrentContextId(context1);
+        EDBObject obj = new EDBObject("/test/context/1");
+        EDBCommit commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision1 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(context2);
+        obj = new EDBObject("/test/context/2");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision2 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(context3);
+        obj = new EDBObject("/test/context/3");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision3 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(CONTEXT);
+        obj = new EDBObject("/test/context/4");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        
+        assertThat(db.getLastRevisionNumberOfContext(context1), is(revision1));
+        assertThat(db.getLastRevisionNumberOfContext(context2), is(revision2));
+        assertThat(db.getLastRevisionNumberOfContext(context3), is(revision3));
+        assertThat(db.getLastRevisionNumberOfContext("notExistingContext"), nullValue());
     }
 }

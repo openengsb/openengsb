@@ -148,4 +148,9 @@ public interface EngineeringDatabaseService {
      * Returns the revision of the current state of the EDB.
      */
     UUID getCurrentRevisionNumber() throws EDBException;
+    
+    /**
+     * Returns the revision of the last commit performed in the EDB under the given contextId.
+     */
+    UUID getLastRevisionNumberOfContext(String contextId) throws EDBException;
 }
