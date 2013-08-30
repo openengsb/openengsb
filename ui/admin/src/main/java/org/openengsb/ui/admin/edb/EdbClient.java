@@ -218,7 +218,7 @@ public class EdbClient extends BasePage {
                 EkbQuery query = queryModel.getObject();
                 List<? extends OpenEngSBModel> models;
                 try {
-                    models = ekbQueryInterface.queryForModels(query.getModel(), query.getQuery());
+                    models = ekbQueryInterface.queryByString(query.getModel(), query.getQuery());
                     resultModel.setObject(models);
                     info(String.format("Found %s results", models.size()));
                 } catch (Exception e) {
