@@ -19,6 +19,7 @@ package org.openengsb.core.edb.jpa.internal.util;
 
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
+import org.openengsb.core.edb.jpa.internal.JPAObject;
 
 /**
  * An EDBConverterStep is a possible EDBObjectEntry <-> JPAEntry converting step. When the doesStepFit method returns
@@ -34,7 +35,7 @@ public interface EDBConverterStep {
     /**
      * Converts an EDBObjectEntry into a JPAEntry.
      */
-    JPAEntry convertToJPAEntry(EDBObjectEntry entry);
+    JPAEntry convertToJPAEntry(EDBObjectEntry entry, JPAObject owner);
 
     /**
      * Converts a JPAEntry into an EDBObjectEntry.

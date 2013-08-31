@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -37,6 +36,7 @@ import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
+import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
 import org.slf4j.Logger;
@@ -441,34 +441,40 @@ public class DefaultJPADao implements JPADao {
             subquery.where(criteriaBuilder.and(p1, p2));
             
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
-            predicates.add(convertParametersToPredicate(request, from, criteriaBuilder));
+            predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
             return typedQuery.getResultList();
         }
     }
-
+    
     /**
      * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
      * the criteria query.
      */
-    private Predicate convertParametersToPredicate(QueryRequest request, Root<?> from,
-            CriteriaBuilder builder) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Predicate convertParametersToPredicateNew(QueryRequest request, Root<?> from,
+            CriteriaBuilder builder, CriteriaQuery<?> query) {
         List<Predicate> predicates = new ArrayList<>();
         for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
-            Join<?, ?> join = from.join("entries");
-            Expression<String> expression = join.<String> get("value");
+            Subquery<JPAEntry> subquery = query.subquery(JPAEntry.class);
+            Root subFrom = subquery.from(JPAEntry.class);
+            subquery.select(subFrom);
+            Expression<String> expression = subFrom.get("value");
             String val = value.getValue().toString();
             if (!request.isCaseSensitive()) {
                 expression = builder.lower(expression);
                 val = val.toLowerCase();
             }
-            Predicate predicate1 = builder.like(join.<String> get("key"), value.getKey());
-            Predicate predicate2 = request.isWildcardAware()
+            
+            Predicate predicate1 = builder.equal(from, subFrom.get("owner"));
+            Predicate predicate2 = builder.like(subFrom.get("key"), value.getKey());
+            Predicate predicate3 = request.isWildcardAware()
                     ? builder.like(expression, val) : builder.equal(expression, val);
-
-            predicates.add(builder.and(predicate1, predicate2));
+            subquery.where(builder.and(predicate1, predicate2, predicate3));
+                    
+            predicates.add(builder.exists(subquery));
         }
         if (request.isAndJoined()) {
             return builder.and(Iterables.toArray(predicates, Predicate.class));

@@ -59,11 +59,11 @@ public final class EDBUtils {
     /**
      * Converts a JPAEntry object into an EDBObjectEntry.
      */
-    public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry) {
+    public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry, JPAObject owner) {
         for (EDBConverterStep step : steps) {
             if (step.doesStepFit(entry.getType())) {
                 LOGGER.debug("EDBConverterStep {} fit for type {}", step.getClass().getName(), entry.getType());
-                return step.convertToJPAEntry(entry);
+                return step.convertToJPAEntry(entry, owner);
             }
         }
         LOGGER.error("No EDBConverterStep fit for EDBObjectEntry {}", entry);
@@ -96,7 +96,7 @@ public final class EDBUtils {
         result.setDeleted(object.isDeleted());
         List<JPAEntry> entries = new ArrayList<JPAEntry>();
         for (EDBObjectEntry entry : object.values()) {
-            entries.add(convertEDBObjectEntryToJPAEntry(entry));
+            entries.add(convertEDBObjectEntryToJPAEntry(entry, result));
         }
         result.setEntries(entries);
         return result;
