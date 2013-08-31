@@ -134,6 +134,11 @@ public class QueryInterfaceService implements QueryInterface {
     public UUID getCurrentRevisionNumber() {
         return edbService.getCurrentRevisionNumber();
     }
+    
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId) {
+        return edbService.getLastRevisionNumberOfContext(contextId);
+    }
 
     @Override
     public List<CommitMetaInfo> queryForCommits(CommitQueryRequest request) throws EKBException {

@@ -224,11 +224,14 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         }
     }
 
-    protected abstract void beginTransaction();
+    protected void beginTransaction() {
+    }
 
-    protected abstract void commitTransaction();
+    protected void commitTransaction() {
+    }
 
-    protected abstract void rollbackTransaction();
+    protected void rollbackTransaction() {
+    }
     
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
