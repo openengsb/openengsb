@@ -24,7 +24,13 @@ import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.QueryParser;
 
-// DOCU:
+/**
+ * The default QueryParser implementation of the OpenEngSB project. It allows and-joined and or-joined queries in the
+ * format: 
+ * 
+ * key:"value" and key:"value" and ... 
+ * key:"value" or key:"value" or ...
+ */
 public class DefaultQueryParser implements QueryParser {
     private static final Pattern AND_JOINED_STRING_QUERY_PATTERN = Pattern
         .compile("(\\w+\\:\\\"[^\\\"]*\\\"(\\s(and)\\s\\w+\\:\\\"[^\\\"]*\\\")*)?");
@@ -49,15 +55,25 @@ public class DefaultQueryParser implements QueryParser {
                 String.format("The given query %s matches neither and joined nor or joined format", query));
         }
     }
-    
+
+    /**
+     * Creates an and-joined query request object out of the query string.
+     */
     private QueryRequest createAndJoinedQueryRequest(String query) {
         return createQueryRequest(query.split(" and ")).andJoined();
     }
-    
+
+    /**
+     * Creates an or-joined query request object out of the query string.
+     */
     private QueryRequest createOrJoinedQueryRequest(String query) {
         return createQueryRequest(query.split(" or ")).orJoined();
     }
-    
+
+    /**
+     * Parses the previously split query string into a query request and fills the parameters of the object
+     * with the data.
+     */
     private QueryRequest createQueryRequest(String[] elements) {
         QueryRequest request = QueryRequest.create();
         for (String element : elements) {
@@ -69,10 +85,16 @@ public class DefaultQueryParser implements QueryParser {
         return request;
     }
 
+    /**
+     * Returns true if the given query string matches the and-joined format and false otherwise.
+     */
     private boolean matchesAndJoinedQuery(String query) {
         return AND_JOINED_STRING_QUERY_PATTERN.matcher(query).matches();
     }
 
+    /**
+     * Returns true if the given query string matches the or-joined format and false otherwise.
+     */
     private boolean matchesOrJoinedQuery(String query) {
         return OR_JOINED_STRING_QUERY_PATTERN.matcher(query).matches();
     }
