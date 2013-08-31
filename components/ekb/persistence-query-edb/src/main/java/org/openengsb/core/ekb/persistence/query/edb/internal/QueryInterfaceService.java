@@ -22,9 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.ModelDescription;
@@ -38,6 +36,7 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelRegistry;
 import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.QueryParser;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +51,7 @@ public class QueryInterfaceService implements QueryInterface {
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
     private ModelRegistry modelRegistry;
-
-    private static final Pattern MAP_OUT_OF_STRING_QUERY_PATTERN = Pattern
-        .compile("(\\w+\\:\\\"[^\\\"]*\\\"(\\s(and)\\s\\w+\\:\\\"[^\\\"]*\\\")*)?");
+    private List<QueryParser> queryParsers;
 
     @Override
     public <T> T getModel(Class<T> model, String oid) {
@@ -77,7 +74,7 @@ public class QueryInterfaceService implements QueryInterface {
         return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model,
             edbService.getHistoryForTimeRange(oid, from, to));
     }
-    
+
     @Override
     public <T> List<T> query(Class<T> model, QueryRequest request) {
         LOGGER.debug("Query for model {} with the request {}", model.getName(), request);
@@ -89,7 +86,7 @@ public class QueryInterfaceService implements QueryInterface {
     public <T> List<T> queryByString(Class<T> model, String query) {
         return query(model, parseQueryString(query));
     }
-    
+
     @Override
     public <T> List<T> queryByStringAndTimestamp(Class<T> model, String query, String timestamp) {
         Long time;
@@ -103,25 +100,18 @@ public class QueryInterfaceService implements QueryInterface {
         request.setTimestamp(time);
         return query(model, request);
     }
-    
+
     @Override
     public QueryRequest parseQueryString(String query) throws EKBException {
-        QueryRequest request = QueryRequest.create();
         if (query.isEmpty()) {
-            return request;
+            return QueryRequest.create();
         }
-        if (!MAP_OUT_OF_STRING_QUERY_PATTERN.matcher(query).matches()) {
-            String errorMessage = "Query string must be empty or have the form 'a:b [and b:c and ...]'";
-            throw new EKBException(errorMessage);
+        for (QueryParser parser : queryParsers) {
+            if (parser.isParsingPossible(query)) {
+                return parser.parseQueryString(query);
+            }
         }
-        String[] elements = query.split(" and ");
-        for (String element : elements) {
-            String[] parts = StringUtils.split(element, ":", 2);
-            parts[0] = parts[0].replace("\\", "\\\\");
-            parts[1] = parts[1].replace("\\", "\\\\");
-            request.addParameter(parts[0], parts[1].substring(1, parts[1].length() - 1));
-        }
-        return request;
+        throw new EKBException("There is no active parser which is able to parse the query string " + query);
     }
 
     @Override
@@ -129,7 +119,7 @@ public class QueryInterfaceService implements QueryInterface {
         LOGGER.debug("Invoked queryForActiveModels with the model {}", model.getName());
         return query(model, QueryRequest.create());
     }
-    
+
     @Override
     public UUID getCurrentRevisionNumber() {
         return edbService.getCurrentRevisionNumber();
@@ -174,10 +164,10 @@ public class QueryInterfaceService implements QueryInterface {
         }
         return result;
     }
-    
+
     /**
-     * Converts an EDBObject instance into a model. For this, the method need to retrieve the model class
-     * to be able to instantiate the corresponding model objects. If the conversion fails, null is returned.
+     * Converts an EDBObject instance into a model. For this, the method need to retrieve the model class to be able to
+     * instantiate the corresponding model objects. If the conversion fails, null is returned.
      */
     private Object createModelOfEDBObject(EDBObject object, Map<ModelDescription, Class<?>> cache) {
         try {
@@ -195,10 +185,10 @@ public class QueryInterfaceService implements QueryInterface {
             return null;
         }
     }
-    
+
     /**
-     * Extracts the required values to lookup a model class from the given EDBObject. If this object does not
-     * contain the required information, an IllegalArgumentException is thrown.
+     * Extracts the required values to lookup a model class from the given EDBObject. If this object does not contain
+     * the required information, an IllegalArgumentException is thrown.
      */
     private ModelDescription getDescriptionFromObject(EDBObject obj) {
         String modelName = obj.getString(EDBConstants.MODEL_TYPE);
@@ -216,8 +206,12 @@ public class QueryInterfaceService implements QueryInterface {
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
     }
-    
+
     public void setModelRegistry(ModelRegistry modelRegistry) {
         this.modelRegistry = modelRegistry;
+    }
+    
+    public void setQueryParsers(List<QueryParser> queryParsers) {
+        this.queryParsers = queryParsers;
     }
 }
