@@ -19,10 +19,19 @@ package org.openengsb.core.ekb.api;
 
 import org.openengsb.core.api.model.QueryRequest;
 
-// DOCU:
+/**
+ * A QueryParser service is a service to parse queries for models from a string into a QueryRequest object.
+ */
 public interface QueryParser {
 
+    /**
+     * Returns true if the given query can be parsed by this service or false if not.
+     */
     boolean isParsingPossible(String query);
-    
+
+    /**
+     * Parses the given query string into a QueryRequest object. If the service is not able to parse the query string,
+     * an EKBException is thrown.
+     */
     QueryRequest parseQueryString(String query) throws EKBException;
 }

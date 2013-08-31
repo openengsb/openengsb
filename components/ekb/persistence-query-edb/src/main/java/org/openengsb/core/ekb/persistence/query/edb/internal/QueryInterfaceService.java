@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryInterfaceService implements QueryInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryInterfaceService.class);
-
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
     private ModelRegistry modelRegistry;
