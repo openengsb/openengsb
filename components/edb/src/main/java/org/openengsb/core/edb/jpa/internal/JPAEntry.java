@@ -19,6 +19,9 @@ package org.openengsb.core.edb.jpa.internal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.openengsb.core.edb.api.EDBObjectEntry;
@@ -30,6 +33,9 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 @SuppressWarnings("serial")
 @Entity
 public class JPAEntry extends VersionedEntity {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OWNER_ID")
+    private JPAObject owner;
     @Index
     @Column(name = "KEY")
     private String key;
@@ -43,22 +49,32 @@ public class JPAEntry extends VersionedEntity {
         value = null;
     }
 
-    public JPAEntry(String key, String value, String type) {
+    public JPAEntry(String key, String value, String type, JPAObject owner) {
         this.key = key;
         this.value = value;
         this.type = type;
+        this.owner = owner;
     }
-    
-    public JPAEntry(EDBObjectEntry entry) {
+
+    public JPAEntry(EDBObjectEntry entry, JPAObject owner) {
         this.key = entry.getKey();
         this.value = entry.getValue().toString();
         this.type = entry.getType();
+        this.owner = owner;
+    }
+    
+    public JPAObject getOwner() {
+        return owner;
+    }
+
+    public void setOwner(JPAObject owner) {
+        this.owner = owner;
     }
 
     public String getKey() {
         return key;
     }
-    
+
     public void setKey(String key) {
         this.key = key;
     }
@@ -66,15 +82,15 @@ public class JPAEntry extends VersionedEntity {
     public String getValue() {
         return value;
     }
-    
+
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     public String getType() {
         return type;
     }
-    
+
     public void setType(String type) {
         this.type = type;
     }

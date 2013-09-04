@@ -15,30 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.jpa.internal.util;
+package org.openengsb.core.ekb.api;
 
-import org.openengsb.core.edb.api.EDBObjectEntry;
-import org.openengsb.core.edb.jpa.internal.JPAEntry;
-import org.openengsb.core.edb.jpa.internal.JPAObject;
+import org.openengsb.core.api.model.QueryRequest;
 
 /**
- * An EDBConverterStep is a possible EDBObjectEntry <-> JPAEntry converting step. When the doesStepFit method returns
- * true the other two methods are used to perform a conversion, if there was no step earlier found which fits.
+ * A QueryParser service is a service to parse queries for models from a string into a QueryRequest object.
  */
-public interface EDBConverterStep {
+public interface QueryParser {
 
     /**
-     * Returns true if the converter step should handle this type of class. False if not
+     * Returns true if the given query can be parsed by this service or false if not.
      */
-    Boolean doesStepFit(String classname);
+    boolean isParsingPossible(String query);
 
     /**
-     * Converts an EDBObjectEntry into a JPAEntry.
+     * Parses the given query string into a QueryRequest object. If the service is not able to parse the query string,
+     * an EKBException is thrown.
      */
-    JPAEntry convertToJPAEntry(EDBObjectEntry entry, JPAObject owner);
-
-    /**
-     * Converts a JPAEntry into an EDBObjectEntry.
-     */
-    EDBObjectEntry convertToEDBObjectEntry(JPAEntry entry);
+    QueryRequest parseQueryString(String query) throws EKBException;
 }

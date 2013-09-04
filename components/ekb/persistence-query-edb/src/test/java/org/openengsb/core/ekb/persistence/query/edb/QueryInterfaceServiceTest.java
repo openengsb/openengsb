@@ -38,9 +38,10 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
-import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.QueryParser;
 import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.common.EDBConverterUtils;
+import org.openengsb.core.ekb.persistence.query.edb.internal.DefaultQueryParser;
 import org.openengsb.core.ekb.persistence.query.edb.internal.QueryInterfaceService;
 import org.openengsb.core.ekb.persistence.query.edb.models.SubModel;
 import org.openengsb.core.ekb.persistence.query.edb.models.TestModel;
@@ -124,6 +125,9 @@ public class QueryInterfaceServiceTest {
 
         service.setEdbService(edbService);
         service.setEdbConverter(new EDBConverter(edbService));
+        List<QueryParser> parsers = new ArrayList<>();
+        parsers.add(new DefaultQueryParser());
+        service.setQueryParsers(parsers);
     }
 
     @Test
@@ -363,25 +367,4 @@ public class QueryInterfaceServiceTest {
         assertThat(model.getMap().get("keyC").toString(), is("valueC"));
     }
 
-    @Test
-    public void testRegexCheckOfQueryForModels_shouldWork() throws Exception {
-        assertThat("query with one condition don't work", checkQuery("a:\"b\""), is(true));
-        assertThat("combined query with two conditions don't work", checkQuery("a:\"b\" and b:\"c\""), is(true));
-        assertThat("combined query with three conditions don't work",
-            checkQuery("a:\"b\" and b:\"c\" and c:\"d\""), is(true));
-        assertThat("empty query doesn't work", checkQuery(""), is(true));
-        assertThat("query with 'and' and no other condition works", checkQuery("a:\"b\" and "), is(false));
-        assertThat("query with 'or' works", checkQuery("a:\"b\" or b:\"c\""), is(false));
-        assertThat("query with an other binding word than 'and' works",
-            checkQuery("a:\"b\" and b:\"c\" or c:\"d\""), is(false));
-    }
-
-    private boolean checkQuery(String query) {
-        try {
-            service.queryByStringAndTimestamp(TestModel.class, query, new Date().getTime() + "");
-            return true;
-        } catch (EKBException e) {
-        }
-        return false;
-    }
 }

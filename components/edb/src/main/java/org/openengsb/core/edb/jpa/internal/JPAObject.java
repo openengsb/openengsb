@@ -36,7 +36,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
  * the JPAObject can be converted to an EDBObject through the EDBUtils class.
  */
 public class JPAObject extends VersionedEntity {
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
     private List<JPAEntry> entries;
     @Column(name = "TIME")
     private Long timestamp;
