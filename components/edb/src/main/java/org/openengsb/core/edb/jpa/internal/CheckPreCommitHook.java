@@ -102,7 +102,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             if (checkIfActiveOidExisting(oid)) {
                 failedObjects.add(insert);
             } else {
-                insert.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, "1", Integer.class.getName()));
+                insert.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, "1", Integer.class.getName(), insert));
             }
         }
         return failedObjects;
@@ -133,7 +133,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
                 modelVersion++;
                 update.removeEntry(EDBConstants.MODEL_VERSION);
                 update.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, modelVersion + "", 
-                    Integer.class.getName()));
+                    Integer.class.getName(), update));
             } catch (EDBException e) {
                 failedObjects.add(update);
             }

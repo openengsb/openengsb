@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.beanutils.MethodUtils;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
+import org.openengsb.core.edb.jpa.internal.JPAObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
@@ -41,8 +42,8 @@ public class DefaultConverterStep implements EDBConverterStep {
     }
 
     @Override
-    public JPAEntry convertToJPAEntry(EDBObjectEntry entry) {
-        return new JPAEntry(entry.getKey(), entry.getValue().toString(), entry.getType());
+    public JPAEntry convertToJPAEntry(EDBObjectEntry entry, JPAObject owner) {
+        return new JPAEntry(entry.getKey(), entry.getValue().toString(), entry.getType(), owner);
     }
 
     @Override
