@@ -150,6 +150,8 @@ public class PersistInterfaceService implements PersistInterface {
             for (String delete : commit.getDeletions()) {
                 newCommit.delete(delete);
             }
+            newCommit.setComment(String.format("revert [%s] %s", commit.getRevisionNumber().toString(), 
+                commit.getComment() != null ? commit.getComment() : ""));
             edbService.commit(newCommit);
         } catch (EDBException e) {
             throw new EKBException("Unable to revert to the given revision " + revision, e);
