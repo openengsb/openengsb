@@ -52,6 +52,7 @@
     <argument ref="edbConverter"/>
     <argument ref="preCommitHooks"/>
     <argument ref="postCommitHooks"/>
+    <argument ref="errorHooks"/>
   </bean>
   
   <service interface="org.openengsb.core.ekb.api.PersistInterface">
@@ -67,5 +68,5 @@
   <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
   <reference-list id="preCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPreCommitHook" availability="optional"/>
   <reference-list id="postCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPostCommitHook" availability="optional"/>
-  
+  <reference-list id="errorHooks" interface="org.openengsb.core.ekb.api.hooks.EKBErrorHook" availability="optional"/>
 </blueprint>
