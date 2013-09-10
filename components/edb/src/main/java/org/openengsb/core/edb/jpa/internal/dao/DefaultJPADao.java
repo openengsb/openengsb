@@ -428,10 +428,8 @@ public class DefaultJPADao implements JPADao {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
             criteriaQuery.distinct(!request.isAndJoined());
-            Root<JPAObject> from = criteriaQuery.from(JPAObject.class);
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
-
+            Root from = criteriaQuery.from(JPAObject.class);
+            
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
             Root subFrom = subquery.from(JPAObject.class);
             Expression<Long> maxExpression = criteriaBuilder.max(subFrom.get("timestamp"));
@@ -440,6 +438,11 @@ public class DefaultJPADao implements JPADao {
             Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2));
             
+            List<Predicate> predicates = new ArrayList<>();
+            if (request.getContextId() != null) {
+                predicates.add(criteriaBuilder.like(from.get("oid"), request.getContextId() + "/%"));
+            }
+            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));

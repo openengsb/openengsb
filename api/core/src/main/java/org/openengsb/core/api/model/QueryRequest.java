@@ -31,6 +31,8 @@ import com.google.common.base.Objects.ToStringHelper;
  * at the given point in time and which are fitting the parameters are returned). The default value is
  * System.currentTimeMillis().
  * 
+ * contextId = If this value is unequal to null, the search will be restricted to models of a specific context.
+ * 
  * wildcardAware = Defines if the values of the parameters are aware of wildcards. Wildcards are % for a generic
  * sequence of characters and _ for exactly one unknown character. The default value is true.
  * 
@@ -42,6 +44,7 @@ import com.google.common.base.Objects.ToStringHelper;
 public final class QueryRequest {
     private Map<String, Object> parameters;
     private long timestamp;
+    private String contextId;
     private boolean wildcardAware;
     private boolean caseSensitive;
     private boolean andJoined;
@@ -52,6 +55,7 @@ public final class QueryRequest {
         wildcardAware = true;
         caseSensitive = true;
         andJoined = true;
+        contextId = null;
     }
 
     /**
@@ -182,6 +186,21 @@ public final class QueryRequest {
         this.andJoined = false;
         return this;
     }
+    
+    /**
+     * Returns the contextId to which the search shall be restricted to
+     */
+    public String getContextId() {
+        return contextId;
+    }
+    
+    /**
+     * Sets the contextId if the search shall be restricted to a specific context
+     */
+    public QueryRequest setContextId(String contextId) {
+        this.contextId = contextId;
+        return this;
+    }
 
     @Override
     public String toString() {
@@ -189,9 +208,10 @@ public final class QueryRequest {
         helper.addValue(wildcardAware ? "wildcard aware" : "wildcard unaware");
         helper.addValue(caseSensitive ? "case sensitive" : "case insensitive");
         helper.addValue(andJoined ? "and-joined" : "or-joined");
+        helper.add("contextId", contextId);
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             helper.add(entry.getKey(), entry.getValue());
         }
-        return helper.toString();
+        return helper.omitNullValues().toString();
     }
 }
