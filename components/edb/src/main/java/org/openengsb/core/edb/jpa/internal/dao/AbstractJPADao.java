@@ -230,9 +230,9 @@ public abstract class AbstractJPADao
 			
             Predicate predicate1 = criteriaBuilder.equal(fromJPAObject.get("oid"), oid);
             Predicate predicate2 = criteriaBuilder.between(fromJPAObject.get("timestamp"), from, to);
-            subquery.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, fromJPAObject, sid)));
+            subquery.where(criteriaBuilder.and(predicate1, predicate2));
 
-            query.where(criteriaBuilder.in(f.get("timestamp")).value(subquery));
+            query.where(criteriaBuilder.and(criteriaBuilder.in(f.get("timestamp")).value(subquery), checkSid(criteriaBuilder, f, sid)));
             query.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);

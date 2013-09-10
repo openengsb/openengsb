@@ -82,6 +82,27 @@
           </instructions>
         </configuration>
       </plugin>
+	  <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>EngineeringDatabaseService</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>org.openengsb.core.edb.api.EngineeringDatabaseService</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/EngineeringDatabaseService.wsdl</outputFileName>
+              <verbose>true</verbose>
+              <attachWsdl>true</attachWsdl>
+              <genWsdl>true</genWsdl>
+              <databinding>aegis</databinding>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.axis2</groupId>
         <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
