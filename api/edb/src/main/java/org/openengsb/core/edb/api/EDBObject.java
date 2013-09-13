@@ -42,7 +42,8 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     }
 	
 	public EDBObject(String oid, EDBStage stage){
-		super(oid);
+		super();
+		setOID(oid);
 		this.stage = stage;
 	}
 

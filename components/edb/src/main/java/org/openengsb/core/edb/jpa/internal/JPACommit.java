@@ -121,6 +121,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return oids;
     }
 
+	@Override
     public final List<EDBObject> getObjects() {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.addAll(inserts);
