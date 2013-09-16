@@ -34,6 +34,17 @@ public class EOModel {
     private String refModelB;
     private String nameA;
     private String nameB;
+    private String shared;
+
+    public EOModel() {
+    }
+
+    public EOModel(String edbId, String refModelA, String refModelB, String shared) {
+        this.edbId = edbId;
+        this.refModelA = refModelA;
+        this.refModelB = refModelB;
+        this.shared = shared;
+    }
 
     public String getEdbId() {
         return edbId;
@@ -73,5 +84,13 @@ public class EOModel {
 
     public void setNameB(String nameB) {
         this.nameB = nameB;
+    }
+
+    public String getShared() {
+        return shared;
+    }
+
+    public void setShared(String shared) {
+        this.shared = shared;
     }
 }

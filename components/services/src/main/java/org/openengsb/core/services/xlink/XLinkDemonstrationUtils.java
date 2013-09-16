@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.xlink.model.XLinkUrlBlueprint;
-import org.openengsb.core.util.ModelUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -85,7 +85,7 @@ public final class XLinkDemonstrationUtils {
         Class clazz = XLinkUtils.getClassOfOpenEngSBModel(modelInformation.getModelClassName(), 
             modelInformation.getVersionString(), serviceFinder);
         Object modelOfView = XLinkUtils.createEmptyInstanceOfModelClass(clazz);
-        List<OpenEngSBModelEntry> keyNames = ModelUtils.getOpenEngSBModelEntries(modelOfView);
+        List<OpenEngSBModelEntry> keyNames = ModelWrapper.wrap(modelOfView).toOpenEngSBModelEntries();
         for (int i = 0; i < keyNames.size(); i++) {
             XLinkUtils.setValueOfModel(modelOfView, keyNames.get(i), identifierValues.get(i));
         } 

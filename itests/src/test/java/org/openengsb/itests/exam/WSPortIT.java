@@ -48,13 +48,10 @@ import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.w3c.dom.Document;
 
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;

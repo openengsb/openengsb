@@ -38,4 +38,10 @@ public interface PersistInterface {
      * Only perform the sanity checks of the EKBCommit.
      */
     SanityCheckReport check(EKBCommit commit) throws EKBException;
+
+    /**
+     * Reverts the models which are contained in the commit with the given revision to the version they had in the
+     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown.
+     */
+    void revertCommit(String revision) throws EKBException;
 }

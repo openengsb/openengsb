@@ -52,6 +52,13 @@ public class TestModel2 implements OpenEngSBModel {
 
     @Override
     public List<OpenEngSBModelEntry> toOpenEngSBModelEntries() {
+        List<OpenEngSBModelEntry> entries = toOpenEngSBModelValues();
+        entries.addAll(tail.values());
+        return entries;
+    }
+    
+    @Override
+    public List<OpenEngSBModelEntry> toOpenEngSBModelValues() {
         List<OpenEngSBModelEntry> entries = Arrays.asList(new OpenEngSBModelEntry("id", id, String.class),
             new OpenEngSBModelEntry("name", name, String.class),
             new OpenEngSBModelEntry("date", date, Date.class),
@@ -63,7 +70,6 @@ public class TestModel2 implements OpenEngSBModel {
             entries.add(new OpenEngSBModelEntry("sub.id", sub.getId(), String.class));
             entries.add(new OpenEngSBModelEntry("sub.value", sub.getValue(), String.class));
         }
-        entries.addAll(tail.values());
         return entries;
     }
 
