@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
 import org.openengsb.framework.vfs.configurationserviceapi.configurationservice.ConfigurationService;
@@ -24,8 +23,8 @@ public class VFSConfigurationService implements ConfigurationService {
     private final Logger logger = LoggerFactory.getLogger(VFSConfigurationService.class);
     private RepositoryHandler repositoryHandler;
     private ResourceBundle configurationServiceProperties = ResourceBundle.getBundle("configurationservice");
-    private ArrayList<RemoteService> remoteServices = new ArrayList<RemoteService>();
-    private ArrayList<ConfigurableService> configurableServices = new ArrayList<ConfigurableService>();
+    private ArrayList<RemoteService> remoteServices = new ArrayList<>();
+    private ArrayList<ConfigurableService> configurableServices = new ArrayList<>();
     private RemoteServiceListener remoteServiceListener = null;
     private BundleContext bundleContext = null;
     private ConfigurableServiceListener configurableServiceListener = null;
@@ -36,6 +35,11 @@ public class VFSConfigurationService implements ConfigurationService {
         this.bundleContext = bundleContext;
     }
 
+    public void setFileOperator(FileOperator fileOperator) {
+        this.fileOperator = fileOperator;
+    }
+
+    @Override
     public void newTag(Tag tag) {
         logger.debug("New tag arrived, reconfigure OpenEngSB");
 
@@ -76,28 +80,37 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
+        
+        try {
+            fileOperator.copy(configFolder.toPath(), tempFolder.toPath());
+        } catch (IOException ex) {
+            logger.debug("error copying configuration to temp directory" + ex.getMessage());
+        }
 
-        for (File f : configFolder.listFiles()) {
+        for (File f : fileOperator.listFiles(configFolder)) {
             fileOperator.fileDelete(f);
         }
         try {
             fileOperator.copy(tag.getPath(), configFolder.toPath());
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(VFSConfigurationService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.debug("error deleting configuration" + ex.getMessage());
         }
 
         List<String> changes = fileOperator.compareFolders(tempFolder, configFolder);
 
         for (ConfigurableService service : configurableServices) {
             for (String s : service.getPropertyList()) {
-                if (changes.contains(s)) {
-                    //reconfigure Service and check if reconfigure was successful
-                    if (!service.reconfigure()) {
-                        loadPreviousTag(tag);
-                        //When the previous config was start successful return and end it. 
-                        return;
+                //if (changes.contains(s)) {
+                for (String change : changes) {
+                    if(change.trim().startsWith(s.trim())) {
+                        //reconfigure Service and check if reconfigure was successful
+                        if (!service.reconfigure()) {
+                            loadPreviousTag(tag);
+                            //When the previous config was start successful return and end it. 
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -120,7 +133,14 @@ public class VFSConfigurationService implements ConfigurationService {
     private void loadPreviousTag(Tag actualTag) {
         logger.debug("Error starting openEngSB woth the new Configuration");
         logger.debug("Geting old config and try again");
-        newTag(repositoryHandler.getPreviousTag(actualTag));
+        Tag previousTag = repositoryHandler.getPreviousTag(actualTag);
+        if(previousTag != null) {
+            newTag(previousTag);
+        }
+        else
+        {
+            logger.debug("no previous tag found");
+        }
     }
 
     public void start() {

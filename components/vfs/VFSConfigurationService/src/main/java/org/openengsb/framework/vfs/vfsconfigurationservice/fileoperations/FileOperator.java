@@ -13,4 +13,6 @@ public interface FileOperator {
     void copy(Path source, Path destination) throws IOException;
 
     void createDirectories(Path path) throws IOException;
+    
+    File[] listFiles(File file);
 }

@@ -59,8 +59,8 @@ public final class VFSRepositoryHandler implements RepositoryHandler {
         this.bundleContext = bundleContext;
     }
 
-    public void setFileOperator(FileOperator fileZipper) {
-        this.fileOperator = fileZipper;
+    public void setFileOperator(FileOperator fileOperator) {
+        this.fileOperator = fileOperator;
     }
 
     public void start() {

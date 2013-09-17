@@ -130,4 +130,9 @@ public class VFSFileOperator implements FileOperator {
     public void createDirectories(Path path) throws IOException {
         Files.createDirectories(path);
     }
+    
+    @Override
+    public File[] listFiles(File file) {
+        return file.listFiles();
+    }
 }
