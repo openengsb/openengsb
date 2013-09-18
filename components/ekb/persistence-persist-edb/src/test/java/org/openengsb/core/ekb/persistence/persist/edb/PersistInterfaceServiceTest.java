@@ -29,11 +29,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.hooks.EKBErrorHook;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
 import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.EDBConverter;
@@ -50,10 +51,11 @@ public class PersistInterfaceServiceTest {
         EDBConverter converter = new EDBConverter(edbService);
         List<EKBPreCommitHook> preHooks = new ArrayList<EKBPreCommitHook>();
         List<EKBPostCommitHook> postHooks = new ArrayList<EKBPostCommitHook>();
+        List<EKBErrorHook> errorHooks = new ArrayList<EKBErrorHook>();
         EDBCommit result = mock(EDBCommit.class);
         when(edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
             anyListOf(EDBObject.class))).thenReturn(result);
-        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks);
+        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, errorHooks);
         ContextHolder.get().setCurrentContextId("test");
     }
 
@@ -61,7 +63,7 @@ public class PersistInterfaceServiceTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            model instanceof OpenEngSBModel, is(true));
+            ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test

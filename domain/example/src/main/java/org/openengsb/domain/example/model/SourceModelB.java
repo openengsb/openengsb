@@ -28,6 +28,16 @@ public class SourceModelB {
     @OpenEngSBModelId
     private String edbId;
     private String name;
+    private String shared;
+
+    public SourceModelB() {
+    }
+
+    public SourceModelB(String edbId, String name, String shared) {
+        this.edbId = edbId;
+        this.name = name;
+        this.shared = shared;
+    }
 
     public String getEdbId() {
         return edbId;
@@ -45,4 +55,11 @@ public class SourceModelB {
         this.name = name;
     }
 
+    public String getShared() {
+        return shared;
+    }
+
+    public void setShared(String shared) {
+        this.shared = shared;
+    }
 }

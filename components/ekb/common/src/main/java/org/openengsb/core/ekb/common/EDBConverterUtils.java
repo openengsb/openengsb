@@ -81,13 +81,6 @@ public final class EDBConverterUtils {
         return builder.toString();
     }
 
-    public static String createOID(Object model, String contextId) {
-        if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
-            throw new IllegalArgumentException("This function need to get a model passed.");
-        }
-        return createOID((OpenEngSBModel) model, contextId);
-    }
-
     /**
      * Gets the information about domain, connector and instance of an EKBCommit object and returns the corresponding
      * ConnectorInformation object.
@@ -138,7 +131,7 @@ public final class EDBConverterUtils {
      */
     public static void fillEDBObjectWithEngineeringObjectInformation(EDBObject object, OpenEngSBModel model)
         throws IllegalAccessException {
-        if (!new SimpleModelWrapper(model).isEngineeringObject()) {
+        if (!new AdvancedModelWrapper(model).isEngineeringObject()) {
             return;
         }
         for (Field field : model.getClass().getDeclaredFields()) {
@@ -168,7 +161,7 @@ public final class EDBConverterUtils {
      * Filters the reference prefix values added in the model to EDBObject conversion out of the EDBObject
      */
     public static void filterEngineeringObjectInformation(EDBObject object, Class<?> model) {
-        if (!SimpleModelWrapper.isEngineeringObjectClass(model)) {
+        if (!AdvancedModelWrapper.isEngineeringObjectClass(model)) {
             return;
         }
         Set<String> keySet = object.keySet();

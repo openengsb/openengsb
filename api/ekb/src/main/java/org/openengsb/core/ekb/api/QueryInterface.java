@@ -18,8 +18,11 @@
 package org.openengsb.core.ekb.api;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 
 /**
  * The query interface provides the functions to access the data stored in the EDB.
@@ -42,41 +45,48 @@ public interface QueryInterface {
     <T> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to);
 
     /**
-     * Queries for models which have all key/value pairs given by the query saved in the OpenEngSBModelEntries for a
-     * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
+     * Queries for models which are fitting to the parameters given by the query request object.
      */
-    <T> List<T> queryForModelsAtTimestamp(Class<T> model, String query, String timestamp);
+    <T> List<T> query(Class<T> model, QueryRequest request);
 
     /**
-     * Queries for the most actual models which have all key/value pairs given by the query saved in the
-     * OpenEngSBModelEntries
+     * Queries for models which are fitting to the parameters given by the query string.
      */
-    <T> List<T> queryForModels(Class<T> model, String query);
-
-    /**
-     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a given
-     * timestamp ("cut" at the timestamp and get all elements where the pairs fit)
-     */
-    <T> List<T> queryForModelsByQueryMapAtTimestamp(Class<T> model, Map<String, Object> queryMap, Long timestamp);
+    <T> List<T> queryByString(Class<T> model, String query);
     
     /**
-     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
+     * Queries for models which are fitting to the parameters given by the query string and the given timestamp.
      */
-    <T> List<T> queryForModelsByQueryMap(Class<T> model, Map<String, Object> queryMap);
-
-    /**
-     * Queries for active models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries.
-     * Active models mean models which are in the newest version.
-     */
-    <T> List<T> queryForActiveModelsByQueryMap(Class<T> model, Map<String, Object> queryMap);
+    <T> List<T> queryByStringAndTimestamp(Class<T> model, String query, String timestamp);
 
     /**
      * Queries for active models of the given model type. Active models mean models which are in the newest version.
      */
     <T> List<T> queryForActiveModels(Class<T> model);
-    
+
+    /**
+     * Parses the given query string and creates the fitting query request object for it. Throws an EKBException in case
+     * the query is invalid.
+     */
+    QueryRequest parseQueryString(String query) throws EKBException;
+
     /**
      * Returns the most recent revision number of the EDB
      */
     UUID getCurrentRevisionNumber();
+    
+    /**
+     * Returns the revision of the last commit performed in the EDB under the given contextId.
+     */
+    UUID getLastRevisionNumberOfContext(String contextId);
+
+    /**
+     * Returns a list of commit meta information of all commits which are matching the given request.
+     */
+    List<CommitMetaInfo> queryForCommits(CommitQueryRequest request) throws EKBException;
+
+    /**
+     * Loads the EKBCommit object with the given revision from the data source.
+     */
+    EKBCommit loadCommit(String revision) throws EKBException;
 }

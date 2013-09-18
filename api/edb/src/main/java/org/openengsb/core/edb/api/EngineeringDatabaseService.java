@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
+
 /**
  * Defines the connection to the engineering database.
  */
@@ -35,10 +39,9 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
-    
+
     /**
-     * Retrieve the current state of the object with the specified OID for the
-     * given timestamp.
+     * Retrieve the current state of the object with the specified OID for the given timestamp.
      */
     EDBObject getObject(String oid, Long timestamp) throws EDBException;
 
@@ -72,22 +75,11 @@ public interface EngineeringDatabaseService {
      * It will be equivalent retrieving the head from the latest commit before or at the exact time provided.
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
-
+    
     /**
-     * Convenience function to query for a single key-value pair in the current state.
+     * Queries for EDBObject based on the given query request object
      */
-    List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException;
-
-    /**
-     * More general query for an object in the current state with the provided key-value pairs.
-     */
-    List<EDBObject> queryByMap(Map<String, Object> query) throws EDBException;
-
-    /**
-     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
-     * (similar to getHead)
-     * */
-    List<EDBObject> query(Map<String, Object> query, Long timestamp) throws EDBException;
+    List<EDBObject> query(QueryRequest request) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -98,12 +90,23 @@ public interface EngineeringDatabaseService {
      * More general query for a commit, with AND-connected key-value pairs to match.
      */
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
+    
+    /**
+     * Returns a list of commit meta information of all commits which are matching the given request.
+     */
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
 
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
      * returned. Exceptions are only thrown for database errors.
      */
     EDBCommit getCommit(Long from) throws EDBException;
+
+    /**
+     * Convenience function to get a commit for a given revision string. If there is no commit for the given revision
+     * string or if a database error occurs, an EDBException is thrown.
+     */
+    EDBCommit getCommitByRevision(String revision) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -134,15 +137,20 @@ public interface EngineeringDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException;
-    
+
     /**
-     * Creates an EDBCommit object out of the given EDBObject lists 
+     * Creates an EDBCommit object out of the given EDBObject lists
      */
     EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException;
-    
+
     /**
      * Returns the revision of the current state of the EDB.
      */
     UUID getCurrentRevisionNumber() throws EDBException;
+    
+    /**
+     * Returns the revision of the last commit performed in the EDB under the given contextId.
+     */
+    UUID getLastRevisionNumberOfContext(String contextId) throws EDBException;
 }

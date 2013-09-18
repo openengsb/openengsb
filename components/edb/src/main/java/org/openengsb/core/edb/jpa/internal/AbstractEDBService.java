@@ -62,6 +62,9 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
      * Performs the actual commit logic for the EDB, including the hooks and the revision checking.
      */
     protected Long performCommitLogic(EDBCommit commit) throws EDBException {
+        if (!(commit instanceof JPACommit)) {
+            throw new EDBException("The given commit type is not supported.");
+        }
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit is already commitet.");
         }
@@ -74,7 +77,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         if (exception != null) {
             return runErrorHooks(commit, exception);
         }
-        Long timestamp = performCommit(commit);
+        Long timestamp = performCommit((JPACommit) commit);
         runEDBPostHooks(commit);
 
         return timestamp;
@@ -84,7 +87,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
      * Does the actual commit work (JPA related actions) and returns the timestamp when the commit was done. Throws an
      * EDBException if an error occurs.
      */
-    private Long performCommit(EDBCommit commit) throws EDBException {
+    private Long performCommit(JPACommit commit) throws EDBException {
         synchronized (entityManager) {
             long timestamp = System.currentTimeMillis();
             try {
@@ -106,9 +109,9 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     /**
      * Add all the changes which are done through the given commit object to the entity manager.
      */
-    private void persistCommitChanges(EDBCommit commit, Long timestamp) {
+    private void persistCommitChanges(JPACommit commit, Long timestamp) {
         commit.setTimestamp(timestamp);
-        addModifiedObjectsToEntityManager(commit.getObjects(), timestamp);
+        addModifiedObjectsToEntityManager(commit.getJPAObjects(), timestamp);
         commit.setCommitted(true);
         logger.debug("persisting JPACommit");
         entityManager.persist(commit);
@@ -119,10 +122,10 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     /**
      * Updates all modified EDBObjects with the timestamp and persist them through the entity manager.
      */
-    private void addModifiedObjectsToEntityManager(List<EDBObject> modified, Long timestamp) {
-        for (EDBObject update : modified) {
-            update.updateTimestamp(timestamp);
-            entityManager.persist(EDBUtils.convertEDBObjectToJPAObject(update));
+    private void addModifiedObjectsToEntityManager(List<JPAObject> modified, Long timestamp) {
+        for (JPAObject update : modified) {
+            update.setTimestamp(timestamp);
+            entityManager.persist(update);
         }
     }
 
@@ -221,11 +224,14 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         }
     }
 
-    protected abstract void beginTransaction();
+    protected void beginTransaction() {
+    }
 
-    protected abstract void commitTransaction();
+    protected void commitTransaction() {
+    }
 
-    protected abstract void rollbackTransaction();
+    protected void rollbackTransaction() {
+    }
     
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;

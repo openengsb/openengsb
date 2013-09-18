@@ -17,16 +17,22 @@
 
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.edb.api.EDBCheckException;
 import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
+import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
+import org.openengsb.core.ekb.api.ModelPersistException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.SanityCheckException;
 import org.openengsb.core.ekb.api.SanityCheckReport;
+import org.openengsb.core.ekb.api.hooks.EKBErrorHook;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
 import org.openengsb.core.ekb.api.hooks.EKBPreCommitHook;
 import org.openengsb.core.ekb.common.ConvertedCommit;
@@ -45,13 +51,16 @@ public class PersistInterfaceService implements PersistInterface {
     private EDBConverter edbConverter;
     private List<EKBPreCommitHook> preCommitHooks;
     private List<EKBPostCommitHook> postCommitHooks;
+    private List<EKBErrorHook> errorHooks;
 
     public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
-            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks) {
+            List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks,
+            List<EKBErrorHook> errorHooks) {
         this.edbService = edbService;
         this.edbConverter = edbConverter;
         this.preCommitHooks = preCommitHooks;
         this.postCommitHooks = postCommitHooks;
+        this.errorHooks = errorHooks;
     }
 
     @Override
@@ -94,16 +103,27 @@ public class PersistInterfaceService implements PersistInterface {
         if (check) {
             performSanityChecks(commit);
         }
+        EKBException exception = null;
         if (persist) {
             ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
-            performPersisting(converted, commit);
-        }
-        for (EKBPostCommitHook hook : postCommitHooks) {
             try {
-                hook.onPostCommit(commit);
-            } catch (Exception e) {
-                LOGGER.warn("An exception is thrown in a EKB post commit hook.", e);
+                performPersisting(converted, commit);
+                for (EKBPostCommitHook hook : postCommitHooks) {
+                    try {
+                        hook.onPostCommit(commit);
+                    } catch (Exception e) {
+                        LOGGER.warn("An exception is thrown in a EKB post commit hook.", e);
+                    }
+                }
+            } catch (EKBException e) {
+                exception = e;
             }
+        }
+        if (exception != null) {
+            for (EKBErrorHook hook : errorHooks) {
+                hook.onError(commit, exception);
+            }
+            throw exception;
         }
     }
 
@@ -121,11 +141,51 @@ public class PersistInterfaceService implements PersistInterface {
     private void performPersisting(ConvertedCommit commit, EKBCommit source) throws EKBException {
         try {
             EDBCommit ci = edbService.createEDBCommit(commit.getInserts(), commit.getUpdates(), commit.getDeletes());
+            ci.setDomainId(source.getDomainId());
+            ci.setConnectorId(source.getConnectorId());
+            ci.setInstanceId(source.getInstanceId());
+            ci.setComment(source.getComment());
             edbService.commit(ci);
             source.setRevisionNumber(ci.getRevisionNumber());
             source.setParentRevisionNumber(ci.getParentRevisionNumber());
+        } catch (EDBCheckException e) {
+            throw new ModelPersistException(convertEDBObjectList(e.getFailedInserts()),
+                convertEDBObjectList(e.getFailedUpdates()), e.getFailedDeletes(), e);
         } catch (EDBException e) {
             throw new EKBException("Error while commiting EKBCommit", e);
+        }
+    }
+
+    /**
+     * Converts a list of EDBObject instances into a list of corresponding model oids.
+     */
+    private List<String> convertEDBObjectList(List<EDBObject> objects) {
+        List<String> oids = new ArrayList<>();
+        for (EDBObject object : objects) {
+            oids.add(object.getOID());
+        }
+        return oids;
+    }
+
+    @Override
+    public void revertCommit(String revision) throws EKBException {
+        try {
+            EDBCommit commit = edbService.getCommitByRevision(revision);
+            EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
+                new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
+            for (EDBObject reverted : commit.getObjects()) {
+                // need to be done in order to avoid problems with conflict detection
+                reverted.remove(EDBConstants.MODEL_VERSION);
+                newCommit.update(reverted);
+            }
+            for (String delete : commit.getDeletions()) {
+                newCommit.delete(delete);
+            }
+            newCommit.setComment(String.format("revert [%s] %s", commit.getRevisionNumber().toString(),
+                commit.getComment() != null ? commit.getComment() : ""));
+            edbService.commit(newCommit);
+        } catch (EDBException e) {
+            throw new EKBException("Unable to revert to the given revision " + revision, e);
         }
     }
 }

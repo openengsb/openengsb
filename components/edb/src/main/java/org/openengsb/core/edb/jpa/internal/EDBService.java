@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
@@ -42,7 +45,7 @@ import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 public class EDBService extends AbstractEDBService {
     private JPADao dao;
     private AuthenticationContext authenticationContext;
-    
+
     public EDBService(JPADao dao, AuthenticationContext authenticationContext,
             List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
             List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks,
@@ -55,24 +58,6 @@ public class EDBService extends AbstractEDBService {
     @Override
     public Long commit(EDBCommit commit) throws EDBException {
         return performCommitLogic(commit);
-    }    
-
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void beginTransaction() {
-    }
-
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void commitTransaction() {
-    }
-
-    /**
-     * Only here for the TestEDBService where there is a real implementation for this method.
-     */
-    protected void rollbackTransaction() {
     }
 
     @Override
@@ -81,7 +66,7 @@ public class EDBService extends AbstractEDBService {
         JPAObject temp = dao.getJPAObject(oid);
         return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
-    
+
     @Override
     public EDBObject getObject(String oid, Long timestamp) throws EDBException {
         getLogger().debug("loading JPAObject with the oid {} for timestamp {}", oid, timestamp);
@@ -143,28 +128,12 @@ public class EDBService extends AbstractEDBService {
     }
 
     @Override
-    public List<EDBObject> queryByKeyValue(String key, Object value) throws EDBException {
-        getLogger().debug("query for objects with key = {} and value = {}", key, value);
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        queryMap.put(key, value);
-        return queryByMap(queryMap);
-    }
-
-    @Override
-    public List<EDBObject> queryByMap(Map<String, Object> queryMap) throws EDBException {
+    public List<EDBObject> query(QueryRequest request) throws EDBException {
+        getLogger().debug("Query for objects based on the request: {}", request);
         try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(request));
         } catch (Exception ex) {
-            throw new EDBException("failed to query for objects with the given map", ex);
-        }
-    }
-
-    @Override
-    public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
-        try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(queryMap, timestamp));
-        } catch (Exception ex) {
-            throw new EDBException("failed to query for objects with the given map", ex);
+            throw new EDBException("Failed to query for objects with the given map", ex);
         }
     }
 
@@ -195,6 +164,12 @@ public class EDBService extends AbstractEDBService {
     }
 
     @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        getLogger().debug("Request revisions of matching commits for the request {}", request);
+        return dao.getRevisionsOfMatchingCommits(request);
+    }
+
+    @Override
     public UUID getCurrentRevisionNumber() throws EDBException {
         try {
             return getCommit(System.currentTimeMillis()).getRevisionNumber();
@@ -203,16 +178,31 @@ public class EDBService extends AbstractEDBService {
             return null;
         }
     }
+    
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
+        try {
+            return getLastCommitByKeyValue("context", contextId).getRevisionNumber();
+        } catch (EDBException e) {
+            getLogger().debug("There was no commit so far under this context, so null is returned");
+        }
+        return null;
+    }
 
     @Override
     public JPACommit getCommit(Long from) throws EDBException {
         List<JPACommit> commits = dao.getJPACommit(from);
         if (commits == null || commits.size() == 0) {
-            throw new EDBException("there is no commit for this timestamp");
+            throw new EDBException("There is no commit for this timestamp");
         } else if (commits.size() > 1) {
-            throw new EDBException("there are more than one commit for one timestamp");
+            throw new EDBException("There are more than one commit for one timestamp");
         }
         return commits.get(0);
+    }
+
+    @Override
+    public EDBCommit getCommitByRevision(String revision) throws EDBException {
+        return dao.getJPACommit(revision);
     }
 
     @Override
@@ -269,4 +259,5 @@ public class EDBService extends AbstractEDBService {
     private String getActualContextId() {
         return ContextHolder.get().getCurrentContextId();
     }
+
 }

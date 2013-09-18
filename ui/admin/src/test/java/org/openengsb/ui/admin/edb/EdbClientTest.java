@@ -59,8 +59,8 @@ public class EdbClientTest extends AbstractUITest {
         DummyModel dummyModel = new DummyModel();
         dummyModel.setId("42");
         dummyModel.setValue("foo");
-        when(queryInterface.queryForModels(DummyModel.class, "id:42")).thenReturn(Arrays.asList(dummyModel));
-        when(queryInterface.queryForModels(DummyModel.class, "crap")).thenThrow(
+        when(queryInterface.queryByString(DummyModel.class, "id:42")).thenReturn(Arrays.asList(dummyModel));
+        when(queryInterface.queryByString(DummyModel.class, "crap")).thenThrow(
             new IllegalArgumentException("illegal query"));
         ServiceList<ClassProvider> classProviders = super.makeServiceList(ClassProvider.class);
         context.putBean("modelProviders", classProviders);

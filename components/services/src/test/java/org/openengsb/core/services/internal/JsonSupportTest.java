@@ -25,11 +25,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.services.internal.model.NullModel;
 import org.openengsb.core.services.internal.model.SubModel;
 import org.openengsb.core.util.JsonUtils;
-import org.openengsb.core.util.ModelUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,9 +51,9 @@ public class JsonSupportTest {
         sub2.setId("sub2");
         sub2.setName("test2");
         model.setSubs(Arrays.asList(sub1, sub2));
-
-        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test", "test", String.class));
-        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("test2", "test2", String.class));
+        ModelWrapper wrapper = ModelWrapper.wrap(model);
+        wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test", "test", String.class));
+        wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("test2", "test2", String.class));
         return model;
     }
 
@@ -69,11 +69,12 @@ public class JsonSupportTest {
     @Test
     public void tryConvertJSONIntoModelWithAdditionalSerializer_shouldThrowNoException() throws Exception {
         NullModel model = createTestModel();
-        ModelUtils.addOpenEngSBModelEntry(model, new OpenEngSBModelEntry("number", 42, Integer.class));
+        ModelWrapper wrapper = ModelWrapper.wrap(model);
+        wrapper.addOpenEngSBModelEntry(new OpenEngSBModelEntry("number", 42, Integer.class));
         String result = mapper.writeValueAsString(model);
 
         NullModel other = JsonUtils.convertObject(result, NullModel.class);
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelTail(other);
+        List<OpenEngSBModelEntry> entries = ModelWrapper.wrap(other).getOpenEngSBModelTail();
         assertThat(model.getId(), is(other.getId()));
         assertThat(model.getValue(), is(other.getValue()));
         assertThat(model.getSubs().size(), is(other.getSubs().size()));

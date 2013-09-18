@@ -20,9 +20,6 @@ package org.openengsb.core.ekb.common;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
@@ -39,8 +36,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
@@ -53,15 +49,14 @@ import org.openengsb.core.ekb.common.models.SubModel;
 import org.openengsb.core.ekb.common.models.TestModel;
 import org.openengsb.core.ekb.common.models.TestModel2.ENUM;
 import org.openengsb.core.ekb.common.models.WrappedPropertiesModel;
-import org.openengsb.core.util.ModelUtils;
 
 /**
  * The EDBConverter test file only tests the converting Model -> EDBObject since the other way round is tested by the
  * QueryInterfaceService test file.
  */
 public class EDBConverterTest {
+    private static final String CONTEXT_ID = "testcontext";
     private EDBConverter converter;
-    private String contextId;
 
     private EngineeringDatabaseService mockedService;
 
@@ -69,23 +64,20 @@ public class EDBConverterTest {
     public void setUp() {
         mockedService = mock(EngineeringDatabaseService.class);
         converter = new EDBConverter(mockedService);
-        contextId = "testcontext";
-        ContextHolder.get().setCurrentContextId(contextId);
+        ContextHolder.get().setCurrentContextId(CONTEXT_ID);
     }
 
     @Test
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-                model instanceof OpenEngSBModel, is(true));
+            ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test
     public void primitivePropertyConversion_toEDBObject_works() {
         PrimitivePropertiesModel model = new PrimitivePropertiesModel();
-
         model.setId("test");
-
         model.setBooleanByGet(true);
         model.setBooleanByIs(true);
         model.setPrimitiveChar(Character.MAX_VALUE);
@@ -94,11 +86,9 @@ public class EDBConverterTest {
         model.setPrimitiveInt(Integer.MAX_VALUE);
         model.setPrimitiveLong(Long.MAX_VALUE);
         model.setPrimitiveShort(Short.MAX_VALUE);
-
         ConnectorInformation id = getTestConnectorInformation();
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
-
         // check entry types
         assertThat(object.get("booleanByGet").getType(), is(Boolean.class.getName()));
         assertThat(object.get("booleanByIs").getType(), is(Boolean.class.getName()));
@@ -108,7 +98,6 @@ public class EDBConverterTest {
         assertThat(object.get("primitiveLong").getType(), is(Long.class.getName()));
         assertThat(object.get("primitiveFloat").getType(), is(Float.class.getName()));
         assertThat(object.get("primitiveDouble").getType(), is(Double.class.getName()));
-
         // check values
         assertThat(object.getBoolean("booleanByGet"), is(true));
         assertThat(object.getBoolean("booleanByIs"), is(true));
@@ -137,7 +126,6 @@ public class EDBConverterTest {
         object.putEDBObjectEntry("primitiveDouble", Double.MAX_VALUE);
 
         PrimitivePropertiesModel model = converter.convertEDBObjectToModel(PrimitivePropertiesModel.class, object);
-
         assertThat(model.getId(), is("test"));
         assertThat(model.getBooleanByGet(), is(true));
         assertThat(model.isBooleanByIs(), is(true));
@@ -152,9 +140,7 @@ public class EDBConverterTest {
     @Test
     public void wrappedPropertyConversion_toEDBObject_works() {
         WrappedPropertiesModel model = new WrappedPropertiesModel();
-
         model.setId("test");
-
         model.setBooleanByGet(true);
         model.setBooleanByIs(true);
         model.setWrappedChar(Character.MAX_VALUE);
@@ -167,7 +153,6 @@ public class EDBConverterTest {
         ConnectorInformation id = getTestConnectorInformation();
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
-
         // check entry types
         assertThat(object.get("booleanByGet").getType(), is(Boolean.class.getName()));
         assertThat(object.get("booleanByIs").getType(), is(Boolean.class.getName()));
@@ -177,7 +162,6 @@ public class EDBConverterTest {
         assertThat(object.get("wrappedLong").getType(), is(Long.class.getName()));
         assertThat(object.get("wrappedFloat").getType(), is(Float.class.getName()));
         assertThat(object.get("wrappedDouble").getType(), is(Double.class.getName()));
-
         // check values
         assertThat(object.getBoolean("booleanByGet"), is(true));
         assertThat(object.getBoolean("booleanByIs"), is(true));
@@ -206,7 +190,6 @@ public class EDBConverterTest {
         object.putEDBObjectEntry("wrappedDouble", Double.MAX_VALUE);
 
         WrappedPropertiesModel model = converter.convertEDBObjectToModel(WrappedPropertiesModel.class, object);
-
         assertThat(model.getId(), is("test"));
         assertThat(model.getBooleanByGet(), is(true));
         assertThat(model.isBooleanByIs(), is(true));
@@ -237,7 +220,7 @@ public class EDBConverterTest {
 
         assertThat(object.getString("connectorId"), is("testconnector"));
         assertThat(object.getString("id"), is("test"));
-        assertThat(object.getString("oid"), is(EDBConverterUtils.createOID(model, contextId)));
+        assertThat(object.getString("oid"), is(ModelWrapper.wrap(model).getCompleteModelOID()));
         assertThat(object.getString("domainId"), is("testdomain"));
         assertThat(object.getString("name"), is("testobject"));
         assertThat(object.getString("instanceId"), is("testinstance"));
@@ -253,17 +236,15 @@ public class EDBConverterTest {
     public void testComplexModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("test");
-
         SubModel sub = new SubModel();
         sub.setId("sub");
         sub.setValue("teststring");
         model.setSub(sub);
-
         ConnectorInformation id = getTestConnectorInformation();
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(1);
-        assertThat(object.getString("sub"), is(EDBConverterUtils.createOID(sub, contextId)));
+        assertThat(object.getString("sub"), is(ModelWrapper.wrap(sub).getCompleteModelOID()));
         EDBObject subObject = objects.get(0);
         assertThat(subObject.getString("id"), is("sub"));
         assertThat(subObject.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
@@ -274,107 +255,90 @@ public class EDBConverterTest {
         // prepare
         RecursiveModel root = new RecursiveModel();
         root.setId("root");
-
         RecursiveModel rootChild = new RecursiveModel();
         rootChild.setId("root_child");
-
         RecursiveModel rootChildChild = new RecursiveModel();
         rootChildChild.setId("root_child_child");
-
         RecursiveModel rootChildChildChild = new RecursiveModel();
         rootChildChildChild.setId("root_child_child_child");
 
         root.setChild(rootChild);
         rootChild.setChild(rootChildChild);
         rootChildChild.setChild(rootChildChildChild);
-
         ConnectorInformation id = getTestConnectorInformation();
 
         // test
         List<EDBObject> objects = converter.convertModelToEDBObject(root, id);
-
         // assert
-        EDBObject obj;
-
-        obj = objects.get(3);
-        assertEquals("root", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/root_child", obj.getString("child"));
+        EDBObject obj = objects.get(3);
+        assertThat(obj.getString("id"), is("root"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("child"), is(ModelWrapper.wrap(rootChild).getCompleteModelOID()));
 
         obj = objects.get(2);
-        assertEquals("root_child", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/root_child_child", obj.getString("child"));
+        assertThat(obj.getString("id"), is("root_child"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("child"), is(ModelWrapper.wrap(rootChildChild).getCompleteModelOID()));
 
         obj = objects.get(1);
-        assertEquals("root_child_child", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/root_child_child_child", obj.getString("child"));
+        assertThat(obj.getString("id"), is("root_child_child"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("child"), is(ModelWrapper.wrap(rootChildChildChild).getCompleteModelOID()));
 
         obj = objects.get(0);
-        assertEquals("root_child_child_child", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertNull(obj.get("child"));
+        assertThat(obj.getString("id"), is("root_child_child_child"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("child"), nullValue());
     }
 
     @Test
     public void testRecursiveModelWithCompositionToEDBObjectConversion_shouldWork() throws Exception {
         // prepare
         RecursiveModel root = new RecursiveModel("root");
-
         RecursiveModel rootChild1 = new RecursiveModel("root_child1");
         RecursiveModel rootChild2 = new RecursiveModel("root_child2");
-
         RecursiveModel child1Child1 = new RecursiveModel("child1_child1");
-
         RecursiveModel child2Child1 = new RecursiveModel("child2_child1");
         RecursiveModel child2Child2 = new RecursiveModel("child2_child2");
-
-        List<RecursiveModel> rootChildren = Arrays.asList(new RecursiveModel[] { rootChild1, rootChild2 });
-        List<RecursiveModel> child2Children = Arrays.asList(new RecursiveModel[] { child2Child1, child2Child2 });
-
+        List<RecursiveModel> rootChildren = Arrays.asList(new RecursiveModel[]{ rootChild1, rootChild2 });
+        List<RecursiveModel> child2Children = Arrays.asList(new RecursiveModel[]{ child2Child1, child2Child2 });
         root.setChildren(rootChildren);
         rootChild1.setChild(child1Child1);
         rootChild2.setChildren(child2Children);
-
         ConnectorInformation id = getTestConnectorInformation();
-
         // test
         List<EDBObject> objects = converter.convertModelToEDBObject(root, id);
-
         // assert
-        EDBObject obj;
-
-        obj = objects.get(5);
-        assertEquals("root", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/root_child1", obj.getString("children.0"));
-        assertEquals("testcontext/root_child2", obj.getString("children.1"));
+        EDBObject obj = objects.get(5);
+        assertThat(obj.getString("id"), is("root"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("children.0"), is(ModelWrapper.wrap(rootChild1).getCompleteModelOID()));
+        assertThat(obj.getString("children.1"), is(ModelWrapper.wrap(rootChild2).getCompleteModelOID()));
 
         obj = objects.get(4);
-        assertEquals("root_child2", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/child2_child1", obj.getString("children.0"));
-        assertEquals("testcontext/child2_child2", obj.getString("children.1"));
+        assertThat(obj.getString("id"), is("root_child2"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("children.0"), is(ModelWrapper.wrap(child2Child1).getCompleteModelOID()));
+        assertThat(obj.getString("children.1"), is(ModelWrapper.wrap(child2Child2).getCompleteModelOID()));
 
         obj = objects.get(3);
-        assertEquals("child2_child2", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
+        assertThat(obj.getString("id"), is("child2_child2"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
 
         obj = objects.get(2);
-        assertEquals("child2_child1", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
+        assertThat(obj.getString("id"), is("child2_child1"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
 
         obj = objects.get(1);
-        assertEquals("root_child1", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
-        assertEquals("testcontext/child1_child1", obj.getString("child"));
+        assertThat(obj.getString("id"), is("root_child1"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
+        assertThat(obj.getString("child"), is(ModelWrapper.wrap(child1Child1).getCompleteModelOID()));
 
         obj = objects.get(0);
-        assertEquals("child1_child1", obj.getString("id"));
-        assertEquals(RecursiveModel.class.getName(), obj.getString(EDBConstants.MODEL_TYPE));
+        assertThat(obj.getString("id"), is("child1_child1"));
+        assertThat(obj.getString(EDBConstants.MODEL_TYPE), is(RecursiveModel.class.getName()));
     }
-    
+
     @Test
     public void testIfEDBObjectsContainCorrectType_shouldWork() throws Exception {
         TestModel model = new TestModel();
@@ -390,7 +354,6 @@ public class EDBConverterTest {
     public void testComplexListModelToEDBObjectConversion_shouldWork() throws Exception {
         TestModel model = new TestModel();
         model.setId("test");
-
         SubModel sub1 = new SubModel();
         sub1.setId("sub1");
         sub1.setValue("teststring1");
@@ -400,23 +363,19 @@ public class EDBConverterTest {
         List<SubModel> subs = new ArrayList<SubModel>();
         subs.add(sub1);
         subs.add(sub2);
-
         model.setSubs(subs);
-
         ConnectorInformation id = getTestConnectorInformation();
-
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
+        EDBObject subObject1 = objects.get(0);
+        EDBObject subObject2 = objects.get(1);
 
         assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 0)),
-                is(EDBConverterUtils.createOID(sub1, contextId)));
+            is(ModelWrapper.wrap(sub1).getCompleteModelOID()));
         assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 1)),
-                is(EDBConverterUtils.createOID(sub2, contextId)));
-
-        EDBObject subObject1 = objects.get(0);
+            is(ModelWrapper.wrap(sub2).getCompleteModelOID()));
         assertThat(subObject1.getString("id"), is("sub1"));
         assertThat(subObject1.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
-        EDBObject subObject2 = objects.get(1);
         assertThat(subObject2.getString("id"), is("sub2"));
         assertThat(subObject2.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
     }
@@ -429,9 +388,7 @@ public class EDBConverterTest {
         TestModel model = new TestModel();
         model.setId("test");
         model.setMap(map);
-
         ConnectorInformation id = getTestConnectorInformation();
-
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
 
         assertThat(object.getString(EDBConverterUtils.getEntryNameForMapKey("map", 0)), is("keyA"));
@@ -448,7 +405,6 @@ public class EDBConverterTest {
         model.setDate(date);
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
-
         EDBObject object = converter.convertModelToEDBObject(model, getTestConnectorInformation()).get(0);
         TestModel result = converter.convertEDBObjectToModel(TestModel.class, object);
 
@@ -461,7 +417,7 @@ public class EDBConverterTest {
     @Test
     public void testIfArraysAreSupported_shouldWork() throws Exception {
         TestModel model = new TestModel();
-        Integer[] numbers = new Integer[] { 1, 2, 3, 4 };
+        Integer[] numbers = new Integer[]{ 1, 2, 3, 4 };
         model.setNumbers(numbers);
         EDBObject object = converter.convertModelToEDBObject(model, getTestConnectorInformation()).get(0);
         TestModel result = converter.convertEDBObjectToModel(TestModel.class, object);
@@ -489,16 +445,9 @@ public class EDBConverterTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.isCheck(), is(false));
         assertThat(model.isCheck2(), is(true));
-        List<OpenEngSBModelEntry> entries = ModelUtils.getOpenEngSBModelEntries(model);
-        Integer version = null;
-        for (OpenEngSBModelEntry entry : entries) {
-            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
-                version = (Integer) entry.getValue();
-                break;
-            }
-        }
+        Object version = ModelWrapper.wrap(model).retrieveInternalModelVersion();
         assertThat(version, notNullValue());
-        assertThat(version, is(1));
+        assertThat((Integer) version, is(1));
     }
 
     @Test
@@ -537,21 +486,18 @@ public class EDBConverterTest {
 
         // test
         RecursiveModel mRoot = converter.convertEDBObjectToModel(RecursiveModel.class, root);
-
         // assert
-        assertEquals("root", mRoot.getId());
+        assertThat(mRoot.getId(), is("root"));
 
         RecursiveModel mChild1 = mRoot.getChild();
-        assertNotNull(mChild1);
-        assertEquals("child1", mChild1.getId());
-
+        assertThat(mChild1, notNullValue());
+        assertThat(mChild1.getId(), is("child1"));
         RecursiveModel mChild2 = mChild1.getChild();
-        assertNotNull(mChild2);
-        assertEquals("child2", mChild2.getId());
-
+        assertThat(mChild2, notNullValue());
+        assertThat(mChild2.getId(), is("child2"));
         RecursiveModel mChild3 = mChild2.getChild();
-        assertNotNull(mChild3);
-        assertEquals("child3", mChild3.getId());
+        assertThat(mChild3, notNullValue());
+        assertThat(mChild3.getId(), is("child3"));
     }
 
     @Test
@@ -607,26 +553,26 @@ public class EDBConverterTest {
         List<RecursiveModel> rootChildren;
         List<RecursiveModel> child1Children;
 
-        assertEquals("root", mRoot.getId());
+        assertThat(mRoot.getId(), is("root"));
         rootChildren = mRoot.getChildren();
-        assertNotNull(rootChildren);
-        assertEquals(2, rootChildren.size());
+        assertThat(rootChildren, notNullValue());
+        assertThat(rootChildren.size(), is(2));
 
         mChild1 = rootChildren.get(0);
         mChild2 = rootChildren.get(1);
 
-        assertEquals("child1", mChild1.getId());
-        assertEquals("child2", mChild2.getId());
+        assertThat(mChild1.getId(), is("child1"));
+        assertThat(mChild2.getId(), is("child2"));
 
         child1Children = mChild1.getChildren();
-        assertNotNull(child1Children);
-        assertEquals(2, child1Children.size());
+        assertThat(child1Children, notNullValue());
+        assertThat(child1Children.size(), is(2));
 
         mChild3 = child1Children.get(0);
         mChild4 = child1Children.get(1);
 
-        assertEquals("child3", mChild3.getId());
-        assertEquals("child4", mChild4.getId());
+        assertThat(mChild3.getId(), is("child3"));
+        assertThat(mChild4.getId(), is("child4"));
     }
 
     @Test
@@ -640,8 +586,8 @@ public class EDBConverterTest {
         EDBObject result = objects.get(0);
         String key1 = getReferenceString(model.getClass(), "modelAId");
         String key2 = getReferenceString(model.getClass(), "modelBId");
-        assertThat(result.getString(key1), is(contextId + "/testReferenceToModelA"));
-        assertThat(result.getString(key2), is(contextId + "/testReferenceToModelB"));
+        assertThat(result.getString(key1), is(CONTEXT_ID + "/testReferenceToModelA"));
+        assertThat(result.getString(key2), is(CONTEXT_ID + "/testReferenceToModelB"));
     }
 
     @Test
@@ -661,7 +607,7 @@ public class EDBConverterTest {
 
     private String getReferenceString(Class<?> model, String field) throws Exception {
         return EDBConverterUtils.getEOReferenceStringFromAnnotation(model.getDeclaredField(field).getAnnotation(
-                OpenEngSBForeignKey.class));
+            OpenEngSBForeignKey.class));
     }
 
     private ConnectorInformation getTestConnectorInformation() {

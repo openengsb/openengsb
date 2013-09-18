@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
+import org.openengsb.core.edb.jpa.internal.JPAObject;
 
 /**
  * The DateConverterStep is the step which shall be used if the entry type is a Date.
@@ -33,8 +34,8 @@ public class DateConverterStep implements EDBConverterStep {
     }
 
     @Override
-    public JPAEntry convertToJPAEntry(EDBObjectEntry entry) {
-        return new JPAEntry(entry.getKey(), "" + ((Date) entry.getValue()).getTime(), entry.getType());
+    public JPAEntry convertToJPAEntry(EDBObjectEntry entry, JPAObject owner) {
+        return new JPAEntry(entry.getKey(), "" + ((Date) entry.getValue()).getTime(), entry.getType(), owner);
     }
 
     @Override
