@@ -30,6 +30,7 @@ import org.openengsb.core.edb.api.EDBDiff;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.common.EDBConverterUtils;
 import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
@@ -211,5 +212,131 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
+
+	@Override
+	public EDBObject getObject(String oid, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getObjects(List<String> oids, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getHead(String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getHistory(String oid, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBLogEntry> getLog(String oid, Long from, Long to, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getHead(long timestamp, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> queryByKeyValue(String key, Object value, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> queryByMap(Map<String, Object> queryMap, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBCommit> getCommitsByKeyValue(String key, Object value, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBCommit> getCommits(Map<String, Object> query, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public EDBCommit getCommit(Long from, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public EDBCommit getLastCommitByKeyValue(String key, Object value, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public EDBCommit getLastCommit(Map<String, Object> queryMap, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public EDBDiff getDiff(Long firstTimestamp, Long secondTimestamp, String sid1, String sid2) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<String> getResurrectedOIDs(String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> queryMap, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value, String sid) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) throws EDBException
+	{
+		return null;
+	}
+
+	@Override
+	public UUID getCurrentRevisionNumber(EDBStage stage) throws EDBException
+	{
+		return null;
+	}
 
 }

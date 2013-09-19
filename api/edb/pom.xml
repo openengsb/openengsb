@@ -82,7 +82,7 @@
           </instructions>
         </configuration>
       </plugin>
-	  <plugin>
+      <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-java2ws-plugin</artifactId>
         <executions>
@@ -99,23 +99,6 @@
             </configuration>
             <goals>
               <goal>java2ws</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>EngineeringDatabaseService</id>
-            <phase>process-classes</phase>
-            <configuration>
-              <className>org.openengsb.core.edb.api.EngineeringDatabaseService</className>
-              <outputFileName>${project.basedir}/target/generated/wsdl/EngineeringDatabaseService.wsdl</outputFileName>
-            </configuration>
-            <goals>
-              <goal>java2wsdl</goal>
             </goals>
           </execution>
         </executions>
@@ -147,6 +130,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
@@ -167,4 +156,3 @@
   </repositories>
 
 </project>
-
