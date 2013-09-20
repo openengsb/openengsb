@@ -1,32 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="configurationServiceFeatures">
-        <feature name="configurationServiceAPI" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
+        <feature name="vfsConfigurationServiceAPI" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
         </feature>
         <feature name="vfsRepositoryHandler" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.vfsrepositoryhandler/VFSRepositoryHandler/1.0</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
         </feature>
         <feature name="vfsConfigurationService" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.vfsconfigurationservice/VFSConfigurationService/1.0</bundle>
-        </feature>
-        <feature name="testBundle" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.TestBundle/TestBundle/1.0</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
         </feature>
         <feature name="vfsAll" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.vfsrepositoryhandler/VFSRepositoryHandler/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.vfsconfigurationservice/VFSConfigurationService/1.0</bundle>
-        </feature>
-        <feature name="testRemoteService" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.testRemoteService/TestRemoteService/1.0</bundle>
-        </feature>
-        <feature name="testConfigurableService" version="1.0">
-                <bundle>org.openengsb.framework.vfs.configurationserviceapi/ConfigurationServiceAPI/1.0</bundle>
-                <bundle>org.openengsb.framework.vfs.testConfigurableService/TestConfigurableService/1.0</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
         </feature>
         <feature name="webDavProtocol" version="1.0">
                 <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
