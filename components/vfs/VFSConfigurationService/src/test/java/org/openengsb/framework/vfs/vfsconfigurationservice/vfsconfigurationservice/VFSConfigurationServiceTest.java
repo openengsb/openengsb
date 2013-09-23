@@ -183,6 +183,7 @@ public class VFSConfigurationServiceTest {
         Mockito.verify(remoteService2, Mockito.atLeast(1)).stop();
         Mockito.verify(remoteService1).start();
         Mockito.verify(remoteService2).start();
-        Mockito.verify(repositoryHandler).getPreviousTag(Mockito.any(Tag.class)); //check for any tag because it is not possible to check for a mocked parameter
+        //check for any tag because it is not possible to check for a mocked parameter
+        Mockito.verify(repositoryHandler).getPreviousTag(Mockito.any(Tag.class));
     }
 }

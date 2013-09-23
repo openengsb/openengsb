@@ -23,19 +23,21 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>4.3.1</version>
+                        <scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>4.3.1</version>
+                        <scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
 			<version>4.0.3</version>
-		</dependency>
+		</dependency-->
  
 		<dependency>
             <groupId>org.openengsb.framework.vfs.configurationserviceapi</groupId>
