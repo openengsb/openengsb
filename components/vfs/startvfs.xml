@@ -22,5 +22,9 @@
                 <feature>http</feature>
                 <bundle>mvn:org.openengsb.framework.vfs.webdavprotocol/org.openengsb.framework.vfs.webdavprotocol</bundle>
         </feature>
+        <feature name="vfsTestServices" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfstestservices/org.openengsb.framework.vfs.vfstestservices/1.0-SNAPSHOT</bundle>
+        </feature>
 </features>
 
