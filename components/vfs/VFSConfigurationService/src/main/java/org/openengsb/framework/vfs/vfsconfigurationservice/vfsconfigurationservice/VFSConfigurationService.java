@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
@@ -63,7 +62,7 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
-        
+
         String configurationFolderPath = configurationServiceProperties.getString("configurationPath");
         File configFolder = new File(configurationFolderPath);
 
@@ -76,7 +75,7 @@ public class VFSConfigurationService implements ConfigurationService {
             }
         }
 
-        if(tempFolder == null) {
+        if (tempFolder == null) {
             UUID uuid = UUID.randomUUID();
             String tempFolderName = "vfstemp_" + uuid.toString();
             tempFolder = new File(tempFolderName);
@@ -109,7 +108,7 @@ public class VFSConfigurationService implements ConfigurationService {
             for (String s : service.getPropertyList()) {
                 for (String change : changes) {
                     if (change.trim().startsWith(s.trim())) {
-                        if(!servicesToReconfigure.contains(service)) {
+                        if (!servicesToReconfigure.contains(service)) {
                             servicesToReconfigure.add(service);
                         }
                         break;
@@ -118,8 +117,7 @@ public class VFSConfigurationService implements ConfigurationService {
             }
         }
 
-        for(ConfigurableService service : servicesToReconfigure)
-        {
+        for (ConfigurableService service : servicesToReconfigure) {
             //reconfigure Service and check if reconfigure was successful
             if (!service.reconfigure()) {
                 loadPreviousTag(tag);
@@ -137,9 +135,9 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
-        
+
         servicesToReconfigure.clear();
-        
+
         try {
             FileUtils.deleteDirectory(tempFolder);
             tempFolder = null;
