@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.logging.Level;
+import org.apache.commons.io.FileUtils;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
 import org.openengsb.framework.vfs.configurationserviceapi.configurationservice.ConfigurationService;
@@ -31,6 +34,8 @@ public class VFSConfigurationService implements ConfigurationService {
     private ConfigurableServiceListener configurableServiceListener = null;
     private RepositoryHandlerListener repositoryHandlerListener = null;
     private FileOperator fileOperator = new VFSFileOperator();
+    private List<ConfigurableService> servicesToReconfigure = new ArrayList<>();
+    private File tempFolder = null;
 
     public VFSConfigurationService(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
@@ -58,19 +63,8 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
-
-        File tempFolder = new File("temp");
-
-        if (!tempFolder.exists() || !tempFolder.isDirectory()) {
-            try {
-                fileOperator.createDirectories(tempFolder.toPath());
-            } catch (IOException ex) {
-                logger.debug("error creating temp file");
-            }
-        }
-
+        
         String configurationFolderPath = configurationServiceProperties.getString("configurationPath");
-
         File configFolder = new File(configurationFolderPath);
 
         if (!configFolder.exists()) {
@@ -82,10 +76,22 @@ public class VFSConfigurationService implements ConfigurationService {
             }
         }
 
-        try {
-            fileOperator.copy(configFolder.toPath(), tempFolder.toPath());
-        } catch (IOException ex) {
-            logger.debug("error copying configuration to temp directory" + ex.getMessage());
+        if(tempFolder == null) {
+            UUID uuid = UUID.randomUUID();
+            String tempFolderName = "vfstemp_" + uuid.toString();
+            tempFolder = new File(tempFolderName);
+            if (!tempFolder.exists() || !tempFolder.isDirectory()) {
+                try {
+                    fileOperator.createDirectories(tempFolder.toPath());
+                } catch (IOException ex) {
+                    logger.debug("error creating temp file");
+                }
+            }
+            try {
+                fileOperator.copy(configFolder.toPath(), tempFolder.toPath());
+            } catch (IOException ex) {
+                logger.debug("error copying configuration to temp directory" + ex.getMessage());
+            }
         }
 
         for (File f : fileOperator.listFiles(configFolder)) {
@@ -103,11 +109,8 @@ public class VFSConfigurationService implements ConfigurationService {
             for (String s : service.getPropertyList()) {
                 for (String change : changes) {
                     if (change.trim().startsWith(s.trim())) {
-                        //reconfigure Service and check if reconfigure was successful
-                        if (!service.reconfigure()) {
-                            loadPreviousTag(tag);
-                            //When the previous config was start successful return and end it. 
-                            return;
+                        if(!servicesToReconfigure.contains(service)) {
+                            servicesToReconfigure.add(service);
                         }
                         break;
                     }
@@ -115,6 +118,15 @@ public class VFSConfigurationService implements ConfigurationService {
             }
         }
 
+        for(ConfigurableService service : servicesToReconfigure)
+        {
+            //reconfigure Service and check if reconfigure was successful
+            if (!service.reconfigure()) {
+                loadPreviousTag(tag);
+                //When the previous config was start successful return and end it. 
+                return;
+            }
+        }
 
         //Restart all remoteServices
         for (RemoteService remote : remoteServices) {
@@ -124,6 +136,15 @@ public class VFSConfigurationService implements ConfigurationService {
                 //When the previous config was start successful return and end it. 
                 return;
             }
+        }
+        
+        servicesToReconfigure.clear();
+        
+        try {
+            FileUtils.deleteDirectory(tempFolder);
+            tempFolder = null;
+        } catch (IOException ex) {
+            logger.error("error deleting temp directory " + ex.getMessage());
         }
 
         logger.debug("Successfully extracted Tag to configurationfolder");
@@ -137,7 +158,13 @@ public class VFSConfigurationService implements ConfigurationService {
         if (previousTag != null) {
             newTag(previousTag);
         } else {
-            logger.debug("no previous tag found");
+            //TODO revert to old config
+            try {
+                FileUtils.deleteDirectory(tempFolder);
+                tempFolder = null;
+            } catch (IOException ex) {
+                logger.error("error deleting temp directory " + ex.getMessage());
+            }
         }
     }
 
