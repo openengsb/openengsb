@@ -30,12 +30,15 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
+
+
 
 public abstract class AbstractResource implements DigestResource, PropFindableResource {
 
