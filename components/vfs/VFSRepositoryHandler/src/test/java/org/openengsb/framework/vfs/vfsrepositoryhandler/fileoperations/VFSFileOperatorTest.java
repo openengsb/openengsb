@@ -68,7 +68,7 @@ public class VFSFileOperatorTest {
 
         String tag2DateString = "20130103_121514";
         Date tag2Date = tagsDateFormat.parse(tag2DateString);
-        String tag2Name = "tag1";
+        String tag2Name = "tag2";
         String tag2DirectoryName = tag2DateString + "_" + tag2Name;
         Path tag2Directory = tagsDirectory.resolve(tag2DirectoryName);
 
@@ -81,12 +81,19 @@ public class VFSFileOperatorTest {
 
         Assert.assertNotNull(tags);
         Assert.assertEquals(2, tags.size());
-        Assert.assertEquals(tag1Date, tags.get(0).getDate());
-        Assert.assertEquals(tag1Name, tags.get(0).getName());
-        Assert.assertEquals(tag1Directory, tags.get(0).getPath());
-        Assert.assertEquals(tag2Date, tags.get(1).getDate());
-        Assert.assertEquals(tag2Name, tags.get(1).getName());
-        Assert.assertEquals(tag2Directory, tags.get(1).getPath());
+
+
+        for (Tag t : tags) {
+            if (t.getName().equals(tag1Name)) {
+                Assert.assertEquals(tag1Date, t.getDate());
+                Assert.assertEquals(tag1Directory, t.getPath());
+            } else if (t.getName().equals(tag2Name)) {
+                Assert.assertEquals(tag2Date, t.getDate());
+                Assert.assertEquals(tag2Directory, t.getPath());
+            } else {
+                Assert.fail("Unknown tag name in tag list");
+            }
+        }
 
         FileUtils.deleteDirectory(tagsDirectory.toFile());
     }

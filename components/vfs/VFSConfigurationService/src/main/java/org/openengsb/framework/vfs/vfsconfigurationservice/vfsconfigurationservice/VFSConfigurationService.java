@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VFSConfigurationService implements ConfigurationService {
+
     private final Logger logger = LoggerFactory.getLogger(VFSConfigurationService.class);
     private RepositoryHandler repositoryHandler;
     private ResourceBundle configurationServiceProperties = ResourceBundle.getBundle("configurationservice");
@@ -80,7 +81,7 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
-        
+
         try {
             fileOperator.copy(configFolder.toPath(), tempFolder.toPath());
         } catch (IOException ex) {
@@ -100,9 +101,8 @@ public class VFSConfigurationService implements ConfigurationService {
 
         for (ConfigurableService service : configurableServices) {
             for (String s : service.getPropertyList()) {
-                //if (changes.contains(s)) {
                 for (String change : changes) {
-                    if(change.trim().startsWith(s.trim())) {
+                    if (change.trim().startsWith(s.trim())) {
                         //reconfigure Service and check if reconfigure was successful
                         if (!service.reconfigure()) {
                             loadPreviousTag(tag);
@@ -134,11 +134,9 @@ public class VFSConfigurationService implements ConfigurationService {
         logger.debug("Error starting openEngSB woth the new Configuration");
         logger.debug("Geting old config and try again");
         Tag previousTag = repositoryHandler.getPreviousTag(actualTag);
-        if(previousTag != null) {
+        if (previousTag != null) {
             newTag(previousTag);
-        }
-        else
-        {
+        } else {
             logger.debug("no previous tag found");
         }
     }

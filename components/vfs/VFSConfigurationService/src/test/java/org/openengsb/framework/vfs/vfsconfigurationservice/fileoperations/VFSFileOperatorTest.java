@@ -110,9 +110,9 @@ public class VFSFileOperatorTest {
         List<String> changedFiles = fileOperator.compareFolders(testDirectory.toFile(), destinationDirectory.toFile());
         Assert.assertNotNull(changedFiles);
         Assert.assertEquals(2, changedFiles.size());
-        Assert.assertEquals(removedFile1.toString(), changedFiles.get(0));
-        Assert.assertEquals(removedFile2.toString(), changedFiles.get(1));
-
+        Assert.assertTrue(changedFiles.contains(removedFile1.toString()));
+        Assert.assertTrue(changedFiles.contains(removedFile2.toString()));
+        
         FileUtils.deleteDirectory(destinationDirectory.toFile());
         deleteTestDirectory();
     }
@@ -167,9 +167,10 @@ public class VFSFileOperatorTest {
         List<String> changedFiles = fileOperator.compareFolders(testDirectory.toFile(), destinationDirectory.toFile());
         Assert.assertNotNull(changedFiles);
         Assert.assertEquals(2, changedFiles.size());
-        Assert.assertEquals(changedFile1.toString(), changedFiles.get(0));
-        Assert.assertEquals(changedFile2.toString(), changedFiles.get(1));
-
+        Assert.assertTrue(changedFiles.contains(changedFile1.toString()));
+        Assert.assertTrue(changedFiles.contains(changedFile2.toString()));
+        
+        
         FileUtils.deleteDirectory(destinationDirectory.toFile());
         deleteTestDirectory();
     }
