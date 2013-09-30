@@ -38,8 +38,6 @@ import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 
-
-
 public abstract class AbstractResource implements DigestResource, PropFindableResource {
 
     private Logger log = LoggerFactory.getLogger(AbstractResource.class);
@@ -71,14 +69,23 @@ public abstract class AbstractResource implements DigestResource, PropFindableRe
             }
         }
 
+        Authentication authenticate = null;
         try {
-            Authentication authenticate =
-                    authenticator.authenticate(token.getPrincipal().toString(), (Credentials) token.getCredentials());
 
+            if (authenticator.supports((Credentials) token.getCredentials())) {
+                authenticate =
+                        authenticator.authenticate(token.getPrincipal().toString(),
+                        (Credentials) token.getCredentials());
+            }
         } catch (AuthenticationException ex) {
             log.debug("Login Error: " + ex.getMessage());
         }
-        return null;
+
+        if (authenticate == null) {
+            return null;
+        }
+
+        return authenticate.getUsername();
     }
 
     @Override
