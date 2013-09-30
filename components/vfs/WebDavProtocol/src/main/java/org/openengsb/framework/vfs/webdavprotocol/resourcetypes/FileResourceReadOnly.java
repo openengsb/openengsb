@@ -4,8 +4,6 @@
  */
 package org.openengsb.framework.vfs.webdavprotocol.resourcetypes;
 
-import io.milton.http.exceptions.BadRequestException;
-import io.milton.http.exceptions.ConflictException;
 import io.milton.http.exceptions.NotAuthorizedException;
 import io.milton.resource.CollectionResource;
 import java.io.File;

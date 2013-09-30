@@ -33,7 +33,6 @@ import org.openengsb.core.api.security.model.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.openengsb.core.services.*;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
