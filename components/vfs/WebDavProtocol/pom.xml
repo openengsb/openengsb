@@ -119,7 +119,7 @@
             <scope>provided</scope>
             <type>jar</type>
         </dependency>
-        
+       
         <dependency>
             <groupId>org.openengsb.connector</groupId>
             <artifactId>org.openengsb.connector.usernamepassword</artifactId>
@@ -163,7 +163,7 @@
                         <Bundle-Activator>org.openengsb.framework.vfs.webdavprotocol.activator.Activator</Bundle-Activator>
 
                         <Private-Package>
-                            org.openengsb.framework.vfs.vfsrepositoryhandler.*
+                            org.openengsb.framework.vfs.webdavprotocol.*
                         </Private-Package>
 			
                         <Import-Package>
