@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
@@ -35,6 +36,8 @@ public class VFSConfigurationService implements ConfigurationService {
     private FileOperator fileOperator = new VFSFileOperator();
     private List<ConfigurableService> servicesToReconfigure = new ArrayList<>();
     private File tempFolder = null;
+    private String configurationFolderPath = configurationServiceProperties.getString("configurationPath");
+    private File configFolder = new File(configurationFolderPath);
 
     public VFSConfigurationService(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
@@ -62,9 +65,6 @@ public class VFSConfigurationService implements ConfigurationService {
                 return;
             }
         }
-
-        String configurationFolderPath = configurationServiceProperties.getString("configurationPath");
-        File configFolder = new File(configurationFolderPath);
 
         if (!configFolder.exists()) {
             try {
@@ -158,7 +158,29 @@ public class VFSConfigurationService implements ConfigurationService {
         if (previousTag != null) {
             newTag(previousTag);
         } else {
-            //TODO revert to old config
+            for (File f : fileOperator.listFiles(configFolder)) {
+                fileOperator.fileDelete(f);
+            }
+            try {
+                fileOperator.copy(tempFolder.toPath(), configFolder.toPath());
+            } catch (IOException ex) {
+                logger.error("could not revert config" + ex.getMessage());
+            }
+            
+            for(ConfigurableService service : servicesToReconfigure)
+            {
+                if(!service.reconfigure())
+                {
+                    logger.error("could not revert to the old configuration");
+                }
+            }
+            
+            for (RemoteService remote : remoteServices) {
+            if (!remote.start()) {
+                    logger.debug("could not restart remote service after reverting to old configuration");
+                }
+            }
+            
             try {
                 FileUtils.deleteDirectory(tempFolder);
                 tempFolder = null;
