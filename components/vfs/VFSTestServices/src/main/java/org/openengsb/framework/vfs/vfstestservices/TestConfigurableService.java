@@ -7,14 +7,22 @@ public class TestConfigurableService implements ConfigurableService {
 
     private List<String> propertyList;
     private boolean success;
+    private String name = "ConfService";
 
     public TestConfigurableService(List<String> propertyList, boolean success) {
         this.propertyList = propertyList;
         this.success = success;
     }
 
+    public TestConfigurableService(List<String> propertyList, boolean success, String name) {
+        this.propertyList = propertyList;
+        this.success = success;
+        this.name = name;
+    }
+
     @Override
     public boolean reconfigure() {
+        System.out.print("ConfigurableService Name: " + name + " hass been reconfigured with return state: " + success);
         return success;
     }
 
