@@ -98,7 +98,7 @@ public final class VFSRepositoryHandler implements RepositoryHandler {
             logger.debug("executing newTag in ConfigurationService");
             configurationService.newTag(tag);
         }
-    }
+     }
 
     public Tag getPreviousTag(Tag currentTag) {
         return tags.getPreviousTag(currentTag);

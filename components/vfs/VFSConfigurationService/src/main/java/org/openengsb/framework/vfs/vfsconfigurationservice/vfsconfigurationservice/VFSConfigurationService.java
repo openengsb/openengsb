@@ -107,7 +107,9 @@ public class VFSConfigurationService implements ConfigurationService {
 
         for (ConfigurableService service : configurableServices) {
             for (String s : service.getPropertyList()) {
+                s = s.replace("\\", "/");
                 for (String change : changes) {
+                    change = change.replace("\\", "/");
                     if (change.trim().startsWith(s.trim())) {
                         if(!servicesToReconfigure.contains(service)) {
                             servicesToReconfigure.add(service);

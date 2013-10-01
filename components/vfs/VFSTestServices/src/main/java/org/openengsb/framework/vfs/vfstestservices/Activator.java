@@ -12,7 +12,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         List<String> propertyList1 = new ArrayList<>();
-        propertyList1.add(""); //TODO
+        propertyList1.add("./config/file1.txt"); //TODO
 
         ConfigurableService configurableService1 = new TestConfigurableService(propertyList1, true);
 
