@@ -65,7 +65,7 @@ public class VFSConfigurationServiceTest {
         List<String> changedConfigs = new ArrayList<>();
         changedConfigs.add(configurationPath + "/config1.txt");
         changedConfigs.add(configurationPath + "/folder1/config2.txt");
-        Mockito.when(fileOperator.compareFolders(new File("temp"), new File(configurationPath)))
+        Mockito.when(fileOperator.compareFolders(Mockito.any(File.class), Mockito.any(File.class)))
                 .thenReturn(changedConfigs);
         Mockito.when(fileOperator.listFiles(new File(configurationPath))).thenReturn(new File[0]);
 
@@ -121,28 +121,28 @@ public class VFSConfigurationServiceTest {
         Mockito.when(configurableService1.reconfigure()).thenReturn(true);
         
         List<String> configurableService1Configs = new ArrayList<>();
-        configurableService1Configs.add(configurationPath + "/folder1/config2.txt");
+        configurableService1Configs.add(configurationPath + "./folder1/config2.txt");
         Mockito.when(configurableService1.getPropertyList()).thenReturn(configurableService1Configs);
 
         ConfigurableService configurableService2 = Mockito.mock(ConfigurableService.class);
         Mockito.when(configurableService2.reconfigure()).thenReturn(true);
         
         List<String> configurableService2Configs = new ArrayList<>();
-        configurableService2Configs.add(configurationPath + "/config3.txt");
+        configurableService2Configs.add(configurationPath + "./config3.txt");
         Mockito.when(configurableService2.getPropertyList()).thenReturn(configurableService2Configs);
         
         ConfigurableService configurableService3 = Mockito.mock(ConfigurableService.class);
         Mockito.when(configurableService3.reconfigure()).thenReturn(false).thenReturn(true);
         
         List<String> configurableService3Configs = new ArrayList<>();
-        configurableService3Configs.add(configurationPath + "/folder1");
+        configurableService3Configs.add(configurationPath + "./folder1");
         Mockito.when(configurableService3.getPropertyList()).thenReturn(configurableService3Configs);
         
         ConfigurableService configurableService4 = Mockito.mock(ConfigurableService.class);
         Mockito.when(configurableService4.reconfigure()).thenReturn(true);
         
         List<String> configurableService4Configs = new ArrayList<>();
-        configurableService4Configs.add(configurationPath + "/config1.txt");
+        configurableService4Configs.add(configurationPath + "./config1.txt");
         Mockito.when(configurableService4.getPropertyList()).thenReturn(configurableService4Configs);
 
         RemoteService remoteService1 = Mockito.mock(RemoteService.class);
@@ -156,9 +156,9 @@ public class VFSConfigurationServiceTest {
         FileOperator fileOperator = Mockito.mock(FileOperator.class);
         
         List<String> changedConfigs = new ArrayList<>();
-        changedConfigs.add(configurationPath + "/config1.txt");
-        changedConfigs.add(configurationPath + "/folder1/config2.txt");
-        Mockito.when(fileOperator.compareFolders(new File("temp"), new File(configurationPath)))
+        changedConfigs.add(configurationPath + "./config1.txt");
+        changedConfigs.add(configurationPath + "./folder1/config2.txt");
+        Mockito.when(fileOperator.compareFolders(Mockito.any(File.class), Mockito.any(File.class)))
                 .thenReturn(changedConfigs);
         Mockito.when(fileOperator.listFiles(new File(configurationPath))).thenReturn(new File[0]);
 
