@@ -61,22 +61,23 @@ public abstract class AbstractResource implements DigestResource, PropFindableRe
             }
         };
 
-
         if (authenticator == null) {
             authenticator = webDavHandler.getAuthenticationDomainService();
             if (authenticator == null) {
                 log.error("Authenticator is still null, not able to get it from webDavHandler");
+                return null;
             }
         }
 
         Authentication authenticate = null;
         try {
 
-            if (authenticator.supports((Credentials) token.getCredentials())) {
-                authenticate =
-                        authenticator.authenticate(token.getPrincipal().toString(),
-                        (Credentials) token.getCredentials());
+            if (!authenticator.supports((Credentials) token.getCredentials())) {
+                return null;
             }
+            authenticate = authenticator.authenticate(token.getPrincipal().toString(),
+                    (Credentials) token.getCredentials());
+
         } catch (AuthenticationException ex) {
             log.debug("Login Error: " + ex.getMessage());
         }
