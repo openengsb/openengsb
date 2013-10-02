@@ -22,7 +22,8 @@ public class TestConfigurableService implements ConfigurableService {
 
     @Override
     public boolean reconfigure() {
-        System.out.print("ConfigurableService Name: " + name + " hass been reconfigured with return state: " + success);
+        System.out.print(
+                "ConfigurableService Name: " + name + " has been reconfigured with return state: " + success + "\n");
         return success;
     }
 
