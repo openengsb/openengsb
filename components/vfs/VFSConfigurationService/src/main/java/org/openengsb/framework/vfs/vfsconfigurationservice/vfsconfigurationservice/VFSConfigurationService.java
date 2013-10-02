@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
@@ -166,21 +165,19 @@ public class VFSConfigurationService implements ConfigurationService {
             } catch (IOException ex) {
                 logger.error("could not revert config" + ex.getMessage());
             }
-            
-            for(ConfigurableService service : servicesToReconfigure)
-            {
-                if(!service.reconfigure())
-                {
+
+            for (ConfigurableService service : servicesToReconfigure) {
+                if (!service.reconfigure()) {
                     logger.error("could not revert to the old configuration");
                 }
             }
-            
+
             for (RemoteService remote : remoteServices) {
-            if (!remote.start()) {
+                if (!remote.start()) {
                     logger.debug("could not restart remote service after reverting to old configuration");
                 }
             }
-            
+
             try {
                 FileUtils.deleteDirectory(tempFolder);
                 tempFolder = null;

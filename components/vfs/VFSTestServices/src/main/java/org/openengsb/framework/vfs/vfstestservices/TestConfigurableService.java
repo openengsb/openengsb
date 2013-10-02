@@ -16,9 +16,9 @@ public class TestConfigurableService implements ConfigurableService {
     }
 
     public TestConfigurableService(List<String> propertyList, boolean success, String name) {
-        this(propertyList, success, "ConfigurableService", 1);
+        this(propertyList, success, name, 1);
     }
-    
+
     public TestConfigurableService(List<String> propertyList, boolean success, String name, int returnCount) {
         this.propertyList = propertyList;
         this.success = success;
@@ -29,14 +29,13 @@ public class TestConfigurableService implements ConfigurableService {
     @Override
     public boolean reconfigure() {
         returns++;
-        
-        if(returns > returnCount)
-        {
+
+        if (returns > returnCount) {
             success = true;
         }
-        
+
         System.out.print(
-                "ConfigurableService Name: " + name + " has been reconfigured with return state: " + success + "\n");
+            "ConfigurableService Name: " + name + " has been reconfigured with return state: " + success + "\n");
         return success;
     }
 
