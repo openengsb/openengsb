@@ -14,37 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.List;
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import org.openengsb.core.edb.api.EDBStage;
+import org.apache.openjpa.persistence.jdbc.Index;
 
-/**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
- */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
-    
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(this.objects);
-    }
-    
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
+@SuppressWarnings("serial")
+@Entity
+public class JPAStage extends VersionedEntity implements EDBStage {
+	@Column(name="STAGEID")
+	@Index
+	private String stageId;
+	@Column(name="CREATOR")
+	private String creator;
+	@Column(name="TIMESTAMP")
+	private Long timeStamp;
+	
+	@Override
+	public void setStageId(String id) {
+		this.stageId = id;
+	}
 
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
-    
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    
-    public Long getTimestamp() {
-        return timestamp;
-    }
+	@Override
+	public String getStageId() {
+		return this.stageId;
+	}
+
+	@Override
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	@Override
+	public String getCreator() {
+		return this.creator;
+	}
+
+	@Override
+	public void setTimeStamp(Long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	@Override
+	public Long getTimeStamp() {
+		return this.timeStamp;
+	}
 }

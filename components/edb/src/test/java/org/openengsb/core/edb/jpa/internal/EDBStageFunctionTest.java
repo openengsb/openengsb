@@ -14,37 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import org.junit.Test;
+import org.openengsb.core.edb.api.EDBStage;
+import static org.hamcrest.Matchers.notNullValue;
+import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
 
-/**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
- */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
-    
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(this.objects);
-    }
-    
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
+public class EDBStageFunctionTest extends AbstractEDBFunctionTest {
 
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
-    
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    
-    public Long getTimestamp() {
-        return timestamp;
-    }
+	@Override
+	protected Tools initTools(){
+		return new StageTestTools();
+	}
+	
 }

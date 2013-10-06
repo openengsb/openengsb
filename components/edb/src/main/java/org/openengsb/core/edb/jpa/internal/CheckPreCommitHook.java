@@ -24,6 +24,7 @@ import org.openengsb.core.edb.api.EDBCheckException;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
@@ -54,10 +55,10 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         List<String> deleteFails = null;
 
         if (orig.getInsertedObjects() != null) {
-            insertFails = checkInserts(orig.getInsertedObjects());
+            insertFails = checkInserts(orig.getInsertedObjects(), orig.getEDBStage());
         }
         if (orig.getDeletions() != null) {
-            deleteFails = checkDeletions(orig.getDeletions());
+            deleteFails = checkDeletions(orig.getDeletions(), orig.getEDBStage());
         }
         if (orig.getUpdatedObjects() != null) {
             updateFails = checkUpdates(orig.getUpdatedObjects());
@@ -95,11 +96,11 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      * Checks if all oid's of the given JPAObjects are not existing yet. Returns a list of objects where the JPAObject
      * already exists.
      */
-    private List<JPAObject> checkInserts(List<JPAObject> inserts) {
+    private List<JPAObject> checkInserts(List<JPAObject> inserts, EDBStage stage) {
         List<JPAObject> failedObjects = new ArrayList<JPAObject>();
         for (JPAObject insert : inserts) {
             String oid = insert.getOID();
-            if (checkIfActiveOidExisting(oid)) {
+            if (checkIfActiveOidExisting(oid, checkStage(stage))) {
                 failedObjects.add(insert);
             } else {
                 insert.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, "1", Integer.class.getName(), insert));
@@ -108,14 +109,24 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         return failedObjects;
     }
 
+	private String checkStage(EDBStage stage)
+	{
+		if(stage != null)
+		{
+			return stage.getStageId();
+		}
+		
+		return null;
+	}
+
     /**
      * Checks if all oid's of the given JPAObjects are existing. Returns a list of objects where the JPAObject doesn't
      * exist.
      */
-    private List<String> checkDeletions(List<String> deletes) {
+    private List<String> checkDeletions(List<String> deletes, EDBStage stage) {
         List<String> failedObjects = new ArrayList<String>();
         for (String delete : deletes) {
-            if (!checkIfActiveOidExisting(delete)) {
+            if (!checkIfActiveOidExisting(delete, checkStage(stage))) {
                 failedObjects.add(delete);
             }
         }
@@ -151,7 +162,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
 
         if (entry != null) {
             modelVersion = Integer.parseInt(entry.getValue());
-            Integer currentVersion = dao.getVersionOfOid(oid);
+            Integer currentVersion = dao.getVersionOfOid(oid, checkStage(newObject.getJPAStage()));
             if (!modelVersion.equals(currentVersion)) {
                 try {
                     checkForConflict(newObject);
@@ -163,7 +174,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
                 modelVersion = currentVersion;
             }
         } else {
-            modelVersion = dao.getVersionOfOid(oid);
+            modelVersion = dao.getVersionOfOid(oid, checkStage(newObject.getJPAStage()));
         }
 
         return modelVersion;
@@ -175,7 +186,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
      */
     private void checkForConflict(JPAObject newObject) throws EDBException {
         String oid = newObject.getOID();
-        JPAObject object = dao.getJPAObject(oid);
+        JPAObject object = dao.getJPAObject(oid, checkStage(newObject.getJPAStage()));
         for (JPAEntry entry : newObject.getEntries()) {
             if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
                 continue;
@@ -194,9 +205,9 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     /**
      * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
      */
-    private boolean checkIfActiveOidExisting(String oid) {
+    private boolean checkIfActiveOidExisting(String oid, String sid) {
         try {
-            JPAObject obj = dao.getJPAObject(oid);
+            JPAObject obj = dao.getJPAObject(oid, sid);
             if (!obj.isDeleted()) {
                 return true;
             }

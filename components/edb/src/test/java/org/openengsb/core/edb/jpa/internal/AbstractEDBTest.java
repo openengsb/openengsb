@@ -37,13 +37,17 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
-public class AbstractEDBTest {
+public abstract class AbstractEDBTest {
     protected TestEDBService db;
+	protected Tools tools;
+	
+	protected abstract Tools initTools();
 
     @Rule
     public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
@@ -65,6 +69,9 @@ public class AbstractEDBTest {
 
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
+		
+		this.tools = this.initTools();
+		this.tools.setDb(db);
     }
 
     @After
@@ -75,31 +82,31 @@ public class AbstractEDBTest {
     /**
      * Returns an EDBCommit object.
      */
-    protected EDBCommit getEDBCommit() {
-        return db.createEDBCommit(null, null, null);
-    }
+	protected EDBCommit getEDBCommit() {
+		return tools.createEDBCommit(null, null, null);
+	}
 
     /**
      * Creates a new commit object, adds the given inserts, updates and deletes and commit it.
      */
-    protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
-        EDBCommit ci = db.createEDBCommit(inserts, updates, deletes);
+	 protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
+        EDBCommit ci = tools.createEDBCommit(inserts, updates, deletes);
         return db.commit(ci);
     }
 
     /**
      * Adds an EDBObjectEntry based on the given key and value to the given map
      */
-    protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
+	protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
         map.put(key, new EDBObjectEntry(key, value, value.getClass()));
     }
 
     /**
      * Returns a random test EDBObject
      */
-    protected EDBObject createRandomTestObject(String oid) {
+	protected EDBObject createRandomTestObject(String oid) {
         Random random = new Random(System.currentTimeMillis());
-        EDBObject result = new EDBObject(oid);
+        EDBObject result = tools.createEDBObject(oid);
         int max = 5;
 
         for (int i = 0; i < max; ++i) {
@@ -107,7 +114,8 @@ public class AbstractEDBTest {
             String value = "key value " + Integer.toString(random.nextInt(100));
             result.putEDBObjectEntry(key, value);
         }
-        return new EDBObject(oid);
+
+		return result;
     }
 
     /**
@@ -130,5 +138,4 @@ public class AbstractEDBTest {
         }
         return null;
     }
-
 }

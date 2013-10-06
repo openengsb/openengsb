@@ -25,7 +25,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -45,6 +48,10 @@ public class JPAObject extends VersionedEntity {
     @Index
     @Column(name = "OID")
     private String oid;
+    
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name="STAGE",nullable = true)
+	private JPAStage stage;
 
     public JPAObject() {
         entries = new ArrayList<>();
@@ -91,6 +98,14 @@ public class JPAObject extends VersionedEntity {
     public void setEntries(List<JPAEntry> entries) {
         this.entries = entries;
     }
+	
+	public void setJPAStage(JPAStage stage){
+		this.stage = stage;
+	}
+	
+	public JPAStage getJPAStage(){
+		return this.stage;
+	}
 
     public Boolean isDeleted() {
         return isDeleted;

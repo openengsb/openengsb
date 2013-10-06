@@ -39,7 +39,7 @@ public class EDBObjectEntry implements Serializable {
     }
 
     public EDBObjectEntry(String key, Object value, String type) {
-        this.key = key;
+		this.key = key;
         this.value = value;
         this.type = type;
     }

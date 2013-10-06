@@ -14,37 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.edb.api;
 
-package org.openengsb.core.edb.jpa.internal;
+import java.io.Serializable;
 
-import java.util.List;
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
-
-/**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
- */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
+public interface EDBStage extends Serializable {
     
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(this.objects);
-    }
+    public void setStageId(String id);
     
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
-
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
+    public String getStageId();
     
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
+    public void setCreator(String creator);
     
-    public Long getTimestamp() {
-        return timestamp;
-    }
+    public String getCreator();
+    
+    public void setTimeStamp(Long timeStamp);
+    
+    public Long getTimeStamp();
+    
 }

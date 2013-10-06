@@ -29,13 +29,23 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
     private static final String OID_CONST = "oid";
     private static final String DELETED_CONST = "isDeleted";
 
-    /**
+    
+	private EDBStage stage;
+	
+	/**
      * Create an EDBObject with a specified OID.
      */
     public EDBObject(String oid) {
         super();
         setOID(oid);
+		this.stage = null;
     }
+	
+	public EDBObject(String oid, EDBStage stage){
+		super();
+		this.stage = stage;
+		this.setOID(oid);
+	}
 
     /**
      * Create an EDBObject using a Map of data. The OID is stored after loading the data Map, so any already existing
@@ -43,9 +53,15 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      */
     public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
         super(data);
-        setOID(oid);
+		this.setOID(oid);
     }
-
+	
+	public EDBObject(String oid, Map<String, EDBObjectEntry> data, EDBStage stage) {
+        super(data);
+		this.stage = stage;
+		this.setOID(oid);
+    }
+	
     /**
      * Retrieve the timestamp for this object.
      */
@@ -176,8 +192,8 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Adds an EDBObjectEntry to this EDBObject
      */
     public void putEDBObjectEntry(String key, Object value, String type) {
-        put(key, new EDBObjectEntry(key, value, type));
-    }
+		put(key, new EDBObjectEntry(key, value, type));
+	}
 
     /**
      * Adds an EDBObjectEntry to this EDBObject
@@ -214,4 +230,12 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
         builder.append(" \"").append(entry.getKey()).append("\"");
         builder.append(" : ").append(entry.getValue());
     }
+    
+    public void setEDBStage(EDBStage stage) {
+		this.stage = stage;
+	}
+	
+	public EDBStage getEDBStage(){
+		return this.stage;
+	}
 }

@@ -14,37 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
-import java.util.List;
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import org.junit.Test;
 
-/**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
- */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
-    
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(this.objects);
-    }
-    
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
 
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
-    
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    
-    public Long getTimestamp() {
-        return timestamp;
-    }
+public class EDBStageQueryTest extends AbstractEDBQueryTest
+{
+
+	@Override
+	protected Tools initTools()
+	{
+		return new StageTestTools();
+	}
+	
 }

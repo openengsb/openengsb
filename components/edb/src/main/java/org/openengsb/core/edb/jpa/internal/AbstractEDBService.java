@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.edb.api.hooks.EDBBeginCommitHook;
 import org.openengsb.core.edb.api.hooks.EDBErrorHook;
@@ -69,7 +70,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
             throw new EDBException("EDBCommit is already commitet.");
         }
         if (revisionCheckEnabled && commit.getParentRevisionNumber() != null
-                && !commit.getParentRevisionNumber().equals(getCurrentRevisionNumber())) {
+                && !commit.getParentRevisionNumber().equals(getCurrentRevisionNumber(commit.getEDBStage()))) {
             throw new EDBException("EDBCommit do not have the correct head revision number.");
         }
         runBeginCommitHooks(commit);
@@ -116,7 +117,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         logger.debug("persisting JPACommit");
         entityManager.persist(commit);
         logger.debug("mark the deleted elements as deleted");
-        updateDeletedObjectsThroughEntityManager(commit.getDeletions(), timestamp);
+        updateDeletedObjectsThroughEntityManager(commit.getDeletions(), timestamp, commit.getEDBStage());
     }
 
     /**
@@ -133,8 +134,12 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
      * Updates all deleted objects with the timestamp, mark them as deleted and persist them through the entity manager.
      */
     private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp) {
+        this.updateDeletedObjectsThroughEntityManager(oids, timestamp, null);
+    }
+	
+	private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp, EDBStage stage) {
         for (String id : oids) {
-            EDBObject o = new EDBObject(id);
+            EDBObject o = new EDBObject(id, stage);
             o.updateTimestamp(timestamp);
             o.setDeleted(true);
             JPAObject j = EDBUtils.convertEDBObjectToJPAObject(o);
@@ -169,7 +174,7 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     private EDBException runPreCommitHooks(EDBCommit commit) {
         EDBException exception = null;
         for (EDBPreCommitHook hook : preCommitHooks) {
-            try {
+            try {				
                 hook.onPreCommit(commit);
             } catch (ServiceUnavailableException e) {
                 // Ignore

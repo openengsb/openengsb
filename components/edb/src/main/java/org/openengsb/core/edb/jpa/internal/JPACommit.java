@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,12 +28,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import org.openengsb.core.edb.api.EDBStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +60,9 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private String revision;
     @Column(name = "PARENT")
     private String parent;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name="STAGE",nullable = true)
+	private JPAStage stage;
     @Column(name = "DOMAIN")
     private String domainId;
     @Column(name = "CONNECTOR")
@@ -72,24 +79,26 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> deletions;
 
+	
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
     @Deprecated
-    public JPACommit() {
+	public JPACommit() {
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
         deletions = new ArrayList<String>();
-    }
-
-    public JPACommit(String committer, String contextId) {
-        this.committer = committer;
+	}
+	
+	public JPACommit(String committer, String contextId) {
+		this.committer = committer;
         this.context = contextId;
+        this.stage = null;
         deletions = new ArrayList<String>();
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
         this.revision = UUID.randomUUID().toString();
-    }
+    }		
 
     @Override
     public void setCommitted(Boolean committed) {
@@ -268,4 +277,16 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+	@Override
+	public EDBStage getEDBStage()
+	{
+		return this.stage;
+	}
+
+	@Override
+	public void setEDBStage(EDBStage stage)
+	{
+		this.stage = (JPAStage)stage;
+	}
 }
