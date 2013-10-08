@@ -415,10 +415,10 @@
   </feature>
 
   <feature name="vfs" version="1.0-SNAPSHOT" description="Virtual File System">
-  	<bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+  	<feature>http</feature>
+    <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
   	<bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
   	<bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
-  	<feature>http</feature>
   	<bundle>mvn:org.openengsb.framework.vfs.webdavprotocol/org.openengsb.framework.vfs.webdavprotocol</bundle>
   </feature>
 
