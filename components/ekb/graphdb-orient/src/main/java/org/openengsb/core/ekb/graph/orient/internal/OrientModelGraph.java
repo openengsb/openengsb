@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.ekb.api.ModelGraph;
@@ -48,11 +50,13 @@ public final class OrientModelGraph implements ModelGraph {
     private OGraphDatabase graph;
     private Map<String, TransformationDescription> descriptions;
     private AtomicLong counter;
+    private ReadWriteLock lockingMechanism;
 
     public OrientModelGraph() {
         startup();
         descriptions = new HashMap<String, TransformationDescription>();
         counter = new AtomicLong(0L);
+        lockingMechanism = new ReentrantReadWriteLock(true);
     }
 
     private void startup() {
@@ -87,108 +91,146 @@ public final class OrientModelGraph implements ModelGraph {
      * same start situation.
      */
     public void cleanDatabase() {
-        for (ODocument edge : graph.browseEdges()) {
-            edge.delete();
-        }
-        for (ODocument node : graph.browseVertices()) {
-            node.delete();
+        lockingMechanism.writeLock().lock();
+        try {
+            for (ODocument edge : graph.browseEdges()) {
+                edge.delete();
+            }
+            for (ODocument node : graph.browseVertices()) {
+                node.delete();
+            }
+        } finally {
+            lockingMechanism.writeLock().unlock();
         }
     }
 
     @Override
     public void addModel(ModelDescription model) {
-        ODocument node = getModel(model.toString());
-        if (node == null) {
-            node = graph.createVertex("Models");
-            OrientModelGraphUtils.setIdFieldValue(node, model.toString());
+        lockingMechanism.writeLock().lock();
+        try {
+            ODocument node = getModel(model.toString());
+            if (node == null) {
+                node = graph.createVertex("Models");
+                OrientModelGraphUtils.setIdFieldValue(node, model.toString());
+            }
+            OrientModelGraphUtils.setActiveFieldValue(node, true);
+            node.save();
+            LOGGER.debug("Added model {} to the graph database", model);
+        } finally {
+            lockingMechanism.writeLock().unlock();
         }
-        OrientModelGraphUtils.setActiveFieldValue(node, true);
-        node.save();
-        LOGGER.debug("Added model {} to the graph database", model);
     }
 
     @Override
     public void removeModel(ModelDescription model) {
-        ODocument node = getModel(model.toString());
-        if (node == null) {
-            LOGGER.warn("Couldn't remove model {} since it wasn't present in the graph database", model);
-            return;
+        lockingMechanism.writeLock().lock();
+        try {
+            ODocument node = getModel(model.toString());
+            if (node == null) {
+                LOGGER.warn("Couldn't remove model {} since it wasn't present in the graph database", model);
+                return;
+            }
+            OrientModelGraphUtils.setActiveFieldValue(node, false);
+            node.save();
+            LOGGER.debug("Removed model {} from the graph database", model);
+        } finally {
+            lockingMechanism.writeLock().unlock();
         }
-        OrientModelGraphUtils.setActiveFieldValue(node, false);
-        node.save();
-        LOGGER.debug("Removed model {} from the graph database", model);
     }
 
     @Override
     public void addTransformation(TransformationDescription description) {
-        checkTransformationDescriptionId(description);
-        ODocument source = getOrCreateModel(description.getSourceModel().toString());
-        ODocument target = getOrCreateModel(description.getTargetModel().toString());
-        ODocument edge = graph.createEdge(source, target);
-        OrientModelGraphUtils.setIdFieldValue(edge, description.getId());
-        if (description.getFileName() != null) {
-            OrientModelGraphUtils.setFilenameFieldValue(edge, description.getFileName());
+        lockingMechanism.writeLock().lock();
+        try {
+            checkTransformationDescriptionId(description);
+            ODocument source = getOrCreateModel(description.getSourceModel().toString());
+            ODocument target = getOrCreateModel(description.getTargetModel().toString());
+            ODocument edge = graph.createEdge(source, target);
+            OrientModelGraphUtils.setIdFieldValue(edge, description.getId());
+            if (description.getFileName() != null) {
+                OrientModelGraphUtils.setFilenameFieldValue(edge, description.getFileName());
+            }
+            OrientModelGraphUtils.fillEdgeWithPropertyConnections(edge, description);
+            edge.save();
+            descriptions.put(description.getId(), description);
+            LOGGER.debug("Added transformation description {} to the graph database", description);
+        } finally {
+            lockingMechanism.writeLock().unlock();
         }
-        OrientModelGraphUtils.fillEdgeWithPropertyConnections(edge, description);
-        edge.save();
-        descriptions.put(description.getId(), description);
-        LOGGER.debug("Added transformation description {} to the graph database", description);
     }
 
     @Override
     public void removeTransformation(TransformationDescription description) {
-        String source = description.getSourceModel().toString();
-        String target = description.getTargetModel().toString();
-        for (ODocument edge : getEdgesBetweenModels(source, target)) {
-            String id = OrientModelGraphUtils.getIdFieldValue(edge);
-            if (description.getId() == null && isInternalId(id)) {
-                edge.delete();
-                descriptions.remove(id);
-                LOGGER.debug("Removed transformation description {} from the graph database", id);
-            } else if (id.equals(description.getId())) {
-                edge.delete();
-                descriptions.remove(id);
-                LOGGER.debug("Removed transformation description {} from the graph database", id);
-                break;
+        lockingMechanism.writeLock().lock();
+        try {
+            String source = description.getSourceModel().toString();
+            String target = description.getTargetModel().toString();
+            for (ODocument edge : getEdgesBetweenModels(source, target)) {
+                String id = OrientModelGraphUtils.getIdFieldValue(edge);
+                if (description.getId() == null && isInternalId(id)) {
+                    edge.delete();
+                    descriptions.remove(id);
+                    LOGGER.debug("Removed transformation description {} from the graph database", id);
+                } else if (id.equals(description.getId())) {
+                    edge.delete();
+                    descriptions.remove(id);
+                    LOGGER.debug("Removed transformation description {} from the graph database", id);
+                    break;
+                }
             }
+        } finally {
+            lockingMechanism.writeLock().unlock();
         }
     }
 
     @Override
     public List<TransformationDescription> getTransformationsPerFileName(String filename) {
-        String query = String.format("select from E where %s = ?", OrientModelGraphUtils.FILENAME);
-        List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>(query), filename);
-        List<TransformationDescription> result = new ArrayList<TransformationDescription>();
-        for (ODocument edge : edges) {
-            result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
+        lockingMechanism.readLock().lock();
+        try {
+            String query = String.format("select from E where %s = ?", OrientModelGraphUtils.FILENAME);
+            List<ODocument> edges = graph.query(new OSQLSynchQuery<ODocument>(query), filename);
+            List<TransformationDescription> result = new ArrayList<TransformationDescription>();
+            for (ODocument edge : edges) {
+                result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
+            }
+            return result;
+        } finally {
+            lockingMechanism.readLock().unlock();
         }
-        return result;
     }
 
     @Override
     public List<TransformationDescription> getTransformationPath(ModelDescription source, ModelDescription target,
             List<String> ids) {
-        if (ids == null) {
-            ids = new ArrayList<String>();
-        }
-        List<ODocument> path = recursivePathSearch(source.toString(), target.toString(), ids, new ODocument[0]);
-        List<TransformationDescription> result = new ArrayList<TransformationDescription>();
-        if (path != null) {
-            for (ODocument edge : path) {
-                result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
+        lockingMechanism.readLock().lock();
+        try {
+            if (ids == null) {
+                ids = new ArrayList<String>();
             }
-            return result;
+            List<ODocument> path = recursivePathSearch(source.toString(), target.toString(), ids, new ODocument[0]);
+            List<TransformationDescription> result = new ArrayList<TransformationDescription>();
+            if (path != null) {
+                for (ODocument edge : path) {
+                    result.add(descriptions.get(OrientModelGraphUtils.getIdFieldValue(edge)));
+                }
+                return result;
+            }
+            throw new IllegalArgumentException("No transformation description found");
+        } finally {
+            lockingMechanism.readLock().unlock();
         }
-        throw new IllegalArgumentException("No transformation description found");
     }
 
     @Override
     public Boolean isTransformationPossible(ModelDescription source, ModelDescription target, List<String> ids) {
+        lockingMechanism.readLock().lock();
         try {
             getTransformationPath(source, target, ids);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
+        } finally {
+            lockingMechanism.readLock().unlock();
         }
     }
 
@@ -331,7 +373,12 @@ public final class OrientModelGraph implements ModelGraph {
      * Returns true if the model is currently active, returns false if not.
      */
     public boolean isModelActive(ModelDescription model) {
-        ODocument node = getModel(model.toString());
-        return OrientModelGraphUtils.getActiveFieldValue(node);
+        lockingMechanism.readLock().lock();
+        try {
+            ODocument node = getModel(model.toString());
+            return OrientModelGraphUtils.getActiveFieldValue(node);
+        } finally {
+            lockingMechanism.readLock().unlock();
+        }
     }
 }
