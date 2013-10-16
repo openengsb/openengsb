@@ -17,6 +17,8 @@
 
 package org.openengsb.core.ekb.api;
 
+import java.util.UUID;
+
 /**
  * The persist interface provides the functions to maintain the models of the EDB. This includes the conversion of
  * models and sanity checks of models.
@@ -41,7 +43,10 @@ public interface PersistInterface {
 
     /**
      * Reverts the models which are contained in the commit with the given revision to the version they had in the
-     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown.
+     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown. If the context
+     * locking feature is enabled, the second parameter is used as a check if the current parent revision of a context
+     * is still the expected one and throws an EKBConcurrentException otherwise. If the feature is not enabled, this
+     * parameter is ignored.
      */
-    void revertCommit(String revision) throws EKBException;
+    void revertCommit(String revision, UUID expectedContextParentRevision) throws EKBException;
 }
