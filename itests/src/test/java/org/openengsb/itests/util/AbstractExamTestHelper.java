@@ -48,6 +48,7 @@ import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
+import org.drools.command.GetDefaultValue;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
@@ -391,10 +392,23 @@ public abstract class AbstractExamTestHelper {
                     "stomp"), (String) portNames.get("jms.stomp.port")),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                     .versionAsInProject()) };
+        mainOptions = combine(mainOptions, getDefaultEDBConfiguration());
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
         }
         return mainOptions;
+    }
+    
+    private static Option[] getDefaultEDBConfiguration() {
+        return new Option[]{
+            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
+                "url", "jdbc:h2:mem:itests"),
+            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
+                "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
+            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
+                "username", ""),
+            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
+                "password", "")};
     }
 
     public String getConfigProperty(String config, String name) throws IOException {

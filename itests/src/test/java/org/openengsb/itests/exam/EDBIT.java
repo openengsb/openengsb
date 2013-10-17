@@ -70,20 +70,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     public static Option[] myConfiguration() throws Exception {
         Option[] options = new Option[]{
             new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "url", "jdbc:h2:mem:itests"),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "username", ""),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "password", ""),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.ekb",
+                "etc/org.openengsb.ekb.cfg",
                 "modelUpdatePropagationMode", "DEACTIVATED"),
+            new KarafDistributionConfigurationFilePutOption(
+                "etc/org.openengsb.ekb.cfg",
+                "persistInterfaceLockingMode", "DEACTIVATED"),
             mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject()
         };
         return combine(baseConfiguration(), options);

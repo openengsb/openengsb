@@ -32,7 +32,7 @@ import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 public class EOEnhancerTestFullActivatedMode extends AbstractEngineeringObjectEnhancerTest {
     
     public EOEnhancerTestFullActivatedMode() {
-        super(EOMode.FULLY_ACTIVED);
+        super(EOMode.FULLY_ACTIVATED);
     }
 
     @Test
