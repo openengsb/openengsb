@@ -825,7 +825,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test(expected = EKBException.class)
     public void testRevertInvalidCommit_shouldThrowException() throws Exception {
-        persist.revertCommit(UUID.randomUUID().toString());
+        persist.revertCommit(UUID.randomUUID().toString(), query.getLastRevisionNumberOfContext(CONTEXT));
     }
 
     @Test
@@ -853,10 +853,10 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         TestModelDecorator result1 =
             new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
-        persist.revertCommit(revision2);
+        persist.revertCommit(revision2, query.getLastRevisionNumberOfContext(CONTEXT));
         TestModelDecorator result2 =
             new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
-        persist.revertCommit(revision);
+        persist.revertCommit(revision, query.getLastRevisionNumberOfContext(CONTEXT));
         TestModelDecorator result3 =
             new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
         assertThat(result1, notNullValue());
