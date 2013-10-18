@@ -26,7 +26,7 @@
   <cm:property-placeholder persistent-id="org.openengsb.ekb">
     <cm:default-properties>
       <cm:property name="modelUpdatePropagationMode" value="FULLY_ACTIVATED" />
-      <cm:property name="persistInterfaceLockingMode" value="DEACTIVATED" />
+      <cm:property name="persistInterfaceLockingMode" value="ACTIVATED" />
     </cm:default-properties>
   </cm:property-placeholder>
   

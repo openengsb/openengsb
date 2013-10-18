@@ -17,22 +17,27 @@
 
 package org.openengsb.itests.exam;
 
+import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
+import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.ModelWrapper;
+import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBConcurrentException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
-import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
-import org.openengsb.itests.exam.models.SubModelDecorator;
-import org.openengsb.itests.exam.models.TestModelDecorator;
+import org.openengsb.domain.example.model.SourceModelA;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -53,8 +58,9 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
                 "modelUpdatePropagationMode", "DEACTIVATED"),
             new KarafDistributionConfigurationFilePutOption(
                 "etc/org.openengsb.ekb.cfg",
-                "persistInterfaceLockingMode", "BOTH"),
-            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject()
+                "persistInterfaceLockingMode", "ACTIVATED"),
+            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example")
         };
         return combine(baseConfiguration(), options);
     }
@@ -70,35 +76,109 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
     
     @Test(expected = EKBConcurrentException.class)
     public void testIfUnexpectedParentRevisionThrowsException_shouldThrowException() throws Exception {
-        TestModelDecorator model = getTestModelDecorator();
+        SourceModelA model = new SourceModelA();
         model.setEdbId("unexpectedParentRevision/1");
-        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit, null);
         
-        model = getTestModelDecorator();
+        model = new SourceModelA();
         model.setEdbId("unexpectedParentRevision/2");
-        commit = getTestEKBCommit().addInsert(model.getModel());
+        commit = getTestEKBCommit().addInsert(model);
         // second time throws an exception since the expected parent revision is no longer null
-        persist.commit(commit);
+        persist.commit(commit, null);
     }
-
-    private TestModelDecorator loadTestModel(String oid) throws Exception {
-        return new TestModelDecorator(query.getModel(getTestModel(), getModelOid(oid)));
+    
+    @Test(expected = EKBConcurrentException.class) 
+    public void testIfConcurrentWritingInTheSameContextThrowsAnException_shouldThrowException() throws Exception {
+        EKBCommit commit = getTestEKBCommit();
+        for (int i = 0; i < 30; i++) {
+            SourceModelA model = new SourceModelA();
+            model.setEdbId("concurrentTest/1/" + i);
+            commit.addInsert(model);
+        }
+        EKBCommit anotherCommit = getTestEKBCommit();
+        SourceModelA model = new SourceModelA();
+        model.setEdbId("concurrentTest/1/30");
+        anotherCommit.addInsert(model);
+        
+        ModelCommitThread thread = new ModelCommitThread(persist, commit, CONTEXT);
+        thread.start();
+        Thread.sleep(20);
+        // throws an exception since the other commit is still running in the context
+        persist.commit(anotherCommit);
     }
-
-    private SubModelDecorator loadSubModel(String oid) throws Exception {
-        return new SubModelDecorator(query.getModel(getSubModel(), getModelOid(oid)));
+    
+    @Test
+    public void testIfConcurrentWritingInDifferentContextsWorks_shouldWork() throws Exception {
+        String otherContext = "a_different_context";
+        String oid = "";
+        EKBCommit commit = getTestEKBCommit();
+        for (int i = 0; i < 15; i++) {
+            SourceModelA model = new SourceModelA();
+            model.setEdbId("concurrentTest/2/" + i);
+            commit.addInsert(model);
+            if (i == 14) {
+                oid = ModelWrapper.wrap(model).retrieveInternalModelId().toString();
+            }
+        }
+        ModelCommitThread thread = new ModelCommitThread(persist, commit, CONTEXT);
+        thread.start();
+        ModelCommitThread thread2 = new ModelCommitThread(persist, commit, otherContext);
+        thread2.start();
+        thread.join();
+        thread2.join();
+        
+        ContextHolder.get().setCurrentContextId(CONTEXT);
+        assertThat(edbService.getObject(getModelOid(oid)), notNullValue());
+        ContextHolder.get().setCurrentContextId(otherContext);
+        assertThat(edbService.getObject(getModelOid(oid)), notNullValue());
     }
-
-    private TestModelDecorator getTestModelDecorator() throws Exception {
-        return new TestModelDecorator(getTestModel().newInstance());
+    
+    @Test
+    public void testIfCheckForContextIsDoneCorrectly_shouldWork() throws Exception {
+        ContextHolder.get().setCurrentContextId("A");
+        EKBCommit commit = getTestEKBCommit();
+        SourceModelA model = new SourceModelA();
+        model.setEdbId("contextSwitchTest/1");
+        String oid = ModelWrapper.wrap(model).retrieveInternalModelId().toString();
+        model.setName("A");
+        commit.addInsert(model);
+        persist.commit(commit, query.getLastRevisionNumberOfContext("A"));
+        ContextHolder.get().setCurrentContextId("B");
+        persist.commit(commit, query.getLastRevisionNumberOfContext("B"));
+        model.setName("B");
+        commit = getTestEKBCommit();
+        commit.addUpdate(model);
+        ContextHolder.get().setCurrentContextId("A");
+        persist.commit(commit, query.getLastRevisionNumberOfContext("A"));
+        ContextHolder.get().setCurrentContextId("B");
+        persist.commit(commit, query.getLastRevisionNumberOfContext("B"));
+        
+        ContextHolder.get().setCurrentContextId("A");
+        EDBObject obj = edbService.getObject(getModelOid(oid));
+        assertThat(obj, notNullValue());
+        assertThat(obj.getString("name"), is("B"));
+        ContextHolder.get().setCurrentContextId("B");
+        obj = edbService.getObject(getModelOid(oid));
+        assertThat(obj, notNullValue());
+        assertThat(obj.getString("name"), is("B"));
     }
-
-    private SubModelDecorator getSubModelDecorator() throws Exception {
-        return new SubModelDecorator(getSubModel().newInstance());
-    }
-
-    private PrimitivePropertyModelDecorator getPrimitivePropertyModelDecorator() throws Exception {
-        return new PrimitivePropertyModelDecorator(getPrimitivePropertyModel().newInstance());
+    
+    class ModelCommitThread extends Thread {
+        private PersistInterface persist;
+        private EKBCommit commit;
+        private String contextId;
+        
+        public ModelCommitThread(PersistInterface persist, EKBCommit commit, String contextId) {
+            this.persist = persist;
+            this.commit = commit;
+            this.contextId = contextId;
+        }
+        
+        @Override
+        public void run() {
+            ContextHolder.get().setCurrentContextId(contextId);
+            persist.commit(commit);
+        }
     }
 }

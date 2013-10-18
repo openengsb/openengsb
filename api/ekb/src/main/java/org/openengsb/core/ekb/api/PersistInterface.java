@@ -32,9 +32,26 @@ public interface PersistInterface {
     void commit(EKBCommit commit) throws SanityCheckException, EKBException;
 
     /**
+     * Does a sanity check of the EKBCommit and the status of the EDB when this models are changed. After passed sanity
+     * check, the models are persisted. The expectedContextHeadRevision defines which revision should be the head for
+     * the current context. If there is a different head revision for the context, an EKBConcurrentException is thrown.
+     * A null value for the expectedContextHeadRevision means that it is assumed that there is no commit for the context
+     * so far.
+     */
+    void commit(EKBCommit commit, UUID expectedContextHeadRevision) throws SanityCheckException, EKBException;
+
+    /**
      * Persist the changes of the EKBCommit without performing sanity checks of them.
      */
     void forceCommit(EKBCommit commit) throws EKBException;
+
+    /**
+     * Persist the changes of the EKBCommit without performing sanity checks of them. The expectedContextHeadRevision
+     * defines which revision should be the head for the current context. If there is a different head revision for the
+     * context, an EKBConcurrentException is thrown. A null value for the expectedContextHeadRevision means that it is
+     * assumed that there is no commit for the context so far.
+     */
+    void forceCommit(EKBCommit commit, UUID expectedContextHeadRevision) throws EKBException;
 
     /**
      * Only perform the sanity checks of the EKBCommit.
@@ -43,10 +60,16 @@ public interface PersistInterface {
 
     /**
      * Reverts the models which are contained in the commit with the given revision to the version they had in the
-     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown. If the context
-     * locking feature is enabled, the second parameter is used as a check if the current parent revision of a context
-     * is still the expected one and throws an EKBConcurrentException otherwise. If the feature is not enabled, this
-     * parameter is ignored.
+     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown.
      */
-    void revertCommit(String revision, UUID expectedContextParentRevision) throws EKBException;
+    void revertCommit(String revision) throws EKBException;
+
+    /**
+     * Reverts the models which are contained in the commit with the given revision to the version they had in the
+     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown. The
+     * expectedContextHeadRevision defines which revision should be the head for the current context. If there is a
+     * different head revision for the context, an EKBConcurrentException is thrown. A null value for the
+     * expectedContextHeadRevision means that it is assumed that there is no commit for the context so far.
+     */
+    void revertCommit(String revision, UUID expectedContextHeadRevision) throws EKBException;
 }
