@@ -20,10 +20,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import org.junit.Test;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
+import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
@@ -49,28 +57,16 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         ci = getEDBCommit();
         ci.insert(v1);
         long time2 = db.commit(ci);
-
-        List<EDBObject> list1 = tools.queryByKeyValue("A", "B");
-        List<EDBObject> list2 = tools.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Dog", "Food");
-            }
-        });
-
-        List<EDBObject> list3 = tools.queryByMap(new HashMap<String, Object>() {
-            {
-                put("Cow", "Milk");
-            }
-        });
-
-        List<EDBObject> list4 = tools.queryByMap(new HashMap<String, Object>() {
-            {
-                put("A", "B");
-                put("Cow", "Milk");
-                put("House", "Garden");
-            }
-        });
+	
+	QueryRequest req = QueryRequest.query("A", "B");
+        List<EDBObject> list1 = tools.query(req);
+        req = QueryRequest.query("A", "B").addParameter("Dog", "Food");
+        List<EDBObject> list2 = tools.query(req);
+        req = QueryRequest.query("Cow", "Milk");
+        List<EDBObject> list3 = tools.query(req);
+        req = QueryRequest.query("A", "B").addParameter("Cow", "Milk")
+                .addParameter("House", "Garden");
+        List<EDBObject> list4 = tools.query(req);
 
         assertThat(list1.size(), is(1));
         assertThat(list2.size(), is(1));
@@ -139,9 +135,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 
         long time3 = db.commit(ci);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("pre:KeyB", "pre:Value A 1");
-        List<EDBObject> result = tools.query(map, time2);
+        List<EDBObject> result = tools.query(QueryRequest.query("pre:KeyB", "pre:Value A 1").setTimestamp(time2));
 
         boolean b1 = false;
         boolean b2 = false;
@@ -195,7 +189,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("K", "B");
-        List<EDBObject> result = tools.query(map, System.currentTimeMillis());
+        List<EDBObject> result = tools.query(QueryRequest.query("K", "B"));
         assertThat(result.size(), is(1));
     }
 	
@@ -226,7 +220,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         db.commit(ci);
 
         Map<String, Object> map = new HashMap<String, Object>();
-        List<EDBObject> result = tools.query(map, System.currentTimeMillis());
+        List<EDBObject> result = tools.query(QueryRequest.create());
         EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
         EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
         assertThat(result.size(), is(2));
@@ -283,9 +277,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 
         long time3 = db.commit(ci);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("KeyB", "Value A 1");
-        List<EDBObject> result = tools.query(map, time3);
+        List<EDBObject> result = tools.query(QueryRequest.query("KeyB", "Value A 1").setTimestamp(time3));
 
         boolean b1 = false;
         boolean b2 = false;
@@ -319,13 +311,209 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 	@Test
 	public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
-        putValue("bla_kdjer", "test", data1);
+        putValue("bla", "teststring", data1);
         EDBObject v1 = tools.createEDBObject("/test/query/8", data1);
         EDBCommit ci = getEDBCommit();
         ci.insert(v1);
         db.commit(ci);
-        List<EDBObject> result = tools.queryByKeyValue("bla%", "test");
+        List<EDBObject> result = tools.query(QueryRequest.query("bla", "test%").wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
+	result = tools.query(QueryRequest.query("bla", "test_tring").wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/8"));
+        result = tools.query(QueryRequest.query("bla", "test%").wildcardUnaware());
+        assertThat(result.size(), is(0));
     }
+	
+    @Test
+    public void testIfRetrievingCommitByRevisionWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = tools.createEDBObject("/test/query/9", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        db.commit(ci);
+        EDBCommit test = tools.getCommitByRevision(ci.getRevisionNumber().toString());
+        assertThat(test, notNullValue());
+        assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
+    }
+    
+    @Test
+    public void testIfRetrievingCommitByRevisionWithIntermediateCommitsWorks_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = tools.createEDBObject("/test/query/10", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        db.commit(ci);
+        String revision = ci.getRevisionNumber().toString();
+        obj.putEDBObjectEntry("test", "test2", String.class);
+        EDBCommit ci2 = getEDBCommit();
+        ci2.update(obj);
+        db.commit(ci2);
+        EDBCommit test = tools.getCommitByRevision(revision);
+        assertThat(test, notNullValue());
+        assertThat(test, is(ci));
+        assertThat(test.getInserts().get(0).getString("test"), is("test"));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testIfRetrievingCommitByInvalidRevisionFails_shouldFail() throws Exception {
+        tools.getCommitByRevision(UUID.randomUUID().toString());
+    }
+    
+    @Test
+    public void testIfRetrievingCommitRevisionsByRequestGivesCorrectRevisions_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
+        entries.put("test", new EDBObjectEntry("test", "test", String.class));
+        EDBObject obj = tools.createEDBObject("/test/query/11", entries);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(obj);
+        Long timestamp1 = db.commit(ci);
+        String revision1 = ci.getRevisionNumber().toString();
+        obj.putEDBObjectEntry("test2", "test2", String.class);
+        ci = getEDBCommit();
+        ci.setComment("this is a comment");
+        ci.update(obj);
+        Long timestamp2 = db.commit(ci);
+        String revision2 = ci.getRevisionNumber().toString();
+        CommitQueryRequest request = new CommitQueryRequest();
+        request.setCommitter("wrongName");
+        assertThat(tools.getRevisionsOfMatchingCommits(request).size(), is(0));
+        request = new CommitQueryRequest();
+        request.setCommitter("wrongContext");
+        assertThat(tools.getRevisionsOfMatchingCommits(request).size(), is(0));
+
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp1);
+        List<CommitMetaInfo> revisions = tools.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(2));
+        assertThat(revisions.get(0).getRevision(), is(revision1));
+        assertThat(revisions.get(1).getRevision(), is(revision2));
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp1);
+        request.setCommitter("testuser");
+        revisions = tools.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(2));
+        assertThat(revisions.get(0).getRevision(), is(revision1));
+        assertThat(revisions.get(1).getRevision(), is(revision2));
+        request = new CommitQueryRequest();
+        request.setStartTimestamp(timestamp2);
+
+        revisions = tools.getRevisionsOfMatchingCommits(request);
+        assertThat(revisions.size(), is(1));
+        assertThat(revisions.get(0).getRevision(), is(revision2));
+        assertThat(revisions.get(0).getCommitter(), is(COMMITTER));
+        assertThat(revisions.get(0).getContext(), is(CONTEXT));
+        assertThat(revisions.get(0).getTimestamp(), is(timestamp2));
+        assertThat(revisions.get(0).getComment(), is("this is a comment"));
+    }
+    
+    @Test
+    public void testIfQueryingWithCaseInsensitivity_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        putValue("test", "This is A test", data1);
+        EDBObject v1 = tools.createEDBObject("/test/query/12", data1);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(v1);
+        db.commit(ci);
+        List<EDBObject> result = tools.query(QueryRequest.query("test", "this is a test").caseInsensitive());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/12"));
+        result = tools.query(QueryRequest.query("test", "this is a test").caseSensitive());
+        assertThat(result.size(), is(0));
+    }
+
+    @Test
+    public void testIfQueryingWithCaseSensitivityAndWildcards_shouldWork() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
+        putValue("test", "This is A new test", data1);
+        EDBObject v1 = tools.createEDBObject("/test/query/13", data1);
+        EDBCommit ci = getEDBCommit();
+        ci.insert(v1);
+        db.commit(ci);
+        List<EDBObject> result = tools.query(QueryRequest.query("test", "this is a % test")
+            .caseInsensitive().wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/13"));
+        result = tools.query(QueryRequest.query("test", "this is a % test").caseInsensitive().wildcardUnaware());
+        assertThat(result.size(), is(0));
+        result = tools.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardUnaware());
+        assertThat(result.size(), is(0));
+        result = tools.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardAware());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/13"));
+    }
+    
+    @Test
+    public void testIfLastRevisionNumberOfContextWorks_shouldReturnCorrectRevisions() throws Exception {
+        String context1 = "context1";
+        String context2 = "context2";
+        String context3 = "context3";
+        ContextHolder.get().setCurrentContextId(context1);
+        EDBObject obj = tools.createEDBObject("/test/context/1");
+        EDBCommit commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision1 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(context2);
+        obj = tools.createEDBObject("/test/context/2");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision2 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(context3);
+        obj = tools.createEDBObject("/test/context/3");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        UUID revision3 = commit.getRevisionNumber();
+        ContextHolder.get().setCurrentContextId(CONTEXT);
+        obj = tools.createEDBObject("/test/context/4");
+        commit = getEDBCommit();
+        commit.insert(obj);
+        db.commit(commit);
+        
+        assertThat(tools.getLastRevisionNumberOfContext(context1), is(revision1));
+        assertThat(tools.getLastRevisionNumberOfContext(context2), is(revision2));
+        assertThat(tools.getLastRevisionNumberOfContext(context3), is(revision3));
+        assertThat(tools.getLastRevisionNumberOfContext("notExistingContext"), nullValue());
+    }
+    
+    @Test
+    public void testIfOrRequestsAreWorking_shouldReturnCorrectObjects() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<>();
+        putValue("Cow", "Milk", data1);
+        putValue("Cheese", "Cheddar", data1);
+        EDBObject v1 = tools.createEDBObject("/test/query/14/1", data1);
+        Map<String, EDBObjectEntry> data2 = new HashMap<>();
+        putValue("Animal", "Dog", data2);
+        putValue("Cow", "Milk", data2);
+        EDBObject v2 = tools.createEDBObject("/test/query/14/2", data2);
+        Map<String, EDBObjectEntry> data3 = new HashMap<>();
+        putValue("House", "Garden", data3);
+        EDBObject v3 = tools.createEDBObject("/test/query/14/3", data3);
+        Map<String, EDBObjectEntry> data4 = new HashMap<>();
+        putValue("Cheese", "Cheddar", data4);
+        putValue("Animal", "Dog", data4);
+        EDBObject v4 = tools.createEDBObject("/test/query/14/4", data4);
+        EDBCommit commit = getEDBCommit();
+        commit.insert(v1);
+        commit.insert(v2);
+        commit.insert(v3);
+        commit.insert(v4);
+        db.commit(commit);
+        QueryRequest request = QueryRequest.create().orJoined();
+        request.addParameter("Cow", "Milk");
+        assertThat(tools.query(request).size(), is(2));
+        request.addParameter("Animal", "Dog");
+        assertThat(tools.query(request).size(), is(3));
+        request.removeParameter("Cow");
+        assertThat(tools.query(request).size(), is(2));
+        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
+        assertThat(tools.query(request).size(), is(4));
+    }
+
 }

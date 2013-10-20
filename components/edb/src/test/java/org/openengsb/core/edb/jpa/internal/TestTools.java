@@ -17,6 +17,10 @@ package org.openengsb.core.edb.jpa.internal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
@@ -98,21 +102,27 @@ public class TestTools implements Tools {
 		return db.getResurrectedOIDs();
 	}
 
-	@Override
-	public List<EDBObject> queryByKeyValue(String key, Object value)
-	{
-		return db.queryByKeyValue(key, value);
-	}
+    @Override
+    public List<EDBObject> query(QueryRequest request)
+    {
+	return db.query(request);
+    }
 
-	@Override
-	public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp)
-	{
-		return db.query(queryMap, timestamp);
-	}
+    @Override
+    public EDBCommit getCommitByRevision(String revision)
+    {
+	return db.getCommitByRevision(revision);
+    }
 
-	@Override
-	public List<EDBObject> queryByMap(Map<String, Object> queryMap)
-	{
-		return db.queryByMap(queryMap);
-	}
+    @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request)
+    {
+	return db.getRevisionsOfMatchingCommits(request);
+    }
+
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId)
+    {
+	return db.getLastRevisionNumberOfContext(contextId);
+    }
 }

@@ -87,6 +87,8 @@ public interface JPADao {
      * this revision
      */
     JPACommit getJPACommit(String revision) throws EDBException;
+    
+    JPACommit getJPACommit(String revision, String sid) throws EDBException;
 
     /**
      * Returns a list of oids from the JPAObjects which has been resurrected
@@ -107,6 +109,8 @@ public interface JPADao {
      * object.
      */
     List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
+    
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException;
 
     /**
      * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.
@@ -126,6 +130,8 @@ public interface JPADao {
      * Returns a list of JPAObjects which match to the parameters in the given query request
      */
     List<JPAObject> query(QueryRequest request) throws EDBException;
+    
+    List<JPAObject> query(QueryRequest request, String sid) throws EDBException;
 
     /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.

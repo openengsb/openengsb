@@ -17,6 +17,10 @@ package org.openengsb.core.edb.jpa.internal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import org.openengsb.core.api.model.CommitMetaInfo;
+import org.openengsb.core.api.model.CommitQueryRequest;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
@@ -50,9 +54,11 @@ public interface Tools {
 	
 	List<String> getResurrectedOIDs();
 	
-	List<EDBObject> queryByKeyValue(String key, Object value);
+	List<EDBObject> query(QueryRequest request);
 	
-	List<EDBObject> query(Map<String, Object> queryMap, Long timestamp);
+	EDBCommit getCommitByRevision(String revision);
 	
-	List<EDBObject> queryByMap(Map<String, Object> queryMap);
+	List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request);
+	
+	UUID getLastRevisionNumberOfContext(String contextId);
 }

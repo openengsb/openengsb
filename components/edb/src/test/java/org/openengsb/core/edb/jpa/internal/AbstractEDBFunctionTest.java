@@ -63,7 +63,7 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         checkTimeStamps(Arrays.asList(time));
     }
 	
-	@Test(expected = EDBException.class)
+    @Test(expected = EDBException.class)
     public void testGetInexistantObject_shouldThrowException() throws Exception {
         tools.getEDBObject("/this/object/does/not/exist");
     }

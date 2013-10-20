@@ -63,7 +63,9 @@ public class EDBService extends AbstractEDBService {
 	
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-		return getObject(oid, null);
+        getLogger().debug("loading newest JPAObject with the oid {}", new Object[]{oid});
+        JPAObject temp = dao.getJPAObject(oid, null);
+	return EDBUtils.convertJPAObjectToEDBObject(temp);
     }
 
     @Override 
@@ -71,7 +73,7 @@ public class EDBService extends AbstractEDBService {
         getLogger().debug("loading newest JPAObject with the oid {} and sid {}", new Object[]{oid, sid});
         JPAObject temp = dao.getJPAObject(oid, sid);
 	return EDBUtils.convertJPAObjectToEDBObject(temp);
-	}
+    }
 		
 	@Override
     public EDBObject getObject(String oid, Long timestamp) throws EDBException {
@@ -157,12 +159,17 @@ public class EDBService extends AbstractEDBService {
         }
         throw new EDBException("Failed to get head for timestamp " + Long.toString(timestamp));
     }
-
+    
     @Override
     public List<EDBObject> query(QueryRequest request) throws EDBException {
+	return this.query(request, null);
+    }
+
+    @Override
+    public List<EDBObject> query(QueryRequest request, String sid) throws EDBException {
         getLogger().debug("Query for objects based on the request: {}", request);
         try {
-            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(request));
+            return EDBUtils.convertJPAObjectsToEDBObjects(dao.query(request, sid));
         } catch (Exception ex) {
             throw new EDBException("Failed to query for objects with the given map", ex);
         }
@@ -212,11 +219,16 @@ public class EDBService extends AbstractEDBService {
         JPACommit result = dao.getLastCommit(queryMap, sid);
         return result;
     }
-
+    
     @Override
     public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
+        return this.getRevisionsOfMatchingCommits(request, null);
+    }
+
+    @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException {
         getLogger().debug("Request revisions of matching commits for the request {}", request);
-        return dao.getRevisionsOfMatchingCommits(request);
+        return dao.getRevisionsOfMatchingCommits(request, sid);
     }
 
     @Override
@@ -240,8 +252,13 @@ public class EDBService extends AbstractEDBService {
     
     @Override
     public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
+        return this.getLastRevisionNumberOfContext(contextId, null);
+    }
+    
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId, String sid) throws EDBException {
         try {
-            return getLastCommitByKeyValue("context", contextId).getRevisionNumber();
+            return getLastCommitByKeyValue("context", contextId, sid).getRevisionNumber();
         } catch (EDBException e) {
             getLogger().debug("There was no commit so far under this context, so null is returned");
         }
@@ -266,7 +283,12 @@ public class EDBService extends AbstractEDBService {
 
     @Override
     public EDBCommit getCommitByRevision(String revision) throws EDBException {
-        return dao.getJPACommit(revision);
+        return this.getCommitByRevision(revision, null);
+    }
+    
+    @Override
+    public EDBCommit getCommitByRevision(String revision, String sid) throws EDBException {
+        return dao.getJPACommit(revision, sid);
     }
 
     @Override

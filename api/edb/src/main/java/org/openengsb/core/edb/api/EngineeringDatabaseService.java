@@ -87,6 +87,8 @@ public interface EngineeringDatabaseService {
      * Queries for EDBObject based on the given query request object
      */
     List<EDBObject> query(QueryRequest request) throws EDBException;
+    
+    List<EDBObject> query(QueryRequest request, String sid) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -104,6 +106,8 @@ public interface EngineeringDatabaseService {
      * Returns a list of commit meta information of all commits which are matching the given request.
      */
     List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
+    
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException;
 
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
@@ -117,6 +121,8 @@ public interface EngineeringDatabaseService {
      * string or if a database error occurs, an EDBException is thrown.
      */
     EDBCommit getCommitByRevision(String revision) throws EDBException;
+    
+    EDBCommit getCommitByRevision(String revision, String sid) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -177,4 +183,6 @@ public interface EngineeringDatabaseService {
      * Returns the revision of the last commit performed in the EDB under the given contextId.
      */
     UUID getLastRevisionNumberOfContext(String contextId) throws EDBException;
+    
+    UUID getLastRevisionNumberOfContext(String contextId, String sid) throws EDBException;
 }
