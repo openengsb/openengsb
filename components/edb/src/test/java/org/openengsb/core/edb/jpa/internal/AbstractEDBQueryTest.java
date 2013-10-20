@@ -6,13 +6,13 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.openengsb.core.edb.jpa.internal;
 
@@ -35,12 +35,11 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
+public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
 
-public abstract class AbstractEDBQueryTest extends AbstractEDBTest
-{
-	@SuppressWarnings("serial")
+    @SuppressWarnings("serial")
     @Test
-	public void testQueryWithSomeAspects_shouldWork() throws Exception {
+    public void testQueryWithSomeAspects_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("A", "B", data1);
         putValue("Cow", "Milk", data1);
@@ -57,8 +56,8 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         ci = getEDBCommit();
         ci.insert(v1);
         long time2 = db.commit(ci);
-	
-	QueryRequest req = QueryRequest.query("A", "B");
+
+        QueryRequest req = QueryRequest.query("A", "B");
         List<EDBObject> list1 = tools.query(req);
         req = QueryRequest.query("A", "B").addParameter("Dog", "Food");
         List<EDBObject> list2 = tools.query(req);
@@ -75,9 +74,9 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
 
         checkTimeStamps(Arrays.asList(time1, time2));
     }
-	
-	@Test
-	public void testQueryOfOldVersion_shouldWork() throws Exception {
+
+    @Test
+    public void testQueryOfOldVersion_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         putValue("pre:KeyA", "pre:Value A 1", data1v1);
         putValue("pre:KeyB", "pre:Value A 1", data1v1);
@@ -160,9 +159,9 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(time2 > 0, is(true));
         assertThat(time3 > 0, is(true));
     }
-	
-	@Test
-	public void testQueryWithTimestamp_shouldWork() throws Exception {
+
+    @Test
+    public void testQueryWithTimestamp_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Cow", "Milk", data1);
@@ -192,9 +191,9 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         List<EDBObject> result = tools.query(QueryRequest.query("K", "B"));
         assertThat(result.size(), is(1));
     }
-	
-	@Test
-	public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
+
+    @Test
+    public void testQueryWithTimestampAndEmptyMap_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("K", "B", data1);
         putValue("Cow", "Milk", data1);
@@ -227,9 +226,9 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(result1.containsKey("K"), is(false));
         assertThat(result2.containsKey("Dog"), is(true));
     }
-	
-	@Test
-	public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
+
+    @Test
+    public void testQueryOfLastKnownVersion_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1v1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 1", data1v1);
         putValue("KeyB", "Value A 1", data1v1);
@@ -307,9 +306,9 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(time2 > 0, is(true));
         assertThat(time3 > 0, is(true));
     }
-	
-	@Test
-	public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
+
+    @Test
+    public void testIfQueryingWithLikeWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("bla", "teststring", data1);
         EDBObject v1 = tools.createEDBObject("/test/query/8", data1);
@@ -319,13 +318,13 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         List<EDBObject> result = tools.query(QueryRequest.query("bla", "test%").wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
-	result = tools.query(QueryRequest.query("bla", "test_tring").wildcardAware());
+        result = tools.query(QueryRequest.query("bla", "test_tring").wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/8"));
         result = tools.query(QueryRequest.query("bla", "test%").wildcardUnaware());
         assertThat(result.size(), is(0));
     }
-	
+
     @Test
     public void testIfRetrievingCommitByRevisionWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
@@ -339,7 +338,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(test, is(ci));
         assertThat(test.getInserts().get(0).getString("test"), is("test"));
     }
-    
+
     @Test
     public void testIfRetrievingCommitByRevisionWithIntermediateCommitsWorks_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
@@ -358,12 +357,12 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(test, is(ci));
         assertThat(test.getInserts().get(0).getString("test"), is("test"));
     }
-    
+
     @Test(expected = EDBException.class)
     public void testIfRetrievingCommitByInvalidRevisionFails_shouldFail() throws Exception {
         tools.getCommitByRevision(UUID.randomUUID().toString());
     }
-    
+
     @Test
     public void testIfRetrievingCommitRevisionsByRequestGivesCorrectRevisions_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> entries = new HashMap<String, EDBObjectEntry>();
@@ -410,7 +409,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(revisions.get(0).getTimestamp(), is(timestamp2));
         assertThat(revisions.get(0).getComment(), is("this is a comment"));
     }
-    
+
     @Test
     public void testIfQueryingWithCaseInsensitivity_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
@@ -435,7 +434,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         ci.insert(v1);
         db.commit(ci);
         List<EDBObject> result = tools.query(QueryRequest.query("test", "this is a % test")
-            .caseInsensitive().wildcardAware());
+                .caseInsensitive().wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
         result = tools.query(QueryRequest.query("test", "this is a % test").caseInsensitive().wildcardUnaware());
@@ -446,7 +445,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
     }
-    
+
     @Test
     public void testIfLastRevisionNumberOfContextWorks_shouldReturnCorrectRevisions() throws Exception {
         String context1 = "context1";
@@ -475,13 +474,13 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest
         commit = getEDBCommit();
         commit.insert(obj);
         db.commit(commit);
-        
+
         assertThat(tools.getLastRevisionNumberOfContext(context1), is(revision1));
         assertThat(tools.getLastRevisionNumberOfContext(context2), is(revision2));
         assertThat(tools.getLastRevisionNumberOfContext(context3), is(revision3));
         assertThat(tools.getLastRevisionNumberOfContext("notExistingContext"), nullValue());
     }
-    
+
     @Test
     public void testIfOrRequestsAreWorking_shouldReturnCorrectObjects() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<>();

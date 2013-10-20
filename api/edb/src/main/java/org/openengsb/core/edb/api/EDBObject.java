@@ -1,20 +1,15 @@
 /**
- * Licensed to the Austrian Association for Software Tool Integration (AASTI)
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership. The AASTI licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership.
+ * The AASTI licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
-
 package org.openengsb.core.edb.api;
 
 import java.util.HashMap;
@@ -26,26 +21,26 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, EDBObjectEntry> {
+
     private static final String OID_CONST = "oid";
     private static final String DELETED_CONST = "isDeleted";
 
-    
-	private EDBStage stage;
-	
-	/**
+    private EDBStage stage;
+
+    /**
      * Create an EDBObject with a specified OID.
      */
     public EDBObject(String oid) {
         super();
         setOID(oid);
-		this.stage = null;
+        this.stage = null;
     }
-	
-	public EDBObject(String oid, EDBStage stage){
-		super();
-		this.stage = stage;
-		this.setOID(oid);
-	}
+
+    public EDBObject(String oid, EDBStage stage) {
+        super();
+        this.stage = stage;
+        this.setOID(oid);
+    }
 
     /**
      * Create an EDBObject using a Map of data. The OID is stored after loading the data Map, so any already existing
@@ -53,15 +48,15 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      */
     public EDBObject(String oid, Map<String, EDBObjectEntry> data) {
         super(data);
-		this.setOID(oid);
+        this.setOID(oid);
     }
-	
-	public EDBObject(String oid, Map<String, EDBObjectEntry> data, EDBStage stage) {
+
+    public EDBObject(String oid, Map<String, EDBObjectEntry> data, EDBStage stage) {
         super(data);
-		this.stage = stage;
-		this.setOID(oid);
+        this.stage = stage;
+        this.setOID(oid);
     }
-	
+
     /**
      * Retrieve the timestamp for this object.
      */
@@ -192,8 +187,8 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
      * Adds an EDBObjectEntry to this EDBObject
      */
     public void putEDBObjectEntry(String key, Object value, String type) {
-		put(key, new EDBObjectEntry(key, value, type));
-	}
+        put(key, new EDBObjectEntry(key, value, type));
+    }
 
     /**
      * Adds an EDBObjectEntry to this EDBObject
@@ -230,12 +225,12 @@ public class EDBObject extends HashMap<String, EDBObjectEntry> {
         builder.append(" \"").append(entry.getKey()).append("\"");
         builder.append(" : ").append(entry.getValue());
     }
-    
+
     public void setEDBStage(EDBStage stage) {
-		this.stage = stage;
-	}
-	
-	public EDBStage getEDBStage(){
-		return this.stage;
-	}
+        this.stage = stage;
+    }
+
+    public EDBStage getEDBStage() {
+        return this.stage;
+    }
 }

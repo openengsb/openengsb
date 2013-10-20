@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
@@ -44,6 +42,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit extends VersionedEntity implements EDBCommit {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JPACommit.class);
 
     @Column(name = "COMMITER", length = 50)
@@ -60,9 +59,9 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private String revision;
     @Column(name = "PARENT")
     private String parent;
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@Column(name="STAGE",nullable = true)
-	private JPAStage stage;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "STAGE", nullable = true)
+    private JPAStage stage;
     @Column(name = "DOMAIN")
     private String domainId;
     @Column(name = "CONNECTOR")
@@ -79,26 +78,26 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> deletions;
 
-	
     /**
-     * the empty constructor is only for the jpa enhancer. Do not use it in real code.
+     * the empty constructor is only for the jpa enhancer. Do not use it in real
+     * code.
      */
     @Deprecated
-	public JPACommit() {
+    public JPACommit() {
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
         deletions = new ArrayList<String>();
-	}
-	
-	public JPACommit(String committer, String contextId) {
-		this.committer = committer;
+    }
+
+    public JPACommit(String committer, String contextId) {
+        this.committer = committer;
         this.context = contextId;
         this.stage = null;
         deletions = new ArrayList<String>();
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
         this.revision = UUID.randomUUID().toString();
-    }		
+    }
 
     @Override
     public void setCommitted(Boolean committed) {
@@ -116,7 +115,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         objects.addAll(updates);
         return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
-    
+
     public List<JPAObject> getJPAObjects() {
         List<JPAObject> objects = new ArrayList<JPAObject>();
         objects.addAll(inserts);
@@ -208,17 +207,17 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return inserts != null ? EDBUtils.convertJPAObjectsToEDBObjects(inserts)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getInsertedObjects() {
         return inserts != null ? inserts : new ArrayList<JPAObject>();
     }
 
     @Override
     public List<EDBObject> getUpdates() {
-        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates) 
+        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getUpdatedObjects() {
         return updates != null ? updates : new ArrayList<JPAObject>();
     }
@@ -237,7 +236,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void setHeadRevisionNumber(UUID head) {
         this.parent = head != null ? head.toString() : null;
     }
-    
+
     @Override
     public String getDomainId() {
         return domainId;
@@ -278,15 +277,13 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         this.comment = comment;
     }
 
-	@Override
-	public EDBStage getEDBStage()
-	{
-		return this.stage;
-	}
+    @Override
+    public EDBStage getEDBStage() {
+        return this.stage;
+    }
 
-	@Override
-	public void setEDBStage(EDBStage stage)
-	{
-		this.stage = (JPAStage)stage;
-	}
+    @Override
+    public void setEDBStage(EDBStage stage) {
+        this.stage = (JPAStage) stage;
+    }
 }

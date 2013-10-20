@@ -6,13 +6,13 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.openengsb.core.edb.jpa.internal;
 
@@ -33,18 +33,17 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
-import org.openengsb.core.edb.api.EDBStage;
 
 public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
-	
-	@Test
-	public void testOpenDatabase_shouldWork() throws Exception {
+
+    @Test
+    public void testOpenDatabase_shouldWork() throws Exception {
         assertThat(db, notNullValue());
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testCommit_shouldWork() throws Exception {
-		
+
         EDBObject obj = tools.createEDBObject("Tester");
         obj.putEDBObjectEntry("Test", "Hooray");
         EDBCommit ci = tools.createEDBCommit(Arrays.asList(obj), null, null);
@@ -58,17 +57,17 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(obj, notNullValue());
         assertThat(hooray, notNullValue());
 
-		tools.assertStage(obj.getEDBStage());
-		
+        tools.assertStage(obj.getEDBStage());
+
         checkTimeStamps(Arrays.asList(time));
     }
-	
+
     @Test(expected = EDBException.class)
     public void testGetInexistantObject_shouldThrowException() throws Exception {
         tools.getEDBObject("/this/object/does/not/exist");
     }
-	
-	@Test
+
+    @Test
     public void testGetCommits_shouldWork() throws Exception {
         EDBObject obj = tools.createEDBObject("TestObject");
         obj.putEDBObjectEntry("Bla", "Blabla");
@@ -81,14 +80,14 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
 
         assertThat(commits1.size(), is(1));
         assertThat(commits2.size(), is(0));
-		
-		tools.assertStage(commits1.get(0).getEDBStage());
+
+        tools.assertStage(commits1.get(0).getEDBStage());
 
         checkTimeStamps(Arrays.asList(time));
     }
-	
-	@SuppressWarnings("unchecked")
-	@Test
+
+    @SuppressWarnings("unchecked")
+    @Test
     public void testGetHistoryAndCheckForElements_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
@@ -145,16 +144,16 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
 
         assertThat(history.get(2).getString("Lock"), is("Smith"));
         assertThat(history.get(2).getString("Cat"), is("Dog"));
-		
-		tools.assertStage(history.get(0).getEDBStage());
-		tools.assertStage(history.get(1).getEDBStage());
-		tools.assertStage(history.get(2).getEDBStage());
+
+        tools.assertStage(history.get(0).getEDBStage());
+        tools.assertStage(history.get(1).getEDBStage());
+        tools.assertStage(history.get(2).getEDBStage());
 
         checkTimeStamps(Arrays.asList(time1, time2, time3, time4));
     }
-	
-	@Test
-	public void testHistoryOfDeletion_shouldWork() throws Exception {
+
+    @Test
+    public void testHistoryOfDeletion_shouldWork() throws Exception {
         EDBCommit ci = getEDBCommit();
         ci.insert(createRandomTestObject("/deletion/1"));
         long time1 = db.commit(ci);
@@ -168,15 +167,15 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(history.size(), is(2));
         assertThat(history.get(0).isDeleted(), is(false));
         assertThat(history.get(1).isDeleted(), is(true));
-		
-		tools.assertStage(history.get(0).getEDBStage());
-		tools.assertStage(history.get(1).getEDBStage());
+
+        tools.assertStage(history.get(0).getEDBStage());
+        tools.assertStage(history.get(1).getEDBStage());
 
         checkTimeStamps(Arrays.asList(time1, time2));
     }
-	
-	@Test
-	public void testGetLog_shouldWork() throws Exception {
+
+    @Test
+    public void testGetLog_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -221,9 +220,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
 
         checkTimeStamps(Arrays.asList(time1, time2, time3, time4));
     }
-	
-	@Test
-	public void testDiff_shouldWork() throws Exception {
+
+    @Test
+    public void testDiff_shouldWork() throws Exception {
         long time1 = 0;
         long time2 = 0;
         long time3 = 0;
@@ -264,9 +263,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(diffBc.getDifferenceCount(), is(1));
         assertThat(diffAc.getDifferenceCount(), is(1));
     }
-	
-	@Test
-	public void testGetResurrectedOIDs_shouldWork() throws Exception {
+
+    @Test
+    public void testGetResurrectedOIDs_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = tools.createEDBObject("/ress/object", data1);
@@ -293,9 +292,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
 
         checkTimeStamps(Arrays.asList(time1, time2, time3));
     }
-	
-	@Test(expected = EDBException.class)
-	public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
+
+    @Test(expected = EDBException.class)
+    public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
         putValue("KeyA", "Value A 1", data1);
         EDBObject v1 = tools.createEDBObject("/fail/object", data1);
@@ -304,8 +303,8 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         db.commit(ci);
         db.commit(ci);
     }
-	
-	@Test
+
+    @Test
     public void testCommitEDBObjectsInsert_shouldWork() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/insert/1");
         object.putEDBObjectEntry("bla", "blub");
@@ -319,7 +318,7 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(object.getObject(EDBConstants.MODEL_VERSION, Integer.class), is(1));
     }
 
-	@Test(expected = EDBException.class)
+    @Test(expected = EDBException.class)
     public void testCommitEDBObjectsInsertDouble_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/insert/2");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
@@ -328,9 +327,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         commitObjects(inserts, null, null);
         commitObjects(inserts, null, null);
     }
-	
-	@Test(expected = EDBException.class)
-	public void testIfConflictDetectionIsWorking_shouldThrowException() throws Exception {
+
+    @Test(expected = EDBException.class)
+    public void testIfConflictDetectionIsWorking_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/insert/3");
         object.putEDBObjectEntry("bla", "blub");
         List<EDBObject> inserts = new ArrayList<EDBObject>();
@@ -341,9 +340,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         object.putEDBObjectEntry("test", "test");
         commitObjects(inserts, Arrays.asList(object), null);
     }
-	
-	@Test
-	public void testCommitEDBObjectsUpdate_shouldWork() throws Exception {
+
+    @Test
+    public void testCommitEDBObjectsUpdate_shouldWork() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/update/1");
         object.putEDBObjectEntry("testkey", "testvalue");
         List<EDBObject> objects = new ArrayList<EDBObject>();
@@ -366,9 +365,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(second.getObject(EDBConstants.MODEL_VERSION, Integer.class), is(2));
         assertThat(second.getString("testkey"), is("testvalue1"));
     }
-	
-	@Test(expected = EDBException.class)
-	public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() throws Exception {
+
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/update/2");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
@@ -377,9 +376,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         object.putEDBObjectEntry("test", "test");
         commitObjects(null, objects, null);
     }
-	
-	@Test(expected = EDBException.class)
-	public void testCommitEDBObjectsUpdateVerstionConflict2_shouldThrowException() throws Exception {
+
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsUpdateVerstionConflict2_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/update/3");
         commitObjects(Arrays.asList(object), null, null);
         EDBObject receive1 = tools.getEDBObject("/commit/test/update/3");
@@ -389,9 +388,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         commitObjects(null, Arrays.asList(receive1), null);
         commitObjects(null, Arrays.asList(receive2), null);
     }
-	
-	@Test
-	public void testCommitEDBObjectsDelete_shouldWork() throws Exception {
+
+    @Test
+    public void testCommitEDBObjectsDelete_shouldWork() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/delete/1");
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
@@ -401,8 +400,8 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         EDBObject entry = tools.getEDBObject("/commit/test/delete/1");
         assertThat(entry.isDeleted(), is(true));
     }
-	
-	@Test(expected = EDBException.class)
+
+    @Test(expected = EDBException.class)
     public void testCommitEDBObjectsDeleteNonExisting_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/delete/2");
         List<EDBObject> objects = new ArrayList<EDBObject>();
@@ -410,7 +409,7 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         commitObjects(null, null, objects);
     }
 
-	@Test(expected = EDBException.class)
+    @Test(expected = EDBException.class)
     public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() throws Exception {
         EDBObject object = tools.createEDBObject("/commit/test/delete/3");
         List<EDBObject> objects = new ArrayList<EDBObject>();
@@ -419,8 +418,8 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         commitObjects(null, null, objects);
         commitObjects(null, null, objects);
     }
-	
-	@Test
+
+    @Test
     public void testIfOtherTypesThanStringWorks_shouldProcessInteger() throws Exception {
         EDBObject object = tools.createEDBObject("test/type/integer");
         object.putEDBObjectEntry("value", Integer.valueOf(42));
@@ -431,7 +430,7 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat((Integer) value, is(42));
     }
 
-	@Test
+    @Test
     public void testIfOtherTypesThanStringWorks_shouldProcessBoolean() throws Exception {
         EDBObject object = tools.createEDBObject("test/type/boolean");
         object.putEDBObjectEntry("value", Boolean.TRUE);
@@ -441,9 +440,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(value.getClass().getName(), is(Boolean.class.getName()));
         assertThat((Boolean) value, is(Boolean.TRUE));
     }
-	
-	@Test
-	public void testIfOtherTypesThanStringWorks_shouldProcessDate() throws Exception {
+
+    @Test
+    public void testIfOtherTypesThanStringWorks_shouldProcessDate() throws Exception {
         EDBObject object = tools.createEDBObject("test/type/date");
         Date date = new Date();
         object.putEDBObjectEntry("value", date);
@@ -453,9 +452,9 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         assertThat(value.getClass().getName(), is(Date.class.getName()));
         assertThat((Date) value, is(date));
     }
-	
-	@Test(expected = EDBException.class)
-	public void testIfWrongParentCausesCommitError_shouldThrowException() throws Exception {
+
+    @Test(expected = EDBException.class)
+    public void testIfWrongParentCausesCommitError_shouldThrowException() throws Exception {
         db.commit(getEDBCommit()); // add one entry so that there is actually a head
         EDBCommit ci = getEDBCommit();
         ci.insert(createRandomTestObject("/wrongparent/1"));
@@ -464,8 +463,8 @@ public abstract class AbstractEDBFunctionTest extends AbstractEDBTest {
         db.commit(ci2);
         db.commit(ci);
     }
-	
-	@Test
+
+    @Test
     public void testIfCreatedCommitContainsRevisionNumber_shouldReturnNotNull() throws Exception {
         EDBCommit ci = getEDBCommit();
         assertThat(ci.getRevisionNumber(), notNullValue());

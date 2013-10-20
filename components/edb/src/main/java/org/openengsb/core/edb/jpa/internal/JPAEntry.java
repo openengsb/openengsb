@@ -17,7 +17,6 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

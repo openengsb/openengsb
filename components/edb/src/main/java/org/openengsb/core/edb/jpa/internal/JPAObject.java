@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
@@ -27,18 +26,18 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import org.apache.openjpa.persistence.jdbc.Index;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
 @SuppressWarnings("serial")
 @Entity
 /**
- * this defines a jpa object in the database. The correlation to the EDBObject is that
- * the JPAObject can be converted to an EDBObject through the EDBUtils class.
+ * this defines a jpa object in the database. The correlation to the EDBObject
+ * is that the JPAObject can be converted to an EDBObject through the EDBUtils
+ * class.
  */
 public class JPAObject extends VersionedEntity {
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
     private List<JPAEntry> entries;
     @Column(name = "TIME")
@@ -48,10 +47,10 @@ public class JPAObject extends VersionedEntity {
     @Index
     @Column(name = "OID")
     private String oid;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@Column(name="STAGE",nullable = true)
-	private JPAStage stage;
+    @Column(name = "STAGE", nullable = true)
+    private JPAStage stage;
 
     public JPAObject() {
         entries = new ArrayList<>();
@@ -66,8 +65,8 @@ public class JPAObject extends VersionedEntity {
     }
 
     /**
-     * Returns the entry of the JPAEntry list of this object with the given key. Returns null in case there is no such
-     * entry.
+     * Returns the entry of the JPAEntry list of this object with the given key.
+     * Returns null in case there is no such entry.
      */
     public JPAEntry getEntry(String entryKey) {
         for (JPAEntry entry : entries) {
@@ -79,7 +78,8 @@ public class JPAObject extends VersionedEntity {
     }
 
     /**
-     * Removes the entry from the JPAEntry list of this object with the given key.
+     * Removes the entry from the JPAEntry list of this object with the given
+     * key.
      */
     public void removeEntry(String entryKey) {
         Iterator<JPAEntry> iter = entries.iterator();
@@ -98,14 +98,14 @@ public class JPAObject extends VersionedEntity {
     public void setEntries(List<JPAEntry> entries) {
         this.entries = entries;
     }
-	
-	public void setJPAStage(JPAStage stage){
-		this.stage = stage;
-	}
-	
-	public JPAStage getJPAStage(){
-		return this.stage;
-	}
+
+    public void setJPAStage(JPAStage stage) {
+        this.stage = stage;
+    }
+
+    public JPAStage getJPAStage() {
+        return this.stage;
+    }
 
     public Boolean isDeleted() {
         return isDeleted;

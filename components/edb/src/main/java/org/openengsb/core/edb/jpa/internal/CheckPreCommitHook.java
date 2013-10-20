@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
@@ -32,11 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the standard pre-commit hook for the EDB. It does the basic checking algorithms, fills and updates the
- * model version field and checks for conflicts. If any error occurs, the onPreCommit function throws an
+ * This class is the standard pre-commit hook for the EDB. It does the basic
+ * checking algorithms, fills and updates the model version field and checks for
+ * conflicts. If any error occurs, the onPreCommit function throws an
  * EDBCheckException.
  */
 public class CheckPreCommitHook implements EDBPreCommitHook {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPreCommitHook.class);
     private JPADao dao;
 
@@ -67,8 +68,9 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Checks all lists with failed objects if there is the need to throw an EDBCheckException. If the need is given, it
-     * creates this exception and throws it.
+     * Checks all lists with failed objects if there is the need to throw an
+     * EDBCheckException. If the need is given, it creates this exception and
+     * throws it.
      */
     private void testIfExceptionNeeded(List<JPAObject> insertFails, List<JPAObject> updateFails,
             List<String> deleteFails) throws EDBCheckException {
@@ -93,8 +95,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Checks if all oid's of the given JPAObjects are not existing yet. Returns a list of objects where the JPAObject
-     * already exists.
+     * Checks if all oid's of the given JPAObjects are not existing yet. Returns
+     * a list of objects where the JPAObject already exists.
      */
     private List<JPAObject> checkInserts(List<JPAObject> inserts, EDBStage stage) {
         List<JPAObject> failedObjects = new ArrayList<JPAObject>();
@@ -109,19 +111,16 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
         return failedObjects;
     }
 
-	private String checkStage(EDBStage stage)
-	{
-		if(stage != null)
-		{
-			return stage.getStageId();
-		}
-		
-		return null;
-	}
+    private String checkStage(EDBStage stage) {
+        if (stage != null) {
+            return stage.getStageId();
+        }
+        return null;
+    }
 
     /**
-     * Checks if all oid's of the given JPAObjects are existing. Returns a list of objects where the JPAObject doesn't
-     * exist.
+     * Checks if all oid's of the given JPAObjects are existing. Returns a list
+     * of objects where the JPAObject doesn't exist.
      */
     private List<String> checkDeletions(List<String> deletes, EDBStage stage) {
         List<String> failedObjects = new ArrayList<String>();
@@ -134,7 +133,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Checks every update for a potential conflict. Returns a list of objects where a conflict has been found.
+     * Checks every update for a potential conflict. Returns a list of objects
+     * where a conflict has been found.
      */
     private List<JPAObject> checkUpdates(List<JPAObject> updates) throws EDBException {
         List<JPAObject> failedObjects = new ArrayList<JPAObject>();
@@ -143,8 +143,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
                 Integer modelVersion = investigateVersionAndCheckForConflict(update);
                 modelVersion++;
                 update.removeEntry(EDBConstants.MODEL_VERSION);
-                update.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, modelVersion + "", 
-                    Integer.class.getName(), update));
+                update.addEntry(new JPAEntry(EDBConstants.MODEL_VERSION, modelVersion + "",
+                        Integer.class.getName(), update));
             } catch (EDBException e) {
                 failedObjects.add(update);
             }
@@ -153,7 +153,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Investigates the version of an JPAObject and checks if a conflict can be found.
+     * Investigates the version of an JPAObject and checks if a conflict can be
+     * found.
      */
     private Integer investigateVersionAndCheckForConflict(JPAObject newObject) throws EDBException {
         JPAEntry entry = newObject.getEntry(EDBConstants.MODEL_VERSION);
@@ -181,8 +182,9 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Simple check mechanism if there is a conflict between a model which should be saved and the existing model, based
-     * on the values which are in the EDB.
+     * Simple check mechanism if there is a conflict between a model which
+     * should be saved and the existing model, based on the values which are in
+     * the EDB.
      */
     private void checkForConflict(JPAObject newObject) throws EDBException {
         String oid = newObject.getOID();
@@ -194,8 +196,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
             JPAEntry rival = object.getEntry(entry.getKey());
             String value = rival != null ? rival.getValue() : null;
             if (value == null || !value.equals(entry.getValue())) {
-                LOGGER.debug("Conflict detected at key {} when comparing {} with {}", new Object[]{ entry.getKey(),
-                    entry.getValue(), value == null ? "null" : value });
+                LOGGER.debug("Conflict detected at key {} when comparing {} with {}", new Object[]{entry.getKey(),
+                    entry.getValue(), value == null ? "null" : value});
                 throw new EDBException("Conflict detected. Failure when comparing the values of the key "
                         + entry.getKey());
             }
@@ -203,7 +205,8 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     /**
-     * Returns true if the given oid is active right now (means is existing and not deleted) and return false otherwise.
+     * Returns true if the given oid is active right now (means is existing and
+     * not deleted) and return false otherwise.
      */
     private boolean checkIfActiveOidExisting(String oid, String sid) {
         try {

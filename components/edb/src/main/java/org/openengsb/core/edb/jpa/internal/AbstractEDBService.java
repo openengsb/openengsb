@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * The AbstractEDBService is used to encapsulate the commit logic of the EDB.
  */
 public abstract class AbstractEDBService implements EngineeringDatabaseService {
+
     protected EntityManager entityManager;
     private Logger logger;
     private Boolean revisionCheckEnabled;
@@ -60,7 +60,8 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Performs the actual commit logic for the EDB, including the hooks and the revision checking.
+     * Performs the actual commit logic for the EDB, including the hooks and the
+     * revision checking.
      */
     protected Long performCommitLogic(EDBCommit commit) throws EDBException {
         if (!(commit instanceof JPACommit)) {
@@ -85,8 +86,9 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Does the actual commit work (JPA related actions) and returns the timestamp when the commit was done. Throws an
-     * EDBException if an error occurs.
+     * Does the actual commit work (JPA related actions) and returns the
+     * timestamp when the commit was done. Throws an EDBException if an error
+     * occurs.
      */
     private Long performCommit(JPACommit commit) throws EDBException {
         synchronized (entityManager) {
@@ -108,7 +110,8 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Add all the changes which are done through the given commit object to the entity manager.
+     * Add all the changes which are done through the given commit object to the
+     * entity manager.
      */
     private void persistCommitChanges(JPACommit commit, Long timestamp) {
         commit.setTimestamp(timestamp);
@@ -121,7 +124,8 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Updates all modified EDBObjects with the timestamp and persist them through the entity manager.
+     * Updates all modified EDBObjects with the timestamp and persist them
+     * through the entity manager.
      */
     private void addModifiedObjectsToEntityManager(List<JPAObject> modified, Long timestamp) {
         for (JPAObject update : modified) {
@@ -131,13 +135,14 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Updates all deleted objects with the timestamp, mark them as deleted and persist them through the entity manager.
+     * Updates all deleted objects with the timestamp, mark them as deleted and
+     * persist them through the entity manager.
      */
     private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp) {
         this.updateDeletedObjectsThroughEntityManager(oids, timestamp, null);
     }
-	
-	private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp, EDBStage stage) {
+
+    private void updateDeletedObjectsThroughEntityManager(List<String> oids, Long timestamp, EDBStage stage) {
         for (String id : oids) {
             EDBObject o = new EDBObject(id, stage);
             o.updateTimestamp(timestamp);
@@ -148,9 +153,10 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Runs all registered begin commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
-     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, it is thrown and so returned to
-     * the calling instance.
+     * Runs all registered begin commit hooks on the EDBCommit object. Logs
+     * exceptions which occurs in the hooks, except for
+     * ServiceUnavailableExceptions and EDBExceptions. If an EDBException
+     * occurs, it is thrown and so returned to the calling instance.
      */
     private void runBeginCommitHooks(EDBCommit commit) throws EDBException {
         for (EDBBeginCommitHook hook : beginCommitHooks) {
@@ -167,14 +173,15 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Runs all registered pre commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
-     * for ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function returns this
-     * exception.
+     * Runs all registered pre commit hooks on the EDBCommit object. Logs
+     * exceptions which occurs in the hooks, except for
+     * ServiceUnavailableExceptions and EDBExceptions. If an EDBException
+     * occurs, the function returns this exception.
      */
     private EDBException runPreCommitHooks(EDBCommit commit) {
         EDBException exception = null;
         for (EDBPreCommitHook hook : preCommitHooks) {
-            try {				
+            try {
                 hook.onPreCommit(commit);
             } catch (ServiceUnavailableException e) {
                 // Ignore
@@ -189,10 +196,11 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Runs all registered error hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except for
-     * ServiceUnavailableExceptions and EDBExceptions. If an EDBException occurs, the function overrides the cause of
-     * the error with the new Exception. If an error hook returns a new EDBCommit, the EDB tries to persist this commit
-     * instead.
+     * Runs all registered error hooks on the EDBCommit object. Logs exceptions
+     * which occurs in the hooks, except for ServiceUnavailableExceptions and
+     * EDBExceptions. If an EDBException occurs, the function overrides the
+     * cause of the error with the new Exception. If an error hook returns a new
+     * EDBCommit, the EDB tries to persist this commit instead.
      */
     private Long runErrorHooks(EDBCommit commit, EDBException exception) throws EDBException {
         for (EDBErrorHook hook : errorHooks) {
@@ -214,8 +222,9 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
     }
 
     /**
-     * Runs all registered post commit hooks on the EDBCommit object. Logs exceptions which occurs in the hooks, except
-     * for ServiceUnavailableExceptions.
+     * Runs all registered post commit hooks on the EDBCommit object. Logs
+     * exceptions which occurs in the hooks, except for
+     * ServiceUnavailableExceptions.
      */
     private void runEDBPostHooks(EDBCommit commit) {
         for (EDBPostCommitHook hook : postCommitHooks) {
@@ -237,11 +246,11 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
 
     protected void rollbackTransaction() {
     }
-    
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-    
+
     public Logger getLogger() {
         return logger;
     }

@@ -20,16 +20,16 @@ import java.io.Serializable;
 
 public interface EDBStage extends Serializable {
     
-    public void setStageId(String id);
+    void setStageId(String id);
     
-    public String getStageId();
+    String getStageId();
     
-    public void setCreator(String creator);
+    void setCreator(String creator);
     
-    public String getCreator();
+    String getCreator();
     
-    public void setTimeStamp(Long timeStamp);
+    void setTimeStamp(Long timeStamp);
     
-    public Long getTimeStamp();
+    Long getTimeStamp();
     
 }

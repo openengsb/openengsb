@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,17 +36,17 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
-import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.api.hooks.EDBPreCommitHook;
 import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
 public abstract class AbstractEDBTest {
+
     protected TestEDBService db;
-	protected Tools tools;
-	
-	protected abstract Tools initTools();
+    protected Tools tools;
+
+    protected abstract Tools initTools();
 
     @Rule
     public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
@@ -69,9 +68,9 @@ public abstract class AbstractEDBTest {
 
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
-		
-		this.tools = this.initTools();
-		this.tools.setDb(db);
+
+        this.tools = this.initTools();
+        this.tools.setDb(db);
     }
 
     @After
@@ -82,14 +81,15 @@ public abstract class AbstractEDBTest {
     /**
      * Returns an EDBCommit object.
      */
-	protected EDBCommit getEDBCommit() {
-		return tools.createEDBCommit(null, null, null);
-	}
+    protected EDBCommit getEDBCommit() {
+        return tools.createEDBCommit(null, null, null);
+    }
 
     /**
-     * Creates a new commit object, adds the given inserts, updates and deletes and commit it.
+     * Creates a new commit object, adds the given inserts, updates and deletes
+     * and commit it.
      */
-	 protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
+    protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
         EDBCommit ci = tools.createEDBCommit(inserts, updates, deletes);
         return db.commit(ci);
     }
@@ -97,14 +97,14 @@ public abstract class AbstractEDBTest {
     /**
      * Adds an EDBObjectEntry based on the given key and value to the given map
      */
-	protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
+    protected void putValue(String key, Object value, Map<String, EDBObjectEntry> map) {
         map.put(key, new EDBObjectEntry(key, value, value.getClass()));
     }
 
     /**
      * Returns a random test EDBObject
      */
-	protected EDBObject createRandomTestObject(String oid) {
+    protected EDBObject createRandomTestObject(String oid) {
         Random random = new Random(System.currentTimeMillis());
         EDBObject result = tools.createEDBObject(oid);
         int max = 5;
@@ -115,11 +115,12 @@ public abstract class AbstractEDBTest {
             result.putEDBObjectEntry(key, value);
         }
 
-		return result;
+        return result;
     }
 
     /**
-     * Iterates through the list of timestamps and checks if every timestamp is bigger than 0
+     * Iterates through the list of timestamps and checks if every timestamp is
+     * bigger than 0
      */
     protected void checkTimeStamps(List<Long> timestamps) {
         for (Long timestamp : timestamps) {

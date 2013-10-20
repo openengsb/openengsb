@@ -29,7 +29,6 @@ import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EDBStage;
-import org.springframework.util.Assert;
 
 /**
  *
@@ -37,110 +36,95 @@ import org.springframework.util.Assert;
  */
 public class StageTestTools implements Tools {
 
-	private TestEDBService db;
-	
-	protected String getSid() {
-		return "stage1";
-	}
-	
-	protected JPAStage getStage() {
-		JPAStage stage = new JPAStage();
-		stage.setStageId(getSid());
-		stage.setCreator("sveti");
-		return stage;
-	}
-	
-	@Override
-	public void setDb(TestEDBService db)
-	{
-		this.db = db;
-	}
+    private TestEDBService db;
 
-	@Override
-	public EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
-	{
-		return db.createEDBCommit(getStage(), inserts, updates, deletes);
-	}
+    protected String getSid() {
+        return "stage1";
+    }
 
-	@Override
-	public EDBObject getEDBObject(String oid)
-	{
-		return db.getObject(oid, getSid());
-	}
-
-	@Override
-	public EDBObject createEDBObject(String oid, Map<String, EDBObjectEntry> data)
-	{
-		return new EDBObject(oid, data, getStage());
-	}
-
-	@Override
-	public EDBObject createEDBObject(String oid)
-	{
-		return new EDBObject(oid, getStage());
-	}
-
-	@Override
-	public void assertStage(EDBStage actual)
-	{
-		JPAStage expected = getStage();
-		
-		assertThat(actual, notNullValue());
-		assertThat(actual.getStageId(), is(expected.getStageId()));
-		assertThat(actual.getCreator(), is(expected.getCreator()));
-	}
-
-	@Override
-	public List<EDBCommit> getCommitsByKeyValue(String key, Object value)
-	{
-		return db.getCommitsByKeyValue(key, value, getSid());
-	}
-
-	@Override
-	public List<EDBObject> getHistory(String oid)
-	{
-		return db.getHistory(oid, getSid());
-	}
-
-	@Override
-	public List<EDBLogEntry> getLog(String oid, Long from, Long to)
-	{
-		return db.getLog(oid, from, to, getSid());
-	}
-
-	@Override
-	public Diff getDiff(Long firstTimestamp, Long secondTimestamp)
-	{
-		return db.getDiff(firstTimestamp, secondTimestamp, getSid(), getSid());
-	}
-
-	@Override
-	public List<String> getResurrectedOIDs()
-	{
-		return db.getResurrectedOIDs(getSid());
-	}
-
-    @Override
-    public List<EDBObject> query(QueryRequest request)
-    {
-	return db.query(request, this.getSid());
+    protected JPAStage getStage() {
+        JPAStage stage = new JPAStage();
+        stage.setStageId(getSid());
+        stage.setCreator("sveti");
+        return stage;
     }
 
     @Override
-    public EDBCommit getCommitByRevision(String revision)
-    {
-	return db.getCommitByRevision(revision, this.getSid());
+    public void setDb(TestEDBService db) {
+        this.db = db;
     }
 
     @Override
-    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request)
-    {
-	return db.getRevisionsOfMatchingCommits(request, this.getSid());
+    public EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
+        return db.createEDBCommit(getStage(), inserts, updates, deletes);
     }
 
     @Override
-    public UUID getLastRevisionNumberOfContext(String contextId)
-    {
-	return db.getLastRevisionNumberOfContext(contextId, this.getSid());
+    public EDBObject getEDBObject(String oid) {
+        return db.getObject(oid, getSid());
+    }
+
+    @Override
+    public EDBObject createEDBObject(String oid, Map<String, EDBObjectEntry> data) {
+        return new EDBObject(oid, data, getStage());
+    }
+
+    @Override
+    public EDBObject createEDBObject(String oid) {
+        return new EDBObject(oid, getStage());
+    }
+
+    @Override
+    public void assertStage(EDBStage actual) {
+        JPAStage expected = getStage();
+
+        assertThat(actual, notNullValue());
+        assertThat(actual.getStageId(), is(expected.getStageId()));
+        assertThat(actual.getCreator(), is(expected.getCreator()));
+    }
+
+    @Override
+    public List<EDBCommit> getCommitsByKeyValue(String key, Object value) {
+        return db.getCommitsByKeyValue(key, value, getSid());
+    }
+
+    @Override
+    public List<EDBObject> getHistory(String oid) {
+        return db.getHistory(oid, getSid());
+    }
+
+    @Override
+    public List<EDBLogEntry> getLog(String oid, Long from, Long to) {
+        return db.getLog(oid, from, to, getSid());
+    }
+
+    @Override
+    public Diff getDiff(Long firstTimestamp, Long secondTimestamp) {
+        return db.getDiff(firstTimestamp, secondTimestamp, getSid(), getSid());
+    }
+
+    @Override
+    public List<String> getResurrectedOIDs() {
+        return db.getResurrectedOIDs(getSid());
+    }
+
+    @Override
+    public List<EDBObject> query(QueryRequest request) {
+        return db.query(request, this.getSid());
+    }
+
+    @Override
+    public EDBCommit getCommitByRevision(String revision) {
+        return db.getCommitByRevision(revision, this.getSid());
+    }
+
+    @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) {
+        return db.getRevisionsOfMatchingCommits(request, this.getSid());
+    }
+
+    @Override
+    public UUID getLastRevisionNumberOfContext(String contextId) {
+        return db.getLastRevisionNumberOfContext(contextId, this.getSid());
     }
 }

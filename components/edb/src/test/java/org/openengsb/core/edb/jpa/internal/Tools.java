@@ -32,33 +32,34 @@ import org.openengsb.core.edb.api.EDBStage;
  * @author vauve_000
  */
 public interface Tools {
-	void setDb(TestEDBService db);
-	
-	EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes);
-	
-	EDBObject getEDBObject(String oid);
-	
-	EDBObject createEDBObject(String oid, Map<String, EDBObjectEntry> data);
-	
-	EDBObject createEDBObject(String oid);
-	
-	void assertStage(EDBStage actual);
-	
-	List<EDBCommit> getCommitsByKeyValue(String key, Object value);
-	
-	List<EDBObject> getHistory(String oid);
-	
-	List<EDBLogEntry> getLog(String oid, Long from, Long to);
-	
-	Diff getDiff(Long firstTimestamp, Long secondTimestamp);
-	
-	List<String> getResurrectedOIDs();
-	
-	List<EDBObject> query(QueryRequest request);
-	
-	EDBCommit getCommitByRevision(String revision);
-	
-	List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request);
-	
-	UUID getLastRevisionNumberOfContext(String contextId);
+
+    void setDb(TestEDBService db);
+
+    EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes);
+
+    EDBObject getEDBObject(String oid);
+
+    EDBObject createEDBObject(String oid, Map<String, EDBObjectEntry> data);
+
+    EDBObject createEDBObject(String oid);
+
+    void assertStage(EDBStage actual);
+
+    List<EDBCommit> getCommitsByKeyValue(String key, Object value);
+
+    List<EDBObject> getHistory(String oid);
+
+    List<EDBLogEntry> getLog(String oid, Long from, Long to);
+
+    Diff getDiff(Long firstTimestamp, Long secondTimestamp);
+
+    List<String> getResurrectedOIDs();
+
+    List<EDBObject> query(QueryRequest request);
+
+    EDBCommit getCommitByRevision(String revision);
+
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request);
+
+    UUID getLastRevisionNumberOfContext(String contextId);
 }

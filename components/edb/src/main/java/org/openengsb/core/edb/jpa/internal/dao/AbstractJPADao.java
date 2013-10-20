@@ -6,13 +6,13 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.openengsb.core.edb.jpa.internal.dao;
 
@@ -34,35 +34,31 @@ import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBException;
-import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
-import org.openengsb.core.edb.jpa.internal.JPAStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractJPADao
-{
-	protected static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
+public abstract class AbstractJPADao {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
     protected EntityManager entityManager;
-	
-	private Predicate checkSid(CriteriaBuilder criteriaBuilder, Root from, String sid)
-	{
-		if(sid != null)
-		{
-			Join join = from.join("stage");
-			Predicate predicateSid = criteriaBuilder.equal(join.get("stageId"), sid);
-			return predicateSid;
-			//return criteriaBuilder.and(predicateSid);
-		}
-		
-		return criteriaBuilder.equal(from.get("stage"), null);
-	}
-	
-	protected JPAObject getJPAObject(String oid, long timestamp, String sid) throws EDBException {
-		synchronized (entityManager) {
+
+    private Predicate checkSid(CriteriaBuilder criteriaBuilder, Root from, String sid) {
+        if (sid != null) {
+            Join join = from.join("stage");
+            Predicate predicateSid = criteriaBuilder.equal(join.get("stageId"), sid);
+            return predicateSid;
+            //return criteriaBuilder.and(predicateSid);
+        }
+
+        return criteriaBuilder.equal(from.get("stage"), null);
+    }
+
+    protected JPAObject getJPAObject(String oid, long timestamp, String sid) throws EDBException {
+        synchronized (entityManager) {
             LOGGER.debug("Loading object {} for the time {}", oid, timestamp);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
@@ -72,9 +68,9 @@ public abstract class AbstractJPADao
 
             Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
             Predicate predicate2 = criteriaBuilder.le(from.get("timestamp"), timestamp);
-			
-			query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, from, sid)));
-            
+
+            query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, from, sid)));
+
             query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
 
             TypedQuery typedQuery = entityManager.createQuery(query).setMaxResults(1);
@@ -88,9 +84,9 @@ public abstract class AbstractJPADao
 
             return resultList.get(0);
         }
-	}
-	
-	protected JPAHead getJPAHead(long timestamp, String sid) throws EDBException {
+    }
+
+    protected JPAHead getJPAHead(long timestamp, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading head for timestamp {}", timestamp);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -104,7 +100,7 @@ public abstract class AbstractJPADao
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
             Predicate subPredicate1 = criteriaBuilder.le(maxTime.get("timestamp"), timestamp);
             Predicate subPredicate2 = criteriaBuilder.equal(maxTime.get("oid"), from.get("oid"));
-			subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2, checkSid(criteriaBuilder, maxTime, sid)));
+            subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2, checkSid(criteriaBuilder, maxTime, sid)));
 
             Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), subquery);
             Predicate predicate2 = criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE);
@@ -119,7 +115,7 @@ public abstract class AbstractJPADao
             return head;
         }
     }
-	
+
     protected List<JPAObject> getJPAObjectHistory(String oid, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading the history for the object {}", oid);
@@ -127,17 +123,17 @@ public abstract class AbstractJPADao
             CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
             Root from = query.from(JPAObject.class);
             query.select(from);
-			query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), checkSid(criteriaBuilder, from, sid)));
+            query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), checkSid(criteriaBuilder, from, sid)));
             query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
             return typedQuery.getResultList();
         }
     }
-	
-	protected List<JPAObject> getJPAObjectHistory(String oid, long from, long to, String sid) throws EDBException {
+
+    protected List<JPAObject> getJPAObjectHistory(String oid, long from, long to, String sid) throws EDBException {
         synchronized (entityManager) {
-            LOGGER.debug("Loading the history for the object {} from {} to {}", new Object[]{ oid, from, to });
+            LOGGER.debug("Loading the history for the object {} from {} to {}", new Object[]{oid, from, to});
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
             Root f = query.from(JPAObject.class);
@@ -145,15 +141,15 @@ public abstract class AbstractJPADao
 
             Predicate predicate1 = criteriaBuilder.equal(f.get("oid"), oid);
             Predicate predicate2 = criteriaBuilder.between(f.get("timestamp"), from, to);
-			query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, f, sid)));
+            query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, f, sid)));
             query.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
             return typedQuery.getResultList();
         }
     }
-	
-	protected List<JPAObject> getJPAObjects(List<String> oid, String sid) throws EDBException {
+
+    protected List<JPAObject> getJPAObjects(List<String> oid, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading newest object {}", oid);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -165,7 +161,7 @@ public abstract class AbstractJPADao
             Subquery<Number> subquery = query.subquery(Number.class);
             Root maxTime = subquery.from(JPAObject.class);
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
-			subquery.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")), checkSid(criteriaBuilder, maxTime, sid)));
+            subquery.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")), checkSid(criteriaBuilder, maxTime, sid)));
 
             Predicate predicate1 = criteriaBuilder.in(from.get("oid")).value(oid);
             Predicate predicate2 = criteriaBuilder.equal(from.get("timestamp"), subquery);
@@ -177,10 +173,10 @@ public abstract class AbstractJPADao
             return resultList;
         }
     }
-	
-	protected List<JPACommit> getJPACommit(String oid, long from, long to, String sid) throws EDBException {
+
+    protected List<JPACommit> getJPACommit(String oid, long from, long to, String sid) throws EDBException {
         synchronized (entityManager) {
-            LOGGER.debug("Loading all commits which involve object {} from {} to {}", new Object[]{ oid, from, to });
+            LOGGER.debug("Loading all commits which involve object {} from {} to {}", new Object[]{oid, from, to});
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
             Root<JPACommit> f = query.from(JPACommit.class);
@@ -189,7 +185,7 @@ public abstract class AbstractJPADao
             Subquery<JPAObject> subquery = query.subquery(JPAObject.class);
             Root fromJPAObject = subquery.from(JPAObject.class);
             subquery.select(fromJPAObject.get("timestamp"));
-			
+
             Predicate predicate1 = criteriaBuilder.equal(fromJPAObject.get("oid"), oid);
             Predicate predicate2 = criteriaBuilder.between(fromJPAObject.get("timestamp"), from, to);
             subquery.where(criteriaBuilder.and(predicate1, predicate2));
@@ -201,17 +197,17 @@ public abstract class AbstractJPADao
             return typedQuery.getResultList();
         }
     }
-	
+
     protected JPACommit getJPACommit(String revision, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get commit for the revision {}", revision);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
             Root<JPACommit> from = query.from(JPACommit.class);
-           
-	    query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), checkSid(criteriaBuilder, from, sid)));
-           
-	    TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
+
+            query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), checkSid(criteriaBuilder, from, sid)));
+
+            TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
             List<JPACommit> result = typedQuery.getResultList();
             switch (result.size()) {
                 case 0:
@@ -223,8 +219,8 @@ public abstract class AbstractJPADao
             }
         }
     }
-	
-	protected List<String> getResurrectedOIDs(String sid) throws EDBException {
+
+    protected List<String> getResurrectedOIDs(String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("get resurrected JPA objects");
 
@@ -249,8 +245,8 @@ public abstract class AbstractJPADao
             return typedQuery.getResultList();
         }
     }
-	
-	protected List<JPACommit> getJPACommit(long timestamp, String sid) throws EDBException {
+
+    protected List<JPACommit> getJPACommit(long timestamp, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Load the commit for the timestamp {}", timestamp);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -262,15 +258,15 @@ public abstract class AbstractJPADao
             Root maxTime = subquery.from(JPACommit.class);
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
             subquery.where(criteriaBuilder.and(criteriaBuilder.le(maxTime.get("timestamp"), timestamp), checkSid(criteriaBuilder, maxTime, sid)));
-			
-			query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
-			
+
+            query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
+
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
             return typedQuery.getResultList();
         }
     }
-	
-	protected List<JPACommit> getCommits(Map<String, Object> param, String sid) throws EDBException {
+
+    protected List<JPACommit> getCommits(Map<String, Object> param, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get commits which are given to a param map with {} elements", param.size());
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -285,8 +281,8 @@ public abstract class AbstractJPADao
             return typedQuery.getResultList();
         }
     }
-	
-	protected JPACommit getLastCommit(Map<String, Object> param, String sid) throws EDBException {
+
+    protected JPACommit getLastCommit(Map<String, Object> param, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get last commit which are given to a param map with {} elements", param.size());
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -295,8 +291,8 @@ public abstract class AbstractJPADao
 
             query.select(from);
             Predicate[] predicates = analyzeParamMap(criteriaBuilder, from, param);
-            
-	    query.where(criteriaBuilder.and(predicates), checkSid(criteriaBuilder, from, sid));
+
+            query.where(criteriaBuilder.and(predicates), checkSid(criteriaBuilder, from, sid));
             query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
 
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query).setMaxResults(1);
@@ -307,24 +303,21 @@ public abstract class AbstractJPADao
             }
         }
     }
-	
-	
+
     protected List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get matching revisions for the request {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery query = criteriaBuilder.createQuery();
             Root<JPACommit> from = query.from(JPACommit.class);
-            
-	    query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment")
-                , from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId")
-                , from.get("instanceId"));
+
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment"), from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId"), from.get("instanceId"));
 
             Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
-            
-	    query.where(criteriaBuilder.and(predicates), checkSid(criteriaBuilder, from, sid));
-           
-	    query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
+
+            query.where(criteriaBuilder.and(predicates), checkSid(criteriaBuilder, from, sid));
+
+            query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
             TypedQuery<Object[]> typedQuery = entityManager.createQuery(query);
             List<CommitMetaInfo> infos = new ArrayList<>();
             for (Object[] row : typedQuery.getResultList()) {
@@ -343,8 +336,8 @@ public abstract class AbstractJPADao
             return infos;
         }
     }
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Predicate[] convertCommitRequestToPredicates(CriteriaBuilder builder, Root from,
             CommitQueryRequest request) {
         List<Predicate> predicates = new ArrayList<>();
@@ -355,14 +348,14 @@ public abstract class AbstractJPADao
             predicates.add(builder.equal(from.get("context"), request.getContext()));
         }
         predicates.add(builder.between(from.get("timestamp"), request.getStartTimestamp(),
-            request.getEndTimestamp()));
+                request.getEndTimestamp()));
         return Iterables.toArray(predicates, Predicate.class);
     }
 
     /**
      * Analyzes the map and filters the values which are used for query
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private Predicate[] analyzeParamMap(CriteriaBuilder criteriaBuilder, Root from, Map<String, Object> param) {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
@@ -384,8 +377,8 @@ public abstract class AbstractJPADao
 
         return temp;
     }
-	
-	protected Integer getVersionOfOid(String oid, String sid) throws EDBException {
+
+    protected Integer getVersionOfOid(String oid, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("loading version of model under the oid {}", oid);
 
@@ -405,7 +398,7 @@ public abstract class AbstractJPADao
             }
         }
     }
-	
+
     protected List<JPAObject> query(QueryRequest request, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Perform query with the query object: {}", request);
@@ -423,7 +416,7 @@ public abstract class AbstractJPADao
             Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
             Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2, checkSid(criteriaBuilder, subFrom, sid)));
-            
+
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
@@ -432,12 +425,12 @@ public abstract class AbstractJPADao
             return typedQuery.getResultList();
         }
     }
-	
-	/**
-     * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
-     * the criteria query.
+
+    /**
+     * Converts a query request parameter map for a query operation into a list
+     * of predicates which need to be added to the criteria query.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Predicate convertParametersToPredicateNew(QueryRequest request, Root<?> from,
             CriteriaBuilder builder, CriteriaQuery<?> query) {
         List<Predicate> predicates = new ArrayList<>();
@@ -451,13 +444,13 @@ public abstract class AbstractJPADao
                 expression = builder.lower(expression);
                 val = val.toLowerCase();
             }
-            
+
             Predicate predicate1 = builder.equal(from, subFrom.get("owner"));
             Predicate predicate2 = builder.like(subFrom.get("key"), value.getKey());
             Predicate predicate3 = request.isWildcardAware()
                     ? builder.like(expression, val) : builder.equal(expression, val);
             subquery.where(builder.and(predicate1, predicate2, predicate3));
-                    
+
             predicates.add(builder.exists(subquery));
         }
         if (request.isAndJoined()) {

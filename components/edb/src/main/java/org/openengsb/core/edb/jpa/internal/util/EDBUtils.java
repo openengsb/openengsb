@@ -6,15 +6,14 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.openengsb.core.edb.jpa.internal.util;
 
 import java.util.ArrayList;
@@ -33,19 +32,23 @@ import org.slf4j.LoggerFactory;
  * The EDBUtils class contains functions needed in the whole EDB implementation.
  */
 public final class EDBUtils {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBUtils.class);
     private static List<EDBConverterStep> steps = new ArrayList<EDBConverterStep>(Arrays.asList(
-        new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
+            new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
 
     private EDBUtils() {
     }
 
     /**
-     * Converts a JPAEntry object into an EDBObjectEntry element. If there is a problem with the instantiation of the
-     * type of the JPAEntry, the simple string object will be written in the resulting element. To instantiate the type
-     * first the static method "valueOf" of the type will be tried. If that didn't work, then the constructor of the
-     * object with a string parameter is used. If that didn't work either, the simple string will be set in the entry.
-     */	
+     * Converts a JPAEntry object into an EDBObjectEntry element. If there is a
+     * problem with the instantiation of the type of the JPAEntry, the simple
+     * string object will be written in the resulting element. To instantiate
+     * the type first the static method "valueOf" of the type will be tried. If
+     * that didn't work, then the constructor of the object with a string
+     * parameter is used. If that didn't work either, the simple string will be
+     * set in the entry.
+     */
     public static EDBObjectEntry convertJPAEntryToEDBObjectEntry(JPAEntry entry) {
         for (EDBConverterStep step : steps) {
             if (step.doesStepFit(entry.getType())) {
@@ -55,9 +58,9 @@ public final class EDBUtils {
         }
         LOGGER.error("No EDBConverterStep fit for JPAEntry {}", entry);
         return null;
-	}
+    }
 
-	/**
+    /**
      * Converts a EDBObjectEntry object into an JPAEntry.
      */
     public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry, JPAObject owner) {
@@ -69,16 +72,15 @@ public final class EDBUtils {
         }
         LOGGER.error("No EDBConverterStep fit for EDBObjectEntry {}", entry);
         return null;
-	}
-	
-	/*todo: kill this? private static List<JPAEntry> convertEDBObjectEntriesToJPAEntries(EDBObject object){
-		List<JPAEntry> entries = new ArrayList<JPAEntry>();
-		for (EDBObjectEntry entry : object.values()) {
-            entries.add(convertEDBObjectEntryToJPAEntry(entry));
-        }
-		return entries;
-	}*/
+    }
 
+    /*todo: kill this? private static List<JPAEntry> convertEDBObjectEntriesToJPAEntries(EDBObject object){
+     List<JPAEntry> entries = new ArrayList<JPAEntry>();
+     for (EDBObjectEntry entry : object.values()) {
+     entries.add(convertEDBObjectEntryToJPAEntry(entry));
+     }
+     return entries;
+     }*/
     /**
      * Converts a JPAObject object into an EDBObject.
      */
@@ -92,7 +94,7 @@ public final class EDBUtils {
         if (object.getTimestamp() != null) {
             result.updateTimestamp(object.getTimestamp());
         }
-		result.setEDBStage(object.getJPAStage());
+        result.setEDBStage(object.getJPAStage());
         return result;
     }
 
@@ -111,24 +113,27 @@ public final class EDBUtils {
         }
         result.setEntries(entries);
         return result;
-	}
-	
-	private static JPAStage convertEDBStageToJPAStage(EDBStage object){
-		//in this case it is unstaged
-		if(object == null)
-			return null;
-		
-		//if the object is allready a JPAStage obejct we can scip conversion.
-		if(object instanceof JPAStage)
-			return (JPAStage)object;
-		
-		JPAStage result = new JPAStage();
-		result.setCreator(object.getCreator());
-		result.setStageId(object.getStageId());
-		result.setTimeStamp(object.getTimeStamp());
-		
-		return result;
-	}
+    }
+
+    private static JPAStage convertEDBStageToJPAStage(EDBStage object) {
+        //in this case it is unstaged
+        if (object == null) {
+            return null;
+        }
+
+        //if the object is allready a JPAStage obejct we can scip conversion.
+        if (object instanceof JPAStage) {
+            return (JPAStage) object;
+        }
+
+        JPAStage result = new JPAStage();
+        result.setCreator(object.getCreator());
+        result.setStageId(object.getStageId());
+        result.setTimeStamp(object.getTimeStamp());
+
+        return result;
+    }
+
     /**
      * Converts a list of EDBObjects into a list of JPAObjects
      */
