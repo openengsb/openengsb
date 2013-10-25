@@ -57,35 +57,6 @@ public abstract class AbstractJPADao {
         return criteriaBuilder.equal(from.get("stage"), null);
     }
 
-    protected JPAObject getJPAObject(String oid, long timestamp, String sid) throws EDBException {
-        synchronized (entityManager) {
-            LOGGER.debug("Loading object {} for the time {}", oid, timestamp);
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-            Root from = query.from(JPAObject.class);
-
-            query.select(from);
-
-            Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
-            Predicate predicate2 = criteriaBuilder.le(from.get("timestamp"), timestamp);
-
-            query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, from, sid)));
-
-            query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
-
-            TypedQuery typedQuery = entityManager.createQuery(query).setMaxResults(1);
-            List<JPAObject> resultList = typedQuery.getResultList();
-
-            if (resultList.size() < 1) {
-                throw new EDBException("Failed to query existing object");
-            } else if (resultList.size() > 1) {
-                throw new EDBException("Received more than 1 object which should not be possible!");
-            }
-
-            return resultList.get(0);
-        }
-    }
-
     protected JPAHead getJPAHead(long timestamp, String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Loading head for timestamp {}", timestamp);
@@ -148,6 +119,35 @@ public abstract class AbstractJPADao {
             return typedQuery.getResultList();
         }
     }
+    
+    protected JPAObject getJPAObject(String oid, long timestamp, String sid) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Loading object {} for the time {}", oid, timestamp);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+            Root from = query.from(JPAObject.class);
+
+            query.select(from);
+
+            Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
+            Predicate predicate2 = criteriaBuilder.le(from.get("timestamp"), timestamp);
+
+            query.where(criteriaBuilder.and(predicate1, predicate2, checkSid(criteriaBuilder, from, sid)));
+
+            query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
+
+            TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query).setMaxResults(1);
+            List<JPAObject> resultList = typedQuery.getResultList();
+
+            if (resultList.size() < 1) {
+                throw new EDBException("Failed to query existing object");
+            } else if (resultList.size() > 1) {
+                throw new EDBException("Received more than 1 object which should not be possible!");
+            }
+
+            return resultList.get(0);
+        }
+    }
 
     protected List<JPAObject> getJPAObjects(List<String> oid, String sid) throws EDBException {
         synchronized (entityManager) {
@@ -198,28 +198,6 @@ public abstract class AbstractJPADao {
         }
     }
 
-    protected JPACommit getJPACommit(String revision, String sid) throws EDBException {
-        synchronized (entityManager) {
-            LOGGER.debug("Get commit for the revision {}", revision);
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
-            Root<JPACommit> from = query.from(JPACommit.class);
-
-            query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), checkSid(criteriaBuilder, from, sid)));
-
-            TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
-            List<JPACommit> result = typedQuery.getResultList();
-            switch (result.size()) {
-                case 0:
-                    throw new EDBException("There is no commit with the given revision " + revision);
-                case 1:
-                    return result.get(0);
-                default:
-                    throw new EDBException("More than one commit with the given revision found!");
-            }
-        }
-    }
-
     protected List<String> getResurrectedOIDs(String sid) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("get resurrected JPA objects");
@@ -263,6 +241,28 @@ public abstract class AbstractJPADao {
 
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
             return typedQuery.getResultList();
+        }
+    }
+    
+    protected JPACommit getJPACommit(String revision, String sid) throws EDBException {
+        synchronized (entityManager) {
+            LOGGER.debug("Get commit for the revision {}", revision);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
+            Root<JPACommit> from = query.from(JPACommit.class);
+
+            query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), checkSid(criteriaBuilder, from, sid)));
+
+            TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
+            List<JPACommit> result = typedQuery.getResultList();
+            switch (result.size()) {
+                case 0:
+                    throw new EDBException("There is no commit with the given revision " + revision);
+                case 1:
+                    return result.get(0);
+                default:
+                    throw new EDBException("More than one commit with the given revision found!");
+            }
         }
     }
 
@@ -311,7 +311,9 @@ public abstract class AbstractJPADao {
             CriteriaQuery query = criteriaBuilder.createQuery();
             Root<JPACommit> from = query.from(JPACommit.class);
 
-            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment"), from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId"), from.get("instanceId"));
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment")
+                , from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId")
+                , from.get("instanceId"));
 
             Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
 
@@ -405,9 +407,7 @@ public abstract class AbstractJPADao {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
             criteriaQuery.distinct(!request.isAndJoined());
-            Root<JPAObject> from = criteriaQuery.from(JPAObject.class);
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
+            Root from = criteriaQuery.from(JPAObject.class);
 
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
             Root subFrom = subquery.from(JPAObject.class);
@@ -416,6 +416,12 @@ public abstract class AbstractJPADao {
             Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
             Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2, checkSid(criteriaBuilder, subFrom, sid)));
+
+            List<Predicate> predicates = new ArrayList<>();
+            if (request.getContextId() != null) {
+                predicates.add(criteriaBuilder.like(from.get("oid"), request.getContextId() + "/%"));
+            }
+            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
 
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));

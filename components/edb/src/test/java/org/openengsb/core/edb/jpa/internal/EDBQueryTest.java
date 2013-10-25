@@ -22,5 +22,4 @@ public class EDBQueryTest extends AbstractEDBQueryTest {
     protected Tools initTools() {
         return new TestTools();
     }
-
 }

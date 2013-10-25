@@ -15,12 +15,27 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.persistence.persist.edb.internal;
+package org.openengsb.core.ekb.api;
 
 /**
- * The EOMode enumeration defines the mode in which the engineering object enhancement is done.
+ * This exception is thrown if a concurrency problem has happened inside the EKB.
  */
-public enum EOMode {
-    DEACTIVATED,
-    FULLY_ACTIVATED
+@SuppressWarnings("serial")
+public class EKBConcurrentException extends EKBException {
+
+    public EKBConcurrentException() {
+        super();
+    }
+
+    public EKBConcurrentException(String message) {
+        super(message);
+    }
+
+    public EKBConcurrentException(Throwable cause) {
+        super(cause);
+    }
+
+    public EKBConcurrentException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

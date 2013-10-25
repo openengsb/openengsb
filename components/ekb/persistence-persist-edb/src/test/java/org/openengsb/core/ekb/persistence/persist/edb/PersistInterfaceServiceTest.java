@@ -55,7 +55,8 @@ public class PersistInterfaceServiceTest {
         EDBCommit result = mock(EDBCommit.class);
         when(edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
             anyListOf(EDBObject.class))).thenReturn(result);
-        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, errorHooks);
+        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, errorHooks
+            , "DEACTIVED");
         ContextHolder.get().setCurrentContextId("test");
     }
 

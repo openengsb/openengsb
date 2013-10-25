@@ -130,7 +130,6 @@ public class DefaultJPADao extends AbstractJPADao implements JPADao {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
-        //return (List<JPACommit>)(List<?>)super.getJPACommit(JPABaseCommit.class, timestamp, null);
         return super.getJPACommit(timestamp, null);
     }
 

@@ -186,9 +186,8 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
         ci.insert(v1);
         db.commit(ci);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("K", "B");
         List<EDBObject> result = tools.query(QueryRequest.query("K", "B"));
+
         assertThat(result.size(), is(1));
     }
 
@@ -218,8 +217,8 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
         ci.insert(v1);
         db.commit(ci);
 
-        Map<String, Object> map = new HashMap<String, Object>();
         List<EDBObject> result = tools.query(QueryRequest.create());
+        
         EDBObject result1 = getEDBObjectOutOfList(result, "/test/querynew3");
         EDBObject result2 = getEDBObjectOutOfList(result, "/test/querynew4");
         assertThat(result.size(), is(2));
@@ -276,6 +275,8 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
 
         long time3 = db.commit(ci);
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("KeyB", "Value A 1");
         List<EDBObject> result = tools.query(QueryRequest.query("KeyB", "Value A 1").setTimestamp(time3));
 
         boolean b1 = false;
@@ -513,6 +514,46 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
         assertThat(tools.query(request).size(), is(2));
         request.addParameter("Cow", "Milk").addParameter("House", "Garden");
         assertThat(tools.query(request).size(), is(4));
+    }
+    
+    @Test
+    public void testIfContextSpecificQueriesWork_shouldReturnCorrectObjects() throws Exception {
+        Map<String, EDBObjectEntry> data1 = new HashMap<>();
+        putValue("Cow", "Milk", data1);
+        putValue("Cheese", "Cheddar", data1);
+        EDBObject v1 = tools.createEDBObject("/test/query/15/1", data1);
+        Map<String, EDBObjectEntry> data2 = new HashMap<>();
+        putValue("Animal", "Dog", data2);
+        putValue("Cow", "Milk", data2);
+        EDBObject v2 = tools.createEDBObject("/test/query/15/2", data2);
+        EDBCommit commit = getEDBCommit();
+        commit.insert(v1);
+        commit.insert(v2);
+        db.commit(commit);
+        
+        Map<String, EDBObjectEntry> data3 = new HashMap<>();
+        putValue("House", "Garden", data3);
+        EDBObject v3 = tools.createEDBObject("/test2/query/15/3", data3);
+        Map<String, EDBObjectEntry> data4 = new HashMap<>();
+        putValue("Cheese", "Cheddar", data4);
+        putValue("Animal", "Dog", data4);
+        EDBObject v4 = tools.createEDBObject("/test2/query/15/4", data4);
+        commit = getEDBCommit();
+        commit.insert(v3);
+        commit.insert(v4);
+        db.commit(commit);
+        QueryRequest request = QueryRequest.create().orJoined();
+        request.addParameter("Animal", "Dog");
+        assertThat(tools.query(request).size(), is(2));
+        request.setContextId("/test");
+        List<EDBObject> result = tools.query(request);
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test/query/15/2"));
+        
+        request.setContextId("/test2");
+        result = tools.query(request);
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getOID(), is("/test2/query/15/4"));
     }
 
 }

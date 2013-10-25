@@ -61,6 +61,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)
 public class EDBIT extends AbstractModelUsingExamTestHelper {
+    private final static String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;
     private QueryInterface query;
     private PersistInterface persist;
@@ -69,20 +70,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     public static Option[] myConfiguration() throws Exception {
         Option[] options = new Option[]{
             new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "url", "jdbc:h2:mem:itests"),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "username", ""),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.infrastructure.jpa",
-                "password", ""),
-            new KarafDistributionConfigurationFilePutOption(
-                "/etc/org.openengsb.ekb",
+                "etc/org.openengsb.ekb.cfg",
                 "modelUpdatePropagationMode", "DEACTIVATED"),
+            new KarafDistributionConfigurationFilePutOption(
+                "etc/org.openengsb.ekb.cfg",
+                "persistInterfaceLockingMode", "DEACTIVATED"),
             mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject()
         };
         return combine(baseConfiguration(), options);
@@ -94,7 +86,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         query = getOsgiService(QueryInterface.class);
         persist = getOsgiService(PersistInterface.class);
         registerModelProvider();
-        ContextHolder.get().setCurrentContextId("testcontext");
+        ContextHolder.get().setCurrentContextId(CONTEXT);
     }
 
     @Test
@@ -245,6 +237,38 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\\\test\"");
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testEKBInsertCommitAndQueryWithContextId_shouldReturnModelOnlyOnCorrectContext() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setName("testmodel");
+        model.setEdbId("createevent/7");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        ContextHolder.get().setCurrentContextId("othercontext");
+        TestModelDecorator model2 = getTestModelDecorator();
+        model2.setName("testmodel");
+        model2.setEdbId("createevent/8");
+        commit = getTestEKBCommit().addInsert(model2.getModel());
+        persist.commit(commit);
+
+        QueryRequest request = QueryRequest.query("name", "testmodel");
+        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        assertThat(result.size(), is(2));
+        request.setContextId(CONTEXT);
+        result = (List<Object>) query.query(getTestModel(), request);
+        assertThat(result.size(), is(1));
+        assertThat(new TestModelDecorator(result.get(0)).getEdbId(), is("createevent/7"));
+        request.setContextId("othercontext");
+        result = (List<Object>) query.query(getTestModel(), request);
+        assertThat(result.size(), is(1));
+        assertThat(new TestModelDecorator(result.get(0)).getEdbId(), is("createevent/8"));
+        request.setContextId("somenonesensecontext");
+        result = (List<Object>) query.query(getTestModel(), request);
+        assertThat(result.size(), is(0));
+        ContextHolder.get().setCurrentContextId(CONTEXT);
     }
 
     @Test

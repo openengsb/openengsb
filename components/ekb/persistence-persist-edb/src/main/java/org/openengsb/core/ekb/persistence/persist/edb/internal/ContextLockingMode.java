@@ -18,9 +18,11 @@
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 /**
- * The EOMode enumeration defines the mode in which the engineering object enhancement is done.
+ * The ContextLockingMode enumeration defines the possible modes of the context locking mechanism.
+ * ACTIVATED = Only one commit/revert can be performed at the same time.
+ * DEACTIVATED = No check for concurrent context writing.
  */
-public enum EOMode {
-    DEACTIVATED,
-    FULLY_ACTIVATED
+public enum ContextLockingMode {
+    ACTIVATED,
+    DEACTIVATED;
 }
