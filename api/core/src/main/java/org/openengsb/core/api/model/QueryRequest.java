@@ -52,7 +52,7 @@ public final class QueryRequest {
     private QueryRequest() {
         parameters = new HashMap<String, Object>();
         timestamp = System.currentTimeMillis();
-        wildcardAware = true;
+        wildcardAware = false;
         caseSensitive = true;
         andJoined = true;
         contextId = null;
