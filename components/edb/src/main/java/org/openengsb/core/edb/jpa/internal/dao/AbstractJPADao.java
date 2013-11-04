@@ -6,14 +6,15 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.openengsb.core.edb.jpa.internal.dao;
 
 import com.google.common.collect.Iterables;
@@ -94,7 +95,8 @@ public abstract class AbstractJPADao {
             CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
             Root from = query.from(JPAObject.class);
             query.select(from);
-            query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), checkSid(criteriaBuilder, from, sid)));
+            query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), 
+                checkSid(criteriaBuilder, from, sid)));
             query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
@@ -161,7 +163,8 @@ public abstract class AbstractJPADao {
             Subquery<Number> subquery = query.subquery(Number.class);
             Root maxTime = subquery.from(JPAObject.class);
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
-            subquery.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")), checkSid(criteriaBuilder, maxTime, sid)));
+            subquery.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")), 
+                checkSid(criteriaBuilder, maxTime, sid)));
 
             Predicate predicate1 = criteriaBuilder.in(from.get("oid")).value(oid);
             Predicate predicate2 = criteriaBuilder.equal(from.get("timestamp"), subquery);
@@ -190,7 +193,8 @@ public abstract class AbstractJPADao {
             Predicate predicate2 = criteriaBuilder.between(fromJPAObject.get("timestamp"), from, to);
             subquery.where(criteriaBuilder.and(predicate1, predicate2));
 
-            query.where(criteriaBuilder.and(criteriaBuilder.in(f.get("timestamp")).value(subquery), checkSid(criteriaBuilder, f, sid)));
+            query.where(criteriaBuilder.and(criteriaBuilder.in(f.get("timestamp")).value(subquery), 
+                checkSid(criteriaBuilder, f, sid)));
             query.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
@@ -213,7 +217,8 @@ public abstract class AbstractJPADao {
             Predicate subPredicate1 = criteriaBuilder.equal(from.get("oid"), f.get("oid"));
             Predicate subPredicate2 = criteriaBuilder.equal(f.get("isDeleted"), Boolean.TRUE);
             Predicate subPredicate3 = criteriaBuilder.gt(from.get("timestamp"), f.get("timestamp"));
-            sub.where(criteriaBuilder.and(subPredicate1, subPredicate2, subPredicate3, checkSid(criteriaBuilder, f, sid)));
+            sub.where(criteriaBuilder.and(subPredicate1, subPredicate2, subPredicate3, 
+                checkSid(criteriaBuilder, f, sid)));
 
             Predicate predicate1 = criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE);
             Predicate predicate2 = criteriaBuilder.exists(sub);
@@ -235,7 +240,8 @@ public abstract class AbstractJPADao {
             Subquery<Number> subquery = query.subquery(Number.class);
             Root maxTime = subquery.from(JPACommit.class);
             subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
-            subquery.where(criteriaBuilder.and(criteriaBuilder.le(maxTime.get("timestamp"), timestamp), checkSid(criteriaBuilder, maxTime, sid)));
+            subquery.where(criteriaBuilder.and(criteriaBuilder.le(maxTime.get("timestamp"), timestamp), 
+                checkSid(criteriaBuilder, maxTime, sid)));
 
             query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
 
@@ -251,7 +257,8 @@ public abstract class AbstractJPADao {
             CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
             Root<JPACommit> from = query.from(JPACommit.class);
 
-            query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), checkSid(criteriaBuilder, from, sid)));
+            query.select(from).where(criteriaBuilder.and(criteriaBuilder.equal(from.get("revision"), revision), 
+                checkSid(criteriaBuilder, from, sid)));
 
             TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
             List<JPACommit> result = typedQuery.getResultList();
@@ -304,7 +311,8 @@ public abstract class AbstractJPADao {
         }
     }
 
-    protected List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException {
+    protected List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) 
+        throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Get matching revisions for the request {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -389,7 +397,8 @@ public abstract class AbstractJPADao {
             Root<JPAObject> from = query.from(JPAObject.class);
             Expression<Long> maxExpression = criteriaBuilder.count(from.get("oid"));
             query.select(maxExpression);
-            query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), checkSid(criteriaBuilder, from, sid)));
+            query.where(criteriaBuilder.and(criteriaBuilder.equal(from.get("oid"), oid), 
+                checkSid(criteriaBuilder, from, sid)));
 
             TypedQuery<Long> typedQuery = entityManager.createQuery(query);
             try {
