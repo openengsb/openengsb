@@ -19,6 +19,8 @@ package org.openengsb.ui.common.taskbox.web;
 
 import java.util.ArrayList;
 
+import javax.inject.Named;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -33,7 +35,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.WorkflowException;
 import org.openengsb.core.workflow.api.model.Task;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +42,9 @@ public class CustomTaskPanel extends Panel {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomTaskPanel.class);
     private static final long serialVersionUID = -1163492145404543013L;
 
-    private Task task;
+    private final Task task;
 
-    @PaxWicketBean(name = "taskboxService")
+    @Named("taskboxService")
     private TaskboxService service;
 
     @SuppressWarnings({ "serial" })

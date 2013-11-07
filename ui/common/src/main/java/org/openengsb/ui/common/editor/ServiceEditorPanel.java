@@ -34,7 +34,8 @@ import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -76,8 +77,8 @@ public class ServiceEditorPanel extends Panel {
 
         private static final long serialVersionUID = -6996584309100143740L;
 
-        private Entry<String, Object> entry;
-        private int index;
+        private final Entry<String, Object> entry;
+        private final int index;
 
         public EntryModel(Entry<String, Object> entry, int i) {
             this.entry = entry;
@@ -171,8 +172,8 @@ public class ServiceEditorPanel extends Panel {
         add(new Behavior() {
             @Override
             public void renderHead(Component component, IHeaderResponse response) {
-                response.renderCSSReference(new PackageResourceReference(ServiceEditorPanel.class,
-                    "ServiceEditorPanel.css"));
+                response.render(CssHeaderItem.forReference(new PackageResourceReference(ServiceEditorPanel.class,
+                        "ServiceEditorPanel.css")));
             }
         });
     }
@@ -207,7 +208,7 @@ public class ServiceEditorPanel extends Panel {
 
     private class EntryConverterFunction<K, V> implements Function<Map.Entry<K, V>, MapEntry<K, V>> {
 
-        private Map<K, V> originalMap;
+        private final Map<K, V> originalMap;
 
         protected EntryConverterFunction(Map<K, V> originalMap) {
             this.originalMap = originalMap;
@@ -246,6 +247,7 @@ public class ServiceEditorPanel extends Panel {
                 item.add(new Label("key", keyModel));
 
                 item.add(new WebMarkupContainer("buttonKey").add(new AjaxEventBehavior("onclick") {
+                    @Override
                     protected void onEvent(AjaxRequestTarget target) {
                         ServiceEditorPanel.this.removeProperty(modelObject.getKey());
                         target.add(ServiceEditorPanel.this);
@@ -265,6 +267,7 @@ public class ServiceEditorPanel extends Panel {
                             new AjaxEditableLabel<String>("value", model);
                         container.add(l);
                         container.add(new WebMarkupContainer("buttonValue").add(new AjaxEventBehavior("onclick") {
+                            @Override
                             protected void onEvent(AjaxRequestTarget target) {
                                 model.deleteSubElement(index);
                                 target.add(ServiceEditorPanel.this);

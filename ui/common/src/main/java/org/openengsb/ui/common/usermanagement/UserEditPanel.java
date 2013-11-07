@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -41,7 +44,6 @@ import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.util.BeanUtilsExtended;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +59,13 @@ public abstract class UserEditPanel extends Panel {
 
     private static final long serialVersionUID = 5587225457795713881L;
 
-    @PaxWicketBean(name = "userManager")
+    @Inject
+    @Named("userManager")
     private UserDataManager userManager;
 
     private boolean createMode = true;
 
-    private UserInput input = new UserInput();
+    private final UserInput input = new UserInput();
 
     private Panel permissionContentPanel;
 

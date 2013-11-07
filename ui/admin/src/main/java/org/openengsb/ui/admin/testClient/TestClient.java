@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -42,6 +44,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.extensions.markup.html.tree.BaseTree;
+import org.apache.wicket.extensions.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -51,8 +55,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -92,7 +94,6 @@ import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.admin.util.MethodComparator;
 import org.openengsb.ui.common.model.LocalizableStringModel;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,16 +116,20 @@ public class TestClient extends BasePage {
     public static final String PAGE_NAME_KEY = "testClient.title";
     public static final String PAGE_DESCRIPTION_KEY = "testClient.description";
 
-    @PaxWicketBean(name = "wiringService")
+    @Inject
+    @Named("wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean(name = "osgiUtilsService")
+    @Inject
+    @Named("osgiUtilsService")
     private OsgiUtilsService utilsService;
 
-    @PaxWicketBean(name = "serviceManager")
+    @Inject
+    @Named("serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean(name = "attributeStore")
+    @Inject
+    @Named("attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
 
     private DropDownChoice<MethodId> methodList;
@@ -145,7 +150,7 @@ public class TestClient extends BasePage {
     private AjaxButton jsonButton;
 
     @SuppressWarnings("serial")
-    private IModel<? extends List<? extends DomainProvider>> domainProvider =
+    private final IModel<? extends List<? extends DomainProvider>> domainProvider =
         new LoadableDetachableModel<List<? extends DomainProvider>>() {
             @Override
             protected List<? extends DomainProvider> load() {

@@ -40,12 +40,12 @@ import java.util.TreeMap;
 import javax.swing.tree.TreeModel;
 
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.extensions.markup.html.tree.LinkTree;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.util.tester.FormTester;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -417,7 +417,7 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     private static class IsAssignableFrom extends TypeSafeMatcher<Class<?>> {
-        private Class<?> clazz;
+        private final Class<?> clazz;
 
         public IsAssignableFrom(Class<?> clazz) {
             this.clazz = clazz;

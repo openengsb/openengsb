@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,7 +57,6 @@ import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.api.xlink.service.ui.ToolChooserLogic;
 import org.openengsb.core.api.xlink.service.ui.XLinkMock;
 import org.openengsb.core.services.xlink.XLinkUtils;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,13 +69,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @PaxWicketMountPoint(mountPoint = "openXLink")
 public class ToolChooserPage extends WebPage {
     
-    @PaxWicketBean(name = "osgiUtilsService")
+    @Inject
+    @Named("osgiUtilsService")
     private OsgiUtilsService serviceUtils;
     
-    @PaxWicketBean(name = "toolChooserLogic")
+    @Inject
+    @Named("toolChooserLogic")
     private ToolChooserLogic toolChooserLogic;
     
-    @PaxWicketBean(name = "xLinkMock")
+    @Inject
+    @Named("xLinkMock")
     private XLinkMock xLinkMock;
     
     private String contextId;
@@ -132,7 +136,7 @@ public class ToolChooserPage extends WebPage {
             for (StringValue stringvalue : values) {
                 valuesAsString.add(stringvalue.toString());
             }
-            parameterMap.put(key, (String[]) valuesAsString.toArray(new String[0]));
+            parameterMap.put(key, valuesAsString.toArray(new String[0]));
         }
         return parameterMap;
     }
@@ -313,6 +317,7 @@ public class ToolChooserPage extends WebPage {
         add(new Label("hostId", hostIdMsg));
         List<XLinkConnector> tools = toolChooserLogic.getRegisteredToolsFromHost(hostId);    
         ListView toolList = new ListView("toolList", tools) {
+            @Override
             protected void populateItem(ListItem item) {
                 final XLinkConnector tool = (XLinkConnector) item.getModelObject();
                 item.add(new Label("toolName", tool.getToolName()));
@@ -326,6 +331,7 @@ public class ToolChooserPage extends WebPage {
                         final ModelDescription destModelInfo 
                             = toolChooserLogic.getModelClassOfView(hostId, tool.getId(), view.getViewId());
                         Link viewLink = new Link("viewLink") {
+                            @Override
                             public void onClick() {
                                 triggerXLinkProcessing(destModelInfo, tool.getId(), view.getViewId());
                                 handleSuccessResponse(resp);
