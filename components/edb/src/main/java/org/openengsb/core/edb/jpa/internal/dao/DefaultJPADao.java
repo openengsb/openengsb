@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class DefaultJPADao implements JPADao {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
@@ -429,7 +431,7 @@ public class DefaultJPADao implements JPADao {
             CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
             criteriaQuery.distinct(!request.isAndJoined());
             Root from = criteriaQuery.from(JPAObject.class);
-            
+
             Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
             Root subFrom = subquery.from(JPAObject.class);
             Expression<Long> maxExpression = criteriaBuilder.max(subFrom.get("timestamp"));
@@ -437,7 +439,7 @@ public class DefaultJPADao implements JPADao {
             Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
             Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
             subquery.where(criteriaBuilder.and(p1, p2));
-            
+
             List<Predicate> predicates = new ArrayList<>();
             if (request.getContextId() != null) {
                 predicates.add(criteriaBuilder.like(from.get("oid"), request.getContextId() + "/%"));
@@ -451,7 +453,7 @@ public class DefaultJPADao implements JPADao {
             return typedQuery.getResultList();
         }
     }
-    
+
     /**
      * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
      * the criteria query.
@@ -460,23 +462,14 @@ public class DefaultJPADao implements JPADao {
     private Predicate convertParametersToPredicateNew(QueryRequest request, Root<?> from,
             CriteriaBuilder builder, CriteriaQuery<?> query) {
         List<Predicate> predicates = new ArrayList<>();
-        for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
+        for (Map.Entry<String, Set<Object>> value : request.getParameters().entrySet()) {
             Subquery<JPAEntry> subquery = query.subquery(JPAEntry.class);
             Root subFrom = subquery.from(JPAEntry.class);
             subquery.select(subFrom);
-            Expression<String> expression = subFrom.get("value");
-            String val = value.getValue().toString();
-            if (!request.isCaseSensitive()) {
-                expression = builder.lower(expression);
-                val = val.toLowerCase();
-            }
-            
-            Predicate predicate1 = builder.equal(from, subFrom.get("owner"));
-            Predicate predicate2 = builder.like(subFrom.get("key"), value.getKey());
-            Predicate predicate3 = request.isWildcardAware()
-                    ? builder.like(expression, val) : builder.equal(expression, val);
-            subquery.where(builder.and(predicate1, predicate2, predicate3));
-                    
+            Predicate ownerPredicate = builder.equal(from, subFrom.get("owner"));
+            Predicate keyPredicate = builder.like(subFrom.get("key"), value.getKey());
+            Predicate valuePredicate = buildValuePredicate(request, value.getValue(), subFrom, builder);
+            subquery.where(builder.and(ownerPredicate, keyPredicate, valuePredicate));
             predicates.add(builder.exists(subquery));
         }
         if (request.isAndJoined()) {
@@ -484,6 +477,31 @@ public class DefaultJPADao implements JPADao {
         } else {
             return builder.or(Iterables.toArray(predicates, Predicate.class));
         }
+    }
+
+    private Predicate buildValuePredicate(QueryRequest request, Set<Object> values, Root<?> subFrom,
+            CriteriaBuilder builder) {
+        Expression<String> expression = subFrom.get("value");
+
+        if (!request.isCaseSensitive()) {
+            expression = builder.lower(expression);
+        }
+
+        List<Predicate> valuePredicates = Lists.newArrayList();
+        for (Object obj : values) {
+            String caseCheckedValue = getCaseCheckedValue(obj, request.isCaseSensitive());
+            valuePredicates.add(request.isWildcardAware() ? builder.like(expression, caseCheckedValue) : builder
+                .equal(expression, caseCheckedValue));
+        }
+        if (request.isAndJoined()) {
+            return builder.and(Iterables.toArray(valuePredicates, Predicate.class));
+        } else {
+            return builder.or(Iterables.toArray(valuePredicates, Predicate.class));
+        }
+    }
+
+    private String getCaseCheckedValue(Object object, boolean caseSensitive) {
+        return caseSensitive ? object.toString() : object.toString().toLowerCase();
     }
 
     public void setEntityManager(EntityManager entityManager) {

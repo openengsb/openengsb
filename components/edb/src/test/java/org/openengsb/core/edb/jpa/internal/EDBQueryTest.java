@@ -66,9 +66,9 @@ public class EDBQueryTest extends AbstractEDBTest {
         req = QueryRequest.query("Cow", "Milk");
         List<EDBObject> list3 = db.query(req);
         req = QueryRequest.query("A", "B").addParameter("Cow", "Milk")
-                .addParameter("House", "Garden");
+            .addParameter("House", "Garden");
         List<EDBObject> list4 = db.query(req);
-        
+
         assertThat(list1.size(), is(1));
         assertThat(list2.size(), is(1));
         assertThat(list3.size(), is(2));
@@ -410,7 +410,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(revisions.get(0).getTimestamp(), is(timestamp2));
         assertThat(revisions.get(0).getComment(), is("this is a comment"));
     }
-    
+
     @Test
     public void testIfQueryingWithCaseInsensitivity_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
@@ -425,7 +425,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         result = db.query(QueryRequest.query("test", "this is a test").caseSensitive());
         assertThat(result.size(), is(0));
     }
-    
+
     @Test
     public void testIfQueryingWithCaseSensitivityAndWildcards_shouldWork() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<String, EDBObjectEntry>();
@@ -446,7 +446,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
     }
-    
+
     @Test
     public void testIfLastRevisionNumberOfContextWorks_shouldReturnCorrectRevisions() throws Exception {
         String context1 = "context1";
@@ -475,13 +475,13 @@ public class EDBQueryTest extends AbstractEDBTest {
         commit = getEDBCommit();
         commit.insert(obj);
         db.commit(commit);
-        
+
         assertThat(db.getLastRevisionNumberOfContext(context1), is(revision1));
         assertThat(db.getLastRevisionNumberOfContext(context2), is(revision2));
         assertThat(db.getLastRevisionNumberOfContext(context3), is(revision3));
         assertThat(db.getLastRevisionNumberOfContext("notExistingContext"), nullValue());
     }
-    
+
     @Test
     public void testIfOrRequestsAreWorking_shouldReturnCorrectObjects() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<>();
@@ -499,23 +499,31 @@ public class EDBQueryTest extends AbstractEDBTest {
         putValue("Cheese", "Cheddar", data4);
         putValue("Animal", "Dog", data4);
         EDBObject v4 = new EDBObject("/test/query/14/4", data4);
+        Map<String, EDBObjectEntry> data5 = new HashMap<>();
+        putValue("Cheese", "Cheddar", data5);
+        putValue("Animal", "Dog", data5);
+        putValue("Cow", "Steak", data5);
+        EDBObject v5 = new EDBObject("/test/query/14/5", data5);
         EDBCommit commit = getEDBCommit();
         commit.insert(v1);
         commit.insert(v2);
         commit.insert(v3);
         commit.insert(v4);
+        commit.insert(v5);
         db.commit(commit);
         QueryRequest request = QueryRequest.create().orJoined();
         request.addParameter("Cow", "Milk");
         assertThat(db.query(request).size(), is(2));
-        request.addParameter("Animal", "Dog");
+        request.addParameter("Cow", "Steak");
         assertThat(db.query(request).size(), is(3));
-        request.removeParameter("Cow");
-        assertThat(db.query(request).size(), is(2));
-        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
+        request.addParameter("Animal", "Dog");
         assertThat(db.query(request).size(), is(4));
+        request.removeParameter("Cow");
+        assertThat(db.query(request).size(), is(3));
+        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
+        assertThat(db.query(request).size(), is(5));
     }
-    
+
     @Test
     public void testIfContextSpecificQueriesWork_shouldReturnCorrectObjects() throws Exception {
         Map<String, EDBObjectEntry> data1 = new HashMap<>();
@@ -530,7 +538,7 @@ public class EDBQueryTest extends AbstractEDBTest {
         commit.insert(v1);
         commit.insert(v2);
         db.commit(commit);
-        
+
         Map<String, EDBObjectEntry> data3 = new HashMap<>();
         putValue("House", "Garden", data3);
         EDBObject v3 = new EDBObject("/test2/query/15/3", data3);
@@ -549,12 +557,11 @@ public class EDBQueryTest extends AbstractEDBTest {
         List<EDBObject> result = db.query(request);
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/15/2"));
-        
+
         request.setContextId("/test2");
         result = db.query(request);
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test2/query/15/4"));
     }
-    
-    
+
 }
