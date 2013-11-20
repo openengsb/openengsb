@@ -95,7 +95,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         }
         return null;
     }
-    
+
     @Override
     public EDBObject getObject(String oid) throws EDBException {
         return getObject(oid, null);
@@ -103,7 +103,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public List<EDBObject> query(QueryRequest request) throws EDBException {
-        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%");
+        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%").iterator().next();
         if (reference.equals(getModelOid("objectA/reference/1"))
                 || reference.equals(getModelOid("objectB/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));
@@ -208,7 +208,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public UUID getCurrentRevisionNumber() throws EDBException {
         return null;
     }
-    
+
     @Override
     public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
         return null;
@@ -223,5 +223,5 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException {
         return null;
     }
-    
+
 }

@@ -45,6 +45,7 @@ public class DefaultQueryParserTest {
     public void testRegexCheckForOrJoinedQueries_shouldWork() throws Exception {
         assertWorking("combined query with two conditions don't work", "a:\"b\" or b:\"c\"");
         assertWorking("combined query with three conditions don't work", "a:\"b\" or b:\"c\" or c:\"d\"");
+        assertWorking("combined query with two equal keys don't work", "a:\"b\" or a:\"c\"");
     }
 
     @Test
@@ -64,34 +65,34 @@ public class DefaultQueryParserTest {
     public void testAndQueryRequestObjectConstruction_shouldBuildCorrectObjects() throws Exception {
         QueryRequest request = parser.parseQueryString("a:\"b\" and c:\"d\"");
         assertThat(request.isAndJoined(), is(true));
-        assertThat(request.getParameter("a").toString(), is("b"));
-        assertThat(request.getParameter("c").toString(), is("d"));
+        assertThat(request.getParameter("a").contains("b"), is(true));
+        assertThat(request.getParameter("c").contains("d"), is(true));
         request = parser.parseQueryString("a:\"b\" and c:\"d\" and e:\"f\"");
         assertThat(request.isAndJoined(), is(true));
-        assertThat(request.getParameter("a").toString(), is("b"));
-        assertThat(request.getParameter("c").toString(), is("d"));
-        assertThat(request.getParameter("e").toString(), is("f"));
+        assertThat(request.getParameter("a").contains("b"), is(true));
+        assertThat(request.getParameter("c").contains("d"), is(true));
+        assertThat(request.getParameter("e").contains("f"), is(true));
     }
 
     @Test
     public void testOrQueryRequestObjectConstruction_shouldBuildCorrectObjects() throws Exception {
         QueryRequest request = parser.parseQueryString("a:\"b\" or c:\"d\"");
         assertThat(request.isAndJoined(), is(false));
-        assertThat(request.getParameter("a").toString(), is("b"));
-        assertThat(request.getParameter("c").toString(), is("d"));
+        assertThat(request.getParameter("a").contains("b"), is(true));
+        assertThat(request.getParameter("c").contains("d"), is(true));
         request = parser.parseQueryString("a:\"b\" or c:\"d\" or e:\"f\"");
         assertThat(request.isAndJoined(), is(false));
-        assertThat(request.getParameter("a").toString(), is("b"));
-        assertThat(request.getParameter("c").toString(), is("d"));
-        assertThat(request.getParameter("e").toString(), is("f"));
+        assertThat(request.getParameter("a").contains("b"), is(true));
+        assertThat(request.getParameter("c").contains("d"), is(true));
+        assertThat(request.getParameter("e").contains("f"), is(true));
     }
-    
+
     @Test
     public void testSpecialQueryRequestObjectConstruction_shouldBuildCorrectObjects() throws Exception {
         QueryRequest request = parser.parseQueryString("");
         assertThat(request.getParameters().size(), is(0));
         request = parser.parseQueryString("a:\"b\"");
-        assertThat(request.getParameter("a").toString(), is("b"));
+        assertThat(request.getParameter("a").contains("b"), is(true));
     }
 
     @Test(expected = EKBException.class)
