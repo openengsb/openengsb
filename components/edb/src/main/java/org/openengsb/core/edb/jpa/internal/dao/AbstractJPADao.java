@@ -17,9 +17,11 @@
 package org.openengsb.core.edb.jpa.internal.dao;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -440,23 +442,14 @@ public abstract class AbstractJPADao {
     private Predicate convertParametersToPredicateNew(QueryRequest request, Root<?> from,
             CriteriaBuilder builder, CriteriaQuery<?> query) {
         List<Predicate> predicates = new ArrayList<>();
-        for (Map.Entry<String, Object> value : request.getParameters().entrySet()) {
+        for (Map.Entry<String, Set<Object>> value : request.getParameters().entrySet()) {
             Subquery<JPAEntry> subquery = query.subquery(JPAEntry.class);
             Root subFrom = subquery.from(JPAEntry.class);
             subquery.select(subFrom);
-            Expression<String> expression = subFrom.get("value");
-            String val = value.getValue().toString();
-            if (!request.isCaseSensitive()) {
-                expression = builder.lower(expression);
-                val = val.toLowerCase();
-            }
-
-            Predicate predicate1 = builder.equal(from, subFrom.get("owner"));
-            Predicate predicate2 = builder.like(subFrom.get("key"), value.getKey());
-            Predicate predicate3 = request.isWildcardAware()
-                    ? builder.like(expression, val) : builder.equal(expression, val);
-            subquery.where(builder.and(predicate1, predicate2, predicate3));
-
+	    Predicate ownerPredicate = builder.equal(from, subFrom.get("owner"));
+            Predicate keyPredicate = builder.like(subFrom.get("key"), value.getKey());
+            Predicate valuePredicate = buildValuePredicate(request, value.getValue(), subFrom, builder);
+            subquery.where(builder.and(ownerPredicate, keyPredicate, valuePredicate));
             predicates.add(builder.exists(subquery));
         }
         if (request.isAndJoined()) {
@@ -465,4 +458,30 @@ public abstract class AbstractJPADao {
             return builder.or(Iterables.toArray(predicates, Predicate.class));
         }
     }
+    
+    private Predicate buildValuePredicate(QueryRequest request, Set<Object> values, Root<?> subFrom,
+            CriteriaBuilder builder) {
+        Expression<String> expression = subFrom.get("value");
+
+        if (!request.isCaseSensitive()) {
+            expression = builder.lower(expression);
+        }
+
+        List<Predicate> valuePredicates = Lists.newArrayList();
+        for (Object obj : values) {
+            String caseCheckedValue = getCaseCheckedValue(obj, request.isCaseSensitive());
+            valuePredicates.add(request.isWildcardAware() ? builder.like(expression, caseCheckedValue) : builder
+                .equal(expression, caseCheckedValue));
+        }
+        if (request.isAndJoined()) {
+            return builder.and(Iterables.toArray(valuePredicates, Predicate.class));
+        } else {
+            return builder.or(Iterables.toArray(valuePredicates, Predicate.class));
+        }
+    }
+
+    private String getCaseCheckedValue(Object object, boolean caseSensitive) {
+        return caseSensitive ? object.toString() : object.toString().toLowerCase();
+    }
+
 }

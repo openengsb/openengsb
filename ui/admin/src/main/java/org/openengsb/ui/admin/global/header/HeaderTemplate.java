@@ -20,6 +20,9 @@ package org.openengsb.ui.admin.global.header;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -39,16 +42,18 @@ import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.openengsb.ui.common.resources.images.CommonPictureLocator;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
 
-    @PaxWicketBean(name = "openengsbVersion")
+    @Inject
+    @Named("openengsbVersion")
     private OpenEngSBFallbackVersion openengsbVersion;
-    @PaxWicketBean(name = "openengsbVersionService")
+    @Inject
+    @Named("openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
-    @PaxWicketBean(name = "contextCurrentService")
+    @Inject
+    @Named("contextCurrentService")
     private ContextCurrentService contextService;
 
     public HeaderTemplate(String id) {

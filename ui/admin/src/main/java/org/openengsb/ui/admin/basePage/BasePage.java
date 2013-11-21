@@ -17,7 +17,9 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.StringResourceModel;
@@ -48,12 +50,12 @@ public abstract class BasePage extends OpenEngSBPage {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderCSSReference(CommonCssLocator.getGridsCss());
-        response.renderCSSReference(CommonCssLocator.getCommonCss());
-        response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getGridsCss()));
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getCommonCss()));
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getJqueryUiCss()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryJs()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryUi()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryHelper()));
     }
 
     private void initCommonContent() {

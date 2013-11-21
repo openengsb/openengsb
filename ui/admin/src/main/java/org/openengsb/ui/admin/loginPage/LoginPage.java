@@ -21,7 +21,9 @@ import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -46,7 +48,7 @@ public class LoginPage extends OpenEngSBPage {
 
     private static final long serialVersionUID = 4704550987311760491L;
 
-    private UsernamePassword user = new UsernamePassword();
+    private final UsernamePassword user = new UsernamePassword();
 
     public final class DefaultImprintPanel extends ImprintPanel {
 
@@ -67,20 +69,20 @@ public class LoginPage extends OpenEngSBPage {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderCSSReference(CommonCssLocator.getGridsCss());
-        response.renderCSSReference(CommonCssLocator.getLoginPageCss());
-        response.renderCSSReference(CommonCssLocator.getJqueryUiCss());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryJs());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryUi());
-        response.renderJavaScriptReference(CommonJsLocator.getJqueryHelper());
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getGridsCss()));
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getLoginPageCss()));
+        response.render(JavaScriptHeaderItem.forReference(CommonCssLocator.getJqueryUiCss()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryJs()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryUi()));
+        response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryHelper()));
 
         // Javascript code to set the focus on the unsername input field. Only necessary for loginpage,
         // therefore injected directly
-        response.renderJavaScript(""
+        response.render(JavaScriptHeaderItem.forScript(""
                 + "$(function() {"
                 + "  $(\"#username\").focus();"
                 + "});"
-                + "", "setFocusOnload");
+            + "", "setFocusOnload", "loginfocus"));
     }
 
     private void initContent() {
@@ -97,9 +99,8 @@ public class LoginPage extends OpenEngSBPage {
             }
 
             private void setDefaultResponsePageIfNecessary() {
-                if (!continueToOriginalDestination()) {
-                    setResponsePage(getApplication().getHomePage());
-                }
+                continueToOriginalDestination();
+                setResponsePage(getApplication().getHomePage());
             }
         };
         loginForm.setModel(new CompoundPropertyModel<UsernamePassword>(user));
