@@ -20,7 +20,7 @@ package org.openengsb.ui.common.util;
 import javax.servlet.Filter;
 
 import org.ops4j.pax.wicket.api.ConfigurableFilterConfig;
-import org.ops4j.pax.wicket.util.AbstractFilterFactory;
+import org.ops4j.pax.wicket.api.support.AbstractFilterFactory;
 import org.osgi.framework.BundleContext;
 
 public class DelegatingSecurityFilterFactory extends AbstractFilterFactory {

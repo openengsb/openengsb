@@ -28,7 +28,6 @@ import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
 
-
 public class DefaultJPADao extends AbstractJPADao implements JPADao {
 
     public DefaultJPADao() {

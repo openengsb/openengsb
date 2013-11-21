@@ -17,11 +17,13 @@
 
 package org.openengsb.core.api.model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The QueryRequest object encapsulates a query request for data against the Engineering Database. It contains
@@ -42,7 +44,7 @@ import com.google.common.base.Objects.ToStringHelper;
  * (value=false). The default value is true.
  */
 public final class QueryRequest {
-    private Map<String, Object> parameters;
+    private final Map<String, Set<Object>> parameters;
     private long timestamp;
     private String contextId;
     private boolean wildcardAware;
@@ -50,9 +52,9 @@ public final class QueryRequest {
     private boolean andJoined;
 
     private QueryRequest() {
-        parameters = new HashMap<String, Object>();
+        parameters = Maps.newHashMap();
         timestamp = System.currentTimeMillis();
-        wildcardAware = true;
+        wildcardAware = false;
         caseSensitive = true;
         andJoined = true;
         contextId = null;
@@ -76,7 +78,11 @@ public final class QueryRequest {
      * Adds a parameter to this request.
      */
     public QueryRequest addParameter(String key, Object value) {
-        parameters.put(key, value);
+        if (parameters.get(key) == null) {
+            parameters.put(key, Sets.newHashSet(value));
+        } else {
+            parameters.get(key).add(value);
+        }
         return this;
     }
 
@@ -91,14 +97,14 @@ public final class QueryRequest {
     /**
      * Returns the value for the parameter with the given key in the request.
      */
-    public Object getParameter(String key) {
+    public Set<Object> getParameter(String key) {
         return parameters.get(key);
     }
 
     /**
      * Returns the map of parameters for this request.
      */
-    public Map<String, Object> getParameters() {
+    public Map<String, Set<Object>> getParameters() {
         return parameters;
     }
 
@@ -186,14 +192,14 @@ public final class QueryRequest {
         this.andJoined = false;
         return this;
     }
-    
+
     /**
      * Returns the contextId to which the search shall be restricted to
      */
     public String getContextId() {
         return contextId;
     }
-    
+
     /**
      * Sets the contextId if the search shall be restricted to a specific context
      */
@@ -209,8 +215,10 @@ public final class QueryRequest {
         helper.addValue(caseSensitive ? "case sensitive" : "case insensitive");
         helper.addValue(andJoined ? "and-joined" : "or-joined");
         helper.add("contextId", contextId);
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            helper.add(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Set<Object>> entry : parameters.entrySet()) {
+            for (Object value : entry.getValue()) {
+                helper.add(entry.getKey(), value);
+            }
         }
         return helper.omitNullValues().toString();
     }

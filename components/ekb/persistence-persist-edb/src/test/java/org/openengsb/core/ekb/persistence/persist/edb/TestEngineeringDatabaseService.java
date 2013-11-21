@@ -41,11 +41,10 @@ import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA;
 import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
 
 /**
- * The TestEngineeringDatabaseService is a simple implementation of the
- * EngineeringDatabaseService for testing the Engineering Object support.
+ * The TestEngineeringDatabaseService is a simple implementation of the EngineeringDatabaseService for testing the
+ * Engineering Object support.
  */
-public class TestEngineeringDatabaseService implements EngineeringDatabaseService
-{
+public class TestEngineeringDatabaseService implements EngineeringDatabaseService {
 
     private String getModelOid(String modelId) {
         return String.format("%s/%s", ContextHolder.get().getCurrentContextId(), modelId);
@@ -105,9 +104,9 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public List<EDBObject> query(QueryRequest request) throws EDBException {
-        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%");
+        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%").iterator().next();
         if (reference.equals(getModelOid("objectA/reference/1"))
-            || reference.equals(getModelOid("objectB/reference/1"))) {
+                || reference.equals(getModelOid("objectB/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));
             edbObject.putEDBObjectEntry("modelAId", "objectA/reference/1");
             edbObject.putEDBObjectEntry("modelBId", "objectB/reference/1");
@@ -262,6 +261,11 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
+    public List<EDBObject> query(QueryRequest request, String sid) throws EDBException {
+        return null;
+    }
+
+    @Override
     public List<EDBCommit> getCommitsByKeyValue(String key, Object value, String sid) throws EDBException {
         return null;
     }
@@ -272,7 +276,18 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) 
+        throws EDBException {
+        return null;
+    }
+
+    @Override
     public EDBCommit getCommit(Long from, String sid) throws EDBException {
+        return null;
+    }
+
+    @Override
+    public EDBCommit getCommitByRevision(String revision, String sid) throws EDBException {
         return null;
     }
 
@@ -315,22 +330,6 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public UUID getCurrentRevisionNumber(EDBStage stage) throws EDBException {
-        return null;
-    }
-
-    @Override
-    public List<EDBObject> query(QueryRequest request, String sid) throws EDBException {
-        return null;
-    }
-
-    @Override
-    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) 
-        throws EDBException {
-        return null;
-    }
-
-    @Override
-    public EDBCommit getCommitByRevision(String revision, String sid) throws EDBException {
         return null;
     }
 

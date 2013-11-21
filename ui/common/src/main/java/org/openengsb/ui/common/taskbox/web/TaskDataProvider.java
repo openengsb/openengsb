@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -29,12 +32,12 @@ import org.apache.wicket.model.IModel;
 import org.openengsb.core.workflow.api.TaskboxService;
 import org.openengsb.core.workflow.api.model.Task;
 import org.ops4j.pax.wicket.api.InjectorHolder;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings({ "serial" })
-public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Task> {
+public class TaskDataProvider extends SortableDataProvider<Task, String> implements IFilterStateLocator<Task> {
 
-    @PaxWicketBean(name = "taskboxService")
+    @Inject
+    @Named("taskboxService")
     private TaskboxService taskboxService;
     private TaskFilter filter = TaskFilter.createTaskFilter();
     private List<Task> list;
@@ -49,14 +52,14 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
     }
 
     @Override
-    public Iterator<? extends Task> iterator(int first, int count) {
+    public Iterator<? extends Task> iterator(long first, long count) {
         initList();
 
         List<Task> ret = list;
         if (ret.size() > first + count) {
-            ret = ret.subList(first, first + count);
+            ret = ret.subList((int) first, (int) (first + count));
         } else {
-            ret = ret.subList(first, ret.size());
+            ret = ret.subList((int) first, ret.size());
         }
         return ret.iterator();
     }
@@ -94,7 +97,7 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
     }
 
     @Override
-    public int size() {
+    public long size() {
         initList();
         return list.size();
     }

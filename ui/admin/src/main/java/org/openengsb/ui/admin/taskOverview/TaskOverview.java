@@ -17,12 +17,14 @@
 
 package org.openengsb.ui.admin.taskOverview;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "TASK_USER")
@@ -34,7 +36,8 @@ public class TaskOverview extends BasePage {
     public static final String PAGE_NAME_KEY = "taskOverview.title";
     public static final String PAGE_DESCRIPTION_KEY = "taskOverview.description";
 
-    @PaxWicketBean(name = "webtaskboxService")
+    @Inject
+    @Named("webtaskboxService")
     private WebTaskboxService taskboxService;
 
     public TaskOverview() {

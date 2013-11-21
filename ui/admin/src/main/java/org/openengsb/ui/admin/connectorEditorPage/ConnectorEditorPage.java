@@ -23,6 +23,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
@@ -42,7 +45,6 @@ import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -59,21 +61,23 @@ public class ConnectorEditorPage extends BasePage {
     public static final String PAGE_NAME_KEY = "connectorEditorPage.tile";
     public static final String PAGE_DESCRIPTION_KEY = "connectorEditorPage.title";
 
-    @PaxWicketBean(name = "serviceManager")
+    @Inject
+    @Named("serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;
     private ServiceEditor editor;
-    @PaxWicketBean(name = "osgiUtilsService")
+    @Inject
+    @Named("osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    private String domainType;
-    private String connectorType;
+    private final String domainType;
+    private final String connectorType;
 
     @SuppressWarnings("serial")
     private final class ConnectorServiceEditor extends ServiceEditor {
 
-        private boolean createMode;
-        private Map<String, String> attributeMap;
+        private final boolean createMode;
+        private final Map<String, String> attributeMap;
 
         private ConnectorServiceEditor(String id, String domainType, String connectorType,
                 List<AttributeDefinition> attributes, Map<String, String> attributeMap,
