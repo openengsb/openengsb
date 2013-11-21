@@ -517,11 +517,11 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
 	request.addParameter("Cow", "Steak");
         assertThat(tools.query(request).size(), is(3));
         request.addParameter("Animal", "Dog");
-        assertThat(tools.query(request).size(), is(3));
-        request.removeParameter("Cow");
-        assertThat(tools.query(request).size(), is(2));
-        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
         assertThat(tools.query(request).size(), is(4));
+        request.removeParameter("Cow");
+        assertThat(tools.query(request).size(), is(3));
+        request.addParameter("Cow", "Milk").addParameter("House", "Garden");
+        assertThat(tools.query(request).size(), is(5));
     }
     
     @Test
