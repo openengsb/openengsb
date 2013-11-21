@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.openengsb.framework.vfs</groupId>
         <artifactId>org.openengsb.framework.vfs</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 	
-    <groupId>org.openengsb.framework.vfs.vfsrepositoryhandler</groupId>
+    <groupId>org.openengsb.framework.vfs</groupId>
     <artifactId>org.openengsb.framework.vfs.vfsrepositoryhandler</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>OpenEngSB :: Framework :: VFS :: VFSRepositoryHandler</name>
     <packaging>bundle</packaging>
   
@@ -68,9 +68,9 @@
         </dependency>
 		
         <dependency>
-            <groupId>org.openengsb.framework.vfs.configurationserviceapi</groupId>
-            <artifactId>org.openengsb.framework.vfs.configurationserviceapi</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.openengsb.framework.vfs</groupId>
+            <artifactId>org.openengsb.framework.vfs.api</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

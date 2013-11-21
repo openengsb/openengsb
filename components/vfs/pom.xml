@@ -15,7 +15,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openengsb.framework.vfs</groupId>
     <artifactId>org.openengsb.framework.vfs</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>OpenEngSB :: Framework :: VFS</name>
 
