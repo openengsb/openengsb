@@ -17,6 +17,8 @@
 
 package org.openengsb.core.ekb.api;
 
+import java.util.UUID;
+
 /**
  * The persist interface provides the functions to maintain the models of the EDB. This includes the conversion of
  * models and sanity checks of models.
@@ -30,9 +32,26 @@ public interface PersistInterface {
     void commit(EKBCommit commit) throws SanityCheckException, EKBException;
 
     /**
+     * Does a sanity check of the EKBCommit and the status of the EDB when this models are changed. After passed sanity
+     * check, the models are persisted. The expectedContextHeadRevision defines which revision should be the head for
+     * the current context. If there is a different head revision for the context, an EKBConcurrentException is thrown.
+     * A null value for the expectedContextHeadRevision means that it is assumed that there is no commit for the context
+     * so far.
+     */
+    void commit(EKBCommit commit, UUID expectedContextHeadRevision) throws SanityCheckException, EKBException;
+
+    /**
      * Persist the changes of the EKBCommit without performing sanity checks of them.
      */
     void forceCommit(EKBCommit commit) throws EKBException;
+
+    /**
+     * Persist the changes of the EKBCommit without performing sanity checks of them. The expectedContextHeadRevision
+     * defines which revision should be the head for the current context. If there is a different head revision for the
+     * context, an EKBConcurrentException is thrown. A null value for the expectedContextHeadRevision means that it is
+     * assumed that there is no commit for the context so far.
+     */
+    void forceCommit(EKBCommit commit, UUID expectedContextHeadRevision) throws EKBException;
 
     /**
      * Only perform the sanity checks of the EKBCommit.
@@ -44,4 +63,13 @@ public interface PersistInterface {
      * corresponding commit. If there is no commit with the given revision, an EKBException is thrown.
      */
     void revertCommit(String revision) throws EKBException;
+
+    /**
+     * Reverts the models which are contained in the commit with the given revision to the version they had in the
+     * corresponding commit. If there is no commit with the given revision, an EKBException is thrown. The
+     * expectedContextHeadRevision defines which revision should be the head for the current context. If there is a
+     * different head revision for the context, an EKBConcurrentException is thrown. A null value for the
+     * expectedContextHeadRevision means that it is assumed that there is no commit for the context so far.
+     */
+    void revertCommit(String revision, UUID expectedContextHeadRevision) throws EKBException;
 }

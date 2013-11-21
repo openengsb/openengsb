@@ -18,6 +18,9 @@ package org.openengsb.ui.common.workflow;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -30,7 +33,6 @@ import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.WorkflowService;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import com.google.common.collect.Lists;
 
@@ -38,10 +40,12 @@ public class WorkflowStartPanel extends Panel {
 
     private static final long serialVersionUID = -1610335004844921829L;
 
-    @PaxWicketBean(name = "ruleManager")
+    @Inject
+    @Named("ruleManager")
     private RuleManager ruleManager;
 
-    @PaxWicketBean(name = "workflowService")
+    @Inject
+    @Named("workflowService")
     private WorkflowService workflowService;
 
     private Model<RuleBaseElementId> selectedFlowModel;

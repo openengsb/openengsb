@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -36,16 +38,17 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.ui.admin.tree.dropDownPanel.DropDownPanel;
 import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 public class PropertyEditableColumn extends PropertyRenderableColumn<Void> {
 
     private static final long serialVersionUID = -6534594928754905369L;
 
-    @PaxWicketBean
+    @Inject
+    @Named("domain")
     private List<DomainProvider> domains;
 
-    @PaxWicketBean
+    @Inject
+    @Named("wiringService")
     private WiringService wiringService;
 
     public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {

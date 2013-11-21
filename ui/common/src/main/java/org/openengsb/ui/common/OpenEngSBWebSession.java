@@ -17,6 +17,9 @@
 
 package org.openengsb.ui.common;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
@@ -25,7 +28,6 @@ import org.apache.wicket.request.Request;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.ops4j.pax.wicket.api.InjectorHolder;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +40,8 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 
-    @PaxWicketBean(name = "authenticationContext")
+    @Inject
+    @Named("authenticationContext")
     private AuthenticationContext authenticationContext;
 
     public OpenEngSBWebSession(Request request) {

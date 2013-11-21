@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
@@ -33,7 +36,6 @@ import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +46,16 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainAuthorizationStrategy.class);
 
-    @PaxWicketBean(name = "authorizer")
+    @Inject
+    @Named("authorizer")
     private AuthorizationDomain authorizer;
 
-    @PaxWicketBean(name = "authenticationContext")
+    @Inject
+    @Named("authenticationContext")
     private AuthenticationContext authenticationContext;
 
-    @PaxWicketBean(name = "attributeProviders")
+    @Inject
+    @Named("attributeProviders")
     private List<SecurityAttributeProvider> attributeProviders;
 
     @Override

@@ -19,6 +19,9 @@ package org.openengsb.ui.common.usermanagement;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,7 +29,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import com.google.common.collect.Lists;
 
@@ -47,7 +49,8 @@ public abstract class UserListPanel extends Panel {
 
     private static final long serialVersionUID = 4174921735598606946L;
 
-    @PaxWicketBean(name = "userManager")
+    @Inject
+    @Named("userManager")
     private UserDataManager userManager;
 
     private UserListModel userListModel;
@@ -78,6 +81,7 @@ public abstract class UserListPanel extends Panel {
                 return userListModel;
             }
 
+            @Override
             protected void onDeleteClick(AjaxRequestTarget ajaxRequestTarget, Form<?> form, String param) {
                 userManager.deleteUser(param);
                 userListModel.detach();
