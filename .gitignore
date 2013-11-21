@@ -48,6 +48,24 @@ atlassian-ide-plugin.xml
 core/workflow/data
 nb-configuration.xml
 nbactions.xml
+*/nb-configuration.xml
+*/nbproject/*
+
+#=================
+#VFS-Project
+#=================
+Repository/
+target/*
+*/target/*
+*.orig
+*~
+*.iml
+.idea/*
+*.BACKUP.*
+*.LOCAL.*
+*.BASE.*
+*.REMOTE.*
+/target
 
 #=================
 #maven-files
