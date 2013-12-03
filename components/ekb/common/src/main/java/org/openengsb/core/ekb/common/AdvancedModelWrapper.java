@@ -54,7 +54,7 @@ public class AdvancedModelWrapper extends ModelWrapper {
      */
     public List<EDBObject> getModelsReferringToThisModel(EngineeringDatabaseService edbService) {
         return edbService.query(QueryRequest.query(
-            EDBConverterUtils.REFERENCE_PREFIX + "%", getCompleteModelOID()));
+            EDBConverter.REFERENCE_PREFIX + "%", getCompleteModelOID()));
     }
 
     /**

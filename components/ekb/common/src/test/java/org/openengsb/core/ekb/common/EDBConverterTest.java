@@ -42,6 +42,7 @@ import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.ConnectorInformation;
 import org.openengsb.core.ekb.common.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.common.models.PrimitivePropertiesModel;
 import org.openengsb.core.ekb.common.models.RecursiveModel;
@@ -370,9 +371,9 @@ public class EDBConverterTest {
         EDBObject subObject1 = objects.get(0);
         EDBObject subObject2 = objects.get(1);
 
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 0)),
+        assertThat(object.getString(EDBConverter.getEntryNameForList("subs", 0)),
             is(ModelWrapper.wrap(sub1).getCompleteModelOID()));
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForList("subs", 1)),
+        assertThat(object.getString(EDBConverter.getEntryNameForList("subs", 1)),
             is(ModelWrapper.wrap(sub2).getCompleteModelOID()));
         assertThat(subObject1.getString("id"), is("sub1"));
         assertThat(subObject1.getString(EDBConstants.MODEL_TYPE), is(SubModel.class.getName()));
@@ -391,10 +392,10 @@ public class EDBConverterTest {
         ConnectorInformation id = getTestConnectorInformation();
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
 
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapKey("map", 0)), is("keyA"));
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapValue("map", 0)), is("valueA"));
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapKey("map", 1)), is("keyB"));
-        assertThat(object.getString(EDBConverterUtils.getEntryNameForMapValue("map", 1)), is("valueB"));
+        assertThat(object.getString(EDBConverter.getEntryNameForMapKey("map", 0)), is("keyA"));
+        assertThat(object.getString(EDBConverter.getEntryNameForMapValue("map", 0)), is("valueA"));
+        assertThat(object.getString(EDBConverter.getEntryNameForMapKey("map", 1)), is("keyB"));
+        assertThat(object.getString(EDBConverter.getEntryNameForMapValue("map", 1)), is("valueB"));
     }
 
     @Test
@@ -606,7 +607,7 @@ public class EDBConverterTest {
     }
 
     private String getReferenceString(Class<?> model, String field) throws Exception {
-        return EDBConverterUtils.getEOReferenceStringFromAnnotation(model.getDeclaredField(field).getAnnotation(
+        return EDBConverter.getEOReferenceStringFromAnnotation(model.getDeclaredField(field).getAnnotation(
             OpenEngSBForeignKey.class));
     }
 

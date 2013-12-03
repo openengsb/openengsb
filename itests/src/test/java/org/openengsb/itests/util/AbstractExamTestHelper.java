@@ -48,7 +48,6 @@ import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
-import org.drools.command.GetDefaultValue;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
