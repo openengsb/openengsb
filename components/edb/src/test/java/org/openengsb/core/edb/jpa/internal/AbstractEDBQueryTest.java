@@ -6,14 +6,15 @@
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.openengsb.core.edb.jpa.internal;
 
 import java.util.Arrays;
@@ -499,7 +500,7 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
         putValue("Cheese", "Cheddar", data4);
         putValue("Animal", "Dog", data4);
         EDBObject v4 = tools.createEDBObject("/test/query/14/4", data4);
-	Map<String, EDBObjectEntry> data5 = new HashMap<>();
+        Map<String, EDBObjectEntry> data5 = new HashMap<>();
         putValue("Cheese", "Cheddar", data5);
         putValue("Animal", "Dog", data5);
         putValue("Cow", "Steak", data5);
@@ -509,12 +510,12 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
         commit.insert(v2);
         commit.insert(v3);
         commit.insert(v4);
-	commit.insert(v5);
+        commit.insert(v5);
         db.commit(commit);
         QueryRequest request = QueryRequest.create().orJoined();
         request.addParameter("Cow", "Milk");
         assertThat(tools.query(request).size(), is(2));
-	request.addParameter("Cow", "Steak");
+        request.addParameter("Cow", "Steak");
         assertThat(tools.query(request).size(), is(3));
         request.addParameter("Animal", "Dog");
         assertThat(tools.query(request).size(), is(4));

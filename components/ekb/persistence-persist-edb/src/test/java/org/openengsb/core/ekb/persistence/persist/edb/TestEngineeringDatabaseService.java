@@ -99,7 +99,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        return getObject(oid, (String)null);
+        return getObject(oid, (String) null);
     }
 
     @Override
@@ -276,7 +276,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException {
+    public List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) 
+        throws EDBException {
         return null;
     }
 
@@ -316,12 +317,14 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
     }
 
     @Override
-    public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value, String sid) throws EDBException {
+    public List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value, String sid) 
+        throws EDBException {
         return null;
     }
 
     @Override
-    public EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) throws EDBException {
+    public EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, 
+        List<EDBObject> updates, List<EDBObject> deletes) throws EDBException {
         return null;
     }
 
