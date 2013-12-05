@@ -233,8 +233,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
+        QueryRequest request = QueryRequest.query("name", "C:\\\\test").wildcardUnaware();
         @SuppressWarnings("unchecked")
-        List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\\\test\"");
+        List<Object> result = (List<Object>) query.query(getTestModel(), request);
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
