@@ -79,8 +79,7 @@ public class TaskOverviewPanel extends Panel {
         columns.add(actionsColumn);
         columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("TaskId"), "taskId", "taskId"));
         columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("TaskType"), "taskType", "taskType"));
-        columns
-.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("Description"), "description",
+        columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("Description"), "description",
                 "description"));
         columns.add(new PropertyColumn<Task, String>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
             "taskCreationTimestamp"));
