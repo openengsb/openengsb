@@ -27,7 +27,6 @@ import com.google.common.base.Objects;
  */
 @SuppressWarnings("serial")
 public class EDBObjectEntry implements Serializable {
-
     private String key;
     private Object value;
     private String type;

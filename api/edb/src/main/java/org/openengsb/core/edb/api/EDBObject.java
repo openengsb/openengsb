@@ -26,7 +26,6 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, EDBObjectEntry> {
-
     private static final String OID_CONST = "oid";
     private static final String DELETED_CONST = "isDeleted";
 

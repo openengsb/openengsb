@@ -29,8 +29,14 @@ import java.util.UUID;
  */
 public interface EDBCommit {
 
+    /**
+     * Returns the current EDBStage object.
+     */
     EDBStage getEDBStage();
 
+    /**
+     * Sets the current EDBStage object. 
+     */
     void setEDBStage(EDBStage stage);
 
     /**

@@ -18,18 +18,38 @@ package org.openengsb.core.edb.api;
 
 import java.io.Serializable;
 
+/**
+ * The EDBStage represents an stage and holds all needed information
+ * for staging.
+ */
 public interface EDBStage extends Serializable {
-    
+    /**
+     * Set the id of the current stage.
+     */
     void setStageId(String id);
     
+    /**
+     * Get the current stage id.
+     */
     String getStageId();
     
+    /**
+     * Set the creator of the current stage.
+     */
     void setCreator(String creator);
     
+    /**
+     * Get the creator of the stage.
+     */
     String getCreator();
     
+    /**
+     * Set the creation time of the current stage.
+     */
     void setTimeStamp(Long timeStamp);
     
+    /**
+     * Get the creation time of the current stage.
+     */
     Long getTimeStamp();
-    
 }
