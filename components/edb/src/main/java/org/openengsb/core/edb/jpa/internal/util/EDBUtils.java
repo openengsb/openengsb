@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * The EDBUtils class contains functions needed in the whole EDB implementation.
  */
 public final class EDBUtils {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBUtils.class);
     private static List<EDBConverterStep> steps = new ArrayList<EDBConverterStep>(Arrays.asList(
             new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
@@ -75,13 +74,6 @@ public final class EDBUtils {
         return null;
     }
 
-    /*todo: kill this? private static List<JPAEntry> convertEDBObjectEntriesToJPAEntries(EDBObject object){
-     List<JPAEntry> entries = new ArrayList<JPAEntry>();
-     for (EDBObjectEntry entry : object.values()) {
-     entries.add(convertEDBObjectEntryToJPAEntry(entry));
-     }
-     return entries;
-     }*/
     /**
      * Converts a JPAObject object into an EDBObject.
      */
@@ -122,7 +114,7 @@ public final class EDBUtils {
             return null;
         }
 
-        //if the object is allready a JPAStage obejct we can scip conversion.
+        //if the object is allready a JPAStage obejct we can skip conversion.
         if (object instanceof JPAStage) {
             return (JPAStage) object;
         }

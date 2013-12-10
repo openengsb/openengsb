@@ -25,7 +25,6 @@ import org.apache.openjpa.persistence.jdbc.Index;
 @SuppressWarnings("serial")
 @Entity
 public class JPAStage extends VersionedEntity implements EDBStage {
-
     @Column(name = "STAGEID")
     @Index
     private String stageId;

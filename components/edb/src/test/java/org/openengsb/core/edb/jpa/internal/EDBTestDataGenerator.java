@@ -29,13 +29,7 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EDBStage;
 
-/**
- *
- * @author vauve_000
- */
-public interface Tools {
-
-    void setDb(TestEDBService db);
+public interface EDBTestDataGenerator {
 
     EDBCommit createEDBCommit(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes);
 

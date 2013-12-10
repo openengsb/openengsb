@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * The AbstractEDBService is used to encapsulate the commit logic of the EDB.
  */
 public abstract class AbstractEDBService implements EngineeringDatabaseService {
-
     protected EntityManager entityManager;
     private Logger logger;
     private Boolean revisionCheckEnabled;

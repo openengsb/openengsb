@@ -38,7 +38,6 @@ import org.apache.openjpa.persistence.jdbc.Index;
  * class.
  */
 public class JPAObject extends VersionedEntity {
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
     private List<JPAEntry> entries;
     @Column(name = "TIME")

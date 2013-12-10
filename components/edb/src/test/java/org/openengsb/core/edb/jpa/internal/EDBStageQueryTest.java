@@ -20,8 +20,8 @@ package org.openengsb.core.edb.jpa.internal;
 public class EDBStageQueryTest extends AbstractEDBQueryTest {
 
     @Override
-    protected Tools initTools() {
-        return new StageTestTools();
+    protected EDBTestDataGenerator initTools(TestEDBService db) {
+        return new EDBStagedTestData(db);
     }
 
 }

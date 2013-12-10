@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
  * EDBCheckException.
  */
 public class CheckPreCommitHook implements EDBPreCommitHook {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPreCommitHook.class);
     private JPADao dao;
 
@@ -113,10 +112,7 @@ public class CheckPreCommitHook implements EDBPreCommitHook {
     }
 
     private String checkStage(EDBStage stage) {
-        if (stage != null) {
-            return stage.getStageId();
-        }
-        return null;
+        return stage != null ? stage.getStageId() : null;
     }
 
     /**

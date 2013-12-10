@@ -45,9 +45,9 @@ import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 public abstract class AbstractEDBTest {
 
     protected TestEDBService db;
-    protected Tools tools;
+    protected EDBTestDataGenerator tools;
 
-    protected abstract Tools initTools();
+    protected abstract EDBTestDataGenerator initTools(TestEDBService db);
 
     @Rule
     public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
@@ -70,8 +70,7 @@ public abstract class AbstractEDBTest {
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
 
-        this.tools = this.initTools();
-        this.tools.setDb(db);
+        this.tools = this.initTools(db);
     }
 
     @After

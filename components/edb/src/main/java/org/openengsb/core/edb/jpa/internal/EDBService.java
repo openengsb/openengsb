@@ -44,7 +44,6 @@ import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
  * The implementation of the EngineeringDatabaseService, extending the AbstractEDBService
  */
 public class EDBService extends AbstractEDBService {
-
     private JPADao dao;
     private AuthenticationContext authenticationContext;
 

@@ -30,16 +30,10 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EDBStage;
 import org.springframework.util.Assert;
 
-/**
- *
- * @author vauve_000
- */
-public class TestTools implements Tools {
-
+public class EDBTestData implements EDBTestDataGenerator {
     private TestEDBService db;
 
-    @Override
-    public void setDb(TestEDBService db) {
+    public EDBTestData(TestEDBService db) {
         this.db = db;
     }
 
