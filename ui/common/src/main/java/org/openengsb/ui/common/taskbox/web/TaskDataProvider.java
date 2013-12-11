@@ -57,7 +57,7 @@ public class TaskDataProvider extends SortableDataProvider<Task, String> impleme
 
         List<Task> ret = list;
         if (ret.size() > first + count) {
-            ret = ret.subList((int) first, (int)(first + count));
+            ret = ret.subList((int) first, (int) (first + count));
         } else {
             ret = ret.subList((int) first, ret.size());
         }
