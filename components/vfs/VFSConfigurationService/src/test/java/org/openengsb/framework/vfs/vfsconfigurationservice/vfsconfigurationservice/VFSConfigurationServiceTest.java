@@ -82,11 +82,11 @@ public class VFSConfigurationServiceTest {
 
         Date date = new Date(0);
         Tag tag = Mockito.mock(Tag.class);
-        Mockito.when(tag.getDate()).thenReturn(date);
+        Mockito.when(tag.getCreationDate()).thenReturn(date);
         Mockito.when(tag.getName()).thenReturn("testTag");
-        Mockito.when(tag.getPath()).thenReturn((new File("testTagPath")).toPath());
+        Mockito.when(tag.getTagPath()).thenReturn((new File("testTagPath")).toPath());
 
-        configurationService.newTag(tag);
+        configurationService.notifyAboutNewTag(tag);
         
         Mockito.verify(configurableService1).reconfigure();
         Mockito.verify(configurableService2, Mockito.never()).reconfigure();
@@ -103,14 +103,14 @@ public class VFSConfigurationServiceTest {
     public void testNewTagReconfigurationFailed() {
         Date date = new Date(0);
         Tag tag = Mockito.mock(Tag.class);
-        Mockito.when(tag.getDate()).thenReturn(date);
+        Mockito.when(tag.getCreationDate()).thenReturn(date);
         Mockito.when(tag.getName()).thenReturn("testTag");
-        Mockito.when(tag.getPath()).thenReturn((new File("testTagPath")).toPath());
+        Mockito.when(tag.getTagPath()).thenReturn((new File("testTagPath")).toPath());
         
         Tag previousTag = Mockito.mock(Tag.class);
-        Mockito.when(previousTag.getDate()).thenReturn(date);
+        Mockito.when(previousTag.getCreationDate()).thenReturn(date);
         Mockito.when(previousTag.getName()).thenReturn("previousTag");
-        Mockito.when(previousTag.getPath()).thenReturn((new File("previousTagPath")).toPath());
+        Mockito.when(previousTag.getTagPath()).thenReturn((new File("previousTagPath")).toPath());
         
         BundleContext bundleContext = Mockito.mock(BundleContext.class);
 
@@ -173,7 +173,7 @@ public class VFSConfigurationServiceTest {
         configurationService.setFileOperator(fileOperator);
         configurationService.registerRepositoryHandler(repositoryHandler);
 
-        configurationService.newTag(previousTag);
+        configurationService.notifyAboutNewTag(previousTag);
         
         Mockito.verify(configurableService1, Mockito.times(2)).reconfigure();
         Mockito.verify(configurableService2, Mockito.never()).reconfigure();

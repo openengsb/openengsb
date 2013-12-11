@@ -40,16 +40,16 @@ public class ConfigurationTag implements Tag {
         return name;
     }
 
-    public Path getPath() {
+    public Path getTagPath() {
         return path;
     }
 
-    public Date getDate() {
+    public Date getCreationDate() {
         return date;
     }
 
     public int compareTo(Tag that) {
-        return date.compareTo(that.getDate());
+        return date.compareTo(that.getCreationDate());
     }
 
     @Override

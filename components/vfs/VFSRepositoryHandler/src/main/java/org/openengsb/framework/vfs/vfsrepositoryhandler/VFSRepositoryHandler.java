@@ -96,7 +96,7 @@ public final class VFSRepositoryHandler implements RepositoryHandler {
 
         if (configurationService != null) {
             logger.debug("executing newTag in ConfigurationService");
-            configurationService.newTag(tag);
+            configurationService.notifyAboutNewTag(tag);
         }
     }
 
