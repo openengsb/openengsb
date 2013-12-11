@@ -27,7 +27,6 @@ public class VFSConfigurationFileManipulator implements ConfigurationFileManipul
         String newFolderPath = newPath.toString();
 
         for (String newFilePath : newFolderContent) {
-            //ToDo is there a better way to resolve the relative path?
             String originalFilePath = newFilePath.replace(newFolderPath, originalFolderPath);
 
             if (originalFolderContent.contains(originalFilePath)) {
