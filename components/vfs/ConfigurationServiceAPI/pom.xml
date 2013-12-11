@@ -42,19 +42,6 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Name>ConfigurationServiceAPI</Bundle-Name>
-                        
-						<Export-Package>
-							org.openengsb.framework.vfs.api.common,
-							org.openengsb.framework.vfs.api.configurableservice,
-							org.openengsb.framework.vfs.api.configurationservice,
-							org.openengsb.framework.vfs.api.repositoryhandler,
-							org.openengsb.framework.vfs.api.remoteservice                       
-						</Export-Package>
-					</instructions>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
