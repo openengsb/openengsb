@@ -8,7 +8,7 @@ package org.openengsb.framework.vfs.webdavprotocol.webdavhandler;
 import io.milton.servlet.MiltonServlet;
 import java.util.Hashtable;
 import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.webdavprotocol.servicelistener.AuthenticationDomainTracker;
 import org.openengsb.framework.vfs.webdavprotocol.servicelistener.RepositoryHandlerListener;
 import org.openengsb.framework.vfs.webdavprotocol.servicelistener.HttpServiceListener;

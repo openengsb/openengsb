@@ -3,7 +3,7 @@ package org.openengsb.framework.vfs.vfsrepositoryhandler.fileoperations;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 
 public interface FileOperator {
 

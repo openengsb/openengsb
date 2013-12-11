@@ -1,6 +1,6 @@
-package org.openengsb.framework.vfs.configurationserviceapi.configurationservice;
+package org.openengsb.framework.vfs.api.configurationservice;
 
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 
 /**
  * The Configuration Service is used to reconfigure services that want to be configured via VFS.

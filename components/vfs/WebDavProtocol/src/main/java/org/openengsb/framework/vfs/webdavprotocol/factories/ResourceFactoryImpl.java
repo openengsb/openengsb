@@ -14,7 +14,7 @@ import io.milton.resource.Resource;
 import java.io.File;
 import java.util.logging.Level;
 
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.webdavprotocol.resourcetypes.DirectoryResource;
 import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 

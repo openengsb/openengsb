@@ -1,6 +1,6 @@
 package org.openengsb.framework.vfs.vfsconfigurationservice.servicelistener;
 
-import org.openengsb.framework.vfs.configurationserviceapi.remoteservice.RemoteService;
+import org.openengsb.framework.vfs.api.remoteservice.RemoteService;
 import org.openengsb.framework.vfs.vfsconfigurationservice.vfsconfigurationservice.VFSConfigurationService;
 
 

@@ -4,7 +4,7 @@ package org.openengsb.framework.vfs.vfsrepositoryhandler.servicelistener;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import org.openengsb.framework.vfs.configurationserviceapi.configurationservice.ConfigurationService;
+import org.openengsb.framework.vfs.api.configurationservice.ConfigurationService;
 import org.openengsb.framework.vfs.vfsrepositoryhandler.VFSRepositoryHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

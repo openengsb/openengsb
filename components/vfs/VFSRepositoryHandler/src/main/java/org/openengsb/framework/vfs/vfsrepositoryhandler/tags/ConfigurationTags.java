@@ -3,7 +3,7 @@ package org.openengsb.framework.vfs.vfsrepositoryhandler.tags;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

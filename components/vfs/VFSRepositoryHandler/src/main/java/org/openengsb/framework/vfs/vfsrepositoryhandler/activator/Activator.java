@@ -1,6 +1,6 @@
 package org.openengsb.framework.vfs.vfsrepositoryhandler.activator;
 
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.vfsrepositoryhandler.VFSRepositoryHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -15,11 +15,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 import org.openengsb.framework.vfs.vfsrepositoryhandler.tags.ConfigurationTag;
 import org.osgi.framework.BundleContext;
 

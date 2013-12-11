@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
-import org.openengsb.framework.vfs.configurationserviceapi.configurableservice.ConfigurableService;
-import org.openengsb.framework.vfs.configurationserviceapi.remoteservice.RemoteService;
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.common.Tag;
+import org.openengsb.framework.vfs.api.configurableservice.ConfigurableService;
+import org.openengsb.framework.vfs.api.remoteservice.RemoteService;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.FileOperator;
 import org.osgi.framework.BundleContext;
 
