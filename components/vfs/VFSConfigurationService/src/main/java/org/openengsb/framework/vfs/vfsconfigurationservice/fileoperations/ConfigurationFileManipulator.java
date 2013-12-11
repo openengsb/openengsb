@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public interface FileOperator {
+public interface ConfigurationFileManipulator {
     List<String> compareFolders(File originalPath, File newPath);
 
     void fileDelete(File srcFile);

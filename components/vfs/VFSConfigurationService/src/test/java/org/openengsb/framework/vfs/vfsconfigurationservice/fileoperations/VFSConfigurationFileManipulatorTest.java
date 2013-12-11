@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.Assert;
 
-public class VFSFileOperatorTest {
+public class VFSConfigurationFileManipulatorTest {
     private String testDirectoryName = "TestDirectory";
     private String testSubDirectoryName = "TestSubDirectory";
     private String testDirectoryFileName = "testFile.txt";
@@ -20,7 +20,7 @@ public class VFSFileOperatorTest {
     private Path testDirectoryFile = testDirectory.resolve(testDirectoryFileName);
     private Path testSubDirectoryFile1 = testSubDirectory.resolve(testSubDirectoryFile1Name);
     private Path testSubDirectoryFile2 = testSubDirectory.resolve(testSubDirectoryFile2Name);
-    private FileOperator fileOperator = new VFSFileOperator();
+    private ConfigurationFileManipulator fileOperator = new VFSConfigurationFileManipulator();
 
     @Test
     public void testCompareFoldersEmptyFolders() throws IOException {

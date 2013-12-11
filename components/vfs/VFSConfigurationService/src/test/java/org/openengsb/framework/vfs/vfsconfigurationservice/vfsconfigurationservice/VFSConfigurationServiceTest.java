@@ -11,7 +11,7 @@ import org.openengsb.framework.vfs.api.common.Tag;
 import org.openengsb.framework.vfs.api.configurableservice.ConfigurableService;
 import org.openengsb.framework.vfs.api.remoteservice.RemoteService;
 import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
-import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.FileOperator;
+import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.ConfigurationFileManipulator;
 import org.osgi.framework.BundleContext;
 
 public class VFSConfigurationServiceTest {
@@ -60,7 +60,7 @@ public class VFSConfigurationServiceTest {
         Mockito.when(remoteService2.stop()).thenReturn(true);
         Mockito.when(remoteService2.start()).thenReturn(true);
         
-        FileOperator fileOperator = Mockito.mock(FileOperator.class);
+        ConfigurationFileManipulator fileOperator = Mockito.mock(ConfigurationFileManipulator.class);
         
         List<String> changedConfigs = new ArrayList<>();
         changedConfigs.add(configurationPath + "/config1.txt");
@@ -153,7 +153,7 @@ public class VFSConfigurationServiceTest {
         Mockito.when(remoteService2.stop()).thenReturn(true);
         Mockito.when(remoteService2.start()).thenReturn(true);
         
-        FileOperator fileOperator = Mockito.mock(FileOperator.class);
+        ConfigurationFileManipulator fileOperator = Mockito.mock(ConfigurationFileManipulator.class);
         
         List<String> changedConfigs = new ArrayList<>();
         changedConfigs.add(configurationPath + "./config1.txt");
