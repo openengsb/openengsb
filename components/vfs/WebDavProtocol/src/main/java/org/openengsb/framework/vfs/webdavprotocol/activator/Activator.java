@@ -16,16 +16,11 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-    private HttpServiceListener wrapp;
-    private RepositoryHandlerListener confWrapp;
     private WebDavHandler webDavHandler = null;
 
     @Override
     public void start(BundleContext bc) throws Exception {
-        if (webDavHandler == null) {
-            webDavHandler = WebDavHandler.getInstance();
-        }
-
+        webDavHandler = WebDavHandler.getInstance();
         webDavHandler.setBundleContext(bc);
         webDavHandler.start();
     }
