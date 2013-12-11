@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import org.junit.Test;
 import org.junit.Assert;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 
 public class ConfigurationTagTest {
 

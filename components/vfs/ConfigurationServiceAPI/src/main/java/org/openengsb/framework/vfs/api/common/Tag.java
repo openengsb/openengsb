@@ -1,4 +1,4 @@
-package org.openengsb.framework.vfs.configurationserviceapi.common;
+package org.openengsb.framework.vfs.api.common;
 
 import java.nio.file.Path;
 import java.util.Date;

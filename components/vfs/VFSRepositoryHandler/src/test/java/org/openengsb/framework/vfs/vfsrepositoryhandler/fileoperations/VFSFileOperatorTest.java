@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 import org.junit.Assert;
 
 public class VFSFileOperatorTest {

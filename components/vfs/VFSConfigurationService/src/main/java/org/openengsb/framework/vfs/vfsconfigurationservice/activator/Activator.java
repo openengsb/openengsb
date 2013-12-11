@@ -1,6 +1,6 @@
 package org.openengsb.framework.vfs.vfsconfigurationservice.activator;
 
-import org.openengsb.framework.vfs.configurationserviceapi.configurationservice.ConfigurationService;
+import org.openengsb.framework.vfs.api.configurationservice.ConfigurationService;
 import org.openengsb.framework.vfs.vfsconfigurationservice.vfsconfigurationservice.VFSConfigurationService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

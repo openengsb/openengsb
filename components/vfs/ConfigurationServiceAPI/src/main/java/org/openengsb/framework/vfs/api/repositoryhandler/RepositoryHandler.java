@@ -1,7 +1,7 @@
-package org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler;
+package org.openengsb.framework.vfs.api.repositoryhandler;
 
 import java.nio.file.Path;
-import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
+import org.openengsb.framework.vfs.api.common.Tag;
 
 /**
  * The RepositoryHandler is responsible for handling the configuration repository that is used by VFS to configure openengsb.

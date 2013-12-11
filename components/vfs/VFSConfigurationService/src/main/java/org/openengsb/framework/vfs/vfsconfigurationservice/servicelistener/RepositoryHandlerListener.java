@@ -1,6 +1,6 @@
 package org.openengsb.framework.vfs.vfsconfigurationservice.servicelistener;
 
-import org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler.RepositoryHandler;
+import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.vfsconfigurationservice.vfsconfigurationservice.VFSConfigurationService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

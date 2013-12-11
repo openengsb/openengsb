@@ -1,4 +1,4 @@
-package org.openengsb.framework.vfs.configurationserviceapi.configurableservice;
+package org.openengsb.framework.vfs.api.configurableservice;
 
 import java.util.List;
 

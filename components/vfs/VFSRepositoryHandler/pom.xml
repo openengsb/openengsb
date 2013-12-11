@@ -17,46 +17,36 @@
   
     <url>http://maven.apache.org</url>
   
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-  
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
             <artifactId>org.apache.karaf.shell.console</artifactId>
-            <version>3.0.0.RC1</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.tooling.exam</groupId>
             <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
-            <version>3.0.0.RC1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
-            <version>2.6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -77,13 +67,11 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -99,7 +87,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -124,7 +111,6 @@
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>depends-maven-plugin</artifactId>
-                <version>1.2</version>
                 <executions>
                     <execution>
                         <id>generate-depends-file</id>
