@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -37,6 +39,9 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.extensions.markup.html.tree.BaseTree;
+import org.apache.wicket.extensions.markup.html.tree.LabelTree;
+import org.apache.wicket.extensions.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -44,9 +49,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LabelTree;
-import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -65,7 +67,6 @@ import org.openengsb.core.util.Comparators;
 import org.openengsb.core.util.FilterUtils;
 import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
@@ -82,16 +83,20 @@ public class WiringPage extends BasePage {
     public static final String PAGE_NAME_KEY = "wiringPage.title";
     public static final String PAGE_DESCRIPTION_KEY = "wiringPage.description";
 
-    @PaxWicketBean(name = "wiringService")
+    @Inject
+    @Named("wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean(name = "osgiUtilsService")
+    @Inject
+    @Named("osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean(name = "serviceManager")
+    @Inject
+    @Named("serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean(name = "ruleManager")
+    @Inject
+    @Named("ruleManager")
     private RuleManager ruleManager;
 
     private DropDownChoice<Class<? extends Domain>> domains;
@@ -425,7 +430,7 @@ public class WiringPage extends BasePage {
 
     @SuppressWarnings("serial")
     private class WiringSubjectTree extends LinkTree {
-        private TextField<String> subject;
+        private final TextField<String> subject;
 
         public WiringSubjectTree(String id, TextField<String> subject) {
             super(id);
@@ -454,7 +459,7 @@ public class WiringPage extends BasePage {
 
     @SuppressWarnings("serial")
     public static class CheckedTree extends LabelTree {
-        private Map<String, IModel<Boolean>> checks = new HashMap<String, IModel<Boolean>>();
+        private final Map<String, IModel<Boolean>> checks = new HashMap<String, IModel<Boolean>>();
 
         public CheckedTree(String id, TreeModel model) {
             super(id, model);

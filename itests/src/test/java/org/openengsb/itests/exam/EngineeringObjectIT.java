@@ -62,14 +62,8 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     public static Option[] myConfiguration() throws Exception {
         Option[] options =
             new Option[]{
-                new KarafDistributionConfigurationFilePutOption("/etc/org.openengsb.infrastructure.jpa", "url",
-                    "jdbc:h2:mem:itests"),
-                new KarafDistributionConfigurationFilePutOption("/etc/org.openengsb.infrastructure.jpa",
-                    "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
-                new KarafDistributionConfigurationFilePutOption("/etc/org.openengsb.infrastructure.jpa", "username", ""),
-                new KarafDistributionConfigurationFilePutOption("/etc/org.openengsb.infrastructure.jpa", "password", ""),
-                new KarafDistributionConfigurationFilePutOption("/etc/org.openengsb.ekb", "modelUpdatePropagationMode",
-                    "FULLY_ACTIVATED"),
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg", 
+                    "modelUpdatePropagationMode", "FULLY_ACTIVATED"),
                 mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
                 editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example") };
         return combine(baseConfiguration(), options);

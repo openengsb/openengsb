@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -201,10 +202,14 @@ public class ServiceEditorPanelTest {
             editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
+        
+        @SuppressWarnings("rawtypes")
+        Form form = mock(Form.class);
+        when(form.getRootForm()).thenReturn(form);
+        
         editor =
-            tester.startComponentInPage(new ServiceEditorPanel("panel", Arrays.asList(attributes),
-                editorValues, properties,
-                mock(Form.class)));
+            tester.startComponentInPage(new ServiceEditorPanel("panel", Arrays.asList(attributes), editorValues,
+                    properties, form));
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {

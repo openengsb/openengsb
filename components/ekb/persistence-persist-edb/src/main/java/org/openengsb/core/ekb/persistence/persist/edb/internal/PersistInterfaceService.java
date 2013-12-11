@@ -18,8 +18,12 @@
 package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.edb.api.EDBCheckException;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
@@ -27,6 +31,7 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBConcurrentException;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.ModelPersistException;
 import org.openengsb.core.ekb.api.PersistInterface;
@@ -40,41 +45,98 @@ import org.openengsb.core.ekb.common.EDBConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Objects;
+
 /**
  * Implementation of the PersistInterface service. It's main responsibilities are the saving of models and the sanity
  * checks of these.
  */
 public class PersistInterfaceService implements PersistInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistInterfaceService.class);
-
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
     private List<EKBPreCommitHook> preCommitHooks;
     private List<EKBPostCommitHook> postCommitHooks;
     private List<EKBErrorHook> errorHooks;
+    private ContextLockingMode mode;
+    private Set<String> activeWritingContexts;
 
     public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
             List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks,
-            List<EKBErrorHook> errorHooks) {
+            List<EKBErrorHook> errorHooks, String contextLockingMode) {
         this.edbService = edbService;
         this.edbConverter = edbConverter;
         this.preCommitHooks = preCommitHooks;
         this.postCommitHooks = postCommitHooks;
         this.errorHooks = errorHooks;
+        this.activeWritingContexts = new HashSet<String>();
+        try {
+            this.mode = ContextLockingMode.valueOf(contextLockingMode);
+        } catch (IllegalArgumentException e) {
+            this.mode = ContextLockingMode.DEACTIVATED;
+            LOGGER.error("Unknown mode setting. The context locking mechanism will be deactivated.", e);
+        }
     }
 
     @Override
     public void commit(EKBCommit commit) throws SanityCheckException, EKBException {
         LOGGER.debug("Commit of models was called");
-        runPersistingLogic(commit, true, true);
+        runPersistingLogic(commit, true, null, false);
+        LOGGER.debug("Commit of models was successful");
+    }
+
+    @Override
+    public void commit(EKBCommit commit, UUID expectedContextHeadRevision) throws SanityCheckException, EKBException {
+        LOGGER.debug("Commit of models was called with the expected context head revision {}.",
+            expectedContextHeadRevision);
+        runPersistingLogic(commit, true, expectedContextHeadRevision, true);
         LOGGER.debug("Commit of models was successful");
     }
 
     @Override
     public void forceCommit(EKBCommit commit) throws EKBException {
         LOGGER.debug("Force commit of models was called");
-        runPersistingLogic(commit, false, true);
+        runPersistingLogic(commit, false, null, false);
         LOGGER.debug("Force commit of models was successful");
+    }
+
+    @Override
+    public void forceCommit(EKBCommit commit, UUID expectedContextHeadRevision) throws EKBException {
+        LOGGER.debug("Force commit of models was called with the expected context head revision {}.",
+            expectedContextHeadRevision);
+        runPersistingLogic(commit, false, expectedContextHeadRevision, true);
+        LOGGER.debug("Force commit of models was successful");
+    }
+
+    /**
+     * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true. Additionally tests if the
+     * head revision of the context under which the commit is performed has the given revision number if the
+     * headRevisionCheck flag is set to true.
+     */
+    private void runPersistingLogic(EKBCommit commit, boolean check, UUID expectedContextHeadRevision,
+            boolean headRevisionCheck) throws SanityCheckException, EKBException {
+        String contextId = ContextHolder.get().getCurrentContextId();
+        try {
+            lockContext(contextId);
+            if (headRevisionCheck) {
+                checkForContextHeadRevision(contextId, expectedContextHeadRevision);
+            }
+            runEKBPreCommitHooks(commit);
+            if (check) {
+                performSanityChecks(commit);
+            }
+            EKBException exception = null;
+            ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
+            try {
+                performPersisting(converted, commit);
+                runEKBPostCommitHooks(commit);
+            } catch (EKBException e) {
+                exception = e;
+            }
+            runEKBErrorHooks(commit, exception);
+        } finally {
+            releaseContext(contextId);
+        }
     }
 
     @Override
@@ -85,12 +147,99 @@ public class PersistInterfaceService implements PersistInterface {
         return report;
     }
 
+    @Override
+    public void revertCommit(String revision) throws EKBException {
+        LOGGER.debug("Perform revert for the revision {}.", revision);
+        performRevertLogic(revision, null, false);
+        LOGGER.debug("Finished reverting the commit with the revision {}.", revision);
+    }
+
+    @Override
+    public void revertCommit(String revision, UUID expectedContextHeadRevision) throws EKBException {
+        LOGGER.debug("Perform revert for the revision {} and the expected context head revision {}.", revision,
+            expectedContextHeadRevision);
+        performRevertLogic(revision, expectedContextHeadRevision, true);
+        LOGGER.debug("Finished reverting the commit with the revision {}.", revision);
+    }
+
     /**
-     * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true and does the persisting of
-     * models if persist is set to true.
+     * Performs the actual revert logic including the context locking and the context head revision check if desired.
      */
-    private void runPersistingLogic(EKBCommit commit, boolean check, boolean persist)
-        throws SanityCheckException, EKBException {
+    private void performRevertLogic(String revision, UUID expectedContextHeadRevision, boolean expectedHeadCheck) {
+        String contextId = "";
+        try {
+            EDBCommit commit = edbService.getCommitByRevision(revision);
+            contextId = commit.getContextId();
+            lockContext(contextId);
+            if (expectedHeadCheck) {
+                checkForContextHeadRevision(contextId, expectedContextHeadRevision);
+            }
+            EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
+                new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
+            for (EDBObject reverted : commit.getObjects()) {
+                // need to be done in order to avoid problems with conflict detection
+                reverted.remove(EDBConstants.MODEL_VERSION);
+                newCommit.update(reverted);
+            }
+            for (String delete : commit.getDeletions()) {
+                newCommit.delete(delete);
+            }
+            newCommit.setComment(String.format("revert [%s] %s", commit.getRevisionNumber().toString(),
+                commit.getComment() != null ? commit.getComment() : ""));
+            edbService.commit(newCommit);
+        } catch (EDBException e) {
+            throw new EKBException("Unable to revert to the given revision " + revision, e);
+        } finally {
+            releaseContext(contextId);
+        }
+    }
+
+    /**
+     * If the context locking mode is activated, this method locks the given context for writing operations. If this
+     * context is already locked, an EKBConcurrentException is thrown.
+     */
+    private void lockContext(String contextId) throws EKBConcurrentException {
+        if (mode == ContextLockingMode.DEACTIVATED) {
+            return;
+        }
+        synchronized (activeWritingContexts) {
+            if (activeWritingContexts.contains(contextId)) {
+                throw new EKBConcurrentException("There is already a writing process active in the context.");
+            }
+
+            activeWritingContexts.add(contextId);
+        }
+    }
+
+    /**
+     * Tests if the head revision for the given context matches the given revision number. If this is not the case, an
+     * EKBConcurrentException is thrown.
+     */
+    private void checkForContextHeadRevision(String contextId, UUID expectedHeadRevision)
+        throws EKBConcurrentException {
+        if (!Objects.equal(edbService.getLastRevisionNumberOfContext(contextId), expectedHeadRevision)) {
+            throw new EKBConcurrentException("The current revision of the context does not match the "
+                    + "expected one.");
+        }
+    }
+
+    /**
+     * If the context locking mode is activated, this method releases the lock for the given context for writing
+     * operations.
+     */
+    private void releaseContext(String contextId) {
+        if (mode == ContextLockingMode.DEACTIVATED) {
+            return;
+        }
+        synchronized (activeWritingContexts) {
+            activeWritingContexts.remove(contextId);
+        }
+    }
+
+    /**
+     * Runs all registered pre-commit hooks
+     */
+    private void runEKBPreCommitHooks(EKBCommit commit) throws EKBException {
         for (EKBPreCommitHook hook : preCommitHooks) {
             try {
                 hook.onPreCommit(commit);
@@ -100,25 +249,25 @@ public class PersistInterfaceService implements PersistInterface {
                 LOGGER.warn("An exception is thrown in a EKB pre commit hook.", e);
             }
         }
-        if (check) {
-            performSanityChecks(commit);
-        }
-        EKBException exception = null;
-        if (persist) {
-            ConvertedCommit converted = edbConverter.convertEKBCommit(commit);
+    }
+
+    /**
+     * Runs all registered post-commit hooks
+     */
+    private void runEKBPostCommitHooks(EKBCommit commit) throws EKBException {
+        for (EKBPostCommitHook hook : postCommitHooks) {
             try {
-                performPersisting(converted, commit);
-                for (EKBPostCommitHook hook : postCommitHooks) {
-                    try {
-                        hook.onPostCommit(commit);
-                    } catch (Exception e) {
-                        LOGGER.warn("An exception is thrown in a EKB post commit hook.", e);
-                    }
-                }
-            } catch (EKBException e) {
-                exception = e;
+                hook.onPostCommit(commit);
+            } catch (Exception e) {
+                LOGGER.warn("An exception is thrown in a EKB post commit hook.", e);
             }
         }
+    }
+
+    /**
+     * Runs all registered error hooks
+     */
+    private void runEKBErrorHooks(EKBCommit commit, EKBException exception) {
         if (exception != null) {
             for (EKBErrorHook hook : errorHooks) {
                 hook.onError(commit, exception);
@@ -165,27 +314,5 @@ public class PersistInterfaceService implements PersistInterface {
             oids.add(object.getOID());
         }
         return oids;
-    }
-
-    @Override
-    public void revertCommit(String revision) throws EKBException {
-        try {
-            EDBCommit commit = edbService.getCommitByRevision(revision);
-            EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
-                new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
-            for (EDBObject reverted : commit.getObjects()) {
-                // need to be done in order to avoid problems with conflict detection
-                reverted.remove(EDBConstants.MODEL_VERSION);
-                newCommit.update(reverted);
-            }
-            for (String delete : commit.getDeletions()) {
-                newCommit.delete(delete);
-            }
-            newCommit.setComment(String.format("revert [%s] %s", commit.getRevisionNumber().toString(),
-                commit.getComment() != null ? commit.getComment() : ""));
-            edbService.commit(newCommit);
-        } catch (EDBException e) {
-            throw new EKBException("Unable to revert to the given revision " + revision, e);
-        }
     }
 }

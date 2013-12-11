@@ -14,25 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.ui.common;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+package org.openengsb.core.ekb.api;
 
-import org.apache.shiro.web.mgt.WebSecurityManager;
+/**
+ * This exception is thrown if a concurrency problem has happened inside the EKB.
+ */
+@SuppressWarnings("serial")
+public class EKBConcurrentException extends EKBException {
 
-public class SecurityManagerHolder {
-
-    @Inject
-    @Named("webSecurityManager")
-    private WebSecurityManager webSecurityManager;
-
-    public WebSecurityManager getWebSecurityManager() {
-        return webSecurityManager;
+    public EKBConcurrentException() {
+        super();
     }
 
-    public void setWebSecurityManager(WebSecurityManager webSecurityManager) {
-        this.webSecurityManager = webSecurityManager;
+    public EKBConcurrentException(String message) {
+        super(message);
     }
 
+    public EKBConcurrentException(Throwable cause) {
+        super(cause);
+    }
+
+    public EKBConcurrentException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

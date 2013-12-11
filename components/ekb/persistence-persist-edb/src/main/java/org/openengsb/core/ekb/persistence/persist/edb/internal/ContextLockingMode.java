@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.ui.common;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+package org.openengsb.core.ekb.persistence.persist.edb.internal;
 
-import org.apache.shiro.web.mgt.WebSecurityManager;
-
-public class SecurityManagerHolder {
-
-    @Inject
-    @Named("webSecurityManager")
-    private WebSecurityManager webSecurityManager;
-
-    public WebSecurityManager getWebSecurityManager() {
-        return webSecurityManager;
-    }
-
-    public void setWebSecurityManager(WebSecurityManager webSecurityManager) {
-        this.webSecurityManager = webSecurityManager;
-    }
-
+/**
+ * The ContextLockingMode enumeration defines the possible modes of the context locking mechanism.
+ * ACTIVATED = Only one commit/revert can be performed at the same time.
+ * DEACTIVATED = No check for concurrent context writing.
+ */
+public enum ContextLockingMode {
+    ACTIVATED,
+    DEACTIVATED;
 }

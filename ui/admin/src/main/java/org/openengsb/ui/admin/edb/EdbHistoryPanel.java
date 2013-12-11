@@ -21,6 +21,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -29,7 +32,6 @@ import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @SecurityAttributes({
@@ -40,7 +42,8 @@ public class EdbHistoryPanel extends BasePage {
 
     private static final DateFormat DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.LONG,
         Locale.getDefault());
-    @PaxWicketBean(name = "edbService")
+    @Inject
+    @Named("edbService")
     private EngineeringDatabaseService edbService;
 
     public EdbHistoryPanel() {

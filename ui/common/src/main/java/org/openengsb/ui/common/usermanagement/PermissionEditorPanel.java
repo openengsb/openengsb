@@ -19,6 +19,9 @@ package org.openengsb.ui.common.usermanagement;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -32,7 +35,6 @@ import org.apache.wicket.model.Model;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +55,12 @@ public abstract class PermissionEditorPanel extends Panel {
 
     private Model<Class<?>> permissionTypeModel;
 
-    private Map<String, String> values = Maps.newHashMap();
+    private final Map<String, String> values = Maps.newHashMap();
 
-    private UserInput user;
+    private final UserInput user;
 
-    @PaxWicketBean(name = "permissionProviders")
+    @Inject
+    @Named("permissionProviders")
     private List<ClassProvider> providers;
 
     public PermissionEditorPanel(String id, UserInput user) {

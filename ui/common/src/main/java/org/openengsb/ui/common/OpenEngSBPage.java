@@ -20,12 +20,14 @@ package org.openengsb.ui.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,8 @@ public abstract class OpenEngSBPage extends WebPage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
-    @PaxWicketBean(name = "contextCurrentService")
+    @Inject
+    @Named("contextCurrentService")
     private ContextCurrentService contextService;
 
     public OpenEngSBPage() {

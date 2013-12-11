@@ -191,14 +191,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-csv</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.usernamepassword</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-csv</artifactId>
     </dependency>
   </dependencies>
 

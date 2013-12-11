@@ -19,6 +19,9 @@ package org.openengsb.ui.common.taskbox.web;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -39,7 +42,6 @@ import org.apache.wicket.model.Model;
 import org.openengsb.core.workflow.api.TaskboxException;
 import org.openengsb.core.workflow.api.model.Task;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +51,19 @@ public class TaskOverviewPanel extends Panel {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TaskOverviewPanel.class);
 
-    private TaskDataProvider dataProvider = new TaskDataProvider();
+    private final TaskDataProvider dataProvider = new TaskDataProvider();
     private Panel panel = (Panel) new EmptyPanel("taskPanel").setOutputMarkupId(true);
 
-    @PaxWicketBean(name = "webtaskboxService")
+    @Inject
+    @Named("webtaskboxService")
     private WebTaskboxService webtaskboxService;
 
     @SuppressWarnings("serial")
     public TaskOverviewPanel(String id) {
         super(id);
         setOutputMarkupId(true);
-        ArrayList<IColumn<Task>> columns = new ArrayList<IColumn<Task>>();
-        IColumn<Task> actionsColumn = new FilteredAbstractColumn<Task>(Model.of("Actions")) {
+        ArrayList<IColumn<Task, String>> columns = new ArrayList<IColumn<Task, String>>();
+        IColumn<Task, String> actionsColumn = new FilteredAbstractColumn<Task, String>(Model.of("Actions")) {
             @Override
             public Component getFilter(String componentId, FilterForm<?> form) {
                 return new GoAndClearFilter(componentId, form);
@@ -74,14 +77,15 @@ public class TaskOverviewPanel extends Panel {
             }
         };
         columns.add(actionsColumn);
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskId"), "taskId", "taskId"));
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskType"), "taskType", "taskType"));
-        columns
-            .add(new TextFilteredPropertyColumn<Task, String>(Model.of("Description"), "description", "description"));
-        columns.add(new PropertyColumn<Task>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
+        columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("TaskId"), "taskId", "taskId"));
+        columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("TaskType"), "taskType", "taskType"));
+        columns.add(new TextFilteredPropertyColumn<Task, String, String>(Model.of("Description"), "description",
+                "description"));
+        columns.add(new PropertyColumn<Task, String>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
             "taskCreationTimestamp"));
         FilterForm<Task> form = new FilterForm<Task>("form", dataProvider);
-        DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 15);
+        DefaultDataTable<Task, String> dataTable =
+            new DefaultDataTable<Task, String>("dataTable", columns, dataProvider, 15);
         dataTable.addTopToolbar(new FilterToolbar(dataTable, form, dataProvider));
         form.add(dataTable);
         add(form);
@@ -92,7 +96,7 @@ public class TaskOverviewPanel extends Panel {
 
         private static final long serialVersionUID = -8163071854733837122L;
 
-        private Task task;
+        private final Task task;
 
         @SuppressWarnings("serial")
         public UserActionsPanel(String id, Task t) {

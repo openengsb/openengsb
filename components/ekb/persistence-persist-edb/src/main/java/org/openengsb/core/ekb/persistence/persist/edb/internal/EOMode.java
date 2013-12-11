@@ -22,5 +22,5 @@ package org.openengsb.core.ekb.persistence.persist.edb.internal;
  */
 public enum EOMode {
     DEACTIVATED,
-    FULLY_ACTIVED
+    FULLY_ACTIVATED
 }

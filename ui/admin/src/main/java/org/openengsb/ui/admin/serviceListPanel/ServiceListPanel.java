@@ -23,6 +23,9 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -33,7 +36,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -51,7 +53,7 @@ public class ServiceListPanel extends Panel {
 
         private static final long serialVersionUID = -7322597299600275467L;
 
-        private Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        private final Dictionary<String, Object> properties = new Hashtable<String, Object>();
         private AliveState aliveState;
 
         private String getInstanceId() {
@@ -67,10 +69,12 @@ public class ServiceListPanel extends Panel {
         }
     }
 
-    @PaxWicketBean(name = "blueprintBundleContext")
+    @Inject
+    @Named("blueprintBundleContext")
     private BundleContext bundleContext;
 
-    @PaxWicketBean(name = "connectorList")
+    @Inject
+    @Named("connectorList")
     private List<ServiceReference<Domain>> serviceReferences;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {
