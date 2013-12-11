@@ -21,10 +21,6 @@ import org.openengsb.framework.vfs.webdavprotocol.webdavhandler.WebDavHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-/**
- *
- * @author Richard
- */
 public class Activator implements BundleActivator {
 
     private WebDavHandler webDavHandler = null;
