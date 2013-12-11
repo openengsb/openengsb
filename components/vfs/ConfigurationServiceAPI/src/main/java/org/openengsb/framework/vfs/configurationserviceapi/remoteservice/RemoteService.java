@@ -1,23 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.openengsb.framework.vfs.configurationserviceapi.remoteservice;
 
 /**
- *
- * @author Richard
+ * Remote Services are services that need to be stopped while openengsb is being configured. That can for example be an http service that needs to be stopped to prevent access to openengsb during the reconfiguration. Every service that needs to be stopped during configuration needs to implement this interface.
  */
 public interface RemoteService {
-    /**
-     * Starts the remote service.
-     * @return if the starting was successful.
-     */
     boolean start();
-    
-    /**
-     * Stops the remote service.
-     * @return if the stopping was successful.
-     */
     boolean stop();
 }
