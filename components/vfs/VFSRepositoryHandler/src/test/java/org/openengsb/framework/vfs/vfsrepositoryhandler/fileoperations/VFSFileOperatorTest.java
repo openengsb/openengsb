@@ -85,11 +85,11 @@ public class VFSFileOperatorTest {
 
         for (Tag t : tags) {
             if (t.getName().equals(tag1Name)) {
-                Assert.assertEquals(tag1Date, t.getDate());
-                Assert.assertEquals(tag1Directory, t.getPath());
+                Assert.assertEquals(tag1Date, t.getCreationDate());
+                Assert.assertEquals(tag1Directory, t.getTagPath());
             } else if (t.getName().equals(tag2Name)) {
-                Assert.assertEquals(tag2Date, t.getDate());
-                Assert.assertEquals(tag2Directory, t.getPath());
+                Assert.assertEquals(tag2Date, t.getCreationDate());
+                Assert.assertEquals(tag2Directory, t.getTagPath());
             } else {
                 Assert.fail("Unknown tag name in tag list");
             }

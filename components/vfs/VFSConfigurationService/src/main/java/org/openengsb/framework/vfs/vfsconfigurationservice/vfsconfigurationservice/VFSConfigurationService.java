@@ -47,7 +47,7 @@ public class VFSConfigurationService implements ConfigurationService {
     }
 
     @Override
-    public void newTag(Tag tag) {
+    public void notifyAboutNewTag(Tag tag) {
         logger.debug("New tag arrived, reconfigure OpenEngSB");
 
         if (repositoryHandler == null) {
@@ -96,7 +96,7 @@ public class VFSConfigurationService implements ConfigurationService {
             fileOperator.fileDelete(f);
         }
         try {
-            fileOperator.copy(tag.getPath(), configFolder.toPath());
+            fileOperator.copy(tag.getTagPath(), configFolder.toPath());
         } catch (IOException ex) {
             logger.debug("error deleting configuration" + ex.getMessage());
         }
@@ -155,7 +155,7 @@ public class VFSConfigurationService implements ConfigurationService {
         logger.debug("Geting old config and try again");
         Tag previousTag = repositoryHandler.getPreviousTag(actualTag);
         if (previousTag != null) {
-            newTag(previousTag);
+            notifyAboutNewTag(previousTag);
         } else {
             for (File f : fileOperator.listFiles(configFolder)) {
                 fileOperator.fileDelete(f);
