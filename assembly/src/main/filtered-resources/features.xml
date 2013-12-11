@@ -414,12 +414,12 @@
     <bundle start-level="30">mvn:org.springframework/spring-jms/${spring.version}</bundle>
   </feature>
 
-  <feature name="vfs" version="1.0-SNAPSHOT" description="Virtual File System">
+  <feature name="vfs" version="${project.version}" description="Virtual File System">
   	<feature>http</feature>
-    <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
-  	<bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
-  	<bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
-  	<bundle>mvn:org.openengsb.framework.vfs.webdavprotocol/org.openengsb.framework.vfs.webdavprotocol</bundle>
+    <bundle>mvn:org.openengsb.framework.vfs/org.openengsb.framework.vfs.api/${project.version}</bundle>
+  	<bundle>mvn:org.openengsb.framework.vfs/org.openengsb.framework.vfs.vfsrepositoryhandler/${project.version}</bundle>
+  	<bundle>mvn:org.openengsb.framework.vfs/org.openengsb.framework.vfs.vfsconfigurationservice/${project.version}</bundle>
+  	<bundle>mvn:org.openengsb.framework.vfs/org.openengsb.framework.vfs.webdavprotocol/${project.version}</bundle>
   </feature>
 
 </features>
