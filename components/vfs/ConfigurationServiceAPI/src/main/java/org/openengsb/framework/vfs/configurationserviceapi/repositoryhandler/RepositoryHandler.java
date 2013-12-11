@@ -3,6 +3,9 @@ package org.openengsb.framework.vfs.configurationserviceapi.repositoryhandler;
 import java.nio.file.Path;
 import org.openengsb.framework.vfs.configurationserviceapi.common.Tag;
 
+/**
+ * The RepositoryHandler is responsible for handling the configuration repository that is used by VFS to configure openengsb.
+ */
 public interface RepositoryHandler {
     /**
      * Creates a tag from the specified path.
@@ -18,16 +21,6 @@ public interface RepositoryHandler {
      */
     Tag getPreviousTag(Tag currentTag);
 
-    /**
-     * Returns the path of the repository directory.
-     * @return the path of the repository directory.
-     */
     Path getRepositoryPath();
-
-
-    /**
-     * Returns the path of the configuration directory.
-     * @return the path of the configuration directory.
-     */
     Path getConfigurationPath();
 }
