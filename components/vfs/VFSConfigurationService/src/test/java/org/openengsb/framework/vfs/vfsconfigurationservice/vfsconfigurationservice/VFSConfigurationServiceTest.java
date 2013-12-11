@@ -19,9 +19,10 @@ import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.Config
 import org.osgi.framework.BundleContext;
 
 public class VFSConfigurationServiceTest {
+
     private ResourceBundle configurationServiceProperties = ResourceBundle.getBundle("configurationservice");
     private String configurationPath = configurationServiceProperties.getString("configurationPath");
-    
+
     @Test
     public void testNewTagEverythingOk() throws RemoteServiceException, ReconfigurationException {
         BundleContext bundleContext = Mockito.mock(BundleContext.class);
@@ -29,25 +30,25 @@ public class VFSConfigurationServiceTest {
         RepositoryHandler repositoryHandler = Mockito.mock(RepositoryHandler.class);
 
         ConfigurableService configurableService1 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService1Configs = new ArrayList<>();
         configurableService1Configs.add(configurationPath + "/folder1/config2.txt");
         Mockito.when(configurableService1.getPropertyList()).thenReturn(configurableService1Configs);
 
         ConfigurableService configurableService2 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService2Configs = new ArrayList<>();
         configurableService2Configs.add(configurationPath + "/config3.txt");
         Mockito.when(configurableService2.getPropertyList()).thenReturn(configurableService2Configs);
-        
+
         ConfigurableService configurableService3 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService3Configs = new ArrayList<>();
         configurableService3Configs.add(configurationPath + "/folder1");
         Mockito.when(configurableService3.getPropertyList()).thenReturn(configurableService3Configs);
-        
+
         ConfigurableService configurableService4 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService4Configs = new ArrayList<>();
         configurableService4Configs.add(configurationPath + "/config1.txt");
         Mockito.when(configurableService4.getPropertyList()).thenReturn(configurableService4Configs);
@@ -55,14 +56,14 @@ public class VFSConfigurationServiceTest {
         RemoteService remoteService1 = Mockito.mock(RemoteService.class);
 
         RemoteService remoteService2 = Mockito.mock(RemoteService.class);
-        
+
         ConfigurationFileManipulator fileOperator = Mockito.mock(ConfigurationFileManipulator.class);
-        
+
         List<String> changedConfigs = new ArrayList<>();
         changedConfigs.add(configurationPath + "/config1.txt");
         changedConfigs.add(configurationPath + "/folder1/config2.txt");
         Mockito.when(fileOperator.compareFolders(Mockito.any(File.class), Mockito.any(File.class)))
-                .thenReturn(changedConfigs);
+            .thenReturn(changedConfigs);
         Mockito.when(fileOperator.listFiles(new File(configurationPath))).thenReturn(new File[0]);
 
         VFSConfigurationService configurationService = new VFSConfigurationService(bundleContext);
@@ -83,7 +84,7 @@ public class VFSConfigurationServiceTest {
         Mockito.when(tag.getTagPath()).thenReturn((new File("testTagPath")).toPath());
 
         configurationService.notifyAboutNewTag(tag);
-        
+
         Mockito.verify(configurableService1).reconfigure();
         Mockito.verify(configurableService2, Mockito.never()).reconfigure();
         Mockito.verify(configurableService3).reconfigure();
@@ -94,7 +95,7 @@ public class VFSConfigurationServiceTest {
         Mockito.verify(remoteService2).start();
         Mockito.verify(repositoryHandler, Mockito.never()).getPreviousTag(tag);
     }
-    
+
     @Test
     public void testNewTagReconfigurationFailed() throws RemoteServiceException, ReconfigurationException {
         Date date = new Date(0);
@@ -102,38 +103,38 @@ public class VFSConfigurationServiceTest {
         Mockito.when(tag.getCreationDate()).thenReturn(date);
         Mockito.when(tag.getName()).thenReturn("testTag");
         Mockito.when(tag.getTagPath()).thenReturn((new File("testTagPath")).toPath());
-        
+
         Tag previousTag = Mockito.mock(Tag.class);
         Mockito.when(previousTag.getCreationDate()).thenReturn(date);
         Mockito.when(previousTag.getName()).thenReturn("previousTag");
         Mockito.when(previousTag.getTagPath()).thenReturn((new File("previousTagPath")).toPath());
-        
+
         BundleContext bundleContext = Mockito.mock(BundleContext.class);
 
         RepositoryHandler repositoryHandler = Mockito.mock(RepositoryHandler.class);
         Mockito.when(repositoryHandler.getPreviousTag(Mockito.any(Tag.class))).thenReturn(previousTag);
 
         ConfigurableService configurableService1 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService1Configs = new ArrayList<>();
         configurableService1Configs.add(configurationPath + "./folder1/config2.txt");
         Mockito.when(configurableService1.getPropertyList()).thenReturn(configurableService1Configs);
 
         ConfigurableService configurableService2 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService2Configs = new ArrayList<>();
         configurableService2Configs.add(configurationPath + "./config3.txt");
         Mockito.when(configurableService2.getPropertyList()).thenReturn(configurableService2Configs);
-        
+
         ConfigurableService configurableService3 = Mockito.mock(ConfigurableService.class);
-		Mockito.doThrow(new ReconfigurationException("Reconfiguration failed")).doNothing().when(configurableService3).reconfigure();
-        
+        Mockito.doThrow(new ReconfigurationException("Reconfiguration failed")).doNothing().when(configurableService3).reconfigure();
+
         List<String> configurableService3Configs = new ArrayList<>();
         configurableService3Configs.add(configurationPath + "./folder1");
         Mockito.when(configurableService3.getPropertyList()).thenReturn(configurableService3Configs);
-        
+
         ConfigurableService configurableService4 = Mockito.mock(ConfigurableService.class);
-        
+
         List<String> configurableService4Configs = new ArrayList<>();
         configurableService4Configs.add(configurationPath + "./config1.txt");
         Mockito.when(configurableService4.getPropertyList()).thenReturn(configurableService4Configs);
@@ -141,14 +142,14 @@ public class VFSConfigurationServiceTest {
         RemoteService remoteService1 = Mockito.mock(RemoteService.class);
 
         RemoteService remoteService2 = Mockito.mock(RemoteService.class);
-        
+
         ConfigurationFileManipulator fileOperator = Mockito.mock(ConfigurationFileManipulator.class);
-        
+
         List<String> changedConfigs = new ArrayList<>();
         changedConfigs.add(configurationPath + "./config1.txt");
         changedConfigs.add(configurationPath + "./folder1/config2.txt");
         Mockito.when(fileOperator.compareFolders(Mockito.any(File.class), Mockito.any(File.class)))
-                .thenReturn(changedConfigs);
+            .thenReturn(changedConfigs);
         Mockito.when(fileOperator.listFiles(new File(configurationPath))).thenReturn(new File[0]);
 
         VFSConfigurationService configurationService = new VFSConfigurationService(bundleContext);
@@ -163,7 +164,7 @@ public class VFSConfigurationServiceTest {
         configurationService.registerRepositoryHandler(repositoryHandler);
 
         configurationService.notifyAboutNewTag(previousTag);
-        
+
         Mockito.verify(configurableService1, Mockito.times(2)).reconfigure();
         Mockito.verify(configurableService2, Mockito.never()).reconfigure();
         Mockito.verify(configurableService3, Mockito.times(2)).reconfigure();
