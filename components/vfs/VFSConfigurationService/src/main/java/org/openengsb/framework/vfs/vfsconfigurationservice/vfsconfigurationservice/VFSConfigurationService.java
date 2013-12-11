@@ -10,6 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.openengsb.framework.vfs.api.common.Tag;
 import org.openengsb.framework.vfs.api.configurableservice.ConfigurableService;
 import org.openengsb.framework.vfs.api.configurationservice.ConfigurationService;
+import org.openengsb.framework.vfs.api.exceptions.ReconfigurationException;
+import org.openengsb.framework.vfs.api.exceptions.RemoteServiceException;
 import org.openengsb.framework.vfs.api.remoteservice.RemoteService;
 import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
 import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.FileOperator;
@@ -58,9 +60,13 @@ public class VFSConfigurationService implements ConfigurationService {
 
         //Stop all remoteServices
         for (RemoteService remote : remoteServices) {
-            if (!remote.stop()) {
+            try {
+                remote.stop();
+            }
+            catch (RemoteServiceException ex) {
                 logger.debug("Could not set new Tag");
                 logger.debug("problem stopping remoteService, new Tag will not be deployed");
+                logger.debug("Exception Message: " + ex.getMessage());
                 return;
             }
         }
@@ -68,7 +74,8 @@ public class VFSConfigurationService implements ConfigurationService {
         if (!configFolder.exists()) {
             try {
                 fileOperator.createDirectories(configFolder.toPath());
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 logger.debug("error creating configuration directory: " + ex.getMessage());
                 return;
             }
@@ -81,13 +88,15 @@ public class VFSConfigurationService implements ConfigurationService {
             if (!tempFolder.exists() || !tempFolder.isDirectory()) {
                 try {
                     fileOperator.createDirectories(tempFolder.toPath());
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     logger.debug("error creating temp file");
                 }
             }
             try {
                 fileOperator.copy(configFolder.toPath(), tempFolder.toPath());
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 logger.debug("error copying configuration to temp directory" + ex.getMessage());
             }
         }
@@ -97,7 +106,8 @@ public class VFSConfigurationService implements ConfigurationService {
         }
         try {
             fileOperator.copy(tag.getTagPath(), configFolder.toPath());
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.debug("error deleting configuration" + ex.getMessage());
         }
 
@@ -119,8 +129,12 @@ public class VFSConfigurationService implements ConfigurationService {
         }
 
         for (ConfigurableService service : servicesToReconfigure) {
-            //reconfigure Service and check if reconfigure was successful
-            if (!service.reconfigure()) {
+            try {
+                //reconfigure Service and check if reconfigure was successful
+                service.reconfigure();
+            }
+            catch (ReconfigurationException ex) {
+                logger.debug("Exception Message: " + ex.getMessage());
                 loadPreviousTag(tag);
                 //When the previous config was start successful return and end it. 
                 return;
@@ -129,8 +143,12 @@ public class VFSConfigurationService implements ConfigurationService {
 
         //Restart all remoteServices
         for (RemoteService remote : remoteServices) {
-            if (!remote.start()) {
+            try {
+                remote.start();
+            }
+            catch (RemoteServiceException ex) {
                 logger.debug("error restart remoteService -- reload previous config");
+                logger.debug("Exception Message: " + ex.getMessage());
                 loadPreviousTag(tag);
                 //When the previous config was start successful return and end it. 
                 return;
@@ -142,7 +160,8 @@ public class VFSConfigurationService implements ConfigurationService {
         try {
             FileUtils.deleteDirectory(tempFolder);
             tempFolder = null;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.error("error deleting temp directory " + ex.getMessage());
         }
 
@@ -156,32 +175,41 @@ public class VFSConfigurationService implements ConfigurationService {
         Tag previousTag = repositoryHandler.getPreviousTag(actualTag);
         if (previousTag != null) {
             notifyAboutNewTag(previousTag);
-        } else {
+        }
+        else {
             for (File f : fileOperator.listFiles(configFolder)) {
                 fileOperator.fileDelete(f);
             }
             try {
                 fileOperator.copy(tempFolder.toPath(), configFolder.toPath());
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 logger.error("could not revert config" + ex.getMessage());
             }
 
             for (ConfigurableService service : servicesToReconfigure) {
-                if (!service.reconfigure()) {
-                    logger.error("could not revert to the old configuration");
+                try {
+                    service.reconfigure();
+                }
+                catch (ReconfigurationException ex) {
+                    logger.error("could not revert to the old configuration. Message. " + ex.getMessage());
                 }
             }
 
             for (RemoteService remote : remoteServices) {
-                if (!remote.start()) {
-                    logger.debug("could not restart remote service after reverting to old configuration");
+                try {
+                    remote.start();
+                }
+                catch (RemoteServiceException ex) {
+                    logger.debug("could not restart remote service after reverting to old configuration. Message: " + ex.getMessage());
                 }
             }
 
             try {
                 FileUtils.deleteDirectory(tempFolder);
                 tempFolder = null;
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 logger.error("error deleting temp directory " + ex.getMessage());
             }
         }

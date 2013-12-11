@@ -1,6 +1,7 @@
 package org.openengsb.framework.vfs.api.configurableservice;
 
 import java.util.List;
+import org.openengsb.framework.vfs.api.exceptions.ReconfigurationException;
 
 /**
  * A ConfigurableService is a service that can be reconfigured using VFS. Every service that wants to be configured using VFS must implement this interface.
@@ -8,9 +9,10 @@ import java.util.List;
 public interface ConfigurableService {
     /**
      * Reconfigure the service.
-     * @return True if the reconfiguration was successful, false if it failed.
+	 * @throws  ReconfigurationException when an failure occurs during reconfiguration
+	 * this exception will be thrown.
      */
-    boolean reconfigure();
+    void reconfigure() throws ReconfigurationException;
 
     /**
      * Returns a list of the paths of the configurations that the service needs.
