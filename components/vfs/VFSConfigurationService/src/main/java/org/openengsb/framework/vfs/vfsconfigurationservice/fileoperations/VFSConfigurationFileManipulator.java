@@ -14,8 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VFSFileOperator implements FileOperator {
-    private final Logger logger = LoggerFactory.getLogger(VFSFileOperator.class);
+public class VFSConfigurationFileManipulator implements ConfigurationFileManipulator {
+    private final Logger logger = LoggerFactory.getLogger(VFSConfigurationFileManipulator.class);
 
     public List<String> compareFolders(File originalPath, File newPath) {
         ArrayList<String> changedFiles = new ArrayList<String>();
@@ -27,7 +27,6 @@ public class VFSFileOperator implements FileOperator {
         String newFolderPath = newPath.toString();
 
         for (String newFilePath : newFolderContent) {
-            //ToDo is there a better way to resolve the relative path?
             String originalFilePath = newFilePath.replace(newFolderPath, originalFolderPath);
 
             if (originalFolderContent.contains(originalFilePath)) {

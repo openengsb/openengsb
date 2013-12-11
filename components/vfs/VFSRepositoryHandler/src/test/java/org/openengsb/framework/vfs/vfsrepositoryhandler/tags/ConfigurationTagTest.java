@@ -10,18 +10,10 @@ import org.openengsb.framework.vfs.api.common.Tag;
 
 public class ConfigurationTagTest {
 
-    @Test
-    public void testConstructorWithUnparseablePath() throws IOException {
+    @Test (expected = ParseException.class)
+    public void testConstructorWithUnparseablePath() throws IOException, ParseException {
         Path unparseablePath = (new File(".")).toPath().resolve("UnparseableTagFolderName");
 
-        try {
-            Tag tag = new ConfigurationTag(unparseablePath);
-        } catch (ParseException e) {
-            //This exception is expected to be thrown;
-            Assert.assertTrue(true);
-            return;
-        }
-
-        Assert.assertTrue("Error: ParseException has not been thrown!", false);
+        Tag tag = new ConfigurationTag(unparseablePath);
     }
 }

@@ -12,7 +12,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         List<String> propertyList1 = new ArrayList<>();
-        propertyList1.add("./config/file1.txt"); //TODO
+        propertyList1.add("./config/file1.txt");
         propertyList1.add("./config/file2.txt");
         propertyList1.add("./config/file3.txt");
 
@@ -27,12 +27,6 @@ public class Activator implements BundleActivator {
         ConfigurableService configurableService2 = new TestConfigurableService(propertyList2, false, "Conf2", 4);
 
         context.registerService(ConfigurableService.class.getName(), configurableService2, null);
-//
-//        List<String> propertyList2 = new ArrayList<>();
-//        propertyList1.add(""); //TODO
-//
-//        ConfigurableService configurableService2 = new TestConfigurableService(propertyList2, true);
-//        context.registerService(ConfigurableService.class.getName(), configurableService2, null);
 
         RemoteService remoteService = new TestRemoteService(true, true);
         context.registerService(RemoteService.class.getName(), remoteService, null);

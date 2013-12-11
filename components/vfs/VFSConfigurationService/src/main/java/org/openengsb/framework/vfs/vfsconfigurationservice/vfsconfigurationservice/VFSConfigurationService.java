@@ -14,8 +14,8 @@ import org.openengsb.framework.vfs.api.exceptions.ReconfigurationException;
 import org.openengsb.framework.vfs.api.exceptions.RemoteServiceException;
 import org.openengsb.framework.vfs.api.remoteservice.RemoteService;
 import org.openengsb.framework.vfs.api.repositoryhandler.RepositoryHandler;
-import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.FileOperator;
-import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.VFSFileOperator;
+import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.ConfigurationFileManipulator;
+import org.openengsb.framework.vfs.vfsconfigurationservice.fileoperations.VFSConfigurationFileManipulator;
 import org.openengsb.framework.vfs.vfsconfigurationservice.servicelistener.ConfigurableServiceListener;
 import org.openengsb.framework.vfs.vfsconfigurationservice.servicelistener.RemoteServiceListener;
 import org.openengsb.framework.vfs.vfsconfigurationservice.servicelistener.RepositoryHandlerListener;
@@ -34,7 +34,7 @@ public class VFSConfigurationService implements ConfigurationService {
     private BundleContext bundleContext = null;
     private ConfigurableServiceListener configurableServiceListener = null;
     private RepositoryHandlerListener repositoryHandlerListener = null;
-    private FileOperator fileOperator = new VFSFileOperator();
+    private ConfigurationFileManipulator fileOperator = new VFSConfigurationFileManipulator();
     private List<ConfigurableService> servicesToReconfigure = new ArrayList<>();
     private File tempFolder = null;
     private String configurationFolderPath = configurationServiceProperties.getString("configurationPath");
@@ -44,7 +44,7 @@ public class VFSConfigurationService implements ConfigurationService {
         this.bundleContext = bundleContext;
     }
 
-    public void setFileOperator(FileOperator fileOperator) {
+    public void setFileOperator(ConfigurationFileManipulator fileOperator) {
         this.fileOperator = fileOperator;
     }
 
