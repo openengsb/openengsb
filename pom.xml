@@ -72,6 +72,7 @@
     <!-- OpenEngSB API Modules -->
     <module>api/core</module>
     <module>api/edb</module>
+    <module>api/edbi</module>
     <module>api/ekb</module>
     <module>api/workflow</module>
     <module>api/ui</module>
