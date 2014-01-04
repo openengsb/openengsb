@@ -272,4 +272,9 @@ public interface EngineeringDatabaseService {
      * Returns the revision of the last commit performed in the stage under the given contextId.
      */
     UUID getLastRevisionNumberOfContext(String contextId, String sid) throws EDBException;
+    
+    /**
+     * Creates an EDBStage object.
+     */
+    EDBStage createEDBStage(String stageId);
 }

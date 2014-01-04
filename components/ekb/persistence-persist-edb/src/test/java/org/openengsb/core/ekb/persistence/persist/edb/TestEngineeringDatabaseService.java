@@ -338,4 +338,9 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         return null;
     }
 
+    @Override
+    public EDBStage createEDBStage(String stageId) {
+        return null;
+    }
+
 }

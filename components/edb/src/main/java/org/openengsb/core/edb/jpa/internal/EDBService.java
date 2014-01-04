@@ -381,4 +381,11 @@ public class EDBService extends AbstractEDBService {
         return ContextHolder.get().getCurrentContextId();
     }
 
+    @Override
+    public EDBStage createEDBStage(String stageId) {
+        EDBStage stage = new JPAStage();
+        stage.setStageId(stageId);
+        return stage;
+    }
+
 }
