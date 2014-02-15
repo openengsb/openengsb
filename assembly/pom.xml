@@ -228,6 +228,7 @@
                 <feature>spring-jms</feature>
                 <!-- Pax Wicket -->
                 <feature>pax-wicket</feature>
+                <feature>pax-wicket-blueprint</feature>
                 <feature>wicket</feature>
               </features>
               <copyFileBasedDescriptors>
