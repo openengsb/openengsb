@@ -1,11 +1,12 @@
-/*
- * Copyright 2014 Svetoslav.
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,28 +18,23 @@
 package org.openengsb.itests.exam;
 
 import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.edb.api.EDBCommit;
-import org.openengsb.core.edb.api.EDBException;
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.api.EDBStage;
-import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.edb.api.*;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
-import static org.openengsb.itests.util.AbstractExamTestHelper.baseConfiguration;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import org.ops4j.pax.exam.Option;
-import static org.ops4j.pax.exam.OptionUtils.combine;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(JUnit4TestRunner.class)
 public class EDBStageIT extends AbstractModelUsingExamTestHelper {

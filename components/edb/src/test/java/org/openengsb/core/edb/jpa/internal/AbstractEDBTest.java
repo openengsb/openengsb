@@ -17,18 +17,6 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.persistence.EntityManager;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,12 +30,23 @@ import org.openengsb.core.edb.jpa.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.jpa.internal.dao.JPADao;
 import org.openengsb.labs.jpatest.junit.TestPersistenceUnit;
 
+import javax.persistence.EntityManager;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public abstract class AbstractEDBTest {
 
     protected TestEDBService db;
-    protected EDBTestDataGenerator tools;
+    protected EDBTestDataGenerator dataGenerator;
 
-    protected abstract EDBTestDataGenerator initTools(TestEDBService db);
+    protected abstract EDBTestDataGenerator initDataGenerator(TestEDBService db);
 
     @Rule
     public TestPersistenceUnit testPersistenceUnit = new TestPersistenceUnit();
@@ -70,7 +69,7 @@ public abstract class AbstractEDBTest {
         db = new TestEDBService(dao, authenticationContext, null, Arrays.asList(preCommitHook), null, null, true, em);
         db.open();
 
-        this.tools = this.initTools(db);
+        this.dataGenerator = this.initDataGenerator(db);
     }
 
     @After
@@ -82,7 +81,7 @@ public abstract class AbstractEDBTest {
      * Returns an EDBCommit object.
      */
     protected EDBCommit getEDBCommit() {
-        return tools.createEDBCommit(null, null, null);
+        return dataGenerator.createEDBCommit(null, null, null);
     }
 
     /**
@@ -90,7 +89,7 @@ public abstract class AbstractEDBTest {
      * and commit it.
      */
     protected Long commitObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes) {
-        EDBCommit ci = tools.createEDBCommit(inserts, updates, deletes);
+        EDBCommit ci = dataGenerator.createEDBCommit(inserts, updates, deletes);
         return db.commit(ci);
     }
 
@@ -106,7 +105,7 @@ public abstract class AbstractEDBTest {
      */
     protected EDBObject createRandomTestObject(String oid) {
         Random random = new Random(System.currentTimeMillis());
-        EDBObject result = tools.createEDBObject(oid);
+        EDBObject result = dataGenerator.createEDBObject(oid);
         int max = 5;
 
         for (int i = 0; i < max; ++i) {
