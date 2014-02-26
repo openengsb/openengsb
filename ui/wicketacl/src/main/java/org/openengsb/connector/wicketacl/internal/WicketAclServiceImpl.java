@@ -18,10 +18,12 @@
 package org.openengsb.connector.wicketacl.internal;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -75,17 +77,19 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
     }
 
     private boolean hasAccess(String user, final UIAction actionData) {
-        Collection<WicketPermission> filtered;
+        Collection<WicketPermission> wicketPermissions;
         try {
-            filtered = getWicketPermissions(user);
+            wicketPermissions = getWicketPermissions(user);
         } catch (UserNotFoundException e) {
             LOGGER.warn("user not found", e);
             return false;
         }
 
+        Iterator<WicketPermission> filtered = filterByContext(wicketPermissions);
+
         Collection<String> relevantComponentNames = getRelevantComponentNames(actionData);
         for (final String a : relevantComponentNames) {
-            boolean allowed = Iterators.any(filtered.iterator(), new Predicate<WicketPermission>() {
+            boolean allowed = Iterators.any(filtered, new Predicate<WicketPermission>() {
                 @Override
                 public boolean apply(WicketPermission input) {
                     if (ObjectUtils.notEqual(a, input.getComponentName())) {
@@ -105,6 +109,19 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
             }
         }
         return false;
+    }
+
+    private Iterator<WicketPermission> filterByContext(Collection<WicketPermission> wicketPermissions) {
+        return Iterators.filter(wicketPermissions.iterator(), new Predicate<WicketPermission>() {
+            @Override
+            public boolean apply(WicketPermission permission) {
+                String context = permission.getContext();
+                if (context != null && !context.equals(ContextHolder.get().getCurrentContextId())) {
+                    return false;
+                }
+                return true;
+            }
+        });
     }
 
     private Collection<String> getRelevantComponentNames(UIAction actionData) {
