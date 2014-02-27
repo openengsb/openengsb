@@ -87,6 +87,7 @@
     <module>components/weaver/test</module>
     <module>components/console</module>
     <module>components/edb</module>
+    <module>components/edbi</module>
     <module>components/ekb/common</module>
     <module>components/ekb/graphdb-orient</module>
     <module>components/ekb/modelregistry-tracker</module>
