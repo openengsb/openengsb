@@ -19,16 +19,14 @@ package org.openengsb.core.edbi.api;
 
 import java.util.Collection;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-
 /**
- * Represents the Index of an OpenEngSBModel. It acts as an adapter for the lost typesafety when storing class
- * meta-data. It also contains meta-data of the underlying database schema, that is, the table names that store the data
- * for the given model type.
+ * Represents the Index of a Model. It acts as an adapter for the lost typesafety when storing class meta-data. It also
+ * contains meta-data of the underlying database schema, that is, the table names that store the data for the given
+ * model type.
  * 
  * @param <T> the type of the model
  */
-public interface Index<T extends OpenEngSBModel> {
+public interface Index<T> {
     /**
      * The index name is essentially the canonical class name of the model type.
      * 

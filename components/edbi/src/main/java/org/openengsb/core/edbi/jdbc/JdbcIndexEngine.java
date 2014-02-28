@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 import org.openengsb.core.edbi.api.EDBIndexException;
@@ -64,7 +63,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     @Override
-    public <T extends OpenEngSBModel> Index<T> createIndex(Class<T> model) throws IndexExistsException {
+    public <T> Index<T> createIndex(Class<T> model) throws IndexExistsException {
         if (indexExists(model)) {
             throw new IndexExistsException("Index for model " + model.getSimpleName() + " already exists");
         }
@@ -84,7 +83,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     @Override
-    public boolean indexExists(Class<? extends OpenEngSBModel> model) {
+    public boolean indexExists(Class<?> model) {
         return indexExists(translator.translate(model));
     }
 
@@ -95,7 +94,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends OpenEngSBModel> Index<T> getIndex(Class<T> model) throws IndexNotFoundException {
+    public <T> Index<T> getIndex(Class<T> model) throws IndexNotFoundException {
         if (!indexExists(model)) {
             throw new IndexNotFoundException("Index for model " + model.getSimpleName() + " does not exist");
         }
@@ -183,11 +182,11 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
         return load(name, null);
     }
 
-    protected <T extends OpenEngSBModel> JdbcIndex<T> load(final Class<T> modelClass) {
+    protected <T> JdbcIndex<T> load(final Class<T> modelClass) {
         return load(translator.translate(modelClass), modelClass);
     }
 
-    protected <T extends OpenEngSBModel> JdbcIndex<T> load(final String name, final Class<T> modelClass) {
+    protected <T> JdbcIndex<T> load(final String name, final Class<T> modelClass) {
         String sql = "SELECT TABLE_HEAD, TABLE_HISTORY FROM INDEX_INFORMATION WHERE NAME = ?";
 
         try {

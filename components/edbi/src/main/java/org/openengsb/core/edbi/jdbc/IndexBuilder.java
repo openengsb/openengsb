@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.jdbc.util.Introspector;
@@ -57,7 +56,7 @@ public class IndexBuilder {
      * @param <T> the type of the model class
      * @return a new Index
      */
-    public <T extends OpenEngSBModel> JdbcIndex<T> buildIndex(Class<T> model) {
+    public <T> JdbcIndex<T> buildIndex(Class<T> model) {
         JdbcIndex<T> index = new JdbcIndex<>();
 
         index.setModelClass(model);

@@ -20,19 +20,17 @@ package org.openengsb.core.edbi.jdbc;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexFieldVisitor;
 import org.openengsb.core.edbi.api.UnavailableTypeInformationException;
-
 
 /**
  * Index implementation for the JDBC EBDI container.
  * 
  * @param <T> model type parameter
  */
-public class JdbcIndex<T extends OpenEngSBModel> implements Index<T> {
+public class JdbcIndex<T> implements Index<T> {
 
     private Class<T> modelClass;
     private String name;

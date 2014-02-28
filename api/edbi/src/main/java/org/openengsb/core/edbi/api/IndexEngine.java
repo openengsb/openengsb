@@ -17,11 +17,10 @@
 
 package org.openengsb.core.edbi.api;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edb.api.EDBCommit;
 
 /**
- * An IndexEngine maintains Index data of OpenEngSBModel classes and allows to merge data into the index structures.
+ * An IndexEngine maintains Index data of model classes and allows to merge data into the index structures.
  */
 public interface IndexEngine {
 
@@ -32,7 +31,7 @@ public interface IndexEngine {
      * @return a new Index instance
      * @throws IndexExistsException if the index for this model already exists
      */
-    <T extends OpenEngSBModel> Index<T> createIndex(Class<T> model) throws IndexExistsException;
+    <T> Index<T> createIndex(Class<T> model) throws IndexExistsException;
 
     /**
      * Checks whether an Index for the given model type exists.
@@ -40,7 +39,7 @@ public interface IndexEngine {
      * @param model the model type to check for
      * @return true if it exists, false otherwise
      */
-    boolean indexExists(Class<? extends OpenEngSBModel> model);
+    boolean indexExists(Class<?> model);
 
     /**
      * Checks whether an Index with the given name exists.
@@ -57,7 +56,7 @@ public interface IndexEngine {
      * @return the Index instance for this model
      * @throws IndexNotFoundException if an index for the given model can not be found
      */
-    <T extends OpenEngSBModel> Index<T> getIndex(Class<T> model) throws IndexNotFoundException;
+    <T> Index<T> getIndex(Class<T> model) throws IndexNotFoundException;
 
     /**
      * Retrieves the Index by the given name. When an index is loaded this way, it may not contain typesafe type

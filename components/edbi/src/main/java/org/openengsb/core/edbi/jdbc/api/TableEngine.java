@@ -43,7 +43,7 @@ public interface TableEngine {
 
     /**
      * Drops the table mapped to the given index.
-     *
+     * 
      * @param index the index to drop the table for
      */
     void drop(JdbcIndex<?> index);

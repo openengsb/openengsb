@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.edbi.api.IndexEngine;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
-import org.openengsb.core.edbi.api.IndexEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
