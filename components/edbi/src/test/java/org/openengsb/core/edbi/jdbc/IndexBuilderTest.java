@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.edbi.api.IndexField;
+import org.openengsb.core.edbi.jdbc.names.ClassNameIndexTranslator;
 import org.openengsb.core.edbi.models.CompositeTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 

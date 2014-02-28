@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edbi.jdbc;
+package org.openengsb.core.edbi.jdbc.names;
 
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 

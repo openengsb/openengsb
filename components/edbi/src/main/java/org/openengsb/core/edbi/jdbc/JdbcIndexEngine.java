@@ -36,6 +36,7 @@ import org.openengsb.core.edbi.api.IndexExistsException;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexNotFoundException;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
+import org.openengsb.core.edbi.jdbc.names.ClassNameIndexTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;

@@ -20,12 +20,13 @@ package org.openengsb.core.edbi.api;
 /**
  * Translates class names to representative strings for further usage.
  */
-public interface ClassNameTranslator {
+public interface ClassNameTranslator extends NameTranslator<Class<?>> {
     /**
      * Translates the given class name into an arbitrary string representation.
      * 
      * @param clazz the class to translate
      * @return the translated string
      */
+    @Override
     String translate(Class<?> clazz);
 }
