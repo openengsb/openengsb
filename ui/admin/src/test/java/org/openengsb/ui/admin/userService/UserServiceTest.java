@@ -71,7 +71,7 @@ public class UserServiceTest extends AbstractUITest {
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.update");
         tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:item.update", "onclick");
         Component usernameField =
-            tester.getComponentFromLastRenderedPage("userDialogue:userEditorContainer:userForm:username");
+            tester.getComponentFromLastRenderedPage("editModalWindow:content:userEditorContainer:userForm:username");
         assertFalse(usernameField.isEnabled());
     }
      
@@ -82,7 +82,7 @@ public class UserServiceTest extends AbstractUITest {
         tester.clickLink("lazy:addUser");
         tester.executeAjaxEvent("lazy:addUser", "onclick");
         Component usernameField = 
-            tester.getComponentFromLastRenderedPage("userDialogue:userEditorContainer:userForm:username");
+            tester.getComponentFromLastRenderedPage("editModalWindow:content:userEditorContainer:userForm:username");
         assertTrue(usernameField.isEnabled()); 
     }
      
@@ -92,7 +92,7 @@ public class UserServiceTest extends AbstractUITest {
         tester.assertRenderedPage(UserListPage.class); 
         tester.clickLink("lazy:addUser");
         tester.executeAjaxEvent("lazy:addUser", "onclick");
-        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
+        FormTester formTester = tester.newFormTester("editModalWindow:content:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
@@ -107,16 +107,17 @@ public class UserServiceTest extends AbstractUITest {
         tester.startPage(UserListPage.class);
         tester.clickLink("lazy:addUser");
         tester.executeAjaxEvent("lazy:addUser", "onclick");
-        tester.executeAjaxEvent("userDialogue:userEditorContainer:userForm:permissionListContainer:createPermission",
+        tester.executeAjaxEvent(
+                "editModalWindow:content:userEditorContainer:userForm:permissionListContainer:createPermission",
             "onclick");
         DropDownChoice<Class> dropdown = (DropDownChoice<Class>) tester.getComponentFromLastRenderedPage(
-            "userDialogue:userEditorContainer:userForm:permissionListContainer:"
+            "editModalWindow:content:userEditorContainer:userForm:permissionListContainer:"
             + "createPermissionContainer:createPermissionContent:container:form:permissionTypeSelect");
         List<Class> choices = (List<Class>) dropdown.getChoices(); assertThat(choices, 
             hasItem((Class) WicketPermission.class));
       
         FormTester permissionFormTester = tester.newFormTester(
-            "userDialogue:userEditorContainer:userForm:permissionListContainer:"
+            "editModalWindow:content:userEditorContainer:userForm:permissionListContainer:"
             + "createPermissionContainer:createPermissionContent:container:form");
         permissionFormTester.select("permissionTypeSelect", 0);
         tester.debugComponentTrees();
@@ -138,7 +139,7 @@ public class UserServiceTest extends AbstractUITest {
         tester.clickLink("lazy:addUser");
         tester.executeAjaxEvent("lazy:addUser", "onclick");
         tester.debugComponentTrees();
-        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
+        FormTester formTester = tester.newFormTester("editModalWindow:content:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
@@ -161,7 +162,7 @@ public class UserServiceTest extends AbstractUITest {
         tester.clickLink("lazy:userList:listContainer:form:list:0:item.update");
         tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:item.update", "onclick");
         
-        FormTester formTester = tester.newFormTester("userDialogue:userEditorContainer:userForm");
+        FormTester formTester = tester.newFormTester("editModalWindow:content:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");

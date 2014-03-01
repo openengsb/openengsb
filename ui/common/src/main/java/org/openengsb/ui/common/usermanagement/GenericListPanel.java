@@ -67,6 +67,11 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                     private static final long serialVersionUID = 2004369349622394213L;
 
                     @Override
+                    public boolean isVisible() {
+                        return isDeleteLinkVisibleFor(userListItem.getModelObject());
+                    }
+                    
+                    @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         if (activeConfirm != null) {
                             activeConfirm.get("confirm").replaceWith(new EmptyPanel("confirm"));
@@ -98,6 +103,11 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                     private static final long serialVersionUID = -2327085637957255085L;
 
                     @Override
+                    public boolean isVisible() {
+                        return isEditLinkVisibleFor(userListItem.getModelObject());
+                    }
+                    
+                    @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         onEditClick(ajaxRequestTarget, userListItem.getModelObject());
                     }
@@ -107,6 +117,10 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
         users.setOutputMarkupId(true);
         form.add(users);
     }
+
+    protected abstract boolean isDeleteLinkVisibleFor(T modelObject);
+
+    protected abstract boolean isEditLinkVisibleFor(T modelObject);
 
     protected abstract void onDeleteClick(AjaxRequestTarget ajaxRequestTarget, Form<?> form, T param);
 
