@@ -17,8 +17,6 @@
 
 package org.openengsb.core.edbi.api;
 
-import org.openengsb.core.edb.api.EDBCommit;
-
 /**
  * An IndexEngine maintains Index data of model classes and allows to merge data into the index structures.
  */
@@ -76,10 +74,10 @@ public interface IndexEngine {
     void setClassLoader(ClassLoader classLoader);
 
     /**
-     * Merges the given EDBCommit into the underlying data structure.
+     * Merges the given IndexCommit into the underlying data structure.
      * 
-     * @param commit the EDBCommit to merge
+     * @param commit the IndexCommit to merge
      * @throws EDBIndexException propagated underlying non-runtime exceptions
      */
-    void merge(EDBCommit commit) throws EDBIndexException;
+    void commit(IndexCommit commit) throws EDBIndexException;
 }

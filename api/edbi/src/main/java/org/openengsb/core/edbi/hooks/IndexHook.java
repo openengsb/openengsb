@@ -17,26 +17,41 @@
 
 package org.openengsb.core.edbi.hooks;
 
-import org.openengsb.core.edb.api.EDBCommit;
-import org.openengsb.core.edb.api.hooks.EDBPostCommitHook;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.security.AuthenticationContext;
+import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
 
 /**
- * Implementation of an EDBPostCommitHook that merges data from EDBCommits into the EDBI.
+ * EKBPostCommitHook implementation responsible for extracting model information and calling {@code IndexService} to
+ * create indices for model types.
  */
-public class IndexMergeHook implements EDBPostCommitHook {
-
-    private static final Logger LOG = LoggerFactory.getLogger(IndexMergeHook.class);
+public class IndexHook implements EKBPostCommitHook {
 
     private IndexEngine indexEngine;
+    private AuthenticationContext authenticationContext;
 
     @Override
-    public void onPostCommit(EDBCommit commit) {
-        LOG.info("Merging EDBCommit " + commit.getRevisionNumber());
+    public void onPostCommit(EKBCommit ekbCommit) {
+        CommitConverter commitConverter = new CommitConverter(getAuthenticationContext(), getContextHolder());
 
-        indexEngine.merge(commit);
+        IndexCommit commit = commitConverter.convert(ekbCommit);
+
+        indexEngine.commit(commit);
+    }
+
+    public ContextHolder getContextHolder() {
+        return ContextHolder.get();
+    }
+
+    public AuthenticationContext getAuthenticationContext() {
+        return authenticationContext;
+    }
+
+    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
     }
 
     public IndexEngine getIndexEngine() {
