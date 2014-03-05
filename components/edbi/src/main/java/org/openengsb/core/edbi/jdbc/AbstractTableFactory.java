@@ -23,6 +23,7 @@ import org.openengsb.core.edbi.api.NameTranslator;
 import org.openengsb.core.edbi.jdbc.api.TableFactory;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.sql.Column;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.util.Introspector;
 
@@ -61,13 +62,14 @@ public abstract class AbstractTableFactory implements TableFactory {
             public void visit(IndexField<?> field) {
                 onBeforeFieldVisit(table, field);
 
-                String type = typeMap.getType(field.getType());
+                DataType type = getTypeMap().getType(field.getType());
                 if (type == null) {
                     onMissingTypeVisit(table, field);
                     return;
                 }
+                ((JdbcIndexField) field).setMappedType(type);
 
-                Column column = new Column(columnNameTranslator.translate(field), type);
+                Column column = new Column(getColumnNameTranslator().translate(field), type);
 
                 table.addElement(column);
                 onAfterFieldVisit(table, column, field);
@@ -87,8 +89,12 @@ public abstract class AbstractTableFactory implements TableFactory {
      */
     protected void onMissingTypeVisit(Table table, IndexField<?> field) {
         if (Introspector.isModelClass(field.getType())) {
-            Column column = new Column(getColumnNameTranslator().translate(field), getTypeMap().getType(String.class));
+            DataType type = getTypeMap().getType(String.class);
+            ((JdbcIndexField) field).setMappedType(type);
+
+            Column column = new Column(getColumnNameTranslator().translate(field),type);
             table.addElement(column); // will hold the models OID
+
             onAfterFieldVisit(table, column, field);
         }
     }

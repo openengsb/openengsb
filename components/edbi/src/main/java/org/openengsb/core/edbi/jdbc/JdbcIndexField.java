@@ -18,6 +18,7 @@ package org.openengsb.core.edbi.jdbc;
 
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.UnavailableTypeInformationException;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
 
 /**
  * JdbcIndexField
@@ -29,7 +30,7 @@ public class JdbcIndexField<T> implements IndexField<T> {
     private Class<T> type;
     private String typeName;
     private String mappedName;
-    private String mappedType;
+    private DataType mappedType;
     private ClassLoader classLoader;
 
     JdbcIndexField() {
@@ -71,7 +72,7 @@ public class JdbcIndexField<T> implements IndexField<T> {
     }
 
     @Override
-    public String getMappedType() {
+    public DataType getMappedType() {
         return mappedType;
     }
 
@@ -100,7 +101,7 @@ public class JdbcIndexField<T> implements IndexField<T> {
         this.mappedName = mappedName;
     }
 
-    void setMappedType(String mappedType) {
+    void setMappedType(DataType mappedType) {
         this.mappedType = mappedType;
     }
 

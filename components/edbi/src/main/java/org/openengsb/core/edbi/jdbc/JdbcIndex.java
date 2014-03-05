@@ -19,6 +19,7 @@ package org.openengsb.core.edbi.jdbc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
@@ -36,7 +37,7 @@ public class JdbcIndex<T> implements Index<T> {
     private String name;
     private String headTableName;
     private String historyTableName;
-    private Collection<IndexField<?>> fields;
+    private List<IndexField<?>> fields;
 
     private ClassLoader classLoader;
 
@@ -75,7 +76,7 @@ public class JdbcIndex<T> implements Index<T> {
     }
 
     @Override
-    public Collection<IndexField<?>> getFields() {
+    public List<IndexField<?>> getFields() {
         return fields;
     }
 

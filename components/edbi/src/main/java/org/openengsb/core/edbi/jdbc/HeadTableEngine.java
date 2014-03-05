@@ -105,7 +105,7 @@ public class HeadTableEngine extends AbstractTableEngine {
             JdbcIndexField<?> jdbcField = (JdbcIndexField<?>) field;
 
             jdbcField.setMappedName(column.getName());
-            jdbcField.setTypeName(column.getType());
+            jdbcField.setTypeName(column.getType().getName());
         }
     }
 }

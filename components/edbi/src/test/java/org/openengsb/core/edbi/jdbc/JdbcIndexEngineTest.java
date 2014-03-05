@@ -25,7 +25,9 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Types;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,6 +40,7 @@ import org.openengsb.core.edbi.api.IndexNameTranslator;
 import org.openengsb.core.edbi.api.IndexNotFoundException;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.models.TestModel;
 
 public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
@@ -59,10 +62,10 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
     public void setUp() throws Exception {
         // Type Map
         TypeMap typeMap = mock(TypeMap.class);
-        when(typeMap.getType(String.class)).thenReturn("LONGVARCHAR");
-        when(typeMap.getType(Integer.class)).thenReturn("INTEGER");
-        when(typeMap.getType(Long.class)).thenReturn("INTEGER");
-        when(typeMap.getType(Date.class)).thenReturn("TIMESTAMP");
+        when(typeMap.getType(String.class)).thenReturn(new DataType(Types.LONGVARCHAR, "LONGVARCHAR"));
+        when(typeMap.getType(Integer.class)).thenReturn(new DataType(Types.INTEGER, "INTEGER"));
+        when(typeMap.getType(Long.class)).thenReturn(new DataType(Types.BIGINT, "LONG"));
+        when(typeMap.getType(Date.class)).thenReturn(new DataType(Types.TIMESTAMP, "TIMESTAMP"));
 
         // Translators
         IndexNameTranslator headIndexNameTranslator = new IndexNameTranslator() {
@@ -172,8 +175,39 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
         assertEquals(TestModel.class, index.getModelClass());
         assertEquals("INDEX_HEAD", index.getHeadTableName());
         assertEquals("INDEX_HISTORY", index.getHistoryTableName());
+    }
+
+    @Test
+    public void getIndex_returnsCorrectFields() throws Exception {
+        indexEngine.createIndex(TestModel.class);
+
+        Index<?> index = indexEngine.getIndex(TestModel.class);
 
         assertEquals(3, index.getFields().size());
+
+        Iterator<IndexField<?>> iterator = index.getFields().iterator();
+        JdbcIndexField<?> field;
+
+        field = (JdbcIndexField<?>) iterator.next();
+        assertEquals("compositeModel", field.getName());
+        assertEquals("COMPOSITEMODEL", field.getMappedName());
+        assertEquals("LONGVARCHAR", field.getMappedType().getName());
+        assertEquals(Types.LONGVARCHAR, field.getMappedType().getType());
+        assertEquals(0, field.getMappedType().getScale());
+
+        field = (JdbcIndexField<?>) iterator.next();
+        assertEquals("testInteger", field.getName());
+        assertEquals("TESTINTEGER", field.getMappedName());
+        assertEquals("INTEGER", field.getMappedType().getName());
+        assertEquals(Types.INTEGER, field.getMappedType().getType());
+        assertEquals(0, field.getMappedType().getScale());
+
+        field = (JdbcIndexField<?>) iterator.next();
+        assertEquals("testId", field.getName());
+        assertEquals("TESTID", field.getMappedName());
+        assertEquals("LONGVARCHAR", field.getMappedType().getName());
+        assertEquals(Types.LONGVARCHAR, field.getMappedType().getType());
+        assertEquals(0, field.getMappedType().getScale());
     }
 
     @Test

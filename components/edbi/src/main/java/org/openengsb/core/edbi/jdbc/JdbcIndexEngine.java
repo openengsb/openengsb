@@ -37,6 +37,10 @@ import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexNotFoundException;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.names.ClassNameIndexTranslator;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -164,7 +168,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     protected void persistFields(final JdbcIndex<?> index) {
-        String sql = "INSERT INTO `INDEX_FIELD_INFORMATION` VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `INDEX_FIELD_INFORMATION` VALUES (?, ?, ?, ?, ?, ?, ?)";
         Collection<IndexField<?>> fields = index.getFields();
 
         jdbc().batchUpdate(sql, fields, fields.size(), new ParameterizedPreparedStatementSetter<IndexField<?>>() {
@@ -174,7 +178,11 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
                 ps.setObject(2, field.getName());
                 ps.setObject(3, field.getType().getCanonicalName());
                 ps.setObject(4, field.getMappedName());
-                ps.setObject(5, field.getMappedType());
+
+                DataType type = (DataType) field.getMappedType();
+                ps.setObject(5, type.getType());
+                ps.setObject(6, type.getName());
+                ps.setObject(7, type.getScale());
             }
         });
     }
@@ -224,10 +232,19 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
                     field.setName(rs.getString("NAME"));
                     field.setTypeName(rs.getString("TYPE"));
                     field.setMappedName(rs.getString("MAPPED_NAME"));
-                    field.setMappedType(rs.getString("MAPPED_TYPE"));
+                    field.setMappedType(mapDataType(rs));
 
                     return field;
                 }
+                
+                private DataType mapDataType(ResultSet rs) throws SQLException {
+                    int type = rs.getInt("MAPPED_TYPE");
+                    String name = rs.getString("MAPPED_TYPE_NAME");
+                    int scale = rs.getInt("MAPPED_TYPE_SCALE");
+                    
+                    return new DataType(type, name, scale);
+                }
+                
             }, index.getName());
         } catch (EmptyResultDataAccessException e) {
             LOG.warn("Could not find any fields for index " + index.getName());

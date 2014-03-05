@@ -89,4 +89,29 @@ public class DataType {
     public void setScale(int scale) {
         this.scale = scale;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DataType dataType = (DataType) o;
+
+        if (scale != dataType.scale) {
+            return false;
+        } else if (type != dataType.type) {
+            return false;
+        } else if (name == null) {
+            if (dataType.name != null) {
+                return false;
+            }
+        } else if (!name.equals(dataType.name)) {
+            return false;
+        }
+
+        return true;
+    }
 }

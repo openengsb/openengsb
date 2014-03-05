@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,8 @@ import org.openengsb.core.edbi.api.IndexFieldNameTranslator;
 import org.openengsb.core.edbi.api.IndexNameTranslator;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
+import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.models.CompositeTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
@@ -73,10 +76,10 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
 
         // Type Map
         TypeMap typeMap = mock(TypeMap.class);
-        when(typeMap.getType(String.class)).thenReturn("LONGVARCHAR");
-        when(typeMap.getType(Integer.class)).thenReturn("INTEGER");
-        when(typeMap.getType(Long.class)).thenReturn("INTEGER");
-        when(typeMap.getType(Date.class)).thenReturn("TIMESTAMP");
+        when(typeMap.getType(String.class)).thenReturn(new DataType(Types.LONGNVARCHAR, "LONGVARCHAR"));
+        when(typeMap.getType(Integer.class)).thenReturn(new DataType(Types.INTEGER, "INTEGER"));
+        when(typeMap.getType(Long.class)).thenReturn(new DataType(Types.BIGINT, "LONG"));
+        when(typeMap.getType(Date.class)).thenReturn(new DataType(Types.TIMESTAMP, "TIMESTAMP"));
 
         // Translators (mockito 1.8.5 has a bug with overloading generics)
         IndexNameTranslator indexNameTranslatorStub = new IndexNameTranslator() {
@@ -125,7 +128,7 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
 
         assertEquals("HEAD_TABLE", testIndex.getHeadTableName());
 
-        List<IndexField<?>> fields = (List) testIndex.getFields();
+        List<IndexField<?>> fields = testIndex.getFields();
         assertEquals("TESTID", fields.get(0).getMappedName());
         assertEquals("TESTINTEGER", fields.get(1).getMappedName());
         assertEquals("COMPOSITEMODEL", fields.get(2).getMappedName());

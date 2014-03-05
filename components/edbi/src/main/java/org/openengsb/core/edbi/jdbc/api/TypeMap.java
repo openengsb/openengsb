@@ -31,11 +31,4 @@ public interface TypeMap {
      */
     DataType getType(Class<?> javaType);
 
-    /**
-     * Get the mapped Java type for the given SQL type.
-     * 
-     * @param sqlType the SQL type
-     * @return the mapped Java type
-     */
-    Class<?> getType(DataType sqlType);
 }

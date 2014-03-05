@@ -6,10 +6,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Types;
+
 /**
  * TableElementCompilerTest
  */
 public class TableElementCompilerTest {
+
+    private static DataType INT = new DataType(Types.INTEGER, "INT");
+    private static DataType VARCHAR = new DataType(Types.LONGNVARCHAR, "VARCHAR");
+    private static DataType BOOL = new DataType(Types.BOOLEAN, "BOOL");
+
     @Before
     public void setUp() throws Exception {
 
@@ -29,7 +36,7 @@ public class TableElementCompilerTest {
 
     @Test
     public void toSql_withSingleColumn_returnsCorrectSql() throws Exception {
-        Table table = new Table("FOO", new Column("COL", "VARCHAR"));
+        Table table = new Table("FOO", new Column("COL", VARCHAR));
 
         compileAndAssert("COL VARCHAR", table);
     }
@@ -37,7 +44,7 @@ public class TableElementCompilerTest {
     @Test
     public void toSql_withMultipleColumns_returnsCorrectSql() throws Exception {
         Table table =
-            new Table("FOO", new Column("COL", "VARCHAR"), new Column("COL2", "INT"), new Column("COL3", "BOOL"));
+            new Table("FOO", new Column("COL", VARCHAR), new Column("COL2", INT), new Column("COL3", BOOL));
 
         compileAndAssert("COL VARCHAR,COL2 INT,COL3 BOOL", table);
     }
@@ -45,36 +52,36 @@ public class TableElementCompilerTest {
     @Test
     public void toSql_withColumnsThatContainsOptions_returnsCorrectSql() throws Exception {
         Table table =
-            new Table("FOO", new Column("COL", "VARCHAR", Column.Option.NOT_NULL), new Column("COL2", "VARCHAR",
-                Column.Option.NULL), new Column("COL3", "INT", Column.Option.AUTO_INCREMENT));
+            new Table("FOO", new Column("COL", VARCHAR, Column.Option.NOT_NULL), new Column("COL2", VARCHAR,
+                Column.Option.NULL), new Column("COL3", INT, Column.Option.AUTO_INCREMENT));
 
         compileAndAssert("COL VARCHAR NOT NULL,COL2 VARCHAR,COL3 INT AUTO_INCREMENT", table);
     }
 
     @Test
     public void toSql_withUniqueConstraint_returnsCorrectSql() throws Exception {
-        Table table = new Table("FOO", new Column("A", "INT"), new Column("B", "INT"), new UniqueConstraint("A"));
+        Table table = new Table("FOO", new Column("A", INT), new Column("B", INT), new UniqueConstraint("A"));
 
         compileAndAssert("A INT,B INT,UNIQUE (A)", table);
     }
 
     @Test
     public void toSql_withMultiColumnConstraint_returnsCorrectSql() throws Exception {
-        Table table = new Table("FOO", new Column("A", "INT"), new Column("B", "INT"), new UniqueConstraint("A", "B"));
+        Table table = new Table("FOO", new Column("A", INT), new Column("B", INT), new UniqueConstraint("A", "B"));
 
         compileAndAssert("A INT,B INT,UNIQUE (A,B)", table);
     }
 
     @Test
     public void toSql_withPrimaryKey_returnsCorrectSql() throws Exception {
-        Table table = new Table("FOO", new Column("A", "INT"), new PrimaryKeyConstraint("A"));
+        Table table = new Table("FOO", new Column("A", INT), new PrimaryKeyConstraint("A"));
 
         compileAndAssert("A INT,PRIMARY KEY (A)", table);
     }
 
     @Test
     public void toSql_withForeignKey_returnsCorrectSql() throws Exception {
-        Table table = new Table("FOO", new Column("A", "INT"), new ReferentialConstraint("A", "R", "B"));
+        Table table = new Table("FOO", new Column("A", INT), new ReferentialConstraint("A", "R", "B"));
 
         compileAndAssert("A INT,(A) REFERENCES R (B)", table);
     }
