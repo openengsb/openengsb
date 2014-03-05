@@ -69,4 +69,19 @@ public class Table {
             element.accept(visitor);
         }
     }
+
+    public ColumnSet getColumns() {
+        final ColumnSet columns = new ColumnSet();
+
+        accept(new ColumnVisitor() {
+
+            @Override
+            protected void onVisit(Column column) {
+                columns.add(column);
+            }
+        });
+
+        return columns;
+    }
+
 }

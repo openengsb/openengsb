@@ -24,13 +24,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 import org.openengsb.core.edbi.api.EDBIndexException;
 import org.openengsb.core.edbi.api.Index;
+import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexEngine;
 import org.openengsb.core.edbi.api.IndexExistsException;
 import org.openengsb.core.edbi.api.IndexField;
@@ -99,7 +100,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Index<T> getIndex(Class<T> model) throws IndexNotFoundException {
+    public <T> JdbcIndex<T> getIndex(Class<T> model) throws IndexNotFoundException {
         if (!indexExists(model)) {
             throw new IndexNotFoundException("Index for model " + model.getSimpleName() + " does not exist");
         }
@@ -119,7 +120,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     @Override
-    public Index<?> getIndex(String name) throws IndexNotFoundException {
+    public JdbcIndex<?> getIndex(String name) throws IndexNotFoundException {
         if (!indexExists(name)) {
             throw new IndexNotFoundException("Index " + name + " does not exist");
         }
@@ -140,10 +141,22 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     @Override
-    public void merge(EDBCommit commit) throws EDBIndexException {
-        // each model in the EDB commit should already have an index mapped to it
-        // resolve commit and build an EDBICommit, pass it to the schema mapper
-        // schemaMapper.merge(commit);
+    public void commit(IndexCommit commit) throws EDBIndexException {
+        // TODO: transactional?
+
+        Set<Class<?>> modelClasses = commit.getModelClasses();
+
+        for (Class<?> modelClass : modelClasses) {
+            if (!indexExists(modelClass)) {
+                createIndex(modelClass);
+            }
+
+            JdbcIndex<?> index = getIndex(modelClass);
+
+            schemaMapper.execute(new InsertOperation(commit, index, commit.getInserts().get(modelClass)));
+            schemaMapper.execute(new UpdateOperation(commit, index, commit.getUpdates().get(modelClass)));
+            schemaMapper.execute(new DeleteOperation(commit, index, commit.getDeletes().get(modelClass)));
+        }
     }
 
     protected synchronized boolean existsInDb(String name) {

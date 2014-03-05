@@ -158,6 +158,17 @@ public final class Introspector {
     }
 
     /**
+     * Checks whether the given object is a OpenEngSBModel (i.e. is either assignable by OpenEngSBModel or has the Model
+     * annotation.
+     * 
+     * @param object the object to check
+     * @return true if the object is a model
+     */
+    public static boolean isModel(Object object) {
+        return isModelClass(object.getClass());
+    }
+
+    /**
      * Checks whether the given class is a OpenEngSBModel class (i.e. is either assignable by OpenEngSBModel or has the
      * Model annotation.
      * 

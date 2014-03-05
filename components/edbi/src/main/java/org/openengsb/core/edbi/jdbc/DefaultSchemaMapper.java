@@ -16,9 +16,11 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
-import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.api.TableEngine;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 
 /**
@@ -73,8 +75,21 @@ public class DefaultSchemaMapper implements SchemaMapper {
     }
 
     @Override
-    public void merge(EDBCommit commit) {
-        // TODO
+    public void execute(InsertOperation operation) {
+        headTableEngine.execute(operation);
+        historyTableEngine.execute(operation);
+    }
+
+    @Override
+    public void execute(UpdateOperation operation) {
+        headTableEngine.execute(operation);
+        historyTableEngine.execute(operation);
+    }
+
+    @Override
+    public void execute(DeleteOperation operation) {
+        headTableEngine.execute(operation);
+        historyTableEngine.execute(operation);
     }
 
 }

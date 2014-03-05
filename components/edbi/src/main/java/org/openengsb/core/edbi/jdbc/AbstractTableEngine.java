@@ -24,10 +24,14 @@ import javax.sql.DataSource;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.NameTranslator;
+import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableEngine;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TableFactory;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.sql.TableElementCompiler;
 
@@ -65,6 +69,22 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
     }
 
     @Override
+    public Table get(JdbcIndex<?> index) {
+        if (!exists(index)) {
+            throw new NoSuchTableException("Table for index " + index.getName() + " does not exist");
+        }
+
+        Table table = registry.get(index);
+
+        if (table == null) {
+            table = getTableFactory().create(index); // TODO: proper load function
+            registry.put(index, table);
+        }
+
+        return table;
+    }
+
+    @Override
     public Table create(JdbcIndex<?> index) {
         Table table = getTableFactory().create(index);
 
@@ -85,7 +105,25 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
 
     @Override
     public void drop(JdbcIndex<?> index) {
-        // TODO
+        // TODO: drop(JdbcIndex<?> index)
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void execute(InsertOperation operation) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void execute(UpdateOperation operation) {
+        // TODO: execute(UpdateOperation operation)
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void execute(DeleteOperation operation) {
+        // TODO: execute(DeleteOperation operation)
+        throw new UnsupportedOperationException();
     }
 
     protected abstract TableFactory getTableFactory();

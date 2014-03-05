@@ -16,10 +16,14 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.NameTranslator;
@@ -28,6 +32,7 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.names.PrependingNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
@@ -43,11 +48,8 @@ public class HeadTableEngine extends AbstractTableEngine {
     private HeadTableFactory tableFactory;
 
     public HeadTableEngine(DataSource dataSource, TypeMap typeMap) {
-        this(dataSource, typeMap, new PrependingNameTranslator<>(new SQLIndexNameTranslator(), TABLE_PREFIX));
-    }
-
-    public HeadTableEngine(DataSource dataSource, TypeMap typeMap, NameTranslator<Index<?>> indexNameTranslator) {
-        this(dataSource, typeMap, indexNameTranslator, new SQLIndexFieldNameTranslator());
+        this(dataSource, typeMap, new PrependingNameTranslator<>(new SQLIndexNameTranslator(), TABLE_PREFIX),
+            new SQLIndexFieldNameTranslator());
     }
 
     public HeadTableEngine(DataSource dataSource, TypeMap typeMap, NameTranslator<Index<?>> indexNameTranslator,
@@ -61,6 +63,24 @@ public class HeadTableEngine extends AbstractTableEngine {
         super(dataSource, typeMap, indexNameTranslator, indexFieldNameTranslator);
 
         this.tableFactory = tableFactory;
+    }
+
+    @Override
+    public void execute(InsertOperation operation) {
+        List<OpenEngSBModel> models = operation.getModels();
+        JdbcIndex<?> index = operation.getIndex();
+        Date timestamp = operation.getCommit().getTimestamp();
+
+        List<IndexRecord> records = new ArrayList<>(models.size());
+        for (OpenEngSBModel model : models) {
+            IndexRecord record = new IndexRecord(index, model);
+
+            record.addValue("REV_CREATED", timestamp, Types.TIMESTAMP);
+        }
+
+        Table table = get(index);
+
+        insert(table, records);
     }
 
     @Override

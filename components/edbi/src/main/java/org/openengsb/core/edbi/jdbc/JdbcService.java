@@ -17,14 +17,19 @@
 
 package org.openengsb.core.edbi.jdbc;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /**
- * JdbcService holds a DataSource and provides several protected helper methods for spring-jdbc.
+ * JdbcService holds a DataSource and provides several helper methods for spring-jdbc.
  */
 public class JdbcService {
     private DataSource dataSource;
@@ -52,27 +57,27 @@ public class JdbcService {
         return jdbcn;
     }
 
-    protected <T> T queryForObject(String sql, Class<T> type) {
+    public <T> T queryForObject(String sql, Class<T> type) {
         return jdbc().queryForObject(sql, type);
     }
 
-    protected <T> T queryForObject(String sql, Class<T> type, Object... args) {
+    public <T> T queryForObject(String sql, Class<T> type, Object... args) {
         return jdbc().queryForObject(sql, type, args);
     }
 
-    protected Boolean queryForBoolean(String sql, Object... args) {
+    public Boolean queryForBoolean(String sql, Object... args) {
         return queryForObject(sql, Boolean.class, args);
     }
 
-    protected long count(String table) {
+    public long count(String table) {
         return queryForObject("SELECT COUNT(*) FROM " + table, Long.class);
     }
 
-    protected long count(String table, String where, Object... args) {
+    public long count(String table, String where, Object... args) {
         return queryForObject("SELECT COUNT(*) FROM " + table + " WHERE " + where, Long.class, args);
     }
 
-    protected int insert(String table, String columns, Object... args) {
+    public int insert(String table, String columns, Object... args) {
         String sql =
             String.format("INSERT INTO `%s` (%s) VALUES (%s)", table, columns,
                 StringUtils.repeat("?", ",", args.length));
@@ -80,14 +85,28 @@ public class JdbcService {
         return jdbc().update(sql, args);
     }
 
-    protected int insert(String table, String[] columns, Object[] args) {
+    public int insert(String table, String[] columns, Object[] args) {
         return insert(table, StringUtils.join(columns, ","), args);
     }
 
-    protected int insert(String table, Object... args) {
+    public int insert(String table, Object... args) {
         String sql = String.format("INSERT INTO `%s` VALUES (%s)", table, StringUtils.repeat("?", ",", args.length));
 
         return jdbc().update(sql, args);
+    }
+
+    public int[] insert(String table, Collection<String> columns, SqlParameterSource[] records) {
+        String columnList = StringUtils.join(columns, ",");
+        String placeholders = ":" + StringUtils.join(columns, ",:");
+        String sql = String.format("INSERT INTO `%s` (%s) VALUES (%s)", table, columnList, placeholders);
+
+        return jdbcn().batchUpdate(sql, records);
+    }
+
+    public int[] insert(Table table, List<IndexRecord> records) {
+        final List<String> columns = table.getColumns().getColumnNames();
+
+        return insert(table.getName(), columns, records.toArray(new SqlParameterSource[records.size()]));
     }
 
 }

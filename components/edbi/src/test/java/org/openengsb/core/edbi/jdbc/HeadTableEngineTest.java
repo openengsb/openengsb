@@ -37,6 +37,7 @@ import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexFieldNameTranslator;
 import org.openengsb.core.edbi.api.IndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
@@ -111,7 +112,25 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    public void exists_afterCreate_returnsTrue() throws Exception {
+        engine.create(testIndex);
+
+        assertTrue(engine.exists(testIndex));
+    }
+
+    @Test(expected = NoSuchTableException.class)
+    public void get_onNonExistingIndex_throwsException() throws Exception {
+        engine.get(testIndex);
+    }
+
+    @Test
+    public void get_onExistingIndex_returnsCorrectTable() throws Exception {
+        Table t = engine.create(testIndex);
+
+        assertEquals(t, engine.get(testIndex));
+    }
+
+    @Test
     public void create_works() throws Exception {
         engine.create(testIndex);
 
@@ -143,13 +162,6 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
         }
 
         engine.create(testIndex);
-    }
-
-    @Test
-    public void exists_afterCreate_returnsTrue() throws Exception {
-        engine.create(testIndex);
-
-        assertTrue(engine.exists(testIndex));
     }
 
 }
