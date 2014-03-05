@@ -16,8 +16,10 @@
  */
 package org.openengsb.core.edbi.jdbc.api;
 
-import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edbi.jdbc.JdbcIndex;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 
 /**
  * Facade used by the IndexEngine towards the EDBI data schema.
@@ -46,9 +48,23 @@ public interface SchemaMapper {
     void drop(JdbcIndex<?> index);
 
     /**
-     * Merge the given EDBCommit into the data schema.
+     * Executes an InsertOperation.
      * 
-     * @param commit the commit to merge
+     * @param operation the operation to execute.
      */
-    void merge(EDBCommit commit);
+    void execute(InsertOperation operation);
+
+    /**
+     * Executes an UpdateOperation.
+     * 
+     * @param operation the operation to execute.
+     */
+    void execute(UpdateOperation operation);
+
+    /**
+     * Executes an DeleteOperation.
+     * 
+     * @param operation the operation to execute.
+     */
+    void execute(DeleteOperation operation);
 }

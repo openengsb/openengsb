@@ -17,6 +17,9 @@
 package org.openengsb.core.edbi.jdbc.api;
 
 import org.openengsb.core.edbi.jdbc.JdbcIndex;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 
 /**
@@ -33,6 +36,15 @@ public interface TableEngine {
     boolean exists(JdbcIndex<?> index);
 
     /**
+     * Returns the Table for the given Index.
+     * 
+     * @param index the index
+     * @return the table for the given index
+     * @throws NoSuchTableException if no table for the index exists
+     */
+    Table get(JdbcIndex<?> index) throws NoSuchTableException;
+
+    /**
      * Creates a new table for the given index.
      * 
      * @param index the index to create the table for
@@ -45,11 +57,28 @@ public interface TableEngine {
      * Drops the table mapped to the given index.
      * 
      * @param index the index to drop the table for
+     * @throws NoSuchTableException if no table for the index exists
      */
-    void drop(JdbcIndex<?> index);
+    void drop(JdbcIndex<?> index) throws NoSuchTableException;
 
-    // void insert();
-    // void update();
-    // void delete();
+    /**
+     * Executes an InsertOperation.
+     * 
+     * @param operation the operation to execute.
+     */
+    void execute(InsertOperation operation);
 
+    /**
+     * Executes an UpdateOperation.
+     * 
+     * @param operation the operation to execute.
+     */
+    void execute(UpdateOperation operation);
+
+    /**
+     * Executes an DeleteOperation.
+     * 
+     * @param operation the operation to execute.
+     */
+    void execute(DeleteOperation operation);
 }
