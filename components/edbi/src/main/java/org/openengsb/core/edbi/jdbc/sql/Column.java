@@ -16,15 +16,11 @@
  */
 package org.openengsb.core.edbi.jdbc.sql;
 
-/**
- * Column
- */
-
 import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
- * Represents a column of a Table. It consists of a name (title) and a data type. As both are represented only by
+ * Represents a column of a Table. It consists of a name (title) and a data type name. As both are represented only by
  * String, they should satisfy valid SQL names depending on the underlying SQL implementation they are used for.
  */
 public class Column implements TableElement {
@@ -44,7 +40,7 @@ public class Column implements TableElement {
     /**
      * The data type of the column
      */
-    private String type;
+    private DataType type;
 
     /**
      * The {@link org.openengsb.core.edbi.jdbc.sql.Column.Option} flags for this column
@@ -52,23 +48,23 @@ public class Column implements TableElement {
     private EnumSet<Option> options;
 
     /**
-     * Creates a new Column instance with the given name and type.
+     * Creates a new Column instance with the given name and type name.
      * 
      * @param name the name of the column
-     * @param type the SQL data type name of the column
+     * @param type the data type of the column
      */
-    public Column(String name, String type) {
+    public Column(String name, DataType type) {
         this(name, type, EnumSet.noneOf(Option.class));
     }
 
     /**
-     * Creates a new Column instance with the given name, type and options.
+     * Creates a new Column instance with the given name, type name and options.
      * 
      * @param name the name of the column
-     * @param type the SQL data type name of the column
+     * @param type the data type of the column
      * @param options column options
      */
-    public Column(String name, String type, Option... options) {
+    public Column(String name, DataType type, Option... options) {
         this(name, type, EnumSet.copyOf(Arrays.asList(options)));
     }
 
@@ -76,10 +72,10 @@ public class Column implements TableElement {
      * Creates a new Column instance with the given name, type and options.
      * 
      * @param name the name of the column
-     * @param type the SQL data type name of the column
+     * @param type the data type of the column
      * @param options column options
      */
-    protected Column(String name, String type, EnumSet<Option> options) {
+    public Column(String name, DataType type, EnumSet<Option> options) {
         this.name = name;
         this.type = type;
         this.options = options;
@@ -132,15 +128,8 @@ public class Column implements TableElement {
         return this;
     }
 
-    /**
-     * Sets the designated database native type of the column.
-     * 
-     * @param type the type
-     * @return this for chaining
-     */
-    public Column setType(String type) {
+    public void setType(DataType type) {
         this.type = type;
-        return this;
     }
 
     public boolean hasOption(Option option) {
@@ -155,7 +144,7 @@ public class Column implements TableElement {
         return name;
     }
 
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 

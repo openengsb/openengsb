@@ -82,7 +82,15 @@ public class TableElementCompiler implements TableElementVisitor {
 
         str.append(element.getName());
         str.append(" ");
-        str.append(element.getType());
+
+        DataType type = element.getType();
+        str.append(type.getName());
+
+        if (type.getScale() > 0) {
+            str.append("(");
+            str.append(Integer.toString(type.getScale()));
+            str.append(")");
+        }
 
         if (element.hasOption(Column.Option.NOT_NULL)) {
             str.append(" NOT NULL");

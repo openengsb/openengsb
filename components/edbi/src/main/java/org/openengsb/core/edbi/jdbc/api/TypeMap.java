@@ -16,6 +16,8 @@
  */
 package org.openengsb.core.edbi.jdbc.api;
 
+import org.openengsb.core.edbi.jdbc.sql.DataType;
+
 /**
  * Maps java types to database native data type names.
  */
@@ -27,7 +29,7 @@ public interface TypeMap {
      * @param javaType the Java type
      * @return the mapped sql type
      */
-    String getType(Class<?> javaType);
+    DataType getType(Class<?> javaType);
 
     /**
      * Get the mapped Java type for the given SQL type.
@@ -35,5 +37,5 @@ public interface TypeMap {
      * @param sqlType the SQL type
      * @return the mapped Java type
      */
-    Class<?> getType(String sqlType);
+    Class<?> getType(DataType sqlType);
 }
