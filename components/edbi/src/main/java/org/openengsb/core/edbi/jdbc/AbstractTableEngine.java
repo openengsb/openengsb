@@ -16,11 +16,14 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.NameTranslator;
@@ -116,14 +119,27 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
 
     @Override
     public void execute(UpdateOperation operation) {
-        // TODO: execute(UpdateOperation operation)
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void execute(DeleteOperation operation) {
-        // TODO: execute(DeleteOperation operation)
         throw new UnsupportedOperationException();
+    }
+
+    protected void execute(InsertOperation operation, IndexRecordCallback callback) {
+        JdbcIndex<?> index = operation.getIndex();
+        Table table = get(index);
+
+        List<OpenEngSBModel> models = operation.getModels();
+        List<IndexRecord> records = new ArrayList<>(models.size());
+        for (OpenEngSBModel model : models) {
+            IndexRecord record = new IndexRecord(index, model);
+            callback.call(record);
+            records.add(record);
+        }
+
+        insert(table, records);
     }
 
     protected abstract TableFactory getTableFactory();

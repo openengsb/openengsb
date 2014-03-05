@@ -114,4 +114,12 @@ public class DataType {
 
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        int result = type;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + scale;
+        return result;
+    }
 }

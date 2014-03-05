@@ -30,6 +30,7 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.names.PrependingNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
@@ -62,6 +63,11 @@ public class HistoryTableEngine extends AbstractTableEngine {
         super(dataSource, typeMap, indexNameTranslator, indexFieldNameTranslator);
 
         this.tableFactory = tableFactory;
+    }
+
+    @Override
+    public void execute(InsertOperation operation) {
+
     }
 
     @Override

@@ -16,20 +16,21 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
+import java.util.Map;
+
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edbi.api.IndexField;
-import org.openengsb.core.edbi.jdbc.JdbcIndex;
+import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.util.Introspector;
 import org.openengsb.core.edbi.jdbc.util.ModelUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-import java.util.Map;
-
 /**
-* IndexRecord
-*/
+ * Augmented version of a MapSqlParameterSource for a JdbcIndex and a respective value therein that provides spring-jdbc
+ * named template batch-update support.
+ */
 public class IndexRecord extends MapSqlParameterSource implements SqlParameterSource {
 
     private JdbcIndex<?> index;
@@ -51,12 +52,19 @@ public class IndexRecord extends MapSqlParameterSource implements SqlParameterSo
             String paramName = indexField.getMappedName();
             Object value = extractValue(indexField, entries.get(indexField.getName()));
 
+            if (indexField.getMappedType() instanceof DataType) {
+                registerSqlType(paramName, ((DataType) indexField.getMappedType()).getType());
+            }
             addValue(paramName, value);
         }
     }
 
     protected Object extractValue(IndexField<?> field, OpenEngSBModelEntry entry) {
         Object value = entry.getValue();
+
+        if (value == null) {
+            return null;
+        }
 
         if (Introspector.isModel(value)) {
             return ((OpenEngSBModel) value).retrieveInternalModelId();

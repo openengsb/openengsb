@@ -66,21 +66,13 @@ public class HeadTableEngine extends AbstractTableEngine {
     }
 
     @Override
-    public void execute(InsertOperation operation) {
-        List<OpenEngSBModel> models = operation.getModels();
-        JdbcIndex<?> index = operation.getIndex();
-        Date timestamp = operation.getCommit().getTimestamp();
-
-        List<IndexRecord> records = new ArrayList<>(models.size());
-        for (OpenEngSBModel model : models) {
-            IndexRecord record = new IndexRecord(index, model);
-
-            record.addValue("REV_CREATED", timestamp, Types.TIMESTAMP);
-        }
-
-        Table table = get(index);
-
-        insert(table, records);
+    public void execute(final InsertOperation operation) {
+        execute(operation, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
+            }
+        });
     }
 
     @Override

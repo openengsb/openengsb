@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -33,21 +34,21 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
+import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexFieldNameTranslator;
 import org.openengsb.core.edbi.api.IndexNameTranslator;
 import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
+import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.models.CompositeTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
-/**
- * HeadTableEngineTest
- */
 public class HeadTableEngineTest extends AbstractH2DatabaseTest {
 
     HeadTableEngine engine;
@@ -162,6 +163,46 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
         }
 
         engine.create(testIndex);
+    }
+
+    @Test
+    public void execute_insert_createsRecordsCorrectly() throws Exception {
+        engine.create(testIndex);
+
+        IndexCommit commit = mock(IndexCommit.class);
+        when(commit.getTimestamp()).thenReturn(new Date(42));
+        // TODO: mock entire commit
+
+        List<OpenEngSBModel> models = new ArrayList<>();
+
+        models.add(new TestModel("A", 42));
+        models.add(new TestModel("B", -42));
+
+        InsertOperation operation = new InsertOperation(commit, testIndex, models);
+
+        engine.execute(operation);
+
+        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+            assertTrue(rs.next());
+            assertEquals("A", rs.getString("TESTID"));
+            assertEquals(42, rs.getInt("TESTINTEGER"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+
+            assertTrue(rs.next());
+            assertEquals("B", rs.getString("TESTID"));
+            assertEquals(-42, rs.getInt("TESTINTEGER"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+
+            assertFalse(rs.next());
+        }
+    }
+
+    @Test(expected = NoSuchTableException.class)
+    public void execute_insert_onNonExistingIndex_throwsException() throws Exception {
+        IndexCommit commit = mock(IndexCommit.class);
+        when(commit.getTimestamp()).thenReturn(new Date(42));
+
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>()));
     }
 
 }
