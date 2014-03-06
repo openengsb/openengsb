@@ -43,6 +43,7 @@ import org.openengsb.core.edbi.api.IndexNameTranslator;
 import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
@@ -208,13 +209,15 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
         TestModel testModelA = new TestModel("A", 42);
         TestModel testModelB = new TestModel("B", -42);
 
-        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA, testModelB))));
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA,
+            testModelB))));
 
         testModelB.setTestInteger(43);
 
         IndexCommit updateCommit = mock(IndexCommit.class);
         when(updateCommit.getTimestamp()).thenReturn(new Date(84));
-        engine.execute(new UpdateOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA, testModelB))));
+        engine.execute(new UpdateOperation(updateCommit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(
+            testModelA, testModelB))));
 
         try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
             assertTrue(rs.next());
@@ -225,6 +228,35 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(43, rs.getInt("TESTINTEGER"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+
+            assertFalse(rs.next());
+        }
+    }
+
+    @Test
+    public void execute_delete_deletesRecordsCorrectly() throws Exception {
+        engine.create(testIndex);
+
+        IndexCommit commit = mock(IndexCommit.class);
+        when(commit.getTimestamp()).thenReturn(new Date(42));
+
+        TestModel testModelA = new TestModel("A", 42);
+        TestModel testModelB = new TestModel("B", -42);
+
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA,
+            testModelB))));
+
+        IndexCommit deleteCommit = mock(IndexCommit.class);
+        when(deleteCommit.getTimestamp()).thenReturn(new Date(84));
+
+        engine.execute(new DeleteOperation(deleteCommit, testIndex, new ArrayList<OpenEngSBModel>(Arrays
+            .asList(testModelB))));
+
+        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+            assertTrue(rs.next());
+            assertEquals("A", rs.getString("TESTID"));
+            assertEquals(42, rs.getInt("TESTINTEGER"));
             assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
 
             assertFalse(rs.next());

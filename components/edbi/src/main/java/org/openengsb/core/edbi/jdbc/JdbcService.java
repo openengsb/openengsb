@@ -108,7 +108,7 @@ public class JdbcService {
     public int[] insert(Table table, List<IndexRecord> records) {
         List<String> columns = table.getColumns().getColumnNames();
 
-        return insert(table.getName(), columns, records.toArray(new SqlParameterSource[records.size()]));
+        return insert(table.getName(), columns, toParameterSourceArray(records));
     }
 
     public int[] update(String table, Collection<String> columns, String whereClause, SqlParameterSource[] records) {
@@ -127,7 +127,23 @@ public class JdbcService {
         IndexRecord record = records.get(0);
         columns.retainAll(record.getValues().keySet());
 
-        return update(table.getName(), columns, whereClause, records.toArray(new SqlParameterSource[records.size()]));
+        return update(table.getName(), columns, whereClause, toParameterSourceArray(records));
+    }
+
+    public int[] delete(String table, String whereClause, SqlParameterSource[] records) {
+        String sql = String.format("DELETE FROM `%s` WHERE %s", table, whereClause);
+
+        return jdbcn().batchUpdate(sql, records);
+    }
+
+    public int[] delete(Table table, List<IndexRecord> records) {
+        String whereClause = makeWhereClause(table.getPrimaryKey());
+
+        return delete(table.getName(), whereClause, toParameterSourceArray(records));
+    }
+
+    protected SqlParameterSource[] toParameterSourceArray(List<? extends SqlParameterSource> list) {
+        return list.toArray(new SqlParameterSource[list.size()]);
     }
 
     protected String makeNamedSetClauseList(Collection<String> parameters) {

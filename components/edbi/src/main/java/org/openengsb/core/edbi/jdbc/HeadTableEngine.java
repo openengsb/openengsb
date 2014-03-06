@@ -16,7 +16,6 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
-import java.sql.Types;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -29,7 +28,7 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.names.PrependingNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
-import org.openengsb.core.edbi.jdbc.operation.IndexOperation;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
@@ -82,6 +81,11 @@ public class HeadTableEngine extends AbstractTableEngine {
                 record.addValue("REV_MODIFIED", operation.getCommit().getTimestamp());
             }
         });
+    }
+
+    @Override
+    public void execute(DeleteOperation operation) {
+        delete(get(operation.getIndex()), collectRecords(operation, null));
     }
 
     @Override
