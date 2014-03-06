@@ -27,6 +27,10 @@ import org.openengsb.core.edbi.jdbc.JdbcIndex;
  */
 public class InsertOperation extends IndexOperation {
 
+    public InsertOperation(IndexOperation other) {
+        this(other.getCommit(), other.getIndex(), other.getModels());
+    }
+
     public InsertOperation(IndexCommit commit, JdbcIndex<?> index, List<OpenEngSBModel> models) {
         super(commit, index, models);
     }

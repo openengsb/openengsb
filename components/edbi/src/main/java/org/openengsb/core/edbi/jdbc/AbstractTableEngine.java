@@ -147,6 +147,7 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
 
         for (OpenEngSBModel model : models) {
             IndexRecord record = new IndexRecord(index, model);
+
             if (callback != null) {
                 callback.call(record);
             }

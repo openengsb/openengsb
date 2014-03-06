@@ -18,6 +18,7 @@ package org.openengsb.core.edbi.jdbc;
 
 import static org.openengsb.core.edbi.jdbc.sql.Column.Option.AUTO_INCREMENT;
 
+import java.sql.Types;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -30,7 +31,9 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.names.PrependingNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
@@ -66,8 +69,40 @@ public class HistoryTableEngine extends AbstractTableEngine {
     }
 
     @Override
-    public void execute(InsertOperation operation) {
+    public void execute(final InsertOperation operation) {
+        execute(operation, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_OPERATION", "INSERT", Types.VARCHAR);
+            }
+        });
+    }
 
+    @Override
+    public void execute(UpdateOperation operation) {
+        final InsertOperation insert = new InsertOperation(operation);
+
+        execute(insert, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_MODIFIED", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_OPERATION", "UPDATE", Types.VARCHAR);
+            }
+        });
+    }
+
+    @Override
+    public void execute(DeleteOperation operation) {
+        final InsertOperation insert = new InsertOperation(operation);
+
+        execute(insert, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_MODIFIED", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_OPERATION", "DELETE", Types.VARCHAR);
+            }
+        });
     }
 
     @Override
@@ -88,6 +123,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
 
             table.addElement(new Column("REV_ID", getTypeMap().getType(Long.class), AUTO_INCREMENT));
             table.addElement(new Column("REV_CREATED", getTypeMap().getType(Date.class)));
+            table.addElement(new Column("REV_MODIFIED", getTypeMap().getType(Date.class)));
+            table.addElement(new Column("REV_OPERATION", getTypeMap().getType(String.class)));
             // TODO: more columns ...
         }
 
@@ -96,6 +133,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
             super.onAfterCreate(table, index);
 
             table.addElement(new PrimaryKeyConstraint("REV_ID"));
+
+            index.setHistoryTableName(table.getName());
         }
     }
 }
