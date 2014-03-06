@@ -40,9 +40,4 @@ public final class ModelUtils {
         return map;
     }
 
-    public static void writeInto(OpenEngSBModel model, Map<String, Object> map) {
-        for (OpenEngSBModelEntry entry : model.toOpenEngSBModelEntries()) {
-            map.put(entry.getKey(), entry.getValue());
-        }
-    }
 }

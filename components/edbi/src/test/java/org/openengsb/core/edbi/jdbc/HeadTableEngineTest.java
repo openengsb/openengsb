@@ -44,6 +44,7 @@ import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.models.CompositeTestModel;
@@ -191,6 +192,39 @@ public class HeadTableEngineTest extends AbstractH2DatabaseTest {
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(-42, rs.getInt("TESTINTEGER"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+
+            assertFalse(rs.next());
+        }
+    }
+
+    @Test
+    public void execute_update_updatesRecordsCorrectly() throws Exception {
+        engine.create(testIndex);
+
+        IndexCommit commit = mock(IndexCommit.class);
+        when(commit.getTimestamp()).thenReturn(new Date(42));
+
+        TestModel testModelA = new TestModel("A", 42);
+        TestModel testModelB = new TestModel("B", -42);
+
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA, testModelB))));
+
+        testModelB.setTestInteger(43);
+
+        IndexCommit updateCommit = mock(IndexCommit.class);
+        when(updateCommit.getTimestamp()).thenReturn(new Date(84));
+        engine.execute(new UpdateOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA, testModelB))));
+
+        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+            assertTrue(rs.next());
+            assertEquals("A", rs.getString("TESTID"));
+            assertEquals(42, rs.getInt("TESTINTEGER"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+
+            assertTrue(rs.next());
+            assertEquals("B", rs.getString("TESTID"));
+            assertEquals(43, rs.getInt("TESTINTEGER"));
             assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
 
             assertFalse(rs.next());

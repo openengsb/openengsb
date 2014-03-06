@@ -31,6 +31,7 @@ import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
 import org.openengsb.core.edbi.jdbc.operation.IndexOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
@@ -65,26 +66,27 @@ public class HeadTableEngine extends AbstractTableEngine {
 
     @Override
     public void execute(final InsertOperation operation) {
-        execute(operation, new HeadIndexRecordModifier(operation));
+        execute(operation, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_CREATED", operation.getCommit().getTimestamp());
+            }
+        });
+    }
+
+    @Override
+    public void execute(final UpdateOperation operation) {
+        execute(operation, new IndexRecordCallback() {
+            @Override
+            public void call(IndexRecord record) {
+                record.addValue("REV_MODIFIED", operation.getCommit().getTimestamp());
+            }
+        });
     }
 
     @Override
     protected TableFactory getTableFactory() {
         return tableFactory;
-    }
-
-    public static final class HeadIndexRecordModifier implements IndexRecordCallback {
-
-        private IndexOperation operation;
-
-        public HeadIndexRecordModifier(IndexOperation operation) {
-            this.operation = operation;
-        }
-
-        @Override
-        public void call(IndexRecord record) {
-            record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
-        }
     }
 
     public static final class HeadTableFactory extends AbstractTableFactory {
@@ -111,7 +113,7 @@ public class HeadTableEngine extends AbstractTableEngine {
 
             for (IndexField<?> field : index.getFields()) {
                 if (field.getName().equals(idProperty)) {
-                    table.addElement(new PrimaryKeyConstraint(field.getName()));
+                    table.addElement(new PrimaryKeyConstraint(field.getMappedName()));
                     break;
                 }
             }

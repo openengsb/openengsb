@@ -122,6 +122,11 @@ public class JdbcService {
         List<String> columns = table.getColumns().getColumnNames();
         String whereClause = makeWhereClause(table.getPrimaryKey());
 
+        // FIXME: find an elegant solution for a dynamic SET clause within an UPDATE statement for batch updates
+        // either column exclusions or find subsets of columns within the list of IndexRecords
+        IndexRecord record = records.get(0);
+        columns.retainAll(record.getValues().keySet());
+
         return update(table.getName(), columns, whereClause, records.toArray(new SqlParameterSource[records.size()]));
     }
 
