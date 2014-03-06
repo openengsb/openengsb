@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
+import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -52,6 +53,8 @@ public class JdbcServiceTest extends AbstractH2DatabaseTest {
 
         table =
             new Table("TEST", new Column("ID", new DataType("IDENTITY")), new Column("NAME", new DataType("VARCHAR")), new Column("AGE", new DataType("INT")));
+        table.addElement(new PrimaryKeyConstraint("ID"));
+
         jdbc.execute("CREATE TABLE `TEST` (ID IDENTITY PRIMARY KEY, NAME VARCHAR, AGE INT)");
     }
 
@@ -82,6 +85,33 @@ public class JdbcServiceTest extends AbstractH2DatabaseTest {
         assertEquals(2L, row.get("ID"));
         assertEquals("Ford", row.get("NAME"));
         assertNull(row.get("AGE"));
+    }
+
+    @Test
+    public void update_updatesRecordsCorrectly() throws Exception {
+        List<IndexRecord> records = getRecords();
+        service.insert(table, records);
+
+        records.get(0).addValue("ID", 1L, Types.BIGINT);
+        records.get(0).addValue("NAME", "Zaphod");
+
+        records.get(1).addValue("ID", 2L, Types.BIGINT);
+        records.get(1).addValue("AGE", 44, Types.INTEGER);
+
+        service.update(table, records);
+
+        List<Map<String, Object>> rows = jdbc.queryForList("SELECT * FROM `TEST`");
+        Map<String, Object> row;
+
+        row = rows.get(0);
+        assertEquals(1L, row.get("ID"));
+        assertEquals("Zaphod", row.get("NAME"));
+        assertEquals(42, row.get("AGE"));
+
+        row = rows.get(1);
+        assertEquals(2L, row.get("ID"));
+        assertEquals("Ford", row.get("NAME"));
+        assertEquals(44, row.get("AGE"));
     }
 
     private List<IndexRecord> getRecords() {

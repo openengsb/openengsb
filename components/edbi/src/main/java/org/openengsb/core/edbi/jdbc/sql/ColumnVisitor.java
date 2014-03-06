@@ -23,7 +23,7 @@ public abstract class ColumnVisitor implements TableElementVisitor {
 
     /**
      * Called when visiting a Column.
-     *
+     * 
      * @param column the column being visited
      */
     protected abstract void onVisit(Column column);

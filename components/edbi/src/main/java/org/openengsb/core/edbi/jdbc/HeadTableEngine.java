@@ -17,13 +17,10 @@
 package org.openengsb.core.edbi.jdbc;
 
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.NameTranslator;
@@ -32,6 +29,7 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.names.PrependingNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexFieldNameTranslator;
 import org.openengsb.core.edbi.jdbc.names.SQLIndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.operation.IndexOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
@@ -67,17 +65,26 @@ public class HeadTableEngine extends AbstractTableEngine {
 
     @Override
     public void execute(final InsertOperation operation) {
-        execute(operation, new IndexRecordCallback() {
-            @Override
-            public void call(IndexRecord record) {
-                record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
-            }
-        });
+        execute(operation, new HeadIndexRecordModifier(operation));
     }
 
     @Override
     protected TableFactory getTableFactory() {
         return tableFactory;
+    }
+
+    public static final class HeadIndexRecordModifier implements IndexRecordCallback {
+
+        private IndexOperation operation;
+
+        public HeadIndexRecordModifier(IndexOperation operation) {
+            this.operation = operation;
+        }
+
+        @Override
+        public void call(IndexRecord record) {
+            record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
+        }
     }
 
     public static final class HeadTableFactory extends AbstractTableFactory {

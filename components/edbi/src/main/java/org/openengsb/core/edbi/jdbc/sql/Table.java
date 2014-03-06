@@ -36,7 +36,7 @@ public class Table {
     }
 
     public Table(String name, TableElement... elements) {
-        this(name, Arrays.asList(elements));
+        this(name, new ArrayList<>(Arrays.asList(elements)));
     }
 
     public Table(String name, List<TableElement> elements) {
@@ -68,6 +68,16 @@ public class Table {
         for (TableElement element : elements) {
             element.accept(visitor);
         }
+    }
+
+    public PrimaryKeyConstraint getPrimaryKey() {
+        for (TableElement element : elements) {
+            if (element instanceof PrimaryKeyConstraint) {
+                return (PrimaryKeyConstraint) element;
+            }
+        }
+
+        return null;
     }
 
     public ColumnSet getColumns() {

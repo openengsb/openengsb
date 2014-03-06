@@ -92,7 +92,7 @@ public abstract class AbstractTableFactory implements TableFactory {
             DataType type = getTypeMap().getType(String.class);
             ((JdbcIndexField) field).setMappedType(type);
 
-            Column column = new Column(getColumnNameTranslator().translate(field),type);
+            Column column = new Column(getColumnNameTranslator().translate(field), type);
             table.addElement(column); // will hold the models OID
 
             onAfterFieldVisit(table, column, field);

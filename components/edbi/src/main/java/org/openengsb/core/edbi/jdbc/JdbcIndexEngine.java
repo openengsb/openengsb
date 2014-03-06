@@ -249,15 +249,15 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
                     return field;
                 }
-                
+
                 private DataType mapDataType(ResultSet rs) throws SQLException {
                     int type = rs.getInt("MAPPED_TYPE");
                     String name = rs.getString("MAPPED_TYPE_NAME");
                     int scale = rs.getInt("MAPPED_TYPE_SCALE");
-                    
+
                     return new DataType(type, name, scale);
                 }
-                
+
             }, index.getName());
         } catch (EmptyResultDataAccessException e) {
             LOG.warn("Could not find any fields for index " + index.getName());

@@ -33,6 +33,7 @@ import org.openengsb.core.edbi.jdbc.api.TableExistsException;
 import org.openengsb.core.edbi.jdbc.api.TableFactory;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
+import org.openengsb.core.edbi.jdbc.operation.IndexOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
@@ -128,18 +129,29 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
     }
 
     protected void execute(InsertOperation operation, IndexRecordCallback callback) {
-        JdbcIndex<?> index = operation.getIndex();
-        Table table = get(index);
+        Table table = get(operation.getIndex());
 
+        insert(table, collectRecords(operation, callback));
+    }
+
+    protected void execute(UpdateOperation operation, IndexRecordCallback callback) {
+        Table table = get(operation.getIndex());
+
+        update(table, collectRecords(operation, callback));
+    }
+
+    protected List<IndexRecord> collectRecords(IndexOperation operation, IndexRecordCallback callback) {
+        JdbcIndex<?> index = operation.getIndex();
         List<OpenEngSBModel> models = operation.getModels();
         List<IndexRecord> records = new ArrayList<>(models.size());
+
         for (OpenEngSBModel model : models) {
             IndexRecord record = new IndexRecord(index, model);
             callback.call(record);
             records.add(record);
         }
 
-        insert(table, records);
+        return records;
     }
 
     protected abstract TableFactory getTableFactory();

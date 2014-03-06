@@ -18,11 +18,13 @@
 package org.openengsb.core.edbi.jdbc;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -104,9 +106,51 @@ public class JdbcService {
     }
 
     public int[] insert(Table table, List<IndexRecord> records) {
-        final List<String> columns = table.getColumns().getColumnNames();
+        List<String> columns = table.getColumns().getColumnNames();
 
         return insert(table.getName(), columns, records.toArray(new SqlParameterSource[records.size()]));
+    }
+
+    public int[] update(String table, Collection<String> columns, String whereClause, SqlParameterSource[] records) {
+        String setClauseList = makeNamedSetClauseList(columns);
+        String sql = String.format("UPDATE `%s` SET %s WHERE %s", table, setClauseList, whereClause);
+
+        return jdbcn().batchUpdate(sql, records);
+    }
+
+    public int[] update(Table table, List<IndexRecord> records) {
+        List<String> columns = table.getColumns().getColumnNames();
+        String whereClause = makeWhereClause(table.getPrimaryKey());
+
+        return update(table.getName(), columns, whereClause, records.toArray(new SqlParameterSource[records.size()]));
+    }
+
+    protected String makeNamedSetClauseList(Collection<String> parameters) {
+        return joinNamedParameters(parameters, "=", ",");
+    }
+
+    protected String makeWhereClause(PrimaryKeyConstraint key) {
+        return joinNamedParameters(key.getColumns(), "=", " AND ");
+    }
+
+    protected String joinNamedParameters(Collection<String> parameters, String glue, String delimiter) {
+        StringBuilder str = new StringBuilder(parameters.size() * 20);
+
+        Iterator<String> iterator = parameters.iterator();
+        while (iterator.hasNext()) {
+            String parameter = iterator.next();
+
+            str.append(parameter);
+            str.append(glue);
+            str.append(" :");
+            str.append(parameter);
+
+            if (iterator.hasNext()) {
+                str.append(delimiter);
+            }
+        }
+
+        return str.toString();
     }
 
 }
