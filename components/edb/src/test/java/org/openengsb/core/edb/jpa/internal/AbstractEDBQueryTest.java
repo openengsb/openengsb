@@ -135,7 +135,8 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
 
         long time3 = db.commit(ci);
 
-        List<EDBObject> result = dataGenerator.query(QueryRequest.query("pre:KeyB", "pre:Value A 1").setTimestamp(time2));
+        List<EDBObject> result = dataGenerator.query(QueryRequest.query("pre:KeyB", 
+                "pre:Value A 1").setTimestamp(time2));
 
         boolean b1 = false;
         boolean b2 = false;
@@ -439,11 +440,14 @@ public abstract class AbstractEDBQueryTest extends AbstractEDBTest {
                 .caseInsensitive().wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
-        result = dataGenerator.query(QueryRequest.query("test", "this is a % test").caseInsensitive().wildcardUnaware());
+        result = dataGenerator.query(QueryRequest.query("test", 
+                "this is a % test").caseInsensitive().wildcardUnaware());
         assertThat(result.size(), is(0));
-        result = dataGenerator.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardUnaware());
+        result = dataGenerator.query(QueryRequest.query("test", 
+                "This is % new test").caseSensitive().wildcardUnaware());
         assertThat(result.size(), is(0));
-        result = dataGenerator.query(QueryRequest.query("test", "This is % new test").caseSensitive().wildcardAware());
+        result = dataGenerator.query(QueryRequest.query("test", 
+                "This is % new test").caseSensitive().wildcardAware());
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getOID(), is("/test/query/13"));
     }
