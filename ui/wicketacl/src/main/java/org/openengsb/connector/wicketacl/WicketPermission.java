@@ -26,17 +26,24 @@ public class WicketPermission implements Permission {
 
     private String componentName;
     private String action;
+    private String context;
 
     public WicketPermission() {
-    }
-
-    public WicketPermission(String componentName, String action) {
-        this.componentName = componentName;
-        this.action = action;
+        this(null, null, null);
     }
 
     public WicketPermission(String componentName) {
+        this(componentName, null, null);
+    }
+
+    public WicketPermission(String componentName, String action) {
+        this(componentName, action, null);
+    }
+
+    public WicketPermission(String componentName, String action, String context) {
         this.componentName = componentName;
+        this.action = action;
+        this.context = context;
     }
 
     public String getComponentName() {
@@ -55,6 +62,10 @@ public class WicketPermission implements Permission {
         this.action = action;
     }
 
+    public String getContext() {
+        return context;
+    }
+
     @Override
     public String describe() {
         return String.format("Permission to %s all components belonging the ui context of %s", action, componentName);
@@ -62,7 +73,7 @@ public class WicketPermission implements Permission {
 
     @Override
     public String toString() {
-        return String.format("P %s:%s", componentName, action);
+        return String.format("P %s:%s:%s", componentName, action, context);
     }
 
 }
