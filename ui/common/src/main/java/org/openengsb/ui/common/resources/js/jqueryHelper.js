@@ -36,9 +36,9 @@
  
  });
  
- $(function() {
+$(function() {
 
-$(".dropdownTrigger").click(function() {
+  $(".dropdownTrigger").click(function() {
         var $actList = $(this).find("ul");
 
         var callback = function() {
@@ -51,6 +51,17 @@ $(".dropdownTrigger").click(function() {
             callback();
         }
     });
+  
+$(function () {
+
+	$(".dataTable").find("tr").mouseenter(function(){
+		$(this).find(".inlistButton").toggleClass("hidden");
+	});
+
+	$(".dataTable").find("tr").mouseleave(function(){
+		$(this).find(".inlistButton").toggleClass("hidden");
+	});
+}); 
 
 $("body").click(function(event) {
 var $target = $(event.target);
