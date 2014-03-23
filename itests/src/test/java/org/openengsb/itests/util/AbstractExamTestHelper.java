@@ -48,7 +48,6 @@ import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
-import org.drools.command.GetDefaultValue;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
@@ -230,7 +229,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected <T> T queryOsgiService(Class<T> type, String filter, long timeout, boolean throwException) {
-        ServiceTracker tracker = null;
+        ServiceTracker tracker;
         try {
             String flt;
             if (filter != null) {
@@ -398,17 +397,16 @@ public abstract class AbstractExamTestHelper {
         }
         return mainOptions;
     }
-    
+
     private static Option[] getDefaultEDBConfiguration() {
+        String cfg = "etc/org.openengsb.infrastructure.jpa.cfg";
+
         return new Option[]{
-            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
-                "url", "jdbc:h2:mem:itests"),
-            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
-                "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
-            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
-                "username", ""),
-            editConfigurationFilePut("etc/org.openengsb.infrastructure.jpa.cfg",
-                "password", "")};
+            editConfigurationFilePut(cfg, "url", "jdbc:h2:mem:itests"),
+            editConfigurationFilePut(cfg, "driverClassName", "org.h2.jdbcx.JdbcDataSource"),
+            editConfigurationFilePut(cfg, "username", ""),
+            editConfigurationFilePut(cfg, "password", "")
+        };
     }
 
     public String getConfigProperty(String config, String name) throws IOException {
@@ -418,22 +416,20 @@ public abstract class AbstractExamTestHelper {
     }
 
     private static LogLevel transformLogLevel(String logLevel) {
-        if (logLevel.equals("ERROR")) {
-            return LogLevel.ERROR;
+        switch (logLevel) {
+            case "ERROR":
+                return LogLevel.ERROR;
+            case "WARN":
+                return LogLevel.WARN;
+            case "INFO":
+                return LogLevel.INFO;
+            case "DEBUG":
+                return LogLevel.DEBUG;
+            case "TRACE":
+                return LogLevel.TRACE;
+            default:
+                return LogLevel.WARN;
         }
-        if (logLevel.equals("WARN")) {
-            return LogLevel.WARN;
-        }
-        if (logLevel.equals("INFO")) {
-            return LogLevel.INFO;
-        }
-        if (logLevel.equals("DEBUG")) {
-            return LogLevel.DEBUG;
-        }
-        if (logLevel.equals("TRACE")) {
-            return LogLevel.TRACE;
-        }
-        return LogLevel.WARN;
     }
 
     protected String getOsgiProjectVersion() {
