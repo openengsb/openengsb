@@ -74,8 +74,7 @@ public class TestModel implements OpenEngSBModel {
         return Arrays.asList(
             new OpenEngSBModelEntry("testId", getTestId(), String.class),
             new OpenEngSBModelEntry("testInteger", getTestInteger(), Integer.class),
-            new OpenEngSBModelEntry("compositeModel", getCompositeModel(), CompositeTestModel.class)
-            );
+            new OpenEngSBModelEntry("compositeModel", getCompositeModel(), CompositeTestModel.class));
     }
 
     @Override

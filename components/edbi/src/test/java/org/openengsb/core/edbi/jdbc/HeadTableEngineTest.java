@@ -75,7 +75,8 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
     public void create_works() throws Exception {
         engine.create(testIndex);
 
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+        String sql = "SELECT * FROM HEAD_TABLE";
+        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
 
             assertEquals(4, metaData.getColumnCount());
@@ -111,7 +112,8 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
 
         engine.execute(operation);
 
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+        String sql = "SELECT * FROM HEAD_TABLE";
+        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery(sql)) {
             assertTrue(rs.next());
             assertEquals("A", rs.getString("TESTID"));
             assertEquals(42, rs.getInt("TESTINTEGER"));

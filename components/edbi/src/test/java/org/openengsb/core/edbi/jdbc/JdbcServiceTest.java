@@ -51,8 +51,11 @@ public class JdbcServiceTest extends AbstractH2DatabaseTest {
         jdbc = new JdbcTemplate(getDataSource());
         jdbcn = new NamedParameterJdbcTemplate(getDataSource());
 
-        table =
-            new Table("TEST", new Column("ID", new DataType("IDENTITY")), new Column("NAME", new DataType("VARCHAR")), new Column("AGE", new DataType("INT")));
+        table = new Table("TEST",
+            new Column("ID", new DataType("IDENTITY")),
+            new Column("NAME", new DataType("VARCHAR")),
+            new Column("AGE", new DataType("INT")));
+
         table.addElement(new PrimaryKeyConstraint("ID"));
 
         jdbc.execute("CREATE TABLE `TEST` (ID IDENTITY PRIMARY KEY, NAME VARCHAR, AGE INT)");

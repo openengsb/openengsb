@@ -29,9 +29,9 @@ import java.sql.Types;
  */
 public class TableElementCompilerTest {
 
-    private static DataType INT = new DataType(Types.INTEGER, "INT");
-    private static DataType VARCHAR = new DataType(Types.LONGNVARCHAR, "VARCHAR");
-    private static DataType BOOL = new DataType(Types.BOOLEAN, "BOOL");
+    private static final DataType INT = new DataType(Types.INTEGER, "INT");
+    private static final DataType VARCHAR = new DataType(Types.LONGNVARCHAR, "VARCHAR");
+    private static final DataType BOOL = new DataType(Types.BOOLEAN, "BOOL");
 
     @Before
     public void setUp() throws Exception {
