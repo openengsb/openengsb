@@ -61,7 +61,7 @@ public class DomainInstallIT extends AbstractExamTestHelper {
     public void cleanUp() throws Exception {
         featuresService.uninstallFeature("openengsb-domain-example");
     }
-    
+
     @Test
     public void testIfModelIsWeaved_shouldWeaveModel() throws Exception {
         featuresService.installFeature("openengsb-domain-example");
@@ -91,10 +91,14 @@ public class DomainInstallIT extends AbstractExamTestHelper {
             getBundleContext().getServiceReferences(DomainProvider.class, "(domain=example)");
         assertThat(serviceReferences.size(), is(0));
         featuresService.installFeature("openengsb-domain-example");
-        String filter = String.format("(&(%s=%s)(domain=example))",
-            Constants.OBJECTCLASS, DomainProvider.class.getName());
-        ServiceTracker<DomainProvider, Object> tracker = new ServiceTracker<DomainProvider, Object>(getBundleContext(), FrameworkUtil.createFilter(filter), null);
+
+        String filter =
+            String.format("(&(%s=%s)(domain=example))", Constants.OBJECTCLASS, DomainProvider.class.getName());
+        ServiceTracker<DomainProvider, Object> tracker =
+            new ServiceTracker<>(getBundleContext(), FrameworkUtil.createFilter(filter), null);
+
         tracker.open();
+
         DomainProvider service = (DomainProvider) tracker.waitForService(10000);
         assertThat(service, not(nullValue()));
         assertThat(service.getId(), is("example"));

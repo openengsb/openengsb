@@ -61,7 +61,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)
 public class EDBIT extends AbstractModelUsingExamTestHelper {
-    private final static String CONTEXT = "testcontext";
+    private static final String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;
     private QueryInterface query;
     private PersistInterface persist;
