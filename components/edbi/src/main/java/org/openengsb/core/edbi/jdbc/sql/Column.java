@@ -132,10 +132,21 @@ public class Column implements TableElement {
         this.type = type;
     }
 
+    /**
+     * Checks whether the column has the given option set.
+     * 
+     * @param option the option to check for
+     * @return true if the column has this option, else otherwise
+     */
     public boolean hasOption(Option option) {
         return options.contains(option);
     }
 
+    /**
+     * Returns an immutable EnumSet consisting of all Options set for this column.
+     * 
+     * @return an immutable EnumSet
+     */
     public EnumSet<Option> getOptions() {
         return options.clone();
     }

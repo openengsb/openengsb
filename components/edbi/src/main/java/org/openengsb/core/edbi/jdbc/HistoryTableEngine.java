@@ -39,7 +39,8 @@ import org.openengsb.core.edbi.jdbc.sql.PrimaryKeyConstraint;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 
 /**
- * HistoryTableEngine
+ * Implementation of a TableEngine, that manages the 'history' table of models. It contains a factory for creating those
+ * tables.
  */
 public class HistoryTableEngine extends AbstractTableEngine {
 
@@ -110,6 +111,9 @@ public class HistoryTableEngine extends AbstractTableEngine {
         return tableFactory;
     }
 
+    /**
+     * A TableFactory that creates 'history' tables for models.
+     */
     public static class HistoryTableFactory extends AbstractTableFactory {
 
         public HistoryTableFactory(TypeMap typeMap, NameTranslator<Index<?>> tableNameTranslator,

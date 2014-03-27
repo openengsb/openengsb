@@ -37,7 +37,8 @@ import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.util.Introspector;
 
 /**
- * HeadTableEngine
+ * Implementation of a TableEngine, that manages the 'head' table of models (they contain the current state of each
+ * model). It contains a factory for creating those tables.
  */
 public class HeadTableEngine extends AbstractTableEngine {
 
@@ -93,6 +94,9 @@ public class HeadTableEngine extends AbstractTableEngine {
         return tableFactory;
     }
 
+    /**
+     * A TableFactory that creates 'head' tables for models.
+     */
     public static final class HeadTableFactory extends AbstractTableFactory {
 
         private HeadTableFactory(TypeMap typeMap, NameTranslator<Index<?>> tableNameTranslator,

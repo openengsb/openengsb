@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * ColumnSet
+ * A Set of Column objects. Uses a map to uniquely map Columns to their respective names.
  */
 public class ColumnSet implements Iterable<Column> {
 

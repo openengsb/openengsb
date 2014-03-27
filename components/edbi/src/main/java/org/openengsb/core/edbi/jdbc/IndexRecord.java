@@ -59,6 +59,13 @@ public class IndexRecord extends MapSqlParameterSource implements SqlParameterSo
         }
     }
 
+    /**
+     * Extracts the value from the given {@code OpenEngSBModelEntry} and maps that value to the given field type.
+     * 
+     * @param field the field to map to
+     * @param entry the entry containing the value
+     * @return the transformed (possibly) value
+     */
     protected Object extractValue(IndexField<?> field, OpenEngSBModelEntry entry) {
         Object value = entry.getValue();
 

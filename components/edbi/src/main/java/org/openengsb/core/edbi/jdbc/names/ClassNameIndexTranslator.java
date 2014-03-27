@@ -20,7 +20,7 @@ package org.openengsb.core.edbi.jdbc.names;
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 
 /**
- * ClassNameIndexTranslator
+ * Translates Class objects into Index names. Returns the Classes canonical name.
  */
 public class ClassNameIndexTranslator implements ClassNameTranslator {
 

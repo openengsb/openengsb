@@ -49,7 +49,8 @@ import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
- * JdbcIndexEngine
+ * IndexEngine implementation that uses JDBC as underlying persistence method. Manages Index objects and their
+ * respective tables and data using a SchemaMapper.
  */
 public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 

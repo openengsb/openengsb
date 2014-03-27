@@ -35,6 +35,9 @@ public class IndexBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexBuilder.class);
 
+    /**
+     * These properties are by default excluded when building IndexField instances for an Index.
+     */
     public static final String[] EXCLUDED_PROPERTIES = {
         "class",
         "openEngSBModelTail"
