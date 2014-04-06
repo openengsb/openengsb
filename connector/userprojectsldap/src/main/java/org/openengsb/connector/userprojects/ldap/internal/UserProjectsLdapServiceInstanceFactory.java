@@ -19,6 +19,7 @@ package org.openengsb.connector.userprojects.ldap.internal;
 
 import java.util.Map;
 
+import org.openengsb.connector.userprojects.ldap.internal.ldap.ServerConfig;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.infrastructure.ldap.LdapDao;
@@ -26,21 +27,46 @@ import org.openengsb.infrastructure.ldap.LdapDao;
 public class UserProjectsLdapServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<UserProjectsLdapServiceImpl> {
 
+    private LdapDao ldapDao;
+    
     public UserProjectsLdapServiceInstanceFactory() {
     }
 
     @Override
     public Connector createNewInstance(String id) {
-        LdapDao ldapDao = new LdapDao("localhost", 10389);
-        return new UserProjectsLdapServiceImpl(ldapDao);
+        return new UserProjectsLdapServiceImpl();
     }
 
     @Override
     public UserProjectsLdapServiceImpl doApplyAttributes(UserProjectsLdapServiceImpl instance,
         Map<String, String> attributes) {
-        LdapDao ldapDao =
-            new LdapDao(attributes.get("ldapServer.host"), Integer.valueOf(attributes.get("ldapServer.port")));
+        if (attributes.containsKey("ldapServer.host")) {
+            ServerConfig.host = attributes.get("ldapServer.host");
+        }
+        if (attributes.containsKey("ldapServer.port")) {
+            ServerConfig.port = Integer.valueOf(attributes.get("ldapServer.port"));
+        }
+        if (attributes.containsKey("ldapServer.userDn")) {
+            ServerConfig.userDn = attributes.get("ldapServer.userDn");
+        }
+        if (attributes.containsKey("ldapServer.credentials")) {
+            ServerConfig.credentials = attributes.get("ldapServer.credentials");
+        }
+        if (attributes.containsKey("ldapServer.multipleValueSeparator")) {
+            ServerConfig.multipleValueSeparator = attributes.get("ldapServer.multipleValueSeparator");
+        }
+
+        setupLdapDao();
         instance.setLdapDao(ldapDao);
         return instance;
+    }
+    
+    private void setupLdapDao() {
+        ldapDao = new LdapDao(ServerConfig.host, ServerConfig.port);
+        ldapDao.connect(ServerConfig.userDn, ServerConfig.credentials);
+    }
+
+    public void destroy() {
+        ldapDao.disconnect();
     }
 }

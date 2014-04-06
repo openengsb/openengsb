@@ -39,8 +39,6 @@ import org.openengsb.domain.userprojects.model.User;
  * */
 public final class EntryFactory {
 
-    public static final String MULTIPLE_VALUE_SEPARATOR = "°";
-
     private EntryFactory() {
     }
 
@@ -244,7 +242,8 @@ public final class EntryFactory {
                 entry.add(SchemaConstants.EMPTY_FLAG_ATTRIBUTE, String.valueOf(true));
             } else {
                 // case 3
-                entry.add(SchemaConstants.STRING_ATTRIBUTE, StringUtils.join(descriptions, MULTIPLE_VALUE_SEPARATOR));
+                entry.add(SchemaConstants.STRING_ATTRIBUTE,
+                        StringUtils.join(descriptions, ServerConfig.multipleValueSeparator));
             }
         } catch (LdapException e) {
             throw new LdapRuntimeException(e);
