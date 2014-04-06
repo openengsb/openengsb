@@ -28,8 +28,13 @@
       <entry key="domain" value="userprojects" />
       <entry key="connector" value="userprojects.ldap" />
     </service-properties>
-    <bean class="org.openengsb.connector.userprojects.ldap.internal.UserProjectsLdapServiceInstanceFactory"/>
+    <ref component-id="factory" />
   </service>
+
+  <bean id="factory" class="org.openengsb.connector.userprojects.ldap.internal.UserProjectsLdapServiceInstanceFactory"
+    destroy-method="destroy"/>
+
+  <reference id="userProjectsDomainEvents" interface="org.openengsb.domain.userprojects.UserProjectsDomainEvents"/>
 
   <service>
     <interfaces>

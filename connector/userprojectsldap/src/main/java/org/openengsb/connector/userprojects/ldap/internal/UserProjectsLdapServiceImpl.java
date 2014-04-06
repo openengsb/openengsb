@@ -19,6 +19,8 @@ package org.openengsb.connector.userprojects.ldap.internal;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.DnFactory;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.EntryFactory;
 import org.openengsb.core.api.AliveState;
@@ -35,8 +37,7 @@ import org.openengsb.infrastructure.ldap.NoSuchNodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserProjectsLdapServiceImpl extends AbstractOpenEngSBConnectorService implements
-        UserProjectsDomain {
+public class UserProjectsLdapServiceImpl extends AbstractOpenEngSBConnectorService implements UserProjectsDomain {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProjectsLdapServiceImpl.class);
     private LdapDao ldapDao;
@@ -56,17 +57,20 @@ public class UserProjectsLdapServiceImpl extends AbstractOpenEngSBConnectorServi
         return AliveState.ONLINE;
     }
 
-
     public void setLdapDao(LdapDao dao) {
         ldapDao = dao;
     }
 
     @Override
     public void updateAssignments(List<Assignment> assignments) {
+        for (Assignment assignment : assignments) {
+            storeOverwriteExisting(EntryFactory.assignmentStructure(assignment));
+        }
+    }
+
+    private void storeOverwriteExisting(List<Entry> entryList) {
         try {
-            for (Assignment assignment : assignments) {
-                ldapDao.storeOverwriteExisting(EntryFactory.assignmentStructure(assignment));
-            }
+            ldapDao.storeOverwriteExisting(entryList);
         } catch (NoSuchNodeException | MissingParentException e) {
             LOGGER.error("LDAP exception", e);
             throw new LdapRuntimeException(e);
@@ -75,110 +79,74 @@ public class UserProjectsLdapServiceImpl extends AbstractOpenEngSBConnectorServi
 
     @Override
     public void updatePermissions(List<Permission> permissions) {
-        try {
-            for (Permission permission : permissions) {
-                ldapDao.storeOverwriteExisting(EntryFactory.permissionStructure(permission));
-            }
-        } catch (NoSuchNodeException | MissingParentException e) {
-            LOGGER.error("LDAP exception", e);
-            throw new LdapRuntimeException(e);
+        for (Permission permission : permissions) {
+            storeOverwriteExisting(EntryFactory.permissionStructure(permission));
         }
     }
 
     @Override
     public void updateProjects(List<Project> projects) {
-        try {
-            for (Project project : projects) {
-                ldapDao.storeOverwriteExisting(EntryFactory.projectStructure(project));
-            }
-        } catch (NoSuchNodeException | MissingParentException e) {
-            LOGGER.error("LDAP exception", e);
-            throw new LdapRuntimeException(e);
+        for (Project project : projects) {
+            storeOverwriteExisting(EntryFactory.projectStructure(project));
         }
     }
 
     @Override
     public void updateRoles(List<Role> roles) {
-        try {
-            for (Role role : roles) {
-                ldapDao.storeOverwriteExisting(EntryFactory.roleStructure(role));
-            }
-        } catch (NoSuchNodeException | MissingParentException e) {
-            LOGGER.error("LDAP exception", e);
-            throw new LdapRuntimeException(e);
+        for (Role role : roles) {
+            storeOverwriteExisting(EntryFactory.roleStructure(role));
         }
     }
 
     @Override
     public void updateUsers(List<User> users) {
-        try {
-            for (User user : users) {
-                ldapDao.storeOverwriteExisting(EntryFactory.userStructure(user));
-            }
-        } catch (NoSuchNodeException | MissingParentException e) {
-            LOGGER.error("LDAP exception", e);
-            throw new LdapRuntimeException(e);
+        for (User user : users) {
+            storeOverwriteExisting(EntryFactory.userStructure(user));
         }
     }
 
     @Override
     public void deleteAssignments(List<Assignment> assignments) {
         for (Assignment assignment : assignments) {
-            try {
-                ldapDao.deleteSubtreeIncludingRoot(DnFactory.assignment(assignment));
-            } catch (NoSuchNodeException | MissingParentException e) {
-                LOGGER.error("LDAP exception", e);
-                throw new LdapRuntimeException(e);
-            }
+            deleteSubtreeIncludingRoot(DnFactory.assignment(assignment));
+        }
+    }
+
+    private void deleteSubtreeIncludingRoot(Dn dn) {
+        try {
+            ldapDao.deleteSubtreeIncludingRoot(dn);
+        } catch (NoSuchNodeException | MissingParentException e) {
+            LOGGER.error("LDAP exception", e);
+            throw new LdapRuntimeException(e);
         }
     }
 
     @Override
     public void deletePermissions(List<Permission> permissions) {
         for (Permission permission : permissions) {
-            try {
-                ldapDao.deleteSubtreeIncludingRoot(DnFactory.permission(permission));
-            } catch (NoSuchNodeException | MissingParentException e) {
-                LOGGER.error("LDAP exception", e);
-                throw new LdapRuntimeException(e);
-            }
+            deleteSubtreeIncludingRoot(DnFactory.permission(permission));
         }
     }
 
     @Override
     public void deleteProjects(List<Project> projects) {
         for (Project project : projects) {
-            try {
-                ldapDao.deleteSubtreeIncludingRoot(DnFactory.project(project));
-            } catch (NoSuchNodeException | MissingParentException e) {
-                LOGGER.error("LDAP exception", e);
-                throw new LdapRuntimeException(e);
-            }
+            deleteSubtreeIncludingRoot(DnFactory.project(project));
         }
     }
 
     @Override
     public void deleteRoles(List<Role> roles) {
         for (Role role : roles) {
-            try {
-                ldapDao.deleteSubtreeIncludingRoot(DnFactory.role(role));
-            } catch (NoSuchNodeException | MissingParentException e) {
-                LOGGER.error("LDAP exception", e);
-                throw new LdapRuntimeException(e);
-            }
+            deleteSubtreeIncludingRoot(DnFactory.role(role));
         }
     }
 
     @Override
     public void deleteUsers(List<User> users) {
         for (User user : users) {
-            try {
-                ldapDao.deleteSubtreeIncludingRoot(DnFactory.user(user));
-            } catch (NoSuchNodeException | MissingParentException e) {
-                LOGGER.error("LDAP exception", e);
-                throw new LdapRuntimeException(e);
-            }
+            deleteSubtreeIncludingRoot(DnFactory.user(user));
         }
     }
-    
+
 }

@@ -40,6 +40,12 @@ public final class DnFactory {
     public static final String OU_PROJECTS = "projects";
     public static final String OU_ROLES = "roles";
     public static final String OU_USERS = "users";
+    
+    public static final String CN_ASSIGNMENT_PROJECT = "project";
+    public static final String CN_ASSIGNMENT_USER = "user";
+
+    public static final String CN_PERMISSION_COMPONENT = "component";
+    public static final String CN_PERMISSION_ACTION = "action";
 
     private DnFactory() {
     }
@@ -77,7 +83,11 @@ public final class DnFactory {
     }
 
     public static Dn assignmentProject(Assignment assignment) {
-        return assignmentChild(assignment, "project");
+        return assignmentChild(assignment, CN_ASSIGNMENT_PROJECT);
+    }
+
+    public static Dn assignmentProject(Dn parentDn) {
+        return Utils.concatDn(SchemaConstants.CN_ATTRIBUTE, CN_ASSIGNMENT_PROJECT, parentDn);
     }
 
     public static Dn assignmentChild(Assignment assignment, String childCn) {
@@ -85,7 +95,15 @@ public final class DnFactory {
     }
 
     public static Dn assignmentUser(Assignment assignment) {
-        return assignmentChild(assignment, "user");
+        return assignmentChild(assignment, CN_ASSIGNMENT_USER);
+    }
+
+    public static Dn assignmentUser(Dn parentDn) {
+        return Utils.concatDn(SchemaConstants.CN_ATTRIBUTE, CN_ASSIGNMENT_USER, parentDn);
+    }
+
+    public static Dn assignmentPermissions(Dn parentDn) {
+        return Utils.concatDn(SchemaConstants.OU_ATTRIBUTE, OU_PERMISSIONS, parentDn);
     }
 
     public static Dn assignmentPermissions(Assignment assignment) {
@@ -94,6 +112,10 @@ public final class DnFactory {
 
     public static Dn assignmentPermission(Assignment assignment, String permission) {
         return Utils.concatDn(SchemaConstants.CN_ATTRIBUTE, permission, assignmentPermissions(assignment));
+    }
+
+    public static Dn assignmentRoles(Dn parentDn) {
+        return Utils.concatDn(SchemaConstants.OU_ATTRIBUTE, OU_ROLES, parentDn);
     }
 
     public static Dn assignmentRoles(Assignment assignment) {
@@ -113,11 +135,11 @@ public final class DnFactory {
     }
 
     public static Dn permissionComponent(Permission permission) {
-        return permissionChild(permission, "component");
+        return permissionChild(permission, CN_PERMISSION_COMPONENT);
     }
 
     public static Dn permissionAction(Permission permission) {
-        return permissionChild(permission, "action");
+        return permissionChild(permission, CN_PERMISSION_ACTION);
     }
 
     public static Dn project(Project project) {
