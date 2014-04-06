@@ -1,0 +1,261 @@
+#
+# Licensed to the Austrian Association for Software Tool Integration (AASTI)
+# under one or more contributor license agreements. See the NOTICE file
+# distributed with this work for additional information regarding copyright
+# ownership. The AASTI licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except in compliance
+# with the License. You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+version: 1
+
+dn: dc=openengsb,dc=org
+objectClass: top
+objectClass: domain
+dc: openengsb
+
+dn: ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: assignments
+
+dn: ou=permissions,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: permissions
+
+dn: ou=projects,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: projects
+
+dn: ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: roles
+
+dn: ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+dn: cn=project,ou=projects,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=project
+cn: project
+
+dn: cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=user:project
+cn: user:project
+
+dn: ou=permissions,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=permissions
+ou: permissions
+
+dn: cn=permission2,ou=permissions,cn=user:project,ou=assignments,dc=openengs
+ b,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=permission2
+cn: permission2
+
+dn: cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=role
+cn: role
+
+dn: ou=permissions,cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=permissions
+ou: permissions
+
+dn: cn=update,ou=permissions,cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=update
+cn: update
+
+dn: ou=roles,cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=roles
+ou: roles
+
+dn: cn=perm2,ou=permissions,cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=perm2
+cn: perm2
+
+dn: cn=project,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=project
+cn: project
+org-openengsb-string: project
+
+dn: ou=roles,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=roles
+ou: roles
+
+dn: cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=testUser
+cn: testUser
+
+dn: ou=attributes,cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=attributes
+ou: attributes
+
+dn: cn=attribute,ou=attributes,cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=attribute
+cn: attribute
+org-openengsb-string:: bmV3wrB2YWx1ZQ==
+
+dn: cn=permission1,ou=permissions,cn=user:project,ou=assignments,dc=openengs
+ b,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=permission1
+cn: permission1
+
+dn: cn=Permission: compnew:readnew,ou=permissions,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=Permission: compnew:readnew
+cn: Permission: compnew:readnew
+
+dn: cn=action,cn=Permission: compnew:readnew,ou=permissions,dc=openengsb,dc=
+ org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=action
+cn: action
+org-openengsb-string: readnew
+
+dn: cn=Permission: comp:read,ou=permissions,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=Permission: comp:read
+cn: Permission: comp:read
+
+dn: cn=action,cn=Permission: comp:read,ou=permissions,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=action
+cn: action
+org-openengsb-string: read
+
+dn: cn=role2,ou=roles,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=role2
+cn: role2
+
+dn: cn=role1,ou=roles,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=role1
+cn: role1
+
+dn: cn=perm1,ou=permissions,cn=role,ou=roles,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+cn: cn=perm1
+cn: perm1
+
+dn: cn=component,cn=Permission: compnew:readnew,ou=permissions,dc=openengsb,
+ dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=component
+cn: component
+org-openengsb-string: compnew
+
+dn: cn=attribute2,ou=attributes,cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=attribute2
+cn: attribute2
+org-openengsb-string: value
+
+dn: cn=component,cn=Permission: comp:read,ou=permissions,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=component
+cn: component
+org-openengsb-string: comp
+
+dn: ou=attributes,cn=project,ou=projects,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=attributes
+ou: attributes
+
+dn: cn=attr88,ou=attributes,cn=project,ou=projects,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=attr88
+cn: attr88
+org-openengsb-string: val88
+
+dn: ou=credentials,cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: ou=credentials
+ou: credentials
+
+dn: cn=user,cn=user:project,ou=assignments,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=user
+cn: user
+org-openengsb-string: user
+
+dn: cn=att,ou=attributes,cn=project,ou=projects,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=att
+cn: att
+org-openengsb-string:: dmFsMcKwdmFsMg==
+
+dn: cn=password,ou=credentials,cn=testUser,ou=users,dc=openengsb,dc=org
+objectClass: top
+objectClass: org-openengsb-namedObject
+objectClass: org-openengsb-descriptiveObject
+cn: cn=password
+cn: password
+org-openengsb-string: passwordnew
+
