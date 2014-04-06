@@ -65,72 +65,20 @@
   <build>
      <plugins>
       <plugin>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>wagon-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make-src-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              org.openengsb.core.api.*;version="[${openengsb.version.min},${openengsb.version.max})",
+              org.openengsb.domain.userprojects.*;version="${project.version}",
+              *
+            </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
+          </instructions>
+        </configuration>
       </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-dependency-plugin</artifactId>
-         <executions>
-           <execution>
-             <id>copy</id>
-             <phase>validate</phase>
-             <goals>
-               <goal>copy</goal>
-             </goals>
-             <configuration>
-               <artifactItems>
-                 <artifactItem>
-                   <groupId>org.openengsb.framework</groupId>
-                   <artifactId>org.openengsb.framework.weaver.service</artifactId>
-                   <version>${project.version}</version>
-                   <type>jar</type>
-                   <classifier>agent</classifier>
-                   <overWrite>false</overWrite>
-                   <outputDirectory>${project.build.directory}</outputDirectory>
-                   <destFileName>model-agent.jar</destFileName>
-                 </artifactItem>
-               </artifactItems>
-               <outputDirectory>${project.build.directory}</outputDirectory>
-               <overWriteReleases>false</overWriteReleases>
-               <overWriteSnapshots>true</overWriteSnapshots>
-             </configuration>
-           </execution>
-         </executions>
-       </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-surefire-plugin</artifactId>
-         <configuration>
-           <forkMode>once</forkMode>
-           <argLine>
-             -javaagent:"${project.build.directory}/model-agent.jar"
-           </argLine>
-           <useSystemClassloader>true</useSystemClassloader>
-         </configuration>
-       </plugin>
      </plugins>
   </build>
 
@@ -152,43 +100,15 @@
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
       <version>${project.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>${labs.delegation.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework.workflow</groupId>
-      <artifactId>org.openengsb.framework.workflow.api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.test</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.services</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
@@ -201,6 +121,17 @@
       <artifactId>org.openengsb.infrastructure.ldap</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-integ</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>shared-ldap-schema-data</artifactId>
+          <groupId>org.apache.directory.shared</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
