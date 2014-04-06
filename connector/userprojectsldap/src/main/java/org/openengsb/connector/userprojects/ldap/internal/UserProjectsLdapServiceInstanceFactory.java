@@ -17,6 +17,8 @@
 
 package org.openengsb.connector.userprojects.ldap.internal;
 
+import java.util.Map;
+
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.infrastructure.ldap.LdapDao;
@@ -33,5 +35,12 @@ public class UserProjectsLdapServiceInstanceFactory extends
         return new UserProjectsLdapServiceImpl(ldapDao);
     }
 
-
+    @Override
+    public UserProjectsLdapServiceImpl doApplyAttributes(UserProjectsLdapServiceImpl instance,
+        Map<String, String> attributes) {
+        LdapDao ldapDao =
+            new LdapDao(attributes.get("ldapServer.host"), Integer.valueOf(attributes.get("ldapServer.port")));
+        instance.setLdapDao(ldapDao);
+        return instance;
+    }
 }
