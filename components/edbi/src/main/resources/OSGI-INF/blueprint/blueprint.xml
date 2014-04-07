@@ -19,8 +19,24 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
-           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0">
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
+  <!-- imports -->
+  <reference id="dataSource" interface="javax.sql.DataSource"/>
+
+  <!-- exports -->
+  <service id="indexEngine" interface="org.openengsb.core.edbi.api.IndexEngine">
+    <bean factory-ref="jdbcIndexEngineFactory" factory-method="create"/>
+  </service>
+
+  <!-- beans -->
+  <bean id="jdbcIndexEngineFactory" class="org.openengsb.core.edbi.jdbc.JdbcIndexEngineFactory">
+    <argument ref="driver"/>
+  </bean>
+
+  <!-- driver -->
+  <bean id="driver" class="org.openengsb.core.edbi.jdbc.driver.h2.Driver">
+    <argument ref="dataSource"/>
+  </bean>
 
 </blueprint>

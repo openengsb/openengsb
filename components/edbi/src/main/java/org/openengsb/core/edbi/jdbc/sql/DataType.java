@@ -19,7 +19,7 @@ package org.openengsb.core.edbi.jdbc.sql;
 /**
  * An SQL data type.
  */
-public class DataType {
+public class DataType implements Cloneable {
 
     public static final int UNKNOWN = Integer.MIN_VALUE;
 
@@ -121,5 +121,10 @@ public class DataType {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + scale;
         return result;
+    }
+
+    @Override
+    protected DataType clone() throws CloneNotSupportedException {
+        return new DataType(type, name, scale);
     }
 }
