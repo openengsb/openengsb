@@ -19,6 +19,7 @@ package org.openengsb.ui.common.usermanagement;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.util.BeanUtilsExtended;
 
@@ -79,7 +80,8 @@ public class PermissionInput implements Serializable {
 
     @Override
     public String toString() {
-        return toPermission().toString();
+        Permission permission = toPermission();
+        return StringUtils.isNotBlank(permission.describe()) ? permission.describe() : permission.toString();
     }
 
 }

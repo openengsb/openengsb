@@ -91,6 +91,16 @@ public abstract class UserListPanel extends Panel {
             protected void onEditClick(AjaxRequestTarget target, String param) {
                 openEditorPage(target, param);
             }
+
+            @Override
+            protected boolean isDeleteLinkVisibleFor(String username) {
+                return true;
+            }
+
+            @Override
+            protected boolean isEditLinkVisibleFor(String modelObject) {
+                return true;
+            }
         };
         add(listPanel);
     }

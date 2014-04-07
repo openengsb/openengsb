@@ -22,6 +22,17 @@
   xml:lang="en" lang="en">
   <body>
     <wicket:panel>
+      <style>
+        label.modal {
+            padding-top: 7px;
+        }
+        fieldset.modal {
+            padding-right: 1.4em;
+        }
+        input[type="submit"].modal {
+            margin-left: 1em;
+        }
+      </style>
       <div wicket:id="userEditorContainer">
         <form wicket:id="userForm">
           <fieldset>
@@ -29,20 +40,20 @@
               <wicket:message key="general.title" />
             </legend>
               <div>
-                <label for="username"><wicket:message key="username.title" /></label>
+                <label for="username" class="modal"><wicket:message key="username.title" /></label>
                 <input id="username" wicket:id="username" />
               </div>
               <div>
-                <label for="password"><wicket:message key="password.title" /></label>
+                <label for="password" class="modal"><wicket:message key="password.title" /></label>
                 <input id="password" type="password" wicket:id="password" />
               </div>
               <div>
-                <label for="passwordVerification"><wicket:message key="rePassword.title" /></label>
+                <label for="passwordVerification" class="modal"><wicket:message key="rePassword.title" /></label>
                 <input id="passwordVerification" type="password" wicket:id="passwordVerification" />
               </div>
             </fieldset>
             <hr />
-            <fieldset>
+            <fieldset class="modal">
               <legend>
                 <wicket:message key="permission.title" />
               </legend>
@@ -56,7 +67,7 @@
             <span wicket:id="feedback" />
           </fieldset>
 
-          <input type="submit" wicket:message="value:user.create.button,title:user.create.button" />
+          <input type="submit" wicket:message="value:submitButton,title:submitButton" class="modal"/>
         </form>
       </div>
     </wicket:panel>

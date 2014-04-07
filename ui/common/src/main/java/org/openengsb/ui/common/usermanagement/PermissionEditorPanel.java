@@ -59,6 +59,10 @@ public abstract class PermissionEditorPanel extends Panel {
 
     private final UserInput user;
 
+    private boolean createMode = true;
+
+    private PermissionInput permissionInput;
+
     @Inject
     @Named("permissionProviders")
     private List<ClassProvider> providers;
@@ -66,6 +70,14 @@ public abstract class PermissionEditorPanel extends Panel {
     public PermissionEditorPanel(String id, UserInput user) {
         super(id);
         this.user = user;
+        init();
+    }
+
+    public PermissionEditorPanel(String id, PermissionInput permissionInput) {
+        super(id);
+        this.user = null;
+        this.permissionInput = permissionInput;
+        createMode = false;
         init();
     }
 
@@ -97,8 +109,12 @@ public abstract class PermissionEditorPanel extends Panel {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Class<?> permissionClass = permissionTypeModel.getObject();
-                user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
+                if (createMode) {
+                    Class<?> permissionClass = permissionTypeModel.getObject();
+                    user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
+                } else {
+                    permissionInput.setState(State.UPDATED);
+                }
                 editorPanel.replaceWith(new EmptyPanel("permissionEditor"));
                 submitButton.setVisible(false);
                 target.add(container);
@@ -112,10 +128,18 @@ public abstract class PermissionEditorPanel extends Panel {
             }
         };
         form.add(submitButton);
-        submitButton.setVisible(false);
+        submitButton.setVisible(!createMode);
 
         permissionTypeChoice =
-            new DropDownChoice<Class<?>>("permissionTypeSelect", permissionTypeModel, permissionTypeListModel);
+            new DropDownChoice<Class<?>>("permissionTypeSelect", permissionTypeModel, permissionTypeListModel) {
+                private static final long serialVersionUID = -9044237781077496289L;
+
+                @Override
+                public boolean isVisible() {
+                    return createMode;
+                }
+
+            };
         permissionTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             private static final long serialVersionUID = 5195539410268926662L;
 
@@ -133,7 +157,12 @@ public abstract class PermissionEditorPanel extends Panel {
 
         form.add(permissionTypeChoice);
 
-        editorPanel = new EmptyPanel("permissionEditor");
+        if (createMode) {
+            editorPanel = new EmptyPanel("permissionEditor");
+        } else {
+            editorPanel =
+                new BeanEditorPanel("permissionEditor", permissionInput.getType(), permissionInput.getValues());
+        }
 
         form.add(editorPanel);
     }

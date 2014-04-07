@@ -16,6 +16,7 @@
  */
 package org.openengsb.ui.common.usermanagement;
 
+import java.beans.IntrospectionException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.util.BeanUtilsExtended;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
+import org.openengsb.ui.common.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +69,11 @@ public abstract class UserEditPanel extends Panel {
 
     private final UserInput input = new UserInput();
 
+    private WebMarkupContainer permissionListContainer;
+    private WebMarkupContainer createPermissionContainer;
+
     private Panel permissionContentPanel;
+    private AjaxLink<Object> permissionCreateButton;
 
     public UserEditPanel(String id) {
         super(id);
@@ -124,11 +130,11 @@ public abstract class UserEditPanel extends Panel {
 
         userForm.setModel(new CompoundPropertyModel<UserInput>(input));
 
-        final WebMarkupContainer permissionListContainer = new WebMarkupContainer("permissionListContainer");
+        permissionListContainer = new WebMarkupContainer("permissionListContainer");
         permissionListContainer.setOutputMarkupId(true);
         userForm.add(permissionListContainer);
 
-        final WebMarkupContainer createPermissionContainer = new WebMarkupContainer("createPermissionContainer");
+        createPermissionContainer = new WebMarkupContainer("createPermissionContainer");
         createPermissionContainer.setOutputMarkupId(true);
         permissionListContainer.add(createPermissionContainer);
 
@@ -169,50 +175,91 @@ public abstract class UserEditPanel extends Panel {
             @Override
             protected void onEditClick(AjaxRequestTarget target, PermissionInput param) {
                 LOGGER.info("would edit " + param);
+                showPermissionEditorPanel(target, "createPermissionContent", param);
+            }
+
+            @Override
+            protected boolean isDeleteLinkVisibleFor(PermissionInput permissionInput) {
+                return true;
+            }
+
+            @Override
+            protected boolean isEditLinkVisibleFor(PermissionInput permissionInput) {
+                try {
+                    return !MethodUtil.getRelevantProperties(permissionInput.toPermission()).isEmpty();
+                } catch (IntrospectionException e) {
+                    LOGGER.error("Could not introspect permission bean.", e);
+                    return false;
+                }
+                
             }
 
         };
         permissionListContainer.add(permissionList);
 
-        AjaxLink<Object> ajaxButton = new AjaxLink<Object>("createPermission") {
+        permissionCreateButton = new AjaxLink<Object>("createPermission") {
             private static final long serialVersionUID = 6887755633726845337L;
-
-            private void reenable() {
-                setEnabled(true);
-                // setVisible(true);
-            }
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                PermissionEditorPanel realPermissionEditorPanel =
-                    new PermissionEditorPanel("createPermissionContent", input) {
-                        private static final long serialVersionUID = 6316566908822500463L;
-
-                        @Override
-                        protected void afterSubmit(AjaxRequestTarget target, Form<?> form) {
-                            LOGGER.info("replacing permission-panel with empty panel");
-                            EmptyPanel emptyPanel = new EmptyPanel("createPermissionContent");
-                            createPermissionContainer.addOrReplace(emptyPanel);
-                            permissionContentPanel = emptyPanel;
-                            target.add(createPermissionContainer);
-                            reenable();
-                            target.add(permissionListContainer);
-                        }
-                    };
-                createPermissionContainer.addOrReplace(realPermissionEditorPanel);
-                permissionContentPanel = realPermissionEditorPanel;
-                target.add(createPermissionContainer);
-                setEnabled(false);
-                target.add(this);
+                showPermissionEditorPanel(target, "createPermissionContent", input);
             }
         };
-        permissionListContainer.add(ajaxButton);
+        permissionListContainer.add(permissionCreateButton);
 
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
 
         userForm.add(feedbackPanel);
 
+    }
+
+    private void showPermissionEditorPanel(AjaxRequestTarget target, String id, PermissionInput permissionInput) {
+        showPermissionEditorPanel(target, createPermissionEditorPanel(id, permissionInput));
+    }
+
+    private void showPermissionEditorPanel(AjaxRequestTarget target, String id, UserInput userInput) {
+        showPermissionEditorPanel(target, createPermissionEditorPanel(id, userInput));
+    }
+
+    private PermissionEditorPanel createPermissionEditorPanel(String id, UserInput userInput) {
+        return new PermissionEditorPanel(id, userInput) {
+            private static final long serialVersionUID = -7840663964887113677L;
+
+            @Override
+            protected void afterSubmit(AjaxRequestTarget target, Form<?> form) {
+                onAfterSubmitFromPermissionEditorPanel(target, form);
+            }
+        };
+    }
+    
+    private PermissionEditorPanel createPermissionEditorPanel(String id, PermissionInput permissionInput) {
+        return new PermissionEditorPanel(id, permissionInput) {
+            private static final long serialVersionUID = -4712535765375580266L;
+
+            @Override
+            protected void afterSubmit(AjaxRequestTarget target, Form<?> form) {
+                onAfterSubmitFromPermissionEditorPanel(target, form);
+            }
+        };
+    }
+    
+    private void onAfterSubmitFromPermissionEditorPanel(AjaxRequestTarget target, Form<?> form) {
+        LOGGER.info("replacing permission-panel with empty panel");
+        EmptyPanel emptyPanel = new EmptyPanel("createPermissionContent");
+        createPermissionContainer.addOrReplace(emptyPanel);
+        permissionContentPanel = emptyPanel;
+        target.add(createPermissionContainer);
+        permissionCreateButton.setEnabled(true);
+        target.add(permissionListContainer);
+    }
+    
+    private void showPermissionEditorPanel(AjaxRequestTarget target, PermissionEditorPanel permissionEditorPanel) {
+        createPermissionContainer.addOrReplace(permissionEditorPanel);
+        permissionContentPanel = permissionEditorPanel;
+        target.add(createPermissionContainer);
+        permissionCreateButton.setEnabled(false);
+        target.add(permissionCreateButton);
     }
 
     private boolean createUser() {
