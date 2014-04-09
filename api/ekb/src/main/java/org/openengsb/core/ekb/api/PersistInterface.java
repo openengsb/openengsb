@@ -72,4 +72,14 @@ public interface PersistInterface {
      * expectedContextHeadRevision means that it is assumed that there is no commit for the context so far.
      */
     void revertCommit(String revision, UUID expectedContextHeadRevision) throws EKBException;
+
+    /**
+     * Deletes the commit corresponding revision IFF it is the last commit in its context. Only the last commit in a
+     * context can be deleted to ensure consistency. The context is locked during the delete.
+     * 
+     * @param revision of the commit to delete
+     * @param contextId of the context the commit belongs to and that should be locked
+     * @throws EKBException
+     */
+    void deleteCommit(UUID revision, String contextId) throws EKBException;
 }

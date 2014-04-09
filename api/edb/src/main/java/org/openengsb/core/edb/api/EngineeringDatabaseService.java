@@ -75,7 +75,7 @@ public interface EngineeringDatabaseService {
      * It will be equivalent retrieving the head from the latest commit before or at the exact time provided.
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
-    
+
     /**
      * Queries for EDBObject based on the given query request object
      */
@@ -90,7 +90,7 @@ public interface EngineeringDatabaseService {
      * More general query for a commit, with AND-connected key-value pairs to match.
      */
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
-    
+
     /**
      * Returns a list of commit meta information of all commits which are matching the given request.
      */
@@ -148,9 +148,17 @@ public interface EngineeringDatabaseService {
      * Returns the revision of the current state of the EDB.
      */
     UUID getCurrentRevisionNumber() throws EDBException;
-    
+
     /**
      * Returns the revision of the last commit performed in the EDB under the given contextId.
      */
     UUID getLastRevisionNumberOfContext(String contextId) throws EDBException;
+
+    /**
+     * Deletes the commit corresponding to the given revision.
+     * 
+     * @param revision of the commit to delete
+     * @throws EDBException
+     */
+    void deleteCommit(UUID revision) throws EDBException;
 }

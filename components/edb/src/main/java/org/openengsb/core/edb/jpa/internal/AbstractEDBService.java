@@ -40,12 +40,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractEDBService implements EngineeringDatabaseService {
     protected EntityManager entityManager;
-    private Logger logger;
-    private Boolean revisionCheckEnabled;
-    private List<EDBErrorHook> errorHooks;
-    private List<EDBPostCommitHook> postCommitHooks;
-    private List<EDBPreCommitHook> preCommitHooks;
-    private List<EDBBeginCommitHook> beginCommitHooks;
+    private final Logger logger;
+    private final Boolean revisionCheckEnabled;
+    private final List<EDBErrorHook> errorHooks;
+    private final List<EDBPostCommitHook> postCommitHooks;
+    private final List<EDBPreCommitHook> preCommitHooks;
+    private final List<EDBBeginCommitHook> beginCommitHooks;
 
     public AbstractEDBService(List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
             List<EDBPostCommitHook> postCommitHooks, List<EDBErrorHook> errorHooks, Boolean revisionCheckEnabled,
@@ -224,6 +224,24 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         }
     }
 
+    protected void performDeleteLogic(JPACommit commit) {
+        synchronized (entityManager) {
+            try {
+                beginTransaction();
+                entityManager.remove(commit);
+                commitTransaction();
+                logger.info("Deleted commit " + commit.getRevisionNumber());
+            } catch (Exception ex) {
+                try {
+                    rollbackTransaction();
+                } catch (Exception e) {
+                    throw new EDBException("Failed to rollback transaction to EDB", e);
+                }
+                throw new EDBException("Failed to commit transaction to EDB", ex);
+            }
+        }
+    }
+
     protected void beginTransaction() {
     }
 
@@ -232,11 +250,11 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
 
     protected void rollbackTransaction() {
     }
-    
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-    
+
     public Logger getLogger() {
         return logger;
     }
