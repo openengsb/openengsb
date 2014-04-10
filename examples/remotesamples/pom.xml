@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>34-SNAPSHOT</version>
+    <version>35-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.examples</groupId>
