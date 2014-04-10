@@ -20,11 +20,12 @@ package org.openengsb.core.edb.jpa.internal.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
+import org.openengsb.core.edb.api.EDBStage;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
+import org.openengsb.core.edb.jpa.internal.JPAStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +35,19 @@ import org.slf4j.LoggerFactory;
 public final class EDBUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBUtils.class);
     private static List<EDBConverterStep> steps = new ArrayList<EDBConverterStep>(Arrays.asList(
-        new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
+            new StringConverterStep(), new DateConverterStep(), new DefaultConverterStep()));
 
     private EDBUtils() {
     }
 
     /**
-     * Converts a JPAEntry object into an EDBObjectEntry element. If there is a problem with the instantiation of the
-     * type of the JPAEntry, the simple string object will be written in the resulting element. To instantiate the type
-     * first the static method "valueOf" of the type will be tried. If that didn't work, then the constructor of the
-     * object with a string parameter is used. If that didn't work either, the simple string will be set in the entry.
+     * Converts a JPAEntry object into an EDBObjectEntry element. If there is a
+     * problem with the instantiation of the type of the JPAEntry, the simple
+     * string object will be written in the resulting element. To instantiate
+     * the type first the static method "valueOf" of the type will be tried. If
+     * that didn't work, then the constructor of the object with a string
+     * parameter is used. If that didn't work either, the simple string will be
+     * set in the entry.
      */
     public static EDBObjectEntry convertJPAEntryToEDBObjectEntry(JPAEntry entry) {
         for (EDBConverterStep step : steps) {
@@ -57,7 +61,7 @@ public final class EDBUtils {
     }
 
     /**
-     * Converts a JPAEntry object into an EDBObjectEntry.
+     * Converts a EDBObjectEntry object into an JPAEntry.
      */
     public static JPAEntry convertEDBObjectEntryToJPAEntry(EDBObjectEntry entry, JPAObject owner) {
         for (EDBConverterStep step : steps) {
@@ -83,6 +87,7 @@ public final class EDBUtils {
         if (object.getTimestamp() != null) {
             result.updateTimestamp(object.getTimestamp());
         }
+        result.setEDBStage(object.getJPAStage());
         return result;
     }
 
@@ -91,6 +96,7 @@ public final class EDBUtils {
      */
     public static JPAObject convertEDBObjectToJPAObject(EDBObject object) {
         JPAObject result = new JPAObject();
+        result.setJPAStage(convertEDBStageToJPAStage(object.getEDBStage()));
         result.setTimestamp(object.getTimestamp());
         result.setOID(object.getOID());
         result.setDeleted(object.isDeleted());
@@ -99,6 +105,25 @@ public final class EDBUtils {
             entries.add(convertEDBObjectEntryToJPAEntry(entry, result));
         }
         result.setEntries(entries);
+        return result;
+    }
+
+    private static JPAStage convertEDBStageToJPAStage(EDBStage object) {
+        //in this case it is unstaged
+        if (object == null) {
+            return null;
+        }
+
+        //if the object is allready a JPAStage obejct we can skip conversion.
+        if (object instanceof JPAStage) {
+            return (JPAStage) object;
+        }
+
+        JPAStage result = new JPAStage();
+        result.setCreator(object.getCreator());
+        result.setStageId(object.getStageId());
+        result.setTimeStamp(object.getTimeStamp());
+
         return result;
     }
 

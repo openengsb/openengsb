@@ -25,6 +25,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -32,8 +33,9 @@ import org.apache.openjpa.persistence.jdbc.Index;
 @SuppressWarnings("serial")
 @Entity
 /**
- * this defines a jpa object in the database. The correlation to the EDBObject is that
- * the JPAObject can be converted to an EDBObject through the EDBUtils class.
+ * this defines a jpa object in the database. The correlation to the EDBObject
+ * is that the JPAObject can be converted to an EDBObject through the EDBUtils
+ * class.
  */
 public class JPAObject extends VersionedEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
@@ -45,6 +47,10 @@ public class JPAObject extends VersionedEntity {
     @Index
     @Column(name = "OID")
     private String oid;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "STAGE", nullable = true)
+    private JPAStage stage;
 
     public JPAObject() {
         entries = new ArrayList<>();
@@ -59,8 +65,8 @@ public class JPAObject extends VersionedEntity {
     }
 
     /**
-     * Returns the entry of the JPAEntry list of this object with the given key. Returns null in case there is no such
-     * entry.
+     * Returns the entry of the JPAEntry list of this object with the given key.
+     * Returns null in case there is no such entry.
      */
     public JPAEntry getEntry(String entryKey) {
         for (JPAEntry entry : entries) {
@@ -72,7 +78,8 @@ public class JPAObject extends VersionedEntity {
     }
 
     /**
-     * Removes the entry from the JPAEntry list of this object with the given key.
+     * Removes the entry from the JPAEntry list of this object with the given
+     * key.
      */
     public void removeEntry(String entryKey) {
         Iterator<JPAEntry> iter = entries.iterator();
@@ -90,6 +97,14 @@ public class JPAObject extends VersionedEntity {
 
     public void setEntries(List<JPAEntry> entries) {
         this.entries = entries;
+    }
+
+    public void setJPAStage(JPAStage stage) {
+        this.stage = stage;
+    }
+
+    public JPAStage getJPAStage() {
+        return this.stage;
     }
 
     public Boolean isDeleted() {

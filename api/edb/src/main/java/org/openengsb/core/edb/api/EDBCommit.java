@@ -28,11 +28,22 @@ import java.util.UUID;
  * throws an exception if you want to commit it again.
  */
 public interface EDBCommit {
+
+    /**
+     * Returns the current EDBStage object.
+     */
+    EDBStage getEDBStage();
+
+    /**
+     * Sets the current EDBStage object. 
+     */
+    void setEDBStage(EDBStage stage);
+
     /**
      * Add an object to be inserted. The object's timestamp must match the commit's timestamp.
      */
     void insert(EDBObject obj) throws EDBException;
-    
+
     /**
      * Add an object to be updated. The object's timestamp must match the commit's timestamp.
      */
@@ -47,12 +58,12 @@ public interface EDBCommit {
      * For a created commit: retrieve the list of all objects that have been inserted to this commit.
      */
     List<EDBObject> getInserts();
-    
+
     /**
      * For a created commit: retrieve the list of all objects that have been updated to this commit.
      */
     List<EDBObject> getUpdates();
-    
+
     /**
      * For a created commit: retrieve the list of all objects that should be inserted or updated with this commit.
      */
@@ -93,57 +104,57 @@ public interface EDBCommit {
      * this setter should be called by the EnterpriseDatabaseService at the commit procedure
      */
     void setTimestamp(Long timestamp);
-    
+
     /**
      * Returns the revision number for the EDBCommit object.
      */
     UUID getRevisionNumber();
-    
+
     /**
      * Returns the revision number of the parent of the EDBCommit object.
      */
     UUID getParentRevisionNumber();
-    
+
     /**
      * Sets the revision number of the parent of the EDBCommit object.
      */
     void setHeadRevisionNumber(UUID revisionNumber);
-    
+
     /**
      * Returns the domain id from which this commit has been sent.
      */
     String getDomainId();
-    
+
     /**
      * Sets the domain id from which this commit has been sent.
      */
     void setDomainId(String domainId);
-    
+
     /**
      * Returns the connector id from which this commit has been sent.
      */
     String getConnectorId();
-    
+
     /**
      * Sets the connector id from which this commit has been sent.
      */
     void setConnectorId(String connectorId);
-    
+
     /**
      * Returns the instance id from which this commit has been sent.
      */
     String getInstanceId();
-    
+
     /**
      * Sets the instance id from which this commit has been sent.
      */
     void setInstanceId(String instanceId);
-    
+
     /**
      * Returns the comment to this commit.
      */
     String getComment();
-    
+
     /**
      * Sets the comment for this commit.
      */

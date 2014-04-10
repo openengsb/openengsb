@@ -39,6 +39,11 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
+    
+    /**
+     * Retrieve the current state of the staged object with the specified OID.
+     */
+    EDBObject getObject(String oid, String sid) throws EDBException;
 
     /**
      * Retrieve the current state of the object with the specified OID for the given timestamp.
@@ -51,9 +56,20 @@ public interface EngineeringDatabaseService {
     List<EDBObject> getObjects(List<String> oids) throws EDBException;
 
     /**
+     * Retrieve the current state of the staged objects with the specified OIDs.
+     */
+    List<EDBObject> getObjects(List<String> oids, String sid) throws EDBException;
+
+    /**
      * Retrieve the current state - a list of all EDBObjects currently available.
      */
     List<EDBObject> getHead() throws EDBException;
+
+    /**
+     * Retrieve the current state - a list of all EDBObjects currently available 
+     * in the given stage.
+     */
+    List<EDBObject> getHead(String sid) throws EDBException;
 
     /**
      * Retrieve the history of an object with a specified OID.
@@ -61,9 +77,20 @@ public interface EngineeringDatabaseService {
     List<EDBObject> getHistory(String oid) throws EDBException;
 
     /**
+     * Retrieve the history of an staged object with a specified OID.
+     */
+    List<EDBObject> getHistory(String oid, String sid) throws EDBException;
+
+    /**
      * Retrieve the history of an object with a specified OID between a specified range of timestamps (inclusive).
      */
     List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to) throws EDBException;
+
+    /**
+     * Retrieve the history of an staged object with a specified OID between a 
+     * specified range of timestamps (inclusive).
+     */
+    List<EDBObject> getHistoryForTimeRange(String oid, Long from, Long to, String sid) throws EDBException;
 
     /**
      * Get the Log for an object between two timestamps (inclusive).
@@ -71,15 +98,32 @@ public interface EngineeringDatabaseService {
     List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException;
 
     /**
+     * Get the Log for an staged object between two timestamps (inclusive).
+     */
+    List<EDBLogEntry> getLog(String oid, Long from, Long to, String sid) throws EDBException;
+
+    /**
      * Retrieve the full state for a provided timestamp. Note, there need not exist a commit for this exact timestamp.
      * It will be equivalent retrieving the head from the latest commit before or at the exact time provided.
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
-    
+
+    /**
+     * Retrieve the full state for a provided timestamp from the given stage. 
+     * Note, there need not exist a commit for this exact timestamp.
+     * It will be equivalent retrieving the head from the latest commit before or at the exact time provided.
+     */
+    List<EDBObject> getHead(long timestamp, String sid) throws EDBException;
+
     /**
      * Queries for EDBObject based on the given query request object
      */
     List<EDBObject> query(QueryRequest request) throws EDBException;
+
+    /**
+     * Queries for staged EDBObject based on the given query request object
+     */
+    List<EDBObject> query(QueryRequest request, String sid) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -87,14 +131,29 @@ public interface EngineeringDatabaseService {
     List<EDBCommit> getCommitsByKeyValue(String key, Object value) throws EDBException;
 
     /**
+     * Convenience function to query for a staged commit with a single matching key-value pair.
+     */
+    List<EDBCommit> getCommitsByKeyValue(String key, Object value, String sid) throws EDBException;
+
+    /**
      * More general query for a commit, with AND-connected key-value pairs to match.
      */
     List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException;
-    
+
+    /**
+     * More general query for a staged commit, with AND-connected key-value pairs to match.
+     */
+    List<EDBCommit> getCommits(Map<String, Object> query, String sid) throws EDBException;
+
     /**
      * Returns a list of commit meta information of all commits which are matching the given request.
      */
     List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request) throws EDBException;
+
+    /**
+     * Returns a list of commit meta information of all staged commits which are matching the given request.
+     */
+    List<CommitMetaInfo> getRevisionsOfMatchingCommits(CommitQueryRequest request, String sid) throws EDBException;
 
     /**
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
@@ -103,10 +162,23 @@ public interface EngineeringDatabaseService {
     EDBCommit getCommit(Long from) throws EDBException;
 
     /**
+     * Convenience function to get a commit for a timestamp from the given stage. 
+     * In this case, if the timestamp doesn't exist, null is
+     * returned. Exceptions are only thrown for database errors.
+     */
+    EDBCommit getCommit(Long from, String sid) throws EDBException;
+
+    /**
      * Convenience function to get a commit for a given revision string. If there is no commit for the given revision
      * string or if a database error occurs, an EDBException is thrown.
      */
     EDBCommit getCommitByRevision(String revision) throws EDBException;
+
+    /**
+     * Convenience function to get a commit for a given revision string from the given stage. 
+     * If there is no commit for the given revision string or if a database error occurs, an EDBException is thrown.
+     */
+    EDBCommit getCommitByRevision(String revision, String sid) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -114,14 +186,30 @@ public interface EngineeringDatabaseService {
     EDBCommit getLastCommitByKeyValue(String key, Object value) throws EDBException;
 
     /**
+     * Convenience function to query for a staged commit with a single matching key-value pair.
+     */
+    EDBCommit getLastCommitByKeyValue(String key, Object value, String sid) throws EDBException;
+
+    /**
      * More general query for the last commit, with AND-connected key-value pairs to match.
      */
     EDBCommit getLastCommit(Map<String, Object> query) throws EDBException;
 
     /**
+     * More general query for the last staged commit, with AND-connected key-value pairs to match.
+     */
+    EDBCommit getLastCommit(Map<String, Object> queryMap, String sid) throws EDBException;
+
+    /**
      * Compare two states and show the differences.
      */
     EDBDiff getDiff(Long firstTimestamp, Long secondTimestamp) throws EDBException;
+
+    /*
+     * Compare two states and show the differences. Further it is possible to make cross stage comparissons. 
+     * If you enter two times the same stage ID it will compare on the same stage.
+     */
+    EDBDiff getDiff(Long firstTimestamp, Long secondTimestamp, String sid1, String sid2) throws EDBException;
 
     /**
      * Find all OIDs which have been "resurrected" (deleted and recreated)
@@ -129,14 +217,29 @@ public interface EngineeringDatabaseService {
     List<String> getResurrectedOIDs() throws EDBException;
 
     /**
+     * Find all OIDs which have been "resurrected" in the given stage (deleted and recreated)
+     */
+    List<String> getResurrectedOIDs(String sid) throws EDBException;
+
+    /**
      * Fixed-Complex-Query - Get all objects at the state of last commit which matches the provided query.
      */
     List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> query) throws EDBException;
 
     /**
+     * Fixed-Complex-Query - Get all staged objects at the state of last commit which matches the provided query.
+     */
+    List<EDBObject> getStateOfLastCommitMatching(Map<String, Object> queryMap, String sid) throws EDBException;
+
+    /**
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value) throws EDBException;
+
+    /**
+     * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query, String sid)
+     */
+    List<EDBObject> getStateOfLastCommitMatchingByKeyValue(String key, Object value, String sid) throws EDBException;
 
     /**
      * Creates an EDBCommit object out of the given EDBObject lists
@@ -145,12 +248,33 @@ public interface EngineeringDatabaseService {
         throws EDBException;
 
     /**
+     * Creates an staged EDBCommit object out of the given EDBObject lists
+     */
+    EDBCommit createEDBCommit(EDBStage stage, List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException;
+
+    /**
      * Returns the revision of the current state of the EDB.
      */
     UUID getCurrentRevisionNumber() throws EDBException;
-    
+
+    /**
+     * Returns the revision of the current state of the stage.
+     */
+    UUID getCurrentRevisionNumber(EDBStage stage) throws EDBException;
+
     /**
      * Returns the revision of the last commit performed in the EDB under the given contextId.
      */
     UUID getLastRevisionNumberOfContext(String contextId) throws EDBException;
+
+    /**
+     * Returns the revision of the last commit performed in the stage under the given contextId.
+     */
+    UUID getLastRevisionNumberOfContext(String contextId, String sid) throws EDBException;
+    
+    /**
+     * Creates an EDBStage object.
+     */
+    EDBStage createEDBStage(String stageId);
 }

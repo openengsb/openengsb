@@ -14,37 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.edb.api;
 
-package org.openengsb.core.edb.jpa.internal;
-
-import java.util.List;
-import org.openengsb.core.edb.api.EDBObject;
-import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import java.io.Serializable;
 
 /**
- * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
+ * The EDBStage represents an stage and holds all needed information
+ * for staging.
  */
-public class JPAHead {
-    private List<JPAObject> objects;
-    private Long timestamp;
+public interface EDBStage extends Serializable {
+    /**
+     * Set the id of the current stage.
+     */
+    void setStageId(String id);
     
-    public List<EDBObject> getEDBObjects() {
-        return EDBUtils.convertJPAObjectsToEDBObjects(this.objects);
-    }
+    /**
+     * Get the current stage id.
+     */
+    String getStageId();
     
-    public void setJPAObjects(List<JPAObject> objects) {
-        this.objects = objects;
-    }
-
-    public List<JPAObject> getJPAObjects() {
-        return objects;
-    }
+    /**
+     * Set the creator of the current stage.
+     */
+    void setCreator(String creator);
     
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
+    /**
+     * Get the creator of the stage.
+     */
+    String getCreator();
     
-    public Long getTimestamp() {
-        return timestamp;
-    }
+    /**
+     * Set the creation time of the current stage.
+     */
+    void setTimeStamp(Long timeStamp);
+    
+    /**
+     * Get the creation time of the current stage.
+     */
+    Long getTimeStamp();
 }

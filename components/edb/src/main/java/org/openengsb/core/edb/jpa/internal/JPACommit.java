@@ -20,6 +20,7 @@ package org.openengsb.core.edb.jpa.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,12 +28,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
+import org.openengsb.core.edb.api.EDBStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +59,9 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private String revision;
     @Column(name = "PARENT")
     private String parent;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "STAGE", nullable = true)
+    private JPAStage stage;
     @Column(name = "DOMAIN")
     private String domainId;
     @Column(name = "CONNECTOR")
@@ -73,7 +79,8 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     private List<String> deletions;
 
     /**
-     * the empty constructor is only for the jpa enhancer. Do not use it in real code.
+     * the empty constructor is only for the jpa enhancer. Do not use it in real
+     * code.
      */
     @Deprecated
     public JPACommit() {
@@ -85,6 +92,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public JPACommit(String committer, String contextId) {
         this.committer = committer;
         this.context = contextId;
+        this.stage = null;
         deletions = new ArrayList<String>();
         inserts = new ArrayList<JPAObject>();
         updates = new ArrayList<JPAObject>();
@@ -107,7 +115,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         objects.addAll(updates);
         return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
-    
+
     public List<JPAObject> getJPAObjects() {
         List<JPAObject> objects = new ArrayList<JPAObject>();
         objects.addAll(inserts);
@@ -199,17 +207,17 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return inserts != null ? EDBUtils.convertJPAObjectsToEDBObjects(inserts)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getInsertedObjects() {
         return inserts != null ? inserts : new ArrayList<JPAObject>();
     }
 
     @Override
     public List<EDBObject> getUpdates() {
-        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates) 
+        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getUpdatedObjects() {
         return updates != null ? updates : new ArrayList<JPAObject>();
     }
@@ -228,7 +236,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void setHeadRevisionNumber(UUID head) {
         this.parent = head != null ? head.toString() : null;
     }
-    
+
     @Override
     public String getDomainId() {
         return domainId;
@@ -267,5 +275,15 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Override
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public EDBStage getEDBStage() {
+        return this.stage;
+    }
+
+    @Override
+    public void setEDBStage(EDBStage stage) {
+        this.stage = (JPAStage) stage;
     }
 }
