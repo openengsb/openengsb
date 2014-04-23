@@ -71,7 +71,7 @@ public class LoginPage extends OpenEngSBPage {
     public void renderHead(IHeaderResponse response) {
         response.render(CssHeaderItem.forReference(CommonCssLocator.getGridsCss()));
         response.render(CssHeaderItem.forReference(CommonCssLocator.getLoginPageCss()));
-        response.render(JavaScriptHeaderItem.forReference(CommonCssLocator.getJqueryUiCss()));
+        response.render(CssHeaderItem.forReference(CommonCssLocator.getJqueryUiCss()));
         response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryJs()));
         response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryUi()));
         response.render(JavaScriptHeaderItem.forReference(CommonJsLocator.getJqueryHelper()));
