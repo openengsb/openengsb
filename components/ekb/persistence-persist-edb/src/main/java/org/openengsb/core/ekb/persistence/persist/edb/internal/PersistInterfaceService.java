@@ -53,13 +53,13 @@ import com.google.common.base.Objects;
  */
 public class PersistInterfaceService implements PersistInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistInterfaceService.class);
-    private EngineeringDatabaseService edbService;
-    private EDBConverter edbConverter;
-    private List<EKBPreCommitHook> preCommitHooks;
-    private List<EKBPostCommitHook> postCommitHooks;
-    private List<EKBErrorHook> errorHooks;
+    private final EngineeringDatabaseService edbService;
+    private final EDBConverter edbConverter;
+    private final List<EKBPreCommitHook> preCommitHooks;
+    private final List<EKBPostCommitHook> postCommitHooks;
+    private final List<EKBErrorHook> errorHooks;
     private ContextLockingMode mode;
-    private Set<String> activeWritingContexts;
+    private final Set<String> activeWritingContexts;
 
     public PersistInterfaceService(EngineeringDatabaseService edbService, EDBConverter edbConverter,
             List<EKBPreCommitHook> preCommitHooks, List<EKBPostCommitHook> postCommitHooks,
@@ -314,5 +314,21 @@ public class PersistInterfaceService implements PersistInterface {
             oids.add(object.getOID());
         }
         return oids;
+    }
+
+    @Override
+    public void deleteCommit(UUID revision, String contextId) throws EKBException {
+        if (revision == null || contextId == null) {
+            throw new EKBException("null revision or context not allowed");
+        }
+        try {
+            lockContext(contextId);
+            checkForContextHeadRevision(contextId, revision);
+            edbService.deleteCommit(revision);
+        } catch (EDBException e) {
+            throw new EKBException("Error reverting commit with revision " + revision, e);
+        } finally {
+            releaseContext(contextId);
+        }
     }
 }

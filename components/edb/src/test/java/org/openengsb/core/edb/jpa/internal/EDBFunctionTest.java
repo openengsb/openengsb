@@ -17,8 +17,8 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.openengsb.core.edb.api.EDBCommit;
@@ -38,7 +39,7 @@ import org.openengsb.core.edb.api.EDBObjectEntry;
 
 import com.google.common.collect.Maps;
 
-public class EDBFunctionTest extends AbstractEDBTest {    
+public class EDBFunctionTest extends AbstractEDBTest {
 
     @Test
     public void testOpenDatabase_shouldWork() throws Exception {
@@ -444,13 +445,13 @@ public class EDBFunctionTest extends AbstractEDBTest {
         assertThat(value.getClass().getName(), is(Date.class.getName()));
         assertThat((Date) value, is(date));
     }
-    
+
     @Test
     public void testIfCreatedCommitContainsRevisionNumber_shouldReturnNotNull() throws Exception {
         EDBCommit ci = getEDBCommit();
         assertThat(ci.getRevisionNumber(), notNullValue());
     }
-    
+
     @Test(expected = EDBException.class)
     public void testIfWrongParentCausesCommitError_shouldThrowException() throws Exception {
         db.commit(getEDBCommit()); // add one entry so that there is actually a head
@@ -460,5 +461,25 @@ public class EDBFunctionTest extends AbstractEDBTest {
         ci2.insert(createRandomTestObject("/wrongparent/2"));
         db.commit(ci2);
         db.commit(ci);
+    }
+
+    @Test
+    public void testDeleteCommit_shouldDeleteCommit() throws Exception {
+        UUID preCommitRevision = db.getCurrentRevisionNumber();
+        db.commit(getEDBCommit());
+        UUID postCommitRevision = db.getCurrentRevisionNumber();
+        db.deleteCommit(postCommitRevision);
+        UUID postDeleteRevision = db.getCurrentRevisionNumber();
+        assertThat(postDeleteRevision, is(preCommitRevision));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testDeleteWithNullRevision_shouldThrowException() {
+        db.deleteCommit(null);
+    }
+
+    @Test(expected = EDBException.class)
+    public void testDeleteCommitWithWrongRevision_shouldThrowException() {
+        db.deleteCommit(UUID.randomUUID());
     }
 }

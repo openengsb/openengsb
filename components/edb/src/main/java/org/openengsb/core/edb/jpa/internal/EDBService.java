@@ -43,8 +43,8 @@ import org.openengsb.core.edb.jpa.internal.util.EDBUtils;
  * The implementation of the EngineeringDatabaseService, extending the AbstractEDBService
  */
 public class EDBService extends AbstractEDBService {
-    private JPADao dao;
-    private AuthenticationContext authenticationContext;
+    private final JPADao dao;
+    private final AuthenticationContext authenticationContext;
 
     public EDBService(JPADao dao, AuthenticationContext authenticationContext,
             List<EDBBeginCommitHook> beginCommitHooks, List<EDBPreCommitHook> preCommitHooks,
@@ -178,7 +178,7 @@ public class EDBService extends AbstractEDBService {
             return null;
         }
     }
-    
+
     @Override
     public UUID getLastRevisionNumberOfContext(String contextId) throws EDBException {
         try {
@@ -260,4 +260,12 @@ public class EDBService extends AbstractEDBService {
         return ContextHolder.get().getCurrentContextId();
     }
 
+    @Override
+    public void deleteCommit(UUID revision) throws EDBException {
+        if (revision == null) {
+            throw new EDBException("null revision not allowed");
+        }
+        JPACommit commit = dao.getJPACommit(revision.toString());
+        performDeleteLogic(commit);
+    }
 }

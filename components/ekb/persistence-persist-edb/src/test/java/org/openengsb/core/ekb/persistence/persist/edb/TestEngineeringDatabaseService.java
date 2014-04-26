@@ -224,4 +224,8 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
         return null;
     }
 
+    @Override
+    public void deleteCommit(UUID revision) throws EDBException {
+    }
+
 }

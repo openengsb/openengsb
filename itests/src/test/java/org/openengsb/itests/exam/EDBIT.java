@@ -48,6 +48,7 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
+import org.openengsb.core.ekb.api.EKBConcurrentException;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
@@ -239,7 +240,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void testEKBInsertCommitAndQueryWithContextId_shouldReturnModelOnlyOnCorrectContext() throws Exception {
@@ -339,7 +340,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(name2, is("test2"));
         assertThat(version2, is(2));
     }
-    
+
     @Test
     public void testIfLoadingOfCommitsWork_shouldWork() throws Exception {
         EDBCommit commit = edbService.createEDBCommit(null, null, null);
@@ -867,7 +868,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(result2.getName(), is("middle"));
         assertThat(result3.getName(), is("before"));
     }
-    
+
     @Test
     public void testLoadingOfEKBCommits_shouldLoadAllInformation() throws Exception {
         TestModelDecorator model = getTestModelDecorator();
@@ -882,7 +883,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         commit.setComment("This is the second comment");
         persist.commit(commit);
         String revision2 = commit.getRevisionNumber().toString();
-        
+
         commit = query.loadCommit(revision);
         assertThat(commit, notNullValue());
         assertThat(commit.getInserts().size(), is(1));
@@ -891,7 +892,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
         assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
         assertThat(commit.getComment(), is("This is the first comment"));
-        
+
         commit = query.loadCommit(revision2);
         assertThat(commit, notNullValue());
         assertThat(commit.getUpdates().size(), is(1));
@@ -943,6 +944,45 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(edbObject.getLong("primitiveLong"), is(Long.MAX_VALUE));
         assertThat(edbObject.getFloat("primitiveFloat"), is(Float.MAX_VALUE));
         assertThat(edbObject.getDouble("primitiveDouble"), is(Double.MAX_VALUE));
+    }
+
+    @Test
+    public void testDeleteCommitWithLastRevision_shouldDeleteCommit() throws Exception {
+        UUID preCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("deleteCommitTest/1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+
+        UUID postCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+        persist.deleteCommit(postCommitRevision, CONTEXT);
+
+        UUID postDeleteRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+
+        assertThat(postDeleteRevision, is(preCommitRevision));
+    }
+
+    @Test(expected = EKBConcurrentException.class)
+    public void testDeleteCommitWithOldRevision_shouldThrowException() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("deleteCommitTest/2");
+        EKBCommit commit1 = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit1);
+
+        UUID postFirstCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+
+        TestModelDecorator model2 = getTestModelDecorator();
+        model.setEdbId("deleteCommitTest/3");
+        EKBCommit commit2 = getTestEKBCommit().addInsert(model2.getModel());
+        persist.commit(commit2);
+
+        persist.deleteCommit(postFirstCommitRevision, CONTEXT);
+    }
+
+    @Test(expected = EKBException.class)
+    public void testDeleteCommitWithWrongRevision_shouldThrowException() {
+        persist.deleteCommit(UUID.randomUUID(), CONTEXT);
     }
 
     private TestModelDecorator loadTestModel(String oid) throws Exception {
