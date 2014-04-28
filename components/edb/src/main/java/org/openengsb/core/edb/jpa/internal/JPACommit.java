@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -63,10 +64,10 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "INSTANCE")
     private String instanceId;
     @Column(name = "INSERTS")
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private List<JPAObject> inserts;
     @Column(name = "UPDATES")
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private List<JPAObject> updates;
     @Column(name = "DELS")
     @ElementCollection(fetch = FetchType.EAGER)

@@ -952,15 +952,22 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         TestModelDecorator model = getTestModelDecorator();
         model.setEdbId("deleteCommitTest/1");
+        model.setName("deleteModel1");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
         UUID postCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+        EKBCommit cit = query.loadCommit(postCommitRevision.toString());
         persist.deleteCommit(postCommitRevision, CONTEXT);
 
         UUID postDeleteRevision = query.getLastRevisionNumberOfContext(CONTEXT);
 
         assertThat(postDeleteRevision, is(preCommitRevision));
+
+        QueryRequest request = QueryRequest.query("name", "deleteModel1");
+        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+
+        assertThat(result.size(), is(0));
     }
 
     @Test(expected = EKBConcurrentException.class)
