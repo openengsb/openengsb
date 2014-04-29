@@ -214,15 +214,6 @@
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${smx.specs.version}</bundle>
   </feature>
 
-  <feature name="activemq-web-console" version="${project.version}" description="ActiveMQ Webconsole">
-    <details>
-      This feature provides a webconsole on top of the OpenEngSB ActiveMQ infrastructure. It allows various operations to
-      configure and watch queues but is not integrated into the OpenEngSB by now.
-    </details>
-    <feature version="[2,3)">war</feature>
-    <bundle>mvn:org.apache.activemq/activemq-web-console/${activemq.version}/war</bundle>
-  </feature>
-
   <feature name="openengsb-infrastructure-jms" version="${project.version}" description="OpenEngSB JMS Infrastructure">
     <details>
       This feature provides activemq support including the queue configurations for the OpenEngSB.
@@ -230,6 +221,16 @@
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
     <feature>spring-jms</feature>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jms/${project.version}</bundle>
+  </feature>
+
+  <feature name="activemq-web-console" version="${project.version}" description="ActiveMQ Webconsole">
+    <details>
+      This feature provides a webconsole on top of the OpenEngSB ActiveMQ infrastructure. It allows various operations to
+      configure and watch queues but is not integrated into the OpenEngSB by now.
+    </details>
+    <feature version="[3,4)">war</feature>
+    <feature>openengsb-infrastructure-jms</feature>
+    <bundle>mvn:org.apache.activemq/activemq-web-console/${activemq.version}/war</bundle>
   </feature>
 
   <feature name="openengsb-ports-jms" version="${project.version}" description="OpenEngSB JMS Port Integration">
