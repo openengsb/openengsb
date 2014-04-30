@@ -48,7 +48,7 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
     @Override
     protected String[] getInitScriptResourceNames() {
         return new String[]{
-            "index-schema.h2.sql"
+                "index-schema.h2.sql"
         };
     }
 

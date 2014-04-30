@@ -41,7 +41,7 @@
   <packaging>bundle</packaging>
 
   <description>
-    Engineering Database Index container implementation using JDBC
+    Engineering Database Index implementation using JDBC
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -63,13 +63,13 @@
   <build>
     <resources>
       <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
+        <directory>src/main/resources</directory>
         <includes>
           <include>**/*</include>
         </includes>
       </resource>
       <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
+        <directory>src/main/resources</directory>
         <filtering>true</filtering>
         <includes>
           <include>**/*.info</include>

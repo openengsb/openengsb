@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.edbi.hooks;
+package org.openengsb.framework.edbi.hook.internal;
 
-import java.util.ArrayList;
+import static org.openengsb.core.util.CollectionUtilsExtended.group;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +32,8 @@ import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
 
 /**
  * Converts EKBCommits into IndexCommits.
@@ -48,6 +50,12 @@ public class CommitConverter {
         this.contextHolder = contextHolder;
     }
 
+    /**
+     * Convert the given EKBCommit to an IndexCommit.
+     * 
+     * @param ekbCommit the commit to convert
+     * @return a new IndexCommit instance representing the given EKBCommit
+     */
     public IndexCommit convert(EKBCommit ekbCommit) {
         IndexCommit commit = new IndexCommit();
 
@@ -75,21 +83,19 @@ public class CommitConverter {
         return commit;
     }
 
+    /**
+     * Groups all models in the given collection by their class.
+     * 
+     * @param models the models
+     * @return a map containing all given models grouped by their type
+     */
     protected Map<Class<?>, List<OpenEngSBModel>> mapByClass(Collection<OpenEngSBModel> models) {
-
-        Map<Class<?>, List<OpenEngSBModel>> map = new HashMap<>();
-
-        for (OpenEngSBModel model : models) {
-            Class<?> modelClass = model.getClass();
-
-            if (map.get(modelClass) == null) {
-                map.put(modelClass, new ArrayList<OpenEngSBModel>());
+        return group(models, new Function<OpenEngSBModel, Class<?>>() {
+            @Override
+            public Class<?> apply(OpenEngSBModel input) {
+                return input.getClass();
             }
-
-            map.get(modelClass).add(model);
-        }
-
-        return map;
+        });
     }
 
     protected Set<Class<?>> extractTypes(Collection<OpenEngSBModel> inserts, Collection<OpenEngSBModel> updates,
@@ -142,4 +148,5 @@ public class CommitConverter {
 
         return contextId;
     }
+
 }

@@ -172,7 +172,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
         String sql = "INSERT INTO `INDEX_INFORMATION` VALUES (?, ?, ?, ?)";
         Object[] args = new Object[]{
             index.getName(),
-            index.getClass().getCanonicalName(),
+            index.getModelClass().getCanonicalName(),
             index.getHeadTableName(),
             index.getHistoryTableName()
         };

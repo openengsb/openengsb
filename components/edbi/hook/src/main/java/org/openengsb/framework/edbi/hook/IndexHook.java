@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openengsb.core.edbi.hooks;
+package org.openengsb.framework.edbi.hook;
 
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
@@ -23,13 +22,13 @@ import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexEngine;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
+import org.openengsb.framework.edbi.hook.internal.CommitConverter;
 
 /**
  * EKBPostCommitHook implementation responsible for extracting model information and calling {@code IndexService} to
  * create indices for model types.
  */
 public class IndexHook implements EKBPostCommitHook {
-
     private IndexEngine indexEngine;
     private AuthenticationContext authenticationContext;
 
@@ -61,5 +60,4 @@ public class IndexHook implements EKBPostCommitHook {
     public void setIndexEngine(IndexEngine indexEngine) {
         this.indexEngine = indexEngine;
     }
-
 }
