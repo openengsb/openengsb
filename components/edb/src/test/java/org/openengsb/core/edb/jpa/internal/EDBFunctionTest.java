@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.edb.api.EDBCommit;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
@@ -465,12 +466,34 @@ public class EDBFunctionTest extends AbstractEDBTest {
 
     @Test
     public void testDeleteCommit_shouldDeleteCommit() throws Exception {
-        UUID preCommitRevision = db.getCurrentRevisionNumber();
-        db.commit(getEDBCommit());
-        UUID postCommitRevision = db.getCurrentRevisionNumber();
-        db.deleteCommit(postCommitRevision);
-        UUID postDeleteRevision = db.getCurrentRevisionNumber();
-        assertThat(postDeleteRevision, is(preCommitRevision));
+        UUID preCommit1Revision = db.getCurrentRevisionNumber();
+        UUID preCommit2Revision = commitObject("deleteCommitTest/1", "deleteObject1");
+        UUID postCommit2Revision = commitObject("deleteCommitTest/2", "deleteObject2");
+
+        db.deleteCommit(postCommit2Revision);
+        UUID postDelete1Revision = db.getCurrentRevisionNumber();
+        assertThat(postDelete1Revision, is(preCommit2Revision));
+
+        QueryRequest request = QueryRequest.query("name", "deleteObject1");
+        List<EDBObject> result = db.query(request);
+        assertThat(result.size(), is(1));
+
+        db.deleteCommit(preCommit2Revision);
+        UUID postDelete2Revision = db.getCurrentRevisionNumber();
+        assertThat(postDelete2Revision, is(preCommit1Revision));
+
+        request = QueryRequest.query("name", "deleteObject1");
+        result = db.query(request);
+        assertThat(result.size(), is(0));
+    }
+
+    private UUID commitObject(String oid, String name) {
+        EDBCommit ci = getEDBCommit();
+        EDBObject eo = createRandomTestObject(oid);
+        eo.putEDBObjectEntry("name", name);
+        ci.insert(eo);
+        db.commit(ci);
+        return db.getCurrentRevisionNumber();
     }
 
     @Test(expected = EDBException.class)
