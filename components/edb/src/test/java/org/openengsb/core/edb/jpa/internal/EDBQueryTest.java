@@ -38,6 +38,8 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
+import com.google.common.collect.Lists;
+
 public class EDBQueryTest extends AbstractEDBTest {
 
     @Test
@@ -564,4 +566,17 @@ public class EDBQueryTest extends AbstractEDBTest {
         assertThat(result.get(0).getOID(), is("/test2/query/15/4"));
     }
 
+    @Test
+    public void testIfQueryForDeletedObjects_onlyReturnsDeletedObjects() {
+        EDBObject v1 = createRandomTestObject("/test/query/16/1");
+        commitObjects(Lists.newArrayList(v1), null, null);
+        commitObjects(null, null, Lists.newArrayList(v1));
+
+        QueryRequest request = QueryRequest.create();
+        List<EDBObject> result = db.query(request);
+        assertThat(result.size(), is(0));
+
+        result = db.query(request.deleted());
+        assertThat(result.size(), is(1));
+    }
 }

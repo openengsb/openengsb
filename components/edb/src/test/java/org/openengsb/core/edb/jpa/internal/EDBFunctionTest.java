@@ -17,6 +17,7 @@
 
 package org.openengsb.core.edb.jpa.internal;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -38,6 +39,7 @@ import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class EDBFunctionTest extends AbstractEDBTest {
@@ -464,36 +466,35 @@ public class EDBFunctionTest extends AbstractEDBTest {
         db.commit(ci);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testDeleteCommit_shouldDeleteCommit() throws Exception {
         UUID preCommit1Revision = db.getCurrentRevisionNumber();
-        UUID preCommit2Revision = commitObject("deleteCommitTest/1", "deleteObject1");
-        UUID postCommit2Revision = commitObject("deleteCommitTest/2", "deleteObject2");
+        EDBObject eo1 = createRandomTestObject("deleteCommitTest/1");
+        EDBObject eo2 = createRandomTestObject("deleteCommitTest/2");
+        commitObjects(Lists.newArrayList(eo1, eo2), null, null);
 
+        UUID preCommit2Revision = db.getCurrentRevisionNumber();
+        EDBObject eo3 = createRandomTestObject("deleteCommitTest/3");
+        commitObjects(Lists.newArrayList(eo3), null, Lists.newArrayList(eo1, eo2));
+
+        UUID postCommit2Revision = db.getCurrentRevisionNumber();
+        List<EDBObject> result = db.query(QueryRequest.create());
+        assertThat(result.size(), is(1));
         db.deleteCommit(postCommit2Revision);
+
         UUID postDelete1Revision = db.getCurrentRevisionNumber();
         assertThat(postDelete1Revision, is(preCommit2Revision));
-
-        QueryRequest request = QueryRequest.query("name", "deleteObject1");
-        List<EDBObject> result = db.query(request);
-        assertThat(result.size(), is(1));
-
+        result = db.query(QueryRequest.create());
+        assertThat(result.size(), is(2));
+        assertThat(result.get(0).getOID(), anyOf(is(eo1.getOID()), is(eo2.getOID())));
+        assertThat(result.get(1).getOID(), anyOf(is(eo1.getOID()), is(eo2.getOID())));
         db.deleteCommit(preCommit2Revision);
+
         UUID postDelete2Revision = db.getCurrentRevisionNumber();
         assertThat(postDelete2Revision, is(preCommit1Revision));
-
-        request = QueryRequest.query("name", "deleteObject1");
-        result = db.query(request);
+        result = db.query(QueryRequest.create());
         assertThat(result.size(), is(0));
-    }
-
-    private UUID commitObject(String oid, String name) {
-        EDBCommit ci = getEDBCommit();
-        EDBObject eo = createRandomTestObject(oid);
-        eo.putEDBObjectEntry("name", name);
-        ci.insert(eo);
-        db.commit(ci);
-        return db.getCurrentRevisionNumber();
     }
 
     @Test(expected = EDBException.class)

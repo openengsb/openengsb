@@ -224,10 +224,13 @@ public abstract class AbstractEDBService implements EngineeringDatabaseService {
         }
     }
 
-    protected void performDeleteLogic(JPACommit commit) {
+    protected void performDeleteLogic(JPACommit commit, List<JPAObject> deletedObjects) {
         synchronized (entityManager) {
             try {
                 beginTransaction();
+                for (JPAObject deletedObject : deletedObjects) {
+                    entityManager.remove(deletedObject);
+                }
                 entityManager.remove(commit);
                 commitTransaction();
                 logger.info("Deleted commit " + commit.getRevisionNumber());

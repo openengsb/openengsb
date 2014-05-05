@@ -444,7 +444,7 @@ public class DefaultJPADao implements JPADao {
             if (request.getContextId() != null) {
                 predicates.add(criteriaBuilder.like(from.get("oid"), request.getContextId() + "/%"));
             }
-            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE));
+            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), !request.isDeleted()));
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
             predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));

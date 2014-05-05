@@ -949,42 +949,32 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testDeleteCommitWithLastRevision_shouldDeleteCommit() throws Exception {
         UUID preCommit1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
-
-        TestModelDecorator model = getTestModelDecorator();
-        model.setEdbId("deleteCommitTest/1");
-        model.setName("deleteModel1");
-        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        TestModelDecorator model1 = getTestModelDecorator();
+        model1.setEdbId("deleteCommitTest/1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model1.getModel());
         persist.commit(commit);
 
         UUID preCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
-
-        model = getTestModelDecorator();
-        model.setEdbId("deleteCommitTest/2");
-        model.setName("deleteModel2");
-        commit = getTestEKBCommit().addInsert(model.getModel());
+        TestModelDecorator model2 = getTestModelDecorator();
+        model2.setEdbId("deleteCommitTest/2");
+        commit = getTestEKBCommit().addInsert(model2.getModel());
+        commit.addDelete(model1.getModel());
         persist.commit(commit);
 
         UUID postCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
         persist.deleteCommit(postCommit2Revision, CONTEXT);
 
         UUID postDelete1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
-
         assertThat(postDelete1Revision, is(preCommit2Revision));
-
-        QueryRequest request = QueryRequest.query("name", "deleteModel1");
+        QueryRequest request = QueryRequest.query("edbId", "deleteCommitTest/1");
         List<Object> result = (List<Object>) query.query(getTestModel(), request);
-
         assertThat(result.size(), is(1));
-
         persist.deleteCommit(preCommit2Revision, CONTEXT);
 
         UUID postDelete2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
-
         assertThat(postDelete2Revision, is(preCommit1Revision));
-
-        request = QueryRequest.query("name", "deleteModel1");
+        request = QueryRequest.query("edbId", "deleteCommitTest/1");
         result = (List<Object>) query.query(getTestModel(), request);
-
         assertThat(result.size(), is(0));
     }
 
