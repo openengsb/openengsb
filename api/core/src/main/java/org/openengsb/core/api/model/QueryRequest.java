@@ -50,6 +50,7 @@ public final class QueryRequest {
     private boolean wildcardAware;
     private boolean caseSensitive;
     private boolean andJoined;
+    private boolean deleted;
 
     private QueryRequest() {
         parameters = Maps.newHashMap();
@@ -58,6 +59,7 @@ public final class QueryRequest {
         caseSensitive = true;
         andJoined = true;
         contextId = null;
+        deleted = false;
     }
 
     /**
@@ -205,6 +207,21 @@ public final class QueryRequest {
      */
     public QueryRequest setContextId(String contextId) {
         this.contextId = contextId;
+        return this;
+    }
+
+    /**
+     * Returns true if only deleted models are queried and false if only undeleted models are queried.
+     */
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Sets this request to query for deleted models only.
+     */
+    public QueryRequest deleted() {
+        this.deleted = true;
         return this;
     }
 
