@@ -266,6 +266,12 @@ public class EDBService extends AbstractEDBService {
             throw new EDBException("null revision not allowed");
         }
         JPACommit commit = dao.getJPACommit(revision.toString());
-        performDeleteLogic(commit);
+        QueryRequest request =
+            QueryRequest.create().deleted().orJoined();
+        for (String oid : commit.getDeletions()) {
+            request.addParameter("oid", oid);
+        }
+        List<JPAObject> deletedObjects = dao.query(request);
+        performDeleteLogic(commit, deletedObjects);
     }
 }
