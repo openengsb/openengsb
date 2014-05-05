@@ -948,7 +948,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testDeleteCommitWithLastRevision_shouldDeleteCommit() throws Exception {
-        UUID preCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID preCommit1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
 
         TestModelDecorator model = getTestModelDecorator();
         model.setEdbId("deleteCommitTest/1");
@@ -956,16 +956,34 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
 
-        UUID postCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
-        EKBCommit cit = query.loadCommit(postCommitRevision.toString());
-        persist.deleteCommit(postCommitRevision, CONTEXT);
+        UUID preCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
 
-        UUID postDeleteRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+        model = getTestModelDecorator();
+        model.setEdbId("deleteCommitTest/2");
+        model.setName("deleteModel2");
+        commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
 
-        assertThat(postDeleteRevision, is(preCommitRevision));
+        UUID postCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+        persist.deleteCommit(postCommit2Revision, CONTEXT);
+
+        UUID postDelete1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+
+        assertThat(postDelete1Revision, is(preCommit2Revision));
 
         QueryRequest request = QueryRequest.query("name", "deleteModel1");
         List<Object> result = (List<Object>) query.query(getTestModel(), request);
+
+        assertThat(result.size(), is(1));
+
+        persist.deleteCommit(preCommit2Revision, CONTEXT);
+
+        UUID postDelete2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+
+        assertThat(postDelete2Revision, is(preCommit1Revision));
+
+        request = QueryRequest.query("name", "deleteModel1");
+        result = (List<Object>) query.query(getTestModel(), request);
 
         assertThat(result.size(), is(0));
     }
@@ -973,14 +991,14 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Test(expected = EKBConcurrentException.class)
     public void testDeleteCommitWithOldRevision_shouldThrowException() throws Exception {
         TestModelDecorator model = getTestModelDecorator();
-        model.setEdbId("deleteCommitTest/2");
+        model.setEdbId("deleteCommitTest/3");
         EKBCommit commit1 = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit1);
 
         UUID postFirstCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
 
         TestModelDecorator model2 = getTestModelDecorator();
-        model.setEdbId("deleteCommitTest/3");
+        model.setEdbId("deleteCommitTest/4");
         EKBCommit commit2 = getTestEKBCommit().addInsert(model2.getModel());
         persist.commit(commit2);
 
