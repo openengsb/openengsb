@@ -64,10 +64,10 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     @Column(name = "INSTANCE")
     private String instanceId;
     @Column(name = "INSERTS")
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<JPAObject> inserts;
     @Column(name = "UPDATES")
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<JPAObject> updates;
     @Column(name = "DELS")
     @ElementCollection(fetch = FetchType.EAGER)
@@ -102,13 +102,14 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return committed;
     }
 
+    @Override
     public final List<EDBObject> getObjects() {
         List<JPAObject> objects = new ArrayList<JPAObject>();
         objects.addAll(inserts);
         objects.addAll(updates);
         return EDBUtils.convertJPAObjectsToEDBObjects(objects);
     }
-    
+
     public List<JPAObject> getJPAObjects() {
         List<JPAObject> objects = new ArrayList<JPAObject>();
         objects.addAll(inserts);
@@ -200,17 +201,17 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
         return inserts != null ? EDBUtils.convertJPAObjectsToEDBObjects(inserts)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getInsertedObjects() {
         return inserts != null ? inserts : new ArrayList<JPAObject>();
     }
 
     @Override
     public List<EDBObject> getUpdates() {
-        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates) 
+        return updates != null ? EDBUtils.convertJPAObjectsToEDBObjects(updates)
                 : new ArrayList<EDBObject>();
     }
-    
+
     public List<JPAObject> getUpdatedObjects() {
         return updates != null ? updates : new ArrayList<JPAObject>();
     }
@@ -229,7 +230,7 @@ public class JPACommit extends VersionedEntity implements EDBCommit {
     public void setHeadRevisionNumber(UUID head) {
         this.parent = head != null ? head.toString() : null;
     }
-    
+
     @Override
     public String getDomainId() {
         return domainId;
