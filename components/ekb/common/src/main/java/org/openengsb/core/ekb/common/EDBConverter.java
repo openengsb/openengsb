@@ -24,25 +24,31 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.FileWrapper;
+import org.openengsb.core.api.model.ModelWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.OpenEngSBForeignKey;
 import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EDBObjectEntry;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.ConnectorInformation;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBException;
 import org.openengsb.core.util.ModelUtils;
@@ -56,8 +62,11 @@ import com.google.common.collect.Lists;
  */
 public class EDBConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBConverter.class);
-    private EngineeringDatabaseService edbService;
     
+    public static final String FILEWRAPPER_FILENAME_SUFFIX = ".filename";
+    public static final String REFERENCE_PREFIX = "refersTo_";
+    private EngineeringDatabaseService edbService;
+
     public EDBConverter(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
@@ -73,9 +82,8 @@ public class EDBConverter {
     /**
      * Converts a list of EDBObjects to a list of models of the given model type.
      */
-    public <T> List<T> convertEDBObjectsToModelObjects(Class<T> model,
-            List<EDBObject> objects) {
-        List<T> models = new ArrayList<T>();
+    public <T> List<T> convertEDBObjectsToModelObjects(Class<T> model, List<EDBObject> objects) {
+        List<T> models = new ArrayList<>();
         for (EDBObject object : objects) {
             T instance = convertEDBObjectToModel(model, object);
             if (instance != null) {
@@ -109,8 +117,8 @@ public class EDBConverter {
         if (!checkEDBObjectModelType(object, model)) {
             return null;
         }
-        EDBConverterUtils.filterEngineeringObjectInformation(object, model);
-        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
+        filterEngineeringObjectInformation(object, model);
+        List<OpenEngSBModelEntry> entries = new ArrayList<>();
         for (PropertyDescriptor propertyDescriptor : getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null
                     || propertyDescriptor.getName().equals(ModelUtils.MODEL_TAIL_FIELD_NAME)) {
@@ -138,7 +146,7 @@ public class EDBConverter {
         }
         return ModelUtils.createModel(model, entries);
     }
-    
+
     /**
      * Returns all property descriptors for a given class.
      */
@@ -188,12 +196,12 @@ public class EDBConverter {
             object.remove(propertyName);
         } else if (parameterType.equals(FileWrapper.class)) {
             FileWrapper wrapper = new FileWrapper();
-            String filename = object.getString(propertyName + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX);
+            String filename = object.getString(propertyName + FILEWRAPPER_FILENAME_SUFFIX);
             String content = (String) value;
             wrapper.setFilename(filename);
             wrapper.setContent(Base64.decodeBase64(content));
             value = wrapper;
-            object.remove(propertyName + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX);
+            object.remove(propertyName + FILEWRAPPER_FILENAME_SUFFIX);
         } else if (parameterType.equals(File.class)) {
             return null;
         } else if (object.containsKey(propertyName)) {
@@ -225,7 +233,7 @@ public class EDBConverter {
     private List<Class<?>> getGenericParameterClasses(Method setterMethod, int depth) {
         Type t = setterMethod.getGenericParameterTypes()[0];
         ParameterizedType pType = (ParameterizedType) t;
-        List<Class<?>> classes = new ArrayList<Class<?>>();
+        List<Class<?>> classes = new ArrayList<>();
         for (int i = 0; i < depth; i++) {
             classes.add((Class<?>) pType.getActualTypeArguments()[i]);
         }
@@ -237,9 +245,9 @@ public class EDBConverter {
      */
     @SuppressWarnings("unchecked")
     private <T> List<T> getListValue(Class<T> type, String propertyName, EDBObject object) {
-        List<T> temp = new ArrayList<T>();
+        List<T> temp = new ArrayList<>();
         for (int i = 0;; i++) {
-            String property = EDBConverterUtils.getEntryNameForList(propertyName, i);
+            String property = getEntryNameForList(propertyName, i);
             Object obj = object.getObject(property);
             if (obj == null) {
                 break;
@@ -252,13 +260,13 @@ public class EDBConverter {
         }
         return temp;
     }
-    
+
     /**
      * Gets an array object out of an EDBObject.
      */
     @SuppressWarnings("unchecked")
     private <T> T[] getArrayValue(Class<T> type, String propertyName, EDBObject object) {
-        List<T> elements = getListValue(type, propertyName, object); 
+        List<T> elements = getListValue(type, propertyName, object);
         T[] ar = (T[]) Array.newInstance(type, elements.size());
         return elements.toArray(ar);
     }
@@ -267,10 +275,10 @@ public class EDBConverter {
      * Gets a map object out of an EDBObject.
      */
     private Object getMapValue(Class<?> keyType, Class<?> valueType, String propertyName, EDBObject object) {
-        Map<Object, Object> temp = new HashMap<Object, Object>();
+        Map<Object, Object> temp = new HashMap<>();
         for (int i = 0;; i++) {
-            String keyProperty = EDBConverterUtils.getEntryNameForMapKey(propertyName, i);
-            String valueProperty = EDBConverterUtils.getEntryNameForMapValue(propertyName, i);
+            String keyProperty = getEntryNameForMapKey(propertyName, i);
+            String valueProperty = getEntryNameForMapValue(propertyName, i);
             if (!object.containsKey(keyProperty)) {
                 break;
             }
@@ -309,7 +317,7 @@ public class EDBConverter {
      */
     public ConvertedCommit convertEKBCommit(EKBCommit commit) {
         ConvertedCommit result = new ConvertedCommit();
-        ConnectorInformation information = EDBConverterUtils.getConnectorInformationOfEKBCommit(commit);
+        ConnectorInformation information = commit.getConnectorInformation();
         result.setInserts(convertModelsToEDBObjects(commit.getInserts(), information));
         result.setUpdates(convertModelsToEDBObjects(commit.getUpdates(), information));
         result.setDeletes(convertModelsToEDBObjects(commit.getDeletes(), information));
@@ -321,7 +329,7 @@ public class EDBConverter {
      * the EDB directly).
      */
     public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorInformation info) {
-        List<EDBObject> result = new ArrayList<EDBObject>();
+        List<EDBObject> result = new ArrayList<>();
         if (models != null) {
             for (Object model : models) {
                 result.addAll(convertModelToEDBObject(model, info));
@@ -338,7 +346,7 @@ public class EDBConverter {
         if (!OpenEngSBModel.class.isAssignableFrom(model.getClass())) {
             throw new IllegalArgumentException("This function need to get a model passed");
         }
-        List<EDBObject> objects = new ArrayList<EDBObject>();
+        List<EDBObject> objects = new ArrayList<>();
         if (model != null) {
             convertSubModel((OpenEngSBModel) model, objects, info);
         }
@@ -350,10 +358,10 @@ public class EDBConverter {
      */
     private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorInformation info) {
         String contextId = ContextHolder.get().getCurrentContextId();
-        String oid = EDBConverterUtils.createOID(model, contextId);
+        String oid = ModelWrapper.wrap(model).getCompleteModelOID();
         EDBObject object = new EDBObject(oid);
         try {
-            EDBConverterUtils.fillEDBObjectWithEngineeringObjectInformation(object, model);
+            fillEDBObjectWithEngineeringObjectInformation(object, model);
         } catch (IllegalAccessException e) {
             LOGGER.warn("Unable to fill completely the EngineeringObjectInformation into the EDBObject", e);
             throw new EKBException("Unable to fill completely the EngineeringObjectInformation into the EDBObject", e);
@@ -366,7 +374,7 @@ public class EDBConverter {
                     FileWrapper wrapper = (FileWrapper) entry.getValue();
                     String content = Base64.encodeBase64String(wrapper.getContent());
                     object.putEDBObjectEntry(entry.getKey(), content, String.class);
-                    object.putEDBObjectEntry(entry.getKey() + EDBConverterUtils.FILEWRAPPER_FILENAME_SUFFIX,
+                    object.putEDBObjectEntry(entry.getKey() + FILEWRAPPER_FILENAME_SUFFIX,
                         wrapper.getFilename(), String.class);
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage());
@@ -389,7 +397,7 @@ public class EDBConverter {
                     if (modelItems) {
                         item = convertSubModel((OpenEngSBModel) item, objects, info);
                     }
-                    String entryName = EDBConverterUtils.getEntryNameForList(entry.getKey(), i);
+                    String entryName = getEntryNameForList(entry.getKey(), i);
                     object.putEDBObjectEntry(entryName, item, item.getClass());
                 }
             } else if (entry.getType().isArray()) {
@@ -406,7 +414,7 @@ public class EDBConverter {
                     if (modelItems) {
                         item = convertSubModel((OpenEngSBModel) item, objects, info);
                     }
-                    String entryName = EDBConverterUtils.getEntryNameForList(entry.getKey(), i);
+                    String entryName = getEntryNameForList(entry.getKey(), i);
                     object.putEDBObjectEntry(entryName, item, item.getClass());
                 }
             } else if (Map.class.isAssignableFrom(entry.getType())) {
@@ -432,8 +440,8 @@ public class EDBConverter {
                     if (valueIsModel) {
                         value = convertSubModel((OpenEngSBModel) value, objects, info);
                     }
-                    object.putEDBObjectEntry(EDBConverterUtils.getEntryNameForMapKey(entry.getKey(), i), key);
-                    object.putEDBObjectEntry(EDBConverterUtils.getEntryNameForMapValue(entry.getKey(), i), value);
+                    object.putEDBObjectEntry(getEntryNameForMapKey(entry.getKey(), i), key);
+                    object.putEDBObjectEntry(getEntryNameForMapValue(entry.getKey(), i), value);
                     i++;
                 }
             } else {
@@ -448,5 +456,84 @@ public class EDBConverter {
         object.putEDBObjectEntry("contextId", contextId);
         objects.add(object);
         return oid;
+    }
+
+    /**
+     * Adds to the EDBObject special entries which mark that a model is referring to other models through
+     * OpenEngSBForeignKey annotations
+     */
+    private void fillEDBObjectWithEngineeringObjectInformation(EDBObject object, OpenEngSBModel model)
+        throws IllegalAccessException {
+        if (!new AdvancedModelWrapper(model).isEngineeringObject()) {
+            return;
+        }
+        for (Field field : model.getClass().getDeclaredFields()) {
+            OpenEngSBForeignKey annotation = field.getAnnotation(OpenEngSBForeignKey.class);
+            if (annotation == null) {
+                continue;
+            }
+            String value = (String) FieldUtils.readField(field, model, true);
+            if (value == null) {
+                continue;
+            }
+            value = String.format("%s/%s", ContextHolder.get().getCurrentContextId(), value);
+            String key = getEOReferenceStringFromAnnotation(annotation);
+            object.put(key, new EDBObjectEntry(key, value, String.class));
+        }
+    }
+
+    /**
+     * Filters the reference prefix values added in the model to EDBObject conversion out of the EDBObject
+     */
+    private void filterEngineeringObjectInformation(EDBObject object, Class<?> model) {
+        if (!AdvancedModelWrapper.isEngineeringObjectClass(model)) {
+            return;
+        }
+        Iterator<String> keys = object.keySet().iterator();
+        while (keys.hasNext()) {
+            if (keys.next().startsWith(REFERENCE_PREFIX)) {
+                keys.remove();
+            }
+        }
+    }
+
+    /**
+     * Returns the entry name for a map key in the EDB format. E.g. the map key for the property "map" with the index 0
+     * would be "map.0.key".
+     */
+    public static String getEntryNameForMapKey(String property, Integer index) {
+        return getEntryNameForMap(property, true, index);
+    }
+
+    /**
+     * Returns the entry name for a map value in the EDB format. E.g. the map value for the property "map" with the
+     * index 0 would be "map.0.value".
+     */
+    public static String getEntryNameForMapValue(String property, Integer index) {
+        return getEntryNameForMap(property, false, index);
+    }
+
+    /**
+     * Returns the entry name for a map element in the EDB format. The key parameter defines if the entry name should be
+     * generated for the key or the value of the map. E.g. the map key for the property "map" with the index 0 would be
+     * "map.0.key".
+     */
+    private static String getEntryNameForMap(String property, Boolean key, Integer index) {
+        return String.format("%s.%d.%s", property, index, key ? "key" : "value");
+    }
+
+    /**
+     * Returns the entry name for a list element in the EDB format. E.g. the list element for the property "list" with
+     * the index 0 would be "list.0".
+     */
+    public static String getEntryNameForList(String property, Integer index) {
+        return String.format("%s.%d", property, index);
+    }
+
+    /**
+     * Converts an OpenEngSBForeignKey annotation to the fitting format which will be added to an EDBObject.
+     */
+    public static String getEOReferenceStringFromAnnotation(OpenEngSBForeignKey key) {
+        return String.format("%s%s:%s", REFERENCE_PREFIX, key.modelType(), key.modelVersion().toString());
     }
 }

@@ -34,7 +34,7 @@ import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBLogEntry;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
-import org.openengsb.core.ekb.common.EDBConverterUtils;
+import org.openengsb.core.ekb.common.EDBConverter;
 import org.openengsb.core.ekb.persistence.persist.edb.models.EngineeringObjectModel;
 import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelA;
 import org.openengsb.core.ekb.persistence.persist.edb.models.SourceModelB;
@@ -103,7 +103,7 @@ public class TestEngineeringDatabaseService implements EngineeringDatabaseServic
 
     @Override
     public List<EDBObject> query(QueryRequest request) throws EDBException {
-        String reference = (String) request.getParameter(EDBConverterUtils.REFERENCE_PREFIX + "%").iterator().next();
+        String reference = (String) request.getParameter(EDBConverter.REFERENCE_PREFIX + "%").iterator().next();
         if (reference.equals(getModelOid("objectA/reference/1"))
                 || reference.equals(getModelOid("objectB/reference/1"))) {
             EDBObject edbObject = new EDBObject(getModelOid("common/reference/1"));

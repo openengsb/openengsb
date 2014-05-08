@@ -197,6 +197,14 @@ public class EKBCommit {
         }
     }
     
+    /**
+     * Gets the information about domain, connector and instance of an EKBCommit object and returns the corresponding
+     * ConnectorInformation object.
+     */
+    public ConnectorInformation getConnectorInformation() {
+        return new ConnectorInformation(domainId, connectorId, instanceId);
+    }
+    
     public UUID getParentRevisionNumber() {
         return parentRevisionNumber;
     }

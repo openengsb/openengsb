@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.common;
+package org.openengsb.core.ekb.api;
 
 /**
  * Helper class for easier working with the informations that define a connector: domainId, connectorId and instanceId.
