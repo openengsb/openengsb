@@ -16,10 +16,7 @@
  */
 package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +34,7 @@ import org.openengsb.infrastructure.ldap.NoSuchNodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 public final class DefaultModelManager implements ModelManager {
 
@@ -67,7 +64,7 @@ public final class DefaultModelManager implements ModelManager {
     }
 
     private List<User> createUsers(List<Entry> userEntries) throws NoSuchNodeException, MissingParentException {
-        List<User> users = new ArrayList<>();
+        List<User> users = Lists.newArrayList();
         for (Entry userEntry : userEntries) {
             User user = new User();
             user.setUsername(userEntry.getDn().getRdn().getValue().getString());
@@ -78,8 +75,8 @@ public final class DefaultModelManager implements ModelManager {
         return users;
     }
 
-    private Collection<Attribute> createAttributes(List<Entry> attributeEntries) {
-        Collection<Attribute> attributes = new HashSet<>();
+    private List<Attribute> createAttributes(List<Entry> attributeEntries) {
+        List<Attribute> attributes = Lists.newArrayList();
         for (Entry attributeEntry : attributeEntries) {
             Attribute attribute = new Attribute();
             attribute.setAttributeName(attributeEntry.getDn().getRdn().getValue().getString());
@@ -95,8 +92,8 @@ public final class DefaultModelManager implements ModelManager {
         return Utils.extractAttributeValueNoEmptyCheck(entry, SchemaConstants.STRING_ATTRIBUTE);
     }
 
-    private Collection<Credential> createCredentials(List<Entry> credentialEntries) {
-        Collection<Credential> credentials = new HashSet<>();
+    private List<Credential> createCredentials(List<Entry> credentialEntries) {
+        List<Credential> credentials = Lists.newArrayList();
         for (Entry credentialEntry : credentialEntries) {
             Credential credential = new Credential();
             credential.setType(credentialEntry.getDn().getRdn().getValue().getString());
@@ -125,7 +122,7 @@ public final class DefaultModelManager implements ModelManager {
 
     private List<Assignment> createAssignments(List<Entry> assignmentEntries) throws NoSuchNodeException,
         MissingParentException {
-        List<Assignment> assignments = new ArrayList<>();
+        List<Assignment> assignments = Lists.newArrayList();
         for (Entry entry : assignmentEntries) {
             Assignment assignment = new Assignment();
             assignment.setProject(getLdapAttributeValue(ldapDao.lookup(DnFactory.assignmentProject(entry.getDn()))));
@@ -140,8 +137,8 @@ public final class DefaultModelManager implements ModelManager {
         return assignments;
     }
 
-    private Collection<String> getNamesOfDirectChildren(List<Entry> entries) {
-        Collection<String> names = Sets.newHashSet();
+    private List<String> getNamesOfDirectChildren(List<Entry> entries) {
+        List<String> names = Lists.newArrayList();
         for (Entry entry : entries) {
             names.add(entry.getDn().getRdn().getValue().getString());
         }
@@ -167,7 +164,7 @@ public final class DefaultModelManager implements ModelManager {
 
     private List<Project> createProjects(List<Entry> projectEntries) throws NoSuchNodeException,
         MissingParentException {
-        List<Project> projects = new ArrayList<>();
+        List<Project> projects = Lists.newArrayList();
         for (Entry entry : projectEntries) {
             Project project = new Project();
             project.setName(entry.getDn().getRdn().getValue().getString());
@@ -195,7 +192,7 @@ public final class DefaultModelManager implements ModelManager {
     }
 
     private List<Role> createRoles(List<Entry> roleEntries) throws NoSuchNodeException, MissingParentException {
-        List<Role> roles = new ArrayList<>();
+        List<Role> roles = Lists.newArrayList();
         for (Entry entry : roleEntries) {
             Role role = new Role();
             role.setName(entry.getDn().getRdn().getValue().getString());

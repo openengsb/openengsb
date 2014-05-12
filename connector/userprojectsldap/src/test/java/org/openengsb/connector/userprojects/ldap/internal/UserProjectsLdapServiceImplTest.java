@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +78,7 @@ public class UserProjectsLdapServiceImplTest extends BaseTest {
         assertThat(entry.get(SchemaConstants.STRING_ATTRIBUTE).getString(), is(assignment.getUser()));
 
         List<Entry> entryList = ldapDao.getDirectChildren(DnFactory.assignmentPermissions(assignment));
-        Collection<String> actualCollection = Sets.newHashSet();
+        List<String> actualCollection = Lists.newArrayList();
         for (Entry entry2 : entryList) {
             actualCollection.add(entry2.getDn().getRdn().getValue().getString());
         }
@@ -188,7 +187,7 @@ public class UserProjectsLdapServiceImplTest extends BaseTest {
 
     private void assertCorrectlyStored(Role role) throws NoSuchNodeException, MissingParentException {
         List<Entry> entryList = ldapDao.getDirectChildren(DnFactory.rolePermissions(role));
-        Collection<String> actualCollection = Sets.newHashSet();
+        List<String> actualCollection = Lists.newArrayList();
         for (Entry entry : entryList) {
             actualCollection.add(entry.getDn().getRdn().getValue().getString());
         }

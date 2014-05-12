@@ -16,7 +16,7 @@
  */
 package org.openengsb.connector.userprojects.ldap.internal;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.server.core.integ.AbstractLdapTestUnit;
@@ -33,7 +33,6 @@ import org.openengsb.domain.userprojects.model.User;
 import org.openengsb.infrastructure.ldap.LdapDao;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public abstract class BaseTest extends AbstractLdapTestUnit {
     protected UserProjectsLdapServiceImpl ldapService;
@@ -69,9 +68,9 @@ public abstract class BaseTest extends AbstractLdapTestUnit {
 
     protected Assignment createTestAssignment() {
         Assignment assignment = new Assignment();
-        assignment.setPermissions(Sets.newHashSet("permission1", "permission2"));
+        assignment.setPermissions(Lists.newArrayList("permission1", "permission2"));
         assignment.setProject("project");
-        assignment.setRoles(Sets.newHashSet("role1", "role2"));
+        assignment.setRoles(Lists.newArrayList("role1", "role2"));
         assignment.setUser("user");
         return assignment;
     }
@@ -79,15 +78,15 @@ public abstract class BaseTest extends AbstractLdapTestUnit {
     protected Project createTestProject() {
         Project project = new Project();
         project.setName("project");
-        project.setAttributes(Sets.newHashSet(createTestAttribute("att", "val1", "val2")));
+        project.setAttributes(Lists.newArrayList(createTestAttribute("att", "val1", "val2")));
         return project;
     }
 
     protected Role createTestRole() {
         Role role = new Role();
         role.setName("role");
-        role.setPermissions(Sets.newHashSet("perm1", "perm2"));
-        role.setRoles(Sets.newHashSet("subrole"));
+        role.setPermissions(Lists.newArrayList("perm1", "perm2"));
+        role.setRoles(Lists.newArrayList("subrole"));
         return role;
     }
 
@@ -108,7 +107,7 @@ public abstract class BaseTest extends AbstractLdapTestUnit {
     protected Attribute createTestAttribute(String name, String... values) {
         Attribute attribute = new Attribute();
         attribute.setAttributeName(name);
-        Collection<Object> valueObjects = Sets.newHashSet();
+        List<Object> valueObjects = Lists.newArrayList();
         valueObjects.addAll(Lists.newArrayList(values));
         attribute.setValues(valueObjects);
         return attribute;
