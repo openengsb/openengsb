@@ -94,6 +94,7 @@
     <module>components/ekb/persistence-persist-edb</module>
     <module>components/persistence</module>
     <module>components/services</module>
+    <module>components/usersync</module>
     <module>components/workflow</module>
     <module>components/info</module>
     <!-- OpenEngSB Core Domain Modules -->

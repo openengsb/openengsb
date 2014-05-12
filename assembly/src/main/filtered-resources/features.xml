@@ -187,6 +187,7 @@
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
+    <bundle start-level='60'>mvn:org.openengsb.framework/org.openengsb.framework.usersync/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.api/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.framework.workflow/org.openengsb.framework.workflow.drools/${project.version}</bundle>
@@ -195,6 +196,7 @@
     <!-- security domains and connectors -->
     <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.userprojects/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
   </feature>
