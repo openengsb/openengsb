@@ -24,9 +24,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-root</artifactId>
-    <version>35-SNAPSHOT</version>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../../../</relativePath>
   </parent>
 
   <properties>
@@ -36,7 +37,6 @@
 
   <groupId>org.openengsb.framework.ekb</groupId>
   <artifactId>org.openengsb.framework.ekb.graph.orient</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
   <name>OpenEngSB :: Framework :: EKB :: GraphDB :: Orient</name>
 
   <packaging>bundle</packaging>
