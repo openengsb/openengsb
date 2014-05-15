@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.openengsb.connector</groupId>
+    <artifactId>openengsb-connector-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>org.openengsb.connector.userprojects.ldap</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.userprojects.ldap</bundle.namespace>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.connector</groupId>
+  <artifactId>org.openengsb.connector.userprojects.ldap</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: Connector :: UserProjects :: LDAP</name>
+
+  <packaging>bundle</packaging>
+
+  <description>
+    LDAP Connector implements the UserProjects Domain.
+  </description>
+
+  <url>http://www.openengsb.org</url>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
+  </scm>
+
+  <build>
+     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              org.openengsb.core.api.*;version="[${openengsb.version.min},${openengsb.version.max})",
+              org.openengsb.domain.userprojects.*;version="${project.version}",
+              *
+            </Import-Package>
+            <Delegation-Annotations>true</Delegation-Annotations>
+          </instructions>
+        </configuration>
+      </plugin>
+     </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>openengsb-framework-parent</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
+      <scope>provided</scope>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.labs.delegation</groupId>
+      <artifactId>org.openengsb.labs.delegation.service</artifactId>
+      <version>${labs.delegation.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.userprojects</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.infrastructure</groupId>
+      <artifactId>org.openengsb.infrastructure.ldap</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-integ</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>shared-ldap-schema-data</artifactId>
+          <groupId>org.apache.directory.shared</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+</project>
+

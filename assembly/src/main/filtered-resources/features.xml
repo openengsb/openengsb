@@ -181,6 +181,7 @@
     <bundle>mvn:org.apache.directory.shared/shared-asn1-ber/${ldap.shared.version}</bundle>
     <bundle>mvn:org.apache.directory.shared/shared-asn1-api/${ldap.shared.version}</bundle>
     <bundle>mvn:org.apache.directory.shared/shared-ldap-client-api/${ldap.shared.version}</bundle>
+    <bundle>mvn:org.apache.directory.shared/shared-ldap-net-mina/${ldap.shared.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.ldap/${project.version}</bundle>
     <bundle>mvn:com.fasterxml.uuid/java-uuid-generator/${uuidgen.version}</bundle>
     <!-- OpenEngSB Core Feature Cnt. -->
@@ -197,6 +198,8 @@
     <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
+    <!-- for external user/projects -->
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.userprojects.ldap/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
