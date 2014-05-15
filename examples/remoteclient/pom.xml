@@ -2,14 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-root</artifactId>
-    <version>35-SNAPSHOT</version>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
   </parent>
 
   <groupId>org.openengsb.examples</groupId>
   <artifactId>org.openengsb.examples.remoteclient</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>OpenEngSB :: Examples :: Java Remote Client</name>

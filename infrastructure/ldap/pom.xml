@@ -14,9 +14,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-root</artifactId>
-    <version>35-SNAPSHOT</version>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
   </parent>
 
   <properties>
@@ -27,7 +28,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.infrastructure</groupId>
   <artifactId>org.openengsb.infrastructure.ldap</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Infrastructure :: LDAP</name>
 
