@@ -10,7 +10,9 @@ before_install:
 
 install: mvn validate
 
-script: mvn install -Pitests,checkstyle,licenseCheck
+script:
+  - mvn install -Pcheckstyle,licenseCheck
+  - ./etc/scripts/run-itests.sh
 
 notifications:
   email:
