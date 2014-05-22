@@ -231,12 +231,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.services</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.persistence</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
