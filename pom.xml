@@ -56,6 +56,7 @@
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>-->
     <root.version>35</root.version>   
+    <orientdb.version>1.2.0</orientdb.version>
   </properties>
 
   <dependencyManagement>
