@@ -25,6 +25,7 @@ import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 @Model
 public class TestModel {
     private String name;
+    private String field;
     @OpenEngSBModelId
     private String edbId;
     private SubModel subModel;
@@ -32,13 +33,21 @@ public class TestModel {
     private List<Integer> ids;
 
     private List<TestModel> children;
-    
+
     public void setName(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 
     public void setEdbId(String edbId) {

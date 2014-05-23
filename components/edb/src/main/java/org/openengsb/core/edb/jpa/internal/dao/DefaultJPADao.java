@@ -35,6 +35,7 @@ import javax.persistence.criteria.Subquery;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.QueryRequest;
+import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
 import org.openengsb.core.edb.jpa.internal.JPAEntry;
@@ -333,9 +334,9 @@ public class DefaultJPADao implements JPADao {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery query = criteriaBuilder.createQuery();
             Root<JPACommit> from = query.from(JPACommit.class);
-            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment")
-                , from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId")
-                , from.get("instanceId"));
+            query.multiselect(from.get("committer"), from.get("timestamp"), from.get("context"), from.get("comment"),
+                from.get("revision"), from.get("parent"), from.get("domainId"), from.get("connectorId"),
+                from.get("instanceId"));
 
             Predicate[] predicates = convertCommitRequestToPredicates(criteriaBuilder, from, request);
             query.where(criteriaBuilder.and(predicates));
@@ -369,8 +370,8 @@ public class DefaultJPADao implements JPADao {
         if (request.getContext() != null) {
             predicates.add(builder.equal(from.get("context"), request.getContext()));
         }
-        predicates.add(builder.between(from.get("timestamp"), request.getStartTimestamp(),
-            request.getEndTimestamp()));
+        predicates
+            .add(builder.between(from.get("timestamp"), request.getStartTimestamp(), request.getEndTimestamp()));
         return Iterables.toArray(predicates, Predicate.class);
     }
 
@@ -446,7 +447,17 @@ public class DefaultJPADao implements JPADao {
             }
             predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), !request.isDeleted()));
             predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
-            predicates.add(convertParametersToPredicateNew(request, from, criteriaBuilder, criteriaQuery));
+            if (request.getModelClassName() != null) {
+                Subquery<JPAEntry> subquery2 = criteriaQuery.subquery(JPAEntry.class);
+                Root subFrom2 = subquery2.from(JPAEntry.class);
+                subquery2.select(subFrom);
+                Predicate ownerPredicate = criteriaBuilder.equal(from, subFrom2.get("owner"));
+                Predicate keyPredicate = criteriaBuilder.like(subFrom2.get("key"), EDBConstants.MODEL_TYPE);
+                Predicate valuePredicate = criteriaBuilder.equal(subFrom2.get("value"), request.getModelClassName());
+                subquery2.where(criteriaBuilder.and(ownerPredicate, keyPredicate, valuePredicate));
+                predicates.add(criteriaBuilder.exists(subquery2));
+            }
+            predicates.add(convertParametersToPredicate(request, from, criteriaBuilder, criteriaQuery));
             criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
 
             TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
@@ -459,8 +470,8 @@ public class DefaultJPADao implements JPADao {
      * the criteria query.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Predicate convertParametersToPredicateNew(QueryRequest request, Root<?> from,
-            CriteriaBuilder builder, CriteriaQuery<?> query) {
+    private Predicate convertParametersToPredicate(QueryRequest request, Root<?> from, CriteriaBuilder builder,
+            CriteriaQuery<?> query) {
         List<Predicate> predicates = new ArrayList<>();
         for (Map.Entry<String, Set<Object>> value : request.getParameters().entrySet()) {
             Subquery<JPAEntry> subquery = query.subquery(JPAEntry.class);

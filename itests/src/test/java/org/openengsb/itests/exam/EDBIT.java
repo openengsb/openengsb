@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,15 +70,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
-        Option[] options = new Option[]{
-            new KarafDistributionConfigurationFilePutOption(
-                "etc/org.openengsb.ekb.cfg",
-                "modelUpdatePropagationMode", "DEACTIVATED"),
-            new KarafDistributionConfigurationFilePutOption(
-                "etc/org.openengsb.ekb.cfg",
-                "persistInterfaceLockingMode", "DEACTIVATED"),
-            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject()
-        };
+        Option[] options =
+            new Option[]{
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
+                    "modelUpdatePropagationMode", "DEACTIVATED"),
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
+                    "persistInterfaceLockingMode", "DEACTIVATED"),
+                mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject() };
         return combine(baseConfiguration(), options);
     }
 
@@ -137,6 +136,34 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         List<EDBObject> objects = edbService.query(QueryRequest.query("newtestkey1", "newtestvalue1"));
         assertThat(objects, notNullValue());
         assertThat(objects.size(), not(0));
+    }
+
+    @Test
+    public void testOrQueryForModelType_shouldWork() throws Exception {
+        TestModelDecorator model1 = getTestModelDecorator();
+        model1.setEdbId("orQueryTest/1");
+        model1.setName("model1");
+        TestModelDecorator model2 = getTestModelDecorator();
+        model2.setEdbId("orQueryTest/2");
+        model2.setName("model2");
+        TestModelDecorator model3 = getTestModelDecorator();
+        model3.setEdbId("orQueryTest/3");
+        model3.setName("model3");
+        model3.setField("test");
+        TestModelDecorator model4 = getTestModelDecorator();
+        model4.setEdbId("orQueryTest/4");
+        model4.setName("model4");
+        EKBCommit commit =
+            getTestEKBCommit().addInserts(
+                Arrays.asList(model1.getModel(), model2.getModel(), model3.getModel(), model4.getModel()));
+        persist.commit(commit);
+
+        QueryRequest request =
+            QueryRequest.create().orJoined().addParameter("name", "model1").addParameter("name", "model2")
+                .addParameter("field", "test");
+        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(3));
     }
 
     @Test(expected = EDBException.class)
@@ -611,8 +638,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         persist.commit(commit);
-        ModelWrapper wrapper = ModelWrapper.wrap(query.getModel(getTestModel()
-            , getModelOid("modelmetatest/1")));
+        ModelWrapper wrapper = ModelWrapper.wrap(query.getModel(getTestModel(), getModelOid("modelmetatest/1")));
         assertThat(wrapper.toOpenEngSBModelEntries(), notNullValue());
         assertThat(wrapper.retrieveInternalModelId(), notNullValue());
         assertThat(wrapper.retrieveInternalModelVersion(), notNullValue());

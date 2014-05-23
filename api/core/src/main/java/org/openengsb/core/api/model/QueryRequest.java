@@ -45,6 +45,7 @@ import com.google.common.collect.Sets;
  */
 public final class QueryRequest {
     private final Map<String, Set<Object>> parameters;
+    private String modelClassName;
     private long timestamp;
     private String contextId;
     private boolean wildcardAware;
@@ -238,5 +239,20 @@ public final class QueryRequest {
             }
         }
         return helper.omitNullValues().toString();
+    }
+
+    public String getModelClassName() {
+        return modelClassName;
+    }
+
+    /**
+     * Sets the class of the queried Models.
+     * 
+     * @param modelClass the class name of the model (including package).
+     * @return
+     */
+    public QueryRequest setModelClassName(String modelClassName) {
+        this.modelClassName = modelClassName;
+        return this;
     }
 }
