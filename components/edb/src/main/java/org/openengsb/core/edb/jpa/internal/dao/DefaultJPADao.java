@@ -20,7 +20,6 @@ package org.openengsb.core.edb.jpa.internal.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -35,17 +34,15 @@ import javax.persistence.criteria.Subquery;
 import org.openengsb.core.api.model.CommitMetaInfo;
 import org.openengsb.core.api.model.CommitQueryRequest;
 import org.openengsb.core.api.model.QueryRequest;
-import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.jpa.internal.JPACommit;
-import org.openengsb.core.edb.jpa.internal.JPAEntry;
 import org.openengsb.core.edb.jpa.internal.JPAHead;
 import org.openengsb.core.edb.jpa.internal.JPAObject;
+import org.openengsb.core.edb.jpa.internal.util.QueryRequestCriteriaBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 public class DefaultJPADao implements JPADao {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
@@ -424,95 +421,14 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> query(QueryRequest request) throws EDBException {
         synchronized (entityManager) {
             LOGGER.debug("Perform query with the query object: {}", request);
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<JPAObject> criteriaQuery = criteriaBuilder.createQuery(JPAObject.class);
-            criteriaQuery.distinct(!request.isAndJoined());
-            Root from = criteriaQuery.from(JPAObject.class);
-
-            Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
-            Root subFrom = subquery.from(JPAObject.class);
-            Expression<Long> maxExpression = criteriaBuilder.max(subFrom.get("timestamp"));
-            subquery.select(maxExpression);
-            Predicate p1 = criteriaBuilder.equal(subFrom.get("oid"), from.get("oid"));
-            Predicate p2 = criteriaBuilder.le(subFrom.get("timestamp"), request.getTimestamp());
-            subquery.where(criteriaBuilder.and(p1, p2));
-
-            List<Predicate> predicates = new ArrayList<>();
-            if (request.getContextId() != null) {
-                predicates.add(criteriaBuilder.like(from.get("oid"), request.getContextId() + "/%"));
-            }
-            predicates.add(criteriaBuilder.notEqual(from.get("isDeleted"), !request.isDeleted()));
-            predicates.add(criteriaBuilder.equal(from.get("timestamp"), subquery));
-            if (request.getModelClassName() != null) {
-                Subquery<JPAEntry> subquery2 = criteriaQuery.subquery(JPAEntry.class);
-                Root subFrom2 = subquery2.from(JPAEntry.class);
-                subquery2.select(subFrom);
-                Predicate ownerPredicate = criteriaBuilder.equal(from, subFrom2.get("owner"));
-                Predicate keyPredicate = criteriaBuilder.like(subFrom2.get("key"), EDBConstants.MODEL_TYPE);
-                Predicate valuePredicate = criteriaBuilder.equal(subFrom2.get("value"), request.getModelClassName());
-                subquery2.where(criteriaBuilder.and(ownerPredicate, keyPredicate, valuePredicate));
-                predicates.add(criteriaBuilder.exists(subquery2));
-            }
-            predicates.add(convertParametersToPredicate(request, from, criteriaBuilder, criteriaQuery));
-            criteriaQuery.where(Iterables.toArray(predicates, Predicate.class));
-
-            TypedQuery<JPAObject> typedQuery = entityManager.createQuery(criteriaQuery);
+            QueryRequestCriteriaBuilder builder = new QueryRequestCriteriaBuilder(request, criteriaBuilder);
+            TypedQuery<JPAObject> typedQuery = entityManager.createQuery(builder.buildQuery());
             return typedQuery.getResultList();
         }
-    }
-
-    /**
-     * Converts a query request parameter map for a query operation into a list of predicates which need to be added to
-     * the criteria query.
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Predicate convertParametersToPredicate(QueryRequest request, Root<?> from, CriteriaBuilder builder,
-            CriteriaQuery<?> query) {
-        List<Predicate> predicates = new ArrayList<>();
-        for (Map.Entry<String, Set<Object>> value : request.getParameters().entrySet()) {
-            Subquery<JPAEntry> subquery = query.subquery(JPAEntry.class);
-            Root subFrom = subquery.from(JPAEntry.class);
-            subquery.select(subFrom);
-            Predicate ownerPredicate = builder.equal(from, subFrom.get("owner"));
-            Predicate keyPredicate = builder.like(subFrom.get("key"), value.getKey());
-            Predicate valuePredicate = buildValuePredicate(request, value.getValue(), subFrom, builder);
-            subquery.where(builder.and(ownerPredicate, keyPredicate, valuePredicate));
-            predicates.add(builder.exists(subquery));
-        }
-        if (request.isAndJoined()) {
-            return builder.and(Iterables.toArray(predicates, Predicate.class));
-        } else {
-            return builder.or(Iterables.toArray(predicates, Predicate.class));
-        }
-    }
-
-    private Predicate buildValuePredicate(QueryRequest request, Set<Object> values, Root<?> subFrom,
-            CriteriaBuilder builder) {
-        Expression<String> expression = subFrom.get("value");
-
-        if (!request.isCaseSensitive()) {
-            expression = builder.lower(expression);
-        }
-
-        List<Predicate> valuePredicates = Lists.newArrayList();
-        for (Object obj : values) {
-            String caseCheckedValue = getCaseCheckedValue(obj, request.isCaseSensitive());
-            valuePredicates.add(request.isWildcardAware() ? builder.like(expression, caseCheckedValue) : builder
-                .equal(expression, caseCheckedValue));
-        }
-        if (request.isAndJoined()) {
-            return builder.and(Iterables.toArray(valuePredicates, Predicate.class));
-        } else {
-            return builder.or(Iterables.toArray(valuePredicates, Predicate.class));
-        }
-    }
-
-    private String getCaseCheckedValue(Object object, boolean caseSensitive) {
-        return caseSensitive ? object.toString() : object.toString().toLowerCase();
     }
 
     public void setEntityManager(EntityManager entityManager) {
