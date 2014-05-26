@@ -56,29 +56,28 @@ public class QueryInterfaceService implements QueryInterface {
     public <T> T getModel(Class<T> model, String oid) {
         LOGGER.debug("Invoked getModel with the model {} and the oid {}", model.getName(), oid);
         EDBObject object = edbService.getObject(oid);
-        return (T) edbConverter.convertEDBObjectToModel(model, object);
+        return edbConverter.convertEDBObjectToModel(model, object);
     }
 
     @Override
     public <T> List<T> getModelHistory(Class<T> model, String oid) {
         LOGGER.debug("Invoked getModelHistory with the model {} and the oid {}", model.getName(), oid);
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid));
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistory(oid));
     }
 
     @Override
     public <T> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to) {
         LOGGER.debug("Invoked getModelHistoryForTimeRange with the model {} and the oid {} for the "
-                + "time period of {} to {}", new Object[]{ model.getName(), oid, new Date(from).toString(),
-            new Date(to).toString() });
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model,
-            edbService.getHistoryForTimeRange(oid, from, to));
+                + "time period of {} to {}",
+            new Object[]{ model.getName(), oid, new Date(from).toString(), new Date(to).toString() });
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.getHistoryForTimeRange(oid, from, to));
     }
 
     @Override
     public <T> List<T> query(Class<T> model, QueryRequest request) {
         LOGGER.debug("Query for model {} with the request {}", model.getName(), request);
-        request.addParameter(EDBConstants.MODEL_TYPE, model.getName());
-        return (List<T>) edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(request));
+        request.setModelClassName(model.getName());
+        return edbConverter.convertEDBObjectsToModelObjects(model, edbService.query(request));
     }
 
     @Override
@@ -123,7 +122,7 @@ public class QueryInterfaceService implements QueryInterface {
     public UUID getCurrentRevisionNumber() {
         return edbService.getCurrentRevisionNumber();
     }
-    
+
     @Override
     public UUID getLastRevisionNumberOfContext(String contextId) {
         return edbService.getLastRevisionNumberOfContext(contextId);
@@ -214,7 +213,7 @@ public class QueryInterfaceService implements QueryInterface {
     public void setModelRegistry(ModelRegistry modelRegistry) {
         this.modelRegistry = modelRegistry;
     }
-    
+
     public void setQueryParsers(List<QueryParser> queryParsers) {
         this.queryParsers = queryParsers;
     }

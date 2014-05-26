@@ -26,7 +26,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * reflection calls for you on the TestModel object class instance
  */
 public class TestModelDecorator {
-    private Object model;
+    private final Object model;
 
     public TestModelDecorator(Object model) {
         this.model = model;
@@ -42,6 +42,14 @@ public class TestModelDecorator {
 
     public String getName() throws Exception {
         return (String) MethodUtils.invokeMethod(model, "getName", null);
+    }
+
+    public void setField(String field) throws Exception {
+        MethodUtils.invokeMethod(model, "setField", field);
+    }
+
+    public String getField() throws Exception {
+        return (String) MethodUtils.invokeMethod(model, "getField", null);
     }
 
     public void setEdbId(String edbId) throws Exception {
