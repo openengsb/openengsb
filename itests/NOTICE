@@ -38,25 +38,6 @@ This project includes:
   Apache Aries Quiesce API under The Apache Software License, Version 2.0
   Apache Aries Util under The Apache Software License, Version 2.0
   Apache CXF Bundle Jar under The Apache Software License, Version 2.0
-  Apache Directory LDAP Client API test under The Apache Software License, Version 2.0
-  Apache Directory Shared ASN.1 API under The Apache Software License, Version 2.0
-  Apache Directory Shared ASN.1 BER under The Apache Software License, Version 2.0
-  Apache Directory Shared DSML Engine under The Apache Software License, Version 2.0
-  Apache Directory Shared DSML Parser under The Apache Software License, Version 2.0
-  Apache Directory Shared I18n under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Client API under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Codec under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Codec Standalone under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras ACI under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras Codec under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras Codec API under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras Stored Procedures under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras Trigger under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Extras Util under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Model under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Network MINA under The Apache Software License, Version 2.0
-  Apache Directory Shared LDAP Schema under The Apache Software License, Version 2.0
-  Apache Directory Shared Utilities under The Apache Software License, Version 2.0
   Apache Felix Configuration Admin Service under The Apache Software License, Version 2.0
   Apache Felix File Install under The Apache Software License, Version 2.0
   Apache Felix Framework under The Apache Software License, Version 2.0
@@ -90,12 +71,10 @@ This project includes:
   Apache Karaf :: System :: Shell Commands under The Apache Software License, Version 2.0
   Apache Karaf :: Tooling :: Exam Testing Framework :: Container under The Apache Software License, Version 2.0
   Apache Karaf :: Tooling :: Exam Testing Framework :: Options under The Apache Software License, Version 2.0
-  Apache Log4j under The Apache Software License, Version 2.0
   Apache MINA Core under Apache 2.0 License
   Apache Mina SSHD :: Core under Apache 2.0 License
   Apache Neethi under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: cglib under The Apache Software License, Version 2.0
-  Apache ServiceMix :: Bundles :: javassist under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: junit under The Apache Software License, Version 2.0
   Apache Shiro :: Core under The Apache Software License, Version 2.0
   Apache Shiro :: Support :: Karaf Features under The Apache Software License, Version 2.0
@@ -103,49 +82,12 @@ This project includes:
   Apache Velocity under The Apache Software License, Version 2.0
   Apache XBean :: Reflect under The Apache Software License, Version 2.0
   Apache XML Security for Java under The Apache Software License, Version 2.0
-  ApacheDS AdministrativePoint Interceptor under The Apache Software License, Version 2.0
   ApacheDS All under The Apache Software License, Version 2.0
-  ApacheDS Authentication Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Authorization Interceptor under The Apache Software License, Version 2.0
-  ApacheDS ChangeLog Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Collective Attribute Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Core under The Apache Software License, Version 2.0
-  ApacheDS Core Annotations under The Apache Software License, Version 2.0
-  ApacheDS Core API under The Apache Software License, Version 2.0
-  ApacheDS Core AVL under The Apache Software License, Version 2.0
-  ApacheDS Core Constants under The Apache Software License, Version 2.0
-  ApacheDS Core Integration under The Apache Software License, Version 2.0
-  ApacheDS Core JNDI under The Apache Software License, Version 2.0
-  ApacheDS Core Shared under The Apache Software License, Version 2.0
-  ApacheDS Event Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Exception Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Generalized (X) DBM Partition under The Apache Software License, Version 2.0
-  ApacheDS I18n under The Apache Software License, Version 2.0
-  ApacheDS Interceptors for Kerberos under The Apache Software License, Version 2.0
-  ApacheDS JDBM Implementation MVCC under The Apache Software License, Version 2.0
-  ApacheDS JDBM Partition under The Apache Software License, Version 2.0
-  ApacheDS Journal Interceptor under The Apache Software License, Version 2.0
-  ApacheDS LDIF Partition under The Apache Software License, Version 2.0
-  ApacheDS Normalization Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Operational Attribute Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Password Hashing Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Protocol Kerberos under The Apache Software License, Version 2.0
-  ApacheDS Protocol Kerberos Codec under The Apache Software License, Version 2.0
-  ApacheDS Protocol Ldap under The Apache Software License, Version 2.0
-  ApacheDS Protocol Shared under The Apache Software License, Version 2.0
-  ApacheDS Referral Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Schema Interceptor under The Apache Software License, Version 2.0
-  Apacheds Server Annotations under The Apache Software License, Version 2.0
-  ApacheDS Server Integration under The Apache Software License, Version 2.0
-  ApacheDS Subtree Interceptor under The Apache Software License, Version 2.0
-  ApacheDS Test Framework under The Apache Software License, Version 2.0
-  ApacheDS Triggers Interceptor under The Apache Software License, Version 2.0
   aQute Bundle Tool Library under All files contained in this JAR are licensed under the Apache
          2.0 license, unless noted differently in their source (see
          swing2swt).
   ASM All under BSD
   ASM Core under BSD
-  bnd - Bundle Tool under Apache Software License 2.0
   com.springsource.org.codehaus.janino under BSD license
   Commons BeanUtils under The Apache Software License, Version 2.0
   Commons BeanUtils Core under The Apache Software License, Version 2.0
@@ -158,7 +100,6 @@ This project includes:
   Commons Net under The Apache Software License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
   CSS Parser under GNU Lesser General Public License
-  dom4j under BSD License
   Drools :: Compiler under The Apache Software License, Version 2.0
   Drools :: Core under The Apache Software License, Version 2.0
   Eclipse ECJ under Eclipse Public License v1.0
@@ -166,8 +107,6 @@ This project includes:
   Google Collections Library under The Apache Software License, Version 2.0
   Google Guice - Core Library under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
-  H2 Database Engine under The H2 License, Version 1.0
-  Hamcrest All under BSD style
   hawtbuf under The Apache Software License, Version 2.0
   hawtdispatch under The Apache Software License, Version 2.0
   hawtdispatch-transport under The Apache Software License, Version 2.0
@@ -180,7 +119,6 @@ This project includes:
   Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   Jackson-core under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   jackson-databind under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
-  Jackson-dataformat-CSV under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   Jackson-module-JAXB-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   jansi under The Apache Software License, Version 2.0
   JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
@@ -209,15 +147,10 @@ This project includes:
   JUnit under Common Public License Version 1.0
   Knowledge API under The Apache Software License, Version 2.0
   Knowledge Internal API under The Apache Software License, Version 2.0
-  labs-jpatest-core under The Apache Software License, Version 2.0
-  ldapsdk under MPL 1.1
-  Legion of the Bouncy Castle Java Cryptography APIs under Bouncy Castle License
   Log4j under Apache License, Version 2.0
   Maven Aether Provider under The Apache Software License, Version 2.0
-  Maven Artifact under The Apache Software License, Version 2.0
   Maven Model under The Apache Software License, Version 2.0
   Maven Model Builder under The Apache Software License, Version 2.0
-  Maven Plugin API under The Apache Software License, Version 2.0
   Maven Repository Metadata Model under The Apache Software License, Version 2.0
   Maven Verifier Component under The Apache Software License, Version 2.0
   Maven Wagon API under The Apache Software License, Version 2.0
@@ -232,61 +165,26 @@ This project includes:
   Neko HTML under The Apache Software License, Version 2.0
   OAuth Core under The Apache Software License, Version 2.0
   OAuth Core: Provider under The Apache Software License, Version 2.0
-  OpenEngSB :: Connector :: Example under Apache 2
-  OpenEngSB :: Connector :: MemoryAuditing under Apache 2
-  OpenEngSB :: Connector :: Service ACL under Apache 2
   OpenEngSB :: Connector :: UsernamePassword under Apache 2
-  OpenEngSB :: Connector :: Virtual :: Filewatcher under Apache 2
-  OpenEngSB :: Connector :: Wicket ACL under Apache 2
   OpenEngSB :: Domain :: Auditing under Apache 2
   OpenEngSB :: Domain :: Authentication under Apache 2
   OpenEngSB :: Domain :: Authorization under Apache 2
   OpenEngSB :: Domain :: Example under Apache 2
-  OpenEngSB :: Domain :: OOSourceCode under Apache 2
-  OpenEngSB :: Domain :: SQLCode under Apache 2
-  OpenEngSB :: Domain :: User & Projects under Apache 2
-  OpenEngSB :: Examples :: Java Remote Client under Apache 2
-  OpenEngSB :: Examples :: Remote Samples under Apache 2
   OpenEngSB :: Framework :: API under Apache 2
   OpenEngSB :: Framework :: Assembly under Apache 2
   OpenEngSB :: Framework :: Common under Apache 2
-  OpenEngSB :: Framework :: Console under Apache 2
   OpenEngSB :: Framework :: EDB :: API under Apache 2
-  OpenEngSB :: Framework :: EDB :: JPA under Apache 2
   OpenEngSB :: Framework :: EKB :: API under Apache 2
   OpenEngSB :: Framework :: EKB :: Common under Apache 2
-  OpenEngSB :: Framework :: EKB :: GraphDB :: Orient under Apache 2
-  OpenEngSB :: Framework :: EKB :: Model Registry :: Tracker under Apache 2
-  OpenEngSB :: Framework :: EKB :: Persistence :: Persist :: EDB under Apache 2
-  OpenEngSB :: Framework :: EKB :: Persistence :: Query :: EDB under Apache 2
-  OpenEngSB :: Framework :: EKB :: Transformation :: Wonderland under Apache 2
-  OpenEngSB :: Framework :: Info under Apache 2
   OpenEngSB :: Framework :: Integration Tests under Apache 2
-  OpenEngSB :: Framework :: Parent under Apache 2
   OpenEngSB :: Framework :: Persistence Layer under Apache 2
   OpenEngSB :: Framework :: Services under Apache 2
-  OpenEngSB :: Framework :: Test under Apache 2
   OpenEngSB :: Framework :: Util under Apache 2
-  OpenEngSB :: Framework :: Weaver Service under Apache 2
-  OpenEngSB :: Framework :: Weaver Test under Apache 2
   OpenEngSB :: Framework :: Workflow :: API under Apache 2
   OpenEngSB :: Framework :: Workflow :: Drools under Apache 2
-  OpenEngSB :: Infrastructure :: JMS under Apache 2
-  OpenEngSB :: Infrastructure :: JPA under Apache 2
   OpenEngSB :: Infrastructure :: LDAP under Apache 2
-  OpenEngSB :: Loom :: CSharp :: Common :: WSDL to DLL Maven Plugin under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: Guava under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: HTML Unit Testing Framework under Apache 2
-  OpenEngSB :: Persistence :: Connector under Apache 2
-  OpenEngSB :: Persistence :: Context under Apache 2
-  OpenEngSB :: Persistence :: Rulebase under Apache 2
-  OpenEngSB :: Ports :: JMS under Apache 2
-  OpenEngSB :: Ports :: Webservices under Apache 2
-  OpenEngSB :: Tooling :: Archetypes :: Connector under Apache 2
-  OpenEngSB :: Tooling :: Archetypes :: Domain under Apache 2
-  OpenEngSB :: Tooling :: Archetypes :: Parent under Apache 2
-  OpenEngSB :: User Interface :: Administration under Apache 2
-  OpenEngSB :: User Interface :: API under Apache 2
   OpenEngSB :: User Interface :: Common under Apache 2
   OpenEngSB Labs :: Delegation Service under Apache 2
   OpenJPA Aggregate Jar under Apache Software License 2.0
@@ -328,8 +226,6 @@ This project includes:
   OPS4J Pax Wicket :: Karaf Feature File under ALv2
   OPS4J Pax Wicket :: Service under ALv2
   OPS4J Pax Wicket :: Test Helper under ALv2
-  Orient Commons under Apache 2
-  OrientDB Core under Apache 2
   osgi under Apache License, Version 2.0
   osgi.cmpn under Apache License, Version 2.0
   osgi.core under Apache License, Version 2.0
@@ -346,8 +242,6 @@ This project includes:
   Servlet 2.5 under The Apache Software License, Version 2.0
   Servlet 3.0 under The Apache Software License, Version 2.0
   Simple API for CSS under The W3C Software License
-  Sisu Guava - Core Library under The Apache Software License, Version 2.0
-  Sisu Guice - Core Library under The Apache Software License, Version 2.0
   Sisu-Inject-Bean : Aggregate OSGi bundle under The Apache Software License, Version 2.0 or Eclipse Public License, Version 1.0
   Sisu-Inject-Plexus : Aggregate OSGi bundle under Eclipse Public License, Version 1.0
   SLF4J API Module under MIT License
@@ -364,7 +258,6 @@ This project includes:
   spring-expression under The Apache Software License, Version 2.0
   spring-jms under The Apache Software License, Version 2.0
   spring-tx under The Apache Software License, Version 2.0
-  spring-web under The Apache Software License, Version 2.0
   Stax2 API under The BSD License
   Streaming API for XML under GNU General Public Library or COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
   Streaming API for XML (STAX API 1.0) under The Apache Software License, Version 2.0

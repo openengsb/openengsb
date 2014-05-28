@@ -17,7 +17,12 @@ This project includes:
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
+  JUnit under Common Public License Version 1.0
   OpenEngSB :: Framework :: API under Apache 2
-  OpenEngSB :: User Interface :: API under Apache 2
+  OpenEngSB :: Framework :: EKB :: API under Apache 2
+  OpenEngSB :: Framework :: EKB :: GraphDB :: Orient under Apache 2
+  Orient Commons under Apache 2
+  OrientDB Core under Apache 2
   osgi.core under Apache License, Version 2.0
+  SLF4J API Module under MIT License
 

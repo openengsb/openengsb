@@ -91,7 +91,6 @@
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
       <scope>provided</scope>
-      <version>${labs.delegation.version}</version>
     </dependency>
   </dependencies>
 

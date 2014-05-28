@@ -1,11 +1,804 @@
-openengsb-framework-3.0.0 ????-??-??
+openengsb-framework-3.0.0.M1 2014-05-28
 --------------------------------------------
 
-TBW
+This is the first milestone release towards 3.0.0. The major feature is the introduction of the engineering object as proxy 
+for domain to domain transformations. It also brings tons of bug fixes and library upgrades. 
 
 ### Details
 
-### Known Issues
+** Administration
+    * [OPENENGSB-3465] - Migrate from hudson to travis
+    * [OPENENGSB-3490] - Move relevant documentation parts into confluence and cleanup build
+    * [OPENENGSB-3607] - Work around travis speed problem
+
+** Bug
+    * [OPENENGSB-1169] - "create wrapped artifacts" section outdated
+    * [OPENENGSB-1232] - Workflows in RuleManager broken after bin/stop ing openengsb
+    * [OPENENGSB-1401] - Domains in connctors are referenced by the wrong version
+    * [OPENENGSB-1409] - Range missformed
+    * [OPENENGSB-1468] - issuedomain should not use arraylist as returntype
+    * [OPENENGSB-1674] - git-connector returns an empty list when no updates are available instead of null
+    * [OPENENGSB-1735] - testHandleCallsParallel fails sometimes
+    * [OPENENGSB-1770] - Location and fullDay fields of Google calendar connector doesn't work any more.
+    * [OPENENGSB-1858] - Not all tests run green if another karaf instance is running
+    * [OPENENGSB-1896] - languages are messed up in core-services bundle.properties
+    * [OPENENGSB-1977] - git-connector does not interpret relative paths correctly
+    * [OPENENGSB-1987] - git connector tests need a github-registered ssh private key
+    * [OPENENGSB-2060] - BackendPersistenceSystem basically flawed
+    * [OPENENGSB-2071] - adapt archetypes to new artifact names
+    * [OPENENGSB-2086] - version.max in parent-shared-settings points to 3.0.0
+    * [OPENENGSB-2102] - sed -r is not working under OSX
+    * [OPENENGSB-2111] - git-connector feature is missing reference to jsch
+    * [OPENENGSB-2112] - Keypair for remote security should be created by security-bundle instead of the ports
+    * [OPENENGSB-2126] - race-condition when reloading rulebase
+    * [OPENENGSB-2128] - Exception cannot be deserialized when transported via JSON
+    * [OPENENGSB-2145] - "Plain" jaxws/jaxb does not work in openengsb
+    * [OPENENGSB-2146] - javax.jws in jre.properties already exported via lib
+    * [OPENENGSB-2147] - javax.xml.crypto duplicated between lib and jre.properties
+    * [OPENENGSB-2148] - javax.xml.soap duplicated between two libs and jre.properties
+    * [OPENENGSB-2149] - javax.xml.ws duplicated between jre.properties and lib
+    * [OPENENGSB-2150] - Tabs are not allowed in features.xml
+    * [OPENENGSB-2151] - Duplicated javax.xml exports in two libs
+    * [OPENENGSB-2188] - remove jre-1.5
+    * [OPENENGSB-2215] - Sources are not deployed to m2 central
+    * [OPENENGSB-2217] - Console uses wrong import version of gogo shell
+    * [OPENENGSB-2239] - CXF OSGi transport does not work
+    * [OPENENGSB-2260] - Remote interface cannot work correctly with openengsb model objects
+    * [OPENENGSB-2261] - http://localhost:8090/openengsb/tester does not load external domains
+    * [OPENENGSB-2265] - JsonOutgoingMethodCallMarshalFilter quites Void return value with a NPE
+    * [OPENENGSB-2267] - Minor issues in pom structure
+    * [OPENENGSB-2269] - DefaultSecureMethodCallFilterFactory disrupts the filter-concept
+    * [OPENENGSB-2274] - Incoming and outgoing message fromat differs
+    * [OPENENGSB-2290] - Remote methodcalls do not work when passing instances of subtypes as arguments
+    * [OPENENGSB-2292] - ekbproxyfilter should also be able to handle lists of models/modelwrappers
+    * [OPENENGSB-2293] - QueryService has no root (default) location defined
+    * [OPENENGSB-2294] - EkbService has no root (default) location defined
+    * [OPENENGSB-2296] - Database tests could fail from time to time
+    * [OPENENGSB-2301] - JPATestIT does not close and reopen the database before each test
+    * [OPENENGSB-2314] - Exceptions in event-processing leave the workflow engine locked for other threads for eternity
+    * [OPENENGSB-2316] - adapt gcalendar connector to current openengsb-framework
+    * [OPENENGSB-2318] - adapt gcontacts connector to current openengsb-framework
+    * [OPENENGSB-2324] - adapt notification sample connector to current openengsb-framework
+    * [OPENENGSB-2326] - adapt facebook connector to current openengsb-framework
+    * [OPENENGSB-2328] - adapt plaintext report connector to current openengsb-framework
+    * [OPENENGSB-2329] - adapt promreport connector to current openengsb-framework
+    * [OPENENGSB-2332] - adapt jira connector to current openengsb-framework
+    * [OPENENGSB-2334] - adapt git connector to current openengsb-framework
+    * [OPENENGSB-2335] - adapt github connector to current openengsb-framework
+    * [OPENENGSB-2340] - getOpenEngSBModelEntries doesn't handle Lists and Submodels correctly
+    * [OPENENGSB-2406] - ForwardHandler should also allow events not named raiseEvent
+    * [OPENENGSB-2429] - JSON parser does not include fields/args which are null
+    * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+    * [OPENENGSB-2464] - TestClient: DropdownMenu creates NullPointerException
+    * [OPENENGSB-2471] - Reboot of openengsb doesnt work
+    * [OPENENGSB-2506] - Not enough perm-gen defined for real projects
+    * [OPENENGSB-2524] - Various links and images are broken in manual
+    * [OPENENGSB-2526] - Non use of CDATA in program listing produces an error
+    * [OPENENGSB-2529] - Pdf generation does not find all images correctly
+    * [OPENENGSB-2555] - new way of handling source distribution breaks exec-script
+    * [OPENENGSB-2559] - OpenEngSB does not start when used offline
+    * [OPENENGSB-2576] - Adapt domain/connector archetype to latest version
+    * [OPENENGSB-2578] - Oxygen project has the wrong files/folders referenced
+    * [OPENENGSB-2579] - Do NOT use tabs in code/src files
+    * [OPENENGSB-2580] - If the parent is a snapshot it could not be found in the current setup
+    * [OPENENGSB-2582] - Domains and Connectors need to include our snapshot repo to work with deployed snapshots correctly
+    * [OPENENGSB-2589] - Jetty log output is shown
+    * [OPENENGSB-2597] - Archetypes contain values specific for the openengsb alone
+    * [OPENENGSB-2608] - Typo in OpenEngSBFileModel
+    * [OPENENGSB-2636] - release is missing WSDL-artifact
+    * [OPENENGSB-2647] - domain.version.range does not follow semantic versioning
+    * [OPENENGSB-2673] - missing wicket version in master
+    * [OPENENGSB-2683] - Not all features are started/downloaded for karaf/openengsb
+    * [OPENENGSB-2684] - TestClient: Input with wrong Format causes Exception during MethodCall
+    * [OPENENGSB-2695] - switching context in UI yields internal error
+    * [OPENENGSB-2712] - createEmptyModel with ModelEntries as parameter discard model oid and model version
+    * [OPENENGSB-2724] - Admin Ui Unittests fail, because contextCurrentService can not be resolved
+    * [OPENENGSB-2725] - pax wicket throws classcast exception during authentification in admin ui unittests
+    * [OPENENGSB-2726] - Bug in the querying of models with submodels
+    * [OPENENGSB-2729] - Authorisation problem
+    * [OPENENGSB-2730] - serviceUtils leads to startup Issues
+    * [OPENENGSB-2732] - Missing types in wsld generation
+    * [OPENENGSB-2735] - openengsb-framework 2.4.1 starts karaf twice
+    * [OPENENGSB-2736] - m2e-error in internal connector and domains
+    * [OPENENGSB-2742] - Test-domain. Add default constructor
+    * [OPENENGSB-2747] - Change Class<?> to Class
+    * [OPENENGSB-2757] - ConsoleIT fail when executed in the wrong order
+    * [OPENENGSB-2789] - Remove the getType Method
+    * [OPENENGSB-2792] - Neodatis is incompatible to ASF release
+    * [OPENENGSB-2795] - Processbags in tasks operate on shared instances
+    * [OPENENGSB-2798] - Naming of ConnectorId is quite confusing
+    * [OPENENGSB-2802] - replace ConnectorDefinition with simple string
+    * [OPENENGSB-2803] - Introduce new object for commits
+    * [OPENENGSB-2820] - Conflict checking in the EDB has a small error
+    * [OPENENGSB-2823] - Unchecked Nullpointer sources in ModelHandler
+    * [OPENENGSB-2824] - test-data from jms-port is stored in src-zip
+    * [OPENENGSB-2825] - README is outdated
+    * [OPENENGSB-2831] - framework-feature should not contain reference to ui-api-bundle
+    * [OPENENGSB-2834] - cannot deploy framework because internal connectors reference non-existing features.xml
+    * [OPENENGSB-2836] - Possible ConcurrentModificationException in AbstractOsgiMockServiceTest
+    * [OPENENGSB-2837] - itests always run with debug-port active
+    * [OPENENGSB-2843] - Json-Marshalling: Event class string-representation incorrent
+    * [OPENENGSB-2848] - access to index in DefaultPersistenceIndex is not thread-safe
+    * [OPENENGSB-2856] - Provide maven-profile that enables itests
+    * [OPENENGSB-2859] - "workflow-elements are printed to stdout on error during creation
+    * [OPENENGSB-2860] - jdk-download-link in documentation is broken
+    * [OPENENGSB-2862] - zip-assembly is corrupt when built using java7
+    * [OPENENGSB-2877] - Duplicated distribution tags
+    * [OPENENGSB-2894] - "further information" link in readme point to invalid location
+    * [OPENENGSB-2902] - Remove old wsdl plugin
+    * [OPENENGSB-2903] - Change wsdl plugin
+    * [OPENENGSB-2904] - Change the wsdl plugin
+    * [OPENENGSB-2905] - Change the wsdl plugin
+    * [OPENENGSB-2906] - Change wsdl plugin
+    * [OPENENGSB-2907] - Change wsdl plugin
+    * [OPENENGSB-2908] - Change wsdl plugin
+    * [OPENENGSB-2909] - Change wsdl plugin
+    * [OPENENGSB-2910] - Change wsdl plugin
+    * [OPENENGSB-2915] - Tracking a branch other than master fails
+    * [OPENENGSB-2916] - TestClientTests should not rely on specific ordering of methods
+    * [OPENENGSB-2918] - endless-loops in itests should timeout at some point
+    * [OPENENGSB-2921] - Example domain is not available in offline mode
+    * [OPENENGSB-2932] - permissionProviders is not defined in ui's application-context
+    * [OPENENGSB-2936] - ConsoleIT fail when executed on a non english environment machine
+    * [OPENENGSB-2947] - Uncought nullpointer exception in JPAEntry
+    * [OPENENGSB-2949] - remove unused ProxyFactory-interface
+    * [OPENENGSB-2961] - Creating full-day gcal entries from Appointments doesn't work
+    * [OPENENGSB-2962] - use delegated classloading to load CredentialTypes
+    * [OPENENGSB-2963] - use delegated classloading to load PermissionTypes
+    * [OPENENGSB-2966] - replace custom primitives-handling in test-client with ClassUtils from commons-lang
+    * [OPENENGSB-2967] - updating the location of a gcal entry doesn't work
+    * [OPENENGSB-2968] - ConsoleIT-tests execution-order influences result
+    * [OPENENGSB-2969] - taskbox-string for no records found was changed by wicket-1.5-port
+    * [OPENENGSB-2971] - TaskboxUiIT broken since wicket-1.5-upgrade
+    * [OPENENGSB-2979] - enhance workflowService with workflow-monitoring methods
+    * [OPENENGSB-2986] - WorkflowDeployerService NullPointerException
+    * [OPENENGSB-2994] - The workflow service unit test does not terminate sometimes
+    * [OPENENGSB-2996] - integrate auditing into workflow-service instead of using the "auditing-rule"
+    * [OPENENGSB-2999] - port infrastructure-jms from xbean to java-code
+    * [OPENENGSB-3000] - EDB and aries-jpa-1.0 throws exception on shutdown
+    * [OPENENGSB-3001] - pax-wicket-errors on shutdown
+    * [OPENENGSB-3007] - Remove duplicate CompositeConnector-classes
+    * [OPENENGSB-3010] - Database does not reconnect on failure
+    * [OPENENGSB-3012] - EDB queryForModels timestamp parameter check need to be smarter
+    * [OPENENGSB-3016] - openengsb-test is missing from dependency-management in shared-pom
+    * [OPENENGSB-3019] - give all components a higher start level
+    * [OPENENGSB-3022] - testInvalidAuthentication_shouldNotInvokeRequestHandler fails sometimes
+    * [OPENENGSB-3023] - some workflow-unittests failing randomly in java7
+    * [OPENENGSB-3030] - EKB commit throw error with custom OpenEngSBModels
+    * [OPENENGSB-3031] - ui-admin does not unregister wicket-application when stopped
+    * [OPENENGSB-3036] - when starting up the second time persistence-bundles don't start correctly
+    * [OPENENGSB-3043] - WSPortIT tests fail
+    * [OPENENGSB-3047] - RuleManager does not load packages correctly if there are no rules in it.
+    * [OPENENGSB-3056] - Create wsdls for core-services in API
+    * [OPENENGSB-3058] - MethodCall-marshaller does not load Array-types correctly
+    * [OPENENGSB-3061] - Taskbox-ui broken in Internet Explorer
+    * [OPENENGSB-3068] - "Opt-out" restriction for remote service-calls makes no sense
+    * [OPENENGSB-3112] - compiling loom-csharp fails with NullPointerException
+    * [OPENENGSB-3117] - Serialized Models should not contain openengsbModelEntries-field
+    * [OPENENGSB-3118] - EkbConverter does not handle Numbers correctly
+    * [OPENENGSB-3121] - JMS-port fails to start sometimes
+    * [OPENENGSB-3144] - When a new property is added to the connector, the field is not cleared
+    * [OPENENGSB-3147] - Remove References to springframwork's BundleContextAware
+    * [OPENENGSB-3153] - TransformationDeployerService references RuleBaseException
+    * [OPENENGSB-3162] - Adjust domain-archetype to auto-injection of domain-services
+    * [OPENENGSB-3164] - Don't use AbstractOpenEngSBConnectorService helper methods in gcalendar connector
+    * [OPENENGSB-3165] - Don't use AbstractOpenEngSBConnectorService helper methods in gcontacts connector
+    * [OPENENGSB-3166] - update git connector to new ekb infrastructure
+    * [OPENENGSB-3167] - Don't use AbstractOpenEngSBConnectorService helper methods in github connector
+    * [OPENENGSB-3168] - Don't use AbstractOpenEngSBConnectorService helper methods in jira connector
+    * [OPENENGSB-3169] - Update maven connector to new ekb infrastructure
+    * [OPENENGSB-3170] - Don't use AbstractOpenEngSBConnectorService helper methods in trac connector
+    * [OPENENGSB-3189] - Tests do not work when absolute path contains a space
+    * [OPENENGSB-3203] - The weaver agent shouldn't contain a slf4j jar binding
+    * [OPENENGSB-3207] - use spring-jms-feature instead of direct bundle-references
+    * [OPENENGSB-3209] - upgrade spring-version to 3.1.2
+    * [OPENENGSB-3221] - updating import-files causes NullPointerException
+    * [OPENENGSB-3222] - ConnectorDeployer may block FileInstall when factory is not available
+    * [OPENENGSB-3224] - Race-condition in workflowDeployer
+    * [OPENENGSB-3225] - possible NullPointerException when deploying global-files
+    * [OPENENGSB-3227] - Exceptions about connectors already existing in subsequent startups
+    * [OPENENGSB-3229] - Possible NullPointerException in weaved models
+    * [OPENENGSB-3241] - Refactor RequestHandlerImpl to use org.apache.commons.lang.ClassUtils
+    * [OPENENGSB-3242] - ConnectorManager should not print Exceptions to console because of unavailable ConnectorInstanceFactory
+    * [OPENENGSB-3243] - ekb does not allow special characters in values
+    * [OPENENGSB-3244] - ConnectorDeployer should truncate trailing whitespace from values
+    * [OPENENGSB-3245] - shiro fails to start when restarting openengsb
+    * [OPENENGSB-3247] - Change Enums to String Constants in Requirement Domain
+    * [OPENENGSB-3248] - Weaver service creates two agent jars
+    * [OPENENGSB-3249] - Adjust Methods and Version in RequirementDomain
+    * [OPENENGSB-3253] - Possible ClassCastException in edb conflict detection
+    * [OPENENGSB-3254] - OpenEngSBModelTail isn't set in the models when checked out of the EDB
+    * [OPENENGSB-3255] - Save the object type of properties on EDB level
+    * [OPENENGSB-3256] - values containing ":" cannot be queried
+    * [OPENENGSB-3258] - Fix property-names, create missing event
+    * [OPENENGSB-3259] - remove unnecessary parents
+    * [OPENENGSB-3260] - remove loom-modules from framework
+    * [OPENENGSB-3261] - Avoid overloading methods in EDB API
+    * [OPENENGSB-3262] - Avoid overloading methods in EKB QueryInterface
+    * [OPENENGSB-3263] - Avoid overloading methods in Workflow API
+    * [OPENENGSB-3270] - Sending of 'Object' instances with JSON, removes their subtype
+    * [OPENENGSB-3271] - wrong relative paths in ekb bundles
+    * [OPENENGSB-3283] - Improve the function toOpenEngSBModelEntries so that it checks if the getter it refers really exists
+    * [OPENENGSB-3291] - disable snapshot-repos in pax.url.mvn.cfg in openengsb-framework distribution
+    * [OPENENGSB-3307] - loom-csharp compile-error because of missing openengsb-api-version
+    * [OPENENGSB-3334] - duplicate aopalliance dependency in parent-pom
+    * [OPENENGSB-3335] - duplicate declaration of services-dependency in itests
+    * [OPENENGSB-3336] - Missing Documentation in API Bundle
+    * [OPENENGSB-3337] - Replace Map wit TransfertMap 
+    * [OPENENGSB-3350] - Fix modal dialog
+    * [OPENENGSB-3365] - upgrade activemq to 5.7.0
+    * [OPENENGSB-3368] - Remove the throw exception from the interface methods in the api
+    * [OPENENGSB-3374] - Change the start level of the api and weaver bundle so that they get started before the other core components
+    * [OPENENGSB-3376] - upgrade guava to 13.0.1
+    * [OPENENGSB-3377] - upgrade commons-pool to 1.6
+    * [OPENENGSB-3391] - Datasource uses double-pooling which leads to hanging connections
+    * [OPENENGSB-3393] - registerFlowTriggerRule does not work correctly when event is a model
+    * [OPENENGSB-3394] - WSPortIT broken on master
+    * [OPENENGSB-3420] - @Inject-ing AuthenticationContext in itests does not work in some environments
+    * [OPENENGSB-3422] - Update connector archetype to use correct domain artifact name format
+    * [OPENENGSB-3423] - fix resources in Connector archetype
+    * [OPENENGSB-3427] - migrate JSON-handling to jackson 2.x
+    * [OPENENGSB-3429] - VirtualConnectorFactory should use the domain-interfaces classloader for creating the proxy
+    * [OPENENGSB-3430] - Singleton Root-subject can cause serious side-effects
+    * [OPENENGSB-3436] - remove outdated clientproject.root archetype
+    * [OPENENGSB-3453] - generate WSDL for MixinDomains in api
+    * [OPENENGSB-3457] - domains oosourcecode and sqlcode are missing from assembly
+    * [OPENENGSB-3472] - Archetype tests fail if the m2 repo is not in its default place. 
+    * [OPENENGSB-3473] - Comma in annotation definition break some builds
+    * [OPENENGSB-3486] - The wsdl2dll plugin does not create for each project a lib folder
+    * [OPENENGSB-3489] - Remove dependency tag from the wsdl2dll plugin
+    * [OPENENGSB-3495] - OpenEngSB Framework pom still describes SMX project
+    * [OPENENGSB-3497] - wsdl2dll module points to wrong parent
+    * [OPENENGSB-3503] - Domain provider for SQL-Domain returns NULL for domain interface
+    * [OPENENGSB-3504] - Master does not build on W7 with J7
+    * [OPENENGSB-3519] - Exception declaration in the interfaces
+    * [OPENENGSB-3525] - Make the wsdl2dll plugin compatible to axis java2wsdl v.1.7.0 SNAPSHOT version
+    * [OPENENGSB-3533] - Remove old api version properties and all of its references
+    * [OPENENGSB-3534] - Version property for openengsb-test exists in openengsb-root
+    * [OPENENGSB-3537] - Add OpenEngSBModel
+    * [OPENENGSB-3539] - convert JSON to Model instance does not work if there is a tail
+    * [OPENENGSB-3542] - Console service create ignores service-pid
+    * [OPENENGSB-3544] - openengsb:info does not show framework version and drools version
+    * [OPENENGSB-3545] - TaskboxIT often fails due to the late start of the authentication mechanisms
+    * [OPENENGSB-3549] - OpenEngSB is not working with recent Karaf
+    * [OPENENGSB-3550] - Framework version is no longer exported correctly via http
+    * [OPENENGSB-3558] - Internal dependency versions dont get updated by maven-release-plugin
+    * [OPENENGSB-3559] - Repositories are missing in some POMs
+    * [OPENENGSB-3560] - Archetype versions in integration tests are hard coded
+    * [OPENENGSB-3579] - json to java converted OpenEngSBModelEntries' values are always converted to String
+    * [OPENENGSB-3580] - The Json Marshaller does not suppoert Array to List convertion
+    * [OPENENGSB-3581] - A GUID is given twice for an entry
+    * [OPENENGSB-3595] - Some integration tests fail because of not loaded authentication environment
+    * [OPENENGSB-3599] - contextId null after being set
+    * [OPENENGSB-3606] - Incorrect behaviour while loading models with submodels
+    * [OPENENGSB-3609] - Change java2wsdl plugin
+    * [OPENENGSB-3610] - Fix lifecycle mappings
+    * [OPENENGSB-3618] - ManipulationUtils should be less strict with boolean types
+    * [OPENENGSB-3619] - EDBConverter fails converting wrapped Number type properties
+    * [OPENENGSB-3622] - Replace propreties in the comments with default value (Wsdl2dll)
+    * [OPENENGSB-3624] - org.openengsb.framework.weaver.test couldnt be deployed
+    * [OPENENGSB-3625] - EDBConverter writes the wrong type to the EDBObjectEntries
+    * [OPENENGSB-3627] - EDB can not handle Character types
+    * [OPENENGSB-3632] - first karaf start sometimes causes ConcurrentModificationException
+    * [OPENENGSB-3641] - Update email-connector to work with the latest framework-changes
+    * [OPENENGSB-3644] - Update Propagation error which prevents updates in some cases
+    * [OPENENGSB-3647] - exception thrown at shutdown 
+    * [OPENENGSB-3648] - Make the pre-push-script run again with the current master
+    * [OPENENGSB-3657] - OpenEngSB and connector/domain root dont share the same version
+    * [OPENENGSB-3665] - Add EKBErrorHook to the EKB PersistInterface Hooks
+    * [OPENENGSB-3666] - OConcurrentModificationException sometimes occurs on karaf startup
+    * [OPENENGSB-3670] - Fix wrong configuration in the EDB related integration tests
+    * [OPENENGSB-3688] - Pax Wicket SPI Blueprint missing in assembled framework
+    * [OPENENGSB-3696] - GUI for user management doesn't work
+    * [OPENENGSB-3711] - Checkstyle errors in itest component
+    * [OPENENGSB-3723] - LoginPage includes jQuery UI CSS as JavaScriptHeaderItem
+    * [OPENENGSB-3730] - JPACommit not cascading delete on JPAObject lists
+    * [OPENENGSB-3734] - deleteCommit does not remove entries for deleted JPAObjects
+
+** Deprecation
+    * [OPENENGSB-2185] - Deprecate CorePersistenceBackendService on 2.x.y
+    * [OPENENGSB-2229] - deprecate EngineeringKnowledgeBaseService
+    * [OPENENGSB-2372] - Deprecate ModelFactory of the EKB
+    * [OPENENGSB-2718] - Deprecate EDB Events usage
+    * [OPENENGSB-2985] - remove WorkflowService#startFlowInBackground
+
+** Documentation 
+    * [OPENENGSB-3077] - Add/Update documentation for the new model handling
+    * [OPENENGSB-3274] - Copy paste error in domain report documentation
+    * [OPENENGSB-3275] - Copy paste error in domain contact
+    * [OPENENGSB-3276] - Copy paste error in domain deploy
+    * [OPENENGSB-3277] - Copy paste error in domain issue
+    * [OPENENGSB-3278] - Copy paste error in domain notification
+    * [OPENENGSB-3280] - Copy paste error in domain scm
+    * [OPENENGSB-3281] - Copy paste error in domain test
+
+** Idea
+    * [OPENENGSB-408] - Implement User Interface results of the Interaction & Design Mini Workshop
+    * [OPENENGSB-714] - Security for internal configurations
+    * [OPENENGSB-1783] - Redesign the openengsb look and feel
+    * [OPENENGSB-2064] - Config persistence backend
+    * [OPENENGSB-2431] - use a different way than events to save elements in the EDB
+    * [OPENENGSB-2756] - Introduce ModelTransformation unit
+    * [OPENENGSB-3137] - Release API seperately
+
+** Improvement
+    * [OPENENGSB-255] - Supress log output of drools
+    * [OPENENGSB-1269] - add components to jira connector
+    * [OPENENGSB-1314] - Extract dependencies from openengsb-framework to openengsb-root
+    * [OPENENGSB-1679] - Add base documentation about the concepts of the EDB/EKB
+    * [OPENENGSB-1743] - move Usermanagement to JPA
+    * [OPENENGSB-1754] - Enhance gcalendar with EDB access
+    * [OPENENGSB-1775] - Change Rulemanager to use ConfigPersistence instead of PersistenceService
+    * [OPENENGSB-1785] - Removing dynamic-import from test client
+    * [OPENENGSB-1787] - Use the reserve-network-port-mojo in itests
+    * [OPENENGSB-1819] - Color OFFLINE services in the service tag RED and ONLINE Green
+    * [OPENENGSB-1835] - Enhance gcontacts connector with EDB/EKB access
+    * [OPENENGSB-1837] - Enhance github connector with EDB/EKB access
+    * [OPENENGSB-1838] - Enhance jira connector with EDB/EKB access
+    * [OPENENGSB-1844] - Enhance git connector with EDB/EKB access
+    * [OPENENGSB-1846] - Enhance plaintextreport connector with EDB/EKB access
+    * [OPENENGSB-1847] - Enhance promreport connector with EDB/EKB access
+    * [OPENENGSB-1876] - divide OsgiServiceUtils into bundleContext-dependent and bundlecontext-independent stuff
+    * [OPENENGSB-1880] - Add cancel button on edit-service-page
+    * [OPENENGSB-1884] - Allow to remove service properties again in edit-service-ui
+    * [OPENENGSB-1966] - Remove ConfigPersistenceBackend which uses default PersistenceService
+    * [OPENENGSB-2057] - Java7 compatibility
+    * [OPENENGSB-2058] - let as many itests as possible run without @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+    * [OPENENGSB-2072] - archetypes need to be validated automatically somehow
+    * [OPENENGSB-2084] - Remove OpenEngSBCoreServices
+    * [OPENENGSB-2089] - Move all org.openengsb.framework.console packages to internal
+    * [OPENENGSB-2134] - Avoid arrow anti pattern in JMSIncomingPort
+    * [OPENENGSB-2135] - Use IllegalStateException instead of RuntimeException if extraction of text of jms message fails
+    * [OPENENGSB-2144] - Provide libs from features.xml via parent/shared
+    * [OPENENGSB-2195] - edb tests should use in memory database
+    * [OPENENGSB-2197] - Remove KNOWN_ISSUES file
+    * [OPENENGSB-2200] - Refactor Workflow Unittests
+    * [OPENENGSB-2204] - display arrays properly when returned by a method
+    * [OPENENGSB-2209] - All other then standard scripts are not working
+    * [OPENENGSB-2218] - restructure current EKB bundle
+    * [OPENENGSB-2238] - memory and permSize needs to be increased for integration tests to increase stability
+    * [OPENENGSB-2262] - Timeout needs to be configurable for jms
+    * [OPENENGSB-2264] - couple event to workflow integration test
+    * [OPENENGSB-2268] - Provide integration tests for various remoting situations
+    * [OPENENGSB-2271] - remove DefaultSecureMethodCallFilterFactory
+    * [OPENENGSB-2284] - "recieve"-queue in JmsIncomingPort should be configurable
+    * [OPENENGSB-2286] - Add ModelUtils to the core common bundle
+    * [OPENENGSB-2288] - EDB Query improvement
+    * [OPENENGSB-2291] - new function for ekb query
+    * [OPENENGSB-2295] - It's not very wise that the default database is put into the dir where the project is executed
+    * [OPENENGSB-2299] - Make the example domain and connector optional in an additional feature
+    * [OPENENGSB-2300] - Add overload for connector manager if an instance is already known
+    * [OPENENGSB-2312] - Allow openengsb:services command without params (list as default)
+    * [OPENENGSB-2342] - Do not reference artifact versions directly in the OEB code
+    * [OPENENGSB-2346] - Improve naming in openengsb-framework manual project (openengsb-framework-manual.xml/xpr)
+    * [OPENENGSB-2376] - Use CHANGELOG instead of CHANGELOG.md
+    * [OPENENGSB-2402] - Refactor org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter.java
+    * [OPENENGSB-2407] - OpenEngSB EventForward should make clear that we want only one param (event) per raise method
+    * [OPENENGSB-2421] - move static content of the documentation to the homepage
+    * [OPENENGSB-2436] - Documentation restructuring
+    * [OPENENGSB-2469] - Use karaf features instead of defining own aries based features
+    * [OPENENGSB-2504] - remove ConnectorRegistrationManager from API
+    * [OPENENGSB-2509] - Change usage of serviceId to usage of PID everywhere
+    * [OPENENGSB-2511] - Rename documentation package to openengsb-framework-manual
+    * [OPENENGSB-2522] - Move assembly descriptors into src/descriptors instead of src/main/descriptors
+    * [OPENENGSB-2571] - Unify openengsb framework connectors/domains with "external" domains connectors
+    * [OPENENGSB-2573] - Include documentation about HermesJms into documentation explaining remoting
+    * [OPENENGSB-2577] - add short description to connector-manual
+    * [OPENENGSB-2584] - Include issuetracker, buildserver and inceptionYear from root
+    * [OPENENGSB-2586] - Include issuetracker, buildserver and inceptionYear from root
+    * [OPENENGSB-2590] - Configure releases via mvn release:prepare/perform again
+    * [OPENENGSB-2601] - Duplicated docbkx version in parents/shared and openengsb/root
+    * [OPENENGSB-2708] - move EDBEntry/OpenEngSBModelEntry converting logic into the EKB
+    * [OPENENGSB-2709] - EDBEvents should be handled by the EKB rather than by the EDB
+    * [OPENENGSB-2711] - EDB should save the model type of models. This value should be considered when the QueryInterface is used
+    * [OPENENGSB-2723] - Add OpenEngSBModel Map support
+    * [OPENENGSB-2733] - OpenEngSBModels should support "equals" and "hashCode"
+    * [OPENENGSB-2734] - Make events OpenEngSBModels
+    * [OPENENGSB-2739] - Replace Spring-security config with shiro in web-ui
+    * [OPENENGSB-2740] - Enhance OpenEngSBModels with default/static property values for strings through annotations
+    * [OPENENGSB-2773] - Adapte connector to the test domain
+    * [OPENENGSB-2793] - use the new openjpa maven plugin instead of the old one
+    * [OPENENGSB-2804] - Remove no longer required .gitmodules file
+    * [OPENENGSB-2814] - make sure local repository is in the correct branch
+    * [OPENENGSB-2826] - README should provide more detail on how to compile
+    * [OPENENGSB-2827] - README should not include license header
+    * [OPENENGSB-2828] - separate create/delete and "register/unregister" for remote connectors
+    * [OPENENGSB-2830] - features.xml should include reference to shiro-features-xml
+    * [OPENENGSB-2844] - Replace OpenEngSBCoreServices with proper injectoin
+    * [OPENENGSB-2849] - provide mandatory config for workflow-engine via config-files in etc
+    * [OPENENGSB-2899] - Change the source releases to look more like typically apache releases
+    * [OPENENGSB-2914] - Do not overload methods in example domain
+    * [OPENENGSB-2917] - TestClient should sort methods independent of reflection-implementation
+    * [OPENENGSB-2920] - Remove optional naming of auditing-domain in assembly-pom
+    * [OPENENGSB-2922] - Add itest to make sure HOST:PORT/system/framework.version.info always returns current version
+    * [OPENENGSB-2923] - Make openwire & stomp port configurable
+    * [OPENENGSB-2931] - remove all ignored tests
+    * [OPENENGSB-2935] - Implement model transformation unit
+    * [OPENENGSB-2943] - Redesigned logo, color schema
+    * [OPENENGSB-2981] - Make it possible to start workflows without "flowstartedevent"-workaround
+    * [OPENENGSB-2982] - remove "WorkflowStarter" because it's a poltergeist
+    * [OPENENGSB-2983] - remove workflowStartedEvent
+    * [OPENENGSB-2987] - Log Level of WorkflowDeployerService
+    * [OPENENGSB-2989] - Regex check on the query if it is correctly
+    * [OPENENGSB-2990] - merge MethodCallRequest and SecureRequest
+    * [OPENENGSB-2995] - automatically detect parameter-types in filteractions
+    * [OPENENGSB-3002] - adapt AbstractOsgiMockServiceTest to osgi 4.3
+    * [OPENENGSB-3004] - Remove commented dependencies in features.xml
+    * [OPENENGSB-3011] - add queryForModels method to EDB where no timestamp string is needed
+    * [OPENENGSB-3015] - add profiles to replace openengsb-plugin-tasks
+    * [OPENENGSB-3018] - Replace current model handling with OSGi weaving hooks and byte code manipulation
+    * [OPENENGSB-3020] - remove binary transformation domain and connector
+    * [OPENENGSB-3021] - Disable Message-encryption by default
+    * [OPENENGSB-3034] - separate static from non-static methods in serviceUtils
+    * [OPENENGSB-3037] - move orienttechnologies-repo to root
+    * [OPENENGSB-3041] - enable OpenEngSB to handle non-wrapped models in incoming messages.
+    * [OPENENGSB-3054] - Provide UI-element for querying edb
+    * [OPENENGSB-3069] - Use Version string instead of osgi version in modeldescription
+    * [OPENENGSB-3081] - adapt appointment domain to new model handling
+    * [OPENENGSB-3083] - adapt build domain to new model handling
+    * [OPENENGSB-3084] - adapt contact domain to new model handling
+    * [OPENENGSB-3085] - adapt deploy domain to new model handling
+    * [OPENENGSB-3086] - adapt issue domain to new model handling
+    * [OPENENGSB-3087] - adapt notification domain to new model handling
+    * [OPENENGSB-3088] - adapt report domain to new model handling
+    * [OPENENGSB-3089] - adapt scm domain to new model handling
+    * [OPENENGSB-3090] - adapt test domain to new model handling
+    * [OPENENGSB-3091] - adapt email connector to new model handling
+    * [OPENENGSB-3092] - adapt gcalendar connector to new model handling
+    * [OPENENGSB-3093] - adapt gcontacts connector to new model handling
+    * [OPENENGSB-3095] - adapt github connector to new model handling
+    * [OPENENGSB-3096] - adapt jira connector to new model handling
+    * [OPENENGSB-3098] - adapt plaintextreport connector to new model handling
+    * [OPENENGSB-3099] - adapt promreport connector to new model handling
+    * [OPENENGSB-3100] - adapt trac connector to new model handling
+    * [OPENENGSB-3119] - Thread safe implementation of EDB
+    * [OPENENGSB-3120] - Thread safe implementation of UserDataManager
+    * [OPENENGSB-3122] - Replace PersistenceService Mockup with ConfigPersistenceService Mockup 
+    * [OPENENGSB-3128] - move openjpa-enhancer-plugin-configuration to shared-bundle-settings pom
+    * [OPENENGSB-3129] - get rid of warning about missing logger
+    * [OPENENGSB-3130] - Warning from bundle-plugin "did not find matching referal ..."
+    * [OPENENGSB-3131] - Warning weaver.test jar is empty
+    * [OPENENGSB-3134] - Remove processIdLock from Workflow
+    * [OPENENGSB-3136] - auto-inject requried services into domain-bundles
+    * [OPENENGSB-3141] - add logging statements to injected bytecode
+    * [OPENENGSB-3143] - Remove SpecialActionsAfterSerialisation from API
+    * [OPENENGSB-3145] - Querying for active models results in n+1 JDBC-Queries
+    * [OPENENGSB-3146] - use @Inject for WiringService in DomainEndpointFactoryIT
+    * [OPENENGSB-3150] - Do not throw EDBException in EKB
+    * [OPENENGSB-3151] - Create separated API-bundles
+    * [OPENENGSB-3152] - AbstractOpenEngSBConnectorService should not contain reference to EKB
+    * [OPENENGSB-3155] - Remove AbstractDirectoryRuleManager and ResourceHandler
+    * [OPENENGSB-3156] - WorkflowDeployer should reattempt install when new bundle is deployed
+    * [OPENENGSB-3157] - Give all unit tests the correct naming scheme
+    * [OPENENGSB-3161] - Remove deprecated EngineeringKnowledgeBaseService
+    * [OPENENGSB-3171] - add reference to labs-delegation in domain-archetype
+    * [OPENENGSB-3178] - Remove DomainEventsProxyFactoryBean from framework-common
+    * [OPENENGSB-3179] - Remove blueprint.xml from domain-appointment and let domain provide models
+    * [OPENENGSB-3180] - Remove blueprint.xml from domain-build and let domain provide models
+    * [OPENENGSB-3181] - Remove blueprint.xml from domain-contact and let domain provide models
+    * [OPENENGSB-3182] - Remove blueprint.xml from domain-deploy and let domain provide models
+    * [OPENENGSB-3183] - Remove blueprint.xml from domain-issue and let domain provide models
+    * [OPENENGSB-3185] - Remove blueprint.xml from domain-report and let domain provide models
+    * [OPENENGSB-3186] - Remove blueprint.xml from domain-requirement and let domain provide models
+    * [OPENENGSB-3187] - Remove blueprint.xml from domain-scm and let domain provide models
+    * [OPENENGSB-3188] - Remove blueprint.xml from domain-test and let domain provide models
+    * [OPENENGSB-3197] - Move AbstractDataRow to EDB and rename it to something meaningful
+    * [OPENENGSB-3198] - extend OpenEngSBModels with the methods getModelTail and setModelTail
+    * [OPENENGSB-3199] - make core-services independent of workflow-bundle
+    * [OPENENGSB-3200] - Merge security-bundle into services-bundle
+    * [OPENENGSB-3204] - Add interface for Authentication to replace SecurityContext
+    * [OPENENGSB-3205] - Let OpenEngSBModel extend Serializable
+    * [OPENENGSB-3210] - Check all printStackTrace calls for their necessity
+    * [OPENENGSB-3211] - Check all System.out.println or System.err.println calls for their necessity
+    * [OPENENGSB-3213] - Move ModelDescription from ekb.api to framework.api
+    * [OPENENGSB-3214] - remove sample-maven-projects from itests
+    * [OPENENGSB-3215] - Change ModelRegistry from BundleListener to BundleTracker
+    * [OPENENGSB-3223] - Remove getRuleBase form RuleManager in workflow-API
+    * [OPENENGSB-3228] - update notification domain to use service auto-injecting
+    * [OPENENGSB-3238] - Separate EBK Impl bundle into parts
+    * [OPENENGSB-3246] - Introduce a whitelist for model providing bundles instead of black lists
+    * [OPENENGSB-3252] - Add support for primitive types in models
+    * [OPENENGSB-3273] - Remove hardcoded versions from feature.xml
+    * [OPENENGSB-3285] - merge bundle-settings, shared-settings into framework-parent
+    * [OPENENGSB-3288] - extract domain-parent to separate repository
+    * [OPENENGSB-3289] - extract connector-parent to separate repository
+    * [OPENENGSB-3298] - create util-bundle and extract util-code from common-bundle
+    * [OPENENGSB-3302] - Add "Versickerungs"-information to the edges in the graph db
+    * [OPENENGSB-3308] - Make Version (and timestamp) available via OpenEngSBModel
+    * [OPENENGSB-3314] - change ModelRegistry from singleton to normal instance class
+    * [OPENENGSB-3323] - Save also the version of the model into the EDB
+    * [OPENENGSB-3341] - Change the id concept of the EDB Objects
+    * [OPENENGSB-3355] - Provide Hooks for the persist interface
+    * [OPENENGSB-3356] - Introduce EngineeringObject update propagation on/off flag
+    * [OPENENGSB-3361] - Minimize EDBConverterUtils
+    * [OPENENGSB-3362] - Allow custom transformation functions
+    * [OPENENGSB-3363] - Test submodel support better and make the EDBIT tests more readable
+    * [OPENENGSB-3369] - InvokeAllIgnoreResult-strategy should ignore when some connector throws an Exception during execution
+    * [OPENENGSB-3385] - EDBCommits should have a revision number and a head revision number
+    * [OPENENGSB-3395] - do not pack .idea-directory in src-assembly
+    * [OPENENGSB-3396] - ignore .repository-directory generated by jenkins
+    * [OPENENGSB-3416] - cleanup unused dependencies in poms
+    * [OPENENGSB-3418] - allow ConnectorInstanceFactory#applyAttributes to return a new instance of the connector
+    * [OPENENGSB-3421] - Remove default resource filtering from framework parent pom
+    * [OPENENGSB-3431] - VirtualConnectors should be aware of the domain they are used in
+    * [OPENENGSB-3433] - Move contributor list from framework root pom to confluence
+    * [OPENENGSB-3439] - Update checkstyle to work with checkstyle 5+
+    * [OPENENGSB-3463] - Wonderland: instantiation operation is not entirely functional
+    * [OPENENGSB-3464] - Remove no longer required webdav uploads
+    * [OPENENGSB-3477] - Wonderland: use different temporary field identifier
+    * [OPENENGSB-3480] - Restructure openengsb project structure
+    * [OPENENGSB-3483] - Generate OpenEngSBCore dll from the interfaces
+    * [OPENENGSB-3496] - use labs-jpatest for testing persistence-code
+    * [OPENENGSB-3502] - Many classes breaks checkstyle
+    * [OPENENGSB-3508] - Correct version of wsdl2dll tool
+    * [OPENENGSB-3512] - make OpenEngSBModelEntry serializeble
+    * [OPENENGSB-3513] - make openengsb-root the only available parent pom
+    * [OPENENGSB-3516] - EDB should be able to handle Arrays
+    * [OPENENGSB-3517] - wonderland: improve performance of the instantiation operation
+    * [OPENENGSB-3526] - Change Groupid of the wsdl2dll plugin
+    * [OPENENGSB-3530] - Improve EDB performance through indexing
+    * [OPENENGSB-3541] - Make JMSPortIT class runnable without AllConfinedStagedReactorFactory
+    * [OPENENGSB-3543] - Make ConsoleIT class runnable without AllConfinedStagedReactorFactory
+    * [OPENENGSB-3555] - XLink: Adapt hardwired transformation for Testdata used in evaluation
+    * [OPENENGSB-3566] - Change log level of drools schema validation to get rid of validation warnings
+    * [OPENENGSB-3594] - Filter warnings and schema validation errors from the wsdl2dll plugin
+    * [OPENENGSB-3602] - Provide additional method in OpenEngSBModel which returns only the properties of the object itself
+    * [OPENENGSB-3603] - EDB support for more than one level of submodels
+    * [OPENENGSB-3611] - Change java2wsdl plugin
+    * [OPENENGSB-3612] - Change java2sdl plugin
+    * [OPENENGSB-3613] - Adapt wsdl2dll code to the cxf java2wsdl
+    * [OPENENGSB-3616] - Change expression to property so that maven does not show a warning
+    * [OPENENGSB-3620] - EDBConverterTest does not cover all primitive/wrapped type conversions
+    * [OPENENGSB-3643] - Improve the test cases for the engineering object enhancements
+    * [OPENENGSB-3658] - Improve performance of the query interface
+    * [OPENENGSB-3659] - Introduce object for model queries instead of a hash map
+    * [OPENENGSB-3660] - Add method to the query interface which returns the last revision id commited in a specific context
+    * [OPENENGSB-3661] - Enable also OR queries against models
+    * [OPENENGSB-3662] - Reverted commits should have a meaningful comment
+    * [OPENENGSB-3663] - Use a more efficient query implementation
+    * [OPENENGSB-3664] - Introduce context based model persisting locking mechansim
+    * [OPENENGSB-3672] - add support for multiple values per key to EDBQueries
+    * [OPENENGSB-3733] - add support to query for deleted EDBObjects with QueryRequest
+    * [OPENENGSB-3741] - separate ModelClassName from QueryRequest.parameters
+
+** Library Upgrade
+    * [OPENENGSB-257] - Upgrade to wicket 1.5.x
+    * [OPENENGSB-1003] - Upgrade to karaf 3.0.0
+    * [OPENENGSB-1311] - Use "real" osgified guava lib
+    * [OPENENGSB-1394] - Upgrade to openengsb-1.2.0.RC1
+    * [OPENENGSB-1465] - Upgrade openengsb-domain-issue to 1.2.0
+    * [OPENENGSB-1491] - Upgrade openengsb-domain-appointment to 1.2.1
+    * [OPENENGSB-1493] - Upgrade openengsb-domain-contact to 1.2.1
+    * [OPENENGSB-1497] - Upgrade openengsb-domain-report to 1.2.1
+    * [OPENENGSB-1508] - Push connectors and domains to latest openengsb-framework-1.3.0.M1
+    * [OPENENGSB-1516] - Because of OPENENGSB-1468 openengsb-domain-issue-1.2.1 is required
+    * [OPENENGSB-1585] - Upgrade openengsb-domain-issue to 1.2.2
+    * [OPENENGSB-1609] - Upgrade openengsb-framework to 1.3.0.M2
+    * [OPENENGSB-2016] - Upgrade jaxb smx bundles to 2.2.4
+    * [OPENENGSB-2090] - Upgrade to labs-paxexam-karaf to 0.1.1
+    * [OPENENGSB-2098] - Upgrade to pax-wicket to 0.7.3
+    * [OPENENGSB-2099] - Upgrade to wicket to 1.4.18
+    * [OPENENGSB-2110] - upgrade pax-wicket to 0.8.0
+    * [OPENENGSB-2113] - Upgrade to guava-10 smx
+    * [OPENENGSB-2123] - upgrade jgit to 1.1.0.201109151100-r
+    * [OPENENGSB-2131] - Upgrade to pax-wicket 0.7.4
+    * [OPENENGSB-2142] - upgrade to openengsb-root-23
+    * [OPENENGSB-2152] - Upgrade apache velocity libs to 1.7
+    * [OPENENGSB-2153] - Upgrade wss4j to 1.6.2
+    * [OPENENGSB-2154] - Upgrade neethi to 3.0.1
+    * [OPENENGSB-2155] - Upgrade activation api to 1.8.0
+    * [OPENENGSB-2196] - Upgrade paxexam-karaf test container to 0.2.0
+    * [OPENENGSB-2199] - Upgrade to karaf-2.2.4
+    * [OPENENGSB-2202] - Upgrade to cxf 2.4.3
+    * [OPENENGSB-2203] - Upgrade to pax-wicket 0.7.5
+    * [OPENENGSB-2205] - upgrade paxexam-karaf to 0.2.1
+    * [OPENENGSB-2216] - Upgrade to wicket 1.4.19
+    * [OPENENGSB-2220] - switch from smx jaxws api to geronimo jaxws spec
+    * [OPENENGSB-2221] - Upgrade xmlschema to 2.0.1
+    * [OPENENGSB-2222] - upgrade saaj impl version to 1.3.9_1
+    * [OPENENGSB-2223] - Upgrade opensaml to 2.5.1_1
+    * [OPENENGSB-2224] - Upgrade wss4j to 1.6.3
+    * [OPENENGSB-2227] - Upgrade to openengsb-root-24
+    * [OPENENGSB-2230] - upgrade to upgrade paxexam-karaf to 0.2.2
+    * [OPENENGSB-2237] - Upgrade to paxexam-karaf 0.3.0
+    * [OPENENGSB-2240] - downgrade to cxf 2.4.2
+    * [OPENENGSB-2251] - Upgrade to cxf 2.5.0
+    * [OPENENGSB-2252] - Upgrade commons-compress to 1.3
+    * [OPENENGSB-2255] - Upgrade to cxf 2.4.4
+    * [OPENENGSB-2256] - upgrade drools to 5.3.0.Final
+    * [OPENENGSB-2266] - Upgrade to paxexam-karaf testframework 0.4.0
+    * [OPENENGSB-2285] - Upgrade amq to 5.5.1
+    * [OPENENGSB-2289] - Upgrade paxexam-karaf to 0.4.1
+    * [OPENENGSB-2297] - Upgrade to openengsb-root 25
+    * [OPENENGSB-2310] - Upgrade to openengsb-root-26
+    * [OPENENGSB-2347] - Upgrade docbkx-maven-plugin to 2.0.13
+    * [OPENENGSB-2385] - Upgrade to commons-compress 1.3
+    * [OPENENGSB-2465] - Upgrade to karaf 2.2.5
+    * [OPENENGSB-2468] - Upgrade to cxf 2.5.1
+    * [OPENENGSB-2470] - Upgrade to root-28
+    * [OPENENGSB-2499] - Upgrade to openengsb-root-29
+    * [OPENENGSB-2530] - Upgrade to labs-paxexm-karaf 0.5.0
+    * [OPENENGSB-2531] - Upgrade to exam 2.3.0
+    * [OPENENGSB-2533] - Upgrade axiom to 1.2.12
+    * [OPENENGSB-2534] - Upgrade saaj impl to 1.3.9_2
+    * [OPENENGSB-2535] - Upgrade guava lib to 10.0.1
+    * [OPENENGSB-2536] - Upgrade jackson to 1.9.3
+    * [OPENENGSB-2537] - Upgrade commons IO to 2.1
+    * [OPENENGSB-2538] - Upgrade commons codec to 1.6
+    * [OPENENGSB-2539] - Upgrade to wsdl4j 1.6.2_5
+    * [OPENENGSB-2540] - Upgrade xmlbeans to 2.5.0_2
+    * [OPENENGSB-2541] - upgrade rhino to 1.7R2_2
+    * [OPENENGSB-2542] - Upgrade xml resolver to 1.2_4
+    * [OPENENGSB-2543] - Upgrade slf4j to 1.6.4
+    * [OPENENGSB-2544] - Upgrade xerces to 2.9.1_4
+    * [OPENENGSB-2545] - Upgrade bcel to 5.2_4
+    * [OPENENGSB-2546] - Upgrade xalan to 2.7.1_4
+    * [OPENENGSB-2547] - Upgrade oro to 2.0.8_5
+    * [OPENENGSB-2548] - Upgrade jdom to 1.1_4
+    * [OPENENGSB-2549] - Upgrade fastinfoset to 1.2.7_4
+    * [OPENENGSB-2550] - Upgrade commons-pool to 1.5.7
+    * [OPENENGSB-2551] - Upgrade h2 to 1.3.163
+    * [OPENENGSB-2552] - Upgrade woodstox to 4.1.2
+    * [OPENENGSB-2592] - Upgrade to openengsb-root-30
+    * [OPENENGSB-2638] - Upgrade domain-notification to 2.0.0
+    * [OPENENGSB-2639] - Upgrade domain-appointment to 2.0.0
+    * [OPENENGSB-2641] - upgrade domain-contact to 2.0.0
+    * [OPENENGSB-2643] - upgrade domain-issue to 2.0.0
+    * [OPENENGSB-2644] - upgrade domain-report to 2.0.0
+    * [OPENENGSB-2645] - upgrade domain-scm to 2.0.0
+    * [OPENENGSB-2696] - Upgrade to framework-2.4.1
+    * [OPENENGSB-2701] - upgrade guava to 11.0.1
+    * [OPENENGSB-2716] - Upgrade to cxf 2.5.2
+    * [OPENENGSB-2746] - Upgrade to pax-wicket 0.8.1
+    * [OPENENGSB-2769] - Upgrade labs-paxexam-karaf to 0.5.1
+    * [OPENENGSB-2770] - Upgrade openengsb-root to 31
+    * [OPENENGSB-2771] - Upgrade to openjpa 2.2.0
+    * [OPENENGSB-2787] - Upgrade to openengsb-root-32
+    * [OPENENGSB-2816] - Upgrade to pax-wicket 1.0.0
+    * [OPENENGSB-2840] - Upgrade pax-wicket to 0.8.3
+    * [OPENENGSB-2845] - upgrade pax-wicket to 0.8.4
+    * [OPENENGSB-2875] - Upgrade to labs-paxexam-karaf 0.5.2
+    * [OPENENGSB-2876] - Upgrade to exam 2.3.1
+    * [OPENENGSB-2900] - Upgrade to karaf 2.2.6
+    * [OPENENGSB-2911] - Upgrade to spring 3.0.7.RELEASE
+    * [OPENENGSB-2944] - Upgrade to openengsb-root-33
+    * [OPENENGSB-2948] - Upgrade to labs-paxexam-0.5.3
+    * [OPENENGSB-2951] - Upgrade to cxf 2.5.3
+    * [OPENENGSB-2952] - Upgrade to AMQ 5.6.0
+    * [OPENENGSB-2956] - Upgrade to karaf 2.2.7
+    * [OPENENGSB-2958] - Upgrade to fileinstall 3.2.2
+    * [OPENENGSB-2959] - Upgrade to pax-web 1.0.9
+    * [OPENENGSB-2960] - Upgrade to gogo 0.10.0
+    * [OPENENGSB-3044] - upgrade cxf to 2.6.1
+    * [OPENENGSB-3048] - upgrade pax-wicket to 1.0.1
+    * [OPENENGSB-3049] - upgrade pax.web to 2.0.0 final
+    * [OPENENGSB-3123] - upgrade felix-version to 4.0.3 in config.properties
+    * [OPENENGSB-3149] - upgrade equinox to 3.8.0.v20120529-1548
+    * [OPENENGSB-3206] - Upgrade pax-wicket to 1.0.2
+    * [OPENENGSB-3208] - Upgrade pax-web to a newer version 2.0.2
+    * [OPENENGSB-3251] - Update orient db to version 1.1.0
+    * [OPENENGSB-3257] - downgrade axis2 java2wsdl maven plugin to version 1.6.1
+    * [OPENENGSB-3346] - Upgrade drools to 5.5.0.Final
+    * [OPENENGSB-3347] - Upgrade drools to 5.5.0-SNAPSHOT
+    * [OPENENGSB-3390] - Datasource connection does not allow to set connectionProperties
+    * [OPENENGSB-3397] - Upgrade drools to 5.5.0.CR1 and jbpm to 5.4.0.CR1
+    * [OPENENGSB-3399] - upgrade assembly-builder-resources to 1.0.1
+    * [OPENENGSB-3413] - Upgrade to pax-wicket 1.1.1
+    * [OPENENGSB-3414] - Upgrade openjpa to 2.2.1
+    * [OPENENGSB-3415] - upgrade osgi.core and osgi.compendium to 4.3.1
+    * [OPENENGSB-3437] - Upgrade to pax-wicket 3.0.0
+    * [OPENENGSB-3507] - Upgrade pax-web to 3.0.0.M2
+    * [OPENENGSB-3561] - Upgrade to karaf 3.0.0.RC1
+    * [OPENENGSB-3675] - upgrade fasterxml.jackson to 2.2.2
+    * [OPENENGSB-3719] - upgrade root to 35-SNAPSHOT
+    * [OPENENGSB-3737] - set subprojects to project parent instead of root
+
+** New Feature
+    * [OPENENGSB-200] - manage authentication and authorization in domains
+    * [OPENENGSB-947] - Create workflow via configuration files
+    * [OPENENGSB-948] - Add OSGI-INF/bundle.info as used in Karaf to the openengsb bundles
+    * [OPENENGSB-1253] - Implement rule and flow file config persistence
+    * [OPENENGSB-1411] - Add marshling template creation UI
+    * [OPENENGSB-1467] - Setup project for "Alternative Jira-Connector"
+    * [OPENENGSB-1862] - Provide initial feature set and idea of openengsb-connector-notificationsample
+    * [OPENENGSB-1873] - Make optional fields show in another way than required fields
+    * [OPENENGSB-1931] - Implement JPA persistence backend for ConnectorManager
+    * [OPENENGSB-2075] - provide functionality from testclient via commandline
+    * [OPENENGSB-2076] - include apacheds as a feature 
+    * [OPENENGSB-2159] - introduce model registry
+    * [OPENENGSB-2162] - transform data when invoking connectors in a workflow
+    * [OPENENGSB-2243] - introduce BTPF-domain and BTPF-sample connector
+    * [OPENENGSB-2279] - List running services via commandline
+    * [OPENENGSB-2280] - Create a new command to create a new service via commandline
+    * [OPENENGSB-2281] - Create a new command to delete a service via command line
+    * [OPENENGSB-2339] - ModelWrapper shall be able to handle File Objects correctly
+    * [OPENENGSB-2377] - introduce OpenEngSBFileModel
+    * [OPENENGSB-2379] - support correlationID in JMS-port
+    * [OPENENGSB-2479] - Include openengsb-manual-builder-resources as dependency in parents/shared
+    * [OPENENGSB-2488] - Include openengsb-assembly-builder-resources as dependency in parents/shared
+    * [OPENENGSB-2489] - Add an easy method to allow domains configured with minimal pom setup
+    * [OPENENGSB-2490] - Add an easy method to allow connectors configured with minimal pom setup
+    * [OPENENGSB-2510] - Add creation and deployment of new manual structure
+    * [OPENENGSB-2574] - Include easy configuration for wsdl for domains into the domain parent
+    * [OPENENGSB-2604] - Make openengsb version available via simple http service
+    * [OPENENGSB-2710] - EKB shall provide in addition to the QueryInterface a PersistInterface
+    * [OPENENGSB-2720] - Provide hooks for the EDB
+    * [OPENENGSB-2749] - XLink API Definition and Documentation
+    * [OPENENGSB-2788] - Add a ConnectorId generation method to AbstractOpenEngSBConnectorService
+    * [OPENENGSB-2796] - Add a feature to start workflows directly via UI
+    * [OPENENGSB-2842] - XLink User Servlet
+    * [OPENENGSB-2881] - XLink User Wicketpage
+    * [OPENENGSB-2978] - XLink: ConnectorManager Extension
+    * [OPENENGSB-2988] - Method to retrieve all data in QueryInterface
+    * [OPENENGSB-3079] - Create Requirement Domain
+    * [OPENENGSB-3080] - Create notification connector for MS Windows
+    * [OPENENGSB-3266] - XLink: Create Annotation to mark identifying fields for XLink, in ModelClasses
+    * [OPENENGSB-3315] - Add EngineeringObject support
+    * [OPENENGSB-3351] - add method to check for existing connector
+    * [OPENENGSB-3375] - Create generic FileWatcherConnector
+    * [OPENENGSB-3382] - allow transformations to be attached to tool-model-bundles
+    * [OPENENGSB-3386] - Allow connector-implementations to use their own tool-model in implementations
+    * [OPENENGSB-3455] - Wonderland: allow nested object access
+    * [OPENENGSB-3631] - revert functionality for EkbCommits
+    * [OPENENGSB-3667] - implement mechanism for context specific concurrency control in persistinterface
+    * [OPENENGSB-3669] - add a way to explicitly set context in QueryRequests
+    * [OPENENGSB-3721] - add deleteCommit method to PersistInterface and EngineeringDatabaseService
+
+** Task 
+    * [OPENENGSB-78] - Port Facebook connector to openengsb osgi
+    * [OPENENGSB-705] - Update UI to work with the blueprint style dependency injection mechanism if this is possible.
+    * [OPENENGSB-711] - Create integration tests for taskbox custom panel replacement functionality 
+    * [OPENENGSB-1276] - Use slf4j instead of commons-logging in jira connector
+    * [OPENENGSB-1319] - Adjust all connectors to new ServiceManager-API
+    * [OPENENGSB-1396] - Add infrastructure for notice file generation
+    * [OPENENGSB-1397] - Add ASF2 license file
+    * [OPENENGSB-1444] - Release openengsb-connector-gcalendar-1.2.1
+    * [OPENENGSB-1447] - Release openengsb-connector-gcontacts-1.2.1
+    * [OPENENGSB-1460] - Release openengsb-connector-plaintextreport-1.2.1
+    * [OPENENGSB-1462] - Release openengsb-connector-promreport-1.2.1
+    * [OPENENGSB-1579] - Release openengsb-connector-github-1.2.1
+    * [OPENENGSB-1639] - Create integration tests for the console commands
+    * [OPENENGSB-1716] - openengsb.User is almost a copy of spring.security.User
+    * [OPENENGSB-1863] - Create infrastructure for openengsb-connector-notificationsample
+    * [OPENENGSB-1865] - Release openengsb-connector-notificationsample-1.2.0
+    * [OPENENGSB-2101] - Remove direct wicket references from parents/shared
+    * [OPENENGSB-2122] - upgrade git-connector to framework-2.0 and domain-scm-2.0
+    * [OPENENGSB-2124] - inject configPersistence via blueprint and remove it from OpenengSBCoreServices
+    * [OPENENGSB-2156] - Check properties in parents/shared
+    * [OPENENGSB-2157] - Make clear that adding jaxp-ri in features.xml is a BAD idea
+    * [OPENENGSB-2189] - add javax.tools version 1 to the exports of jre-1.6 and jre-1.7
+    * [OPENENGSB-2190] - Create Bundle org.openengsb.persistence.connector for Connector backends
+    * [OPENENGSB-2191] - Create Bundle org.openengsb.persistence.context for Context backends
+    * [OPENENGSB-2192] - Create Bundle org.openengsb.persistence.rulebase for rule backends
+    * [OPENENGSB-2193] - wrap org.apache.commons.collections15
+    * [OPENENGSB-2208] - Move startup scripts into filtered-resources/bin
+    * [OPENENGSB-2235] - Create base class for JPA entities
+    * [OPENENGSB-2254] - Move documentation to domains they belong to. 
+    * [OPENENGSB-2263] - create example for remote connector
+    * [OPENENGSB-2425] - Move resources from openengsb-framework to openengsb-manual-builder-resources
+    * [OPENENGSB-2523] - Add source distribution
+    * [OPENENGSB-2525] - Remove connector/domain docs from framework docs
+    * [OPENENGSB-2532] - Remove no longer required resources from manual
+    * [OPENENGSB-2567] - move connector documentation to corresponding connector-repositories
+    * [OPENENGSB-2568] - adapt connector to new flat package structure
+    * [OPENENGSB-2618] - Release connector-promreport 2.0.0
+    * [OPENENGSB-2651] - release connector-gcalendar-2.0.0
+    * [OPENENGSB-2652] - Release connector-gcontacts-2.0.0
+    * [OPENENGSB-2653] - Release connector-git-2.0.0
+    * [OPENENGSB-2654] - Release connector-github-2.0.0
+    * [OPENENGSB-2657] - Release connector-notificationsample-2.0.0
+    * [OPENENGSB-2658] - Release connector-plaintextreport-2.0.0
+    * [OPENENGSB-2660] - Rename CHANGELOG.md to CHANGELOG
+    * [OPENENGSB-2661] - use openengsb-connector-parent-2.4.0
+    * [OPENENGSB-2731] - Get rid of overloading in test domain
+    * [OPENENGSB-2745] - get rid of sun.reflect imports
+    * [OPENENGSB-2748] - Remove hardcoded ressourcereferences at wicket mockups
+    * [OPENENGSB-2821] - Update all domains to work with new EKB infrastructure
+    * [OPENENGSB-2822] - Update all connectors to work with new EKB infrastructure
+    * [OPENENGSB-2832] - remove spring-security references from features.xml
+    * [OPENENGSB-2850] - Remove never finished workflow editor from UI
+    * [OPENENGSB-3045] - Remove enum-method from ExampleDomain as it breaks loom-csharp
+
 
 openengsb-framework-2.0.0 2011-09-21 
 --------------------------------------------

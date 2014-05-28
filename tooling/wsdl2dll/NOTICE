@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This project includes:
-  Apache Log4j under The Apache Software License, Version 2.0
-  Commons Collections under The Apache Software License, Version 2.0
-  Commons IO under The Apache Software License, Version 2.0
-  Commons Lang under The Apache Software License, Version 2.0
-  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   JUnit under Common Public License Version 1.0
+  Maven Artifact under The Apache Software License, Version 2.0
+  Maven Model under The Apache Software License, Version 2.0
+  Maven Plugin API under The Apache Software License, Version 2.0
   Mockito under The MIT License
-  OpenEngSB :: Framework :: API under Apache 2
-  OpenEngSB :: Framework :: Test under Apache 2
-  osgi.cmpn under Apache License, Version 2.0
-  osgi.core under Apache License, Version 2.0
-  SLF4J API Module under MIT License
-  SLF4J LOG4J-12 Binding under MIT License
+  OpenEngSB :: Loom :: CSharp :: Common :: WSDL to DLL Maven Plugin under Apache 2
+  Plexus :: Component Annotations under The Apache Software License, Version 2.0
+  Plexus Classworlds under The Apache Software License, Version 2.0
+  Plexus Common Utilities under The Apache Software License, Version 2.0
+  Sisu Guava - Core Library under The Apache Software License, Version 2.0
+  Sisu Guice - Core Library under The Apache Software License, Version 2.0
+  Sisu-Inject-Bean : Aggregate OSGi bundle under The Apache Software License, Version 2.0 or Eclipse Public License, Version 1.0
+  Sisu-Inject-Plexus : Aggregate OSGi bundle under Eclipse Public License, Version 1.0
 

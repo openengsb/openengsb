@@ -14,10 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This project includes:
-  Commons IO under The Apache Software License, Version 2.0
-  Commons Lang under The Apache Software License, Version 2.0
-  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
-  OpenEngSB :: Framework :: API under Apache 2
-  OpenEngSB :: User Interface :: API under Apache 2
-  osgi.core under Apache License, Version 2.0
+  OpenEngSB :: Tooling :: Archetypes :: Connector under Apache 2
+  OpenEngSB :: Tooling :: Archetypes :: Domain under Apache 2
+  OpenEngSB :: Tooling :: Archetypes :: Parent under Apache 2
 

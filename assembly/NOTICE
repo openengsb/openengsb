@@ -1,0 +1,103 @@
+Licensed to the Austrian Association for Software Tool Integration (AASTI)
+under one or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information regarding copyright
+ownership. The AASTI licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+This project includes:
+  Aether :: API under Eclipse Public License, Version 1.0
+  Aether :: Connector :: Wagon under Eclipse Public License, Version 1.0
+  Aether :: Implementation under Eclipse Public License, Version 1.0
+  Aether :: SPI under Eclipse Public License, Version 1.0
+  Aether :: Utilities under Eclipse Public License, Version 1.0
+  Apache Aries Blueprint API under The Apache Software License, Version 2.0
+  Apache Aries Blueprint CM under The Apache Software License, Version 2.0
+  Apache Aries Blueprint Core under The Apache Software License, Version 2.0
+  Apache Aries Blueprint Core Compatiblity Fragment Bundle under The Apache Software License, Version 2.0
+  Apache Aries Proxy API under The Apache Software License, Version 2.0
+  Apache Aries Proxy Service under The Apache Software License, Version 2.0
+  Apache Aries Quiesce API under The Apache Software License, Version 2.0
+  Apache Aries Util under The Apache Software License, Version 2.0
+  Apache Felix Configuration Admin Service under The Apache Software License, Version 2.0
+  Apache Felix File Install under The Apache Software License, Version 2.0
+  Apache Felix Framework under The Apache Software License, Version 2.0
+  Apache Karaf :: Assemblies :: Default Distribution under The Apache Software License, Version 2.0
+  Apache Karaf :: Assemblies :: Features :: Enterprise under The Apache Software License, Version 2.0
+  Apache Karaf :: Assemblies :: Features :: Framework under The Apache Software License, Version 2.0
+  Apache Karaf :: Assemblies :: Features :: Spring under The Apache Software License, Version 2.0
+  Apache Karaf :: Assemblies :: Features :: Standard under The Apache Software License, Version 2.0
+  Apache Karaf :: Bundle :: Commands under The Apache Software License, Version 2.0
+  Apache Karaf :: Bundle :: Core under The Apache Software License, Version 2.0
+  Apache Karaf :: Client under The Apache Software License, Version 2.0
+  Apache Karaf :: Exception under The Apache Software License, Version 2.0
+  Apache Karaf :: Features :: Command under The Apache Software License, Version 2.0
+  Apache Karaf :: Features :: Core under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Boot under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Config under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Modules under The Apache Software License, Version 2.0
+  Apache Karaf :: Main under The Apache Software License, Version 2.0
+  Apache Karaf :: Region :: Core under The Apache Software License, Version 2.0
+  Apache Karaf :: Shell :: Console under The Apache Software License, Version 2.0
+  Apache Karaf :: Shell :: Help System under The Apache Software License, Version 2.0
+  Apache Karaf :: Shell :: Table under The Apache Software License, Version 2.0
+  Apache Karaf :: Shell :: Various Commands under The Apache Software License, Version 2.0
+  Apache Karaf :: System :: Core under The Apache Software License, Version 2.0
+  Apache Karaf :: System :: Shell Commands under The Apache Software License, Version 2.0
+  Apache MINA Core under Apache 2.0 License
+  Apache Mina SSHD :: Core under Apache 2.0 License
+  Apache ServiceMix :: Bundles :: junit under The Apache Software License, Version 2.0
+  Apache Shiro :: Support :: Karaf Features under The Apache Software License, Version 2.0
+  Apache XBean :: Reflect under The Apache Software License, Version 2.0
+  ASM All under BSD
+  bnd - Bundle Tool under Apache Software License 2.0
+  Commons Codec under The Apache Software License, Version 2.0
+  Commons Logging under The Apache Software License, Version 2.0
+  Google Collections Library under The Apache Software License, Version 2.0
+  Google Guice - Core Library under The Apache Software License, Version 2.0
+  HttpClient under Apache License
+  jansi under The Apache Software License, Version 2.0
+  JLEdit :: Core under The Apache Software License, Version 2.0
+  JLine under The BSD License
+  Maven Aether Provider under The Apache Software License, Version 2.0
+  Maven Model under The Apache Software License, Version 2.0
+  Maven Model Builder under The Apache Software License, Version 2.0
+  Maven Repository Metadata Model under The Apache Software License, Version 2.0
+  Maven Wagon API under The Apache Software License, Version 2.0
+  Maven Wagon File Provider under The Apache Software License, Version 2.0
+  Maven Wagon HTTP Shared Library under The Apache Software License, Version 2.0
+  Maven Wagon Lightweight HTTP Provider under The Apache Software License, Version 2.0
+  OpenEngSB :: Framework :: Assembly under Apache 2
+  OPS4J Base - Lang under ALv2
+  OPS4J Base - Monitors under ALv2
+  OPS4J Base - Net under ALv2
+  OPS4J Base - Util - Collections under ALv2
+  OPS4J Base - Util - Property under ALv2
+  OPS4J Base - Util - XML under ALv2
+  OPS4J Pax Logging - API under ALv2
+  OPS4J Pax Logging - Service under ALv2
+  OPS4J Pax Swissbox :: Bnd Utils under ALv2
+  OPS4J Pax Swissbox :: Property under ALv2
+  OPS4J Pax Url - aether: under ALv2
+  OPS4J Pax Url - Commons under ALv2
+  OPS4J Pax Url - Maven Commons under ALv2
+  OPS4J Pax Url - wrap: under ALv2
+  OPS4J Pax Wicket :: Karaf Feature File under ALv2
+  osgi under Apache License, Version 2.0
+  Plexus :: Component Annotations under The Apache Software License, Version 2.0
+  Plexus :: Default Container under The Apache Software License, Version 2.0
+  Plexus Classworlds under The Apache Software License, Version 2.0
+  Plexus Common Utilities under Apache Public License 2.0
+  Plexus Interpolation API under The Apache Software License, Version 2.0
+  Sisu-Inject-Bean : Aggregate OSGi bundle under The Apache Software License, Version 2.0 or Eclipse Public License, Version 1.0
+  Sisu-Inject-Plexus : Aggregate OSGi bundle under Eclipse Public License, Version 1.0
+  SLF4J API Module under MIT License
+

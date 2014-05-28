@@ -1,0 +1,106 @@
+Licensed to the Austrian Association for Software Tool Integration (AASTI)
+under one or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information regarding copyright
+ownership. The AASTI licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+This project includes:
+  Activation 1.1 under The Apache Software License, Version 2.0
+  AOP alliance under Public Domain
+  Apache Geronimo JSR-317 JPA 2.0 Spec API under The Apache Software License, Version 2.0
+  Apache Geronimo OSGI factory registry under The Apache Software License, Version 2.0
+  Apache Geronimo OSGi-enable spec bundle locator under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Boot under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Config under The Apache Software License, Version 2.0
+  Apache Karaf :: JAAS :: Modules under The Apache Software License, Version 2.0
+  Apache Karaf :: Shell :: Console under The Apache Software License, Version 2.0
+  Apache Log4j under The Apache Software License, Version 2.0
+  Apache MINA Core under Apache 2.0 License
+  Apache Mina SSHD :: Core under Apache 2.0 License
+  Apache ServiceMix :: Bundles :: cglib under The Apache Software License, Version 2.0
+  Apache Shiro :: Core under The Apache Software License, Version 2.0
+  Apache Shiro :: Web under The Apache Software License, Version 2.0
+  ApacheDS All under The Apache Software License, Version 2.0
+  ASM Core under BSD
+  Commons BeanUtils under The Apache Software License, Version 2.0
+  Commons BeanUtils Core under The Apache Software License, Version 2.0
+  Commons Codec under The Apache Software License, Version 2.0
+  Commons Collections under The Apache Software License, Version 2.0
+  Commons IO under The Apache Software License, Version 2.0
+  Commons Lang under The Apache Software License, Version 2.0
+  Commons Logging under The Apache Software License, Version 2.0
+  Commons Pool under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
+  Hamcrest All under BSD style
+  Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-core under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  jackson-databind under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-module-JAXB-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Java UUID Generator under The Apache Software License, Version 2.0
+  Java(TM) EE 7 Specification APIs under CDDL + GPLv2 with classpath exception
+  JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
+  JavaMail API under CDDL/GPLv2+CE
+  JLine under The BSD License
+  JMS 1.1 under The Apache Software License, Version 2.0
+  JTA 1.1 under The Apache Software License, Version 2.0
+  JUnit under Common Public License Version 1.0
+  Mockito under The MIT License
+  OpenEngSB :: Connector :: UsernamePassword under Apache 2
+  OpenEngSB :: Connector :: Wicket ACL under Apache 2
+  OpenEngSB :: Domain :: Auditing under Apache 2
+  OpenEngSB :: Domain :: Authentication under Apache 2
+  OpenEngSB :: Domain :: Authorization under Apache 2
+  OpenEngSB :: Domain :: Example under Apache 2
+  OpenEngSB :: Domain :: OOSourceCode under Apache 2
+  OpenEngSB :: Domain :: SQLCode under Apache 2
+  OpenEngSB :: Framework :: API under Apache 2
+  OpenEngSB :: Framework :: Common under Apache 2
+  OpenEngSB :: Framework :: EDB :: API under Apache 2
+  OpenEngSB :: Framework :: EKB :: API under Apache 2
+  OpenEngSB :: Framework :: Persistence Layer under Apache 2
+  OpenEngSB :: Framework :: Services under Apache 2
+  OpenEngSB :: Framework :: Test under Apache 2
+  OpenEngSB :: Framework :: Util under Apache 2
+  OpenEngSB :: Framework :: Workflow :: API under Apache 2
+  OpenEngSB :: Infrastructure :: LDAP under Apache 2
+  OpenEngSB :: User Interface :: Administration under Apache 2
+  OpenEngSB :: User Interface :: API under Apache 2
+  OpenEngSB :: User Interface :: Common under Apache 2
+  OpenEngSB Labs :: Delegation Service under Apache 2
+  OpenJPA Aggregate Jar under Apache Software License 2.0
+  OPS4J Base - All under ALv2
+  OPS4J Pax Wicket :: Service under ALv2
+  OPS4J Pax Wicket :: Test Helper under ALv2
+  osgi.cmpn under Apache License, Version 2.0
+  osgi.core under Apache License, Version 2.0
+  Serp under BSD
+  Servlet 2.5 under The Apache Software License, Version 2.0
+  SLF4J API Module under MIT License
+  SLF4J LOG4J-12 Binding under MIT License
+  Spring OSGi Annotations under Apache License, Version 2.0
+  Spring OSGi Core under Apache License, Version 2.0
+  Spring OSGi Extender under Apache License, Version 2.0
+  Spring OSGi IO under Apache License, Version 2.0
+  spring-aop under The Apache Software License, Version 2.0
+  spring-asm under The Apache Software License, Version 2.0
+  spring-beans under The Apache Software License, Version 2.0
+  spring-context under The Apache Software License, Version 2.0
+  spring-core under The Apache Software License, Version 2.0
+  spring-expression under The Apache Software License, Version 2.0
+  Streaming API for XML under GNU General Public Library or COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+  Wicket Auth Roles under The Apache Software License, Version 2.0
+  Wicket Core under The Apache Software License, Version 2.0
+  Wicket Development Utilities under The Apache Software License, Version 2.0
+  Wicket Extensions under The Apache Software License, Version 2.0
+  Wicket Request under The Apache Software License, Version 2.0
+  Wicket Util under The Apache Software License, Version 2.0
+
