@@ -25,11 +25,13 @@
   <reference id="queryService" interface="org.openengsb.core.ekb.api.QueryInterface" />
   <reference id="persistService" interface="org.openengsb.core.ekb.api.PersistInterface" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
   
   <bean id="syncServiceBean" class="org.openengsb.core.usersync.SyncronizedUserServiceImpl">
     <property name="queryService" ref="queryService" />
     <property name="persistService" ref="persistService" />
     <property name="userManager" ref="userManager" />
+    <property name="authenticationContext" ref="authenticationContext" />
   </bean>
   
   <service interface="org.openengsb.core.usersync.SyncronizedUserService">
