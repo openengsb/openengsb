@@ -117,6 +117,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.infrastructure</groupId>
       <artifactId>org.openengsb.infrastructure.ldap</artifactId>
       <version>${project.version}</version>

@@ -68,14 +68,16 @@ public final class DefaultModelManager implements ModelManager {
         for (Entry userEntry : userEntries) {
             User user = new User();
             user.setUsername(userEntry.getDn().getRdn().getValue().getString());
-            user.setAttributes(createAttributes(ldapDao.getDirectChildren(DnFactory.userAttributes(user))));
-            user.setCredentials(createCredentials(ldapDao.getDirectChildren(DnFactory.userCredentials(user))));
+            user.setAttributes(createAttributes(ldapDao.getDirectChildren(DnFactory.userAttributes(user)),
+                    user.getUsername()));
+            user.setCredentials(createCredentials(ldapDao.getDirectChildren(DnFactory.userCredentials(user)),
+                    user.getUsername()));
             users.add(user);
         }
         return users;
     }
 
-    private List<Attribute> createAttributes(List<Entry> attributeEntries) {
+    private List<Attribute> createAttributes(List<Entry> attributeEntries, String owner) {
         List<Attribute> attributes = Lists.newArrayList();
         for (Entry attributeEntry : attributeEntries) {
             Attribute attribute = new Attribute();
@@ -83,6 +85,7 @@ public final class DefaultModelManager implements ModelManager {
             attribute.getValues().addAll(
                     Arrays.asList(StringUtils.split(getLdapAttributeValue(attributeEntry),
                             ServerConfig.multipleValueSeparator)));
+            attribute.generateUuid(owner);
             attributes.add(attribute);
         }
         return attributes;
@@ -92,12 +95,13 @@ public final class DefaultModelManager implements ModelManager {
         return Utils.extractAttributeValueNoEmptyCheck(entry, SchemaConstants.STRING_ATTRIBUTE);
     }
 
-    private List<Credential> createCredentials(List<Entry> credentialEntries) {
+    private List<Credential> createCredentials(List<Entry> credentialEntries, String owner) {
         List<Credential> credentials = Lists.newArrayList();
         for (Entry credentialEntry : credentialEntries) {
             Credential credential = new Credential();
             credential.setType(credentialEntry.getDn().getRdn().getValue().getString());
             credential.setValue(getLdapAttributeValue(credentialEntry));
+            credential.generateUuid(owner);
             credentials.add(credential);
         }
         return credentials;
@@ -132,6 +136,7 @@ public final class DefaultModelManager implements ModelManager {
                     .assignmentPermissions(entry.getDn()))));
             assignment.setRoles(getNamesOfDirectChildren(ldapDao.getDirectChildren(DnFactory.assignmentRoles(entry
                     .getDn()))));
+            assignment.generateUuid();
             assignments.add(assignment);
         }
         return assignments;
@@ -168,7 +173,8 @@ public final class DefaultModelManager implements ModelManager {
         for (Entry entry : projectEntries) {
             Project project = new Project();
             project.setName(entry.getDn().getRdn().getValue().getString());
-            project.setAttributes(createAttributes(ldapDao.getDirectChildren(DnFactory.projectAttributes(project))));
+            project.setAttributes(createAttributes(ldapDao.getDirectChildren(DnFactory.projectAttributes(project)),
+                    project.getName()));
             projects.add(project);
         }
         return projects;

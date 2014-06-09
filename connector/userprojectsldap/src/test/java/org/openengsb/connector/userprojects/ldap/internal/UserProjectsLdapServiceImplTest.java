@@ -20,10 +20,13 @@ package org.openengsb.connector.userprojects.ldap.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.directory.server.annotations.CreateLdapServer;
 import org.apache.directory.server.annotations.CreateTransport;
@@ -78,18 +81,18 @@ public class UserProjectsLdapServiceImplTest extends BaseTest {
         assertThat(entry.get(SchemaConstants.STRING_ATTRIBUTE).getString(), is(assignment.getUser()));
 
         List<Entry> entryList = ldapDao.getDirectChildren(DnFactory.assignmentPermissions(assignment));
-        List<String> actualCollection = Lists.newArrayList();
+        Collection<String> actualCollection = Lists.newArrayList();
         for (Entry entry2 : entryList) {
             actualCollection.add(entry2.getDn().getRdn().getValue().getString());
         }
-        assertThat(actualCollection, equalTo(assignment.getPermissions()));
+        assertTrue(CollectionUtils.isEqualCollection(actualCollection, assignment.getPermissions()));
 
         entryList = ldapDao.getDirectChildren(DnFactory.assignmentRoles(assignment));
         actualCollection.clear();
         for (Entry entry2 : entryList) {
             actualCollection.add(entry2.getDn().getRdn().getValue().getString());
         }
-        assertThat(actualCollection, equalTo(assignment.getRoles()));
+        assertTrue(CollectionUtils.isEqualCollection(actualCollection, assignment.getRoles()));
     }
 
     @Test
@@ -191,14 +194,14 @@ public class UserProjectsLdapServiceImplTest extends BaseTest {
         for (Entry entry : entryList) {
             actualCollection.add(entry.getDn().getRdn().getValue().getString());
         }
-        assertThat(actualCollection, equalTo(role.getPermissions()));
+        assertTrue(CollectionUtils.isEqualCollection(actualCollection, role.getPermissions()));
 
         entryList = ldapDao.getDirectChildren(DnFactory.roleSubroles(role));
         actualCollection.clear();
         for (Entry entry : entryList) {
             actualCollection.add(entry.getDn().getRdn().getValue().getString());
         }
-        assertThat(actualCollection, equalTo(role.getRoles()));
+        assertTrue(CollectionUtils.isEqualCollection(actualCollection, role.getRoles()));
     }
 
     @Test

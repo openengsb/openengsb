@@ -18,8 +18,10 @@ package org.openengsb.connector.userprojects.ldap.internal;
 
 import java.util.List;
 
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.DefaultModelManager;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.ModelManager;
+import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.domain.userprojects.UserProjectsDomainEvents;
 import org.openengsb.domain.userprojects.event.UpdateAssignmentEvent;
 import org.openengsb.domain.userprojects.event.UpdateProjectsEvent;
@@ -36,13 +38,19 @@ public final class DefaultSynchronizationService implements SynchronizationServi
     private ModelManager modelManager;
 
     private UserProjectsDomainEvents events;
+    private AuthenticationContext authenticationContext;
 
     public void setUserProjectsDomainEvents(UserProjectsDomainEvents domainEvents) {
         events = domainEvents;
     }
 
+    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
+    }
+
     @Override
     public void syncFromLdapServerToOpenEngSB(LdapDao ldapDao) {
+        authenticationContext.login("admin", new Password("password"));
         modelManager = new DefaultModelManager(ldapDao);
         syncUsers();
         syncProjects();

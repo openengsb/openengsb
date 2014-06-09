@@ -28,8 +28,13 @@ public class UserProjectsLdapServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<UserProjectsLdapServiceImpl> {
 
     private LdapDao ldapDao;
+    private SynchronizationService synchronizationService;
     
     public UserProjectsLdapServiceInstanceFactory() {
+    }
+
+    public void setSynchronizationService(SynchronizationService service) {
+        synchronizationService = service;
     }
 
     @Override
@@ -58,6 +63,8 @@ public class UserProjectsLdapServiceInstanceFactory extends
 
         setupLdapDao();
         instance.setLdapDao(ldapDao);
+        synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
+
         return instance;
     }
     

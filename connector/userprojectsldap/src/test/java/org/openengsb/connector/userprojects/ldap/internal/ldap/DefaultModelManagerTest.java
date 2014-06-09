@@ -17,12 +17,12 @@
 
 package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.directory.server.annotations.CreateLdapServer;
 import org.apache.directory.server.annotations.CreateTransport;
 import org.apache.directory.server.core.annotations.ApplyLdifFiles;
@@ -47,6 +47,7 @@ public class DefaultModelManagerTest extends BaseTest {
 
     private DefaultModelManager modelManager;
 
+    @Override
     @Before
     public void beforeTest() throws Exception {
         super.beforeTest();
@@ -54,35 +55,35 @@ public class DefaultModelManagerTest extends BaseTest {
     }
 
     @Test
-    public void testFindAssignments() {
+    public void testFindAssignments() throws InterruptedException {
         Assignment assignment = createTestAssignment();
         List<Assignment> expected = Arrays.asList(assignment);
         ldapService.updateAssignments(expected);
-        assertThat(modelManager.findAssignments(), equalTo(expected));
+        assertTrue(CollectionUtils.isEqualCollection(modelManager.findAssignments(), expected));
     }
     
     @Test
-    public void testFindProjects() {
+    public void testFindProjects() throws InterruptedException {
         Project project = createTestProject();
         List<Project> expected = Arrays.asList(project);
         ldapService.updateProjects(expected);
-        assertThat(modelManager.findProjects(), equalTo(expected));
+        assertTrue(CollectionUtils.isEqualCollection(modelManager.findProjects(), expected));
     }
     
     @Test
-    public void testFindRoles() {
+    public void testFindRoles() throws InterruptedException {
         Role role = createTestRole();
         List<Role> expected = Arrays.asList(role);
         ldapService.updateRoles(expected);
-        assertThat(modelManager.findRoles(), equalTo(expected));
+        assertTrue(CollectionUtils.isEqualCollection(modelManager.findRoles(), expected));
     }
     
     @Test
-    public void testFindUsers() {
+    public void testFindUsers() throws InterruptedException {
         User user = createTestUser();
         List<User> expected = Arrays.asList(user);
         ldapService.updateUsers(expected);
-        assertThat(modelManager.findUsers(), equalTo(expected));
+        assertTrue(CollectionUtils.isEqualCollection(modelManager.findUsers(), expected));
     }
 
 }
