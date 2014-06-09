@@ -79,7 +79,7 @@ public class Assignment {
         this.permissions = permissions;
     }
 
-    private boolean generateUuid() {
+    public boolean generateUuid() {
 
         if (user == null || project == null) {
             return false;

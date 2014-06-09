@@ -34,6 +34,8 @@ public class User {
     @OpenEngSBModelId
     private String username;
 
+    private String currentProject;
+
     private List<Credential> credentials = Lists.newArrayList();
 
     private List<Attribute> attributes = Lists.newArrayList();
@@ -67,6 +69,14 @@ public class User {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject(String currentProject) {
+        this.currentProject = currentProject;
     }
 
     @Override

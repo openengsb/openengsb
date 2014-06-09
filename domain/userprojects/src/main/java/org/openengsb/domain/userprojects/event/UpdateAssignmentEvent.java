@@ -17,29 +17,29 @@
 
 package org.openengsb.domain.userprojects.event;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.openengsb.core.api.Event;
 import org.openengsb.domain.userprojects.model.Assignment;
 
 public class UpdateAssignmentEvent extends Event {
 
-    private Collection<Assignment> updatedAssignments;
-    private Collection<Assignment> deletedAssignments;
+    private List<Assignment> updatedAssignments;
+    private List<Assignment> deletedAssignments;
 
-    public Collection<Assignment> getUpdatedAssignments() {
+    public List<Assignment> getUpdatedAssignments() {
         return updatedAssignments;
     }
 
-    public void setUpdatedAssignments(Collection<Assignment> updatedAssignments) {
+    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
         this.updatedAssignments = updatedAssignments;
     }
 
-    public Collection<Assignment> getDeletedAssignments() {
+    public List<Assignment> getDeletedAssignments() {
         return deletedAssignments;
     }
 
-    public void setDeletedAssignments(Collection<Assignment> deletedAssignments) {
+    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
         this.deletedAssignments = deletedAssignments;
     }
 }
