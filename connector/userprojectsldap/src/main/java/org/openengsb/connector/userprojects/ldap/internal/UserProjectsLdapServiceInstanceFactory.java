@@ -18,6 +18,8 @@
 package org.openengsb.connector.userprojects.ldap.internal;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.openengsb.connector.userprojects.ldap.internal.ldap.ServerConfig;
 import org.openengsb.core.api.Connector;
@@ -30,6 +32,7 @@ public class UserProjectsLdapServiceInstanceFactory extends
 
     private LdapDao ldapDao;
     private SynchronizationService synchronizationService;
+    private final Timer syncTimer = new Timer();
     
     public UserProjectsLdapServiceInstanceFactory() {
     }
@@ -62,12 +65,27 @@ public class UserProjectsLdapServiceInstanceFactory extends
             ServerConfig.multipleValueSeparator = attributes.get("ldapServer.multipleValueSeparator");
         }
 
+        if (attributes.containsKey("ldapServer.syncPeriodInMilliseconds")) {
+            ServerConfig.syncPeriodInMilliseconds =
+                Long.valueOf(attributes.get("ldapServer.syncPeriodInMilliseconds"));
+        }
+
         setupLdapDao();
         instance.setLdapDao(ldapDao);
-        String oldContext = ContextHolder.get().getCurrentContextId();
-        ContextHolder.get().setCurrentContextId("foo");
-        synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
-        ContextHolder.get().setCurrentContextId(oldContext);
+        
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                String oldContext = ContextHolder.get().getCurrentContextId();
+                ContextHolder.get().setCurrentContextId("foo");
+                synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
+                ContextHolder.get().setCurrentContextId(oldContext);
+            }
+        };
+        
+        syncTimer.schedule(task, 0, ServerConfig.syncPeriodInMilliseconds);
+        
+        
 
         return instance;
     }
@@ -78,6 +96,7 @@ public class UserProjectsLdapServiceInstanceFactory extends
     }
 
     public void destroy() {
+        syncTimer.cancel();
         ldapDao.disconnect();
     }
 }
