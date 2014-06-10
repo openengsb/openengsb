@@ -25,6 +25,11 @@ import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
 
+/**
+ * This service is responsible to distribute the data to both the
+ * {@link org.openengsb.core.api.security.service.UserDataManager} and the EKB
+ * {@link org.openengsb.core.ekb.api.PersistInterface}.
+ */
 public interface SyncronizedUserService {
 
     // Basic user operations methods
@@ -78,12 +83,32 @@ public interface SyncronizedUserService {
     void deleteAssignments(List<Assignment> assignments);
 
     // Special Assignment operations
+    /**
+     * Deletes all assignments for a specific project.
+     * 
+     * @param projectName name of the project where all assignments should be deleted.
+     */
     void deleteAllAssignmentsForProject(String projectName);
 
+    /**
+     * Deletes all assignments for a specific project.
+     * 
+     * @param project project where all assignments should be deleted.
+     */
     void deleteAllAssignmentsForProject(Project project);
 
-    void deleteAllAssignmentsForUser(String usreName);
+    /**
+     * Deletes all assignments for a specific user.
+     * 
+     * @param userName name of the user where all assignments should be deleted.
+     */
+    void deleteAllAssignmentsForUser(String userName);
 
+    /**
+     * Deletes all assignments for a specific user.
+     * 
+     * @param user user where all assignments should be deleted.
+     */
     void deleteAllAssignmentsForUser(User user);
 
     AliveState getAliveState();

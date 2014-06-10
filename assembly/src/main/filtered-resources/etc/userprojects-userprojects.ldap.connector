@@ -19,8 +19,8 @@ domainType=userprojects
 connectorType=userprojects.ldap
 property.location.root=userprojects/userprojects.ldap
 
-attribute.ldapServer.host=128.131.168.164
-attribute.ldapServer.port=10389
+attribute.ldapServer.host=127.0.0.1
+attribute.ldapServer.port=12345
 attribute.ldapServer.userDn=uid=admin,ou=system
 attribute.ldapServer.credentials=secret
 attribute.ldapServer.multipleValueSeparator=°

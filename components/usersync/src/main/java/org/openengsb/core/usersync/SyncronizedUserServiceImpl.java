@@ -394,7 +394,7 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
             } catch (PermissionSetAlreadyExistsException e) {
                 LOGGER.error("This is Impossible.");
             } catch (Exception e) {
-                LOGGER.error("Entry exists exception. This seems impossible. Message: " + e.getMessage());
+                LOGGER.error("Entry exists exception. This seems impossible.", e);
             }
         }
 

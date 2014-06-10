@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.openengsb.connector.userprojects.ldap.internal.ldap.ServerConfig;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.infrastructure.ldap.LdapDao;
 
@@ -63,7 +64,10 @@ public class UserProjectsLdapServiceInstanceFactory extends
 
         setupLdapDao();
         instance.setLdapDao(ldapDao);
+        String oldContext = ContextHolder.get().getCurrentContextId();
+        ContextHolder.get().setCurrentContextId("foo");
         synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
+        ContextHolder.get().setCurrentContextId(oldContext);
 
         return instance;
     }
