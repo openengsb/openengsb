@@ -75,7 +75,7 @@ public abstract class AbstractH2DatabaseTest {
         }
     }
 
-    protected static DataSource createDataSource() throws SQLException {
+    protected DataSource createDataSource() throws SQLException {
         JdbcDataSource dataSource = new JdbcDataSource();
 
         dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
@@ -85,7 +85,7 @@ public abstract class AbstractH2DatabaseTest {
         return dataSource;
     }
 
-    protected static void shutdownDataSource(DataSource dataSource) throws SQLException {
+    protected void shutdownDataSource(DataSource dataSource) throws SQLException {
         try (Connection c = dataSource.getConnection()) {
             c.createStatement().execute("SHUTDOWN");
         }

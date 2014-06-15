@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexField;
@@ -45,7 +46,15 @@ import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.models.TestModel;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class HeadTableEngineTest extends AbstractTableEngineTest {
+
+    private Connection connection;
+
+    @Before
+    public void setUp() throws Exception {
+        connection = getDataSource().getConnection();
+    }
 
     @Override
     protected TableEngine createEngine(DataSource dataSource, TypeMap typeMap) {
@@ -72,7 +81,7 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         engine.create(testIndex);
 
         String sql = "SELECT * FROM HEAD_TABLE";
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery(sql)) {
+        try (ResultSet rs = connection.createStatement().executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
 
             assertEquals(4, metaData.getColumnCount());
@@ -99,7 +108,7 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         when(commit.getTimestamp()).thenReturn(new Date(42));
         // TODO: mock entire commit
 
-        List<OpenEngSBModel> models = new ArrayList<>();
+        List models = new ArrayList<>();
 
         models.add(new TestModel("A", 42));
         models.add(new TestModel("B", -42));
@@ -109,7 +118,7 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         engine.execute(operation);
 
         String sql = "SELECT * FROM HEAD_TABLE";
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery(sql)) {
+        try (ResultSet rs = connection.createStatement().executeQuery(sql)) {
             assertTrue(rs.next());
             assertEquals("A", rs.getString("TESTID"));
             assertEquals(42, rs.getInt("TESTINTEGER"));
@@ -134,17 +143,16 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         TestModel testModelA = new TestModel("A", 42);
         TestModel testModelB = new TestModel("B", -42);
 
-        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA,
-            testModelB))));
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList(Arrays.asList(testModelA, testModelB))));
 
         testModelB.setTestInteger(43);
 
         IndexCommit updateCommit = mock(IndexCommit.class);
         when(updateCommit.getTimestamp()).thenReturn(new Date(84));
-        engine.execute(new UpdateOperation(updateCommit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(
-            testModelA, testModelB))));
+        engine.execute(new UpdateOperation(updateCommit, testIndex,
+            new ArrayList(Arrays.asList(testModelA, testModelB))));
 
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+        try (ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
             assertTrue(rs.next());
             assertEquals("A", rs.getString("TESTID"));
             assertEquals(42, rs.getInt("TESTINTEGER"));
@@ -169,16 +177,14 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         TestModel testModelA = new TestModel("A", 42);
         TestModel testModelB = new TestModel("B", -42);
 
-        engine.execute(new InsertOperation(commit, testIndex, new ArrayList<OpenEngSBModel>(Arrays.asList(testModelA,
-            testModelB))));
+        engine.execute(new InsertOperation(commit, testIndex, new ArrayList(Arrays.asList(testModelA, testModelB))));
 
         IndexCommit deleteCommit = mock(IndexCommit.class);
         when(deleteCommit.getTimestamp()).thenReturn(new Date(84));
 
-        engine.execute(new DeleteOperation(deleteCommit, testIndex, new ArrayList<OpenEngSBModel>(Arrays
-            .asList(testModelB))));
+        engine.execute(new DeleteOperation(deleteCommit, testIndex, new ArrayList(Arrays.asList(testModelB))));
 
-        try (ResultSet rs = getDataSource().getConnection().createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
+        try (ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM HEAD_TABLE")) {
             assertTrue(rs.next());
             assertEquals("A", rs.getString("TESTID"));
             assertEquals(42, rs.getInt("TESTINTEGER"));

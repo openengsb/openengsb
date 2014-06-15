@@ -29,6 +29,14 @@ public class CompositeTestModel {
     @OpenEngSBModelId
     public Integer testId;
 
+    public CompositeTestModel() {
+
+    }
+
+    public CompositeTestModel(Integer testId) {
+        this.testId = testId;
+    }
+
     public Integer getTestId() {
         return testId;
     }

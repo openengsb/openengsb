@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -63,13 +64,13 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>${project.basedir}/src/main/resources</directory>
         <includes>
           <include>**/*</include>
         </includes>
       </resource>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>${project.basedir}/src/main/resources</directory>
         <filtering>true</filtering>
         <includes>
           <include>**/*.info</include>
@@ -78,14 +79,50 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.framework</groupId>
+                  <artifactId>org.openengsb.framework.weaver.service</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <classifier>agent</classifier>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>model-agent.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>
+            -javaagent:"${project.build.directory}/model-agent.jar"
+          </argLine>
+          <useSystemClassloader>true</useSystemClassloader>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <DynamicImport-Package>*</DynamicImport-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -111,8 +148,18 @@
       <artifactId>org.openengsb.framework.edbi.api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.util</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- utility -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
