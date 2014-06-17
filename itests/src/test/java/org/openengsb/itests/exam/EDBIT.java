@@ -48,11 +48,12 @@ import org.openengsb.core.edb.api.EDBConstants;
 import org.openengsb.core.edb.api.EDBException;
 import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
+import org.openengsb.core.ekb.api.EDBQueryFilter;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBConcurrentException;
 import org.openengsb.core.ekb.api.EKBException;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
 import org.openengsb.itests.exam.models.SubModelDecorator;
 import org.openengsb.itests.exam.models.TestModelDecorator;
@@ -65,17 +66,15 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 public class EDBIT extends AbstractModelUsingExamTestHelper {
     private static final String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;
-    private QueryInterface query;
-    private PersistInterface persist;
+    private EKBService ekbService;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
-        Option[] options =
-            new Option[]{
+        Option[] options = new Option[] {
                 new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
-                    "modelUpdatePropagationMode", "DEACTIVATED"),
+                        "modelUpdatePropagationMode", "DEACTIVATED"),
                 new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
-                    "persistInterfaceLockingMode", "DEACTIVATED"),
+                        "persistInterfaceLockingMode", "DEACTIVATED"),
                 mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject() };
         return combine(baseConfiguration(), options);
     }
@@ -83,8 +82,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     @Before
     public void setup() throws Exception {
         edbService = getOsgiService(EngineeringDatabaseService.class);
-        query = getOsgiService(QueryInterface.class);
-        persist = getOsgiService(PersistInterface.class);
+        ekbService = getOsgiService(EKBService.class);
         registerModelProvider();
         ContextHolder.get().setCurrentContextId(CONTEXT);
     }
@@ -153,15 +151,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         TestModelDecorator model4 = getTestModelDecorator();
         model4.setEdbId("orQueryTest/4");
         model4.setName("model4");
-        EKBCommit commit =
-            getTestEKBCommit().addInserts(
+        EKBCommit commit = getTestEKBCommit().addInserts(
                 Arrays.asList(model1.getModel(), model2.getModel(), model3.getModel(), model4.getModel()));
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        QueryRequest request =
-            QueryRequest.create().orJoined().addParameter("name", "model1").addParameter("name", "model2")
-                .addParameter("field", "test");
-        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        QueryRequest request = QueryRequest.create().orJoined().addParameter("name", "model1")
+                .addParameter("name", "model2").addParameter("field", "test");
+        List<Object> result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result, notNullValue());
         assertThat(result.size(), is(3));
     }
@@ -198,9 +194,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setId("testId");
 
         EKBCommit commit = getTestEKBCommit().addInsert(model);
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        OpenEngSBFileModel result = query.getModel(OpenEngSBFileModel.class, getModelOid("testId"));
+        OpenEngSBFileModel result = ekbService.getModel(OpenEngSBFileModel.class, getModelOid("testId"));
 
         File newFile = result.getFile();
 
@@ -219,8 +215,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setEdbId("createevent/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
 
-        persist.commit(commit);
-        persist.commit(commit);
+        ekbService.commit(commit);
+        ekbService.commit(commit);
     }
 
     @Test
@@ -229,7 +225,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test");
         model.setEdbId("createevent/2");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("createevent/2"));
         String name = obj.getString("name");
@@ -245,10 +241,10 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("C:\\test");
         model.setEdbId("createevent/5");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        @SuppressWarnings("unchecked")
-        List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\test\"");
+        List<Object> result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(
+                "name:\"C:\\test\""), null));
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
@@ -259,43 +255,41 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("C:\\\\test");
         model.setEdbId("createevent/6");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         QueryRequest request = QueryRequest.query("name", "C:\\\\test").wildcardUnaware();
-        @SuppressWarnings("unchecked")
-        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        List<Object> result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0), is(getTestModel()));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testEKBInsertCommitAndQueryWithContextId_shouldReturnModelOnlyOnCorrectContext() throws Exception {
         TestModelDecorator model = getTestModelDecorator();
         model.setName("testmodel");
         model.setEdbId("createevent/7");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         ContextHolder.get().setCurrentContextId("othercontext");
         TestModelDecorator model2 = getTestModelDecorator();
         model2.setName("testmodel");
         model2.setEdbId("createevent/8");
         commit = getTestEKBCommit().addInsert(model2.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         QueryRequest request = QueryRequest.query("name", "testmodel");
-        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        List<Object> result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(2));
         request.setContextId(CONTEXT);
-        result = (List<Object>) query.query(getTestModel(), request);
+        result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(1));
         assertThat(new TestModelDecorator(result.get(0)).getEdbId(), is("createevent/7"));
         request.setContextId("othercontext");
-        result = (List<Object>) query.query(getTestModel(), request);
+        result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(1));
         assertThat(new TestModelDecorator(result.get(0)).getEdbId(), is("createevent/8"));
         request.setContextId("somenonesensecontext");
-        result = (List<Object>) query.query(getTestModel(), request);
+        result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(0));
         ContextHolder.get().setCurrentContextId(CONTEXT);
     }
@@ -306,7 +300,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test1");
         model.setEdbId("batchevent/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("batchevent/1"));
         String name1 = obj.getString("name");
@@ -318,7 +312,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model2.setName("test3");
         model2.setEdbId("batchevent/2");
         commit.addInsert(model2.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         obj = edbService.getObject(getModelOid("batchevent/1"));
         String name2 = obj.getString("name");
@@ -340,7 +334,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         TestModelDecorator model = getTestModelDecorator();
         model.setEdbId("deleteevent/1");
         EKBCommit commit = getTestEKBCommit().addDelete(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
     }
 
     @Test
@@ -349,14 +343,14 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test1");
         model.setEdbId("updateevent/2");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("updateevent/2"));
         String name1 = obj.getString("name");
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         model.setName("test2");
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         obj = edbService.getObject(getModelOid("updateevent/2"));
         String name2 = obj.getString("name");
@@ -385,16 +379,17 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test");
         model.setEdbId("updateevent/3");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version1 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
         ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        // results in no conflict because the values are the same even if the version is different
+        // results in no conflict because the values are the same even if the
+        // version is different
         obj = edbService.getObject(getModelOid("updateevent/3"));
         Integer version2 = obj.getObject(EDBConstants.MODEL_VERSION, Integer.class);
 
@@ -408,13 +403,13 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test1");
         model.setEdbId("updateevent/4");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         model.setName("test2");
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class);
         ModelWrapper.wrap(model.getModel()).addOpenEngSBModelEntry(entry);
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
     }
 
     @Test
@@ -429,7 +424,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubModel(sub.getModel());
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject mainObject = edbService.getObject(getModelOid("testSub/1"));
         EDBObject subObject = edbService.getObject(getModelOid("testSub/2"));
@@ -457,7 +452,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubs(subs);
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject mainObject = edbService.getObject(getModelOid("testSub/3"));
         EDBObject subObject1 = edbService.getObject(getModelOid("testSub/4"));
@@ -519,9 +514,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
         // test
         EKBCommit commit = getTestEKBCommit().addInsert(root.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        rRoot = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("root")));
+        rRoot = new TestModelDecorator(ekbService.getModel(getTestModel(), getModelOid("root")));
 
         // assert
         assertThat(rRoot.getEdbId(), is("root"));
@@ -594,11 +589,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         root.setChildren(rootChildren);
 
         EKBCommit commit = getTestEKBCommit().addInsert(root.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         // test
         commit = getTestEKBCommit().addDelete(root.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         // assert
         EDBObject rRoot = edbService.getObject(getModelOid("root/1"));
@@ -623,9 +618,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("blub");
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        ModelWrapper result = ModelWrapper.wrap(query.getModel(getTestModel(), getModelOid("modeltailtest/1")));
+        ModelWrapper result = ModelWrapper.wrap(ekbService.getModel(getTestModel(), getModelOid("modeltailtest/1")));
         Boolean versionPresent = result.retrieveInternalModelVersion() != null;
         assertThat(versionPresent, is(true));
     }
@@ -637,8 +632,8 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setEdbId("modelmetatest/1");
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
-        ModelWrapper wrapper = ModelWrapper.wrap(query.getModel(getTestModel(), getModelOid("modelmetatest/1")));
+        ekbService.commit(commit);
+        ModelWrapper wrapper = ModelWrapper.wrap(ekbService.getModel(getTestModel(), getModelOid("modelmetatest/1")));
         assertThat(wrapper.toOpenEngSBModelEntries(), notNullValue());
         assertThat(wrapper.retrieveInternalModelId(), notNullValue());
         assertThat(wrapper.retrieveInternalModelVersion(), notNullValue());
@@ -656,7 +651,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubModel(sub.getModel());
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         model = loadTestModel("submodeltest/1");
         assertThat(model.getModel(), notNullValue());
         sub = new SubModelDecorator(model.getSubModel());
@@ -680,7 +675,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubs(subs);
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         model = loadTestModel("submodeltest/2");
         assertThat(model.getModel(), notNullValue());
         assertThat(model.getSubs(), notNullValue());
@@ -707,11 +702,11 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubModel(sub.getModel());
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         sub.setName("updated");
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         sub = loadSubModel("submodeltest/3/1");
         assertThat(sub.getModel(), notNullValue());
@@ -734,7 +729,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubs(subs);
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         subs.clear();
         sub = getSubModelDecorator();
@@ -751,9 +746,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         subs.add(sub.getModel());
         model.setSubs(subs);
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        model = new TestModelDecorator(query.getModel(getTestModel(), getModelOid("submodeltest/4")));
+        model = new TestModelDecorator(ekbService.getModel(getTestModel(), getModelOid("submodeltest/4")));
         assertThat(model.getModel(), notNullValue());
         assertThat(model.getSubs(), notNullValue());
         assertThat(model.getSubs().get(0), notNullValue());
@@ -784,9 +779,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubModel(sub.getModel());
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         commit = getTestEKBCommit().addDelete(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject testModel = edbService.getObject(getModelOid("submodeltest/5"));
         EDBObject subModel = edbService.getObject(getModelOid("submodeltest/5/1"));
@@ -810,9 +805,9 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubs(subs);
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         commit = getTestEKBCommit().addDelete(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         EDBObject testModel = edbService.getObject(getModelOid("submodeltest/6"));
         EDBObject subModel1 = edbService.getObject(getModelOid("submodeltest/6/1"));
@@ -833,12 +828,12 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setSubModel(sub.getModel());
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         Thread.sleep(5);
 
         sub.setName("test2");
         commit = getTestEKBCommit().addUpdate(sub.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         sub = loadSubModel("submodeltest/7/1");
         assertThat(sub.getModel(), notNullValue());
@@ -853,7 +848,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test(expected = EKBException.class)
     public void testRevertInvalidCommit_shouldThrowException() throws Exception {
-        persist.revertCommit(UUID.randomUUID().toString());
+        ekbService.deleteCommit(UUID.randomUUID());
     }
 
     @Test
@@ -865,28 +860,28 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model2.setEdbId("reverttest/2");
         model2.setName("test");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
-        String revision = commit.getRevisionNumber().toString();
+        ekbService.commit(commit);
+        UUID revision = commit.getRevisionNumber();
 
         model.setName("middle");
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
-        String revision2 = commit.getRevisionNumber().toString();
+        ekbService.commit(commit);
+        UUID revision2 = commit.getRevisionNumber();
 
         commit = getTestEKBCommit().addInsert(model2.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
         model.setName("after");
         commit = getTestEKBCommit().addUpdate(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        TestModelDecorator result1 =
-            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
-        persist.revertCommit(revision2);
-        TestModelDecorator result2 =
-            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
-        persist.revertCommit(revision);
-        TestModelDecorator result3 =
-            new TestModelDecorator(query.getModel(getTestModel(), getModelOid("reverttest/1")));
+        TestModelDecorator result1 = new TestModelDecorator(ekbService.getModel(getTestModel(),
+                getModelOid("reverttest/1")));
+        ekbService.deleteCommit(revision2);
+        TestModelDecorator result2 = new TestModelDecorator(ekbService.getModel(getTestModel(),
+                getModelOid("reverttest/1")));
+        ekbService.deleteCommit(revision);
+        TestModelDecorator result3 = new TestModelDecorator(ekbService.getModel(getTestModel(),
+                getModelOid("reverttest/1")));
         assertThat(result1, notNullValue());
         assertThat(result2, notNullValue());
         assertThat(result3, notNullValue());
@@ -902,28 +897,28 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         model.setName("test");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
         commit.setComment("This is the first comment");
-        persist.commit(commit);
-        String revision = commit.getRevisionNumber().toString();
+        ekbService.commit(commit);
+        UUID revision = commit.getRevisionNumber();
         model.setName("test2");
         commit = getTestEKBCommit().addUpdate(model.getModel());
         commit.setComment("This is the second comment");
-        persist.commit(commit);
-        String revision2 = commit.getRevisionNumber().toString();
+        ekbService.commit(commit);
+        UUID revision2 = commit.getRevisionNumber();
 
-        commit = query.loadCommit(revision);
+        commit = ekbService.loadCommit(revision);
         assertThat(commit, notNullValue());
         assertThat(commit.getInserts().size(), is(1));
-        assertThat(commit.getRevisionNumber().toString(), is(revision));
+        assertThat(commit.getRevisionNumber(), is(revision));
         assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
         assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
         assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
         assertThat(commit.getComment(), is("This is the first comment"));
 
-        commit = query.loadCommit(revision2);
+        commit = ekbService.loadCommit(revision2);
         assertThat(commit, notNullValue());
         assertThat(commit.getUpdates().size(), is(1));
-        assertThat(commit.getRevisionNumber().toString(), is(revision2));
-        assertThat(commit.getParentRevisionNumber().toString(), is(revision));
+        assertThat(commit.getRevisionNumber(), is(revision2));
+        assertThat(commit.getParentRevisionNumber(), is(revision));
         assertThat(commit.getDomainId(), is(getTestEKBCommit().getDomainId()));
         assertThat(commit.getConnectorId(), is(getTestEKBCommit().getConnectorId()));
         assertThat(commit.getInstanceId(), is(getTestEKBCommit().getInstanceId()));
@@ -947,7 +942,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(model.getBooleanByGet(), is(true));
 
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
         // check edb object
         EDBObject edbObject = edbService.getObject(getModelOid("ppm/0"));
@@ -974,33 +969,33 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testDeleteCommitWithLastRevision_shouldDeleteCommit() throws Exception {
-        UUID preCommit1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID preCommit1Revision = ekbService.getLastRevisionId();
         TestModelDecorator model1 = getTestModelDecorator();
         model1.setEdbId("deleteCommitTest/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model1.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        UUID preCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID preCommit2Revision = ekbService.getLastRevisionId();
         TestModelDecorator model2 = getTestModelDecorator();
         model2.setEdbId("deleteCommitTest/2");
         commit = getTestEKBCommit().addInsert(model2.getModel());
         commit.addDelete(model1.getModel());
-        persist.commit(commit);
+        ekbService.commit(commit);
 
-        UUID postCommit2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
-        persist.deleteCommit(postCommit2Revision, CONTEXT);
+        UUID postCommit2Revision = ekbService.getLastRevisionId();
+        ekbService.deleteCommit(postCommit2Revision);
 
-        UUID postDelete1Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID postDelete1Revision = ekbService.getLastRevisionId();
         assertThat(postDelete1Revision, is(preCommit2Revision));
         QueryRequest request = QueryRequest.query("edbId", "deleteCommitTest/1");
-        List<Object> result = (List<Object>) query.query(getTestModel(), request);
+        List<Object> result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(1));
-        persist.deleteCommit(preCommit2Revision, CONTEXT);
+        ekbService.deleteCommit(preCommit2Revision);
 
-        UUID postDelete2Revision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID postDelete2Revision = ekbService.getLastRevisionId();
         assertThat(postDelete2Revision, is(preCommit1Revision));
         request = QueryRequest.query("edbId", "deleteCommitTest/1");
-        result = (List<Object>) query.query(getTestModel(), request);
+        result = ekbService.query(new SingleModelQuery(getTestModel(), new EDBQueryFilter(request), null));
         assertThat(result.size(), is(0));
     }
 
@@ -1009,29 +1004,29 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         TestModelDecorator model = getTestModelDecorator();
         model.setEdbId("deleteCommitTest/3");
         EKBCommit commit1 = getTestEKBCommit().addInsert(model.getModel());
-        persist.commit(commit1);
+        ekbService.commit(commit1);
 
-        UUID postFirstCommitRevision = query.getLastRevisionNumberOfContext(CONTEXT);
+        UUID postFirstCommitRevision = ekbService.getLastRevisionId();
 
         TestModelDecorator model2 = getTestModelDecorator();
         model.setEdbId("deleteCommitTest/4");
         EKBCommit commit2 = getTestEKBCommit().addInsert(model2.getModel());
-        persist.commit(commit2);
+        ekbService.commit(commit2);
 
-        persist.deleteCommit(postFirstCommitRevision, CONTEXT);
+        ekbService.deleteCommit(postFirstCommitRevision);
     }
 
     @Test(expected = EKBException.class)
     public void testDeleteCommitWithWrongRevision_shouldThrowException() {
-        persist.deleteCommit(UUID.randomUUID(), CONTEXT);
+        ekbService.deleteCommit(UUID.randomUUID());
     }
 
     private TestModelDecorator loadTestModel(String oid) throws Exception {
-        return new TestModelDecorator(query.getModel(getTestModel(), getModelOid(oid)));
+        return new TestModelDecorator(ekbService.getModel(getTestModel(), getModelOid(oid)));
     }
 
     private SubModelDecorator loadSubModel(String oid) throws Exception {
-        return new SubModelDecorator(query.getModel(getSubModel(), getModelOid(oid)));
+        return new SubModelDecorator(ekbService.getModel(getSubModel(), getModelOid(oid)));
     }
 
     private TestModelDecorator getTestModelDecorator() throws Exception {

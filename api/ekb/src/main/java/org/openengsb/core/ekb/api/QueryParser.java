@@ -1,3 +1,4 @@
+package org.openengsb.core.ekb.api;
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
@@ -15,7 +16,6 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.api;
 
 import org.openengsb.core.api.model.QueryRequest;
 

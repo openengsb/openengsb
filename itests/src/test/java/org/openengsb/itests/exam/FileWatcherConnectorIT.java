@@ -37,7 +37,8 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.EventSupport;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.model.SourceModelA;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
@@ -70,15 +71,15 @@ public class FileWatcherConnectorIT extends AbstractPreConfiguredExamTestHelper 
         attributes.put("mixin.1", EventSupport.class.getName());
         attributes.put("modelType", "org.openengsb.domain.example.model.SourceModelA");
         Map<String, Object> properties = new HashMap<String, Object>();
-        ConnectorDescription connectorDescription =
-            new ConnectorDescription("example", "filewatcher", attributes, properties);
+        ConnectorDescription connectorDescription = new ConnectorDescription("example", "filewatcher", attributes,
+                properties);
         connectorManager.create(connectorDescription);
         getOsgiService(ExampleDomain.class, 30000L);
         Thread.sleep(1500);
         FileUtils.write(watchfile, "\"foo\",\"bar\"");
         Thread.sleep(1500);
-        QueryInterface queryInterface = getOsgiService(QueryInterface.class);
-        List<SourceModelA> sourceModelAs = queryInterface.queryForActiveModels(SourceModelA.class);
+        EKBService ekbService = getOsgiService(EKBService.class);
+        List<SourceModelA> sourceModelAs = ekbService.query(new SingleModelQuery(SourceModelA.class));
         assertThat(sourceModelAs.size(), is(1));
         assertThat(sourceModelAs.get(0).getEdbId(), is("foo"));
         assertThat(sourceModelAs.get(0).getName(), is("bar"));

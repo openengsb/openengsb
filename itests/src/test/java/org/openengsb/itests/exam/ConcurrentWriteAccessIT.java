@@ -35,8 +35,7 @@ import org.openengsb.core.edb.api.EDBObject;
 import org.openengsb.core.edb.api.EngineeringDatabaseService;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.EKBConcurrentException;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
 import org.openengsb.domain.example.model.SourceModelA;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
 import org.ops4j.pax.exam.Option;
@@ -47,48 +46,44 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
     private static final String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;
-    private QueryInterface query;
-    private PersistInterface persist;
+    private EKBService ekbService;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
-        Option[] options = new Option[]{
-            new KarafDistributionConfigurationFilePutOption(
-                "etc/org.openengsb.ekb.cfg",
-                "modelUpdatePropagationMode", "DEACTIVATED"),
-            new KarafDistributionConfigurationFilePutOption(
-                "etc/org.openengsb.ekb.cfg",
-                "persistInterfaceLockingMode", "ACTIVATED"),
-            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
-            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example")
-        };
+        Option[] options = new Option[] {
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
+                        "modelUpdatePropagationMode", "DEACTIVATED"),
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
+                        "persistInterfaceLockingMode", "ACTIVATED"),
+                mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
+                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example") };
         return combine(baseConfiguration(), options);
     }
 
     @Before
     public void setup() throws Exception {
         edbService = getOsgiService(EngineeringDatabaseService.class);
-        query = getOsgiService(QueryInterface.class);
-        persist = getOsgiService(PersistInterface.class);
+        ekbService = getOsgiService(EKBService.class);
         registerModelProvider();
         ContextHolder.get().setCurrentContextId(CONTEXT);
     }
-    
+
     @Test(expected = EKBConcurrentException.class)
     public void testIfUnexpectedParentRevisionThrowsException_shouldThrowException() throws Exception {
         SourceModelA model = new SourceModelA();
         model.setEdbId("unexpectedParentRevision/1");
         EKBCommit commit = getTestEKBCommit().addInsert(model);
-        persist.commit(commit, null);
-        
+        ekbService.commit(commit, null);
+
         model = new SourceModelA();
         model.setEdbId("unexpectedParentRevision/2");
         commit = getTestEKBCommit().addInsert(model);
-        // second time throws an exception since the expected parent revision is no longer null
-        persist.commit(commit, null);
+        // second time throws an exception since the expected parent revision is
+        // no longer null
+        ekbService.commit(commit, null);
     }
-    
-    @Test(expected = EKBConcurrentException.class) 
+
+    @Test(expected = EKBConcurrentException.class)
     public void testIfConcurrentWritingInTheSameContextThrowsAnException_shouldThrowException() throws Exception {
         EKBCommit commit = getTestEKBCommit();
         for (int i = 0; i < 30; i++) {
@@ -100,14 +95,15 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
         SourceModelA model = new SourceModelA();
         model.setEdbId("concurrentTest/1/30");
         anotherCommit.addInsert(model);
-        
-        ModelCommitThread thread = new ModelCommitThread(persist, commit, CONTEXT);
+
+        ModelCommitThread thread = new ModelCommitThread(ekbService, commit, CONTEXT);
         thread.start();
         Thread.sleep(20);
-        // throws an exception since the other commit is still running in the context
-        persist.commit(anotherCommit);
+        // throws an exception since the other commit is still running in the
+        // context
+        ekbService.commit(anotherCommit);
     }
-    
+
     @Test
     public void testIfConcurrentWritingInDifferentContextsWorks_shouldWork() throws Exception {
         String otherContext = "a_different_context";
@@ -121,19 +117,19 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
                 oid = ModelWrapper.wrap(model).retrieveInternalModelId().toString();
             }
         }
-        ModelCommitThread thread = new ModelCommitThread(persist, commit, CONTEXT);
+        ModelCommitThread thread = new ModelCommitThread(ekbService, commit, CONTEXT);
         thread.start();
-        ModelCommitThread thread2 = new ModelCommitThread(persist, commit, otherContext);
+        ModelCommitThread thread2 = new ModelCommitThread(ekbService, commit, otherContext);
         thread2.start();
         thread.join();
         thread2.join();
-        
+
         ContextHolder.get().setCurrentContextId(CONTEXT);
         assertThat(edbService.getObject(getModelOid(oid)), notNullValue());
         ContextHolder.get().setCurrentContextId(otherContext);
         assertThat(edbService.getObject(getModelOid(oid)), notNullValue());
     }
-    
+
     @Test
     public void testIfCheckForContextIsDoneCorrectly_shouldWork() throws Exception {
         ContextHolder.get().setCurrentContextId("A");
@@ -143,17 +139,17 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
         String oid = ModelWrapper.wrap(model).retrieveInternalModelId().toString();
         model.setName("A");
         commit.addInsert(model);
-        persist.commit(commit, query.getLastRevisionNumberOfContext("A"));
+        ekbService.commit(commit, ekbService.getLastRevisionId());
         ContextHolder.get().setCurrentContextId("B");
-        persist.commit(commit, query.getLastRevisionNumberOfContext("B"));
+        ekbService.commit(commit, ekbService.getLastRevisionId());
         model.setName("B");
         commit = getTestEKBCommit();
         commit.addUpdate(model);
         ContextHolder.get().setCurrentContextId("A");
-        persist.commit(commit, query.getLastRevisionNumberOfContext("A"));
+        ekbService.commit(commit, ekbService.getLastRevisionId());
         ContextHolder.get().setCurrentContextId("B");
-        persist.commit(commit, query.getLastRevisionNumberOfContext("B"));
-        
+        ekbService.commit(commit, ekbService.getLastRevisionId());
+
         ContextHolder.get().setCurrentContextId("A");
         EDBObject obj = edbService.getObject(getModelOid(oid));
         assertThat(obj, notNullValue());
@@ -163,22 +159,22 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
         assertThat(obj, notNullValue());
         assertThat(obj.getString("name"), is("B"));
     }
-    
+
     class ModelCommitThread extends Thread {
-        private PersistInterface persist;
-        private EKBCommit commit;
-        private String contextId;
-        
-        public ModelCommitThread(PersistInterface persist, EKBCommit commit, String contextId) {
-            this.persist = persist;
+        private final EKBService ekbService;
+        private final EKBCommit commit;
+        private final String contextId;
+
+        public ModelCommitThread(EKBService ekbService, EKBCommit commit, String contextId) {
+            this.ekbService = ekbService;
             this.commit = commit;
             this.contextId = contextId;
         }
-        
+
         @Override
         public void run() {
             ContextHolder.get().setCurrentContextId(contextId);
-            persist.commit(commit);
+            ekbService.commit(commit);
         }
     }
 }

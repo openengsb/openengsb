@@ -33,33 +33,30 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnector;
 import org.openengsb.core.ekb.api.EKBCommit;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 
 public class FileWatcherConnector extends VirtualConnector implements EventSupport {
 
     private Class<?> modelType;
 
-    private QueryInterface queryService;
-
-    private PersistInterface persistService;
+    private final EKBService ekbService;
 
     private FileSerializer<?> fileSerializer;
 
     private File watchfile;
 
-    private AuthenticationContext authenticationContext;
+    private final AuthenticationContext authenticationContext;
 
     private List<?> localModels = new ArrayList<Object>();
 
     private Timer timer;
 
-    public FileWatcherConnector(String instanceId, String domainType, PersistInterface persistService,
-            QueryInterface queryService, AuthenticationContext authenticationContext) {
+    public FileWatcherConnector(String instanceId, String domainType, EKBService ekbService,
+            AuthenticationContext authenticationContext) {
         super(instanceId, domainType);
         this.authenticationContext = authenticationContext;
-        this.persistService = persistService;
-        this.queryService = queryService;
+        this.ekbService = ekbService;
     }
 
     @Override
@@ -79,8 +76,13 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
         }
     }
 
+    /**
+     * [Onto-EKB] TODO: Check compatibility with the EKB onto implementation.
+     * 
+     * @throws IOException
+     */
     private synchronized void update() throws IOException {
-        List<?> models = queryService.queryForActiveModels(modelType);
+        List<?> models = ekbService.query(new SingleModelQuery(modelType));
         if (models == null) {
             watchfile.delete();
             localModels = Collections.emptyList();
@@ -150,7 +152,7 @@ public class FileWatcherConnector extends VirtualConnector implements EventSuppo
                 commit.setDomainId(domainType);
                 ContextHolder.get().setCurrentContextId("foo");
                 authenticationContext.login("admin", new Password("password"));
-                persistService.commit(commit);
+                ekbService.commit(commit);
                 authenticationContext.logout();
             }
         };

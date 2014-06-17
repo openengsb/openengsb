@@ -25,7 +25,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,8 +57,8 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.ekb.api.EKBCommit;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
@@ -85,12 +84,9 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
     protected TransformationEngine transformationEngine;
 
     @Mock
-    protected PersistInterface persistenceService;
+    protected EKBService ekbService;
 
-    private Map<Class<?>, List<Object>> activeModels = new HashMap<Class<?>, List<Object>>();
-
-    @Mock
-    protected QueryInterface queryService;
+    private final Map<Class<?>, List<Object>> activeModels = new HashMap<Class<?>, List<Object>>();
 
     @Before
     public void setUp() throws Exception {
@@ -122,16 +118,21 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
                 }
                 return null;
             }
-        }).when(persistenceService).commit(any(EKBCommit.class));
-        when(queryService.queryForActiveModels(any(Class.class))).thenAnswer(new Answer<List<Object>>() {
-            @Override
-            public List<Object> answer(InvocationOnMock invocation) throws Throwable {
-                Class<?> type = (Class<?>) invocation.getArguments()[0];
-                return activeModels.get(type);
-            }
-        });
-        FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider("foo", persistenceService,
-                queryService, bundleContext, mock(AuthenticationContext.class));
+        }).when(ekbService).commit(any(EKBCommit.class));
+
+        // TODO: Check @FJE
+        // when(ekbService.queryForActiveModels(any(Class.class))).thenAnswer(new
+        // Answer<List<Object>>() {
+        // @Override
+        // public List<Object> answer(InvocationOnMock invocation) throws
+        // Throwable {
+        // Class<?> type = (Class<?>) invocation.getArguments()[0];
+        // return activeModels.get(type);
+        // }
+        // });
+
+        FileWatcherConnectorProvider provider = new FileWatcherConnectorProvider("foo", ekbService, bundleContext,
+                mock(AuthenticationContext.class));
         provider.setId("filewatcher");
         registerService(provider, props, VirtualConnectorProvider.class);
     }
@@ -159,8 +160,8 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testConnectorProviderIsCreated() throws Exception {
-        Collection<ServiceReference<ConnectorProvider>> serviceReferences =
-                bundleContext.getServiceReferences(ConnectorProvider.class, "(domain=example)");
+        Collection<ServiceReference<ConnectorProvider>> serviceReferences = bundleContext.getServiceReferences(
+                ConnectorProvider.class, "(domain=example)");
         assertThat(serviceReferences.isEmpty(), is(false));
     }
 
@@ -194,7 +195,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         ServiceReference<EventSupport> reference = bundleContext.getServiceReference(EventSupport.class);
         EventSupport service = bundleContext.getService(reference);
         service.onEvent(new Event());
-        verify(queryService).queryForActiveModels(TestModel.class);
+        verify(ekbService).query(new SingleModelQuery(TestModel.class));
     }
 
     private ConnectorDescription makeConnectorDescription(Class<?> parserClass, File testFile) {
@@ -213,7 +214,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription desc = makeConnectorDescription(CSVParser.class, testfile);
         connectorManager.create(desc);
         FileUtils.write(testfile, "42,\"foo\",7");
-        verify(persistenceService, timeout(2500)).commit(any(EKBCommit.class));
+        verify(ekbService, timeout(2500)).commit(any(EKBCommit.class));
     }
 
     @Test
@@ -229,7 +230,7 @@ public class FileWatcherConnectorTest extends AbstractOsgiMockServiceTest {
         desc2.getAttributes().put("modelType", TestModel.class.getName());
         connectorManager.create(desc2);
         FileUtils.write(testfile, "42,\"foo\",7");
-        verify(persistenceService, timeout(2500)).commit(any(EKBCommit.class));
+        verify(ekbService, timeout(2500)).commit(any(EKBCommit.class));
         Thread.sleep(2000);
         System.out.println("reading file back:\n" + FileUtils.readFileToString(testfile2));
         ObjectMapper objectMapper = new ObjectMapper();

@@ -133,14 +133,13 @@ public class QueryInterfaceServiceTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            ModelWrapper.isModel(model.getClass()), is(true));
+                ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test
     public void testGetOpenEngSBModelGeneral_shouldWork() throws Exception {
         TestModel model = service.getModel(TestModel.class, "testoid");
-        TestModel model2 = ModelUtils.createModel(TestModel.class, 
-            ModelWrapper.wrap(model).toOpenEngSBModelEntries());
+        TestModel model2 = ModelUtils.createModel(TestModel.class, ModelWrapper.wrap(model).toOpenEngSBModelEntries());
 
         assertThat(model.getId().equals(model2.getId()), is(true));
         assertThat(model.getDate().equals(model2.getDate()), is(true));
@@ -235,7 +234,7 @@ public class QueryInterfaceServiceTest {
         temp.add("test3");
         model.setList(temp);
         testList = model.getList();
-        
+
         assertThat(testList.size(), is(3));
         assertThat(testList.get(0), is("test1"));
         assertThat(testList.get(1), is("test2"));

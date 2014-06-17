@@ -55,7 +55,9 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EDBQueryFilter;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.labs.delegation.service.ClassProvider;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -68,9 +70,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
-@SecurityAttributes({
-    @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB")
-})
+@SecurityAttributes({ @SecurityAttribute(key = "org.openengsb.ui.component", value = "EDB") })
 @PaxWicketMountPoint(mountPoint = "edb")
 public class EdbClient extends BasePage {
 
@@ -78,7 +78,7 @@ public class EdbClient extends BasePage {
 
     public static final String PAGE_NAME_KEY = "edbClient.title";
     public static final String PAGE_DESCRIPTION_KEY = "edbClient.description";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EdbClient.class);
 
     static class EkbQuery implements Serializable {
@@ -109,7 +109,7 @@ public class EdbClient extends BasePage {
 
     @Inject
     @Named("queryInterface")
-    private QueryInterface ekbQueryInterface;
+    private EKBService ekbService;
 
     @Inject
     @Named("modelProviders")
@@ -134,7 +134,7 @@ public class EdbClient extends BasePage {
                 for (Class<?> c : p.listClasses()) {
                     if (!OpenEngSBModel.class.isAssignableFrom(c)) {
                         LOGGER.error("Class {} was not correctly woven, so it will not appear in model-dropdown",
-                            c.getName());
+                                c.getName());
                         continue;
                     }
                     result.add((Class<? extends OpenEngSBModel>) c);
@@ -147,9 +147,8 @@ public class EdbClient extends BasePage {
 
     public EdbClient() {
         Form<Object> form = new Form<Object>("form");
-        final DropDownChoice<Class<? extends OpenEngSBModel>> modelSelector =
-            new DropDownChoice<Class<? extends OpenEngSBModel>>("modelSelector",
-                new Model<Class<? extends OpenEngSBModel>>(), new DomainModelListModel());
+        final DropDownChoice<Class<? extends OpenEngSBModel>> modelSelector = new DropDownChoice<Class<? extends OpenEngSBModel>>(
+                "modelSelector", new Model<Class<? extends OpenEngSBModel>>(), new DomainModelListModel());
         modelSelector.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             private static final long serialVersionUID = -1516333824153580148L;
 
@@ -191,12 +190,12 @@ public class EdbClient extends BasePage {
                     return emptyList.iterator();
                 }
                 List<String> allKeys = Lists.transform(Arrays.asList(beanInfo.getPropertyDescriptors()),
-                    new Function<PropertyDescriptor, String>() {
-                        @Override
-                        public String apply(PropertyDescriptor input) {
-                            return input.getName() + ":";
-                        }
-                    });
+                        new Function<PropertyDescriptor, String>() {
+                            @Override
+                            public String apply(PropertyDescriptor input) {
+                                return input.getName() + ":";
+                            }
+                        });
                 if (Strings.isNullOrEmpty(input)) {
                     return allKeys.iterator();
                 }
@@ -222,12 +221,13 @@ public class EdbClient extends BasePage {
                 EkbQuery query = queryModel.getObject();
                 List<? extends OpenEngSBModel> models;
                 try {
-                    models = ekbQueryInterface.queryByString(query.getModel(), query.getQuery());
+                    models = ekbService.query(new SingleModelQuery(query.getModel(), new EDBQueryFilter(query
+                            .getQuery()), null));
                     resultModel.setObject(models);
                     info(String.format("Found %s results", models.size()));
                 } catch (Exception e) {
-                    error(String.format("Error when querying for models %s (%s)",
-                        e.getMessage(), e.getClass().getName()));
+                    error(String.format("Error when querying for models %s (%s)", e.getMessage(), e.getClass()
+                            .getName()));
                 }
                 target.add(feedback);
                 target.add(resultContainer);
@@ -256,19 +256,19 @@ public class EdbClient extends BasePage {
                         break;
                     }
                 }
-                AjaxLink<String> historyLink =
-                    new AjaxLink<String>("id", new PropertyModel<String>(item.getModelObject(), idProperty)) {
-                        private static final long serialVersionUID = -6539033599615376277L;
+                AjaxLink<String> historyLink = new AjaxLink<String>("id", new PropertyModel<String>(item
+                        .getModelObject(), idProperty)) {
+                    private static final long serialVersionUID = -6539033599615376277L;
 
-                        @Override
-                        public void onClick(AjaxRequestTarget target) {
-                            this.setResponsePage(new EdbHistoryPanel(getModel().getObject()));
-                        }
-                    };
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        this.setResponsePage(new EdbHistoryPanel(getModel().getObject()));
+                    }
+                };
                 historyLink.add(new Label("text", new PropertyModel<String>(item.getModelObject(), idProperty)));
                 item.add(historyLink);
-                MultiLineLabel multiLineLabel =
-                    new MultiLineLabel("entries", item.getModelObject().toOpenEngSBModelEntries().toString());
+                MultiLineLabel multiLineLabel = new MultiLineLabel("entries", item.getModelObject()
+                        .toOpenEngSBModelEntries().toString());
                 item.add(multiLineLabel);
             }
         });

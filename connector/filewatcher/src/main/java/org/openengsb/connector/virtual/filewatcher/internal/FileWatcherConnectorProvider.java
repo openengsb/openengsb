@@ -24,24 +24,20 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.AbstractConnectorProvider;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
 import org.osgi.framework.BundleContext;
 
 public class FileWatcherConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
 
-    private QueryInterface queryService;
+    private final EKBService ekbService;
 
-    private PersistInterface persistService;
+    private final AuthenticationContext authenticationContext;
 
-    private AuthenticationContext authenticationContext;
-
-    public FileWatcherConnectorProvider(String id, PersistInterface persistService, QueryInterface queryService,
-            BundleContext bundleContext, AuthenticationContext authenticationContext) {
+    public FileWatcherConnectorProvider(String id, EKBService ekbService, BundleContext bundleContext,
+            AuthenticationContext authenticationContext) {
         setId(id);
         setBundleContext(bundleContext);
-        this.persistService = persistService;
-        this.queryService = queryService;
+        this.ekbService = ekbService;
         this.authenticationContext = authenticationContext;
     }
 
@@ -54,15 +50,14 @@ public class FileWatcherConnectorProvider extends AbstractConnectorProvider impl
         builder.description("filewatcher.description");
 
         builder.attribute(builder.newAttribute().id("watchfile").name("filewatcher.watchfile.id")
-            .description("filewatcher.watchfile.description").build());
+                .description("filewatcher.watchfile.description").build());
 
         return builder.build();
     }
 
     @Override
     public FileWatcherConnectorFactory createFactory(DomainProvider provider) {
-        return new FileWatcherConnectorFactory(
-            provider, persistService, queryService, bundleContext, authenticationContext);
+        return new FileWatcherConnectorFactory(provider, ekbService, bundleContext, authenticationContext);
     }
 
 }

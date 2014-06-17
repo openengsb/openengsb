@@ -53,10 +53,10 @@ public class PersistInterfaceServiceTest {
         List<EKBPostCommitHook> postHooks = new ArrayList<EKBPostCommitHook>();
         List<EKBErrorHook> errorHooks = new ArrayList<EKBErrorHook>();
         EDBCommit result = mock(EDBCommit.class);
-        when(edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
-            anyListOf(EDBObject.class))).thenReturn(result);
-        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, errorHooks
-            , "DEACTIVED");
+        when(
+                edbService.createEDBCommit(anyListOf(EDBObject.class), anyListOf(EDBObject.class),
+                        anyListOf(EDBObject.class))).thenReturn(result);
+        this.service = new PersistInterfaceService(edbService, converter, preHooks, postHooks, errorHooks, "DEACTIVED");
         ContextHolder.get().setCurrentContextId("test");
     }
 
@@ -64,7 +64,7 @@ public class PersistInterfaceServiceTest {
     public void testIfModelAgentIsSet_shouldWork() throws Exception {
         TestModel model = new TestModel();
         assertThat("TestModel isn't enhanced. Maybe you forgot to set the java agent?",
-            ModelWrapper.isModel(model.getClass()), is(true));
+                ModelWrapper.isModel(model.getClass()), is(true));
     }
 
     @Test

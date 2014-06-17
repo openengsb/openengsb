@@ -28,8 +28,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.common.VirtualConnectorFactory;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EKBService;
 import org.openengsb.labs.delegation.service.DelegationClassLoader;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -41,26 +40,22 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileWatcherConnectorFactory.class);
 
-    private QueryInterface queryService;
+    private final EKBService ekbService;
 
-    private PersistInterface persistService;
+    private final DelegationClassLoader delegationClassLoader;
+    private final AuthenticationContext authenticationContext;
 
-    private DelegationClassLoader delegationClassLoader;
-    private AuthenticationContext authenticationContext;
-
-    public FileWatcherConnectorFactory(DomainProvider domainProvider, PersistInterface persistService,
-            QueryInterface queryService, BundleContext bundleContext, AuthenticationContext authenticationContext) {
+    public FileWatcherConnectorFactory(DomainProvider domainProvider, EKBService ekbService,
+            BundleContext bundleContext, AuthenticationContext authenticationContext) {
         super(domainProvider);
-        this.persistService = persistService;
-        this.queryService = queryService;
+        this.ekbService = ekbService;
         this.delegationClassLoader = new DelegationClassLoader(bundleContext, Constants.DELEGATION_CONTEXT_MODELS,
                 getClass().getClassLoader());
         this.authenticationContext = authenticationContext;
     }
 
     @Override
-    protected FileWatcherConnector updateHandlerAttributes(FileWatcherConnector handler,
-            Map<String, String> attributes) {
+    protected FileWatcherConnector updateHandlerAttributes(FileWatcherConnector handler, Map<String, String> attributes) {
         Class<?> modelType;
         try {
             modelType = delegationClassLoader.loadClass(attributes.get("modelType"));
@@ -93,8 +88,7 @@ public class FileWatcherConnectorFactory extends VirtualConnectorFactory<FileWat
 
     @Override
     protected FileWatcherConnector createNewHandler(String id) {
-        return new FileWatcherConnector(
-            id, domainProvider.getId(), persistService, queryService, authenticationContext);
+        return new FileWatcherConnector(id, domainProvider.getId(), ekbService, authenticationContext);
     }
 
     @Override

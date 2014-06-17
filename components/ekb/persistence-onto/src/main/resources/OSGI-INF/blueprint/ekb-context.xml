@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0">
+
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.ekb">
+    <cm:default-properties>
+      <cm:property name="modelUpdatePropagationMode" value="FULLY_ACTIVATED" />
+      <cm:property name="persistInterfaceLockingMode" value="ACTIVATED" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+  
+  <!-- References to other bundles -->
+  <reference id="edbService" interface="org.openengsb.core.edb.api.EngineeringDatabaseService" />
+  <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
+  <reference-list id="preCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPreCommitHook" availability="optional"/>
+  <reference-list id="postCommitHooks" interface="org.openengsb.core.ekb.api.hooks.EKBPostCommitHook" availability="optional"/>
+  <reference-list id="errorHooks" interface="org.openengsb.core.ekb.api.hooks.EKBErrorHook" availability="optional"/>
+</blueprint>

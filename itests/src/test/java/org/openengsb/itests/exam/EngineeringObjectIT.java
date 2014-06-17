@@ -34,9 +34,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.ekb.api.EDBQueryFilter;
+import org.openengsb.core.ekb.api.EKBService;
 import org.openengsb.core.ekb.api.ModelRegistry;
-import org.openengsb.core.ekb.api.PersistInterface;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.Query;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.ekb.api.transformation.TransformationDescription;
 import org.openengsb.core.ekb.common.AdvancedModelWrapper;
@@ -52,18 +54,16 @@ import org.osgi.framework.Version;
 
 @RunWith(JUnit4TestRunner.class)
 public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
-    private QueryInterface query;
-    private PersistInterface persist;
+    private EKBService ekbService;
     private ModelRegistry registry;
     private boolean initialized = false;
     private Version exampleDomainVersion = null;
 
     @Configuration
     public static Option[] myConfiguration() throws Exception {
-        Option[] options =
-            new Option[]{
-                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg", 
-                    "modelUpdatePropagationMode", "FULLY_ACTIVATED"),
+        Option[] options = new Option[] {
+                new KarafDistributionConfigurationFilePutOption("etc/org.openengsb.ekb.cfg",
+                        "modelUpdatePropagationMode", "FULLY_ACTIVATED"),
                 mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
                 editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example") };
         return combine(baseConfiguration(), options);
@@ -76,8 +76,7 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         }
         Bundle b = getInstalledBundle("org.openengsb.domain.example");
         exampleDomainVersion = b.getVersion();
-        query = getOsgiService(QueryInterface.class);
-        persist = getOsgiService(PersistInterface.class);
+        ekbService = getOsgiService(EKBService.class);
         registry = getOsgiService(ModelRegistry.class);
         TransformationEngine engine = getOsgiService(TransformationEngine.class);
         List<TransformationDescription> descriptions = generateTransformationDescriptions();
@@ -100,8 +99,8 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
     private List<TransformationDescription> generateTransformationDescriptions() {
         List<TransformationDescription> descriptions = new ArrayList<TransformationDescription>();
-        TransformationDescription desc =
-            new TransformationDescription(getSourceModelADescription(), getEOModelDescription());
+        TransformationDescription desc = new TransformationDescription(getSourceModelADescription(),
+                getEOModelDescription());
         desc.forwardField("name", "nameA");
         desc.forwardField("shared", "shared");
         desc.setId("AtoEO");
@@ -132,15 +131,15 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
 
     @Test
     public void testIfEngineeringObjectsAreInsertedCorrectly_shouldInsertObjectAndLoadReferencedValues()
-        throws Exception {
+            throws Exception {
         SourceModelA sourceA = new SourceModelA("sourceA/1", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/1", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/1", sourceA.getEdbId(), sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        EOModel result = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        EOModel result = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
         String nameA = result.getNameA();
         String nameB = result.getNameB();
 
@@ -152,18 +151,18 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     public void testIfEOUpdateWorksCorrectly_shouldUpdateSourceModel() throws Exception {
         SourceModelA sourceA = new SourceModelA("sourceA/2", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/2", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/2", sourceA.getEdbId(), sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
         eo.setNameA("updatedNameA");
         eo.setShared("updatedShared");
-        persist.commit(getTestEKBCommit().addUpdate(eo));
+        ekbService.commit(getTestEKBCommit().addUpdate(eo));
 
-        sourceA = query.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
-        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        sourceA = ekbService.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
+        sourceB = ekbService.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(sourceA.getName(), is("updatedNameA"));
         assertThat(sourceA.getShared(), is("updatedShared"));
         assertThat(sourceB.getShared(), is("updatedShared"));
@@ -173,18 +172,18 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     public void testIfSourceUpdateWorksCorrectly_shouldUpdateEngineeringObject() throws Exception {
         SourceModelA sourceA = new SourceModelA("sourceA/3", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/3", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/3", sourceA.getEdbId(), sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        sourceA = query.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
+        sourceA = ekbService.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
         sourceA.setName("updatedNameA");
         sourceA.setShared("updatedShared");
-        persist.commit(getTestEKBCommit().addUpdate(sourceA));
+        ekbService.commit(getTestEKBCommit().addUpdate(sourceA));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
-        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        sourceB = ekbService.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(eo.getNameA(), is("updatedNameA"));
         assertThat(eo.getShared(), is("updatedShared"));
         assertThat(sourceB.getShared(), is("updatedShared"));
@@ -193,17 +192,17 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testIfEOUpdateWorksCorrectlyWithOnlyOneSource_shouldUpdateSourceModel() throws Exception {
         SourceModelA sourceA = new SourceModelA("sourceA/4", "sourceNameA", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA));
 
         EOModel eo = new EOModel("eo/4", sourceA.getEdbId(), null, "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
         eo.setNameA("updatedNameA");
         eo.setShared("updatedShared");
-        persist.commit(getTestEKBCommit().addUpdate(eo));
+        ekbService.commit(getTestEKBCommit().addUpdate(eo));
 
-        SourceModelA result = query.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
+        SourceModelA result = ekbService.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
         assertThat(result.getName(), is("updatedNameA"));
         assertThat(result.getShared(), is("updatedShared"));
     }
@@ -212,16 +211,16 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     public void testDeleteSourceModel_doesNotDeleteLinkedModels() {
         SourceModelA sourceA = new SourceModelA("sourceA/5", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/5", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/5", sourceA.getEdbId(), sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        SourceModelA source = query.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
-        persist.commit(getTestEKBCommit().addDelete(source));
+        SourceModelA source = ekbService.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
+        ekbService.commit(getTestEKBCommit().addDelete(source));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
-        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        sourceB = ekbService.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(eo, notNullValue());
         assertThat(sourceB, notNullValue());
     }
@@ -230,16 +229,16 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     public void testDeleteEOModel_doesNotDeleteLinkedModels() {
         SourceModelA sourceA = new SourceModelA("sourceA/6", "sourceNameA", "shared");
         SourceModelB sourceB = new SourceModelB("sourceB/6", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA).addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/6", sourceA.getEdbId(), sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
-        persist.commit(getTestEKBCommit().addDelete(eo));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        ekbService.commit(getTestEKBCommit().addDelete(eo));
 
-        sourceA = query.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
-        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        sourceA = ekbService.getModel(SourceModelA.class, getModelOid(sourceA.getEdbId()));
+        sourceB = ekbService.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(sourceA, notNullValue());
         assertThat(sourceB, notNullValue());
     }
@@ -249,13 +248,17 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
         EOModel eo = new EOModel("eo/7", "sourceA/7", "sourceB/7", "shared");
         eo.setNameA("sourceNameA");
         eo.setNameB("sourceNameB");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        List<EOModel> eos = query.queryByString(EOModel.class, "oid:\"" + getModelOid("eo/7") + "\"");
-        List<SourceModelB> sourceBs =
-            query.queryByString(SourceModelB.class, "oid:\"" + getModelOid("sourceB/7") + "\"");
-        List<SourceModelA> sourceAs =
-            query.queryByString(SourceModelA.class, "oid:\"" + getModelOid("sourceA/7") + "\"");
+        Query query = new SingleModelQuery(EOModel.class, new EDBQueryFilter("oid:\"" + getModelOid("eo/7") + "\""),
+                null);
+        List<EOModel> eos = ekbService.query(query);
+        query = new SingleModelQuery(SourceModelB.class,
+                new EDBQueryFilter("oid:\"" + getModelOid("sourceB/7") + "\""), null);
+        List<SourceModelB> sourceBs = ekbService.query(query);
+        query = new SingleModelQuery(SourceModelA.class,
+                new EDBQueryFilter("oid:\"" + getModelOid("sourceA/7") + "\""), null);
+        List<SourceModelA> sourceAs = ekbService.query(query);
 
         assertThat(eos.size(), is(1));
         assertThat(sourceBs.size(), is(0));
@@ -265,33 +268,37 @@ public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     @Test
     public void testInsertSourceModel_doesNotInsertLinkedModels() {
         SourceModelA sourceA = new SourceModelA("sourceA/8", "sourceNameA", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceA));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceA));
 
-        List<EOModel> eos = query.queryByString(EOModel.class, "oid:\"" + getModelOid("eo/8") + "\"");
-        List<SourceModelB> sourceBs =
-            query.queryByString(SourceModelB.class, "oid:\"" + getModelOid("sourceB/8") + "\"");
-        List<SourceModelA> sourceAs =
-            query.queryByString(SourceModelA.class, "oid:\"" + getModelOid("sourceA/8") + "\"");
+        Query query = new SingleModelQuery(EOModel.class, new EDBQueryFilter("oid:\"" + getModelOid("eo/8") + "\""),
+                null);
+        List<EOModel> eos = ekbService.query(query);
+        query = new SingleModelQuery(SourceModelB.class,
+                new EDBQueryFilter("oid:\"" + getModelOid("sourceB/8") + "\""), null);
+        List<SourceModelB> sourceBs = ekbService.query(query);
+        query = new SingleModelQuery(SourceModelA.class,
+                new EDBQueryFilter("oid:\"" + getModelOid("sourceA/8") + "\""), null);
+        List<SourceModelA> sourceAs = ekbService.query(query);
 
         assertThat(eos.size(), is(0));
         assertThat(sourceBs.size(), is(0));
         assertThat(sourceAs.size(), is(1));
     }
-    
+
     @Test
     public void testIfUpdatePropagationWithMissingModelsWorks_shouldUpdateExistingModels() throws Exception {
         SourceModelB sourceB = new SourceModelB("sourceB/9", "sourceNameB", "shared");
-        persist.commit(getTestEKBCommit().addInsert(sourceB));
+        ekbService.commit(getTestEKBCommit().addInsert(sourceB));
 
         EOModel eo = new EOModel("eo/9", "this/does/not/exist", sourceB.getEdbId(), "shared");
-        persist.commit(getTestEKBCommit().addInsert(eo));
+        ekbService.commit(getTestEKBCommit().addInsert(eo));
 
-        eo = query.getModel(EOModel.class, getModelOid(eo.getEdbId()));
+        eo = ekbService.getModel(EOModel.class, getModelOid(eo.getEdbId()));
         eo.setNameB("updatedNameB");
         eo.setShared("updatedShared");
-        persist.commit(getTestEKBCommit().addUpdate(eo));
+        ekbService.commit(getTestEKBCommit().addUpdate(eo));
 
-        sourceB = query.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
+        sourceB = ekbService.getModel(SourceModelB.class, getModelOid(sourceB.getEdbId()));
         assertThat(sourceB.getName(), is("updatedNameB"));
         assertThat(sourceB.getShared(), is("updatedShared"));
     }

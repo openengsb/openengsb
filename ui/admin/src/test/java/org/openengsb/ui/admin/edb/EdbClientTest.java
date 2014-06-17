@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -37,7 +36,9 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.ekb.api.QueryInterface;
+import org.openengsb.core.ekb.api.EDBQueryFilter;
+import org.openengsb.core.ekb.api.EKBService;
+import org.openengsb.core.ekb.api.SingleModelQuery;
 import org.openengsb.core.test.DummyModel;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.ServiceList;
@@ -49,19 +50,23 @@ import org.openengsb.ui.admin.index.Index;
 
 public class EdbClientTest extends AbstractUITest {
 
-    private QueryInterface queryInterface;
+    private EKBService ekbService;
 
     @Before
     public void setUp() throws Exception {
         createDomainProviderMock(NullDomain.class, "example");
-        queryInterface = mock(QueryInterface.class);
-        context.putBean("queryInterface", queryInterface);
+        ekbService = mock(EKBService.class);
+        context.putBean("queryInterface", ekbService);
         DummyModel dummyModel = new DummyModel();
         dummyModel.setId("42");
         dummyModel.setValue("foo");
-        when(queryInterface.queryByString(DummyModel.class, "id:42")).thenReturn(Arrays.asList(dummyModel));
-        when(queryInterface.queryByString(DummyModel.class, "crap")).thenThrow(
-            new IllegalArgumentException("illegal query"));
+        ekbService.query(new SingleModelQuery(DummyModel.class, new EDBQueryFilter("id:42"), null));
+        // TODO: check @FJE
+        // when(ekbService.query(new SingleModelQuery(DummyModel.class, new
+        // EDBQueryFilter("id:42"), null))).thenReturn(
+        // Arrays.asList(dummyModel));
+        when(ekbService.query(new SingleModelQuery(DummyModel.class, new EDBQueryFilter("crap"), null))).thenThrow(
+                new IllegalArgumentException("illegal query"));
         ServiceList<ClassProvider> classProviders = super.makeServiceList(ClassProvider.class);
         context.putBean("modelProviders", classProviders);
         ClassProviderImpl classProvider = new ClassProviderImpl(bundle, DummyModel.class.getName());
@@ -81,8 +86,7 @@ public class EdbClientTest extends AbstractUITest {
     @Test
     public void testModelDropDown_shouldContainDummyModel() throws Exception {
         tester.startPage(EdbClient.class);
-        DropDownChoice<Class<? extends OpenEngSBModel>> dropdown =
-            (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
+        DropDownChoice<Class<? extends OpenEngSBModel>> dropdown = (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
                 .getComponentFromLastRenderedPage("form:modelSelector");
         @SuppressWarnings("rawtypes")
         List<Object> choices = (List) dropdown.getChoices();
@@ -96,8 +100,7 @@ public class EdbClientTest extends AbstractUITest {
         Component query = tester.getComponentFromLastRenderedPage("form:query");
         assertFalse("queryfield not disabled at the beginning", query.isEnabled());
         FormTester formTester = tester.newFormTester("form");
-        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =
-            (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
+        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown = (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
                 .getComponentFromLastRenderedPage("form:modelSelector");
         formTester.select("modelSelector", getIndexForValue(modeldropdown, "DummyModel"));
         tester.executeAjaxEvent(modeldropdown, "onchange");
@@ -109,15 +112,14 @@ public class EdbClientTest extends AbstractUITest {
     public void testEnterQuery_shouldReturnQueryResults() throws Exception {
         tester.startPage(EdbClient.class);
         FormTester formTester = tester.newFormTester("form");
-        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =
-            (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
+        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown = (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
                 .getComponentFromLastRenderedPage("form:modelSelector");
         formTester.select("modelSelector", getIndexForValue(modeldropdown, "DummyModel"));
         tester.executeAjaxEvent(modeldropdown, "onchange");
         formTester.setValue("query", "id:42");
         tester.executeAjaxEvent("form:submit", "onclick");
-        ListView<? extends OpenEngSBModel> resultElement =
-            (ListView<? extends OpenEngSBModel>) tester.getComponentFromLastRenderedPage("result:list");
+        ListView<? extends OpenEngSBModel> resultElement = (ListView<? extends OpenEngSBModel>) tester
+                .getComponentFromLastRenderedPage("result:list");
         tester.assertFeedback("form:feedback", "Found 1 results");
         assertThat(resultElement.get("0:id").getDefaultModelObjectAsString(), is("42"));
         assertThat(resultElement.get("0:entries").getDefaultModelObjectAsString(), containsString("foo"));
@@ -128,14 +130,15 @@ public class EdbClientTest extends AbstractUITest {
     public void testInvalidQuery_shouldShowError() throws Exception {
         tester.startPage(EdbClient.class);
         FormTester formTester = tester.newFormTester("form");
-        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown =
-            (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
+        DropDownChoice<Class<? extends OpenEngSBModel>> modeldropdown = (DropDownChoice<Class<? extends OpenEngSBModel>>) tester
                 .getComponentFromLastRenderedPage("form:modelSelector");
         formTester.select("modelSelector", getIndexForValue(modeldropdown, "DummyModel"));
         tester.executeAjaxEvent(modeldropdown, "onchange");
         formTester.setValue("query", "crap");
         tester.executeAjaxEvent("form:submit", "onclick");
-        tester.assertFeedback("form:feedback", String.format("Error when querying for models %s (%s)",
-            "illegal query", IllegalArgumentException.class.getName()));
+        tester.assertFeedback(
+                "form:feedback",
+                String.format("Error when querying for models %s (%s)", "illegal query",
+                        IllegalArgumentException.class.getName()));
     }
 }
