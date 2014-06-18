@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * AbstractH2DatabaseTest
@@ -35,6 +36,8 @@ import org.junit.Before;
 public abstract class AbstractH2DatabaseTest {
 
     protected DataSource dataSource;
+
+    protected JdbcTemplate jdbcTemplate;
 
     public DataSource getDataSource() {
         return dataSource;
@@ -73,6 +76,14 @@ public abstract class AbstractH2DatabaseTest {
             IOUtils.copy(stream, writer);
             return writer.toString();
         }
+    }
+
+    protected JdbcTemplate jdbc() throws SQLException {
+        if (jdbcTemplate == null) {
+            jdbcTemplate = new JdbcTemplate(getDataSource());
+        }
+
+        return jdbcTemplate;
     }
 
     protected DataSource createDataSource() throws SQLException {
