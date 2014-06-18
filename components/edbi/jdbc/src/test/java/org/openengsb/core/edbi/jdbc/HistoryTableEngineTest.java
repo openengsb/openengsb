@@ -60,7 +60,7 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
 
         ((JdbcIndexField<?>) fields.get(0)).setMappedName("TESTID");
         ((JdbcIndexField<?>) fields.get(1)).setMappedName("TESTINTEGER");
-        ((JdbcIndexField<?>) fields.get(2)).setMappedName("COMPOSITEMODEL");
+        ((JdbcIndexField<?>) fields.get(2)).setMappedName("SUBMODEL");
     }
 
     @Override
@@ -99,7 +99,7 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals("REV_OPERATION", metaData.getColumnName(4));
             assertEquals("TESTID", metaData.getColumnName(5));
             assertEquals("TESTINTEGER", metaData.getColumnName(6));
-            assertEquals("COMPOSITEMODEL", metaData.getColumnName(7));
+            assertEquals("SUBMODEL", metaData.getColumnName(7));
         }
 
         assertEquals("HISTORY_TABLE", testIndex.getHistoryTableName());

@@ -89,7 +89,7 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
             assertEquals("REV_CREATED", metaData.getColumnName(1));
             assertEquals("TESTID", metaData.getColumnName(2));
             assertEquals("TESTINTEGER", metaData.getColumnName(3));
-            assertEquals("COMPOSITEMODEL", metaData.getColumnName(4));
+            assertEquals("SUBMODEL", metaData.getColumnName(4));
         }
 
         assertEquals("HEAD_TABLE", testIndex.getHeadTableName());
@@ -97,7 +97,7 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         List<IndexField<?>> fields = testIndex.getFields();
         assertEquals("TESTID", fields.get(0).getMappedName());
         assertEquals("TESTINTEGER", fields.get(1).getMappedName());
-        assertEquals("COMPOSITEMODEL", fields.get(2).getMappedName());
+        assertEquals("SUBMODEL", fields.get(2).getMappedName());
     }
 
     @Test

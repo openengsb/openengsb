@@ -24,16 +24,16 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 
 @Model
-public class CompositeTestModel {
+public class SubTestModel {
 
     @OpenEngSBModelId
     public Integer testId;
 
-    public CompositeTestModel() {
+    public SubTestModel() {
 
     }
 
-    public CompositeTestModel(Integer testId) {
+    public SubTestModel(Integer testId) {
         this.testId = testId;
     }
 

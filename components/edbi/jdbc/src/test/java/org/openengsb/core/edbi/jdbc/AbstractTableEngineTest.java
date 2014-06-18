@@ -28,7 +28,7 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.sql.Table;
-import org.openengsb.core.edbi.models.CompositeTestModel;
+import org.openengsb.core.edbi.models.SubTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
 import javax.sql.DataSource;
@@ -70,11 +70,11 @@ public abstract class AbstractTableEngineTest extends AbstractH2DatabaseTest {
         testInteger.setName("testInteger");
         testInteger.setType(Integer.class);
 
-        JdbcIndexField<CompositeTestModel> compositeModel = new JdbcIndexField<>(testIndex);
-        compositeModel.setName("compositeModel");
-        compositeModel.setType(CompositeTestModel.class);
+        JdbcIndexField<SubTestModel> subModel = new JdbcIndexField<>(testIndex);
+        subModel.setName("subModel");
+        subModel.setType(SubTestModel.class);
 
-        testIndex.setFields(Arrays.asList(testId, testInteger, compositeModel));
+        testIndex.setFields(Arrays.asList(testId, testInteger, subModel));
 
         // Type Map
         TypeMap typeMap = mock(TypeMap.class);

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openengsb.core.edbi.models.CompositeTestModel;
+import org.openengsb.core.edbi.models.SubTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
 /**
@@ -35,7 +35,7 @@ public class IntrospectorTest {
     @Test
     public void isModelClass_behavesCorrectly() throws Exception {
         assertTrue(Introspector.isModelClass(TestModel.class));
-        assertTrue(Introspector.isModelClass(CompositeTestModel.class));
+        assertTrue(Introspector.isModelClass(SubTestModel.class));
         assertFalse(Introspector.isModelClass(IntrospectorTest.class));
         assertFalse(Introspector.isModelClass(int.class));
     }
@@ -48,7 +48,7 @@ public class IntrospectorTest {
         assertEquals(List.class, map.get("openEngSBModelTail"));
         assertEquals(String.class, map.get("testId"));
         assertEquals(Integer.class, map.get("testInteger"));
-        assertEquals(CompositeTestModel.class, map.get("compositeModel"));
+        assertEquals(SubTestModel.class, map.get("subModel"));
     }
 
     @Test
@@ -58,12 +58,12 @@ public class IntrospectorTest {
         assertEquals(3, map.size());
         assertEquals(String.class, map.get("testId"));
         assertEquals(Integer.class, map.get("testInteger"));
-        assertEquals(CompositeTestModel.class, map.get("compositeModel"));
+        assertEquals(SubTestModel.class, map.get("subModel"));
     }
 
     @Test
     public void getOpenEngSBModelIdProperty_returnsCorrectProperty() throws Exception {
         assertEquals("testId", Introspector.getOpenEngSBModelIdProperty(TestModel.class));
-        assertEquals("testId", Introspector.getOpenEngSBModelIdProperty(CompositeTestModel.class));
+        assertEquals("testId", Introspector.getOpenEngSBModelIdProperty(SubTestModel.class));
     }
 }

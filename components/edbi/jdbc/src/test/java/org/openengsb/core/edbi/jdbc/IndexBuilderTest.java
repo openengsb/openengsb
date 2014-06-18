@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.jdbc.names.ClassNameIndexTranslator;
-import org.openengsb.core.edbi.models.CompositeTestModel;
+import org.openengsb.core.edbi.models.SubTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
 /**
@@ -52,8 +52,8 @@ public class IndexBuilderTest {
 
         IndexField[] fields = index.getFields().toArray(new IndexField[3]);
 
-        assertEquals("compositeModel", fields[0].getName());
-        assertEquals(CompositeTestModel.class, fields[0].getType());
+        assertEquals("subModel", fields[0].getName());
+        assertEquals(SubTestModel.class, fields[0].getType());
 
         assertEquals("testInteger", fields[1].getName());
         assertEquals(Integer.class, fields[1].getType());

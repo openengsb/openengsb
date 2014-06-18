@@ -26,7 +26,7 @@ public class TestModel {
     private String testId;
     private Integer testInteger;
 
-    private CompositeTestModel compositeModel;
+    private SubTestModel subModel;
 
     public TestModel() {
 
@@ -40,18 +40,18 @@ public class TestModel {
         this(id, integer, null);
     }
 
-    public TestModel(String testId, Integer testInteger, CompositeTestModel compositeModel) {
+    public TestModel(String testId, Integer testInteger, SubTestModel subModel) {
         setTestId(testId);
         setTestInteger(testInteger);
-        setCompositeModel(compositeModel);
+        setSubModel(subModel);
     }
 
-    public CompositeTestModel getCompositeModel() {
-        return compositeModel;
+    public SubTestModel getSubModel() {
+        return subModel;
     }
 
-    public void setCompositeModel(CompositeTestModel compositeModel) {
-        this.compositeModel = compositeModel;
+    public void setSubModel(SubTestModel subModel) {
+        this.subModel = subModel;
     }
 
     public String getTestId() {
