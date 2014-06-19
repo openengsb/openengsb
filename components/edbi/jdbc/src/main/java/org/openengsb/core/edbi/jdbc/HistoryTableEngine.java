@@ -20,6 +20,7 @@ import static org.openengsb.core.edbi.jdbc.sql.Column.Option.AUTO_INCREMENT;
 
 import java.sql.Types;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -74,7 +75,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
         execute(operation, new IndexRecordCallback() {
             @Override
             public void call(IndexRecord record) {
-                record.addValue("REV_CREATED", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_COMMIT", operation.getCommit().getCommitId(), Types.VARCHAR);
+                record.addValue("REV_TIMESTAMP", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
                 record.addValue("REV_OPERATION", "INSERT", Types.VARCHAR);
             }
         });
@@ -87,7 +89,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
         execute(insert, new IndexRecordCallback() {
             @Override
             public void call(IndexRecord record) {
-                record.addValue("REV_MODIFIED", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_COMMIT", insert.getCommit().getCommitId(), Types.VARCHAR);
+                record.addValue("REV_TIMESTAMP", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
                 record.addValue("REV_OPERATION", "UPDATE", Types.VARCHAR);
             }
         });
@@ -100,7 +103,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
         execute(insert, new IndexRecordCallback() {
             @Override
             public void call(IndexRecord record) {
-                record.addValue("REV_MODIFIED", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
+                record.addValue("REV_COMMIT", insert.getCommit().getCommitId(), Types.VARCHAR);
+                record.addValue("REV_TIMESTAMP", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
                 record.addValue("REV_OPERATION", "DELETE", Types.VARCHAR);
             }
         });
@@ -126,8 +130,8 @@ public class HistoryTableEngine extends AbstractTableEngine {
             super.onBeforeCreate(table, index);
 
             table.addElement(new Column("REV_ID", getTypeMap().getType(Long.class), AUTO_INCREMENT));
-            table.addElement(new Column("REV_CREATED", getTypeMap().getType(Date.class)));
-            table.addElement(new Column("REV_MODIFIED", getTypeMap().getType(Date.class)));
+            table.addElement(new Column("REV_COMMIT", getTypeMap().getType(UUID.class)));
+            table.addElement(new Column("REV_TIMESTAMP", getTypeMap().getType(Date.class)));
             table.addElement(new Column("REV_OPERATION", getTypeMap().getType(String.class)));
             // TODO: more columns ...
         }

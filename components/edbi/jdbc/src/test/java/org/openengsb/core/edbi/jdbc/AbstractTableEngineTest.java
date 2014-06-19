@@ -36,6 +36,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,6 +80,7 @@ public abstract class AbstractTableEngineTest extends AbstractH2DatabaseTest {
         // Type Map
         TypeMap typeMap = mock(TypeMap.class);
         when(typeMap.getType(String.class)).thenReturn(new DataType(Types.LONGNVARCHAR, "LONGVARCHAR"));
+        when(typeMap.getType(UUID.class)).thenReturn(new DataType(Types.VARCHAR, "VARCHAR"));
         when(typeMap.getType(Integer.class)).thenReturn(new DataType(Types.INTEGER, "INTEGER"));
         when(typeMap.getType(Long.class)).thenReturn(new DataType(Types.BIGINT, "LONG"));
         when(typeMap.getType(Date.class)).thenReturn(new DataType(Types.TIMESTAMP, "TIMESTAMP"));

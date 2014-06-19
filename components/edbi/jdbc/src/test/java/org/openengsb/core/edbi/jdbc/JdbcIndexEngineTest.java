@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.sql.Types;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
@@ -66,6 +67,7 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
         when(typeMap.getType(Integer.class)).thenReturn(new DataType(Types.INTEGER, "INTEGER"));
         when(typeMap.getType(Long.class)).thenReturn(new DataType(Types.BIGINT, "LONG"));
         when(typeMap.getType(Date.class)).thenReturn(new DataType(Types.TIMESTAMP, "TIMESTAMP"));
+        when(typeMap.getType(UUID.class)).thenReturn(new DataType(Types.VARCHAR, "VARCHAR"));
 
         // Translators
         IndexNameTranslator headIndexNameTranslator = new IndexNameTranslator() {

@@ -109,6 +109,7 @@ public class HeadTableEngine extends AbstractTableEngine {
             super.onBeforeCreate(table, index);
 
             table.addElement(new Column("REV_CREATED", getTypeMap().getType(Date.class)));
+            table.addElement(new Column("REV_MODIFIED", getTypeMap().getType(Date.class)));
         }
 
         @Override

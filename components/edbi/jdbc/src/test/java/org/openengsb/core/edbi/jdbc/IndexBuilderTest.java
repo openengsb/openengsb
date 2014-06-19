@@ -18,6 +18,9 @@ package org.openengsb.core.edbi.jdbc;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,14 +54,20 @@ public class IndexBuilderTest {
         assertEquals(3, index.getFields().size());
 
         IndexField[] fields = index.getFields().toArray(new IndexField[3]);
+        Arrays.sort(fields, new Comparator<IndexField>() {
+            @Override
+            public int compare(IndexField o1, IndexField o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         assertEquals("subModel", fields[0].getName());
         assertEquals(SubTestModel.class, fields[0].getType());
 
-        assertEquals("testInteger", fields[1].getName());
-        assertEquals(Integer.class, fields[1].getType());
+        assertEquals("testId", fields[1].getName());
+        assertEquals(String.class, fields[1].getType());
 
-        assertEquals("testId", fields[2].getName());
-        assertEquals(String.class, fields[2].getType());
+        assertEquals("testInteger", fields[2].getName());
+        assertEquals(Integer.class, fields[2].getType());
     }
 }

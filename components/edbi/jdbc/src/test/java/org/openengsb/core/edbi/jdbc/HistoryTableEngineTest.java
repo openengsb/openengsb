@@ -94,8 +94,8 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals(7, metaData.getColumnCount());
 
             assertEquals("REV_ID", metaData.getColumnName(1));
-            assertEquals("REV_CREATED", metaData.getColumnName(2));
-            assertEquals("REV_MODIFIED", metaData.getColumnName(3));
+            assertEquals("REV_COMMIT", metaData.getColumnName(2));
+            assertEquals("REV_TIMESTAMP", metaData.getColumnName(3));
             assertEquals("REV_OPERATION", metaData.getColumnName(4));
             assertEquals("TESTID", metaData.getColumnName(5));
             assertEquals("TESTINTEGER", metaData.getColumnName(6));
@@ -128,14 +128,14 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals(42, rs.getInt("TESTINTEGER"));
             assertEquals(1L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(-42, rs.getInt("TESTINTEGER"));
             assertEquals(2L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertFalse(rs.next());
         }
@@ -170,21 +170,21 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals(42, rs.getInt("TESTINTEGER"));
             assertEquals(1L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(-42, rs.getInt("TESTINTEGER"));
             assertEquals(2L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(43, rs.getInt("TESTINTEGER"));
             assertEquals(3L, rs.getLong("REV_ID"));
             assertEquals("UPDATE", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(84), rs.getTimestamp("REV_MODIFIED"));
+            assertEquals(new Date(84), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertFalse(rs.next());
         }
@@ -213,21 +213,21 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals(42, rs.getInt("TESTINTEGER"));
             assertEquals(1L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(-42, rs.getInt("TESTINTEGER"));
             assertEquals(2L, rs.getLong("REV_ID"));
             assertEquals("INSERT", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(42), rs.getTimestamp("REV_CREATED"));
+            assertEquals(new Date(42), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertTrue(rs.next());
             assertEquals("B", rs.getString("TESTID"));
             assertEquals(-42, rs.getInt("TESTINTEGER"));
             assertEquals(3L, rs.getLong("REV_ID"));
             assertEquals("DELETE", rs.getString("REV_OPERATION"));
-            assertEquals(new Date(84), rs.getTimestamp("REV_MODIFIED"));
+            assertEquals(new Date(84), rs.getTimestamp("REV_TIMESTAMP"));
 
             assertFalse(rs.next());
         }

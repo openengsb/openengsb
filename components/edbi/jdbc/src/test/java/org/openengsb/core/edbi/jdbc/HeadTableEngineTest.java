@@ -84,12 +84,13 @@ public class HeadTableEngineTest extends AbstractTableEngineTest {
         try (ResultSet rs = connection.createStatement().executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
 
-            assertEquals(4, metaData.getColumnCount());
+            assertEquals(5, metaData.getColumnCount());
 
             assertEquals("REV_CREATED", metaData.getColumnName(1));
-            assertEquals("TESTID", metaData.getColumnName(2));
-            assertEquals("TESTINTEGER", metaData.getColumnName(3));
-            assertEquals("SUBMODEL", metaData.getColumnName(4));
+            assertEquals("REV_MODIFIED", metaData.getColumnName(2));
+            assertEquals("TESTID", metaData.getColumnName(3));
+            assertEquals("TESTINTEGER", metaData.getColumnName(4));
+            assertEquals("SUBMODEL", metaData.getColumnName(5));
         }
 
         assertEquals("HEAD_TABLE", testIndex.getHeadTableName());
