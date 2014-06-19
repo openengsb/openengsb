@@ -419,5 +419,11 @@
     <bundle start-level="30">mvn:org.springframework/spring-jms/${spring.version}</bundle>
   </feature>
 
+  <feature name="spring-jdbc" version="${project.version}" description="Spring JDBC support">
+    <feature>spring</feature>
+    <bundle start-level="30">mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-jdbc/${spring.version}</bundle>
+  </feature>
+
 </features>
 
