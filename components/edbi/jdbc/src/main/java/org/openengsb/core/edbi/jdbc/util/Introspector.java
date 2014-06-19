@@ -142,19 +142,32 @@ public final class Introspector {
 
     /**
      * Uses {@link #getAnnotatedFields(Class, Class)} to look for a field annotated with the {@code OpenEngSBModelId}
-     * annotation, and if present, returns its name.
+     * annotation, and if present, returns that Field instance.
      * 
      * @param modelClass the class to introspect
-     * @return the name of the {@link java.lang.reflect.Field} annotated with {@code OpenEngSBModelId}, or null
+     * @return the {@link java.lang.reflect.Field} annotated with {@code OpenEngSBModelId}, or null if none exists
      */
-    public static String getOpenEngSBModelIdProperty(Class<?> modelClass) {
+    public static Field getOpenEngSBModelIdField(Class<?> modelClass) {
         List<Field> fields = getAnnotatedFields(modelClass, OpenEngSBModelId.class);
 
         if (fields.isEmpty()) {
             return null;
         }
 
-        return fields.get(0).getName();
+        return fields.get(0);
+    }
+
+    /**
+     * Uses {@link #getAnnotatedFields(Class, Class)} to look for a field annotated with the {@code OpenEngSBModelId}
+     * annotation, and if present, returns its name.
+     * 
+     * @param modelClass the class to introspect
+     * @return the name of the {@link java.lang.reflect.Field} annotated with {@code OpenEngSBModelId}, or null
+     */
+    public static String getOpenEngSBModelIdProperty(Class<?> modelClass) {
+        Field field = getOpenEngSBModelIdField(modelClass);
+
+        return (field == null) ? null : field.getName();
     }
 
     /**

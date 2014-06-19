@@ -207,8 +207,8 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
         field = (JdbcIndexField<?>) iterator.next();
         assertEquals("subModel", field.getName());
         assertEquals("SUBMODEL", field.getMappedName());
-        assertEquals("LONGVARCHAR", field.getMappedType().getName());
-        assertEquals(Types.LONGVARCHAR, field.getMappedType().getType());
+        assertEquals("INTEGER", field.getMappedType().getName());
+        assertEquals(Types.INTEGER, field.getMappedType().getType());
         assertEquals(0, field.getMappedType().getScale());
     }
 

@@ -16,6 +16,8 @@
  */
 package org.openengsb.core.edbi.jdbc;
 
+import java.lang.reflect.Field;
+
 import org.openengsb.core.edbi.api.Index;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexFieldVisitor;
@@ -26,11 +28,15 @@ import org.openengsb.core.edbi.jdbc.sql.Column;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.util.Introspector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractTableFactory
  */
 public abstract class AbstractTableFactory implements TableFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTableFactory.class);
 
     private TypeMap typeMap;
     private NameTranslator<Index<?>> indexNameTranslator;
@@ -88,15 +94,30 @@ public abstract class AbstractTableFactory implements TableFactory {
      * @param field the field being visited and has no type information
      */
     protected void onMissingTypeVisit(Table table, IndexField<?> field) {
-        if (Introspector.isModelClass(field.getType())) {
-            DataType type = getTypeMap().getType(String.class);
-            ((JdbcIndexField) field).setMappedType(type);
-
-            Column column = new Column(getColumnNameTranslator().translate(field), type);
-            table.addElement(column); // will hold the models OID
-
-            onAfterFieldVisit(table, column, field);
+        if (!Introspector.isModelClass(field.getType())) {
+            return;
         }
+
+        Field idField = Introspector.getOpenEngSBModelIdField(field.getType());
+
+        if (idField == null) {
+            LOG.warn("@Model class {} does not have an @OpenEngSBModelId", field.getType());
+            return;
+        }
+
+        DataType type = getTypeMap().getType(idField.getType());
+
+        if (type == null) {
+            LOG.warn("@OpenEngSBModelId field {} has an unmapped type {}", field.getName(), field.getType());
+            return;
+        }
+
+        ((JdbcIndexField) field).setMappedType(type);
+
+        Column column = new Column(getColumnNameTranslator().translate(field), type);
+        table.addElement(column); // will hold the models OID
+
+        onAfterFieldVisit(table, column, field);
     }
 
     /**
