@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="configurationServiceFeatures">
+        <feature name="vfsConfigurationServiceAPI" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+        </feature>
+        <feature name="vfsRepositoryHandler" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
+        </feature>
+        <feature name="vfsConfigurationService" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
+        </feature>
+        <feature name="vfsAll" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsconfigurationservice/org.openengsb.framework.vfs.vfsconfigurationservice/1.0-SNAPSHOT</bundle>
+        </feature>
+        <feature name="webDavProtocol" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfsrepositoryhandler/org.openengsb.framework.vfs.vfsrepositoryhandler/1.0-SNAPSHOT</bundle>
+                <feature>http</feature>
+                <bundle>mvn:org.openengsb.framework.vfs.webdavprotocol/org.openengsb.framework.vfs.webdavprotocol</bundle>
+        </feature>
+        <feature name="vfsTestServices" version="1.0">
+                <bundle>mvn:org.openengsb.framework.vfs.configurationserviceapi/org.openengsb.framework.vfs.configurationserviceapi/1.0-SNAPSHOT</bundle>
+                <bundle>mvn:org.openengsb.framework.vfs.vfstestservices/org.openengsb.framework.vfs.vfstestservices/1.0-SNAPSHOT</bundle>
+        </feature>
+</features>
+

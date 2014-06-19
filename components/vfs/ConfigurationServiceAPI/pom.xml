@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openengsb.framework.vfs</groupId>
+		<artifactId>org.openengsb.framework.vfs</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>org.openengsb.framework.vfs</groupId>
+	<artifactId>org.openengsb.framework.vfs.api</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<name>OpenEngSB :: Framework :: VFS :: API</name>
+	<packaging>bundle</packaging>
+
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>4.0.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency> 
+			<groupId>org.osgi</groupId> 
+			<artifactId>org.osgi.core</artifactId> 
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+  
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

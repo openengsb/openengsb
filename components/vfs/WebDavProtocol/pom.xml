@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <repositories>
+        <repository>
+            <id>milton-repo</id>
+            <url>http://milton.io/maven/</url>
+        </repository> 
+        <repository>
+            <id>glassfish-repository</id>
+            <url>http://download.java.net/maven/glassfish</url>
+        </repository>
+    </repositories>
+	
+    <parent>
+        <groupId>org.openengsb.framework.vfs</groupId>
+        <artifactId>org.openengsb.framework.vfs</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+	
+    <groupId>org.openengsb.framework.vfs</groupId>
+    <artifactId>org.openengsb.framework.vfs.webdavprotocol</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <name>OpenEngSB :: Framework :: VFS :: WebDavProtocol</name>
+    <packaging>bundle</packaging>
+	
+    <url>http://maven.apache.org</url>
+	
+    <dependencies>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.milton</groupId>
+            <artifactId>milton-server-ce</artifactId>
+            <version>2.5.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.milton</groupId>
+            <artifactId>milton-api</artifactId>
+            <version>2.5.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+       <dependency>
+            <groupId>org.openengsb.framework.vfs</groupId>
+            <artifactId>org.openengsb.framework.vfs.api</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>	
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.servlet</artifactId>
+            <version>3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.openengsb.framework</groupId>
+            <artifactId>org.openengsb.framework.services</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+       
+        <dependency>
+            <groupId>org.openengsb.connector</groupId>
+            <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>3.1.4.RELEASE</version>
+            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>OpenEngSB :: Framework :: VFS :: WebDavProtocol</Bundle-Name>
+                        <Bundle-Activator>org.openengsb.framework.vfs.webdavprotocol.activator.Activator</Bundle-Activator>
+
+                        <Private-Package>
+                            org.openengsb.framework.vfs.webdavprotocol.*
+                        </Private-Package>
+			
+                        <Import-Package>
+                            org.apache.commons.*,
+                            javax.servlet.*,
+                            *;resolution:=optional
+                        </Import-Package>
+
+                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>depends-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-depends-file</id>
+                        <goals>
+                            <goal>generate-depends-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

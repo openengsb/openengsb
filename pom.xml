@@ -96,6 +96,7 @@
     <module>components/services</module>
     <module>components/workflow</module>
     <module>components/info</module>
+    <module>components/vfs</module>
     <!-- OpenEngSB Core Domain Modules -->
     <module>domain/auditing</module>
     <module>domain/example</module>

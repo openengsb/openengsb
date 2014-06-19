@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>org.openengsb.framework.vfs</groupId>
+        <artifactId>org.openengsb.framework.vfs</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+	
+    <groupId>org.openengsb.framework.vfs</groupId>
+    <artifactId>org.openengsb.framework.vfs.vfsrepositoryhandler</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <name>OpenEngSB :: Framework :: VFS :: VFSRepositoryHandler</name>
+    <packaging>bundle</packaging>
+  
+    <url>http://maven.apache.org</url>
+  
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.tooling.exam</groupId>
+            <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>karaf</artifactId>
+            <version>3.0.0.RC1</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.openengsb.framework.vfs</groupId>
+            <artifactId>org.openengsb.framework.vfs.api</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <version>1.5</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>OpenEngSB :: Framework :: VFS :: VFSRepositoryHandler</Bundle-Name>
+                        <Bundle-Activator>org.openengsb.framework.vfs.vfsrepositoryhandler.activator.Activator</Bundle-Activator>
+                    
+                        <Export-Package></Export-Package>
+                    
+                        <Private-Package>
+                            org.openengsb.framework.vfs.vfsrepositoryhandler.*
+                        </Private-Package>
+                                                
+                        <Import-Package>
+                            *;resolution:=optional
+                        </Import-Package>
+
+                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>depends-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-depends-file</id>
+                        <goals>
+                            <goal>generate-depends-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
