@@ -63,6 +63,8 @@ public abstract class AbstractTableFactory implements TableFactory {
             table.setName(getIndexNameTranslator().translate(index));
         }
 
+        LOG.info("Creating table {} for index {}", table.getName(), index.getName());
+
         index.accept(new IndexFieldVisitor() {
             @Override
             public void visit(IndexField<?> field) {

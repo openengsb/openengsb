@@ -22,11 +22,15 @@ import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.api.TableEngine;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.driver.Driver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory fro creating basic JdbcIndexEngine instances from a Driver.
  */
 public class JdbcIndexEngineFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcIndexEngineFactory.class);
 
     private Driver driver;
 
@@ -35,6 +39,8 @@ public class JdbcIndexEngineFactory {
     }
 
     public JdbcIndexEngine create() {
+        LOG.info("Creating new JdbcIndexEngine with driver {}", driver.getClass());
+
         TypeMap typeMap = driver.getTypeMap();
         DataSource dataSource = driver.getDataSource();
 

@@ -22,12 +22,16 @@ import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Facades {@link org.openengsb.core.edbi.jdbc.HeadTableEngine} and
  * {@link org.openengsb.core.edbi.jdbc.HistoryTableEngine}.
  */
 public class DefaultSchemaMapper implements SchemaMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultSchemaMapper.class);
 
     private TableEngine headTableEngine;
     private TableEngine historyTableEngine;
@@ -53,6 +57,7 @@ public class DefaultSchemaMapper implements SchemaMapper {
     public void create(JdbcIndex<?> index) {
         // TODO: handle inconsistency
         if (exists(index)) {
+            LOG.debug("Skipping schema creation for {}. Schema exists.", index.getName());
             return;
         }
 
@@ -66,6 +71,7 @@ public class DefaultSchemaMapper implements SchemaMapper {
     @Override
     public void drop(JdbcIndex<?> index) {
         if (!exists(index)) {
+            LOG.debug("Skipping schema drop for {}. Schema doesn't exists.", index.getName());
             return;
         }
 
@@ -76,18 +82,21 @@ public class DefaultSchemaMapper implements SchemaMapper {
 
     @Override
     public void execute(InsertOperation operation) {
+        LOG.debug("Executing InsertOpration");
         headTableEngine.execute(operation);
         historyTableEngine.execute(operation);
     }
 
     @Override
     public void execute(UpdateOperation operation) {
+        LOG.debug("Executing UpdateOperation");
         headTableEngine.execute(operation);
         historyTableEngine.execute(operation);
     }
 
     @Override
     public void execute(DeleteOperation operation) {
+        LOG.debug("Executing DeleteOperation");
         headTableEngine.execute(operation);
         historyTableEngine.execute(operation);
     }

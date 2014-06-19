@@ -72,6 +72,8 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     @Override
     public <T> Index<T> createIndex(Class<T> model) throws IndexExistsException {
+        LOG.info("Creating Index for Class {}", model);
+
         if (indexExists(model)) {
             throw new IndexExistsException("Index for model " + model.getSimpleName() + " already exists");
         }
@@ -145,6 +147,7 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     @Override
     public void commit(IndexCommit commit) throws EDBIndexException {
         // TODO: transactional!
+        LOG.info("Committing, id: {}", commit.getCommitId());
 
         Set<Class<?>> modelClasses = commit.getModelClasses();
 
@@ -152,12 +155,14 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
             throw new IllegalArgumentException("Commit has no model class information");
         }
 
+        LOG.debug("Checking if index exists for classes {}", modelClasses);
         for (Class<?> modelClass : modelClasses) {
             if (!indexExists(modelClass)) {
                 createIndex(modelClass);
             }
         }
 
+        LOG.debug("Executing operations");
         for (Class<?> modelClass : modelClasses) {
             JdbcIndex<?> index = getIndex(modelClass);
 
@@ -183,6 +188,8 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     protected synchronized void persist(JdbcIndex<?> index) throws IndexExistsException {
+        LOG.info("Persisting Index {}", index.getName());
+
         if (existsInDb(index.getName())) {
             throw new IndexExistsException("Index " + index.getName() + " already exists");
         }
@@ -228,6 +235,8 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
     }
 
     protected <T> JdbcIndex<T> load(final String name, final Class<T> modelClass) {
+        LOG.info("Loading Index {} (with class {})", name, modelClass);
+
         String sql = "SELECT TABLE_HEAD, TABLE_HISTORY FROM INDEX_INFORMATION WHERE NAME = ?";
 
         try {

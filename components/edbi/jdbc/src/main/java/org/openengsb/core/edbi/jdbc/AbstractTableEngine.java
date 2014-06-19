@@ -38,11 +38,15 @@ import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.sql.TableElementCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractTableEngine
  */
 public abstract class AbstractTableEngine extends JdbcService implements TableEngine {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTableEngine.class);
 
     private TypeMap typeMap;
     private NameTranslator<Index<?>> tableNameTranslator;
@@ -99,6 +103,8 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
         // TODO: sql independence
         String sql =
             String.format("CREATE TABLE `%s` ( %s );", table.getName(), new TableElementCompiler(table).toSql());
+
+        LOG.info("Creating table for Index {}. SQL is: {}", index.getName(), sql);
 
         jdbc().execute(sql);
 

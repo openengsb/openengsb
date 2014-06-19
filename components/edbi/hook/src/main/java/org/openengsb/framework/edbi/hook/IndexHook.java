@@ -23,17 +23,24 @@ import org.openengsb.core.edbi.api.IndexEngine;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.hooks.EKBPostCommitHook;
 import org.openengsb.framework.edbi.hook.internal.CommitConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EKBPostCommitHook implementation responsible for extracting model information and calling {@code IndexService} to
  * create indices for model types.
  */
 public class IndexHook implements EKBPostCommitHook {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IndexHook.class);
+
     private IndexEngine indexEngine;
     private AuthenticationContext authenticationContext;
 
     @Override
     public void onPostCommit(EKBCommit ekbCommit) {
+        LOG.info("Caught onPostCommit event for EKBCommit {}", ekbCommit.getRevisionNumber());
+
         CommitConverter commitConverter = new CommitConverter(getAuthenticationContext(), getContextHolder());
 
         IndexCommit commit = commitConverter.convert(ekbCommit);
