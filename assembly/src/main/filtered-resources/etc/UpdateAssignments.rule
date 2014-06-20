@@ -1,0 +1,10 @@
+when
+  e : org.openengsb.domain.userprojects.event.UpdateAssignmentEvent()
+then
+  if(e.getUpdatedAssignments() != null) {
+    syncService.checkinAssignments(e.getUpdatedAssignments());
+  }
+  
+  if(e.getDeletedAssignments() != null) {
+    syncService.deleteAssignments(e.getDeletedAssignments());
+  }

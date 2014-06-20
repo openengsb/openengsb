@@ -14,32 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.openengsb.domain.userprojects.event;
+package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
 import java.util.List;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.domain.userprojects.model.Assignment;
+import org.openengsb.domain.userprojects.model.Project;
+import org.openengsb.domain.userprojects.model.Role;
+import org.openengsb.domain.userprojects.model.User;
 
-public class UpdateAssignmentEvent extends Event {
+/**
+ * Acts as an entity manager for LDAP server.
+ *
+ */
+public interface ModelManager {
 
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
+    /**
+     * Finds all available assignments on the LDAP server.
+     */
+    List<Assignment> findAssignments();
+    
+    /**
+     * Finds all available projects on the LDAP server.
+     */
+    List<Project> findProjects();
+    
+    /**
+     * Finds all available roles on the LDAP server.
+     */
+    List<Role> findRoles();
 
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
-    }
+    /**
+     * Finds all available users on the LDAP server.
+     */
+    List<User> findUsers();
 
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
-    }
-
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
-    }
-
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
-    }
 }

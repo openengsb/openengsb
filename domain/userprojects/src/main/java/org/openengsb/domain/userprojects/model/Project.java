@@ -18,6 +18,7 @@
 package org.openengsb.domain.userprojects.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -25,7 +26,7 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
@@ -34,7 +35,7 @@ public class Project {
     @OpenEngSBModelId
     private String name;
 
-    private Collection<Attribute> attributes = Sets.newHashSet();
+    private List<Attribute> attributes = Lists.newArrayList();
 
     public Project() {
     }
@@ -55,7 +56,7 @@ public class Project {
         return attributes;
     }
 
-    public void setAttributes(Collection<Attribute> attributes) {
+    public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
     }
 

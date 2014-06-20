@@ -15,7 +15,35 @@
 # limitations under the License.
 #
 
-org.openengsb.core.workflow.api.TaskboxService taskbox
-org.openengsb.core.workflow.api.TaskboxServiceInternal taskboxinternal
-org.openengsb.domain.auditing.AuditingDomain auditing
-org.openengsb.core.usersync.SyncronizedUserService syncService
+version: 1
+
+# basic structure that is needed for the connector to work.
+dn: dc=openengsb,dc=org
+objectClass: domain
+objectClass: top
+dc: openengsb
+
+dn: ou=assignments,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: assignments
+
+dn: ou=permissions,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: permissions
+
+dn: ou=projects,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: projects
+
+dn: ou=roles,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: roles
+
+dn: ou=users,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: users

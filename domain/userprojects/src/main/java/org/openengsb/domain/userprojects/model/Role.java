@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.userprojects.model;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -25,7 +25,7 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
@@ -34,9 +34,9 @@ public class Role {
     @OpenEngSBModelId
     private String name;
 
-    private Collection<String> roles = Sets.newHashSet();
+    private List<String> roles = Lists.newArrayList();
 
-    private Collection<String> permissions = Sets.newHashSet();
+    private List<String> permissions = Lists.newArrayList();
 
     public Role() {
     }
@@ -53,19 +53,19 @@ public class Role {
         this.name = name;
     }
 
-    public Collection<String> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<String> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
-    public Collection<String> getPermissions() {
+    public List<String> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Collection<String> permissions) {
+    public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
     }
 

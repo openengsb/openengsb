@@ -18,6 +18,7 @@
 package org.openengsb.domain.userprojects.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -25,7 +26,7 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 /**
  * Note: To make sure that this object can be managed properly by the EDB it is recommended to call the generateUuid
@@ -41,8 +42,8 @@ public class Assignment {
     private String user;
     private String project;
 
-    private Collection<String> roles = Sets.newHashSet();
-    private Collection<String> permissions = Sets.newHashSet();
+    private List<String> roles = Lists.newArrayList();
+    private List<String> permissions = Lists.newArrayList();
 
     public String getUser() {
         return user;
@@ -57,7 +58,7 @@ public class Assignment {
         return roles;
     }
 
-    public void setRoles(Collection<String> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
@@ -74,11 +75,11 @@ public class Assignment {
         return permissions;
     }
 
-    public void setPermissions(Collection<String> permissions) {
+    public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
     }
 
-    private boolean generateUuid() {
+    public boolean generateUuid() {
 
         if (user == null || project == null) {
             return false;

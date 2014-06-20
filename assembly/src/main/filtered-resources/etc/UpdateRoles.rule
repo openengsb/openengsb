@@ -1,0 +1,10 @@
+when
+  e : org.openengsb.domain.userprojects.event.UpdateRolesEvent()
+then
+  if(e.getUpdatedRoles() != null) {
+    syncService.checkinRoles(e.getUpdatedRoles());
+  }
+  
+  if(e.getDeletedRoles() != null) {
+    syncService.deleteRoles(e.getDeletedRoles());
+  }

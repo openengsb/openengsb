@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.userprojects.model;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -25,7 +25,7 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 /**
  * Note: To make sure that this object can be managed properly by the EDB it is recommended to call the generateUuid
@@ -40,7 +40,7 @@ public class Attribute {
 
     private String attributeName;
 
-    private Collection<Object> values = Sets.newHashSet();
+    private List<Object> values = Lists.newArrayList();
 
     public String getAttributeName() {
         return attributeName;
@@ -50,11 +50,11 @@ public class Attribute {
         this.attributeName = attributeName;
     }
 
-    public Collection<Object> getValues() {
+    public List<Object> getValues() {
         return values;
     }
 
-    public void setValues(Collection<Object> values) {
+    public void setValues(List<Object> values) {
         this.values = values;
     }
 

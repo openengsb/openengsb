@@ -14,32 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.connector.userprojects.ldap.internal;
 
-package org.openengsb.domain.userprojects.event;
+import org.openengsb.infrastructure.ldap.LdapDao;
 
-import java.util.List;
+/**
+ * Performs synchronization between the LDAP server and the OpenEngSB.
+ */
+public interface SynchronizationService {
+    
+    /**
+     * Currently run only once at the start to populate the user/project data in the bus.
+     */
+    void syncFromLdapServerToOpenEngSB(LdapDao ldapDao);
 
-import org.openengsb.core.api.Event;
-import org.openengsb.domain.userprojects.model.Assignment;
-
-public class UpdateAssignmentEvent extends Event {
-
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
-
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
-    }
-
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
-    }
-
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
-    }
-
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
-    }
 }

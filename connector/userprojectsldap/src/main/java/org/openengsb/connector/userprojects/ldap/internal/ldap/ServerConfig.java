@@ -14,32 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
-package org.openengsb.domain.userprojects.event;
+public final class ServerConfig {
 
-import java.util.List;
-
-import org.openengsb.core.api.Event;
-import org.openengsb.domain.userprojects.model.Assignment;
-
-public class UpdateAssignmentEvent extends Event {
-
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
-
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
+    private ServerConfig() {
+        
     }
-
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
-    }
-
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
-    }
-
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
-    }
+    
+    public static String host = "localhost";
+    public static int port = 10389;
+    public static String userDn = "uid=admin,ou=system";
+    public static String credentials = "secret";
+    public static String multipleValueSeparator = "°";
+    public static long syncPeriodInMilliseconds = 60000;
 }

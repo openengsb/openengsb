@@ -15,31 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.userprojects.event;
+package org.openengsb.connector.userprojects.ldap.internal;
 
-import java.util.List;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.AbstractConnectorProvider;
 
-import org.openengsb.core.api.Event;
-import org.openengsb.domain.userprojects.model.Assignment;
+public class UserProjectsLdapConnectorProvider extends AbstractConnectorProvider {
 
-public class UpdateAssignmentEvent extends Event {
+    @Override
+    public ServiceDescriptor getDescriptor() {
+        Builder builder = ServiceDescriptor.builder(strings);
+        builder.id(id);
+        builder.name("userprojects.ldap.name").description("userprojects.ldap.description");
 
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
-
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
+        return builder.build();
     }
 
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
-    }
-
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
-    }
-
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
-    }
 }

@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.userprojects.event;
+package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
-import java.util.List;
+import org.openengsb.connector.userprojects.ldap.internal.LdapRuntimeException;
 
-import org.openengsb.core.api.Event;
-import org.openengsb.domain.userprojects.model.Assignment;
+/**
+ * Thrown upon attempting to access an Attribute not defined for a given Entry.
+ */
+public class ObjectClassViolationException extends LdapRuntimeException {
 
-public class UpdateAssignmentEvent extends Event {
+    private static final long serialVersionUID = 3329558001005307519L;
 
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
-
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
+    public ObjectClassViolationException() {
+        super();
     }
 
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
+    public ObjectClassViolationException(String message) {
+        super(message);
     }
 
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
+    public ObjectClassViolationException(Throwable cause) {
+        super(cause);
     }
 
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
+    public ObjectClassViolationException(String message, Throwable cause) {
+        super(message, cause);
     }
+
 }

@@ -1,0 +1,10 @@
+when
+  e : org.openengsb.domain.userprojects.event.UpdateUserEvent()
+then
+  if(e.getNewUpdatedUsers() != null) {
+    syncService.checkinUsers(e.getNewUpdatedUsers());
+  }
+  
+  if(e.getDeletedUsers() != null) {
+    syncService.deleteUsers(e.getDeletedUsers());
+  }

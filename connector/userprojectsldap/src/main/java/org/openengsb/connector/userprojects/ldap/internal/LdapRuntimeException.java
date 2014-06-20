@@ -15,31 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.userprojects.event;
+package org.openengsb.connector.userprojects.ldap.internal;
 
-import java.util.List;
+public class LdapRuntimeException extends RuntimeException {
 
-import org.openengsb.core.api.Event;
-import org.openengsb.domain.userprojects.model.Assignment;
+    private static final long serialVersionUID = 6267165144631084590L;
 
-public class UpdateAssignmentEvent extends Event {
-
-    private List<Assignment> updatedAssignments;
-    private List<Assignment> deletedAssignments;
-
-    public List<Assignment> getUpdatedAssignments() {
-        return updatedAssignments;
+    public LdapRuntimeException() {
+        super();
     }
 
-    public void setUpdatedAssignments(List<Assignment> updatedAssignments) {
-        this.updatedAssignments = updatedAssignments;
+    public LdapRuntimeException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public List<Assignment> getDeletedAssignments() {
-        return deletedAssignments;
+    public LdapRuntimeException(String message) {
+        super(message);
     }
 
-    public void setDeletedAssignments(List<Assignment> deletedAssignments) {
-        this.deletedAssignments = deletedAssignments;
+    public LdapRuntimeException(Throwable cause) {
+        super(cause);
     }
+
 }

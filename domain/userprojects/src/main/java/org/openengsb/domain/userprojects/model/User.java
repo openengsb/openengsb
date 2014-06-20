@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.userprojects.model;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -25,7 +25,7 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
@@ -34,9 +34,11 @@ public class User {
     @OpenEngSBModelId
     private String username;
 
-    private Collection<Credential> credentials = Sets.newHashSet();
+    private String currentProject;
 
-    private Collection<Attribute> attributes = Sets.newHashSet();
+    private List<Credential> credentials = Lists.newArrayList();
+
+    private List<Attribute> attributes = Lists.newArrayList();
 
     public User() {
     }
@@ -53,20 +55,28 @@ public class User {
         this.username = username;
     }
 
-    public Collection<Credential> getCredentials() {
+    public List<Credential> getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(Collection<Credential> credentials) {
+    public void setCredentials(List<Credential> credentials) {
         this.credentials = credentials;
     }
 
-    public Collection<Attribute> getAttributes() {
+    public List<Attribute> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Collection<Attribute> attributes) {
+    public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject(String currentProject) {
+        this.currentProject = currentProject;
     }
 
     @Override

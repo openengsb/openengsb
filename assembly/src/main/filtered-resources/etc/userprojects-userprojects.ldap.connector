@@ -15,7 +15,12 @@
 # limitations under the License.
 #
 
-org.openengsb.core.workflow.api.TaskboxService taskbox
-org.openengsb.core.workflow.api.TaskboxServiceInternal taskboxinternal
-org.openengsb.domain.auditing.AuditingDomain auditing
-org.openengsb.core.usersync.SyncronizedUserService syncService
+domainType=userprojects
+connectorType=userprojects.ldap
+property.location.root=userprojects/userprojects.ldap
+
+attribute.ldapServer.host=127.0.0.1
+attribute.ldapServer.port=12345
+attribute.ldapServer.userDn=uid=admin,ou=system
+attribute.ldapServer.credentials=secret
+attribute.ldapServer.multipleValueSeparator=°
