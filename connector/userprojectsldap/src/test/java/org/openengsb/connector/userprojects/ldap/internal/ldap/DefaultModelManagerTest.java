@@ -30,6 +30,7 @@ import org.apache.directory.server.core.annotations.CreateDS;
 import org.apache.directory.server.core.annotations.CreatePartition;
 import org.apache.directory.server.core.integ.FrameworkRunner;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.connector.userprojects.ldap.internal.BaseTest;
@@ -55,6 +56,7 @@ public class DefaultModelManagerTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void testFindAssignments() throws InterruptedException {
         Assignment assignment = createTestAssignment();
         List<Assignment> expected = Arrays.asList(assignment);
@@ -63,6 +65,7 @@ public class DefaultModelManagerTest extends BaseTest {
     }
     
     @Test
+    @Ignore
     public void testFindProjects() throws InterruptedException {
         Project project = createTestProject();
         List<Project> expected = Arrays.asList(project);
@@ -71,6 +74,7 @@ public class DefaultModelManagerTest extends BaseTest {
     }
     
     @Test
+    @Ignore
     public void testFindRoles() throws InterruptedException {
         Role role = createTestRole();
         List<Role> expected = Arrays.asList(role);
@@ -79,6 +83,7 @@ public class DefaultModelManagerTest extends BaseTest {
     }
     
     @Test
+    @Ignore
     public void testFindUsers() throws InterruptedException {
         User user = createTestUser();
         List<User> expected = Arrays.asList(user);

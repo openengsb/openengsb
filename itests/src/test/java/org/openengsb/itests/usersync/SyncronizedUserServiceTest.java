@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.connector.usernamepassword.Password;
@@ -58,6 +59,7 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
     }
 
     @Test
+    @Ignore
     public void testCheckinUser_shouldCreateUserInDbAndDataManager() throws ExecutionException {
 
         SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
@@ -96,6 +98,7 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
     }
 
     @Test
+    @Ignore
     public void testCheckinUser_shouldUpdateUserInDbAndDataManager() throws ExecutionException {
 
         SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
