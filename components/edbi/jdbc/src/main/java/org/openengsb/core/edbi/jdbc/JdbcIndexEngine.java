@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,6 +84,9 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
         // create schema (history and head tables in underlying db) for index and map tables
         schemaMapper.create(index);
+
+        // remove any fields that might not have valid type information
+        removeUnmappedFields(index);
 
         // store index meta data
         persist(index);
@@ -185,6 +189,25 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     protected synchronized boolean existsInDb(String name) {
         return count("INDEX_INFORMATION", "NAME = ?", name) > 0;
+    }
+
+    /**
+     * Remove fields from the index that have no mapped type information.
+     * 
+     * @param index the index to be pruned
+     */
+    protected void removeUnmappedFields(JdbcIndex<?> index) {
+        Iterator<IndexField<?>> iterator = index.getFields().iterator();
+
+        while (iterator.hasNext()) {
+            IndexField<?> field = iterator.next();
+
+            if (field.getMappedType() == null) {
+                LOG.info("Removing {} from index {} - no mapped type information", field.getName(), index.getName());
+                iterator.remove();
+            }
+        }
+
     }
 
     protected synchronized void persist(JdbcIndex<?> index) throws IndexExistsException {

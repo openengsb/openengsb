@@ -16,17 +16,13 @@
  */
 package org.openengsb.core.edbi.integration;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.sql.SQLException;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
-import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.edbi.api.Index;
@@ -37,8 +33,10 @@ import org.openengsb.core.edbi.jdbc.JdbcIndex;
 import org.openengsb.core.edbi.jdbc.JdbcIndexEngine;
 import org.openengsb.core.edbi.jdbc.JdbcIndexEngineFactory;
 import org.openengsb.core.edbi.jdbc.driver.h2.Driver;
+import org.openengsb.core.edbi.models.PrimitivePropertyModel;
 import org.openengsb.core.edbi.models.SubTestModel;
 import org.openengsb.core.edbi.models.TestModel;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class H2IndexEngineIntegrationTest extends AbstractH2DatabaseTest {
@@ -206,6 +204,40 @@ public class H2IndexEngineIntegrationTest extends AbstractH2DatabaseTest {
         assertEquals("DELETE", rowset.getString("REV_OPERATION"));
 
         assertFalse(rowset.next());
+    }
+
+    @Test
+    public void commit_insert_primitivePropertyModel_createsRecordsCorrectly() throws Exception {
+        PrimitivePropertyModel model = new PrimitivePropertyModel();
+
+        model.setId("ppm/1");
+        model.setBooleanByGet(true);
+        model.setBooleanByIs(true);
+        model.setPrimitiveDouble(Double.MAX_VALUE);
+        model.setPrimitiveFloat(Float.MAX_VALUE);
+        model.setPrimitiveInt(Integer.MAX_VALUE);
+        model.setPrimitiveLong(Long.MAX_VALUE);
+        model.setPrimitiveShort(Short.MAX_VALUE);
+
+        engine.commit(newTestCommit().insert(model).get());
+
+        JdbcIndex<?> index = engine.getIndex(PrimitivePropertyModel.class);
+
+        Map<String, Object> record;
+        try {
+            record = jdbc().queryForMap("SELECT * FROM " + index.getHeadTableName());
+        } catch (EmptyResultDataAccessException e) {
+            fail("There was no record inserted to " + index.getHeadTableName() + ": " + e.getMessage());
+            return;
+        }
+
+        assertEquals(true, record.get("BOOLEANBYGET"));
+        assertEquals(true, record.get("BOOLEANBYIS"));
+        assertEquals(Double.MAX_VALUE, record.get("PRIMITIVEDOUBLE"));
+        assertEquals(Float.MAX_VALUE, record.get("PRIMITIVEFLOAT"));
+        assertEquals(Integer.MAX_VALUE, record.get("PRIMITIVEINT"));
+        assertEquals(Long.MAX_VALUE, record.get("PRIMITIVELONG"));
+        assertEquals(Short.MAX_VALUE, record.get("PRIMITIVESHORT"));
     }
 
     private IndexCommitBuilder newTestCommit() {

@@ -23,6 +23,7 @@ import static java.sql.Types.DOUBLE;
 import static java.sql.Types.FLOAT;
 import static java.sql.Types.INTEGER;
 import static java.sql.Types.LONGNVARCHAR;
+import static java.sql.Types.SMALLINT;
 import static java.sql.Types.TIME;
 import static java.sql.Types.TIMESTAMP;
 import static java.sql.Types.VARCHAR;
@@ -51,6 +52,8 @@ public class H2TypeMap extends AbstractTypeMap {
         put(double.class, DOUBLE, "DOUBLE");
         put(Float.class, FLOAT, "REAL");
         put(float.class, FLOAT, "REAL");
+        put(Short.class, SMALLINT, "SMALLINT");
+        put(short.class, SMALLINT, "SMALLINT");
 
         put(String.class, LONGNVARCHAR, "LONGVARCHAR");
 
