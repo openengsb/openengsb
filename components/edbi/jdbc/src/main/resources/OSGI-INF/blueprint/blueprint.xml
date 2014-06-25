@@ -26,7 +26,7 @@
 
   <!-- exports -->
   <service id="indexEngine" interface="org.openengsb.core.edbi.api.IndexEngine">
-    <bean factory-ref="jdbcIndexEngineFactory" factory-method="create"/>
+    <bean factory-ref="jdbcIndexEngineFactory" factory-method="create" init-method="install"/>
   </service>
 
   <!-- beans -->

@@ -59,6 +59,10 @@ public class JdbcService {
         return jdbcn;
     }
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     public <T> T queryForObject(String sql, Class<T> type) {
         return jdbc().queryForObject(sql, type);
     }

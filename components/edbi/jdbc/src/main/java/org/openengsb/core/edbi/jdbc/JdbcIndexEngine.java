@@ -39,6 +39,7 @@ import org.openengsb.core.edbi.api.IndexExistsException;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexNotFoundException;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
+import org.openengsb.core.edbi.jdbc.driver.h2.SchemaCreateCommand;
 import org.openengsb.core.edbi.jdbc.names.ClassNameIndexTranslator;
 import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
@@ -185,6 +186,13 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
                 schemaMapper.execute(new DeleteOperation(commit, index, deletes));
             }
         }
+    }
+
+    /**
+     * Creates the necessary relations to save Index and IndexField instances.
+     */
+    public void install() {
+        new SchemaCreateCommand(getDataSource()).execute(); // TODO: sql independence
     }
 
     protected synchronized boolean existsInDb(String name) {
