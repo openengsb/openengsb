@@ -204,6 +204,14 @@
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.userprojects.ldap/${project.version}</bundle>
   </feature>
 
+  <feature name="openengsb-edbi" version="${project.version}" description="OpenEngSB EDB Index">
+    <feature>openengsb-framework</feature>
+    <feature>spring-jdbc</feature>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.jdbc/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.hook/${project.version}</bundle>
+  </feature>
+
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
     <details>
       This feature allone provides ActiveMQ support in the OpenEngSB. Still, it does not provide queues or anything
