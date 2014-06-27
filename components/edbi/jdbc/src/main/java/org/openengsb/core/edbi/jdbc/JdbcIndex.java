@@ -58,7 +58,7 @@ public class JdbcIndex<T> implements Index<T> {
                 ClassLoader cl = (classLoader != null) ? classLoader : getClass().getClassLoader();
                 modelClass = (Class<T>) Class.forName(name, true, cl);
             } catch (ClassNotFoundException e) {
-                throw new UnavailableTypeInformationException("Can't load class " + name);
+                throw new UnavailableTypeInformationException("Can't load class " + name, e);
             }
         }
 

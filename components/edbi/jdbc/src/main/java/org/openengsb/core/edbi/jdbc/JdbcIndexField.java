@@ -59,7 +59,7 @@ public class JdbcIndexField<T> implements IndexField<T> {
                 ClassLoader cl = (classLoader != null) ? classLoader : getClass().getClassLoader();
                 type = (Class<T>) Class.forName(typeName, true, cl);
             } catch (ClassNotFoundException e) {
-                throw new UnavailableTypeInformationException("Can't load class " + typeName);
+                throw new UnavailableTypeInformationException("Can't load class " + typeName, e);
             }
         }
 
