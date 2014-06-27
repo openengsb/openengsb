@@ -46,9 +46,6 @@ import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.models.TestModel;
 
-/**
- * HistoryTableEngineTest
- */
 public class HistoryTableEngineTest extends AbstractTableEngineTest {
 
     @Before

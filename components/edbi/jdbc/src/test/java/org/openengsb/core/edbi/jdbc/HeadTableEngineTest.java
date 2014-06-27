@@ -47,10 +47,6 @@ import org.openengsb.core.edbi.models.TestModel;
 
 public class HeadTableEngineTest extends AbstractTableEngineTest {
 
-    HeadTableEngine engine;
-
-    JdbcIndex<TestModel> testIndex;
-
     @Override
     protected TableEngine createEngine(DataSource dataSource, TypeMap typeMap) {
         // Translators (mockito 1.8.5 has a bug with overloading generics)
