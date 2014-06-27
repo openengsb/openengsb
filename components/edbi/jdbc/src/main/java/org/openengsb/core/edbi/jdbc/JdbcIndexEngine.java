@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.edbi.api.ClassNameTranslator;
 import org.openengsb.core.edbi.api.EDBIndexException;
 import org.openengsb.core.edbi.api.Index;
@@ -143,20 +144,37 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     @Override
     public void commit(IndexCommit commit) throws EDBIndexException {
-        // TODO: transactional?
+        // TODO: transactional!
 
         Set<Class<?>> modelClasses = commit.getModelClasses();
+
+        if (modelClasses == null) {
+            throw new IllegalArgumentException("Commit has no model class information");
+        }
 
         for (Class<?> modelClass : modelClasses) {
             if (!indexExists(modelClass)) {
                 createIndex(modelClass);
             }
+        }
 
+        for (Class<?> modelClass : modelClasses) {
             JdbcIndex<?> index = getIndex(modelClass);
 
-            schemaMapper.execute(new InsertOperation(commit, index, commit.getInserts().get(modelClass)));
-            schemaMapper.execute(new UpdateOperation(commit, index, commit.getUpdates().get(modelClass)));
-            schemaMapper.execute(new DeleteOperation(commit, index, commit.getDeletes().get(modelClass)));
+            List<OpenEngSBModel> inserts = commit.getInserts().get(modelClass);
+            if (!isEmpty(inserts)) {
+                schemaMapper.execute(new InsertOperation(commit, index, inserts));
+            }
+
+            List<OpenEngSBModel> updates = commit.getUpdates().get(modelClass);
+            if (!isEmpty(updates)) {
+                schemaMapper.execute(new UpdateOperation(commit, index, updates));
+            }
+
+            List<OpenEngSBModel> deletes = commit.getDeletes().get(modelClass);
+            if (!isEmpty(deletes)) {
+                schemaMapper.execute(new DeleteOperation(commit, index, deletes));
+            }
         }
     }
 
@@ -261,8 +279,12 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
             }, index.getName());
         } catch (EmptyResultDataAccessException e) {
-            LOG.warn("Could not find any fields for index " + index.getName());
+            LOG.warn("Could not find any fields for index {}", index.getName());
             return Collections.emptyList();
         }
+    }
+
+    private boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 }
