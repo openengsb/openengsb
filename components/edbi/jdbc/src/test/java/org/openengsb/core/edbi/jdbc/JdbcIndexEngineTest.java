@@ -26,8 +26,12 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.After;
@@ -49,7 +53,7 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
     @Override
     protected String[] getInitScriptResourceNames() {
         return new String[]{
-                "index-schema.h2.sql"
+            "index-schema.h2.sql"
         };
     }
 
@@ -187,8 +191,24 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
 
         assertEquals(3, index.getFields().size());
 
-        Iterator<IndexField<?>> iterator = index.getFields().iterator();
+        List<IndexField<?>> fields = new ArrayList<>(index.getFields());
+
+        Collections.sort(fields, new Comparator<IndexField<?>>() {
+            @Override
+            public int compare(IndexField<?> o1, IndexField<?> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        Iterator<IndexField<?>> iterator = fields.iterator();
         JdbcIndexField<?> field;
+
+        field = (JdbcIndexField<?>) iterator.next();
+        assertEquals("subModel", field.getName());
+        assertEquals("SUBMODEL", field.getMappedName());
+        assertEquals("INTEGER", field.getMappedType().getName());
+        assertEquals(Types.INTEGER, field.getMappedType().getType());
+        assertEquals(0, field.getMappedType().getScale());
 
         field = (JdbcIndexField<?>) iterator.next();
         assertEquals("testId", field.getName());
@@ -204,12 +224,6 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
         assertEquals(Types.INTEGER, field.getMappedType().getType());
         assertEquals(0, field.getMappedType().getScale());
 
-        field = (JdbcIndexField<?>) iterator.next();
-        assertEquals("subModel", field.getName());
-        assertEquals("SUBMODEL", field.getMappedName());
-        assertEquals("INTEGER", field.getMappedType().getName());
-        assertEquals(Types.INTEGER, field.getMappedType().getType());
-        assertEquals(0, field.getMappedType().getScale());
     }
 
     @Test
