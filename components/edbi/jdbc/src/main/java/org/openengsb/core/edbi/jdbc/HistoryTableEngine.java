@@ -25,6 +25,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.openengsb.core.edbi.api.Index;
+import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.NameTranslator;
 import org.openengsb.core.edbi.jdbc.api.TableFactory;
@@ -72,47 +73,49 @@ public class HistoryTableEngine extends AbstractTableEngine {
 
     @Override
     public void execute(final InsertOperation operation) {
-        execute(operation, new IndexRecordCallback() {
-            @Override
-            public void call(IndexRecord record) {
-                record.addValue("REV_COMMIT", operation.getCommit().getCommitId(), Types.VARCHAR);
-                record.addValue("REV_TIMESTAMP", operation.getCommit().getTimestamp(), Types.TIMESTAMP);
-                record.addValue("REV_OPERATION", "INSERT", Types.VARCHAR);
-            }
-        });
+        execute(operation, new CommitIndexRecordCallback(operation.getCommit(), "INSERT"));
     }
 
     @Override
     public void execute(UpdateOperation operation) {
         final InsertOperation insert = new InsertOperation(operation);
 
-        execute(insert, new IndexRecordCallback() {
-            @Override
-            public void call(IndexRecord record) {
-                record.addValue("REV_COMMIT", insert.getCommit().getCommitId(), Types.VARCHAR);
-                record.addValue("REV_TIMESTAMP", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
-                record.addValue("REV_OPERATION", "UPDATE", Types.VARCHAR);
-            }
-        });
+        execute(insert, new CommitIndexRecordCallback(insert.getCommit(), "UPDATE"));
     }
 
     @Override
     public void execute(DeleteOperation operation) {
         final InsertOperation insert = new InsertOperation(operation);
 
-        execute(insert, new IndexRecordCallback() {
-            @Override
-            public void call(IndexRecord record) {
-                record.addValue("REV_COMMIT", insert.getCommit().getCommitId(), Types.VARCHAR);
-                record.addValue("REV_TIMESTAMP", insert.getCommit().getTimestamp(), Types.TIMESTAMP);
-                record.addValue("REV_OPERATION", "DELETE", Types.VARCHAR);
-            }
-        });
+        execute(insert, new CommitIndexRecordCallback(insert.getCommit(), "DELETE"));
     }
 
     @Override
     protected TableFactory getTableFactory() {
         return tableFactory;
+    }
+
+    protected static class CommitIndexRecordCallback implements IndexRecordCallback {
+        private final String operation;
+        private final IndexCommit commit;
+
+        public CommitIndexRecordCallback(IndexCommit commit, String operation) {
+            this.commit = commit;
+            this.operation = operation;
+        }
+
+        @Override
+        public void call(IndexRecord record) {
+            record.addValue("REV_OPERATION", operation, Types.VARCHAR);
+
+            record.addValue("REV_COMMIT", commit.getCommitId(), Types.VARCHAR);
+            record.addValue("REV_TIMESTAMP", commit.getTimestamp(), Types.TIMESTAMP);
+            record.addValue("REV_USER", commit.getUser(), Types.VARCHAR);
+            record.addValue("REV_CONTEXTID", commit.getContextId(), Types.VARCHAR);
+            record.addValue("REV_DOMAINID", commit.getDomainId(), Types.VARCHAR);
+            record.addValue("REV_CONNECTORID", commit.getConnectorId(), Types.VARCHAR);
+            record.addValue("REV_INSTANCEID", commit.getInstanceId(), Types.VARCHAR);
+        }
     }
 
     /**
@@ -133,7 +136,11 @@ public class HistoryTableEngine extends AbstractTableEngine {
             table.addElement(new Column("REV_COMMIT", getTypeMap().getType(UUID.class)));
             table.addElement(new Column("REV_TIMESTAMP", getTypeMap().getType(Date.class)));
             table.addElement(new Column("REV_OPERATION", getTypeMap().getType(String.class)));
-            // TODO: more columns ...
+            table.addElement(new Column("REV_USER", getTypeMap().getType(String.class)));
+            table.addElement(new Column("REV_CONTEXTID", getTypeMap().getType(String.class)));
+            table.addElement(new Column("REV_DOMAINID", getTypeMap().getType(String.class)));
+            table.addElement(new Column("REV_CONNECTORID", getTypeMap().getType(String.class)));
+            table.addElement(new Column("REV_INSTANCEID", getTypeMap().getType(String.class)));
         }
 
         @Override

@@ -122,9 +122,15 @@ public class H2IndexEngineIntegrationTest extends AbstractH2DatabaseTest {
         assertEquals(11, record.get(column));
 
         record = jdbc().queryForMap("SELECT * FROM " + index.getHistoryTableName());
+        assertEquals(11, record.get(column));
+        // assert meta data
         assertEquals(commit.getTimestamp(), record.get("REV_TIMESTAMP"));
         assertEquals("INSERT", record.get("REV_OPERATION"));
-        assertEquals(11, record.get(column));
+        assertEquals("testUser", record.get("REV_USER"));
+        assertEquals("testContext", record.get("REV_CONTEXTID"));
+        assertEquals("testDomain", record.get("REV_DOMAINID"));
+        assertEquals("testConnector", record.get("REV_CONNECTORID"));
+        assertEquals("testInstance", record.get("REV_INSTANCEID"));
     }
 
     @Test
