@@ -85,10 +85,10 @@ public class H2IndexEngineIntegrationTest extends AbstractH2DatabaseTest {
 
     @Test
     public void commit_insertWithSubmodel_shouldProperlyInsertRecords() throws Exception {
-        SubTestModel submodel;
+        SubTestModel submodel = new SubTestModel(11);
 
         IndexCommit commit = newTestCommit()
-            .insert(submodel = new SubTestModel(11))
+            .insert(submodel)
             .insert(new TestModel("foo", 1, submodel))
             .insert(new TestModel("bar", 2))
             .get();
