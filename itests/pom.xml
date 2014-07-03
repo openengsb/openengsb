@@ -168,6 +168,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework.edbi</groupId>
+      <artifactId>org.openengsb.framework.edbi.api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework.ekb</groupId>
       <artifactId>org.openengsb.framework.ekb.api</artifactId>
       <version>${project.version}</version>

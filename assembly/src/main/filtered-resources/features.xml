@@ -204,6 +204,14 @@
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.userprojects.ldap/${project.version}</bundle>
   </feature>
 
+  <feature name="openengsb-edbi" version="${project.version}" description="OpenEngSB EDB Index">
+    <feature>openengsb-framework</feature>
+    <feature>spring-jdbc</feature>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.api/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.jdbc/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.framework.edbi/org.openengsb.framework.edbi.hook/${project.version}</bundle>
+  </feature>
+
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
     <details>
       This feature allone provides ActiveMQ support in the OpenEngSB. Still, it does not provide queues or anything
@@ -417,6 +425,12 @@
     <bundle start-level="10">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${geronimo.jta.version}</bundle>
     <bundle start-level="10">mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/${geronimo.jms.version}</bundle>
     <bundle start-level="30">mvn:org.springframework/spring-jms/${spring.version}</bundle>
+  </feature>
+
+  <feature name="spring-jdbc" version="${project.version}" description="Spring JDBC support">
+    <feature>spring</feature>
+    <bundle start-level="30">mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <bundle start-level="30">mvn:org.springframework/spring-jdbc/${spring.version}</bundle>
   </feature>
 
 </features>

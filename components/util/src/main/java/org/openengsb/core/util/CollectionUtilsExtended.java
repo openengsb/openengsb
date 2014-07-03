@@ -16,7 +16,11 @@
  */
 package org.openengsb.core.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -31,7 +35,7 @@ public final class CollectionUtilsExtended {
      * provides a view to the given collection, that only contains objects that are instances of the given clazz. It
      * uses the guava-methods {@link Collections2#filter(Collection, Predicate)} and
      * {@link Collections2#transform(Collection, Function)}.
-     *
+     * 
      * The returned collection is immutable.
      */
     public static <TargetType> Collection<TargetType> filterCollectionByClass(Collection<?> source,
@@ -49,6 +53,33 @@ public final class CollectionUtilsExtended {
                 return (TargetType) input;
             }
         });
+    }
+
+    /**
+     * Does a "group by" or map aggregation on a collection based on keys that are emitted by the given function. For
+     * each key emitted by the function, the map will contain a list at that key entry containing at least one element
+     * from the collection.
+     * 
+     * @param collection the collection to group
+     * @param keyFn the function that emits the key for each value
+     * @param <K> the key type
+     * @param <V> the value type
+     * @return a map of lists where each list contains elements that
+     */
+    public static <K, V> Map<K, List<V>> group(Collection<V> collection, Function<V, K> keyFn) {
+        Map<K, List<V>> map = new HashMap<>();
+
+        for (V value : collection) {
+            K key = keyFn.apply(value);
+
+            if (map.get(key) == null) {
+                map.put(key, new ArrayList<V>());
+            }
+
+            map.get(key).add(value);
+        }
+
+        return map;
     }
 
     private CollectionUtilsExtended() {
