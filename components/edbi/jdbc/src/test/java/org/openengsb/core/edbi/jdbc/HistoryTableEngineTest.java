@@ -91,7 +91,7 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
         try (ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM HISTORY_TABLE")) {
             ResultSetMetaData metaData = rs.getMetaData();
 
-            assertEquals(11, metaData.getColumnCount());
+            assertEquals(12, metaData.getColumnCount());
 
             assertEquals("REV_ID", metaData.getColumnName(1));
             assertEquals("REV_COMMIT", metaData.getColumnName(2));
@@ -100,10 +100,11 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertEquals("REV_USER", metaData.getColumnName(5));
             assertEquals("REV_CONTEXTID", metaData.getColumnName(6));
             assertEquals("REV_DOMAINID", metaData.getColumnName(7));
-            assertEquals("REV_INSTANCEID", metaData.getColumnName(8));
-            assertEquals("TESTID", metaData.getColumnName(9));
-            assertEquals("TESTINTEGER", metaData.getColumnName(10));
-            assertEquals("SUBMODEL", metaData.getColumnName(11));
+            assertEquals("REV_CONNECTORID", metaData.getColumnName(8));
+            assertEquals("REV_INSTANCEID", metaData.getColumnName(9));
+            assertEquals("TESTID", metaData.getColumnName(10));
+            assertEquals("TESTINTEGER", metaData.getColumnName(11));
+            assertEquals("SUBMODEL", metaData.getColumnName(12));
         }
 
         assertEquals("HISTORY_TABLE", testIndex.getHistoryTableName());
