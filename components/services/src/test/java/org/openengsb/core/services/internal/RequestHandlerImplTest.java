@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testMethodCallWithNullParameters_shouldBeSerialized() throws Exception {
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 });
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 }, Arrays.asList(new String[]{"java.lang.Integer", "java.lang.Integer", "java.lang.Integer"}));
         ObjectMapper objectMapper = new ObjectMapper();
         String writeValueAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCall);
         MethodCall readValue = objectMapper.readValue(writeValueAsString, MethodCall.class);

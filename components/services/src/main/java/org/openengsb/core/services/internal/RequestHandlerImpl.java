@@ -128,7 +128,8 @@ public class RequestHandlerImpl implements RequestHandler {
             } else {
                 returnTemplate.setType(ReturnType.Object);
                 returnTemplate.setArg(result);
-                returnTemplate.setClassName(result.getClass().getName());
+                String resultClassName = result == null? method.getReturnType().getName():result.getClass().getName();
+                returnTemplate.setClassName(resultClassName);
             }
         } catch (Exception e) {
             LOGGER.warn("Exception in remote method invocation: ", e);

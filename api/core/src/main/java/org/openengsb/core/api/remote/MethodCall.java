@@ -18,11 +18,12 @@
 package org.openengsb.core.api.remote;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -46,27 +47,38 @@ public class MethodCall implements Serializable {
     public MethodCall() {
     }
 
-    public MethodCall(String methodName, Object[] args) {
-        this(methodName, args, new HashMap<String, String>());
+    public MethodCall(Method method, Object[] args) {
+        this(method, args, Collections.<String, String>emptyMap());
     }
-
+    
+    public MethodCall(Method method, Object[] args, Map<String, String> metaData) {
+        this(method.getName(), args, metaData, getRealClassImplementation(method, args));
+    }
+    
+    public MethodCall(String methodName, Object[] args) {
+        this(methodName, args, Collections.<String, String>emptyMap());
+    }
+    
+    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
+        this(methodName, args, metaData, getRealClassImplementation(null, args));
+    }
+    
     public MethodCall(String methodName, Object[] args, List<String> classes) {
-        this(methodName, args, new HashMap<String, String>(), classes);
+        this(methodName, args, Collections.<String, String>emptyMap(), classes);
     }
 
     public MethodCall(String methodName, Object[] args, Map<String, String> metaData, List<String> classes) {
         super();
+        init(methodName, args, classes, metaData);
+    }
+
+    private void init(String methodName, Object[] args, List<String> classes, Map<String, String> metaData) {
         this.methodName = methodName;
         this.args = args;
-        this.metaData = metaData;
         this.classes = classes;
+        this.metaData = metaData;
     }
-
-    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
-        this(methodName, args, metaData, null);
-        classes = getRealClassImplementation();
-    }
-
+    
     public String getMethodName() {
         return methodName;
     }
@@ -99,31 +111,33 @@ public class MethodCall implements Serializable {
         this.classes = classes;
     }
 
-    public List<String> getRealClassImplementation() {
-        List<String> argsClasses = new ArrayList<String>();
-        if (getArgs() != null) {
-            for (Object object : getArgs()) {
-                if (object == null) {
-                    argsClasses.add(null);
-                } else if (object instanceof List<?>) {
-                    argsClasses.add(List.class.getName());
-                } else {
-                    argsClasses.add(object.getClass().getName());
-                }
-            }
+    private static List<String> getRealClassImplementation(Method method, Object[] args) {
+        if (args == null) {
+            return Collections.emptyList();
         }
-        return argsClasses;
+        List<String> argClasses = new ArrayList<String>(args.length);
+        for (int i = 0; i<args.length; i++) {
+            argClasses.add(getArgumentClass(method, args[i], i));
+        }
+        return argClasses;
+    }
+    
+    private static String getArgumentClass(Method method, Object arg, int argIndex) {
+        if (arg == null) {
+            if (method == null) {
+                throw new IllegalArgumentException("cannot determine type of null argument");
+            }
+            return method.getParameterTypes()[argIndex].getName();
+        } else if (arg instanceof List<?>) {
+            return List.class.getName();
+        } else {
+            return arg.getClass().getName();
+        }
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(args);
-        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
-        result = prime * result + ((metaData == null) ? 0 : metaData.hashCode());
-        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        return result;
+        return Objects.hash(methodName, args, classes, metaData);
     }
 
     @Override
@@ -131,38 +145,14 @@ public class MethodCall implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
+        if (obj instanceof MethodCall) {
+            MethodCall other = (MethodCall) obj;
+            return Objects.equals(methodName, other.methodName)
+                    && Objects.deepEquals(args, other.args)
+                    && Objects.equals(classes, other.classes)
+                    && Objects.equals(metaData, other.metaData);
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MethodCall other = (MethodCall) obj;
-        if (!Arrays.equals(args, other.args)) {
-            return false;
-        }
-        if (classes == null) {
-            if (other.classes != null) {
-                return false;
-            }
-        } else if (!classes.equals(other.classes)) {
-            return false;
-        }
-        if (metaData == null) {
-            if (other.metaData != null) {
-                return false;
-            }
-        } else if (!metaData.equals(other.metaData)) {
-            return false;
-        }
-        if (methodName == null) {
-            if (other.methodName != null) {
-                return false;
-            }
-        } else if (!methodName.equals(other.methodName)) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
 }
