@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
@@ -49,10 +50,12 @@ public final class JsonUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MODEL_MAPPER = new ObjectMapper();
 
     static {
         // adding the additional deserializer needed to deserialize models
-        MAPPER.registerModule(new SimpleModule().addDeserializer(Object.class, new OpenEngSBModelEntryDeserializer()));
+        MODEL_MAPPER.registerModule(new SimpleModule().addDeserializer(Object.class,
+            new OpenEngSBModelEntryDeserializer()));
     }
 
     /**
@@ -61,6 +64,9 @@ public final class JsonUtils {
      */
     public static <T> T convertObject(String json, Class<T> clazz) throws IOException {
         try {
+            if (clazz.isAnnotationPresent(Model.class)) {
+                return MODEL_MAPPER.readValue(json, clazz);
+            }
             return MAPPER.readValue(json, clazz);
         } catch (IOException e) {
             String error = String.format("Unable to parse given json '%s' into class '%s'.", json, clazz.getName());
@@ -72,6 +78,9 @@ public final class JsonUtils {
     private static Object convertArgument(String className, Object arg) {
         try {
             Class<?> type = findType(className);
+            if (type.isAnnotationPresent(Model.class)) {
+                return MODEL_MAPPER.convertValue(arg, type);
+            }
             return MAPPER.convertValue(arg, type);
         } catch (ClassNotFoundException e) {
             LOGGER.error("could not convert argument " + arg, e);
