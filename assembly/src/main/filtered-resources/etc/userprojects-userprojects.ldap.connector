@@ -24,3 +24,4 @@ attribute.ldapServer.port=12345
 attribute.ldapServer.userDn=uid=admin,ou=system
 attribute.ldapServer.credentials=secret
 attribute.ldapServer.multipleValueSeparator=°
+attribute.ldapServer.syncPeriodInMilliseconds=60000
