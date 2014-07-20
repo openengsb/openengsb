@@ -17,7 +17,7 @@
 
 ou=assignments
     => cn=${assignmentName}
-        => cn=project 
+        => cn=project
           => org-openengsb-string: ${projectName}
         => cn=user
           => org-openengsb-string: ${username}
@@ -25,7 +25,7 @@ ou=assignments
             => cn=${permissionName}
         => ou=roles
             => cn=${roleName}
-        
+
 ou=permissions
     => cn=${permissionName}
         => cn=component
@@ -38,14 +38,14 @@ ou=projects
         => ou=attributes
             => cn=${attributeName}
               => org-openengsb-string: ${attributeValues-combined-by-separator}
-    
+
 ou=roles
     => cn=${roleName}
         => ou=permissions
             => cn=${permissionName}
         => ou=roles
             => cn=${rolename}
-            
+
 ou=users
     => cn=${username}
         => ou=attributes
@@ -54,4 +54,4 @@ ou=users
         => ou=credentials
             => cn=${credentialType} with value as attribute string value
               => org-openengsb-string: ${credentialValue}
-    
+
