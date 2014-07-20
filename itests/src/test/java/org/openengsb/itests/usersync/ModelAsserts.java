@@ -6,7 +6,14 @@ import org.openengsb.domain.userprojects.model.Attribute;
 import org.openengsb.domain.userprojects.model.Credential;
 import org.openengsb.domain.userprojects.model.User;
 
+/**
+ * Assertions for User models.
+ */
 public final class ModelAsserts {
+
+    private ModelAsserts() {
+        // static utility class
+    }
 
     public static void assertEqualUser(User user1, User user2) {
         assertEquals(user1.getUsername(), user2.getUsername());
