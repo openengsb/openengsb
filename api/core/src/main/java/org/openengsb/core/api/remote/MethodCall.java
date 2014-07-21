@@ -69,16 +69,12 @@ public class MethodCall implements Serializable {
 
     public MethodCall(String methodName, Object[] args, Map<String, String> metaData, List<String> classes) {
         super();
-        init(methodName, args, classes, metaData);
-    }
-
-    private void init(String methodName, Object[] args, List<String> classes, Map<String, String> metaData) {
         this.methodName = methodName;
         this.args = args;
         this.classes = classes;
         this.metaData = metaData;
     }
-    
+
     public String getMethodName() {
         return methodName;
     }
@@ -116,7 +112,7 @@ public class MethodCall implements Serializable {
             return Collections.emptyList();
         }
         List<String> argClasses = new ArrayList<String>(args.length);
-        for (int i = 0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             argClasses.add(getArgumentClass(method, args[i], i));
         }
         return argClasses;
