@@ -128,7 +128,8 @@ public class RequestHandlerImpl implements RequestHandler {
             } else {
                 returnTemplate.setType(ReturnType.Object);
                 returnTemplate.setArg(result);
-                String resultClassName = result == null? method.getReturnType().getName():result.getClass().getName();
+                String resultClassName =
+                    result == null ? method.getReturnType().getName() : result.getClass().getName();
                 returnTemplate.setClassName(resultClassName);
             }
         } catch (Exception e) {
@@ -162,7 +163,7 @@ public class RequestHandlerImpl implements RequestHandler {
 
     /**
      * TODO: OPENENGSB-1976
-     *
+     * 
      * This is a workaround for the mess with Aries JPA proxies.
      */
     private Class<?> retrieveRealServiceClass(Object service) {

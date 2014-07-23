@@ -86,7 +86,10 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testMethodCallWithNullParameters_shouldBeSerialized() throws Exception {
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 1, null, 2 }, Arrays.asList(new String[]{"java.lang.Integer", "java.lang.Integer", "java.lang.Integer"}));
+        Object[] args = { 1, null, 2 };
+        String[] classes = { "java.lang.Integer", "java.lang.Integer", "java.lang.Integer" };
+        MethodCall methodCall = new MethodCall("test", args, Arrays.asList(classes));
+
         ObjectMapper objectMapper = new ObjectMapper();
         String writeValueAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(methodCall);
         MethodCall readValue = objectMapper.readValue(writeValueAsString, MethodCall.class);
