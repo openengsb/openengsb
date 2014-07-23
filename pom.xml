@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>35</version>
+    <version>36-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.framework</groupId>
@@ -47,26 +47,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <!-- base settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- maven plugin versions 
-    <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
-    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>-->
-    <root.version>35</root.version>   
-    <orientdb.version>1.2.0</orientdb.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-root</artifactId>
-        <version>${root.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <modules>
     <!-- OpenEngSB API Modules -->
