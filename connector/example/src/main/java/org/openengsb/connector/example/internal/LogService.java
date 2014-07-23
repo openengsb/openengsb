@@ -84,7 +84,9 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
 
     @Override
     public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
-        LOGGER.info("received model with the id \"{}\" and name \"{}\"", model == null? null: model.getId(), model == null? null: model.getName());
+        Integer id = (model == null) ? null : model.getId();
+        String name = (model == null) ? null : model.getName();
+        LOGGER.info("received model with the id \"{}\" and name \"{}\"", id, name);
         if (model == null) {
             return null;
         }
