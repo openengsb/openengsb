@@ -44,6 +44,9 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
 
     @Override
     public String doSomethingWithMessage(String message) {
+        if ("<NULL>".equals(message)) {
+            return null;
+        }
         message = prefix + ": " + message;
         String level = "INFO";
         if (outputMode != null) {
@@ -81,8 +84,12 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
 
     @Override
     public ExampleResponseModel doSomethingWithModel(ExampleRequestModel model) {
-        LOGGER.info("received model with the id \"{}\" and name \"{}\"", model.getId(), model.getName());
+        LOGGER.info("received model with the id \"{}\" and name \"{}\"", model == null? null: model.getId(), model == null? null: model.getName());
+        if (model == null) {
+            return null;
+        }
         ExampleResponseModel response = new ExampleResponseModel();
+        response.setResult(model.getName());
         return response;
     }
 
