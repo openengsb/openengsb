@@ -17,12 +17,17 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
+
 /**
  * The CommitMetaInfo class contains meta information about a commit that has been done in the EDB/EKB context. It is
  * used in order to provide a human readable way to recognize a commit with more information than just the timestamp or
  * the revision of the commit.
  */
-public class CommitMetaInfo {
+public class CommitMetaInfo implements Serializable {
+
+    private static final long serialVersionUID = -2837447354678863937L;
+
     private String committer;
     private Long timestamp;
     private String context;
@@ -56,7 +61,7 @@ public class CommitMetaInfo {
     public void setContext(String context) {
         this.context = context;
     }
-    
+
     public String getComment() {
         return comment;
     }
