@@ -252,11 +252,38 @@ public final class QueryRequest implements Serializable {
     /**
      * Sets the class of the queried Models.
      * 
-     * @param modelClass the class name of the model (including package).
-     * @return
+     * @param modelClassName the class name of the model (including package).
+     * @return this for chaining
      */
     public QueryRequest setModelClassName(String modelClassName) {
         this.modelClassName = modelClassName;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        QueryRequest other = (QueryRequest) o;
+
+        return (andJoined == other.andJoined) &&
+                (caseSensitive == other.caseSensitive) &&
+                (deleted == other.deleted) &&
+                (timestamp == other.timestamp) &&
+                (wildcardAware == other.wildcardAware) &&
+                (Objects.equal(contextId, other.contextId)) &&
+                (Objects.equal(modelClassName, other.modelClassName)) &&
+                (Objects.equal(parameters, other.parameters));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(parameters, modelClassName, timestamp, contextId, wildcardAware, caseSensitive,
+            andJoined, deleted);
     }
 }
