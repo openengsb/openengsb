@@ -8,10 +8,10 @@ before_install:
   - mv repository ~/.m2/
   - rm oeb_bootstrap_m2_repo.zip
 
-install: mvn validate
+install: 
+  - mvn install -Pcheckstyle,licenseCheck
 
 script:
-  - mvn install -Pcheckstyle,licenseCheck
   - ./etc/scripts/run-itests.sh
 
 notifications:

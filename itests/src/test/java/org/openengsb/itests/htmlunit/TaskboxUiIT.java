@@ -49,7 +49,6 @@ import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -249,7 +248,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         }
     }
 
-    private void loginAsAdmin() throws FailingHttpStatusCodeException, IOException {
+    private void loginAsAdmin() throws IOException {
         HtmlPage page = webClient.getPage(pageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
