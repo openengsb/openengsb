@@ -26,9 +26,12 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.infrastructure.ldap.LdapDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserProjectsLdapServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<UserProjectsLdapServiceImpl> {
+    private static final Logger LOG = LoggerFactory.getLogger(UserProjectsLdapServiceInstanceFactory.class);
 
     private LdapDao ldapDao;
     private SynchronizationService synchronizationService;
@@ -70,29 +73,35 @@ public class UserProjectsLdapServiceInstanceFactory extends
                 Long.valueOf(attributes.get("ldapServer.syncPeriodInMilliseconds"));
         }
 
-        setupLdapDao();
+        ldapDao = new LdapDao(ServerConfig.host, ServerConfig.port);
         instance.setLdapDao(ldapDao);
         
+        setupSynchronization();
+
+        return instance;
+    }
+    
+    private void setupSynchronization() {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 String oldContext = ContextHolder.get().getCurrentContextId();
                 ContextHolder.get().setCurrentContextId("foo");
-                synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
+                try {
+                    if (!ldapDao.getConnection().isConnected()) {
+                        LOG.info("Trying to connect to the LDAP server on {}:{}", new Object[] { ServerConfig.host,
+                            ServerConfig.port });
+                        ldapDao.connect(ServerConfig.userDn, ServerConfig.credentials);
+                    }
+                    synchronizationService.syncFromLdapServerToOpenEngSB(ldapDao);
+                } catch (Exception e) {
+                    LOG.error("Could not sync from LDAP server to OpenEngSB", e);
+                }
                 ContextHolder.get().setCurrentContextId(oldContext);
             }
         };
         
         syncTimer.schedule(task, 0, ServerConfig.syncPeriodInMilliseconds);
-        
-        
-
-        return instance;
-    }
-    
-    private void setupLdapDao() {
-        ldapDao = new LdapDao(ServerConfig.host, ServerConfig.port);
-        ldapDao.connect(ServerConfig.userDn, ServerConfig.credentials);
     }
 
     public void destroy() {
