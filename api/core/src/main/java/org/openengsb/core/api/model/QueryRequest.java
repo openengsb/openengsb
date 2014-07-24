@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,7 +44,10 @@ import com.google.common.collect.Sets;
  * andJoined = Defines if the parameters are joined via logical AND operators (value=true) or logical OR operators
  * (value=false). The default value is true.
  */
-public final class QueryRequest {
+public final class QueryRequest implements Serializable {
+
+    private static final long serialVersionUID = -7265061639501222473L;
+
     private final Map<String, Set<Object>> parameters;
     private String modelClassName;
     private long timestamp;
