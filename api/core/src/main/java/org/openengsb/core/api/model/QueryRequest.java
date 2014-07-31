@@ -271,14 +271,14 @@ public final class QueryRequest implements Serializable {
 
         QueryRequest other = (QueryRequest) o;
 
-        return (andJoined == other.andJoined) &&
-                (caseSensitive == other.caseSensitive) &&
-                (deleted == other.deleted) &&
-                (timestamp == other.timestamp) &&
-                (wildcardAware == other.wildcardAware) &&
-                (Objects.equal(contextId, other.contextId)) &&
-                (Objects.equal(modelClassName, other.modelClassName)) &&
-                (Objects.equal(parameters, other.parameters));
+        return (andJoined == other.andJoined)
+                && (caseSensitive == other.caseSensitive)
+                && (deleted == other.deleted)
+                && (timestamp == other.timestamp)
+                && (wildcardAware == other.wildcardAware)
+                && (Objects.equal(contextId, other.contextId))
+                && (Objects.equal(modelClassName, other.modelClassName))
+                && (Objects.equal(parameters, other.parameters));
     }
 
     @Override
