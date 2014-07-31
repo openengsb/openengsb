@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,7 +44,10 @@ import com.google.common.collect.Sets;
  * andJoined = Defines if the parameters are joined via logical AND operators (value=true) or logical OR operators
  * (value=false). The default value is true.
  */
-public final class QueryRequest {
+public final class QueryRequest implements Serializable {
+
+    private static final long serialVersionUID = -7265061639501222473L;
+
     private final Map<String, Set<Object>> parameters;
     private String modelClassName;
     private long timestamp;
@@ -248,11 +252,38 @@ public final class QueryRequest {
     /**
      * Sets the class of the queried Models.
      * 
-     * @param modelClass the class name of the model (including package).
-     * @return
+     * @param modelClassName the class name of the model (including package).
+     * @return this for chaining
      */
     public QueryRequest setModelClassName(String modelClassName) {
         this.modelClassName = modelClassName;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        QueryRequest other = (QueryRequest) o;
+
+        return (andJoined == other.andJoined)
+                && (caseSensitive == other.caseSensitive)
+                && (deleted == other.deleted)
+                && (timestamp == other.timestamp)
+                && (wildcardAware == other.wildcardAware)
+                && (Objects.equal(contextId, other.contextId))
+                && (Objects.equal(modelClassName, other.modelClassName))
+                && (Objects.equal(parameters, other.parameters));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(parameters, modelClassName, timestamp, contextId, wildcardAware, caseSensitive,
+            andJoined, deleted);
     }
 }
