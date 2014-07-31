@@ -90,7 +90,6 @@ public class LdapDao {
     public void connect(String dn, String credentials) {
         BindRequest bindRequest = new BindRequestImpl();
         bindRequest.setCredentials(credentials);
-        connection.setTimeOut(0);
         try {
             bindRequest.setDn(new Dn(dn));
             connection.connect();
