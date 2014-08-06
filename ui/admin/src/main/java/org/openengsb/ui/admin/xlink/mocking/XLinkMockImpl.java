@@ -303,7 +303,7 @@ public class XLinkMockImpl implements XLinkMock {
             throw new DomainNotLinkableException();
         } 
         authenticationContext.login("admin", new Password("password"));
-        service.openXLinks(modelObjectsDestination.toArray(), viewToCall);
+//        service.openXLinks(modelObjectsDestination.toArray(), viewToCall);
     }
     
     /**

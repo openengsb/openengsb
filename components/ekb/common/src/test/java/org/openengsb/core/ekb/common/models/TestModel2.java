@@ -153,6 +153,11 @@ public class TestModel2 implements OpenEngSBModel {
     }
     
     @Override
+    public String retrieveInternalModelIdName() {
+        return "edbId";
+    }
+    
+    @Override
     public String retrieveModelName() {
         return this.getClass().getName();
     }

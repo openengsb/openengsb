@@ -17,17 +17,18 @@
 
 package org.openengsb.core.services.internal.xlink;
 
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class XLinkUtilsTest {
     /**Key of a demo view*/    
     private static String viewId2 = "exampleViewId_2";
     /**Descriptions in different languages for a view*/    
-    private static HashMap<String, String> descriptions  = new HashMap<String, String>();
+    private static Map<Locale, String> descriptions  = new HashMap<>();
     /**Composed viewdata as a list.*/
     private static List<XLinkConnectorView> views = new ArrayList<XLinkConnectorView>();
     /**Id of the Testcontext at the OpenEngSB*/
@@ -71,9 +72,9 @@ public class XLinkUtilsTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        descriptions.put("en", "This is a demo view.");
-        descriptions.put("de", "Das ist eine demonstration view.");
-        views = new ArrayList();
+        descriptions.put(Locale.ENGLISH, "This is a demo view.");
+        descriptions.put(Locale.GERMAN, "Das ist eine demonstration view.");
+        views = new ArrayList<>();
         views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
         views.add(new XLinkConnectorView(viewId2, toolName, descriptions));
         modelsToViews.put(new ModelDescription(exampleModelClass.getName(), exampleModelClassVersion), 

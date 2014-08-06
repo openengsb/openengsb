@@ -98,6 +98,14 @@ public class ModelWrapper implements OpenEngSBModel {
      * Calls the corresponding method in the wrapped model.
      */
     @Override
+    public String retrieveInternalModelIdName() {
+        return model.retrieveInternalModelIdName();
+    }
+
+    /**
+     * Calls the corresponding method in the wrapped model.
+     */
+    @Override
     public Long retrieveInternalModelTimestamp() {
         return model.retrieveInternalModelTimestamp();
     }

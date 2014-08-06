@@ -26,8 +26,6 @@ public final class XLinkConstants {
         
     }
     
-    // @extract-start XLinkUtilsKeyDefs
-
     /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
     public static final String XLINK_CONTEXTID_KEY = "contextId";
 
@@ -55,6 +53,4 @@ public final class XLinkConstants {
     
     /**Format of the ExpirationDate*/
     public static final String DATEFORMAT = "yyyyMMddkkmmss";
-
-    // @extract-end
 }

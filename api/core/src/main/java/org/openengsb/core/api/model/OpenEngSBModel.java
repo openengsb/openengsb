@@ -45,6 +45,12 @@ public interface OpenEngSBModel extends Serializable {
     Object retrieveInternalModelId();
 
     /**
+     * Returns the name of the internal model id of the model. This id is defined through the OpenEngSBModelId
+     * annotation. Returns null if no model id is defined.
+     */
+    String retrieveInternalModelIdName();
+
+    /**
      * Returns the internal model timestamp. This timestamp tells the user when this model has been last saved in the
      * EDB. If the model is not persisted, the returned value is null.
      */

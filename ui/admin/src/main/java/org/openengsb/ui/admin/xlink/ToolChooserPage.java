@@ -406,7 +406,7 @@ public class ToolChooserPage extends WebPage {
      * If no description could be found for the configured locale, the first one
      * from the iterator is returned.
      */
-    private String returnLocalizedDescription(Map<String, String> descriptions) {
+    private String returnLocalizedDescription(Map<Locale, String> descriptions) {
         if (descriptions.isEmpty()) {
             return null;
         }

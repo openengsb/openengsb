@@ -17,33 +17,21 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.xlink.model.XLinkConnector;
+import java.util.List;
+
+import org.openengsb.core.api.xlink.model.XLinkObject;
+
 
 /**
- * Every Domain that wants to offer XLinking to itÂ´s Connectors, must implement this interface. Connectors can choose
+ * Every Domain that wants to offer XLinking to its Connectors, must implement this interface. Connectors can choose
  * whether they want to participate in XLinking, or not.
  */
 @MixinDomain("linking")
 public interface LinkingSupport {
 
-    // @extract-start LinkableDomainOpenLinks
     /**
-     * PushMethod to transfere a List of potential Matches, of modelObjects, to the Clienttool. Also defines the Id of
+     * PushMethod to transfer a List of potential Matches, of modelObjects, to the Clienttool. Also defines the Id of
      * View to open Matches in. The transfered modelObjects are instances of the Clienttools model.
      */
-    void openXLinks(Object[] modelObjects, String viewId);
-
-    // @extract-end
-
-    // @extract-start LinkableDomainUpdateEvent
-    /**
-     * During the registration each connector receives an array of all other currently 
-     * registered tools from the same host. This function is called every time this array changes.
-     * Via this method, the array is kept uptodate. 
-     * This information is used to support local switching between tools.
-     */
-    void onRegisteredToolsChanged(XLinkConnector[] registeredTools);
-
-    // @extract-end
-
+    void openXLinks(List<XLinkObject> xLinkObjects);
 }

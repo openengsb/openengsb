@@ -42,14 +42,13 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
     @Override
     public List<XLinkConnector> getRegisteredToolsFromHost(String hostId) {
         return Arrays.asList(XLinkUtils.getLocalToolFromRegistrations(
-                serviceManager.getXLinkRegistration(hostId)));
+                serviceManager.getXLinkRegistrations(hostId)));
     } 
     
     @Override
     public ModelDescription getModelClassOfView(String hostId, String connectorId, String viewId) {
         if (getRegistration(hostId, connectorId) != null) {
-            XLinkUrlBlueprint template = getRegistration(hostId, connectorId).getxLinkTemplate();
-            return template.getViewToModels().get(viewId);            
+            return getRegistration(hostId, connectorId).getModelDescription(viewId);
         }
         return null;
     }    
@@ -59,7 +58,7 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
      * Returns null, if no XLinkRegistration was found.
      */
     private XLinkConnectorRegistration getRegistration(String hostId, String connectorId) {
-        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistrations(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return registration;
             }
@@ -69,7 +68,7 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
     
     @Override
     public boolean isConnectorRegistrated(String hostId, String connectorId) {
-        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistrations(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
                 return true;
             }
@@ -79,10 +78,9 @@ public class ToolChooserLogicImpl implements ToolChooserLogic {
     
     @Override
     public boolean isViewExisting(String hostId, String connectorId, String viewId) {
-        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistration(hostId)) {
+        for (XLinkConnectorRegistration registration : serviceManager.getXLinkRegistrations(hostId)) {
             if (registration.getConnectorId().equals(connectorId)) {
-                return registration.getxLinkTemplate().getViewToModels().containsKey(viewId);
-            }
+                return registration.getModelDescription(viewId) == null;            }
         }
         return false;
     }    

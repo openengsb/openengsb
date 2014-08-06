@@ -17,6 +17,12 @@
 
 package org.openengsb.domain.SQLCode.model;
 
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.model.annotation.Model;
+import org.openengsb.labs.delegation.service.Provide;
+
+@Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
+@Model
 public class SQLCreateField {
     
     private String fieldName;    

@@ -19,52 +19,48 @@ package org.openengsb.core.api.xlink.model;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openengsb.core.api.model.ModelDescription;
 
 /**
- * Modelclass to store a XLink registration, of a connector, to XLink.
+ * This class models the XLink registration of a connector to XLink.
  */
 public class XLinkConnectorRegistration implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * HostId of the client, provided during registration.
-     * This is currently the IP of the host.
      */
     private String hostId;
-    
+
     /**
      * Id of the connector, identifying the tool
-     */    
+     */
     private String connectorId;
-    
+
     /**
      * Human readable name of the tool, may be null.
-     */    
+     */
     private String toolName;
-    
+
     /**
      * Model/View associations, provided by the client during registration
      */
-    private Map<ModelDescription, XLinkConnectorView[]> modelsToViews;
-    
-    /**
-     * BluePrint that was generated and returned to the client during registration
-     */
-    private XLinkUrlBlueprint xLinkTemplate;
+    private Map<ModelDescription, XLinkConnectorView[]> modelViewMapping;
 
-    public XLinkConnectorRegistration(String hostId, String connectorId, String toolName, 
-            Map<ModelDescription, XLinkConnectorView[]> modelsToViews, XLinkUrlBlueprint xLinkTemplate) {
+    public XLinkConnectorRegistration(String hostId, String connectorId, String toolName,
+            Map<ModelDescription, XLinkConnectorView[]> modelViewMapping) {
         this.hostId = hostId;
         this.connectorId = connectorId;
         this.toolName = toolName;
-        this.modelsToViews = modelsToViews;
-        this.xLinkTemplate = xLinkTemplate;
+        this.modelViewMapping = modelViewMapping;
     }
-    
+
     /**
      * Id of the connector, identifying the tool
-     */   
+     */
     public String getConnectorId() {
         return connectorId;
     }
@@ -72,10 +68,9 @@ public class XLinkConnectorRegistration implements Serializable {
     public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
-    
+
     /**
-     * HostId of the client, provided during registration.
-     * This is currently the IP of the host.
+     * HostId of the client, provided during registration. This is currently the IP of the host.
      */
     public String getHostId() {
         return hostId;
@@ -84,21 +79,10 @@ public class XLinkConnectorRegistration implements Serializable {
     public void setHostId(String hostId) {
         this.hostId = hostId;
     }
-    
-    /**
-     * Model/View associations, provided by the client during registration
-     */
-    public Map<ModelDescription, XLinkConnectorView[]> getModelsToViews() {
-        return modelsToViews;
-    }
 
-    public void setModelsToViews(Map<ModelDescription, XLinkConnectorView[]> modelsToViews) {
-        this.modelsToViews = modelsToViews;
-    }
-    
     /**
      * Human readable name of the tool, may be null.
-     */  
+     */
     public String getToolName() {
         return toolName;
     }
@@ -106,16 +90,26 @@ public class XLinkConnectorRegistration implements Serializable {
     public void setToolName(String toolName) {
         this.toolName = toolName;
     }
-    
+
     /**
-     * BluePrint that was generated and returned to the client during registration
+     * Model/View associations, provided by the client during registration
      */
-    public XLinkUrlBlueprint getxLinkTemplate() {
-        return xLinkTemplate;
+    public Map<ModelDescription, XLinkConnectorView[]> getModelsToViews() {
+        return modelViewMapping;
     }
 
-    public void setxLinkTemplate(XLinkUrlBlueprint xLinkTemplate) {
-        this.xLinkTemplate = xLinkTemplate;
+    public void setModelsToViews(Map<ModelDescription, XLinkConnectorView[]> modelsToViews) {
+        this.modelViewMapping = modelsToViews;
     }
-    
+
+    public ModelDescription getModelDescription(String viewId) {
+        for (Entry<ModelDescription, XLinkConnectorView[]> entry : modelViewMapping.entrySet()) {
+            for (XLinkConnectorView view : entry.getValue()) {
+                if (view.getViewId().equals(viewId)) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
 }

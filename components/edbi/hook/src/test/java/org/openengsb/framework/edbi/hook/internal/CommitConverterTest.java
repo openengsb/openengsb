@@ -153,6 +153,11 @@ public class CommitConverterTest {
         }
 
         @Override
+        public String retrieveInternalModelIdName() {
+        	return null;
+        }
+        
+        @Override
         public Long retrieveInternalModelTimestamp() {
             return null;
         }

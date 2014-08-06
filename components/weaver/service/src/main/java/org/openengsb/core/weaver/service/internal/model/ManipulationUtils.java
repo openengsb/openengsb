@@ -274,7 +274,7 @@ public final class ManipulationUtils {
             temp = temp.getSuperclass();
         }
         CtClass[] params = generateClassField();
-        CtMethod method = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
+        CtMethod valueMethod = new CtMethod(cp.get(Object.class.getName()), "retrieveInternalModelId", params, clazz);
         StringBuilder builder = new StringBuilder();
         builder.append(createTrace("Called retrieveInternalModelId"));
         CtMethod idFieldGetter = getFieldGetter(modelIdField, clazz);
@@ -283,8 +283,17 @@ public final class ManipulationUtils {
         } else {
             builder.append(String.format("return %s();", idFieldGetter.getName()));
         }
-        method.setBody(createMethodBody(builder.toString()));
-        clazz.addMethod(method);
+        valueMethod.setBody(createMethodBody(builder.toString()));
+        clazz.addMethod(valueMethod);
+
+        CtMethod nameMethod =
+            new CtMethod(cp.get(String.class.getName()), "retrieveInternalModelIdName", generateClassField(), clazz);
+        if (modelIdField == null) {
+            nameMethod.setBody(createMethodBody("return null;"));
+        } else {
+            nameMethod.setBody(createMethodBody("return \"" + modelIdField.getName() + "\";"));
+        }
+        clazz.addMethod(nameMethod);
     }
 
     /**
