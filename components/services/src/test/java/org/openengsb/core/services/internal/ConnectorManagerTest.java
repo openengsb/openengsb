@@ -29,7 +29,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +43,6 @@ import java.util.Map;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Connector;
@@ -58,9 +56,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelViewMapping;
-import org.openengsb.core.api.xlink.model.XLinkConnector;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
@@ -85,10 +81,9 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorRegistrationManager serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private DefaultConfigPersistenceService configPersistence;
-    
+
     private LinkingSupport testConnector;
-    private ArgumentCaptor<XLinkConnector[]> eventArgument;
-    
+
     private TransformationEngine transformationEngine;
 
     @Before
@@ -98,16 +93,16 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerConfigPersistence();
         transformationEngine = mock(TransformationEngine.class);
         when(transformationEngine
-                .performTransformation(any(ModelDescription.class), any(ModelDescription.class), any()))
-                .thenAnswer(new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        return invocation.getArguments()[2];
-                    }
-                });
+            .performTransformation(any(ModelDescription.class), any(ModelDescription.class), any()))
+            .thenAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return invocation.getArguments()[2];
+                }
+            });
         MethodInterceptor securityInterceptor = new ForwardMethodInterceptor();
         serviceRegistrationManagerImpl = new ConnectorRegistrationManager(bundleContext, transformationEngine,
-                securityInterceptor, new SecurityAttributeProviderImpl());
+            securityInterceptor, new SecurityAttributeProviderImpl());
         serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
         mockedServiceUtils = mock(DefaultOsgiUtilsService.class);
@@ -118,7 +113,6 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(mockedServiceUtils.getService("(service.pid=test2+test2+test2)", 100L)).thenReturn(testConnector2);
         when(mockedServiceUtils.getService("(service.pid=test3+test3+test3)", 100L)).thenReturn(null);
         when(mockedServiceUtils.getService("(service.pid=test4+test4+test4)", 100L)).thenReturn(testConnector3);
-        eventArgument = ArgumentCaptor.forClass(XLinkConnector[].class);
         createServiceManager();
     }
 
@@ -153,7 +147,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
         serviceUtils.getService("(foo=bar)", 100L);
     }
-    
+
     @Test
     public void testCreateService_shouldExist() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
@@ -163,7 +157,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription connectorDescription = new ConnectorDescription("test", "testc", attributes, properties);
 
         String id = connectorManager.create(connectorDescription);
-        
+
         boolean exists = connectorManager.connectorExists(id);
         assertTrue("Service doesn't exist after creation", exists);
     }
@@ -325,7 +319,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             // expected
         }
     }
-    
+
     @Test
     public void testDeleteService_shouldNotExistAnymore() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
@@ -338,90 +332,86 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
         connectorManager.delete(connectorId);
 
-        
-        connectorExists =  connectorManager.connectorExists(connectorId);
+        connectorExists = connectorManager.connectorExists(connectorId);
         assertFalse("service was still existing after deletion", connectorExists);
     }
-    
+
     @Test
     public void testGetXLinkRegistration_isEmptyOnInitial() {
         String hostId = "127.0.0.1";
         assertTrue(connectorManager.getXLinkRegistrations(hostId).isEmpty());
-    } 
-   
+    }
+
     @Test
     public void testGetXLinkRegistration_returnsConnectedRegistration() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelViewMapping[] modelViewMappings
-            = createModelViewsMappings(toolName);
+        ModelViewMapping[] modelViewMappings = createModelViewsMappings(toolName);
         connectorManager.registerWithXLink(connectorId, hostId, toolName, modelViewMappings);
         List<XLinkConnectorRegistration> registrations = connectorManager.getXLinkRegistrations(hostId);
         assertEquals(1, registrations.size());
         assertThat(registrations.get(0).getHostId(), is(hostId));
         assertThat(registrations.get(0).getConnectorId(), is(connectorId));
         assertThat(registrations.get(0).getToolName(), is(toolName));
-    }     
-    
+    }
+
     @Test
     public void testUnregisterFromXLink_OnMissingRegistration_NoFail() {
         String connectorId = "test+test+test";
         connectorManager.unregisterFromXLink(connectorId);
-    }         
-    
+    }
+
     @Test
     public void testUnregisterFromXLink_isEmptyAfterDisconnect() {
         String connectorId = "test+test+test";
         String hostId = "127.0.0.1";
         String toolName = "myTool";
-        ModelViewMapping[] modelViewMappings 
-            = createModelViewsMappings(toolName);
+        ModelViewMapping[] modelViewMappings = createModelViewsMappings(toolName);
         connectorManager.registerWithXLink(connectorId, hostId, toolName, modelViewMappings);
         connectorManager.unregisterFromXLink(connectorId);
         assertTrue(((XLinkConnectorManager) connectorManager).getXLinkRegistrations(hostId).isEmpty());
-    }      
-    
-//    @Test(expected = DomainNotLinkableException.class)
-//    public void testConnectorValidation_connectorIsNullAndFails() {
-//        String connectorId = "test3+test3+test3";
-//        String hostId = "127.0.0.1";
-//        String toolName = "myTool";
-//        ModelViewMapping[] modelViewMappings 
-//            = createModelViewsMappings(toolName); 
-//        connectorManager.registerForXLink(connectorId, hostId, toolName, modelViewMappings);
-//    }
-//    
-//    @Test(expected = DomainNotLinkableException.class)
-//    public void testConnectorValidation_connectorIsNotLinkableAndFails() {
-//        String connectorId = "test4+test4+test4";
-//        String hostId = "127.0.0.1";
-//        String toolName = "myTool";
-//        ModelViewMapping[] modelViewMappings 
-//            = createModelViewsMappings(toolName); 
-//        connectorManager.registerForXLink(connectorId, hostId, toolName, modelViewMappings);
-//    }    
-    
+    }
+
+    // @Test(expected = DomainNotLinkableException.class)
+    // public void testConnectorValidation_connectorIsNullAndFails() {
+    // String connectorId = "test3+test3+test3";
+    // String hostId = "127.0.0.1";
+    // String toolName = "myTool";
+    // ModelViewMapping[] modelViewMappings
+    // = createModelViewsMappings(toolName);
+    // connectorManager.registerForXLink(connectorId, hostId, toolName, modelViewMappings);
+    // }
+    //
+    // @Test(expected = DomainNotLinkableException.class)
+    // public void testConnectorValidation_connectorIsNotLinkableAndFails() {
+    // String connectorId = "test4+test4+test4";
+    // String hostId = "127.0.0.1";
+    // String toolName = "myTool";
+    // ModelViewMapping[] modelViewMappings
+    // = createModelViewsMappings(toolName);
+    // connectorManager.registerForXLink(connectorId, hostId, toolName, modelViewMappings);
+    // }
+
     private ModelViewMapping[] createModelViewsMappings(String toolName) {
         String viewId1 = "exampleViewId_1";
         String viewId2 = "exampleViewId_2";
-        ModelViewMapping[] modelViewMappings 
-            = new ModelViewMapping[1];  
-        Map<Locale, String> descriptions  = new HashMap<>();
+        ModelViewMapping[] modelViewMappings = new ModelViewMapping[1];
+        Map<Locale, String> descriptions = new HashMap<>();
         List<XLinkConnectorView> views = new ArrayList<XLinkConnectorView>();
-        
+
         descriptions.put(Locale.ENGLISH, "This is a demo view.");
         descriptions.put(Locale.GERMAN, "Das ist eine demonstration view.");
         views = new ArrayList<XLinkConnectorView>();
         views.add(new XLinkConnectorView(viewId1, toolName, descriptions));
-        views.add(new XLinkConnectorView(viewId2, toolName, descriptions));        
-        
-        modelViewMappings[0] = 
-                new ModelViewMapping(
-                        new ModelDescription(
-                                ExampleObjectOrientedModel.class.getName(),
-                                "3.0.0.SNAPSHOT")
-                        , views.toArray(new XLinkConnectorView[0]));
+        views.add(new XLinkConnectorView(viewId2, toolName, descriptions));
+
+        modelViewMappings[0] =
+            new ModelViewMapping(
+                new ModelDescription(
+                    ExampleObjectOrientedModel.class.getName(),
+                    "3.0.0.SNAPSHOT")
+                , views.toArray(new XLinkConnectorView[0]));
         return modelViewMappings;
     }
 
@@ -479,13 +469,14 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         nullModel.setId(42);
         nullModel.setValue("foo");
         when(transformationEngine.performTransformation(
-                any(ModelDescription.class), any(ModelDescription.class), eq(dummyModel)))
-                .thenReturn(nullModel);
+            any(ModelDescription.class), any(ModelDescription.class), eq(dummyModel)))
+            .thenReturn(nullModel);
 
         service.commitModel(dummyModel);
         verify(mockedConnector).commitModel(nullModel);
     }
 
+    @SuppressWarnings("unchecked")
     private void registerMockedFactory() throws Exception {
         factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
@@ -513,5 +504,5 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         domainProviderProps.put("domain", "test");
         registerService(domainProvider, domainProviderProps, DomainProvider.class);
     }
-    
+
 }

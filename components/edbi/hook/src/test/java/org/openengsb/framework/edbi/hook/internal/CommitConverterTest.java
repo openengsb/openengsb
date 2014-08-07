@@ -55,7 +55,6 @@ public class CommitConverterTest {
         converter = new CommitConverter(authenticationContext, contextHolder);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void convert_convertsCorrectly() throws Exception {
         // build test commit
@@ -154,9 +153,9 @@ public class CommitConverterTest {
 
         @Override
         public String retrieveInternalModelIdName() {
-        	return null;
+            return null;
         }
-        
+
         @Override
         public Long retrieveInternalModelTimestamp() {
             return null;

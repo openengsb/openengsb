@@ -152,7 +152,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         forceCreateWithId(id, connectorDescription);
         return id;
     }
-    
+
     @Override
     public void forceCreateWithId(String id, ConnectorDescription connectorDescription) {
         checkForExistingServices(id);
@@ -281,9 +281,9 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     protected OsgiUtilsService getUtilsService() {
-		return utilsService;
-	}
-    
+        return utilsService;
+    }
+
     public void setUtilsService(OsgiUtilsService utilsService) {
         this.utilsService = utilsService;
     }
