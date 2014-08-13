@@ -26,6 +26,6 @@ public final class ServerConfig {
     public static int port = 10389;
     public static String userDn = "uid=admin,ou=system";
     public static String credentials = "secret";
-    public static String multipleValueSeparator = "°";
+    public static String multipleValueSeparator = ":-:";
     public static long syncPeriodInMilliseconds = 60000;
 }
