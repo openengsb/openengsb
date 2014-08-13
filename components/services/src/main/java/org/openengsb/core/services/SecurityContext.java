@@ -17,10 +17,10 @@
 package org.openengsb.core.services;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.shiro.concurrent.SubjectAwareExecutorService;
+import org.apache.shiro.subject.ExecutionException;
 import org.apache.shiro.subject.Subject;
 import org.openengsb.core.services.internal.security.RootAuthenticationToken;
 import org.openengsb.core.util.ContextAwareCallable;
@@ -39,7 +39,7 @@ public final class SecurityContext {
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
         throws ExecutionException {
         ContextAwareCallable<ReturnType> contextAwareCallable = new ContextAwareCallable<ReturnType>(task);
-        Subject newsubject = (new Subject.Builder()).buildSubject();
+        Subject newsubject = new Subject.Builder().buildSubject();
         newsubject.login(new RootAuthenticationToken());
         try {
             return newsubject.execute(contextAwareCallable);
@@ -53,7 +53,7 @@ public final class SecurityContext {
      */
     public static void executeWithSystemPermissions(Runnable task) {
         ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
-        Subject newsubject = (new Subject.Builder()).buildSubject();
+        Subject newsubject = new Subject.Builder().buildSubject();
         newsubject.login(new RootAuthenticationToken());
         try {
             newsubject.execute(contextAwaretask);

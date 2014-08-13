@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
+import org.apache.shiro.subject.ExecutionException;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -60,8 +60,8 @@ public class ServicesHelper {
         osgiUtilsService = new DefaultOsgiUtilsService();
         osgiUtilsService.setBundleContext(bundleContext);
         serviceManager = osgiUtilsService.getService(ConnectorManager.class);
-        CommandProcessor commandProcessor = osgiUtilsService
-            .getService(org.apache.felix.service.command.CommandProcessor.class);
+        CommandProcessor commandProcessor =
+            osgiUtilsService.getService(org.apache.felix.service.command.CommandProcessor.class);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         keyboard = commandSession.getKeyboard();
     }
@@ -124,8 +124,8 @@ public class ServicesHelper {
             final String idFinal = id;
             int input = 'Y';
             if (!force) {
-                OutputStreamFormater
-                    .printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
+                OutputStreamFormater.printValue(String.format(
+                    "Do you really want to delete the connector: %s (Y/n): ", id));
                 input = keyboard.read();
             }
             if ('n' != (char) input && 'N' != (char) input) {
@@ -157,8 +157,7 @@ public class ServicesHelper {
         List<String> runningServiceIds = getRunningServiceIds();
         for (int i = 0; i < runningServiceIds.size(); i++) {
             String serviceId = runningServiceIds.get(i);
-            OutputStreamFormater.printTabbedValues(
-                9, String.format("[%s]", i), String.format("%s", serviceId));
+            OutputStreamFormater.printTabbedValues(9, String.format("[%s]", i), String.format("%s", serviceId));
         }
         String s = readUserInput();
         int pos;
@@ -260,8 +259,7 @@ public class ServicesHelper {
         List<String> domainProviderNames = getDomainProviderNames();
         for (int i = 0; i < domainProviderNames.size(); i++) {
             String provider = domainProviderNames.get(i);
-            OutputStreamFormater.printTabbedValues(
-                9, String.format("[%s]", i), String.format("%s", provider));
+            OutputStreamFormater.printTabbedValues(9, String.format("[%s]", i), String.format("%s", provider));
         }
         String s = readUserInput();
         int pos;
@@ -286,8 +284,8 @@ public class ServicesHelper {
             if (attributesFromInput.containsKey(attributeDefinition.getId())) {
                 userValue = attributesFromInput.get(attributeDefinition.getId());
             } else {
-                OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
-                    description, defaultValue));
+                OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName),
+                    String.format("%s (%s)", description, defaultValue));
                 if (!attributeDefinition.getOptions().isEmpty()) {
                     userValue = letUserChooseFromOption(attributeDefinition.getOptions());
                 } else {
@@ -305,9 +303,8 @@ public class ServicesHelper {
     private String letUserChooseFromOption(List<AttributeDefinition.Option> options) {
         for (int i = 0; i < options.size(); i++) {
             AttributeDefinition.Option option = options.get(i);
-            OutputStreamFormater
-                .printTabbedValues(9, String.format("[%s]", i), String.format("%s (%s)", option.getLabel()
-                    .getString(Locale.getDefault()), option.getValue()));
+            OutputStreamFormater.printTabbedValues(9, String.format("[%s]", i),
+                String.format("%s (%s)", option.getLabel().getString(Locale.getDefault()), option.getValue()));
         }
         String s = readUserInput();
         int pos;
@@ -320,8 +317,9 @@ public class ServicesHelper {
     }
 
     private ConnectorProvider getConnectorToCreate(String domainProviderId, String connector) {
-        List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(ConnectorProvider.class,
-            String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
+        List<ConnectorProvider> connectorProviders =
+            osgiUtilsService.listServices(ConnectorProvider.class,
+                String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
 
         for (ConnectorProvider connectorProvider : connectorProviders) {
             if (connector != null && connector.equals(connectorProvider.getId())) {
@@ -334,9 +332,9 @@ public class ServicesHelper {
         for (int i = 0; i < connectorProviders.size(); i++) {
             ConnectorProvider connectorProvider = connectorProviders.get(i);
             ServiceDescriptor descriptor = connectorProvider.getDescriptor();
-            OutputStreamFormater
-                .printTabbedValues(9, String.format("[%s] %s", i, descriptor.getName().getString(Locale
-                    .getDefault())), descriptor.getDescription().getString(Locale.getDefault()));
+            OutputStreamFormater.printTabbedValues(9, String.format("[%s] %s", i,
+                descriptor.getName().getString(Locale.getDefault())),
+                descriptor.getDescription().getString(Locale.getDefault()));
         }
         String positionString = readUserInput();
         int pos;

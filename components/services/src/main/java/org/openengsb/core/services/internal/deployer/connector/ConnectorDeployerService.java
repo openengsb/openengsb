@@ -57,37 +57,33 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Sets;
 
-public class ConnectorDeployerService extends AbstractOpenEngSBService
-        implements ArtifactInstaller {
+public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
     private static final String CONNECTOR_EXTENSION = ".connector";
 
     private static final String DOMAIN_PATTERN = "(" + org.openengsb.core.api.Constants.DOMAIN_KEY + "=%s)";
 
-    private static final String DOMAIN_CONNECTOR_PATTERN = "("
-            + "&(" + org.openengsb.core.api.Constants.DOMAIN_KEY + "=%s)"
-            + "(" + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=%s)"
-            + ")";
+    private static final String DOMAIN_CONNECTOR_PATTERN = "(" + "&(" + org.openengsb.core.api.Constants.DOMAIN_KEY
+            + "=%s)" + "(" + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=%s)" + ")";
 
-    private static final String DOMAIN_PROVIDER_PATTERN =
-        "(" + Constants.OBJECTCLASS + "=" + DomainProvider.class.getName() + ")";
+    private static final String DOMAIN_PROVIDER_PATTERN = "(" + Constants.OBJECTCLASS + "="
+            + DomainProvider.class.getName() + ")";
 
-    private static final String CONNECTOR_FACTORY_PATTERN =
-        "(" + Constants.OBJECTCLASS + "=" + ConnectorInstanceFactory.class.getName() + ")";
+    private static final String CONNECTOR_FACTORY_PATTERN = "(" + Constants.OBJECTCLASS + "="
+            + ConnectorInstanceFactory.class.getName() + ")";
 
-    private static final Logger LOGGER = LoggerFactory
-        .getLogger(ConnectorDeployerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
 
     private ConnectorManager serviceManager;
-    private LoadingCache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
-            new CacheLoader<File, ConnectorFile>() {
-                @Override
-                public ConnectorFile load(File key) throws Exception {
-                    return new ConnectorFile(key);
-                }
-            });
+    private final LoadingCache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, ConnectorFile>() {
+            @Override
+            public ConnectorFile load(File key) throws Exception {
+                return new ConnectorFile(key);
+            }
+        });
 
-    private LoadingCache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
+    private final LoadingCache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
         new CacheLoader<File, Semaphore>() {
             @Override
             public Semaphore load(File key) throws Exception {
@@ -95,7 +91,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             }
         });
 
-    private Set<File> failedInstalls = Sets.newHashSet();
+    private final Set<File> failedInstalls = Sets.newHashSet();
 
     private BundleContext bundleContext;
 
@@ -106,7 +102,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
                 try {
                     tryInstallFailed();
                 } catch (Exception e) {
-                    LOGGER.debug("exception while trying to install connectors after new found domain or connector", e);
+                    LOGGER.debug("exception while trying to install connectors after new found domain or connector",
+                        e);
                 }
             }
         }, "(|" + DOMAIN_PROVIDER_PATTERN + CONNECTOR_FACTORY_PATTERN + ")");
@@ -114,10 +111,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     @Override
     public boolean canHandle(File artifact) {
-        LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")",
-            artifact.getAbsolutePath());
-        if (artifact.isFile()
-                && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
+        LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
+        if (artifact.isFile() && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
             LOGGER.info("Found a .connector file to deploy.");
             return true;
         }
@@ -126,8 +121,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     @Override
     public void install(File artifact) throws Exception {
-        LOGGER.debug("ConnectorDeployer.install(\"{}\")",
-            artifact.getAbsolutePath());
+        LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
         synchronized (failedInstalls) {
             if (!doInstall(artifact)) {
                 failedInstalls.add(artifact);
@@ -144,11 +138,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             return false;
         }
         configFile.update(artifact);
-        final Map<String, Object> properties = new Hashtable<String, Object>(
-            configFile.getProperties());
+        final Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
-        if (properties.get(Constants.SERVICE_RANKING) == null
-                && ConnectorFile.isRootService(artifact)) {
+        if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
             properties.put(Constants.SERVICE_RANKING, -1);
         }
         LOGGER.info("Loading instance {}", configFile.getName());
@@ -183,11 +175,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
                     return null;
                 }
             });
-        } catch (ExecutionException e) {
+        } catch (org.apache.shiro.subject.ExecutionException e) {
             LOGGER.info("installing {} delayed", artifact);
             LOGGER.debug("installing {} failed because of Exception", artifact, e);
             return false;
         }
+        LOGGER.info("Finished installing {}", artifact);
         return true;
     }
 
@@ -205,8 +198,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     @Override
     public void update(File artifact) throws Exception {
-        LOGGER.debug("ConnectorDeployer.update(\"{}\")",
-            artifact.getAbsolutePath());
+        LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
         Semaphore semaphore = updateSemaphores.get(artifact);
         semaphore.acquire();
         try {
@@ -219,8 +211,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     private void doUpdate(File artifact) throws Exception {
         ConnectorFile connectorFile = oldConfigs.get(artifact);
         final String connectorId = connectorFile.getName();
-        ConnectorDescription persistenceContent = serviceManager
-            .getAttributeValues(connectorId);
+        ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
         ChangeSet changes = connectorFile.getChanges(artifact);
 
         final ConnectorDescription newDescription;
@@ -232,8 +223,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             FileUtils.moveFile(artifact, backupFile);
             Properties properties = connectorFile.toProperties();
             properties.store(new FileWriter(artifact),
-                "Connector update failed. The invalid connector-file has been saved to "
-                        + backupFile.getName());
+                "Connector update failed. The invalid connector-file has been saved to " + backupFile.getName());
             throw e;
         }
 
@@ -253,8 +243,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         File candFile = new File(candidate);
         while (candFile.exists()) {
             backupNumber++;
-            String suffix = StringUtils.leftPad(Integer.toString(backupNumber),
-                3, "0");
+            String suffix = StringUtils.leftPad(Integer.toString(backupNumber), 3, "0");
             candidate = artifact.getAbsolutePath() + "_" + suffix;
             candFile = new File(candidate);
         }
@@ -263,23 +252,19 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private ConnectorDescription applyChanges(ConnectorDescription persistenceContent, ChangeSet changes)
         throws MergeException {
-        MapDifference<String, String> changedAttributes = changes
-            .getChangedAttributes();
+        MapDifference<String, String> changedAttributes = changes.getChangedAttributes();
         Map<String, String> attributes = persistenceContent.getAttributes();
 
-        Map<String, String> newAttributes = ConfigUtils.updateMap(attributes,
-            changedAttributes);
-        Map<String, Object> newProperties = ConfigUtils.updateMap(
-            persistenceContent.getProperties(),
-            changes.getChangedProperties());
+        Map<String, String> newAttributes = ConfigUtils.updateMap(attributes, changedAttributes);
+        Map<String, Object> newProperties =
+            ConfigUtils.updateMap(persistenceContent.getProperties(), changes.getChangedProperties());
         return new ConnectorDescription(changes.getDomainType(), changes.getConnectorType(), newAttributes,
             new Hashtable<String, Object>(newProperties));
     }
 
     @Override
     public void uninstall(final File artifact) throws Exception {
-        LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")",
-            artifact.getAbsolutePath());
+        LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
         SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
