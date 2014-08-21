@@ -19,11 +19,9 @@ package org.openengsb.core.usersync;
 import java.util.Collection;
 import java.util.List;
 
-import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.api.security.service.PermissionSetAlreadyExistsException;
 import org.openengsb.core.api.security.service.UserDataManager;
@@ -35,7 +33,6 @@ import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.usersync.exception.AuthenticationException;
 import org.openengsb.domain.userprojects.model.Assignment;
 import org.openengsb.domain.userprojects.model.Attribute;
-import org.openengsb.domain.userprojects.model.Credential;
 import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
@@ -352,11 +349,6 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
             }
         }
 
-        // Add credential
-        for (Credential credential : user.getCredentials()) {
-            userManager.setUserCredentials(user.getUsername(), credential.getType(), credential.getValue());
-        }
-
         // Add attributes
         for (Attribute attribute : user.getAttributes()) {
             userManager.setUserAttribute(user.getUsername(), attribute.getAttributeName(), attribute.getValues()
@@ -374,20 +366,7 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
 
         String setName = role.getName();
 
-        if (userManager.getPermissionSetList().contains(setName)) {
-            // Update existing PermissionSet
-            Collection<Permission> oldPermissions = userManager.getAllPermissionsFromPermissionSet(setName);
-
-            // Delete old Permissions
-            userManager.removePermissionFromSet(setName,
-                    oldPermissions.toArray(new Permission[oldPermissions.size()]));
-
-            // Delete old PermissionSets
-            userManager.removePermissionSetFromPermissionSet(setName,
-                    role.getRoles().toArray(new String[role.getRoles().size()]));
-
-        } else {
-            // Create new PermissionSet
+        if (!userManager.getPermissionSetList().contains(setName)) {
             try {
                 LOGGER.debug("Create permissionset: " + setName);
                 userManager.createPermissionSet(setName);
@@ -397,17 +376,6 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
                 LOGGER.error("Entry exists exception. This seems impossible.", e);
             }
         }
-
-        Collection<Permission> permissionList = Sets.newHashSet();
-
-        for (String permission : role.getPermissions()) {
-            permissionList.add(new WicketPermission(permission));
-        }
-
-        // Add information to PermissionSet
-        userManager.addPermissionToSet(setName, permissionList.toArray(new Permission[permissionList.size()]));
-        userManager.addPermissionSetToPermissionSet(setName,
-                role.getRoles().toArray(new String[role.getRoles().size()]));
     }
 
     private void deleteRoleFromUserManager(String role) {
@@ -426,17 +394,11 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
                     userManager.removePermissionSetFromPermissionSet(permissionSet, role);
                 }
             }
-
-            // Remote permissions from PermissionSet
-            for (Permission permission : userManager.getAllPermissionsFromPermissionSet(role)) {
-                userManager.removePermissionFromSet(role, permission);
-            }
         }
     }
 
     private void addAssignmentInUserManager(Assignment assignment) {
         String user = assignment.getUser();
-        String project = assignment.getProject();
 
         for (String permissionSet : assignment.getRoles()) {
             if (userManager.getPermissionSetList().contains(permissionSet)) {
@@ -446,24 +408,14 @@ public class SyncronizedUserServiceImpl extends AbstractOpenEngSBService impleme
                 LOGGER.debug("Role not found: " + permissionSet);
             }
         }
-
-        for (String permission : assignment.getPermissions()) {
-            userManager.addPermissionToUser(user, new WicketPermission(permission, null, project));
-        }
-
     }
 
     private void deleteAssignmentFromUserManager(Assignment assignment) {
 
         String user = assignment.getUser();
-        String project = assignment.getProject();
 
         for (String permissionSet : assignment.getRoles()) {
             userManager.removePermissionSetFromUser(user, permissionSet);
-        }
-
-        for (String permission : assignment.getPermissions()) {
-            userManager.removePermissionFromUser(user, new WicketPermission(permission, null, project));
         }
     }
 
