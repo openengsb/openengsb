@@ -91,6 +91,7 @@
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
     <module>connector/usernamepassword</module>
+    <module>connector/authenticationjira</module>
     <module>connector/serviceacl</module>
     <!-- <module>connector/userprojectsldap</module> -->
     <!-- OpenEngSB ConfigPersistence Modules -->
