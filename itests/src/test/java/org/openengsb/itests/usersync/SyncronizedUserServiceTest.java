@@ -36,7 +36,6 @@ import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.services.SecurityContext;
 import org.openengsb.core.usersync.SyncronizedUserService;
 import org.openengsb.domain.userprojects.model.Attribute;
-import org.openengsb.domain.userprojects.model.Credential;
 import org.openengsb.domain.userprojects.model.User;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -85,12 +84,6 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
 
                 User user = new User(userName);
 
-                Credential cred = new Credential();
-                cred.setType(credType);
-                cred.setValue(credValue);
-                cred.generateUuid(user.getUsername());
-                user.getCredentials().add(cred);
-
                 Attribute attr = new Attribute();
                 attr.setAttributeName(attrName);
                 attr.getValues().add(attrValue);
@@ -124,12 +117,6 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
                 authenticationContext.login("admin", new Password("password"));
 
                 User user = new User(userName);
-                Credential cred = new Credential();
-                cred.setType(credType);
-                cred.setValue(credValue);
-                cred.generateUuid(user.getUsername());
-                user.getCredentials().add(cred);
-
                 Attribute attr = new Attribute();
                 attr.setAttributeName(attrName);
                 attr.getValues().add(attrValue);
@@ -137,12 +124,6 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
                 user.getAttributes().add(attr);
 
                 impl.checkinUser(user);
-
-                Credential cred2 = new Credential();
-                cred2.setType(cred2Type);
-                cred2.setValue(cred2Value);
-                cred2.generateUuid(user.getUsername());
-                user.getCredentials().add(cred2);
 
                 impl.checkinUser(user);
 

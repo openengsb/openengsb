@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
@@ -36,7 +37,7 @@ public class Role {
 
     private List<String> roles = Lists.newArrayList();
 
-    private List<String> permissions = Lists.newArrayList();
+    private List<Permission> permissions = Lists.newArrayList();
 
     public Role() {
     }
@@ -61,11 +62,11 @@ public class Role {
         this.roles = roles;
     }
 
-    public List<String> getPermissions() {
+    public List<Permission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<String> permissions) {
+    public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
 

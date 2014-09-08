@@ -22,7 +22,6 @@ import java.util.List;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.domain.userprojects.model.Assignment;
-import org.openengsb.domain.userprojects.model.Permission;
 import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
@@ -60,13 +59,6 @@ public interface UserProjectsDomain extends Domain {
     void updateRoles(List<Role> roles);
 
     /**
-     * Should update all permissions in the tool. If some of the permissions don't exist they should be created.
-     * 
-     * @param user List of permissions that should be updated.
-     */
-    void updatePermissions(List<Permission> permissions);
-
-    /**
      * Should update all assignments in the tool. If some of the assignments don't exist they should be created.
      * 
      * @param user List of assignments that should be updated.
@@ -78,8 +70,6 @@ public interface UserProjectsDomain extends Domain {
     void deleteProjects(List<Project> projects);
 
     void deleteRoles(List<Role> roles);
-
-    void deletePermissions(List<Permission> permissions);
 
     void deleteAssignments(List<Assignment> assignments);
 }

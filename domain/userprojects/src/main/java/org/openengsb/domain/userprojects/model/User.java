@@ -36,8 +36,6 @@ public class User {
 
     private String currentProject;
 
-    private List<Credential> credentials = Lists.newArrayList();
-
     private List<Attribute> attributes = Lists.newArrayList();
 
     public User() {
@@ -53,14 +51,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public List<Credential> getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(List<Credential> credentials) {
-        this.credentials = credentials;
     }
 
     public List<Attribute> getAttributes() {
@@ -81,12 +71,12 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", username, credentials.isEmpty() ? "none" : "****");
+        return String.format("%s", username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, credentials, attributes);
+        return Objects.hash(username, attributes);
     }
 
     @Override
@@ -95,7 +85,6 @@ public class User {
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals(username, other.username) && Objects.equals(credentials, other.credentials)
-            && Objects.equals(attributes, other.attributes);
+        return Objects.equals(username, other.username) && Objects.equals(attributes, other.attributes);
     }
 }

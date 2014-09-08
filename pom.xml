@@ -92,7 +92,7 @@
     <module>connector/example</module>
     <module>connector/usernamepassword</module>
     <module>connector/serviceacl</module>
-    <module>connector/userprojectsldap</module>
+    <!-- <module>connector/userprojectsldap</module> -->
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
