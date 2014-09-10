@@ -62,7 +62,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Password;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallMessage;
 import org.openengsb.core.api.remote.MethodResult;
@@ -137,7 +137,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String AUTH_DATA = ""
             + "{"
-            + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
+            + "  \"className\":\"org.openengsb.core.api.security.model.Password\","
             + "  \"data\":"
             + "  {"
             + "    \"value\":\"password\""
