@@ -36,7 +36,6 @@ import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -48,13 +47,14 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.ekb.api.TransformationEngine;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.OpenEngSBShiroAuthenticator;
-import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManager;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.XLinkConnectorManagerImpl;
 import org.openengsb.core.services.internal.security.AdminAccessConnector;
 import org.openengsb.core.services.internal.security.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.services.internal.security.model.RootPermission;
@@ -89,7 +89,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected OsgiUtilsService serviceUtils;
     protected WicketTester tester;
     protected ApplicationContextMock context;
-    protected ConnectorManager serviceManager;
+    protected XLinkConnectorManager serviceManager;
     protected ConnectorRegistrationManager registrationManager;
     protected WiringService wiringService;
     protected ContextCurrentService contextCurrentService;
@@ -120,7 +120,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("osgiUtilsService", serviceUtils);
         ConnectorRegistrationManager registrationManager = new ConnectorRegistrationManager(bundleContext,
                 mock(TransformationEngine.class), new ForwardMethodInterceptor(), new SecurityAttributeProviderImpl());
-        ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
+        XLinkConnectorManagerImpl serviceManager = new XLinkConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
         DummyConfigPersistenceService<String> backend = new DummyConfigPersistenceService<String>();

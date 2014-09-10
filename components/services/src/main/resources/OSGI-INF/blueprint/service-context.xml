@@ -55,7 +55,7 @@
     <ref component-id="connectorManager" />
   </service>
 
-  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
+  <bean id="connectorManager" class="org.openengsb.core.services.internal.XLinkConnectorManagerImpl" init-method="init">
     <property name="registrationManager">
       <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManager">
         <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext" />
@@ -65,6 +65,7 @@
       </bean>
     </property>
     <property name="configPersistence" ref="connectorConfigPersistence" />
+    <property name="transformationEngine" ref="transformationEngine" />
     <property name="xLinkBaseUrl" value="${xlink.url}" />
     <property name="xLinkExpiresIn" value="${xlink.expiresIn}" />
     <property name="utilsService" ref="utilsService" />

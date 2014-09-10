@@ -22,6 +22,7 @@ import java.util.List;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkConnector;
 
+// TODO: SSc review 
 /**
  * This class supplies the logic to process a call from an XLink URL.
  */
@@ -32,6 +33,7 @@ public interface ToolChooserLogic {
      */
     List<XLinkConnector> getRegisteredToolsFromHost(String hostId);
     
+    // TODO: SSc could be more then 1 (e.g. plc view can display variables and pous)
     /**
      * Returns the ModelDescription to a given XLinkRegistration and ViewId.
      * Returns null, if the XLinkRegistration or the ViewId could not be found.

@@ -17,20 +17,23 @@
 
 package org.openengsb.core.api.model;
 
-import com.google.common.base.Objects;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The model description class defines the unique description of a model by the model class name and the version of the
  * model class. The version is equals to the version of the bundle containing the model class. If no version is given,
  * 1.0.0 will be used. All versions have the form x.y.z where x,y and z are integers.
  */
-public class ModelDescription {
+public class ModelDescription implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String modelClassName;
     private String versionString;
 
     public ModelDescription() {
     }
-    
+
     public ModelDescription(String modelClassName, String versionString) {
         this.modelClassName = modelClassName;
         this.versionString = versionString;
@@ -39,7 +42,7 @@ public class ModelDescription {
     public ModelDescription(Class<?> modelClass, String versionString) {
         this(modelClass.getName(), versionString);
     }
-    
+
     public ModelDescription(String modelClassName) {
         this(modelClassName, "1.0.0");
     }
@@ -73,22 +76,19 @@ public class ModelDescription {
 
     @Override
     public int hashCode() {
-        Object[] obj = new Object[]{ modelClassName, versionString };
-        return Objects.hashCode(obj);
+        return Objects.hash(modelClassName, versionString);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ModelDescription)) {
-            return false;
+        if (this == obj) {
+            return true;
         }
-        ModelDescription other = (ModelDescription) obj;
-        if (!(other.getModelClassName().equals(this.getModelClassName()))) {
-            return false;
+        if (obj instanceof ModelDescription) {
+            ModelDescription other = (ModelDescription) obj;
+            return Objects.equals(modelClassName, other.modelClassName)
+                    && Objects.equals(versionString, other.versionString);
         }
-        if (!(other.getVersionString().equals(this.getVersionString()))) {
-            return false;
-        }
-        return true;
+        return false;
     }
 }

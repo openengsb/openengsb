@@ -20,18 +20,53 @@ package org.openengsb.core.api.xlink.service;
 import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.xlink.model.ModelViewMapping;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 
 /**
- * This interface provides additional internal functionality to the ConnectorManager 
- * which is used for XLink by other bundles of the Server
+ * This interface provides additional internal functionality to the ConnectorManager which is used for XLink by other
+ * bundles of the Server
  */
 public interface XLinkConnectorManager extends ConnectorManager {
-    
+
     /**
-     * Returns a list of XLinkConnectorRegistration to a given remoteHostIp. 
-     * If the remoteHostIp is unknown, returns an empty list.
+     * Registers the connector with the given id with XLink.
+     * 
+     * @param connectorId the connector to register for XLink
+     * @param remoteHostId the id of the host where the tool is running, e.g. host IP
+     * @param toolName the name of the tool
+     * @param modelViewMappings a list of models the tool can display and their associated views.
      */
-    List<XLinkConnectorRegistration> getXLinkRegistration(String remoteHostIp);
-    
+    void registerWithXLink(String connectorId, String remoteHostId, String toolName,
+            ModelViewMapping... modelViewMappings);
+
+    /**
+     * Unregisters the connector from XLink.
+     * 
+     * @param connectorId the connector to unregister
+     */
+    void unregisterFromXLink(String connectorId);
+
+    /**
+     * Returns a list of XLinkConnectorRegistration to a given remoteHostIp. If the remoteHostIp is unknown, returns an
+     * empty list.
+     */
+    List<XLinkConnectorRegistration> getXLinkRegistrations(String remoteHostIp);
+
+    /**
+     * 
+     * @param connectorId
+     * @param modelObject
+     * @param hostOnly
+     * @return
+     */
+    String publishXLink(String connectorId, Object modelObject, boolean hostOnly);
+
+    /**
+     * 
+     * @param connectorId
+     * @param modelObject
+     * @return
+     */
+    String generateXLink(String connectorId, Object modelObject);
 }

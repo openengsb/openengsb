@@ -178,6 +178,7 @@ public class ManipulationUtilsTest {
         assertThat((String) getEntryByName(entries, "name"), is("testName"));
         assertThat((String) getEntryByName(entries, "child"), is("testChild"));
         assertThat((String) wrapper.retrieveInternalModelId(), is("testId"));
+        assertThat((String) wrapper.retrieveInternalModelIdName(), is("id"));
     }
     
     @Test

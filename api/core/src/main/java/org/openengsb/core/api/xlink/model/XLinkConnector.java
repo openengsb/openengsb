@@ -17,37 +17,32 @@
 
 package org.openengsb.core.api.xlink.model;
 
-
 import java.io.Serializable;
-import java.util.Arrays;
-
+import java.util.Objects;
 
 /**
- * Modelclass to transfere information about local XLink registrations
- * to other remote connectors.
- * <br/><br/>
- * Carries the ToolName, the ConnectorId of a tool and the views it offers for XLink.
- * A remote connector should only receive information about it´s local tools.
+ * Modelclass to transfer information about local XLink registrations to other remote connectors. <br/>
+ * <br/>
+ * Carries the ToolName, the ConnectorId of a tool and the views it offers for XLink. A remote connector should only
+ * receive information about it´s local tools.
  */
 public class XLinkConnector implements Serializable {
-    
-    // @extract-start XLinkRegisteredTool
+    private static final long serialVersionUID = 1L;
+
     /**
      * Id of the connector, identifying the tool
      */
     private String id;
-    
+
     /**
      * Human readable name of the tool, may be null
      */
     private String toolName;
-    
+
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
     private XLinkConnectorView[] availableViews;
-    
-    // @extract-end
 
     public XLinkConnector() {
     }
@@ -57,10 +52,10 @@ public class XLinkConnector implements Serializable {
         this.toolName = toolName;
         this.availableViews = availableViews;
     }
-   
+
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
-     */  
+     */
     public XLinkConnectorView[] getAvailableViews() {
         return availableViews;
     }
@@ -71,7 +66,7 @@ public class XLinkConnector implements Serializable {
 
     /**
      * Id of the connector, identifying the tool
-     */    
+     */
     public String getId() {
         return id;
     }
@@ -82,7 +77,7 @@ public class XLinkConnector implements Serializable {
 
     /**
      * Name of the tool, may be null
-     */    
+     */
     public String getToolName() {
         return toolName;
     }
@@ -93,32 +88,21 @@ public class XLinkConnector implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        if (this == obj) {
+            return true;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        if (obj instanceof XLinkConnector) {
+            final XLinkConnector other = (XLinkConnector) obj;
+            return Objects.equals(id, other.id)
+                    && Objects.equals(toolName, other.toolName)
+                    && Objects.equals(availableViews, other.availableViews);
         }
-        final XLinkConnector other = (XLinkConnector) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
-            return false;
-        }
-        if ((this.toolName == null) ? (other.toolName != null) : !this.toolName.equals(other.toolName)) {
-            return false;
-        }
-        if (!Arrays.deepEquals(this.availableViews, other.availableViews)) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 83 * hash + (this.toolName != null ? this.toolName.hashCode() : 0);
-        hash = 83 * hash + Arrays.deepHashCode(this.availableViews);
-        return hash;
+        return Objects.hash(id, toolName, availableViews);
     }
-    
+
 }

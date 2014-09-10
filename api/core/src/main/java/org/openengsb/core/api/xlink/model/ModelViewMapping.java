@@ -22,30 +22,31 @@ import java.io.Serializable;
 import org.openengsb.core.api.model.ModelDescription;
 
 /**
- * Modelclass to transfer XLink Model/View associations from a remote tool
- * during the XLink registration.
+ * Model/View associations from a remote tool used during the XLink registration.
  */
-public class ModelToViewsTuple implements Serializable {
-    
+public class ModelViewMapping implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Identifier of an OpenEngSBModel
      */
     private ModelDescription description;
-    
+
     /**
      * Array of Views, offered by the remote tool
      */
     private XLinkConnectorView[] views;
 
-    public ModelToViewsTuple() {
-        
+    public ModelViewMapping() {
+
     }
-    
-    public ModelToViewsTuple(ModelDescription description, XLinkConnectorView[] views) {
+
+    public ModelViewMapping(ModelDescription description, XLinkConnectorView... views) {
         this.description = description;
         this.views = views;
     }
-        
+
     /**
      * Identifier of an OpenEngSBModel
      */
@@ -56,7 +57,7 @@ public class ModelToViewsTuple implements Serializable {
     public void setDescription(ModelDescription description) {
         this.description = description;
     }
-    
+
     /**
      * Array of Views, offered by the remote tool
      */
@@ -67,5 +68,5 @@ public class ModelToViewsTuple implements Serializable {
     public void setViews(XLinkConnectorView[] views) {
         this.views = views;
     }
-    
+
 }
