@@ -116,12 +116,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>com.atlassian.jira.rest.client</artifactId>
       <version>${jira.rest.client.wrapped.version}</version>
