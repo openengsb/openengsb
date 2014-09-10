@@ -25,7 +25,7 @@ import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Password;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
