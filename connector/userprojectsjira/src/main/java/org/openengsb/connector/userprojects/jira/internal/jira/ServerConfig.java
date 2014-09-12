@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
+package org.openengsb.connector.userprojects.jira.internal.jira;
+
+import java.net.URI;
 
 public final class ServerConfig {
 
@@ -22,10 +24,8 @@ public final class ServerConfig {
         
     }
     
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
+    public static URI uri = URI.create("scheme://host:port/path");
+    public static String username = "admin";
+    public static String password = "pass";
     public static long syncPeriodInMilliseconds = 60000;
 }

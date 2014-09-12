@@ -199,9 +199,10 @@
     <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.userprojects/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
+    <feature>openengsb-connector-authentication-jira</feature>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
     <!-- for external user/projects -->
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.userprojects.ldap/${project.version}</bundle>
+    <feature>openengsb-connector-userprojects-jira</feature>
   </feature>
 
   <feature name="openengsb-edbi" version="${project.version}" description="OpenEngSB EDB Index">
@@ -345,6 +346,28 @@
     <feature version="${project.version}">openengsb-framework</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.memoryauditing/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-connector-authentication-jira" version="${project.version}" description="OpenEngSB JIRA Authentication Connector">
+    <details>
+      This feature contains the implementation of the OpenEngSB Authentication Domain using JIRA as the user management. This one can be
+      replaced by any other implementation but at least one implementation instance of this domain is required by the
+      OpenEngSB to run.
+    </details>
+    <bundle dependency="true">mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
+    <bundle dependency="true" start-level='40'>mvn:org.openengsb.wrapped/com.atlassian.jira.rest.client/${jira.rest.client.wrapped.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.authentication.jira/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-connector-userprojects-jira" version="${project.version}" description="OpenEngSB JIRA UserProjects Connector">
+    <details>
+      This feature contains the implementation of the OpenEngSB UserProjects Domain using JIRA as the user-project management. This one 
+      can be replaced by any other implementation but at least one implementation instance of this domain is required by the OpenEngSB 
+      to run.
+    </details>
+    <bundle dependency="true">mvn:org.openengsb.domain/org.openengsb.domain.userprojects/${project.version}</bundle>
+    <bundle dependency="true" start-level='40'>mvn:org.openengsb.wrapped/com.atlassian.jira.rest.client/${jira.rest.client.wrapped.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.userprojects.jira/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-domain-example" version="${project.version}" description="OpenEngSB Example Domain">

@@ -14,18 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
+package org.openengsb.connector.userprojects.jira.internal.jira.json;
 
-public final class ServerConfig {
+import java.util.ArrayList;
 
-    private ServerConfig() {
-        
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+
+import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
+import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
+
+public class UsersJsonParser implements JsonArrayParser<Iterable<User>> {
+
+    private final UserJsonParser userJsonParser = new UserJsonParser();
+
+    @Override
+    public Iterable<User> parse(JSONArray json) throws JSONException {
+        ArrayList<User> res = new ArrayList<User>(json.length());
+        for (int i = 0; i < json.length(); i++) {
+            res.add(userJsonParser.parse(json.getJSONObject(i)));
+        }
+        return res;
     }
-    
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
-    public static long syncPeriodInMilliseconds = 60000;
+
 }

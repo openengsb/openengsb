@@ -14,18 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
+package org.openengsb.connector.userprojects.jira.internal.jira;
 
-public final class ServerConfig {
+import java.util.List;
 
-    private ServerConfig() {
-        
-    }
+import org.openengsb.domain.userprojects.model.Assignment;
+import org.openengsb.domain.userprojects.model.Project;
+import org.openengsb.domain.userprojects.model.User;
+
+/**
+ * Acts as an entity manager for JIRA server.
+ *
+ */
+public interface ModelManager {
+
+    /**
+     * Finds all available projects on the JIRA server.
+     */
+    List<Project> findProjects();
     
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
-    public static long syncPeriodInMilliseconds = 60000;
+    /**
+     * Finds all available users on the JIRA server.
+     */
+    List<User> findUsers();
+
+    /**
+     * Finds all available assignments on the JIRA server.
+     */
+    List<Assignment> findAssignments();
 }

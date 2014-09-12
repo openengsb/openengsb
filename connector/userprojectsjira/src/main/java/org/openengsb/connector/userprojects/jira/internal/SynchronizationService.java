@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
+package org.openengsb.connector.userprojects.jira.internal;
 
-public final class ServerConfig {
+import org.openengsb.connector.userprojects.jira.internal.jira.JiraClient;
 
-    private ServerConfig() {
-        
-    }
+/**
+ * Performs synchronization between the JIRA server and the OpenEngSB.
+ */
+public interface SynchronizationService {
     
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
-    public static long syncPeriodInMilliseconds = 60000;
+    /**
+     * Synchronizes the user/project data from the JIRA server into the bus.
+     */
+    void syncFromJiraServerToOpenEngSB(JiraClient jiraClient);
+
 }

@@ -16,12 +16,10 @@
 #
 
 domainType=userprojects
-connectorType=userprojects.ldap
-property.location.root=userprojects/userprojects.ldap
+connectorType=userprojects.jira
+property.location.root=userprojects/userprojects.jira
 
-attribute.ldapServer.host=127.0.0.1
-attribute.ldapServer.port=12345
-attribute.ldapServer.userDn=uid=admin,ou=system
-attribute.ldapServer.credentials=secret
-attribute.ldapServer.multipleValueSeparator=:-:
-attribute.ldapServer.syncPeriodInMilliseconds=60000
+attribute.jiraServer.uri=scheme://host:port/path
+attribute.jiraServer.username=user
+attribute.jiraServer.password=password
+attribute.jiraServer.syncPeriodInMilliseconds=60000

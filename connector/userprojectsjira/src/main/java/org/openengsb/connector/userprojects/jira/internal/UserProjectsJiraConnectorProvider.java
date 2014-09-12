@@ -14,18 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
 
-public final class ServerConfig {
+package org.openengsb.connector.userprojects.jira.internal;
 
-    private ServerConfig() {
-        
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.AbstractConnectorProvider;
+
+public class UserProjectsJiraConnectorProvider extends AbstractConnectorProvider {
+
+    @Override
+    public ServiceDescriptor getDescriptor() {
+        Builder builder = ServiceDescriptor.builder(strings);
+        builder.id(id);
+        builder.name("userprojects.jira.name").description("userprojects.jira.description");
+
+        return builder.build();
     }
-    
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
-    public static long syncPeriodInMilliseconds = 60000;
+
 }

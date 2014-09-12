@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.ldap.internal.ldap;
+package org.openengsb.connector.userprojects.jira.internal.jira;
 
-public final class ServerConfig {
+public final class JiraClientFactory {
 
-    private ServerConfig() {
+    private JiraClientFactory() {
         
     }
     
-    public static String host = "localhost";
-    public static int port = 10389;
-    public static String userDn = "uid=admin,ou=system";
-    public static String credentials = "secret";
-    public static String multipleValueSeparator = ":-:";
-    public static long syncPeriodInMilliseconds = 60000;
+    public static JiraClient create() {
+        return new RestJiraClient(ServerConfig.uri, ServerConfig.username, ServerConfig.password);
+    }
 }
