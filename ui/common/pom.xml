@@ -156,12 +156,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.authorization</artifactId>
       <version>${project.version}</version>

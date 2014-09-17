@@ -49,7 +49,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.workflow.api.RuleManager;

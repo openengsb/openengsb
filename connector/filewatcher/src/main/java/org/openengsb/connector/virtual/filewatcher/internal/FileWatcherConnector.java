@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Timer;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Password;
 import org.openengsb.connector.virtual.filewatcher.FileSerializer;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.EventSupport;

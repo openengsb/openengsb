@@ -16,7 +16,7 @@
  */
 package org.openengsb.connector.userprojects.jira.internal;
 
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Password;
 import org.openengsb.connector.userprojects.jira.internal.jira.DefaultModelManager;
 import org.openengsb.connector.userprojects.jira.internal.jira.JiraClient;
 import org.openengsb.connector.userprojects.jira.internal.jira.ModelManager;

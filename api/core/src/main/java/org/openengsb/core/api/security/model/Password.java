@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.usernamepassword;
+package org.openengsb.core.api.security.model;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.security.Credentials;
