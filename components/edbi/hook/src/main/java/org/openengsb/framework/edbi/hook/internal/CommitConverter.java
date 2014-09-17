@@ -19,6 +19,7 @@ package org.openengsb.framework.edbi.hook.internal;
 import static org.openengsb.core.util.CollectionUtilsExtended.group;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ public class CommitConverter {
         commit.setConnectorId(ekbCommit.getConnectorId());
         commit.setDomainId(ekbCommit.getDomainId());
         commit.setInstanceId(ekbCommit.getInstanceId());
+        commit.setTimestamp(new Date());
 
         commit.setUser(getUser());
         commit.setContextId(getContextId());

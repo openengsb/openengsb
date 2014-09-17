@@ -17,6 +17,7 @@
 package org.openengsb.framework.edbi.hook.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -86,6 +87,7 @@ public class CommitConverterTest {
         assertEquals("testDomain", convertedCommit.getDomainId());
         assertEquals("testInstance", convertedCommit.getInstanceId());
         assertEquals("550e8400-e29b-41d4-a716-446655440000", convertedCommit.getCommitId().toString());
+        assertNotNull(convertedCommit.getTimestamp());
 
         assertEquals("testContext", convertedCommit.getContextId());
         assertEquals("testUser", convertedCommit.getUser());
