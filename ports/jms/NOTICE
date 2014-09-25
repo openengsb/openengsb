@@ -56,6 +56,7 @@ This project includes:
   Log4j under Apache License, Version 2.0
   Mockito under The MIT License
   mqtt-client under The Apache Software License, Version 2.0
+  OpenEngSB :: Connector :: UsernamePassword under Apache 2
   OpenEngSB :: Domain :: Authentication under Apache 2
   OpenEngSB :: Framework :: API under Apache 2
   OpenEngSB :: Framework :: Common under Apache 2

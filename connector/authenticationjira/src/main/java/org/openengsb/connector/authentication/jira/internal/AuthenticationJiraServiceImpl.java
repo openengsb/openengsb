@@ -17,7 +17,7 @@
 
 package org.openengsb.connector.authentication.jira.internal;
 
-import org.openengsb.core.api.security.model.Password;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;

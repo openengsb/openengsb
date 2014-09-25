@@ -18,7 +18,7 @@ package org.openengsb.connector.userprojects.ldap.internal;
 
 import java.util.List;
 
-import org.openengsb.core.api.security.model.Password;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.DefaultModelManager;
 import org.openengsb.connector.userprojects.ldap.internal.ldap.ModelManager;
 import org.openengsb.core.api.security.AuthenticationContext;

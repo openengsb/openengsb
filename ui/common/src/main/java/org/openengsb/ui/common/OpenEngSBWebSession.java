@@ -25,7 +25,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
-import org.openengsb.core.api.security.model.Password;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;

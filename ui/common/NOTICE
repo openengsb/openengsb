@@ -53,6 +53,7 @@ This project includes:
   Mockito under The MIT License
   mvel under The Apache Software License, Version 2.0
   MXP1: Xml Pull Parser 3rd Edition (XPP3) under Indiana University Extreme! Lab Software License, vesion 1.1.1 or Public Domain
+  OpenEngSB :: Connector :: UsernamePassword under Apache 2
   OpenEngSB :: Domain :: Auditing under Apache 2
   OpenEngSB :: Domain :: Authorization under Apache 2
   OpenEngSB :: Framework :: API under Apache 2

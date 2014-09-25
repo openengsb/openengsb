@@ -27,7 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.api.security.model.Password;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.services.SecurityContext;

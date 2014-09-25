@@ -243,6 +243,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.usersync</artifactId>
       <version>${project.version}</version>

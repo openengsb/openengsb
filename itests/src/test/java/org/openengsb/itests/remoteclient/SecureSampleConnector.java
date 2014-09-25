@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.openengsb.core.api.security.model.Password;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -51,7 +51,7 @@ public final class SecureSampleConnector {
                 + "{\n"
                 + "  \"principal\" : \"admin\",\n"
                 + "  \"credentials\" : {\n"
-                + "    \"className\" : \"org.openengsb.core.api.security.model.Password\",\n"
+                + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\",\n"
                 + "    \"data\" : {\n"
                 + "      \"value\" : \"password\"\n"
                 + "    },\n"
@@ -98,7 +98,7 @@ public final class SecureSampleConnector {
             + "  \"timestamp\" : 1336060561647,"
             + "  \"principal\" : \"admin\","
             + "  \"credentials\" : {"
-            + "    \"className\" : \"org.openengsb.core.api.security.model.Password\","
+            + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\","
             + "    \"data\" : {"
             + "      \"value\" : \"password\""
             + "    },"
@@ -124,7 +124,7 @@ public final class SecureSampleConnector {
                 + "  \"destination\" : null,\n"
                 + "  \"principal\" : \"admin\",\n"
                 + "  \"credentials\" : {\n"
-                + "    \"className\" : \"org.openengsb.core.api.security.model.Password\",\n"
+                + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\",\n"
                 + "    \"data\" : {\n"
                 + "      \"value\" : \"password\"\n"
                 + "    },\n"
