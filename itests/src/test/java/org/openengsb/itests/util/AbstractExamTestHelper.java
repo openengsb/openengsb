@@ -56,8 +56,10 @@ import org.openengsb.core.workflow.api.RuleManager;
 import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.drools.OsgiHelper;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestProbeBuilder;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
@@ -90,16 +92,21 @@ public abstract class AbstractExamTestHelper {
 
     private static final int DEBUG_PORT = 5005;
     private static final String LOG_LEVEL = "ERROR";
-    public static final long DEFAULT_TIMEOUT = 30000;
+    public static final long DEFAULT_TIMEOUT = 90000;
 
     @Inject
     private BundleContext bundleContext;
 
-    private AuthenticationContext applicationContext;
+    private AuthenticationContext authenticationContext;
 
     @Before
-    public void waitForRequiredTasks() throws Exception {
-        applicationContext = getOsgiService(AuthenticationContext.class);
+    public void setupFramework() throws Exception {
+        waitForFrameworkToStart();
+        waitForRequiredTasks();
+    }
+    
+    private void waitForRequiredTasks() throws Exception {
+        authenticationContext = getOsgiService(AuthenticationContext.class);
         waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         int count = 0;
@@ -126,7 +133,21 @@ public abstract class AbstractExamTestHelper {
                 throw new IllegalStateException("taskbox-config did not finish in time");
             }
         }
-        applicationContext = getOsgiService(AuthenticationContext.class);
+        authenticationContext = getOsgiService(AuthenticationContext.class);
+    }
+    
+    private void waitForFrameworkToStart() throws Exception {
+        waitForOsgiBundle("org.openengsb.domain.authentication");
+        waitForOsgiBundle("org.openengsb.domain.authorization");
+        waitForOsgiBundle("org.openengsb.connector.usernamepassword");
+        waitForOsgiBundle("org.openengsb.framework.common");
+        waitForOsgiBundle("org.openengsb.framework.util");
+        waitForOsgiBundle("org.openengsb.framework.services");
+        waitForOsgiBundle("org.openengsb.connector.memoryauditing");
+        
+        queryOsgiService(AuditingDomain.class, null, 10000, true);
+        queryOsgiService(AuthenticationDomain.class, "(location.root=authentication-root)", 25000, true);
+        queryOsgiService(AuthorizationDomain.class, "(location.root=authorization-root)", 25000, true);
     }
 
     private static final Map<Integer, String> STATES = ImmutableMap.of(1, "UNINSTALLED", 2, "INSTALLED", 4, "RESOLVED",
@@ -213,7 +234,8 @@ public abstract class AbstractExamTestHelper {
             }
             // break the loop after timeout to avoid endless loop
             if ((i * sleepTime) >= timeout) {
-                break;
+                throw new RuntimeException("bundle " + symbolicName 
+                    + " didn't start after " + timeout / 1000 + " seconds");
             }
             Thread.sleep(sleepTime);
             i++;
@@ -310,7 +332,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
-        applicationContext.login(user, new Password(password));
+        authenticationContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {

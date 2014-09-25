@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.inject.Inject;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -46,7 +45,6 @@ import org.osgi.framework.Constants;
 @RunWith(JUnit4TestRunner.class)
 public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper {
 
-    @Inject
     private WiringService wiringService;
 
     private static class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
@@ -77,6 +75,11 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
 
     }
 
+    @Before
+    public void fetchWiringService() {
+        wiringService = getOsgiService(WiringService.class);
+    }
+    
     @Test
     public void testSingleMethodProxies_shouldProxyService() throws Exception {
         ExampleDomain service = new DummyService("test");

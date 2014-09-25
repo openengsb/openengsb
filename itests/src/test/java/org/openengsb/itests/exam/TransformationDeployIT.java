@@ -26,8 +26,6 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 import java.io.InputStream;
 
-import javax.inject.Inject;
-
 import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,7 +49,6 @@ import org.osgi.framework.Constants;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class TransformationDeployIT extends AbstractExamTestHelper {
 
-    @Inject
     private TransformationEngine transformationEngine;
 
     private TinyBundle providerTinyBundle;
@@ -65,12 +62,14 @@ public class TransformationDeployIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        waitForOsgiBundle("org.openengsb.framework.ekb.transformation.wonderland");
         InputStream transformationInputStream = getClass().getClassLoader()
                 .getResourceAsStream("test-transformations/testDescription.transformation");
         providerTinyBundle = bundle()
                 .add("META-INF/transformations/test.transformation", transformationInputStream)
                 .set(Constants.BUNDLE_SYMBOLICNAME, "test.transformation.provider")
                 .set(Constants.BUNDLE_VERSION, "1.0.0");
+        transformationEngine = queryOsgiService(TransformationEngine.class, null, 25000, true);
     }
 
     @Test

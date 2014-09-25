@@ -199,7 +199,7 @@
     </bean>
   </service>
 
-  <bean class="org.osgi.util.tracker.BundleTracker" init-method="open" destroy-method="close">
+  <bean class="org.osgi.util.tracker.BundleTracker" init-method="open" destroy-method="close" depends-on="transformationEngineService">
     <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
     <argument type="int" value="32" />
     <argument type="org.osgi.util.tracker.BundleTrackerCustomizer">
