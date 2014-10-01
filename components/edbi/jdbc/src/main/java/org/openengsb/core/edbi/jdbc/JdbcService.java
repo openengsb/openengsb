@@ -146,6 +146,10 @@ public class JdbcService {
         return delete(table.getName(), whereClause, toParameterSourceArray(records));
     }
 
+    public int delete(String table, String whereClause, Object... args) {
+        return jdbc().update(String.format("DELETE FROM `%s` WHERE %s", table, whereClause), args);
+    }
+
     protected SqlParameterSource[] toParameterSourceArray(List<? extends SqlParameterSource> list) {
         return list.toArray(new SqlParameterSource[list.size()]);
     }

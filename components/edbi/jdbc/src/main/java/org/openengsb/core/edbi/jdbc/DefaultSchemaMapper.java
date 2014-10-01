@@ -77,9 +77,8 @@ public class DefaultSchemaMapper implements SchemaMapper, OperationExecutor {
             return;
         }
 
-        // TODO
-        // headTableEngine.drop(index);
-        // historyTableEngine.drop(index);
+        headTableEngine.drop(index);
+        historyTableEngine.drop(index);
     }
 
     @Override

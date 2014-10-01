@@ -117,8 +117,18 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
 
     @Override
     public void drop(JdbcIndex<?> index) {
-        // TODO: drop(JdbcIndex<?> index)
-        throw new UnsupportedOperationException();
+        if (!exists(index)) {
+            throw new NoSuchTableException("Table for index " + index.getName() + " does not exist");
+        }
+
+        String tableName = getTableNameTranslator().translate(index);
+
+        if (tableName == null || tableName.isEmpty()) {
+            throw new NoSuchTableException("Table name for index " + index + " could not be resolved. Can not drop.");
+        }
+
+        jdbc().update("DROP TABLE " + tableName);
+        registry.remove(index);
     }
 
     @Override

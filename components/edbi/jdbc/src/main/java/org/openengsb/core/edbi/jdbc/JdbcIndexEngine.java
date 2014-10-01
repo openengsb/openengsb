@@ -198,6 +198,21 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
         return indexes;
     }
 
+    @Override
+    public void removeIndex(Index<?> index) throws EDBIndexException {
+        if (!indexExists(index.getName())) {
+            throw new IndexNotFoundException("Index " + index.getName() + " does not exist");
+        }
+        if (!(index instanceof JdbcIndex)) {
+            throw new EDBIndexException("Can only handle Index instances of type JdbcIndex, was " + index.getClass());
+        }
+
+        schemaMapper.drop((JdbcIndex) index);
+        deleteIndeInformation(index);
+
+        registry.remove(index.getName());
+    }
+
     /**
      * Creates the necessary relations to save Index and IndexField instances.
      */
@@ -336,6 +351,11 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
 
     protected List<String> getAllIndexNames() {
         return jdbc().queryForList("SELECT NAME FROM INDEX_INFORMATION", String.class);
+    }
+
+    protected void deleteIndeInformation(Index<?> index) {
+        delete("INDEX_FIELD_INFORMATION", "INDEX_NAME = ?", index.getName());
+        delete("INDEX_INFORMATION", "NAME = ?", index.getName());
     }
 
     private boolean isEmpty(Collection<?> collection) {

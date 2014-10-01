@@ -77,6 +77,14 @@ public interface IndexEngine {
     List<Index<?>> getAll();
 
     /**
+     * Removes the given index and all related schema objects.
+     * 
+     * @param index the index to delete
+     * @throws EDBIndexException if an error occurred while attempting to delete the given index
+     */
+    void removeIndex(Index<?> index) throws EDBIndexException;
+
+    /**
      * Allows you to specify a ClassLoader that is used when restoring type information on a sparsely loaded Index.
      * 
      * @param classLoader the class loader to use

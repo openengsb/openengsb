@@ -19,6 +19,7 @@ package org.openengsb.core.edbi.jdbc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,7 @@ import org.openengsb.core.edbi.api.IndexCommit;
 import org.openengsb.core.edbi.api.IndexField;
 import org.openengsb.core.edbi.api.IndexFieldNameTranslator;
 import org.openengsb.core.edbi.api.IndexNameTranslator;
+import org.openengsb.core.edbi.jdbc.api.NoSuchTableException;
 import org.openengsb.core.edbi.jdbc.api.TableEngine;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
@@ -108,6 +110,31 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
         }
 
         assertEquals("HISTORY_TABLE", testIndex.getHistoryTableName());
+    }
+
+    @Test
+    public void drop_works() throws Exception {
+        long cnt;
+        String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?";
+
+        engine.create(testIndex);
+        cnt = jdbc().queryForLong(sql, "HISTORY_TABLE");
+        assertEquals(1, cnt);
+
+        engine.drop(testIndex);
+        cnt = jdbc().queryForLong(sql, "HISTORY_TABLE");
+        assertEquals(0, cnt);
+
+        try {
+            engine.get(testIndex);
+            fail("Did not throw NoSuchTableException");
+        } catch (NoSuchTableException e) {
+        }
+    }
+
+    @Test(expected = NoSuchTableException.class)
+    public void drop_nonExistingIndex_throwsException() throws Exception {
+        engine.drop(testIndex);
     }
 
     @Test
@@ -237,5 +264,4 @@ public class HistoryTableEngineTest extends AbstractTableEngineTest {
             assertFalse(rs.next());
         }
     }
-
 }
