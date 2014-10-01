@@ -21,9 +21,6 @@ import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.edit
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
-import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 
@@ -38,15 +35,6 @@ public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTe
     public static Option[] configuration() throws Exception {
         return combine(baseConfiguration(),
             editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"));
-    }
-
-    protected void waitForAuthenticationEnvironment() throws Exception {
-        getOsgiService(AuditingDomain.class, 30000);
-        getOsgiService(AuthenticationDomain.class, "(service.pid=root-authenticator)", 30000);
-        getOsgiService(AuthorizationDomain.class, "(service.pid=root-authorizer)", 30000);
-
-        // TODO: find better solution to find out if the Shiro authenticator is running
-        waitForOsgiBundle("org.openengsb.framework.services");
     }
 
 }

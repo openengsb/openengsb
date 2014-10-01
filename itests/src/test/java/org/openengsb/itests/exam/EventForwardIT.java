@@ -26,6 +26,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -79,8 +80,8 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
+    @Ignore
     public void testSendEvent_shouldCallService() throws Exception {
-        waitForAuthenticationEnvironment();
         authenticateAsAdmin();
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);

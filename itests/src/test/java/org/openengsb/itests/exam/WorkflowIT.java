@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import org.apache.karaf.features.FeaturesService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -103,7 +104,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        waitForAuthenticationEnvironment();
         exampleMock = new DummyLogDomain();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("domain", "example");
@@ -167,11 +167,12 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
+    @Ignore
     public void testRaiseEvent_shouldForwardToConnector() throws Exception {
         ContextHolder.get().setCurrentContextId("foo");
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
         authenticateAsAdmin();
         Event event = new Event();
-        WorkflowService workflowService = getOsgiService(WorkflowService.class);
         workflowService.processEvent(event);
         assertThat(exampleMock.lastEvent, equalTo(event));
     }

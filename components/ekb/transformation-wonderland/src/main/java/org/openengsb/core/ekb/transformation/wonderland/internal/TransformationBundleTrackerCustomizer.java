@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link BundleTrackerCustomizer} that scans new bundles for .transformation-files and registeres them to the
+ * {@link BundleTrackerCustomizer} that scans new bundles for .transformation-files and registers them to the
  * {@link TransformationEngine} and removes them again, when the bundle is removed.
  */
 public class TransformationBundleTrackerCustomizer implements BundleTrackerCustomizer<List<TransformationDescription>> {

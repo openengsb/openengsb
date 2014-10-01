@@ -51,7 +51,6 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
     @Before
     public void setUp() throws Exception {
-        waitForUserDataInitializer();
         webClient = new WebClient();
         String httpPort = getConfigProperty("org.ops4j.pax.web", "org.osgi.service.http.port");
         loginPageUrl = String.format("http://localhost:%s/openengsb/login", httpPort);

@@ -103,6 +103,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testToExecuteOpenEngSBDomainInfoCommand_shouldPrintInfoAboutDomain() throws Exception {
+        waitForOsgiBundle("org.openengsb.domain.example");
         cs.execute("openengsb:domains");
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
@@ -112,7 +113,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testToExecuteOpenEngSBServiceListCommand_shouldListServices() throws Exception {
-        waitForAuthenticationEnvironment();
         cs.execute("openengsb:service list");
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "root-authenticator", "ONLINE"));

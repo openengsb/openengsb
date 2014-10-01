@@ -194,7 +194,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     protected String prepareRequest(String methodCall, String username, String password) {
         String authInfo = ""
                 + "{"
-                + "  \"className\":\"org.openengsb.core.api.security.model.Password\","
+                + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
                 + "  \"data\":"
                 + "  {"
                 + "    \"value\":\"" + password + "\""
