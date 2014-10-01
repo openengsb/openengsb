@@ -12,7 +12,9 @@ install:
   - mvn install -Pcheckstyle,licenseCheck
 
 script:
-  - ./etc/scripts/run-itests.sh
+  - cd itests
+  - mvn test -Pitests
+  - cd ..
 
 notifications:
   email:
