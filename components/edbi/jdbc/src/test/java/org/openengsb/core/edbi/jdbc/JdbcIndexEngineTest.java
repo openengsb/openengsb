@@ -46,6 +46,7 @@ import org.openengsb.core.edbi.api.IndexNotFoundException;
 import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.sql.DataType;
+import org.openengsb.core.edbi.models.SubTestModel;
 import org.openengsb.core.edbi.models.TestModel;
 
 public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
@@ -236,6 +237,18 @@ public class JdbcIndexEngineTest extends AbstractH2DatabaseTest {
         assertEquals(TestModel.class, index.getModelClass());
         assertEquals("INDEX_HEAD", index.getHeadTableName());
         assertEquals("INDEX_HISTORY", index.getHistoryTableName());
+    }
+
+    @Test
+    public void getAll_returnsCorrectIndexes() throws Exception {
+        Index<SubTestModel> i1 = indexEngine.createIndex(SubTestModel.class);
+        Index<TestModel> i2 = indexEngine.createIndex(TestModel.class);
+
+        List<Index<?>> all = indexEngine.getAll();
+
+        assertEquals(2, all.size());
+        assertTrue(all.contains(i1));
+        assertTrue(all.contains(i2));
     }
 
     @Test

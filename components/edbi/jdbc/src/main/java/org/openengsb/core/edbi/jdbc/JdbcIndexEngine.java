@@ -19,6 +19,7 @@ package org.openengsb.core.edbi.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -188,6 +189,15 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
         }
     }
 
+    @Override
+    public List<Index<?>> getAll() {
+        List<Index<?>> indexes = new ArrayList<>();
+        for (String indexName : getAllIndexNames()) {
+            indexes.add(getIndex(indexName));
+        }
+        return indexes;
+    }
+
     /**
      * Creates the necessary relations to save Index and IndexField instances.
      */
@@ -322,6 +332,10 @@ public class JdbcIndexEngine extends JdbcService implements IndexEngine {
             LOG.warn("Could not find any fields for index {}", index.getName());
             return Collections.emptyList();
         }
+    }
+
+    protected List<String> getAllIndexNames() {
+        return jdbc().queryForList("SELECT NAME FROM INDEX_INFORMATION", String.class);
     }
 
     private boolean isEmpty(Collection<?> collection) {
