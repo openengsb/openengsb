@@ -20,6 +20,8 @@ import org.openengsb.core.edbi.jdbc.api.SchemaMapper;
 import org.openengsb.core.edbi.jdbc.api.TableEngine;
 import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.Operation;
+import org.openengsb.core.edbi.jdbc.operation.OperationExecutor;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.slf4j.Logger;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Facades {@link org.openengsb.core.edbi.jdbc.HeadTableEngine} and
  * {@link org.openengsb.core.edbi.jdbc.HistoryTableEngine}.
  */
-public class DefaultSchemaMapper implements SchemaMapper {
+public class DefaultSchemaMapper implements SchemaMapper, OperationExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSchemaMapper.class);
 
@@ -78,6 +80,11 @@ public class DefaultSchemaMapper implements SchemaMapper {
         // TODO
         // headTableEngine.drop(index);
         // historyTableEngine.drop(index);
+    }
+
+    @Override
+    public void execute(Operation operation) {
+        operation.executeWith(this);
     }
 
     @Override

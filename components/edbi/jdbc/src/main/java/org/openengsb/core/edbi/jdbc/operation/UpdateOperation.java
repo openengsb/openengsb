@@ -30,4 +30,9 @@ public class UpdateOperation extends IndexOperation {
     public UpdateOperation(IndexCommit commit, JdbcIndex<?> index, List<OpenEngSBModel> models) {
         super(commit, index, models);
     }
+
+    @Override
+    public void executeWith(OperationExecutor executor) {
+        executor.execute(this);
+    }
 }

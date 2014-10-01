@@ -16,27 +16,15 @@
  */
 package org.openengsb.core.edbi.jdbc.operation;
 
-import java.util.List;
-
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.edbi.api.IndexCommit;
-import org.openengsb.core.edbi.jdbc.JdbcIndex;
-
 /**
- * An insert operation.
+ * A basic tagging and visitable style interface for operations.
  */
-public class InsertOperation extends IndexOperation {
+public interface Operation {
 
-    public InsertOperation(IndexOperation other) {
-        this(other.getCommit(), other.getIndex(), other.getModels());
-    }
-
-    public InsertOperation(IndexCommit commit, JdbcIndex<?> index, List<OpenEngSBModel> models) {
-        super(commit, index, models);
-    }
-
-    @Override
-    public void executeWith(OperationExecutor executor) {
-        executor.execute(this);
-    }
+    /**
+     * Executes this operation with the given executor. This serves as visitor-style double dispatch mechanic.
+     * 
+     * @param executor the executor that executes this operation
+     */
+    void executeWith(OperationExecutor executor);
 }

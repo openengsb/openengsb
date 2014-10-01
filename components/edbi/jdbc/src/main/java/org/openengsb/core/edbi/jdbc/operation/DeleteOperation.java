@@ -30,4 +30,9 @@ public class DeleteOperation extends IndexOperation {
     public DeleteOperation(IndexCommit commit, JdbcIndex<?> index, List<OpenEngSBModel> models) {
         super(commit, index, models);
     }
+
+    @Override
+    public void executeWith(OperationExecutor executor) {
+        executor.execute(this);
+    }
 }
