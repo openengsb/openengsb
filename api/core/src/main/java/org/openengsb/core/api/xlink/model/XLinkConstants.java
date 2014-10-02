@@ -36,6 +36,7 @@ public final class XLinkConstants {
     public static final String XLINK_VERSION_KEY = "versionId";
 
     /** Keyname of the ExpirationDate, mandatory GET-Parameter in XLinks */
+    @Deprecated
     public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
     
     /** Keyname of the IdentifierString, mandatory GET-Parameter in XLinks */
@@ -52,5 +53,6 @@ public final class XLinkConstants {
     public static final String XLINK_HOST_HEADERNAME = "IP";
     
     /**Format of the ExpirationDate*/
+    @Deprecated
     public static final String DATEFORMAT = "yyyyMMddkkmmss";
 }

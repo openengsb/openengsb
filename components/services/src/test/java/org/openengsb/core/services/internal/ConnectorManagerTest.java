@@ -20,6 +20,7 @@ package org.openengsb.core.services.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -32,6 +33,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -59,6 +63,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.xlink.model.ModelViewMapping;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.ekb.api.TransformationEngine;
@@ -72,6 +77,9 @@ import org.openengsb.core.test.DummyModel;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
@@ -130,7 +138,6 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceManagerImpl.setRegistrationManager(serviceRegistrationManagerImpl);
         serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManagerImpl.setxLinkBaseUrl("http://localhost/openXLink");
-        serviceManagerImpl.setxLinkExpiresIn(3);
         serviceManagerImpl.setUtilsService(mockedServiceUtils);
         connectorManager = serviceManagerImpl;
     }
@@ -370,7 +377,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         ModelViewMapping[] modelViewMappings = createModelViewsMappings(toolName);
         connectorManager.registerWithXLink(connectorId, hostId, toolName, modelViewMappings);
         connectorManager.unregisterFromXLink(connectorId);
-        assertTrue(((XLinkConnectorManager) connectorManager).getXLinkRegistrations(hostId).isEmpty());
+        assertTrue(connectorManager.getXLinkRegistrations(hostId).isEmpty());
     }
 
     // @Test(expected = DomainNotLinkableException.class)
@@ -413,6 +420,60 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
                     "3.0.0.SNAPSHOT")
                 , views.toArray(new XLinkConnectorView[0]));
         return modelViewMappings;
+    }
+
+    @Test
+    public void testGenerateXLink_shouldSucceed() {
+        String connectorId = "testConnector";
+        String context = "foo";
+        String testClassName = "TestClass";
+        ExampleObjectOrientedModel modelObject = new ExampleObjectOrientedModel();
+        modelObject.setOoClassName(testClassName);
+        String xlink = connectorManager.generateXLink(connectorId, context, modelObject);
+
+        assertNotNull(xlink);
+
+        // Trim baseURL away
+        xlink = xlink.substring(xlink.indexOf("?") + 1);
+        // Get parameters out of the link
+        Map<String, String> parameterMap = new HashMap<>();
+        for (String parameter : xlink.split("&")) {
+            String[] keyValue = parameter.split("=");
+            if (keyValue.length == 2) {
+                parameterMap.put(keyValue[0], keyValue[1]);
+            }
+        }
+
+        assertEquals(context, parameterMap.get(XLinkConstants.XLINK_CONTEXTID_KEY));
+
+        assertNotNull(parameterMap.get(XLinkConstants.XLINK_IDENTIFIER_KEY));
+
+        String className = parameterMap.get(XLinkConstants.XLINK_MODELCLASS_KEY);
+        assertEquals(ExampleObjectOrientedModel.class.getName(), className);
+
+        ObjectMapper mapper = new ObjectMapper();
+        // Needed because OpenEngSB model tail can not be used here
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        String model = parameterMap.get(XLinkConstants.XLINK_IDENTIFIER_KEY);
+        ExampleObjectOrientedModel exampleModel = null;
+        try {
+            exampleModel = mapper.readValue(urlDecodeParameter(model), ExampleObjectOrientedModel.class);
+        } catch (IOException e) {
+            fail("Should not have been thrown.");
+        }
+
+        assertNotNull(exampleModel);
+        assertEquals(testClassName, exampleModel.getOoClassName());
+    }
+
+    private String urlDecodeParameter(String parameter) {
+        try {
+            return URLDecoder.decode(parameter, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        }
+        return parameter;
     }
 
     @Test

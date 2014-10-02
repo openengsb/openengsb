@@ -17,6 +17,8 @@
 
 package org.openengsb.core.services.internal;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,15 +36,23 @@ import org.openengsb.core.api.xlink.exceptions.DomainNotLinkableException;
 import org.openengsb.core.api.xlink.model.ModelViewMapping;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
+import org.openengsb.core.api.xlink.model.XLinkConstants;
 import org.openengsb.core.api.xlink.model.XLinkObject;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.api.TransformationEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements XLinkConnectorManager {
-    private Map<String, XLinkConnectorRegistration> xLinkRegistrations = new HashMap<>();
+
+    private static Logger log = LoggerFactory.getLogger(XLinkConnectorManagerImpl.class);
+
+    private final Map<String, XLinkConnectorRegistration> xLinkRegistrations = new HashMap<>();
     private String xLinkBaseUrl;
-    private int xLinkExpiresIn = 3;
 
     private TransformationEngine transformationEngine;
     private QueryInterface queryService;
@@ -84,10 +94,10 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
     }
 
     @Override
-    public String publishXLink(String connectorId, Object modelObject, boolean hostOnly) {
+    public String publishXLink(String connectorId, String context, Object modelObject, boolean hostOnly) {
         XLinkConnectorRegistration registration = xLinkRegistrations.get(connectorId);
-        Collection<XLinkConnectorRegistration> registrations = 
-                hostOnly ? getXLinkRegistrations(registration.getHostId()) 
+        Collection<XLinkConnectorRegistration> registrations = hostOnly
+                ? getXLinkRegistrations(registration.getHostId())
                 : xLinkRegistrations.values();
 
         ModelDescription modelDescription = ModelWrapper.wrap(modelObject).getModelDescription();
@@ -100,14 +110,15 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
                 }
                 try {
                     LinkingSupport service = (LinkingSupport) connector;
-                    service.openXLinks(xLinkObjects);
+
+                    service.openXLinks(xLinkObjects.toArray(new XLinkObject[xLinkObjects.size()]));
                 } catch (ClassCastException e) {
                     throw new DomainNotLinkableException();
                 }
             }
         }
 
-        return generateXLink(connectorId, modelObject);
+        return generateXLink(connectorId, context, modelObject);
     }
 
     private List<XLinkObject> collectXLinkObjects(Object modelObject, ModelDescription modelDescription,
@@ -141,15 +152,30 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
     }
 
     @Override
-    public String generateXLink(String connectorId, Object modelObject) {
+    public String generateXLink(String connectorId, String context, Object modelObject) {
         StringBuilder sb = new StringBuilder(xLinkBaseUrl);
-        appendXLinkProperty(sb, "expiresIn", String.valueOf(xLinkExpiresIn));
-        // TODO: append the other properties
+        appendXLinkProperty(sb, '?', XLinkConstants.XLINK_CONTEXTID_KEY, context);
+
+        ModelDescription modelDescription = ModelWrapper.wrap(modelObject).getModelDescription();
+        appendXLinkProperty(sb, '&', XLinkConstants.XLINK_MODELCLASS_KEY, modelDescription.getModelClassName());
+        appendXLinkProperty(sb, '&', XLinkConstants.XLINK_VERSION_KEY, modelDescription.getVersionString());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String objectString = null;
+        try {
+            objectString = mapper.writeValueAsString(modelObject);
+        } catch (JsonProcessingException e) {
+            log.warn("Could not create xLink values.", e);
+        }
+        if (objectString != null) {
+            appendXLinkProperty(sb, '&', XLinkConstants.XLINK_IDENTIFIER_KEY, urlEncodeParameter(objectString));
+        }
         return sb.toString();
     }
 
-    private StringBuilder appendXLinkProperty(StringBuilder sb, String propertyName, String propertyValue) {
-        sb.append('&');
+    private StringBuilder appendXLinkProperty(StringBuilder sb, char separator, String propertyName,
+            String propertyValue) {
+        sb.append(separator);
         sb.append(propertyName);
         sb.append('=');
         sb.append(propertyValue);
@@ -165,20 +191,24 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         return convertedMap;
     }
 
+    /**
+     * URLEncodes the given Parameter in UTF-8
+     */
+    private static String urlEncodeParameter(String parameter) {
+        try {
+            return URLEncoder.encode(parameter, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            log.warn("Could not encode parameter.", ex);
+        }
+        return parameter;
+    }
+
     public String getxLinkBaseUrl() {
         return xLinkBaseUrl;
     }
 
     public void setxLinkBaseUrl(String xLinkBaseUrl) {
         this.xLinkBaseUrl = xLinkBaseUrl;
-    }
-
-    public int getxLinkExpiresIn() {
-        return xLinkExpiresIn;
-    }
-
-    public void setxLinkExpiresIn(int xLinkExpiresIn) {
-        this.xLinkExpiresIn = xLinkExpiresIn;
     }
 
     public void setTransformationEngine(

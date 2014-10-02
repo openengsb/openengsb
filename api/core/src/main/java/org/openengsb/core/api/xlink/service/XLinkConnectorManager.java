@@ -57,16 +57,18 @@ public interface XLinkConnectorManager extends ConnectorManager {
      * 
      * @param connectorId
      * @param modelObject
+     * @param context
      * @param hostOnly
      * @return
      */
-    String publishXLink(String connectorId, Object modelObject, boolean hostOnly);
+    String publishXLink(String connectorId, String context, Object modelObject, boolean hostOnly);
 
     /**
      * 
      * @param connectorId
+     * @param context
      * @param modelObject
      * @return
      */
-    String generateXLink(String connectorId, Object modelObject);
+    String generateXLink(String connectorId, String context, Object modelObject);
 }
