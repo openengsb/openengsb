@@ -222,11 +222,13 @@
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-memoryauditing</feature>
                 <feature>openengsb-connector-example</feature>
-                <!-- Other -->
+                <!-- Spring -->
                 <feature>spring</feature>
                 <feature>spring-web</feature>
                 <feature>spring-dm</feature>
                 <feature>spring-jms</feature>
+                <!-- Other -->
+                <feature>openengsb-edbi</feature>
                 <!-- Pax Wicket -->
                 <feature>pax-wicket</feature>
                 <feature>pax-wicket-blueprint</feature>
