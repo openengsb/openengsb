@@ -30,7 +30,6 @@
   <cm:property-placeholder persistent-id="org.openengsb.core.services.internal.connectormanager">
     <cm:default-properties>
       <cm:property name="xlink.url" value="" />
-      <cm:property name="xlink.expiresIn" value="2" />
     </cm:default-properties>
   </cm:property-placeholder>  
 
@@ -67,7 +66,6 @@
     <property name="configPersistence" ref="connectorConfigPersistence" />
     <property name="transformationEngine" ref="transformationEngine" />
     <property name="xLinkBaseUrl" value="${xlink.url}" />
-    <property name="xLinkExpiresIn" value="${xlink.expiresIn}" />
     <property name="utilsService" ref="utilsService" />
   </bean>
 
