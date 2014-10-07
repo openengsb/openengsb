@@ -14,42 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.edbi.jdbc.api;
-
-import org.openengsb.core.edbi.jdbc.JdbcIndex;
-import org.openengsb.core.edbi.jdbc.operation.Operation;
+package org.openengsb.core.edbi.jdbc.operation;
 
 /**
- * Facade used by the IndexEngine towards the EDBI data schema.
+ * Visitor style interface to execute operations.
  */
-public interface SchemaMapper {
-    /**
-     * Checks whether the schema for the given index exists.
-     * 
-     * @param index the index to check
-     * @return true of the schema exists
-     */
-    boolean exists(JdbcIndex<?> index);
+public interface OperationExecutor {
 
     /**
-     * Creates the data schema for the given index.
-     * 
-     * @param index the index to create the schema for
-     */
-    void create(JdbcIndex<?> index);
-
-    /**
-     * Drops the data schema for the given index.
-     * 
-     * @param index the index to drop the schema for
-     */
-    void drop(JdbcIndex<?> index);
-
-    /**
-     * Executes the given operation of the schema.
+     * Executes the given InsertOperation.
      *
-     * @param operation the operation to execute.
+     * @param operation the operation to execute
      */
-    void execute(Operation operation);
+    void execute(InsertOperation operation);
+
+    /**
+     * Executes the given UpdateOperation.
+     *
+     * @param operation the operation to execute
+     */
+    void execute(UpdateOperation operation);
+
+    /**
+     * Executes the given DeleteOperation.
+     *
+     * @param operation the operation to execute
+     */
+    void execute(DeleteOperation operation);
 
 }

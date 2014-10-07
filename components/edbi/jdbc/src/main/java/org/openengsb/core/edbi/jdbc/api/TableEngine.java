@@ -17,9 +17,7 @@
 package org.openengsb.core.edbi.jdbc.api;
 
 import org.openengsb.core.edbi.jdbc.JdbcIndex;
-import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
-import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
-import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
+import org.openengsb.core.edbi.jdbc.operation.Operation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 
 /**
@@ -66,19 +64,6 @@ public interface TableEngine {
      * 
      * @param operation the operation to execute.
      */
-    void execute(InsertOperation operation);
+    void execute(Operation operation);
 
-    /**
-     * Executes an UpdateOperation.
-     * 
-     * @param operation the operation to execute.
-     */
-    void execute(UpdateOperation operation);
-
-    /**
-     * Executes an DeleteOperation.
-     * 
-     * @param operation the operation to execute.
-     */
-    void execute(DeleteOperation operation);
 }

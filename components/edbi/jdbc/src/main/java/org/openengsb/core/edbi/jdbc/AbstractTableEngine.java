@@ -35,6 +35,8 @@ import org.openengsb.core.edbi.jdbc.api.TypeMap;
 import org.openengsb.core.edbi.jdbc.operation.DeleteOperation;
 import org.openengsb.core.edbi.jdbc.operation.IndexOperation;
 import org.openengsb.core.edbi.jdbc.operation.InsertOperation;
+import org.openengsb.core.edbi.jdbc.operation.Operation;
+import org.openengsb.core.edbi.jdbc.operation.OperationExecutor;
 import org.openengsb.core.edbi.jdbc.operation.UpdateOperation;
 import org.openengsb.core.edbi.jdbc.sql.Table;
 import org.openengsb.core.edbi.jdbc.sql.TableElementCompiler;
@@ -44,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * AbstractTableEngine
  */
-public abstract class AbstractTableEngine extends JdbcService implements TableEngine {
+public abstract class AbstractTableEngine extends JdbcService implements TableEngine, OperationExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTableEngine.class);
 
@@ -115,8 +117,23 @@ public abstract class AbstractTableEngine extends JdbcService implements TableEn
 
     @Override
     public void drop(JdbcIndex<?> index) {
-        // TODO: drop(JdbcIndex<?> index)
-        throw new UnsupportedOperationException();
+        if (!exists(index)) {
+            throw new NoSuchTableException("Table for index " + index.getName() + " does not exist");
+        }
+
+        String tableName = getTableNameTranslator().translate(index);
+
+        if (tableName == null || tableName.isEmpty()) {
+            throw new NoSuchTableException("Table name for index " + index + " could not be resolved. Can not drop.");
+        }
+
+        jdbc().update("DROP TABLE " + tableName);
+        registry.remove(index);
+    }
+
+    @Override
+    public void execute(Operation operation) {
+        operation.executeWith(this);
     }
 
     @Override

@@ -25,7 +25,7 @@ import org.openengsb.core.edbi.jdbc.JdbcIndex;
 /**
  * A unit-of-work object that encapsulates the necessary data of an operation on an index.
  */
-public class IndexOperation {
+public abstract class IndexOperation implements Operation {
 
     private IndexCommit commit;
     private JdbcIndex<?> index;

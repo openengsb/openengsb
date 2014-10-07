@@ -17,6 +17,8 @@
 
 package org.openengsb.core.edbi.api;
 
+import java.util.List;
+
 /**
  * An IndexEngine maintains Index data of model classes and allows to merge data into the index structures.
  */
@@ -65,6 +67,22 @@ public interface IndexEngine {
      * @throws IndexNotFoundException if an index with the given name can not be found
      */
     Index<?> getIndex(String name) throws IndexNotFoundException;
+
+    /**
+     * Retrieves all Index records. When an index is loaded this way, it may not contain typesafe type information (i.e.
+     * the Class may not be loadable by the class loader).
+     * 
+     * @return a list of all Index instances currently managed
+     */
+    List<Index<?>> getAll();
+
+    /**
+     * Removes the given index and all related schema objects.
+     * 
+     * @param index the index to delete
+     * @throws EDBIndexException if an error occurred while attempting to delete the given index
+     */
+    void removeIndex(Index<?> index) throws EDBIndexException;
 
     /**
      * Allows you to specify a ClassLoader that is used when restoring type information on a sparsely loaded Index.
