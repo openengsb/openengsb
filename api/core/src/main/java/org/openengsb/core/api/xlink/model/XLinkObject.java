@@ -25,6 +25,8 @@ import org.openengsb.core.api.model.ModelDescription;
 public class XLinkObject implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private String connectorId;
+    private String applicationName;
     private Object modelObject;
     private ModelDescription modelDescription;
     private List<XLinkConnectorView> views;
@@ -33,12 +35,22 @@ public class XLinkObject implements Serializable {
 
     }
 
-    public XLinkObject(Object modelObject, ModelDescription modelDescription, List<XLinkConnectorView> views) {
+    public XLinkObject(String connectorId, String applicationName, Object modelObject, ModelDescription modelDescription, List<XLinkConnectorView> views) {
+        this.connectorId = connectorId;
+        this.applicationName = applicationName;
         this.modelObject = modelObject;
         this.modelDescription = modelDescription;
         this.views = views;
     }
 
+    public String getConnectorId() {
+        return connectorId;
+    }
+    
+    public String getApplicationName() {
+        return applicationName;
+    }
+    
     public Object getModelObject() {
         return modelObject;
     }

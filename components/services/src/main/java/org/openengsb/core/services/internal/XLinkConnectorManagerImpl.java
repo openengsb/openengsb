@@ -94,27 +94,27 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
     }
 
     @Override
-    public String publishXLink(String connectorId, String context, Object modelObject, boolean hostOnly) {
+    public String requestXLinkSwitch(String connectorId, String context, Object modelObject, boolean hostOnly) {
         XLinkConnectorRegistration registration = xLinkRegistrations.get(connectorId);
         Collection<XLinkConnectorRegistration> registrations = hostOnly
                 ? getXLinkRegistrations(registration.getHostId())
                 : xLinkRegistrations.values();
 
         ModelDescription modelDescription = ModelWrapper.wrap(modelObject).getModelDescription();
+        List<XLinkObject> xLinkObjects = new ArrayList<>();
         for (XLinkConnectorRegistration r : registrations) {
-            List<XLinkObject> xLinkObjects = collectXLinkObjects(modelObject, modelDescription, r);
-            if (!xLinkObjects.isEmpty()) {
-                Object connector = getUtilsService().getService("(service.pid=" + r.getConnectorId() + ")", 100L);
-                if (connector == null) {
-                    throw new IllegalStateException("registered connector not there");
-                }
-                try {
-                    LinkingSupport service = (LinkingSupport) connector;
-
-                    service.openXLinks(xLinkObjects.toArray(new XLinkObject[xLinkObjects.size()]));
-                } catch (ClassCastException e) {
-                    throw new DomainNotLinkableException();
-                }
+            xLinkObjects.addAll(collectXLinkObjects(modelObject, modelDescription, r));
+        }
+        if (!xLinkObjects.isEmpty()) {
+            Object connector = getUtilsService().getService("(service.pid=" + connectorId + ")", 100L);
+            if (connector == null) {
+                throw new IllegalStateException("requestor connector not there");
+            }
+            try {
+                LinkingSupport service = (LinkingSupport) connector;
+                service.showXLinks(xLinkObjects.toArray(new XLinkObject[xLinkObjects.size()]));
+            } catch (ClassCastException e) {
+                throw new DomainNotLinkableException();
             }
         }
 
@@ -126,10 +126,10 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         List<XLinkObject> xLinkObjects = new ArrayList<>();
         for (Entry<ModelDescription, XLinkConnectorView[]> entry : registration.getModelsToViews().entrySet()) {
             if (modelDescription.equals(entry.getKey())) {
-                xLinkObjects.add(new XLinkObject(modelObject, modelDescription, Arrays.asList(entry.getValue())));
+                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), modelObject, modelDescription, Arrays.asList(entry.getValue())));
             } else if (transformationEngine.isTransformationPossible(modelDescription, entry.getKey())) {
                 Object transformedObject = transformAndMerge(modelDescription, entry.getKey(), modelObject);
-                xLinkObjects.add(new XLinkObject(transformedObject, entry.getKey(), Arrays.asList(entry.getValue())));
+                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), transformedObject, entry.getKey(), Arrays.asList(entry.getValue())));
             }
         }
 
