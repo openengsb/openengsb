@@ -17,7 +17,10 @@
 
 package org.openengsb.core.api;
 
+import org.openengsb.core.api.model.ModelDescription;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkObject;
+import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 
 
 /**
@@ -28,8 +31,19 @@ import org.openengsb.core.api.xlink.model.XLinkObject;
 public interface LinkingSupport {
 
     /**
-     * PushMethod to transfer a List of potential Matches, of modelObjects, to the Clienttool. Also defines the Id of
-     * View to open Matches in. The transfered modelObjects are instances of the Clienttools model.
+     * Callback method that is triggered as a response 
+     * to {@link XLinkConnectorManager#requestXLinkSwitch(String, String, Object, boolean)}. 
+     * 
+     * @param xLinkObjects the list of {@link XLinkObject}s that can be opened.
      */
-    void openXLinks(XLinkObject[] xLinkObjects);
+    void showXLinks(XLinkObject[] xLinkObjects);
+    
+    /**
+     * Implementors should open the requested view with the given object. 
+     * 
+     * @param modelDescription the model description
+     * @param modelObject the model object to display
+     * @param view the view to display the model object with
+     */
+    void openXLink(ModelDescription modelDescription, Object modelObject, XLinkConnectorView view);
 }
