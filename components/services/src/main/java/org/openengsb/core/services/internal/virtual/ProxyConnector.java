@@ -18,16 +18,11 @@
 package org.openengsb.core.services.internal.virtual;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.model.ModelDescription;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
@@ -69,8 +64,7 @@ public class ProxyConnector extends VirtualConnector {
         transformationHandler.getTargetMethod();
         Method targetMethod = transformationHandler.getTargetMethod();
         Object[] targetArgs = transformationHandler.transformArguments(args);
-        List<String> paramTypeNames = getParameterTypenames(targetMethod);
-        MethodCall methodCall = new MethodCall(targetMethod.getName(), targetArgs, metadata, paramTypeNames);
+        MethodCall methodCall = new MethodCall(targetMethod, targetArgs, metadata);
 
         if (!registration.isRegistered()) {
             if (targetMethod.getName().equals("getAliveState")) {
@@ -92,34 +86,6 @@ public class ProxyConnector extends VirtualConnector {
             default:
                 throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
-    }
-
-    private List<String> getParameterTypenames(Method targetMethod) {
-        List<Class<?>> paramList = Arrays.asList(targetMethod.getParameterTypes());
-        List<String> paramTypeNames = new ArrayList<String>();
-        for (Class<?> paramType : paramList) {
-            paramTypeNames.add(paramType.getName());
-        }
-        return paramTypeNames;
-    }
-
-    private Object[] transformArguments(Object[] args, Class<?>[] parameterTypes) {
-        if (args == null) {
-            return null;
-        }
-        Object[] transformed = new Object[args.length];
-        for (int i = 0; i < args.length; i++) {
-            transformed[i] = transformArgument(args[i], parameterTypes[i]);
-        }
-        return transformed;
-    }
-
-    private Object transformArgument(Object arg, Class<?> targetType) {
-        if (!(OpenEngSBModel.class.isInstance(arg) && OpenEngSBModel.class.isAssignableFrom(targetType))) {
-            return arg;
-        }
-        return transformationEngine.performTransformation(new ModelDescription(arg.getClass()),
-                new ModelDescription(targetType), arg);
     }
 
     public final void setPortId(String id) {
