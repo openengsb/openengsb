@@ -20,8 +20,9 @@ package org.openengsb.core.api;
 import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 import org.openengsb.core.api.xlink.model.XLinkObject;
+// CHECKSTYLE:OFF
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
-
+// CHECkSTYLE:ON
 
 /**
  * Every Domain that wants to offer XLinking to its Connectors, must implement this interface. Connectors can choose

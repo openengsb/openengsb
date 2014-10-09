@@ -126,10 +126,12 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         List<XLinkObject> xLinkObjects = new ArrayList<>();
         for (Entry<ModelDescription, XLinkConnectorView[]> entry : registration.getModelsToViews().entrySet()) {
             if (modelDescription.equals(entry.getKey())) {
-                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), modelObject, modelDescription, Arrays.asList(entry.getValue())));
+                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), 
+                    modelObject, modelDescription, Arrays.asList(entry.getValue())));
             } else if (transformationEngine.isTransformationPossible(modelDescription, entry.getKey())) {
                 Object transformedObject = transformAndMerge(modelDescription, entry.getKey(), modelObject);
-                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), transformedObject, entry.getKey(), Arrays.asList(entry.getValue())));
+                xLinkObjects.add(new XLinkObject(registration.getConnectorId(), registration.getToolName(), 
+                    transformedObject, entry.getKey(), Arrays.asList(entry.getValue())));
             }
         }
 

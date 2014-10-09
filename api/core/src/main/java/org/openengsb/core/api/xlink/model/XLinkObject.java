@@ -35,7 +35,8 @@ public class XLinkObject implements Serializable {
 
     }
 
-    public XLinkObject(String connectorId, String applicationName, Object modelObject, ModelDescription modelDescription, List<XLinkConnectorView> views) {
+    public XLinkObject(String connectorId, String applicationName, Object modelObject, 
+            ModelDescription modelDescription, List<XLinkConnectorView> views) {
         this.connectorId = connectorId;
         this.applicationName = applicationName;
         this.modelObject = modelObject;
