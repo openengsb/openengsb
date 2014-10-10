@@ -1,3 +1,55 @@
+openengsb-framework-3.0.0.M2 2014-10-10
+--------------------------------------------
+
+This is the second milestone release towards 3.0.0. The major goodies in this release are the EDBI feature, 
+improvements in the communication with remote tools, and improvements in XLink. 
+
+### Details
+
+** Bug
+    * [OPENENGSB-1956] - activemq web console fails
+    * [OPENENGSB-3760] - HistoryTableEngineTest fails because of missing column assertion
+    * [OPENENGSB-3767] - Checkstyle errors in ModelAsserts
+    * [OPENENGSB-3768] - License headers are missing in usersync related code
+    * [OPENENGSB-3769] - license plugin fails on entryStructureDefinition.txt
+    * [OPENENGSB-3771] - Wiketacl dependency missing in usersync
+    * [OPENENGSB-3774] - RequestHandlerImpl has checkstyle errors
+    * [OPENENGSB-3775] - LogService has checkstyle errors
+    * [OPENENGSB-3784] - JMSPortAdminIT fails
+    * [OPENENGSB-3789] - ConnectorDeployerService does not handle ExecutionExceptions properly
+    * [OPENENGSB-3823] - Timestamp is not set in EDB Index Commit
+    * [OPENENGSB-3832] - EDBI package is not packed into zip
+
+** Improvement
+    * [OPENENGSB-3697] - Create an EBDI Integration Test
+    * [OPENENGSB-3709] - Segregate EDBI hooks from API
+    * [OPENENGSB-3715] - Service wiring for JDBC EDBI
+    * [OPENENGSB-3751] - Add spring-jdbc feature
+    * [OPENENGSB-3753] - CommitMetaInfo should be Serializable
+    * [OPENENGSB-3754] - Create a openengsb-edbi feature
+    * [OPENENGSB-3755] - Install routine for JDBC EDBI schema
+    * [OPENENGSB-3759] - Retrieval and registration of services with properties
+    * [OPENENGSB-3761] - Passing Null Objects succeeds
+    * [OPENENGSB-3778] - Checkstyle errors in itests component in Travis
+    * [OPENENGSB-3782] - Make QueryRequest serializable
+    * [OPENENGSB-3783] - QueryRequest should support `hashCode` and `equals`
+    * [OPENENGSB-3786] - Refactor XLink
+    * [OPENENGSB-3790] - Improve multipleValueSeparator used in UserProjects LDAP connector
+    * [OPENENGSB-3801] - OpenEngSBWebSession should use the Password defined by the JIRA authenticator
+
+** Library Upgrade
+    * [OPENENGSB-3794] - upgrade maven-verifier to 1.5
+
+** New Feature
+    * [OPENENGSB-3682] - Create an EDBI API module
+    * [OPENENGSB-3683] - Implement the EBD Index API through JDCB
+    * [OPENENGSB-3796] - Create a JIRA authentication connector
+    * [OPENENGSB-3799] - Add JIRA authentication connector module to the parent
+    * [OPENENGSB-3800] - Integrate JIRA authentication connector into the assembly
+
+** Story
+    * [OPENENGSB-3681] - EDB Index: Facilitate efficient querying of models and their histories
+
 openengsb-framework-3.0.0.M1 2014-05-28
 --------------------------------------------
 
