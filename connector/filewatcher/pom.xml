@@ -36,7 +36,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>org.openengsb.connector.virtual.filewatcher</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
+  <version>3.0.0.M2</version>
 
   <name>OpenEngSB :: Connector :: Virtual :: Filewatcher</name>
 
@@ -60,7 +60,7 @@
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
-    <tag>HEAD</tag>
+    <tag>v3.0.0.M2</tag>
   </scm>
 
   <build>
