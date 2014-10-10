@@ -35,7 +35,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domain</groupId>
   <artifactId>org.openengsb.domain.example</artifactId>
-  <version>3.0.0.M2</version>
+  <version>3.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Example</name>
 
@@ -60,7 +60,7 @@
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
-    <tag>v3.0.0.M2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <build>
