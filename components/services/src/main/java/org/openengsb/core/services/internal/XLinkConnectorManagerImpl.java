@@ -41,6 +41,7 @@ import org.openengsb.core.api.xlink.model.XLinkObject;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.api.TransformationEngine;
+import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,6 +122,14 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         return generateXLink(connectorId, context, modelObject);
     }
 
+    @Override
+    public void openXLink(String connectorId, ModelDescription modelDescription, Object modelObject,
+            XLinkConnectorView view) {
+        String filter = "(" + Constants.SERVICE_PID + "=" + connectorId + ")";
+        LinkingSupport connector = (LinkingSupport) getUtilsService().getService(filter);
+        connector.openXLink(modelDescription, modelObject, view);
+    }
+    
     private List<XLinkObject> collectXLinkObjects(Object modelObject, ModelDescription modelDescription,
             XLinkConnectorRegistration registration) {
         List<XLinkObject> xLinkObjects = new ArrayList<>();

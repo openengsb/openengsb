@@ -20,8 +20,13 @@ package org.openengsb.core.api.xlink.service;
 import java.util.List;
 
 import org.openengsb.core.api.ConnectorManager;
+// CHECKSTYLE:OFF
+import org.openengsb.core.api.LinkingSupport;
+// CHECKSTYLE:ON
+import org.openengsb.core.api.model.ModelDescription;
 import org.openengsb.core.api.xlink.model.ModelViewMapping;
 import org.openengsb.core.api.xlink.model.XLinkConnectorRegistration;
+import org.openengsb.core.api.xlink.model.XLinkConnectorView;
 
 /**
  * This interface provides additional internal functionality to the ConnectorManager which is used for XLink by other
@@ -54,16 +59,31 @@ public interface XLinkConnectorManager extends ConnectorManager {
     List<XLinkConnectorRegistration> getXLinkRegistrations(String remoteHostIp);
 
     /**
+     * This method collects all views which can display the model object or a transformation of it and 
+     * triggers the callback method {@link LinkingSupport#showXLinks(XLinkObject[])} of the connector 
+     * identified with connectorId. 
      * 
      * @param connectorId the requestor's connector id.
-     * @param context
+     * @param context 
      * @param modelObject 
-     * @param hostOnly
+     * @param hostOnly <code>true</code> if only views local to the requestor are to be collected.
      * @return the XLink-URL
      */
     String requestXLinkSwitch(String connectorId, String context, Object modelObject, boolean hostOnly);
 
     /**
+     * Calls {@link LinkingSupport#openXLink(ModelDescription, Object, XLinkConnectorView)} of the connector 
+     * identified with connectorId.
+     * 
+     * @param connectorId
+     * @param modelDescription
+     * @param modelObject
+     * @param view
+     */
+    void openXLink(String connectorId, ModelDescription modelDescription, Object modelObject, XLinkConnectorView view);
+    
+    /**
+     * Generates the XLink-URI for the given model object.
      * 
      * @param connectorId the requestor's connector id.
      * @param context
