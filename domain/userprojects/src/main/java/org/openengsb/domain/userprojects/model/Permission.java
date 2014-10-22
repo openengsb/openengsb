@@ -17,8 +17,6 @@
 
 package org.openengsb.domain.userprojects.model;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -26,56 +24,65 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
-import com.google.common.collect.Lists;
-
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
-public class Project {
+public class Permission {
 
     @OpenEngSBModelId
-    private String name;
+    private String uuid;
 
-    private List<Attribute> attributes = Lists.newArrayList();
+    private String component;
 
-    public Project() {
+    public Permission() {
     }
 
-    public Project(String name) {
-        this.name = name;
+    public Permission(String component) {
+        this.component = component;
     }
 
-    public String getName() {
-        return name;
+    public Permission(String component, String owner) {
+        this.component = component;
+        generateUuid(owner);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUuid() {
+        return uuid;
     }
 
-    public Collection<Attribute> getAttributes() {
-        return attributes;
+    public boolean generateUuid(String owner) {
+        if (component == null) {
+            return false;
+        } else {
+            uuid = "Perm+" + owner + "+" + component;
+            return true;
+        }
+
     }
 
-    public void setAttributes(List<Attribute> attributes) {
-        this.attributes = attributes;
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
     }
 
     @Override
     public String toString() {
-        return String.format("Project: %s:%d", name, attributes.size());
+        return String.format("Permission: %s:%d", component, uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, attributes);
+        return Objects.hash(component, uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Project)) {
+        if (!(obj instanceof Permission)) {
             return false;
         }
-        final Project other = (Project) obj;
-        return Objects.equals(name, other.name) && Objects.equals(attributes, other.attributes);
+        final Permission other = (Permission) obj;
+        return Objects.equals(component, other.component) && Objects.equals(uuid, other.uuid);
     }
 }
