@@ -26,15 +26,27 @@
   <reference id="persistService" interface="org.openengsb.core.ekb.api.PersistInterface" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
   <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
+  <reference-list id="dataSynchronizers" interface="org.openengsb.core.usersync.DataSynchronizer" availability="optional" />
   
-  <bean id="syncServiceBean" class="org.openengsb.core.usersync.SyncronizedUserServiceImpl">
+  <bean id="ekbSynchronizer" class="org.openengsb.core.usersync.impl.EkbDataSynchronizer">
     <property name="queryService" ref="queryService" />
     <property name="persistService" ref="persistService" />
-    <property name="userManager" ref="userManager" />
     <property name="authenticationContext" ref="authenticationContext" />
   </bean>
   
-  <service interface="org.openengsb.core.usersync.SyncronizedUserService">
+  
+  <bean id="userManagerSynchronizer" class="org.openengsb.core.usersync.impl.UserManagerDataSynchronizer">
+    <property name="userManager" ref="userManager" />
+  </bean>
+  
+  <service interface="org.openengsb.core.usersync.DataSynchronizer" ref="ekbSynchronizer" />
+  <service interface="org.openengsb.core.usersync.DataSynchronizer" ref="userManagerSynchronizer" />
+  
+  <bean id="syncServiceBean" class="org.openengsb.core.usersync.impl.SynchronizedUserServiceImpl">
+    <property name="dataSynchronizers" ref="dataSynchronizers" />
+  </bean>
+ 
+  <service interface="org.openengsb.core.usersync.SynchronizedUserService">
     <service-properties>
       <entry key="location.root" value="syncService" />
     </service-properties>

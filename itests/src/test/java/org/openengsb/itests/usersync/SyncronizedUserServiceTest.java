@@ -34,7 +34,7 @@ import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.services.SecurityContext;
-import org.openengsb.core.usersync.SyncronizedUserService;
+import org.openengsb.core.usersync.SynchronizedUserService;
 import org.openengsb.domain.userprojects.model.Attribute;
 import org.openengsb.domain.userprojects.model.User;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
@@ -43,7 +43,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 @RunWith(JUnit4TestRunner.class)
 public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHelper {
 
-    private SyncronizedUserService impl;
+    private SynchronizedUserService impl;
     private UserDataManager userManager;
     private QueryInterface queryService;
     private AuthenticationContext authenticationContext;
@@ -65,7 +65,7 @@ public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHel
         authenticationContext = getOsgiService(AuthenticationContext.class);
         queryService = getOsgiService(QueryInterface.class);
         
-        impl = getOsgiService(SyncronizedUserService.class);
+        impl = getOsgiService(SynchronizedUserService.class);
     }
 
     @After

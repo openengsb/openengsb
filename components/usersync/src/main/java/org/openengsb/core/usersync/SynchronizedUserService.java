@@ -30,7 +30,7 @@ import org.openengsb.domain.userprojects.model.User;
  * {@link org.openengsb.core.api.security.service.UserDataManager} and the EKB
  * {@link org.openengsb.core.ekb.api.PersistInterface}.
  */
-public interface SyncronizedUserService {
+public interface SynchronizedUserService {
 
     // Basic user operations methods
     void checkinUser(User user);
