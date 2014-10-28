@@ -28,9 +28,21 @@
       <entry key="domain" value="userprojects" />
       <entry key="connector" value="userprojects.file" />
     </service-properties>
-    <bean class="org.openengsb.connector.userprojects.file.internal.UserProjectsFileServiceInstanceFactory"/>
+    <ref component-id="factory" />
   </service>
   
+  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
+
+  <bean id="factory" class="org.openengsb.connector.userprojects.file.internal.UserProjectsFileServiceInstanceFactory">
+    <property name="synchronizationService" ref="defaultSyncService" />
+  </bean>
+  <bean id="defaultSyncService" class="org.openengsb.connector.userprojects.file.internal.DefaultSynchronizationService">    
+    <property name="userProjectsDomainEvents" ref="userProjectsDomainEvents"></property>
+    <property name="authenticationContext" ref="authenticationContext" />
+  </bean>
+
+  <reference id="userProjectsDomainEvents" interface="org.openengsb.domain.userprojects.UserProjectsDomainEvents"/>
+
   <service>
     <interfaces>
       <value>org.openengsb.core.api.ConnectorProvider</value>

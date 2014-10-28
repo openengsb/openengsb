@@ -17,11 +17,21 @@
 
 package org.openengsb.connector.userprojects.file.internal;
 
+import java.io.File;
+import java.util.Map;
+
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 public class UserProjectsFileServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<UserProjectsFileServiceImpl> {
+
+    private SynchronizationService synchronizationService;
+
+    public void setSynchronizationService(SynchronizationService service) {
+        synchronizationService = service;
+    }
 
     public UserProjectsFileServiceInstanceFactory() {
     }
@@ -29,5 +39,21 @@ public class UserProjectsFileServiceInstanceFactory extends
     @Override
     public Connector createNewInstance(String id) {
         return new UserProjectsFileServiceImpl();
+    }
+
+    @Override
+    public UserProjectsFileServiceImpl doApplyAttributes(UserProjectsFileServiceImpl instance,
+        Map<String, String> attributes) {
+        if (attributes.containsKey("baseDir")) {
+            File baseDir = new File(attributes.get("baseDir"));
+            if (baseDir.exists()) {
+                String oldContext = ContextHolder.get().getCurrentContextId();
+                ContextHolder.get().setCurrentContextId("userprojects-jira");
+                synchronizationService.syncFromFilesToOpenEngSB(baseDir);
+                ContextHolder.get().setCurrentContextId(oldContext);
+            }
+        }
+
+        return instance;
     }
 }
