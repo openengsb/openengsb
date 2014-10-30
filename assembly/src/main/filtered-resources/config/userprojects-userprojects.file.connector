@@ -20,3 +20,9 @@ connectorType=userprojects.file
 property.location.root=userprojects/userprojects.file
 
 attribute.baseDir=data/userprojectsfile
+attribute.usersFileName=users
+attribute.projectsFileName=projects
+attribute.rolesFileName=roles
+attribute.assignmentsFileName=assignments
+attribute.associationSeparator=:-:
+attribute.valueSeparator=,-,

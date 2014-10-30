@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.connector.userprojects.file.internal.Configuration;
 import org.openengsb.domain.userprojects.model.User;
 
 /**
@@ -28,16 +29,10 @@ import org.openengsb.domain.userprojects.model.User;
  */
 public class UserFileAccessObject extends BaseFileAccessObject {
 
-    private static final String USERS_FILE_NAME = "users";
-
     private final File usersFile;
 
-    public UserFileAccessObject(File mainDir) {
-        usersFile = new File(mainDir, USERS_FILE_NAME);
-    }
-
-    public UserFileAccessObject(String mainDirName) {
-        this(new File(mainDirName));
+    public UserFileAccessObject() {
+        usersFile = Configuration.get().getUsersFile();
     }
 
     /**

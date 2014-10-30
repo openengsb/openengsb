@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.connector.userprojects.file.internal.Configuration;
 import org.openengsb.domain.userprojects.model.Assignment;
 
 /**
@@ -30,16 +31,10 @@ import org.openengsb.domain.userprojects.model.Assignment;
  */
 public class AssignmentFileAccessObject extends BaseFileAccessObject {
 
-    private static final String ASSIGNMENTS_FILE_NAME = "assignments";
-
     private final File assignmentsFile;
 
-    public AssignmentFileAccessObject(File mainDir) {
-        assignmentsFile = new File(mainDir, ASSIGNMENTS_FILE_NAME);
-    }
-
-    public AssignmentFileAccessObject(String mainDirName) {
-        this(new File(mainDirName));
+    public AssignmentFileAccessObject() {
+        assignmentsFile = Configuration.get().getAssignmentsFile();
     }
 
     /**
@@ -57,15 +52,16 @@ public class AssignmentFileAccessObject extends BaseFileAccessObject {
         }
         for (String assignmentString : assignmentStrings) {
             Assignment assignment = new Assignment();
-            String[] substrings = StringUtils.split(assignmentString, ASSOCIATION_SEPARATOR);
+            String[] substrings = StringUtils.split(assignmentString, Configuration.get().getAssociationSeparator());
             assignment.setProject(substrings[0]);
             assignment.setUser(substrings[1]);
             if (substrings.length > 2) {
-                assignment.setRoles(Arrays.asList(StringUtils.split(substrings[2], VALUE_SEPARATOR)));
+                assignment.setRoles(Arrays.asList(StringUtils.split(substrings[2], Configuration.get()
+                        .getValueSeparator())));
             }
             list.add(assignment);
         }
-        
+
         return list;
     }
 

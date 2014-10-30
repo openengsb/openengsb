@@ -17,11 +17,9 @@
 
 package org.openengsb.connector.userprojects.file.internal;
 
-import java.io.File;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 public class UserProjectsFileServiceInstanceFactory extends
@@ -44,16 +42,31 @@ public class UserProjectsFileServiceInstanceFactory extends
     @Override
     public UserProjectsFileServiceImpl doApplyAttributes(UserProjectsFileServiceImpl instance,
         Map<String, String> attributes) {
+        Configuration config = Configuration.get();
         if (attributes.containsKey("baseDir")) {
-            File baseDir = new File(attributes.get("baseDir"));
-            if (baseDir.exists()) {
-                String oldContext = ContextHolder.get().getCurrentContextId();
-                ContextHolder.get().setCurrentContextId("userprojects-jira");
-                synchronizationService.syncFromFilesToOpenEngSB(baseDir);
-                ContextHolder.get().setCurrentContextId(oldContext);
-            }
+            config.setBaseDir(attributes.get("baseDir"));
+        }
+        if (attributes.containsKey("usersFileName")) {
+            config.setUsersFile(attributes.get("usersFileName"));
+        }
+        if (attributes.containsKey("projectsFileName")) {
+            config.setProjectsFile(attributes.get("projectsFileName"));
+        }
+        if (attributes.containsKey("rolesFileName")) {
+            config.setRolesFile(attributes.get("rolesFileName"));
+        }
+        if (attributes.containsKey("assignmentsFileName")) {
+            config.setAssignmentsFile(attributes.get("assignmentsFileName"));
+        }
+        if (attributes.containsKey("associationSeparator")) {
+            config.setAssociationSeparator(attributes.get("associationSeparator"));
+        }
+        if (attributes.containsKey("valueSeparator")) {
+            config.setValueSeparator(attributes.get("valueSeparator"));
         }
 
+        synchronizationService.syncFromFilesToOpenEngSB();
         return instance;
     }
+
 }

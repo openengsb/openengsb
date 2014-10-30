@@ -16,7 +16,6 @@
  */
 package org.openengsb.connector.userprojects.file.internal;
 
-import java.io.File;
 
 
 /**
@@ -27,6 +26,6 @@ public interface SynchronizationService {
     /**
      * Synchronizes the user/project data from the corresponding files into the bus.
      */
-    void syncFromFilesToOpenEngSB(File baseDir);
+    void syncFromFilesToOpenEngSB();
 
 }

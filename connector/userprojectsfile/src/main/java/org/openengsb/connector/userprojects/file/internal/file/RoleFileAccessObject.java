@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openengsb.connector.userprojects.file.internal.Configuration;
 import org.openengsb.domain.userprojects.model.Role;
 
 /**
@@ -30,16 +31,10 @@ import org.openengsb.domain.userprojects.model.Role;
  */
 public class RoleFileAccessObject extends BaseFileAccessObject {
 
-    private static final String ROLES_FILE_NAME = "roles";
-
     private final File rolesFile;
 
-    public RoleFileAccessObject(File mainDir) {
-        rolesFile = new File(mainDir, ROLES_FILE_NAME);
-    }
-
-    public RoleFileAccessObject(String mainDirName) {
-        this(new File(mainDirName));
+    public RoleFileAccessObject() {
+        rolesFile = Configuration.get().getRolesFile();
     }
 
     /**
@@ -56,10 +51,10 @@ public class RoleFileAccessObject extends BaseFileAccessObject {
             throw new FileBasedRuntimeException(e);
         }
         for (String roleString : roleStrings) {
-            String[] substrings = StringUtils.split(roleString, ASSOCIATION_SEPARATOR);
+            String[] substrings = StringUtils.split(roleString, Configuration.get().getAssociationSeparator());
             Role role = new Role(substrings[0]);
             if (substrings.length > 1) {
-                role.setRoles(Arrays.asList(StringUtils.split(substrings[1], VALUE_SEPARATOR)));
+                role.setRoles(Arrays.asList(StringUtils.split(substrings[1], Configuration.get().getValueSeparator())));
             }
             list.add(role);
         }

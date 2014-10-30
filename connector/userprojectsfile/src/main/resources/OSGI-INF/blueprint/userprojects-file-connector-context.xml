@@ -36,7 +36,7 @@
   <bean id="factory" class="org.openengsb.connector.userprojects.file.internal.UserProjectsFileServiceInstanceFactory">
     <property name="synchronizationService" ref="defaultSyncService" />
   </bean>
-  <bean id="defaultSyncService" class="org.openengsb.connector.userprojects.file.internal.DefaultSynchronizationService">    
+  <bean id="defaultSyncService" class="org.openengsb.connector.userprojects.file.internal.DefaultSynchronizationService" destroy-method="destroy">    
     <property name="userProjectsDomainEvents" ref="userProjectsDomainEvents"></property>
     <property name="authenticationContext" ref="authenticationContext" />
   </bean>

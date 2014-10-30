@@ -27,9 +27,6 @@ import org.apache.commons.io.FileUtils;
  */
 public abstract class BaseFileAccessObject {
 
-    protected static final String ASSOCIATION_SEPARATOR = ":-:";
-    protected static final String VALUE_SEPARATOR = ",";
-
     protected List<String> readLines(File file) throws IOException {
         return FileUtils.readLines(file);
     }

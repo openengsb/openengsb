@@ -17,12 +17,15 @@
 package org.openengsb.connector.userprojects.file.internal;
 
 import java.io.File;
+import java.util.Set;
+import java.util.Timer;
 
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.userprojects.file.internal.file.AssignmentFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.ProjectFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.RoleFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.UserFileAccessObject;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.domain.userprojects.UserProjectsDomainEvents;
 import org.openengsb.domain.userprojects.event.UpdateAssignmentEvent;
@@ -36,9 +39,11 @@ public final class DefaultSynchronizationService implements SynchronizationServi
     private ProjectFileAccessObject projectFao;
     private RoleFileAccessObject roleFao;
     private AssignmentFileAccessObject assignmentFao;
-    
+
     private UserProjectsDomainEvents events;
     private AuthenticationContext authenticationContext;
+
+    private Timer timer = new Timer();
 
     public void setUserProjectsDomainEvents(UserProjectsDomainEvents domainEvents) {
         events = domainEvents;
@@ -49,42 +54,88 @@ public final class DefaultSynchronizationService implements SynchronizationServi
     }
 
     @Override
-    public void syncFromFilesToOpenEngSB(File baseDir) {
-        userFao = new UserFileAccessObject(baseDir);
-        projectFao = new ProjectFileAccessObject(baseDir);
-        roleFao = new RoleFileAccessObject(baseDir);
-        assignmentFao = new AssignmentFileAccessObject(baseDir);
-        
+    public void syncFromFilesToOpenEngSB() {
+        userFao = new UserFileAccessObject();
+        projectFao = new ProjectFileAccessObject();
+        roleFao = new RoleFileAccessObject();
+        assignmentFao = new AssignmentFileAccessObject();
+
+        startSync();
+    }
+
+    private void startSync() {
+        Configuration config = Configuration.get();
+        FileWatcher fileWatcher =
+            new FileWatcher(config.getUsersFile(), config.getProjectsFile(), config.getRolesFile(),
+                    config.getAssignmentsFile()) {
+
+                @Override
+                protected void onFilesModified(Set<File> files) {
+                    syncFromFiles(files);
+                }
+            };
+
+        timer.schedule(fileWatcher, 5000, 1000);
+    }
+    
+    private void syncFromFiles(Set<File> files) {
+        String oldContext = ContextHolder.get().getCurrentContextId();
+        ContextHolder.get().setCurrentContextId("userprojects-file");
         authenticationContext.login("admin", new Password("password"));
-        
-        syncUsers();
-        syncProjects();
-        syncRoles();
-        syncAssignments();
+
+        if (files.contains(Configuration.get().getUsersFile())) {
+            syncUsers();
+        }
+        if (files.contains(Configuration.get().getProjectsFile())) {
+            syncProjects();
+        }
+        if (files.contains(Configuration.get().getRolesFile())) {
+            syncRoles();
+        }
+        if (files.contains(Configuration.get().getAssignmentsFile())) {
+            syncAssignments();
+        }
+
+        ContextHolder.get().setCurrentContextId(oldContext);
     }
 
     private void syncUsers() {
+        if (!Configuration.get().getUsersFile().exists()) {
+            return;
+        }
         UpdateUserEvent event = new UpdateUserEvent();
         event.setNewUpdatedUsers(userFao.findAllUsers());
         events.raiseEvent(event);
     }
 
     private void syncProjects() {
+        if (!Configuration.get().getProjectsFile().exists()) {
+            return;
+        }
         UpdateProjectsEvent event = new UpdateProjectsEvent();
         event.setUpdatedProjects(projectFao.findAllProjects());
         events.raiseEvent(event);
     }
-    
+
     private void syncRoles() {
+        if (!Configuration.get().getRolesFile().exists()) {
+            return;
+        }
         UpdateRolesEvent event = new UpdateRolesEvent();
         event.setUpdatedRoles(roleFao.findAllRoles());
         events.raiseEvent(event);
     }
 
     private void syncAssignments() {
+        if (!Configuration.get().getAssignmentsFile().exists()) {
+            return;
+        }
         UpdateAssignmentEvent event = new UpdateAssignmentEvent();
         event.setUpdatedAssignments(assignmentFao.findAllAssignments());
         events.raiseEvent(event);
     }
 
+    public void destroy() {
+        timer.cancel();
+    }
 }
