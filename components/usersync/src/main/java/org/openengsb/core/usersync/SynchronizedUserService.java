@@ -26,13 +26,10 @@ import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
 
 /**
- * This service is responsible to distribute the data to both the
- * {@link org.openengsb.core.api.security.service.UserDataManager} and the EKB
- * {@link org.openengsb.core.ekb.api.PersistInterface}.
+ * This service should save the user-information provided for the EngSB to all {@link DataSynchronizer} objects.
  */
 public interface SynchronizedUserService {
 
-    // Basic user operations methods
     void checkinUser(User user);
     
     void checkinUsers(List<User> users);
@@ -45,7 +42,6 @@ public interface SynchronizedUserService {
 
     void deleteUsersByName(List<String> userNames);
 
-    // Basic project operations
     void checkinProject(Project project);
 
     void checkinProjects(List<Project> projects);
@@ -58,7 +54,6 @@ public interface SynchronizedUserService {
 
     void deleteProjectsByName(List<String> projectNames);
 
-    // Basic role operations
     void checkinRole(Role role);
 
     void checkinRoles(List<Role> roles);
@@ -71,7 +66,6 @@ public interface SynchronizedUserService {
 
     void deleteRolesByName(List<String> roleNames);
 
-    // Basic assignment operations
     void checkinAssignment(Assignment assignment);
 
     void checkinAssignments(List<Assignment> assignments);
@@ -82,7 +76,6 @@ public interface SynchronizedUserService {
 
     void deleteAssignments(List<Assignment> assignments);
 
-    // Special Assignment operations
     /**
      * Deletes all assignments for a specific project.
      * 

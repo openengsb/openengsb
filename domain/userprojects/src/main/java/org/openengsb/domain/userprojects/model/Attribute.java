@@ -66,10 +66,6 @@ public class Attribute {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     @Override
     public String toString() {
         return String.format("%s", attributeName);

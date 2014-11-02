@@ -24,6 +24,10 @@ import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
 import org.openengsb.labs.delegation.service.Provide;
 
+/**
+ * Note: To make sure that this object can be managed properly by the EDB it is recommended to call the generateUuid
+ * method after setting all object attributes.
+ */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class Permission {

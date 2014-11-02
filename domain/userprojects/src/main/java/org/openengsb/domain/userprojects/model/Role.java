@@ -27,6 +27,10 @@ import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This model contains role information. The field name stores the name of the role, the lists roles and permissions
+ * should be used to hold references to roles and permissions.
+ */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class Role {

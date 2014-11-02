@@ -25,6 +25,9 @@ import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
 
+/**
+ * A service from this interface should store user-information into one specific data source.
+ */
 public interface DataSynchronizer {
 
     void checkinUsers(List<User> users) throws SynchronizationException;

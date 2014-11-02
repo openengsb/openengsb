@@ -28,6 +28,10 @@ import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This model contains project information. The field name can be used for the project name, the attributes can be used
+ * to store additional information.
+ */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class Project {

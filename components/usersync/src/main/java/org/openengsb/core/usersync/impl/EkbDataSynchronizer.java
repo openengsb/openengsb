@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.QueryRequest;
 import org.openengsb.core.api.security.AuthenticationContext;
 import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.PersistInterface;
@@ -36,6 +37,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This service implementation stores the given user-data into the EKB via the {@link PersistInterface}.
+ */
 public class EkbDataSynchronizer implements DataSynchronizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserManagerDataSynchronizer.class);
@@ -54,7 +58,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (User user : users) {
-            List<User> result = queryService.queryByString(User.class, "username:\"" + user.getUsername() + "\"");
+            List<User> result = queryService.query(User.class, QueryRequest.query("username", user.getUsername()));
 
             if (result.size() == 0) {
                 LOGGER.info("Create User " + user.getUsername());
@@ -63,7 +67,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
                 LOGGER.info("Update User " + user.getUsername());
                 commit.addUpdate(user);
             } else {
-                LOGGER.error("Error: Duplicate users in EngSB");
+                LOGGER.warn("Error: Duplicate users in EngSB");
                 commit.addUpdate(user);
             }
         }
@@ -78,7 +82,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (User user : users) {
-            List<User> result = queryService.queryByString(User.class, "username:\"" + user.getUsername() + "\"");
+            List<User> result = queryService.query(User.class, QueryRequest.query("username", user.getUsername()));
 
             if (result.size() == 0) {
                 LOGGER.warn("User {1} does not exist.", user.getUsername());
@@ -108,7 +112,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Project project : projects) {
-            List<Project> result = queryService.queryByString(Project.class, "name:\"" + project.getName() + "\"");
+            List<Project> result = queryService.query(Project.class, QueryRequest.query("name", project.getName()));
 
             if (result.size() == 0) {
                 commit.addInsert(project);
@@ -127,7 +131,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Project project : projects) {
-            List<Project> result = queryService.queryByString(Project.class, "name:\"" + project.getName() + "\"");
+            List<Project> result = queryService.query(Project.class, QueryRequest.query("name", project.getName()));
 
             if (result.size() == 0) {
                 LOGGER.warn("Project {1} does not exist.", project.getName());
@@ -158,7 +162,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Role role : roles) {
-            List<Role> result = queryService.queryByString(Role.class, "name:\"" + role.getName() + "\"");
+            List<Role> result = queryService.query(Role.class, QueryRequest.query("name", role.getName()));
 
             if (result.size() == 0) {
                 commit.addInsert(role);
@@ -177,7 +181,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Role role : roles) {
-            List<Role> result = queryService.queryByString(Role.class, "name:\"" + role.getName() + "\"");
+            List<Role> result = queryService.query(Role.class, QueryRequest.query("name", role.getName()));
 
             if (result.size() == 0) {
                 LOGGER.warn("User {1} does not exist.", role.getName());
@@ -207,10 +211,10 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Assignment assignment : assignments) {
-            String query =
-                "userName:\"" + assignment.getUserName() + "\" and projectName:\"" + assignment.getProjectName()
-                    + "\"";
-            List<Assignment> result = queryService.queryByString(Assignment.class, query);
+            QueryRequest request = QueryRequest.create();
+            request.addParameter("userName", assignment.getUserName());
+            request.addParameter("projectName", assignment.getProjectName());
+            List<Assignment> result = queryService.query(Assignment.class, request);
 
             if (result.size() == 0) {
                 commit.addInsert(assignment);
@@ -243,7 +247,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         preparePersistenceAccess();
 
         for (Assignment assignment : assignments) {
-            List<Role> result = queryService.queryByString(Role.class, "uuid:\"" + assignment.getUuid() + "\"");
+            List<Role> result = queryService.query(Role.class, QueryRequest.query("uuid", assignment.getUuid()));
 
             if (result.size() == 0) {
                 LOGGER.warn("User {1} does not exist.", assignment.getUuid());
@@ -309,7 +313,7 @@ public class EkbDataSynchronizer implements DataSynchronizer {
         EKBCommit commit = getEKBCommit();
 
         for (Assignment assignment : assignments) {
-            List<Role> result = queryService.queryByString(Role.class, "uuid:\"" + assignment.getUuid() + "\"");
+            List<Role> result = queryService.query(Role.class, QueryRequest.query("uuid", assignment.getUuid()));
 
             if (result.size() == 0) {
                 LOGGER.warn("User {1} does not exist.", assignment.getUuid());
@@ -323,19 +327,18 @@ public class EkbDataSynchronizer implements DataSynchronizer {
     }
 
     private List<Assignment> queryForAssignments(Assignment assignment) {
-
-        String query = "";
+        QueryRequest request = QueryRequest.create();
 
         if (assignment.getUserName() != null && !assignment.getUserName().equals("")) {
-            query += "userName:\"" + assignment.getUserName() + "\"";
+            request.addParameter("userName", assignment.getUserName());
         }
 
         if (assignment.getProjectName() != null && !assignment.getProjectName().equals("")) {
-            query += "projectName:\"" + assignment.getProjectName() + "\"";
+            request.addParameter("projectName", assignment.getProjectName());
         }
 
         preparePersistenceAccess();
-        List<Assignment> result = queryService.queryByString(Assignment.class, query);
+        List<Assignment> result = queryService.query(Assignment.class, request);
         revokePersistenceAccess();
 
         return result;
@@ -352,7 +355,6 @@ public class EkbDataSynchronizer implements DataSynchronizer {
     }
 
     private void preparePersistenceAccess() {
-
         if (authenticationContext.getAuthenticatedPrincipal() == null
             || !(authenticationContext.getAuthenticatedPrincipal() instanceof String)) {
             throw new SynchronizationException("A user with DB access must be logged in.");
@@ -363,7 +365,6 @@ public class EkbDataSynchronizer implements DataSynchronizer {
     }
 
     private void revokePersistenceAccess() {
-
         ContextHolder.get().setCurrentContextId(currentContext);
     }
 }

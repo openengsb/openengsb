@@ -32,6 +32,9 @@ import org.openengsb.domain.userprojects.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This service implementation stores the given user-data into the {@link UserDataManager}.
+ */
 public class UserManagerDataSynchronizer implements DataSynchronizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserManagerDataSynchronizer.class);
