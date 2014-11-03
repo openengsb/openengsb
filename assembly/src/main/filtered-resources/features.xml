@@ -199,7 +199,7 @@
     <bundle start-level='40'>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.userprojects/${project.version}</bundle>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
-    <feature>openengsb-connector-authentication-jira</feature>
+    <feature>openengsb-connector-authentication-file</feature>
     <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
     <!-- for external user/projects -->
     <feature>openengsb-connector-userprojects-jira</feature>
@@ -346,6 +346,16 @@
     <feature version="${project.version}">openengsb-framework</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.memoryauditing/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-connector-authentication-file" version="${project.version}" description="OpenEngSB File-based Authentication Connector">
+    <details>
+      This feature contains the implementation of the OpenEngSB Authentication Domain using a simple text file as the authentication means. 
+      This one can be replaced by any other implementation but at least one implementation instance of this domain is required by the
+      OpenEngSB to run.
+    </details>
+    <bundle dependency="true">mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
+    <bundle start-level='40'>mvn:org.openengsb.connector/org.openengsb.connector.authentication.file/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-connector-authentication-jira" version="${project.version}" description="OpenEngSB JIRA Authentication Connector">
