@@ -129,19 +129,16 @@
   </dependencies>
 
   <repositories>
-    <repository>
-      <snapshots>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
         <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
-      <id>cdl-ind.ifs.tuwien.ac.at-libs-release</id>
-      <name>libs-release</name>
-      <url>http://cdl-ind.ifs.tuwien.ac.at/artifactory/libs-release</url>
-    </repository>
-    <repository>
-      <snapshots />
-      <id>cdl-ind.ifs.tuwien.ac.at-libs-snapshot</id>
-      <name>libs-snapshot</name>
-      <url>http://cdl-ind.ifs.tuwien.ac.at/artifactory/libs-snapshot</url>
     </repository>
   </repositories>
 
