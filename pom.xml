@@ -94,6 +94,7 @@
     <module>connector/authenticationfile</module>
     <module>connector/authenticationjira</module>
     <module>connector/serviceacl</module>
+    <module>connector/userprojectsfile</module>
     <module>connector/userprojectsjira</module>
     
     <!-- OpenEngSB ConfigPersistence Modules -->
