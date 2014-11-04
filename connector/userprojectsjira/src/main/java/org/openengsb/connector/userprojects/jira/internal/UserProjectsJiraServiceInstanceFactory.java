@@ -83,7 +83,8 @@ public class UserProjectsJiraServiceInstanceFactory extends
                     JiraClient jiraClient = JiraClientFactory.create();
                     synchronizationService.syncFromJiraServerToOpenEngSB(jiraClient);
                 } catch (Exception e) {
-                    LOG.error("Could not sync from JIRA server to OpenEngSB", e);
+                    LOG.error("Could not sync from JIRA server to OpenEngSB. The configuration might be wrong.");
+                    LOG.debug("Sync error", e);
                 }
                 ContextHolder.get().setCurrentContextId(oldContext);
             }
