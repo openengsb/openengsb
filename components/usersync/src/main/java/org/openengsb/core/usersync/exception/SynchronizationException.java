@@ -14,24 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openengsb.core.usersync.exception;
 
-@SuppressWarnings("serial")
-public class AuthenticationException extends RuntimeException {
+public class SynchronizationException extends RuntimeException {
 
-    public AuthenticationException(String string) {
-        super(string);
-    }
+    private static final long serialVersionUID = 1L;
 
-    public AuthenticationException() {
+    public SynchronizationException() {
         super();
     }
 
-    public AuthenticationException(String message, Throwable cause) {
+    public SynchronizationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public AuthenticationException(Throwable cause) {
+    public SynchronizationException(String message) {
+        super(message);
+    }
+
+    public SynchronizationException(Throwable cause) {
         super(cause);
     }
+
 }

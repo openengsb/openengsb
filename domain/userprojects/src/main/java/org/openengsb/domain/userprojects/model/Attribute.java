@@ -58,15 +58,8 @@ public class Attribute {
         this.values = values;
     }
 
-    public boolean generateUuid(String owner) {
-
-        if (attributeName == null) {
-            return false;
-        } else {
-            uuid = "Attr+" + owner + "+" + attributeName;
-
-            return true;
-        }
+    public void generateUuid(String owner) {
+        uuid = "Attr+" + owner + "+" + attributeName;
     }
 
     public String getUuid() {

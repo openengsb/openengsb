@@ -18,4 +18,4 @@
 org.openengsb.core.workflow.api.TaskboxService taskbox
 org.openengsb.core.workflow.api.TaskboxServiceInternal taskboxinternal
 org.openengsb.domain.auditing.AuditingDomain auditing
-org.openengsb.core.usersync.SyncronizedUserService syncService
+org.openengsb.core.usersync.SynchronizedUserService syncService

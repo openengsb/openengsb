@@ -17,14 +17,12 @@
 
 package org.openengsb.domain.userprojects.model;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
@@ -40,22 +38,30 @@ public class Assignment {
     @OpenEngSBModelId
     private String uuid;
 
-    private String user;
-    private String project;
+    private String userName;
+    private String projectName;
 
     private List<String> roles = Lists.newArrayList();
     private List<Permission> permissions = Lists.newArrayList();
 
-    public String getUser() {
-        return user;
+    public Assignment() {
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public Assignment(String userName, String projectName) {
+        this.userName = userName;
+        this.projectName = projectName;
         generateUuid();
     }
 
-    public Collection<String> getRoles() {
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public List<String> getRoles() {
         return roles;
     }
 
@@ -63,16 +69,15 @@ public class Assignment {
         this.roles = roles;
     }
 
-    public String getProject() {
-        return project;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setProject(String project) {
-        this.project = project;
-        generateUuid();
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public Collection<Permission> getPermissions() {
+    public List<Permission> getPermissions() {
         return permissions;
     }
 
@@ -82,10 +87,10 @@ public class Assignment {
 
     public boolean generateUuid() {
 
-        if (user == null || project == null) {
+        if (userName == null || projectName == null) {
             return false;
         } else {
-            uuid = "Assign+" + user + "+" + project;
+            uuid = "Assign+" + userName + "+" + projectName;
 
             return true;
         }
@@ -97,12 +102,12 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", user, project);
+        return String.format("%s:%s", userName, projectName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, project, roles, permissions);
+        return Objects.hash(userName, projectName, roles, permissions);
     }
 
     @Override
@@ -111,7 +116,7 @@ public class Assignment {
             return false;
         }
         final Assignment other = (Assignment) obj;
-        return Objects.equals(user, other.user) && Objects.equals(project, other.project)
+        return Objects.equals(userName, other.userName) && Objects.equals(projectName, other.projectName)
             && Objects.equals(roles, other.roles) && Objects.equals(permissions, other.permissions);
     }
 }

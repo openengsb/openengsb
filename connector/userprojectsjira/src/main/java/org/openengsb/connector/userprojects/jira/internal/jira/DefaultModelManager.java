@@ -115,8 +115,8 @@ public final class DefaultModelManager implements ModelManager {
             for (com.atlassian.jira.rest.client.api.domain.User user : jiraClient.findUsers(Lists
                     .newArrayList(jiraProject))) {
                 Assignment assignment = new Assignment();
-                assignment.setUser(user.getName());
-                assignment.setProject(jiraProject.getName());
+                assignment.setUserName(user.getName());
+                assignment.setProjectName(jiraProject.getName());
                 assignment.generateUuid();
                 assignments.add(assignment);
             }

@@ -27,14 +27,16 @@ import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This model contains user information. The field username can be used for the users name, the attributes can be used
+ * to store additional information.
+ */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class User {
 
     @OpenEngSBModelId
     private String username;
-
-    private String currentProject;
 
     private List<Attribute> attributes = Lists.newArrayList();
 
@@ -59,14 +61,6 @@ public class User {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
-    }
-
-    public String getCurrentProject() {
-        return currentProject;
-    }
-
-    public void setCurrentProject(String currentProject) {
-        this.currentProject = currentProject;
     }
 
     @Override

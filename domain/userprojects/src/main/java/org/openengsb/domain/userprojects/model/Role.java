@@ -23,11 +23,14 @@ import java.util.Objects;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
 import org.openengsb.core.api.model.annotation.OpenEngSBModelId;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.labs.delegation.service.Provide;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This model contains role information. The field name stores the name of the role, the lists roles and permissions
+ * should be used to hold references to roles and permissions.
+ */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
 public class Role {
@@ -36,7 +39,6 @@ public class Role {
     private String name;
 
     private List<String> roles = Lists.newArrayList();
-
     private List<Permission> permissions = Lists.newArrayList();
 
     public Role() {

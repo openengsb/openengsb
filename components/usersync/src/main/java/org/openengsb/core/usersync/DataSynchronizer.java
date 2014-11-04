@@ -19,68 +19,42 @@ package org.openengsb.core.usersync;
 
 import java.util.List;
 
-import org.openengsb.core.api.AliveState;
+import org.openengsb.core.usersync.exception.SynchronizationException;
 import org.openengsb.domain.userprojects.model.Assignment;
 import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
 
 /**
- * This service is responsible to distribute the data to both the
- * {@link org.openengsb.core.api.security.service.UserDataManager} and the EKB
- * {@link org.openengsb.core.ekb.api.PersistInterface}.
+ * A service from this interface should store user-information into one specific data source.
  */
-public interface SyncronizedUserService {
+public interface DataSynchronizer {
 
-    // Basic user operations methods
-    void checkinUser(User user);
-    
-    void checkinUsers(List<User> users);
+    void checkinUsers(List<User> users) throws SynchronizationException;
 
-    void deleteUser(User user);
+    void deleteUsers(List<User> user) throws SynchronizationException;
 
-    void deleteUsers(List<User> user);
+    void deleteUsersByName(List<String> userNames) throws SynchronizationException;
 
-    void deleteUserByName(String userName);
+    void checkinProjects(List<Project> projects) throws SynchronizationException;
 
-    void deleteUsersByName(List<String> userNames);
+    void deleteProjects(List<Project> project) throws SynchronizationException;
 
-    // Basic project operations
-    void checkinProject(Project project);
-
-    void checkinProjects(List<Project> projects);
-
-    void deleteProject(Project project);
-
-    void deleteProjects(List<Project> project);
-
-    void deleteProjectByName(String projectName);
-
-    void deleteProjectsByName(List<String> projectNames);
+    void deleteProjectsByName(List<String> projectNames) throws SynchronizationException;
 
     // Basic role operations
-    void checkinRole(Role role);
+    void checkinRoles(List<Role> roles) throws SynchronizationException;
 
-    void checkinRoles(List<Role> roles);
+    void deleteRoles(List<Role> role) throws SynchronizationException;
 
-    void deleteRole(Role role);
-
-    void deleteRoles(List<Role> role);
-
-    void deleteRoleByName(String roleName);
-
-    void deleteRolesByName(List<String> roleNames);
+    void deleteRolesByName(List<String> roleNames) throws SynchronizationException;
 
     // Basic assignment operations
-    void checkinAssignment(Assignment assignment);
+    void checkinAssignments(List<Assignment> assignments) throws SynchronizationException;
 
-    void checkinAssignments(List<Assignment> assignments);
+    void deleteAssignment(String userName, String project) throws SynchronizationException;
 
-    void deleteAssignment(Assignment assignment);
-
-    void deleteAssignment(String userName, String project);
-
-    void deleteAssignments(List<Assignment> assignments);
+    void deleteAssignments(List<Assignment> assignments) throws SynchronizationException;
 
     // Special Assignment operations
     /**
@@ -88,28 +62,26 @@ public interface SyncronizedUserService {
      * 
      * @param projectName name of the project where all assignments should be deleted.
      */
-    void deleteAllAssignmentsForProject(String projectName);
+    void deleteAllAssignmentsForProject(String projectName) throws SynchronizationException;
 
     /**
      * Deletes all assignments for a specific project.
      * 
      * @param project project where all assignments should be deleted.
      */
-    void deleteAllAssignmentsForProject(Project project);
+    void deleteAllAssignmentsForProject(Project project) throws SynchronizationException;
 
     /**
      * Deletes all assignments for a specific user.
      * 
      * @param userName name of the user where all assignments should be deleted.
      */
-    void deleteAllAssignmentsForUser(String userName);
+    void deleteAllAssignmentsForUser(String userName) throws SynchronizationException;
 
     /**
      * Deletes all assignments for a specific user.
      * 
      * @param user user where all assignments should be deleted.
      */
-    void deleteAllAssignmentsForUser(User user);
-
-    AliveState getAliveState();
+    void deleteAllAssignmentsForUser(User user) throws SynchronizationException;
 }
