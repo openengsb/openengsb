@@ -36,6 +36,7 @@ import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
+import org.ops4j.pax.wicket.api.PaxWicketBeanInjectionSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     @Inject
     @Named("authorizer")
+    @PaxWicketBeanInjectionSource(PaxWicketBeanInjectionSource.INJECTION_SOURCE_BLUEPRINT)
     private AuthorizationDomain authorizer;
 
     @Inject
