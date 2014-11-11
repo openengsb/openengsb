@@ -53,15 +53,14 @@ public class AssignmentFileAccessObject extends BaseFileAccessObject {
         for (String assignmentString : assignmentStrings) {
             Assignment assignment = new Assignment();
             String[] substrings = StringUtils.split(assignmentString, Configuration.get().getAssociationSeparator());
-            assignment.setProject(substrings[0]);
-            assignment.setUser(substrings[1]);
+            assignment.setProjectName(substrings[0]);
+            assignment.setUserName(substrings[1]);
             if (substrings.length > 2) {
                 assignment.setRoles(Arrays.asList(StringUtils.split(substrings[2], Configuration.get()
                         .getValueSeparator())));
             }
             list.add(assignment);
         }
-
         return list;
     }
 
