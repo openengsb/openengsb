@@ -41,7 +41,10 @@ import org.openengsb.core.api.xlink.model.XLinkObject;
 import org.openengsb.core.api.xlink.service.XLinkConnectorManager;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.ekb.api.TransformationEngine;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +154,7 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         Object transformedObject = transformationEngine.performTransformation(sourceModel, targetModel, modelObject);
         if (transformedObject instanceof OpenEngSBModel
                 && ((OpenEngSBModel) transformedObject).retrieveInternalModelId() != null) {
-            List<?> result = queryService.query(transformedObject.getClass(),
+            List<?> result = getQueryInterface().query(transformedObject.getClass(),
                 QueryRequest.query(((OpenEngSBModel) transformedObject).retrieveInternalModelIdName(),
                     ((OpenEngSBModel) transformedObject).retrieveInternalModelId()));
             if (!result.isEmpty()) {
@@ -162,6 +165,17 @@ public class XLinkConnectorManagerImpl extends ConnectorManagerImpl implements X
         return transformedObject;
     }
 
+    private QueryInterface getQueryInterface() {
+        if (queryService == null) {
+            BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
+            ServiceReference<QueryInterface> serviceReference = bundleContext.getServiceReference(QueryInterface.class);
+            if (serviceReference != null) {
+                queryService = bundleContext.getService(serviceReference);
+            }
+        }
+        return queryService;
+    }
+    
     @Override
     public String generateXLink(String connectorId, String context, Object modelObject) {
         StringBuilder sb = new StringBuilder(xLinkBaseUrl);

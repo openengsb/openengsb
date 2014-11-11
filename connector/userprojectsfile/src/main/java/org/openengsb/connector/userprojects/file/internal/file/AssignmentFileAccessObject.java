@@ -61,7 +61,6 @@ public class AssignmentFileAccessObject extends BaseFileAccessObject {
             }
             list.add(assignment);
         }
-
         return list;
     }
 
