@@ -17,6 +17,7 @@
 
 package org.openengsb.domain.userprojects.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.openengsb.core.api.Constants;
@@ -30,7 +31,8 @@ import org.openengsb.labs.delegation.service.Provide;
  */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
-public class Permission {
+public class Permission implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @OpenEngSBModelId
     private String uuid;

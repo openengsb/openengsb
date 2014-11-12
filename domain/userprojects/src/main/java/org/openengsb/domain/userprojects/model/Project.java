@@ -17,6 +17,7 @@
 
 package org.openengsb.domain.userprojects.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +35,8 @@ import com.google.common.collect.Lists;
  */
 @Provide(context = { Constants.DELEGATION_CONTEXT_MODELS })
 @Model
-public class Project {
+public class Project implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @OpenEngSBModelId
     private String name;
