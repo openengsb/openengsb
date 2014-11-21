@@ -20,6 +20,7 @@ package org.openengsb.domain.userprojects.model;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.annotation.Model;
@@ -90,6 +91,7 @@ public class Assignment implements Serializable {
     public boolean generateUuid() {
 
         if (userName == null || projectName == null) {
+            uuid = UUID.randomUUID().toString();
             return false;
         } else {
             uuid = "Assign+" + userName + "+" + projectName;
@@ -99,6 +101,9 @@ public class Assignment implements Serializable {
     }
 
     public String getUuid() {
+        if (uuid == null) {
+            generateUuid();
+        }
         return uuid;
     }
 
