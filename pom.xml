@@ -112,6 +112,7 @@
     <module>ui/admin</module>
     <module>ui/wicketacl</module>
     <!-- OpenEngSB Framework Assembly Module -->
+    <module>shell</module>
     <module>assembly</module>
     <!-- OpenEngSB Examples Modules -->
     <module>examples/remoteclient</module>
