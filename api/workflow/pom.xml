@@ -84,8 +84,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
         <executions>
           <execution>
             <id>EventRegistrationService</id>
@@ -95,7 +95,7 @@
               <outputFileName>${project.basedir}/target/generated/wsdl/EventRegistrationService.wsdl</outputFileName>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
           <execution>
@@ -106,7 +106,7 @@
               <outputFileName>${project.basedir}/target/generated/wsdl/RuleManager.wsdl</outputFileName>
             </configuration>
             <goals>
-              <goal>java2wsdl</goal>
+              <goal>java2ws</goal>
             </goals>
           </execution>
         </executions>
