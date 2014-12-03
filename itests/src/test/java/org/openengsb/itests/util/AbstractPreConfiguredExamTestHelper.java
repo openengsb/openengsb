@@ -17,12 +17,12 @@
 
 package org.openengsb.itests.util;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
 
 /**
  * This additional layer is required since the Configuration annotation is differently handled in exam 2.x. To avoid any

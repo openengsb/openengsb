@@ -17,13 +17,13 @@
 
 package org.openengsb.itests.util;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.debugConfiguration;
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.logLevel;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.debugConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -40,11 +40,6 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.karaf.tooling.exam.options.ConfigurationPointer;
-import org.apache.karaf.tooling.exam.options.LogLevelOption.LogLevel;
-import org.apache.karaf.tooling.exam.options.configs.ManagementCfg;
-import org.apache.karaf.tooling.exam.options.configs.WebCfg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.SecurityManager;
@@ -61,8 +56,12 @@ import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.ProbeBuilder;
 import org.ops4j.pax.exam.TestProbeBuilder;
-import org.ops4j.pax.exam.junit.ProbeBuilder;
+import org.ops4j.pax.exam.karaf.options.ConfigurationPointer;
+import org.ops4j.pax.exam.karaf.options.LogLevelOption;
+import org.ops4j.pax.exam.karaf.options.configs.ManagementCfg;
+import org.ops4j.pax.exam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -92,6 +91,7 @@ public abstract class AbstractExamTestHelper {
 
     private static final int DEBUG_PORT = 5005;
     private static final String LOG_LEVEL = "ERROR";
+    
     public static final long DEFAULT_TIMEOUT = 90000;
 
     @Inject
@@ -251,7 +251,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected <T> T queryOsgiService(Class<T> type, String filter, long timeout, boolean throwException) {
-        ServiceTracker tracker;
+        ServiceTracker<T, T> tracker;
         try {
             String flt;
             if (filter != null) {
@@ -264,11 +264,11 @@ public abstract class AbstractExamTestHelper {
                 flt = "(" + Constants.OBJECTCLASS + "=" + type.getName() + ")";
             }
             Filter osgiFilter = FrameworkUtil.createFilter(flt);
-            tracker = new ServiceTracker(bundleContext, osgiFilter, null);
+            tracker = new ServiceTracker<T, T>(bundleContext, osgiFilter, null);
             tracker.open(true);
             // Note that the tracker is not closed to keep the reference
             // This is buggy, as the service reference may change i think
-            Object svc = type.cast(tracker.waitForService(timeout));
+            T svc = tracker.waitForService(timeout);
             if (svc == null && throwException) {
                 @SuppressWarnings("rawtypes")
                 Dictionary dic = bundleContext.getBundle().getHeaders();
@@ -284,7 +284,7 @@ public abstract class AbstractExamTestHelper {
 
                 throw new RuntimeException("Gave up waiting for service " + flt);
             }
-            return svc != null ? type.cast(svc) : null;
+            return svc;
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException("Invalid filter", e);
         } catch (InterruptedException e) {
@@ -374,7 +374,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     public static Option[] baseConfiguration() throws Exception {
-        String loglevel = LOG_LEVEL;
+//        String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
         boolean hold = true;
         boolean debug = false;
@@ -382,7 +382,7 @@ public abstract class AbstractExamTestHelper {
         if (paxLocalStream != null) {
             Properties properties = new Properties();
             properties.load(paxLocalStream);
-            loglevel = (String) ObjectUtils.defaultIfNull(properties.getProperty("loglevel"), loglevel);
+//            loglevel = (String) ObjectUtils.defaultIfNull(properties.getProperty("loglevel"), loglevel);
             debugPort = "5005"; // (String) ObjectUtils.defaultIfNull(properties.getProperty("debugport"), debugPort);
             debug = true; // ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
             hold = true; // ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
@@ -395,7 +395,7 @@ public abstract class AbstractExamTestHelper {
         portNames.load(portsPropertiesFile);
         LOGGER.warn("running itests with the following port-config");
         LOGGER.warn(portNames.toString());
-        LogLevel realLogLevel = transformLogLevel(loglevel);
+//        LogLevel realLogLevel = transformLogLevel(loglevel);
         Option[] mainOptions =
             new Option[]{
                 new VMOption("-Xmx2048m"),
@@ -403,7 +403,7 @@ public abstract class AbstractExamTestHelper {
                 karafDistributionConfiguration().frameworkUrl(
                     maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
                         .versionAsInProject()),
-                logLevel(realLogLevel),
+                logLevel(LogLevelOption.LogLevel.ERROR),
                 editConfigurationFilePut(WebCfg.HTTP_PORT, (String) portNames.get("jetty.http.port")),
                 editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, (String) portNames.get("rmi.server.port")),
                 editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, (String) portNames.get("rmi.registry.port")),
@@ -412,7 +412,7 @@ public abstract class AbstractExamTestHelper {
                 editConfigurationFilePut(new ConfigurationPointer("etc/org.openengsb.infrastructure.jms.cfg",
                     "stomp"), (String) portNames.get("jms.stomp.port")),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
-                    .versionAsInProject()) };
+                    .versionAsInProject())};
         mainOptions = combine(mainOptions, getDefaultEDBConfiguration());
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
@@ -437,22 +437,22 @@ public abstract class AbstractExamTestHelper {
         return (String) configuration.getProperties().get(name);
     }
 
-    private static LogLevel transformLogLevel(String logLevel) {
-        switch (logLevel) {
-            case "ERROR":
-                return LogLevel.ERROR;
-            case "WARN":
-                return LogLevel.WARN;
-            case "INFO":
-                return LogLevel.INFO;
-            case "DEBUG":
-                return LogLevel.DEBUG;
-            case "TRACE":
-                return LogLevel.TRACE;
-            default:
-                return LogLevel.WARN;
-        }
-    }
+//    private static LogLevel transformLogLevel(String logLevel) {
+//        switch (logLevel) {
+//            case "ERROR":
+//                return LogLevel.ERROR;
+//            case "WARN":
+//                return LogLevel.WARN;
+//            case "INFO":
+//                return LogLevel.INFO;
+//            case "DEBUG":
+//                return LogLevel.DEBUG;
+//            case "TRACE":
+//                return LogLevel.TRACE;
+//            default:
+//                return LogLevel.WARN;
+//        }
+//    }
 
     protected String getOsgiProjectVersion() {
         return bundleContext.getBundle().getHeaders().get("Project-Version");

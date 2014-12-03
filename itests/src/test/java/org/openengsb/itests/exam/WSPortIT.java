@@ -17,12 +17,12 @@
 
 package org.openengsb.itests.exam;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -39,19 +39,19 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.util.DefaultOsgiUtilsService;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
 import org.w3c.dom.Document;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
     private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;

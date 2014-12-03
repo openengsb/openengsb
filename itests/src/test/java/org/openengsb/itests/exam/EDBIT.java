@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,11 +56,12 @@ import org.openengsb.itests.exam.models.PrimitivePropertyModelDecorator;
 import org.openengsb.itests.exam.models.SubModelDecorator;
 import org.openengsb.itests.exam.models.TestModelDecorator;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionConfigurationFilePutOption;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class EDBIT extends AbstractModelUsingExamTestHelper {
     private static final String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;

@@ -51,13 +51,13 @@ import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.remoteclient.ExampleConnector;
 import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 // This one will run each test in it's own container (slower speed)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@ExamReactorStrategy(PerMethod.class)
 public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     private DummyLogDomain exampleMock;

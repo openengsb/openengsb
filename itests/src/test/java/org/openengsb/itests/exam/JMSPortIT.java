@@ -17,13 +17,13 @@
 
 package org.openengsb.itests.exam;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -38,7 +38,6 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,9 +54,10 @@ import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ import org.springframework.jms.support.JmsUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class JMSPortIT extends AbstractRemoteTestHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
     private DefaultOsgiUtilsService utilsService;

@@ -43,11 +43,11 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.itests.htmlunit.testpanel.TestTaskPanel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
+import org.ops4j.pax.exam.ProbeBuilder;
 import org.ops4j.pax.exam.TestProbeBuilder;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.ProbeBuilder;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.Constants;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -57,9 +57,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
-@RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 @Ignore
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
 public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     private static final String CONTEXT = "it-taskbox";
