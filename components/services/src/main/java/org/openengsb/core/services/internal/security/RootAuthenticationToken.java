@@ -22,6 +22,11 @@ import org.apache.shiro.authc.AuthenticationToken;
  * Special Authentication token used for system-access
  */
 public class RootAuthenticationToken implements AuthenticationToken {
+    
+    private static final long serialVersionUID = 1L;
+
+    public static final String USERNAME = "system";
+    
     @Override
     public Object getCredentials() {
         return null;
@@ -29,6 +34,6 @@ public class RootAuthenticationToken implements AuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return new Object();
+        return USERNAME;
     }
 }
