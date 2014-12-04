@@ -31,14 +31,11 @@
     <ref component-id="factory" />
   </service>
   
-  <reference id="authenticationContext" interface="org.openengsb.core.api.security.AuthenticationContext" />
-
   <bean id="factory" class="org.openengsb.connector.userprojects.ldap.internal.UserProjectsLdapServiceInstanceFactory" destroy-method="destroy">
     <property name="synchronizationService" ref="defaultSyncService" />
   </bean>
   <bean id="defaultSyncService" class="org.openengsb.connector.userprojects.ldap.internal.DefaultSynchronizationService">    
     <property name="userProjectsDomainEvents" ref="userProjectsDomainEvents"></property>
-    <property name="authenticationContext" ref="authenticationContext" />
   </bean>
 
   <reference id="userProjectsDomainEvents" interface="org.openengsb.domain.userprojects.UserProjectsDomainEvents"/>

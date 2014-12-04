@@ -102,6 +102,12 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.services</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.labs.delegation</groupId>
       <artifactId>org.openengsb.labs.delegation.service</artifactId>
       <version>${labs.delegation.version}</version>
@@ -113,12 +119,6 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.userprojects</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -138,6 +138,12 @@
           <groupId>org.apache.directory.shared</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.services</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
