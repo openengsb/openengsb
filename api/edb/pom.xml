@@ -93,10 +93,6 @@
             <configuration>
               <className>org.openengsb.core.edb.api.EngineeringDatabaseService</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/EngineeringDatabaseService.wsdl</outputFileName>
-              <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
-              <databinding>aegis</databinding>
             </configuration>
             <goals>
               <goal>java2ws</goal>

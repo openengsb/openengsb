@@ -107,10 +107,6 @@
             <configuration>
               <className>org.openengsb.core.api.ConnectorManager</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/ConnectorManager.wsdl</outputFileName>
-              <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
-              <databinding>aegis</databinding>
             </configuration>
             <goals>
               <goal>java2ws</goal>
@@ -122,10 +118,6 @@
             <configuration>
               <className>org.openengsb.core.api.remote.ProxyConnectorRegistry</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/ProxyConnectorRegistry.wsdl</outputFileName>
-              <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
-              <databinding>aegis</databinding>
             </configuration>
             <goals>
               <goal>java2ws</goal>
@@ -137,10 +129,6 @@
             <configuration>
               <className>org.openengsb.core.api.LinkingSupport</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/LinkingSupport.wsdl</outputFileName>
-              <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
-              <databinding>aegis</databinding>
             </configuration>
             <goals>
               <goal>java2ws</goal>
@@ -152,10 +140,6 @@
             <configuration>
               <className>org.openengsb.core.api.EventSupport</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/EventSupport.wsdl</outputFileName>
-              <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
-              <databinding>aegis</databinding>
             </configuration>
             <goals>
               <goal>java2ws</goal>
@@ -167,9 +151,7 @@
             <configuration>
               <className>org.openengsb.core.api.model.OpenEngSBModel</className>
               <outputFileName>${project.basedir}/target/generated/wsdl/OpenEngSBModel.wsdl</outputFileName>
-	          <verbose>true</verbose>
-              <attachWsdl>true</attachWsdl>
-              <genWsdl>true</genWsdl>
+              <!-- Different databinding is intended -->
               <databinding>jaxb</databinding>
             </configuration>
             <goals>

@@ -32,7 +32,7 @@
   <artifactId>wsdl2dll-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
 
-  <name>OpenEngSB :: Loom :: CSharp :: Common :: WSDL to DLL Maven Plugin</name>
+  <name>OpenEngSB :: Tooling :: WSDL2DLL Maven Plugin</name>
   <description>Simple maven plugin which converts wsdl files to dll files.</description>
 
   <licenses>
