@@ -399,14 +399,6 @@
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.example/${project.version}</bundle>
   </feature>
   
-  <!-- TODO [OPENENGSB-3401] remove this feature after the issue has been resolved -->
-  <feature name="openengsb-domain-sqlcode" version="${project.version}" description="OpenEngSB SQLCode Domain">
-    <details>
-      TBW
-    </details>
-    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.SQLCode/${project.version}</bundle>
-  </feature>  
-
   <feature name="openengsb-connector-example" version="${project.version}" description="OpenEngSB Example Connector">
     <details>
       Connector implementing the sample domain. Typically there is no need to overwrite this connector. There is either no

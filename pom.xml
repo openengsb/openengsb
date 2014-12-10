@@ -119,8 +119,6 @@
     <module>examples/remotesamples</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
-    <!-- OpenEngSB XLink Testdomains-->
-    <module>domain/sqlcode</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
