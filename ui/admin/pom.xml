@@ -291,12 +291,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.OOSourceCode</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>    
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.SQLCode</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>

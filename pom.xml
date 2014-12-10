@@ -121,7 +121,6 @@
     <module>itests</module>
     <!-- OpenEngSB XLink Testdomains-->
     <module>domain/sqlcode</module>
-    <module>domain/oosourcecode</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
