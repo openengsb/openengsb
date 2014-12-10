@@ -20,13 +20,12 @@ import java.io.File;
 import java.util.Set;
 import java.util.Timer;
 
-import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.userprojects.file.internal.file.AssignmentFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.ProjectFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.RoleFileAccessObject;
 import org.openengsb.connector.userprojects.file.internal.file.UserFileAccessObject;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.AuthenticationContext;
+import org.openengsb.core.services.SecurityContext;
 import org.openengsb.domain.userprojects.UserProjectsDomainEvents;
 import org.openengsb.domain.userprojects.event.UpdateAssignmentEvent;
 import org.openengsb.domain.userprojects.event.UpdateProjectsEvent;
@@ -41,16 +40,11 @@ public final class DefaultSynchronizationService implements SynchronizationServi
     private AssignmentFileAccessObject assignmentFao;
 
     private UserProjectsDomainEvents events;
-    private AuthenticationContext authenticationContext;
 
     private Timer timer = new Timer();
 
     public void setUserProjectsDomainEvents(UserProjectsDomainEvents domainEvents) {
         events = domainEvents;
-    }
-
-    public void setAuthenticationContext(AuthenticationContext authenticationContext) {
-        this.authenticationContext = authenticationContext;
     }
 
     @Override
@@ -78,23 +72,27 @@ public final class DefaultSynchronizationService implements SynchronizationServi
         timer.schedule(fileWatcher, 5000, 1000);
     }
     
-    private void syncFromFiles(Set<File> files) {
+    private void syncFromFiles(final Set<File> files) {
         String oldContext = ContextHolder.get().getCurrentContextId();
         ContextHolder.get().setCurrentContextId("userprojects-file");
-        authenticationContext.login("admin", new Password("password"));
+        SecurityContext.executeWithSystemPermissions(new Runnable() {
 
-        if (files.contains(Configuration.get().getUsersFile())) {
-            syncUsers();
-        }
-        if (files.contains(Configuration.get().getProjectsFile())) {
-            syncProjects();
-        }
-        if (files.contains(Configuration.get().getRolesFile())) {
-            syncRoles();
-        }
-        if (files.contains(Configuration.get().getAssignmentsFile())) {
-            syncAssignments();
-        }
+            @Override
+            public void run() {
+                if (files.contains(Configuration.get().getUsersFile())) {
+                    syncUsers();
+                }
+                if (files.contains(Configuration.get().getProjectsFile())) {
+                    syncProjects();
+                }
+                if (files.contains(Configuration.get().getRolesFile())) {
+                    syncRoles();
+                }
+                if (files.contains(Configuration.get().getAssignmentsFile())) {
+                    syncAssignments();
+                }
+            }
+        });
 
         ContextHolder.get().setCurrentContextId(oldContext);
     }

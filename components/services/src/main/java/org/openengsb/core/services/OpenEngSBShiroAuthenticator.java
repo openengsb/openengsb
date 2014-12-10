@@ -35,7 +35,7 @@ public class OpenEngSBShiroAuthenticator extends AbstractAuthenticator {
     @Override
     protected AuthenticationInfo doAuthenticate(AuthenticationToken token) throws AuthenticationException {
         if (token instanceof RootAuthenticationToken) {
-            return new SimpleAuthenticationInfo(new Object(), null, "openengsb");
+            return new SimpleAuthenticationInfo(token.getPrincipal(), null, "openengsb");
         }
         try {
             Authentication authenticate =

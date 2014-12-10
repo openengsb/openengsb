@@ -54,7 +54,7 @@ public class SecurityInterceptor implements MethodInterceptor {
             throw new AccessDeniedException("no authentication was found in context");
         }
 
-        if (subject.getPrincipal().getClass().equals(Object.class)) {
+        if (RootAuthenticationToken.USERNAME.equals(subject.getPrincipal())) {
             // this action is executed in a root-context
             return mi.proceed();
         }
