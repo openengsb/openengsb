@@ -17,13 +17,12 @@
 
 package org.openengsb.itests.exam;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,8 +30,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,15 +40,17 @@ import org.openengsb.core.ekb.api.EKBCommit;
 import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.domain.example.model.EOModel;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionConfigurationFilePutOption;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-@RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
 public class EDBIndexIT extends AbstractModelUsingExamTestHelper {
 
     public static final String CONTEXT = "testcontext";
@@ -66,7 +65,6 @@ public class EDBIndexIT extends AbstractModelUsingExamTestHelper {
         Option[] options = new Option[]{
             configFilePut("etc/org.openengsb.ekb.cfg", "modelUpdatePropagationMode", "DEACTIVATED"),
             configFilePut("etc/org.openengsb.ekb.cfg", "persistInterfaceLockingMode", "DEACTIVATED"),
-            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
             feature("openengsb-domain-example"),
             feature("openengsb-edbi") // also loads spring-jdbc
         };
@@ -78,7 +76,6 @@ public class EDBIndexIT extends AbstractModelUsingExamTestHelper {
         ekb = getOsgiService(PersistInterface.class);
         indexEngine = getOsgiService(IndexEngine.class);
         dataSource = getOsgiService(DataSource.class);
-        registerModelProvider();
         ContextHolder.get().setCurrentContextId(CONTEXT);
     }
 

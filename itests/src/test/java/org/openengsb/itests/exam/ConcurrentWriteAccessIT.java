@@ -17,15 +17,12 @@
 
 package org.openengsb.itests.exam;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
-import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,11 +36,13 @@ import org.openengsb.core.ekb.api.PersistInterface;
 import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.domain.example.model.SourceModelA;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionConfigurationFilePutOption;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
     private static final String CONTEXT = "testcontext";
     private EngineeringDatabaseService edbService;
@@ -59,7 +58,6 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
             new KarafDistributionConfigurationFilePutOption(
                 "etc/org.openengsb.ekb.cfg",
                 "persistInterfaceLockingMode", "ACTIVATED"),
-            mavenBundle().groupId("org.ops4j.pax.tinybundles").artifactId("tinybundles").versionAsInProject(),
             editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example")
         };
         return combine(baseConfiguration(), options);
@@ -70,7 +68,6 @@ public class ConcurrentWriteAccessIT extends AbstractModelUsingExamTestHelper {
         edbService = getOsgiService(EngineeringDatabaseService.class);
         query = getOsgiService(QueryInterface.class);
         persist = getOsgiService(PersistInterface.class);
-        registerModelProvider();
         ContextHolder.get().setCurrentContextId(CONTEXT);
     }
     

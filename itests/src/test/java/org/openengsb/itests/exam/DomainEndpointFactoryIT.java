@@ -39,10 +39,10 @@ import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.framework.Constants;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper {
 
     private WiringService wiringService;

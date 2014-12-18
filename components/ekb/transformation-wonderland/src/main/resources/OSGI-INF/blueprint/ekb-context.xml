@@ -25,22 +25,31 @@
     <argument ref="blueprintBundleContext"/>
   </bean>
 
+  <!-- References to other bundles -->
+  <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
+  <reference id="graphDb" interface="org.openengsb.core.ekb.api.ModelGraph" />
+
   <service interface="org.openengsb.core.ekb.api.transformation.TransformationOperationLoader">
     <ref component-id="operationLoader"/>
   </service>
 
   <!-- Transformation Engine -->
-  <bean id="transformationEngineService" class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationEngineService">
+  <bean id="transformationEngineService" 
+        class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationEngineService">
     <property name="modelRegistry" ref="modelRegistry" />
     <property name="graphDb" ref="graphDb" />
     <property name="operationLoader" ref="operationLoader" />
   </bean>
 
-  <service interface="org.openengsb.core.ekb.api.TransformationEngine">
+  <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationBundleTracker" init-method="open" destroy-method="close">
+    <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
+    <argument ref="transformationEngineService" />
+  </bean>
+
+  <service interface="org.openengsb.core.ekb.api.TransformationEngine" ref="transformationEngineService">
     <service-properties>
       <entry key="location.root" value="ekbTransformationService" />
     </service-properties>
-    <ref component-id="transformationEngineService"/>
   </service>
 
   <service id="transformationDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
@@ -48,10 +57,6 @@
       <property name="engine" ref="transformationEngineService" />
     </bean>
   </service>
-
-  <!-- References to other bundles -->
-  <reference id="modelRegistry" interface="org.openengsb.core.ekb.api.ModelRegistry" />
-  <reference id="graphDb" interface="org.openengsb.core.ekb.api.ModelGraph" />
 
   <!-- Transformation Operations -->
   <service id="forwardOperation" interface="org.openengsb.core.ekb.api.transformation.TransformationOperation">
@@ -198,14 +203,5 @@
       <argument type="org.openengsb.core.ekb.api.ModelRegistry" ref="modelRegistry" />
     </bean>
   </service>
-
-  <bean class="org.osgi.util.tracker.BundleTracker" init-method="open" destroy-method="close" depends-on="transformationEngineService">
-    <argument type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
-    <argument type="int" value="32" />
-    <argument type="org.osgi.util.tracker.BundleTrackerCustomizer">
-      <bean class="org.openengsb.core.ekb.transformation.wonderland.internal.TransformationBundleTrackerCustomizer">
-        <argument type="org.openengsb.core.ekb.api.TransformationEngine" ref="transformationEngineService" />
-      </bean>
-    </argument>
-  </bean>
+  
 </blueprint>

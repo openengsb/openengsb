@@ -44,9 +44,9 @@ import org.openengsb.core.workflow.api.model.RuleBaseElementId;
 import org.openengsb.core.workflow.api.model.RuleBaseElementType;
 import org.openengsb.core.workflow.api.model.Task;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     private TaskboxService taskboxService;
     private WorkflowService workflowService;

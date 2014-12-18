@@ -38,9 +38,9 @@ import org.openengsb.core.usersync.SynchronizedUserService;
 import org.openengsb.domain.userprojects.model.Attribute;
 import org.openengsb.domain.userprojects.model.User;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class SyncronizedUserServiceTest extends AbstractPreConfiguredExamTestHelper {
 
     private SynchronizedUserService impl;

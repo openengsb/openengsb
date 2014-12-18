@@ -17,18 +17,16 @@
 
 package org.openengsb.itests.exam;
 
-import static org.apache.karaf.tooling.exam.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.karaf.tooling.exam.options.KarafDistributionConfigurationFilePutOption;
-import org.apache.karaf.tooling.exam.options.configs.FeaturesCfg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,13 +42,15 @@ import org.openengsb.domain.example.model.EOModel;
 import org.openengsb.domain.example.model.SourceModelA;
 import org.openengsb.domain.example.model.SourceModelB;
 import org.openengsb.itests.util.AbstractModelUsingExamTestHelper;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionConfigurationFilePutOption;
+import org.ops4j.pax.exam.karaf.options.configs.FeaturesCfg;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class EngineeringObjectIT extends AbstractModelUsingExamTestHelper {
     private QueryInterface query;
     private PersistInterface persist;

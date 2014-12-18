@@ -96,7 +96,7 @@ public class AbstractModelUsingExamTestHelper extends AbstractExamTestHelper {
     private Object loadTestModelProvider() throws Exception {
         String filter = String.format("(%s=%s)", Constants.OBJECTCLASS, TestModelProvider.class.getName());
         Filter osgiFilter = FrameworkUtil.createFilter(filter);
-        ServiceTracker tracker = new ServiceTracker(getBundleContext(), osgiFilter, null);
+        ServiceTracker<?, ?> tracker = new ServiceTracker<Object, Object>(getBundleContext(), osgiFilter, null);
         tracker.open(true);
         return tracker.waitForService(4000);
     }

@@ -33,9 +33,9 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.services.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
 
     private UserDataManager userManager;

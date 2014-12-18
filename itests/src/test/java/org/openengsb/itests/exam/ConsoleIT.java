@@ -38,16 +38,16 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.util.OutputStreamFormater;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
+import org.ops4j.pax.exam.ProbeBuilder;
 import org.ops4j.pax.exam.TestProbeBuilder;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.ProbeBuilder;
+import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     private static final String FRAMEWORK_VERSION = "framework-version";
     private static final String FRAMEWORK_ELEMENT_COUNT = "framework-element-count";

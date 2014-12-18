@@ -125,20 +125,24 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.karaf.tooling.exam</groupId>
-      <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.ops4j.pax.url</groupId>
-          <artifactId>pax-url-aether</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-container-karaf</artifactId>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-junit4</artifactId>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.ops4j.pax.url</groupId>
+        <artifactId>pax-url-wrap</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.ops4j.pax.url</groupId>
+        <artifactId>pax-url-mvn</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
@@ -260,16 +264,12 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-    
-    
-    
     <dependency>
       <groupId>org.openengsb.ui</groupId>
       <artifactId>org.openengsb.ui.common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>com.google.guava-all</artifactId>
