@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -147,7 +148,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         List<Object> filterFactories = new LinkedList<Object>();
         filterFactories.add(MessageVerifierFilter.class);
         filterFactories.add(new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext),
-                new ShiroContext()));
+            new ShiroContext()));
         filterFactories.add(new RequestMapperFilter(requestHandler));
         factory.setFilters(filterFactories);
         factory.create();
@@ -212,7 +213,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             processRequest(secureRequest);
             fail("Expected exception");
         } catch (FilterException e) {
-            assertThat(e.getCause(), is(org.apache.shiro.authc.AuthenticationException.class));
+            assertThat(e.getCause(), instanceOf(org.apache.shiro.authc.AuthenticationException.class));
         }
         verify(requestHandler, never()).handleCall(any(MethodCall.class));
     }
@@ -246,7 +247,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
             fail("replay was not detected");
         } catch (FilterException e) {
-            assertThat(e.getCause(), is(MessageVerificationFailedException.class));
+            assertThat(e.getCause(), instanceOf(MessageVerificationFailedException.class));
         }
     }
 

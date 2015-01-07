@@ -16,6 +16,7 @@
  */
 package org.openengsb.core.util;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -62,7 +63,7 @@ public class JsonUtilTest {
             Arrays.asList(TestBean.class.getName()));
         JsonUtils.convertAllArgs(methodCall);
         Object object = methodCall.getArgs()[0];
-        assertThat(object, is(TestBean.class));
+        assertThat(object, instanceOf(TestBean.class));
         assertThat(((TestBean) object).x, is("foo"));
     }
 
@@ -73,7 +74,7 @@ public class JsonUtilTest {
         methodCall = objectMapper.readValue(stringValue, MethodCall.class);
         JsonUtils.convertAllArgs(methodCall);
         Object object = methodCall.getArgs()[0];
-        assertThat(object, is(TestBean[].class));
+        assertThat(object, instanceOf(TestBean[].class));
         TestBean[] arg = (TestBean[]) object;
         assertThat(arg[0].x, is("foo"));
     }

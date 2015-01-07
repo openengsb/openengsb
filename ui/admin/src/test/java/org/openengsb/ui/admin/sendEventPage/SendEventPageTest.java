@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.sendEventPage;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -53,14 +54,14 @@ public class SendEventPageTest extends AbstractUITest {
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
     private RepeatingView fieldList;
-    
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         tester.getApplication().getComponentInstantiationListeners()
             .add(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
-        
+
         List<Event> allAudits = new ArrayList<Event>();
         Event event1 = new Event();
         event1.setName("123");
@@ -124,7 +125,7 @@ public class SendEventPageTest extends AbstractUITest {
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());
         assertThat(captor.getValue(), notNullValue());
-        assertThat(captor.getValue(), is(NullEvent2.class));
+        assertThat(captor.getValue(), instanceOf(NullEvent2.class));
         assertThat(((NullEvent2) captor.getValue()).getTestProperty(), is((Object) "a"));
     }
 

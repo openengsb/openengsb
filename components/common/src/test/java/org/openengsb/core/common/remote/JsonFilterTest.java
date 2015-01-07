@@ -16,6 +16,7 @@
  */
 package org.openengsb.core.common.remote;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -84,7 +85,7 @@ public class JsonFilterTest {
             (MethodResultMessage) jsonOutgoingMethodCallMarshalFilter.filter(new MethodCallMessage(),
                 new HashMap<String, Object>());
         Object arg = result.getResult().getArg();
-        assertThat(arg, is(TestModel.class));
+        assertThat(arg, instanceOf(TestModel.class));
         TestModel resultModel = (TestModel) arg;
         assertThat(resultModel.getId(), is(42));
         assertThat(resultModel.getName(), is("foo"));

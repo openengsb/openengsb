@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.common.editor;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -150,12 +151,12 @@ public class ServiceEditorPanelTest {
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:2:value");
         assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
-    
+
     @Test
     public void testDeleteProperty_shouldWork() throws Exception {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
-        props.put("testpropy", new String[]{ "ping", "pong"});
+        props.put("testpropy", new String[]{ "ping", "pong" });
         startEditorPanel(props, attribOption);
         String path = "panel:properties:0:key";
         Label label1 = (Label) tester.getComponentFromLastRenderedPage(path);
@@ -163,7 +164,7 @@ public class ServiceEditorPanelTest {
         tester.executeAjaxEvent("panel:properties:0:buttonKey", "onclick");
         label1 = (Label) tester.getComponentFromLastRenderedPage(path);
         String after = label1.getDefaultModelObjectAsString();
-        
+
         assertThat(before, is("testpropx"));
         assertThat(after, is("testpropy"));
     }
@@ -173,14 +174,14 @@ public class ServiceEditorPanelTest {
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);
-        
+
         String path = "panel:properties:0:values:1:value";
         @SuppressWarnings("unchecked")
         AjaxEditableLabel<String> value1 =
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
         String before = (String) value1.getDefaultModelObject();
         tester.executeAjaxEvent("panel:properties:0:values:1:buttonValue", "onclick");
-        
+
         @SuppressWarnings("unchecked")
         AjaxEditableLabel<String> value2 =
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage(path);
@@ -202,14 +203,14 @@ public class ServiceEditorPanelTest {
             editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        
+
         @SuppressWarnings("rawtypes")
         Form form = mock(Form.class);
         when(form.getRootForm()).thenReturn(form);
-        
+
         editor =
             tester.startComponentInPage(new ServiceEditorPanel("panel", Arrays.asList(attributes), editorValues,
-                    properties, form));
+                properties, form));
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {
@@ -221,7 +222,7 @@ public class ServiceEditorPanelTest {
         String id = editor.getId() + ":" + buildFormComponentId(attributeId);
         Component c = tester.getComponentFromLastRenderedPage(id);
         assertThat(c, notNullValue());
-        assertThat(c, is(componentType));
+        assertThat(c, instanceOf(componentType));
         return (T) c;
     }
 

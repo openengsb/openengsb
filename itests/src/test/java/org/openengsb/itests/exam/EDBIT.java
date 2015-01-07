@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -250,7 +251,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) query.queryByString(getTestModel(), "name:\"C:\\test\"");
         assertThat(result.isEmpty(), is(false));
-        assertThat(result.get(0), is(getTestModel()));
+        assertThat(result.get(0), instanceOf(getTestModel()));
     }
 
     @Test
@@ -265,7 +266,7 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) query.query(getTestModel(), request);
         assertThat(result.isEmpty(), is(false));
-        assertThat(result.get(0), is(getTestModel()));
+        assertThat(result.get(0), instanceOf(getTestModel()));
     }
 
     @Test
