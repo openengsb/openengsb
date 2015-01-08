@@ -29,6 +29,7 @@ import org.openengsb.core.ekb.api.QueryInterface;
 import org.openengsb.core.usersync.DataSynchronizer;
 import org.openengsb.core.usersync.exception.SynchronizationException;
 import org.openengsb.domain.userprojects.model.Assignment;
+import org.openengsb.domain.userprojects.model.Permission;
 import org.openengsb.domain.userprojects.model.Project;
 import org.openengsb.domain.userprojects.model.Role;
 import org.openengsb.domain.userprojects.model.User;
@@ -167,6 +168,18 @@ public class EkbDataSynchronizer implements DataSynchronizer {
             if (result.size() == 0) {
                 commit.addInsert(role);
             } else {
+                // Merge old and new role to avoid loss of permission information
+                for (String oldRole : result.get(0).getRoles()) {
+                    if (!role.getRoles().contains(oldRole)) {
+                        role.getRoles().add(oldRole);
+                    }
+                }
+
+                for (Permission permission : result.get(0).getPermissions()) {
+                    if (!role.getPermissions().contains(permission)) {
+                        role.getPermissions().add(permission);
+                    }
+                }
                 commit.addUpdate(role);
             }
         }
@@ -219,6 +232,18 @@ public class EkbDataSynchronizer implements DataSynchronizer {
             if (result.size() == 0) {
                 commit.addInsert(assignment);
             } else {
+                // Merge old and new role to avoid loss of permission information
+                for (String oldRole : result.get(0).getRoles()) {
+                    if (!assignment.getRoles().contains(oldRole)) {
+                        assignment.getRoles().add(oldRole);
+                    }
+                }
+
+                for (Permission permission : result.get(0).getPermissions()) {
+                    if (!assignment.getPermissions().contains(permission)) {
+                        assignment.getPermissions().add(permission);
+                    }
+                }
                 commit.addUpdate(assignment);
             }
         }
