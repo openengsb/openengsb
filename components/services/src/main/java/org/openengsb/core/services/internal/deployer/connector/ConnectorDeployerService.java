@@ -165,11 +165,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                         new ConnectorDescription(configFile.getDomainType(), configFile.getConnectorType(),
                             attributes, properties);
                     try {
-                        serviceManager.createWithId(name, connectorDescription);
-                    } catch (IllegalArgumentException e) {
-                        if (e.getMessage().contains("connector already exists")) {
-                            return null;
+                        if (serviceManager.connectorExists(name)) {
+                            serviceManager.update(name, connectorDescription);
+                        } else {
+                            serviceManager.createWithId(name, connectorDescription);
                         }
+                    } catch (IllegalArgumentException e) {
                         throw e;
                     }
                     return null;
