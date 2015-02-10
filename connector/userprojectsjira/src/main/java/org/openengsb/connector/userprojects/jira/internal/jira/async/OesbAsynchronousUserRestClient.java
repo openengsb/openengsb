@@ -18,7 +18,9 @@ package org.openengsb.connector.userprojects.jira.internal.jira.async;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -30,15 +32,16 @@ import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousUserRestClient;
 import com.atlassian.util.concurrent.Promise;
+import com.atlassian.util.concurrent.Promises;
+import com.google.common.collect.Iterables;
 
 public class OesbAsynchronousUserRestClient extends AsynchronousUserRestClient {
 
     protected static final String USER_URI_PREFIX = "user";
     protected static final String ASSIGNABLE_URI_PREFIX = "assignable";
-    protected static final String MULTI_PROJECT_SEARCH_URI_PREFIX = "multiProjectSearch";
+    protected static final String SEARCH_URI_PREFIX = "search";
 
-    protected static final String PROJECT_KEYS_PARAMETER_NAME = "projectKeys";
-    protected static final String PARAMETER_VALUE_SEPARATOR = ",";
+    protected static final String PROJECT_KEY_PARAMETER_NAME = "project";
 
     protected final URI baseUri;
 
@@ -49,29 +52,30 @@ public class OesbAsynchronousUserRestClient extends AsynchronousUserRestClient {
         this.baseUri = baseUri;
     }
 
+    @SuppressWarnings("unchecked")
     public Promise<Iterable<User>> getAssignableUsers(Iterable<BasicProject> projects) {
-        List<String> validProjectKeys = new ArrayList<>();
+        List<BasicProject> validProjects = new ArrayList<>();
         if (projects != null) {
             for (BasicProject project : projects) {
                 if (project == null) {
                     continue;
                 }
                 if (StringUtils.isNotBlank(project.getKey())) {
-                    validProjectKeys.add(project.getKey());
+                    validProjects.add(project);
                 }
             }
         }
-        final UriBuilder uriBuilder =
-            UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX).path(ASSIGNABLE_URI_PREFIX)
-                    .path(MULTI_PROJECT_SEARCH_URI_PREFIX);
-        URI uri;
-        if (validProjectKeys.isEmpty()) {
-            uri = uriBuilder.build();
-        } else {
-            uri =
-                uriBuilder.queryParam(PROJECT_KEYS_PARAMETER_NAME,
-                        StringUtils.join(validProjectKeys, PARAMETER_VALUE_SEPARATOR)).build();
+        Set<User> allAssignableUsers = new HashSet<>();
+        for (BasicProject project : validProjects) {
+            Iterables.addAll(allAssignableUsers, getAssignableUsers(project).claim());
         }
+        return Promises.promise(Iterables.concat(allAssignableUsers));
+    }
+
+    private Promise<Iterable<User>> getAssignableUsers(BasicProject project) {
+        final UriBuilder uriBuilder =
+            UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX).path(ASSIGNABLE_URI_PREFIX).path(SEARCH_URI_PREFIX);
+        URI uri = uriBuilder.queryParam(PROJECT_KEY_PARAMETER_NAME, project.getKey()).build();
         return getAndParse(uri, usersJsonParser);
     }
 
