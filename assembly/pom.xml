@@ -23,10 +23,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <java.min.mem>256M</java.min.mem>
-    <java.max.mem>1024M</java.max.mem>
-    <java.min.perm>128M</java.min.perm>
-    <java.max.perm>256M</java.max.perm>
+    <java.min.mem>1024M</java.min.mem>
+    <java.max.mem>4096M</java.max.mem>
+    <java.min.perm>512M</java.min.perm>
+    <java.max.perm>1024M</java.max.perm>
   </properties>
 
   <parent>
