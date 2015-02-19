@@ -62,9 +62,14 @@ public class AuthenticationFileServiceImpl extends AbstractOpenEngSBConnectorSer
     private String findPasswordByUsername(String username) throws IOException {
         List<String> lines = FileUtils.readLines(Configuration.get().getUsernamePasswordFile());
         for (String line : lines) {
-            String[] usernamePassword = StringUtils.split(line, Configuration.get().getAssociationSeparator());
+            String[] usernamePassword =
+                StringUtils.splitByWholeSeparator(line, Configuration.get().getAssociationSeparator());
+            if (usernamePassword.length < 1) {
+                // invalid line
+                continue;
+            }
             if (usernamePassword[0].equals(username)) {
-                return usernamePassword[1];
+                return usernamePassword.length > 1 ? usernamePassword[1] : "";
             }
         }
         return null;
