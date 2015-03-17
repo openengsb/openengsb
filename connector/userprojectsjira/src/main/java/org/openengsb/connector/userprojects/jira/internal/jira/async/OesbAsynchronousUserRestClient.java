@@ -26,6 +26,8 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.openengsb.connector.userprojects.jira.internal.jira.json.UsersJsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
@@ -36,6 +38,7 @@ import com.atlassian.util.concurrent.Promises;
 import com.google.common.collect.Iterables;
 
 public class OesbAsynchronousUserRestClient extends AsynchronousUserRestClient {
+    private static final Logger LOG = LoggerFactory.getLogger(OesbAsynchronousUserRestClient.class);
 
     protected static final String USER_URI_PREFIX = "user";
     protected static final String ASSIGNABLE_URI_PREFIX = "assignable";
@@ -67,7 +70,17 @@ public class OesbAsynchronousUserRestClient extends AsynchronousUserRestClient {
         }
         Set<User> allAssignableUsers = new HashSet<>();
         for (BasicProject project : validProjects) {
-            Iterables.addAll(allAssignableUsers, getAssignableUsers(project).claim());
+            Promise<Iterable<User>> userPromise = getAssignableUsers(project);
+            Iterable<User> users = null;
+            try {
+                users = userPromise.claim();
+            } catch (Exception e) {
+                // statuscode 401: missing user or wrong pass. 403: forbidden (e.g.captcha required)
+                LOG.info("No access to project with key {}.", project.getKey());
+            }
+            if (users != null) {
+                Iterables.addAll(allAssignableUsers, users);
+            }
         }
         return Promises.promise(Iterables.concat(allAssignableUsers));
     }
