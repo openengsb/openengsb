@@ -115,7 +115,9 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
             LOGGER.warn("Could not deploy workflow-element {} because of unsatisfied dependencies", artifact.getName());
             LOGGER.debug(e.getMessage());
             LOGGER.debug("Details: ", e);
-            failedArtifacts.add(artifact);
+            synchronized(failedArtifacts) {
+                failedArtifacts.add(artifact);
+            }
             return;
         } catch (Exception e) {
             LOGGER.error("Error when deploying workflow-element", e);
