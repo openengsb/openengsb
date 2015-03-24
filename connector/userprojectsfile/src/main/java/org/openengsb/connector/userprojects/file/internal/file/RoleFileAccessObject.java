@@ -50,19 +50,23 @@ public class RoleFileAccessObject extends BaseFileAccessObject {
         } catch (IOException e) {
             throw new FileBasedRuntimeException(e);
         }
-        // FIXME Make string split ArrayIndexOutOfBoundsException safe
+
         for (String roleString : roleStrings) {
-            if (!StringUtils.isBlank(roleString)) {
-                String[] substrings = StringUtils.split(roleString, Configuration.get().getAssociationSeparator());
+            if (StringUtils.isNotBlank(roleString)) {
+                String[] substrings =
+                    StringUtils.splitByWholeSeparator(roleString, Configuration.get().getAssociationSeparator());
+                if (substrings.length < 1 || StringUtils.isBlank(substrings[0])) {
+                    continue;
+                }
                 Role role = new Role(substrings[0]);
                 if (substrings.length > 1) {
-                    role.setRoles(Arrays.asList(StringUtils.split(substrings[1], Configuration.get()
+                    role.setRoles(Arrays.asList(StringUtils.splitByWholeSeparator(substrings[1], Configuration.get()
                             .getValueSeparator())));
                 }
                 list.add(role);
             }
         }
-        
+
         return list;
     }
 

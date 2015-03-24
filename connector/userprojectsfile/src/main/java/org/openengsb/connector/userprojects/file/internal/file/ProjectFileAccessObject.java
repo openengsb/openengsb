@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.connector.userprojects.file.internal.Configuration;
 import org.openengsb.domain.userprojects.model.Project;
 
@@ -49,7 +50,9 @@ public class ProjectFileAccessObject extends BaseFileAccessObject {
             throw new FileBasedRuntimeException(e);
         }
         for (String projectName : projectNames) {
-            list.add(new Project(projectName));
+            if (StringUtils.isNotBlank(projectName)) {
+                list.add(new Project(projectName));
+            }
         }
         
         return list;

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.connector.userprojects.file.internal.Configuration;
 import org.openengsb.domain.userprojects.model.User;
 
@@ -49,7 +50,9 @@ public class UserFileAccessObject extends BaseFileAccessObject {
             throw new FileBasedRuntimeException(e);
         }
         for (String username : usernames) {
-            list.add(new User(username));
+            if (StringUtils.isNotBlank(username)) {
+                list.add(new User(username));
+            }
         }
         
         return list;
