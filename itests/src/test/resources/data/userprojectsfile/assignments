@@ -1,0 +1,7 @@
+user1:-:project1:-:role1,-,role2
+user2:-:project2
+
+user1
+user2:-:
+
+user1:-:project2:-:
