@@ -164,13 +164,15 @@ public class SynchronizedUserServiceImpl extends AbstractOpenEngSBService implem
 
     @Override
     public void deleteAssignment(String userName, String project) {
-        deleteAssignments(Lists.newArrayList(new Assignment(userName, project)));
+        for (DataSynchronizer synchronizer : dataSynchronizers) {
+            synchronizer.deleteAssignment(userName, project);
+        }
     }
 
     @Override
     public void deleteAssignments(List<Assignment> assignments) {
         for (DataSynchronizer synchronizer : dataSynchronizers) {
-            synchronizer.checkinAssignments(assignments);
+            synchronizer.deleteAssignments(assignments);
         }
     }
 
