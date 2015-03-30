@@ -14,48 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.connector.userprojects.file.internal.file;
+package org.openengsb.connector.userprojects.file;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.openengsb.connector.userprojects.file.internal.Configuration;
+import org.openengsb.connector.userprojects.file.internal.file.UserFileAccessObject;
 import org.openengsb.domain.userprojects.model.User;
 
-/**
- * The object providing access to the users file.
- */
-public class UserFileAccessObject extends BaseFileAccessObject {
+@RunWith(MockitoJUnitRunner.class)
+public class UserFileAccessObjectTest {
 
-    private final File usersFile;
+    private static final String RESOURCES_DIR = "src/test/resources";
+    private static final File USERS_FILE = new File(RESOURCES_DIR, "users");
+    
+    private List<User> users = new ArrayList<>();
 
-    public UserFileAccessObject() {
-        usersFile = Configuration.get().getUsersFile();
+    @Before
+    public void setup() {
+        Configuration.get().setUsersFile(USERS_FILE);
+        setupUsers();
     }
 
-    /**
-     * Finds all the available users.
-     * 
-     * @return the list of available users
-     */
-    public List<User> findAllUsers() {
-        List<User> list = new ArrayList<>();
-        List<String> usernames;
-        try {
-            usernames = readLines(usersFile);
-        } catch (IOException e) {
-            throw new FileBasedRuntimeException(e);
-        }
-        for (String username : usernames) {
-            if (StringUtils.isNotBlank(username)) {
-                list.add(new User(username));
-            }
-        }
+    private void setupUsers() {
+        User user = new User("user1");
+        users.add(user);
         
-        return list;
+        user = new User("user2");
+        users.add(user);
     }
 
+    @Test
+    public void testFindAllUsers_shouldFindNonBlankUsers() {
+        UserFileAccessObject fao = new UserFileAccessObject();
+        assertEquals(users, fao.findAllUsers());
+    }
 }

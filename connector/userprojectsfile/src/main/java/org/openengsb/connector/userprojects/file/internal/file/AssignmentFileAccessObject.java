@@ -50,15 +50,19 @@ public class AssignmentFileAccessObject extends BaseFileAccessObject {
         } catch (IOException e) {
             throw new FileBasedRuntimeException(e);
         }
-        // FIXME Make string split ArrayIndexOutOfBoundsException safe
+
         for (String assignmentString : assignmentStrings) {
-            if (!StringUtils.isBlank(assignmentString)) {
+            if (StringUtils.isNotBlank(assignmentString)) {
                 String[] substrings =
-                    StringUtils.split(assignmentString, Configuration.get().getAssociationSeparator());
+                    StringUtils
+                            .splitByWholeSeparator(assignmentString, Configuration.get().getAssociationSeparator());
+                if (substrings.length < 2 || StringUtils.isBlank(substrings[1])) {
+                    continue;
+                }
                 Assignment assignment = new Assignment(substrings[0], substrings[1]);
                 if (substrings.length > 2) {
-                    assignment.setRoles(Arrays.asList(StringUtils.split(substrings[2], Configuration.get()
-                            .getValueSeparator())));
+                    assignment.setRoles(Arrays.asList(StringUtils.splitByWholeSeparator(substrings[2], Configuration
+                            .get().getValueSeparator())));
                 }
                 list.add(assignment);
             }
