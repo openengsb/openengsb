@@ -861,11 +861,15 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
     public void testRevertFunctionality_shouldRevertModelsToOldState() throws Exception {
         TestModelDecorator model = getTestModelDecorator();
         model.setEdbId("reverttest/1");
-        model.setName("before");
+        model.setName("blub");
         TestModelDecorator model2 = getTestModelDecorator();
         model2.setEdbId("reverttest/2");
         model2.setName("test");
         EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        
+        model.setName("before");
+        commit = getTestEKBCommit().addUpdate(model.getModel());
         persist.commit(commit);
         String revision = commit.getRevisionNumber().toString();
 
@@ -971,6 +975,20 @@ public class EDBIT extends AbstractModelUsingExamTestHelper {
         assertThat(edbObject.getLong("primitiveLong"), is(Long.MAX_VALUE));
         assertThat(edbObject.getFloat("primitiveFloat"), is(Float.MAX_VALUE));
         assertThat(edbObject.getDouble("primitiveDouble"), is(Double.MAX_VALUE));
+    }
+    
+    @Test
+    public void testRevertFunctionalityWithOneCommit_shouldResultInEmptyEDB() throws Exception {
+        TestModelDecorator model = getTestModelDecorator();
+        model.setEdbId("reverttest1/1");
+        model.setName("model1");
+        EKBCommit commit = getTestEKBCommit().addInsert(model.getModel());
+        persist.commit(commit);
+        String revision = commit.getRevisionNumber().toString();
+        persist.revertCommit(revision);
+
+        List<?> models = query.query(getTestModel(), QueryRequest.query("name", "model1"));
+        assertThat(models.size(), is(0));
     }
 
     @Test

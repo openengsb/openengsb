@@ -176,13 +176,18 @@ public class PersistInterfaceService implements PersistInterface {
             }
             EDBCommit newCommit = edbService.createEDBCommit(new ArrayList<EDBObject>(),
                 new ArrayList<EDBObject>(), new ArrayList<EDBObject>());
-            for (EDBObject reverted : commit.getObjects()) {
+            for (EDBObject inserted : commit.getInserts()) {
+                inserted.remove(EDBConstants.MODEL_VERSION);
+                newCommit.delete(inserted.getOID());
+            }
+            for (EDBObject reverted : commit.getUpdates()) {
                 // need to be done in order to avoid problems with conflict detection
                 reverted.remove(EDBConstants.MODEL_VERSION);
                 newCommit.update(reverted);
             }
             for (String delete : commit.getDeletions()) {
-                newCommit.delete(delete);
+                EDBObject restore = edbService.getObject(delete, commit.getTimestamp() - 1);
+                newCommit.update(restore);
             }
             newCommit.setComment(String.format("revert [%s] %s", commit.getRevisionNumber().toString(),
                 commit.getComment() != null ? commit.getComment() : ""));
